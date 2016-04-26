@@ -1,0 +1,38 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+
+    <constraint id="ejb3:TransactionalOnlyAllowedOnPublicMethodsOfEJBs">
+        <requiresConcept refId="ejb3:SingletonBean" />
+        <requiresConcept refId="ejb3:StatelessSessionBean" />
+        <description>@Transactional annotations are only allowed on public methods of EJBs.</description>
+        <cypher><![CDATA[
+    MATCH
+      (type:Type)-[:DECLARES]->(method:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(transactional)
+    WHERE
+      transactional.fqn = "javax.transaction.Transactional"
+      and not method.visibility = 'public'
+    RETURN
+      type.fqn as EJB, method.signature as Method
+  ]]></cypher>
+    </constraint>
+
+    <constraint id="ejb3:TransactionAttributeOnlyAllowedOnPublicMethodsOfEJBs">
+        <requiresConcept refId="ejb3:SingletonBean" />
+        <requiresConcept refId="ejb3:StatelessSessionBean" />
+        <description>@TransactionAttribute annotations are only allowed on public methods of EJBs.</description>
+        <cypher><![CDATA[
+    MATCH
+      (type:Type)-[:DECLARES]->(method:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(transactionAttribute)
+    WHERE
+      transactionAttribute.fqn ="javax.ejb.TransactionAttribute"
+      and not (type:Ejb and method.visibility = 'public')
+    RETURN
+      type.fqn as Type, method.signature as Method
+  ]]></cypher>
+    </constraint>
+
+    <group id="default">
+        <includeConstraint refId="ejb3:TransactionalOnlyAllowedOnPublicMethodsOfEJBs" />
+        <includeConstraint refId="ejb3:TransactionAttributeOnlyAllowedOnPublicMethodsOfEJBs" />
+    </group>
+
+</jqa:jqassistant-rules>

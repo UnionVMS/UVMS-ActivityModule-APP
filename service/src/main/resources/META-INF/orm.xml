@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="
+                     http://java.sun.com/xml/ns/persistence/orm
+                     http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+                 version="1.0">
+    <!--<named-native-query name="closestArea">-->
+        <!--<query><![CDATA[WITH prox_query as (SELECT id, st_distance_spheroid(geom, st_geomfromtext('SRID= :Crs ; :Wkt \'), 'SPHEROID["WGS 84",6378137,298.257223563]') :Units as d FROM activity.countries ORDER BY geom <-> 'SRID=4326;POINT(-7.14925 45.11557)'\:\:geometry limit 10) select * from prox_query order by d limit 1]]></query>-->
+    <!--</named-native-query>-->
+</entity-mappings>
