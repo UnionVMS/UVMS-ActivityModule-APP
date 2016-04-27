@@ -132,12 +132,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.wololo</groupId>
-                <artifactId>jts2geojson</artifactId>
-                <version>0.7.0</version>
-            </dependency>
-
-            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.4</version>
@@ -212,25 +206,7 @@
 			    <artifactId>jaxrs-api</artifactId>
 			    <version>3.0.11.Final</version>
 			</dependency>
-<!--
-			  <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
-                <artifactId>reporting-model</artifactId>
-                <version>${reporting.model}</version>
-            </dependency>
 
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-                <artifactId>movement-model</artifactId>
-                <version>${movement.model.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-                <artifactId>asset-model</artifactId>
-                <version>${asset.module.version}</version>
-            </dependency>
-			-->
         </dependencies>
 
     </dependencyManagement>

@@ -14,8 +14,6 @@
 
     <dependencies>
 
-     
-
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
@@ -25,32 +23,11 @@
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>uvms-commons</artifactId>
         </dependency>
-<!--
-   <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
-            <artifactId>reporting-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-            <artifactId>movement-model</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-            <artifactId>asset-model</artifactId>
-            <scope>provided</scope>
-        </dependency>
--->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wololo</groupId>
-            <artifactId>jts2geojson</artifactId>
         </dependency>
 
         <dependency>
@@ -120,24 +97,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-     <!--   <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-transcoder</artifactId>
-            <version>1.8</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>xmlgraphics-commons</artifactId>
-            <version>1.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-codec</artifactId>
-            <version>1.8</version>
-        </dependency>
--->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
