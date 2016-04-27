@@ -207,6 +207,12 @@
 			    <version>3.0.11.Final</version>
 			</dependency>
 
+            <dependency>
+                <groupId>ojdbc</groupId>
+                <artifactId>ojdbc</artifactId>
+                <version>14</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
