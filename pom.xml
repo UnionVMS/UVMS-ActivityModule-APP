@@ -4,7 +4,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
 
@@ -56,12 +56,10 @@
     <dependencyManagement>
 
         <dependencies>
-
-          
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
                 <artifactId>activity-model</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${activity.model}</version>
             </dependency>
         
         	<dependency>
