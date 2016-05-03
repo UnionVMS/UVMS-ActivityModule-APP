@@ -22,10 +22,10 @@ public class VesselStorageCharacteristics {
 	@Column(name = "vessel_type_code_list_id")
 	private String vesselTypeCodeListId;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "VesselStorageCharcterstics", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "sourceVesselCharacteristics", cascade = CascadeType.ALL)
 	private FishingActivity fishingActivitiesForDestVesselCharId;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "VesselStorageCharcterstics", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "destVesselCharacteristics", cascade = CascadeType.ALL)
 	private FishingActivity fishingActivitiesForSourceVesselCharId;
 
 	public VesselStorageCharacteristics() {

@@ -38,7 +38,7 @@ public class VesselTransportMeans {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
 	private Set<VesselCountry> vesselCountries = new HashSet<VesselCountry>(0);
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "VesselTransportMeans", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
 	private FaReportDocument faReportDocuments;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
