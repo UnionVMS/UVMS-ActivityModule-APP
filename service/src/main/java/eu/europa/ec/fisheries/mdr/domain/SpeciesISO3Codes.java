@@ -18,7 +18,6 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class SpeciesISO3Codes extends MasterDataRegistry {
 
-	@Column(name = "code")
 	private String code;
 	
 	@Column(name = "scientific_name")
@@ -33,13 +32,10 @@ public class SpeciesISO3Codes extends MasterDataRegistry {
 	@Column(name = "spanish_name")
 	private String spanishName;
 	
-	@Column(name = "author")
 	private String author;
 	
-	@Column(name = "family")
 	private String family;
 	
-	@Column(name = "order")
 	private String order;
 
 	public String getCode() {

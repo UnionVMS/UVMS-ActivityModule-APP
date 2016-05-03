@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.mdr.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -18,22 +17,16 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class FAOAreaCodes extends MasterDataRegistry {
 
-	@Column(name = "area")
 	private String area;
 	
-	@Column(name = "subarea")
 	private String subarea;
 	
-	@Column(name = "division")
 	private String division;
 	
-	@Column(name = "subdivision")
 	private String subdivision;
 	
-	@Column(name = "unit")
 	private String unit;
 	
-	@Column(name = "description")
 	private String description;
 
 	public String getArea() {

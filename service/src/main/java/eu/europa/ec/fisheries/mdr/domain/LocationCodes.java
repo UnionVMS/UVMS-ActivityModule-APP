@@ -21,25 +21,22 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 	@Column(name = "iso3_country_code")
 	private String iso3CountryCode;
 	
-	@Column(name = "latitude")
 	private Double latitude;
 	
-	@Column(name = "longitude")
 	private Double longitude;
 	
-	@Column(name = "fishingPort")
+	@Column(name = "fishing_port")
 	private Boolean fishingPort;
 	
-	@Column(name = "landingPlace")
+	@Column(name = "landing_place")
 	private Boolean landingPlace;
 	
 	@Column(name = "commercial_port")
 	private Boolean commercialPort;
 	
-	@Column(name = "unloCode")
+	@Column(name = "unlo_code")
 	private String unloCode ;
 	
-	@Column(name = "coordinates")
 	private String coordinates ;
 	
 	@Column(name = "un_function_code")
@@ -48,16 +45,12 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 	@Column(name = "unknown_function")
 	private Boolean unknownFunction;
 	
-	@Column(name = "port")
 	private Boolean port;
 	
-	@Column(name = "rail")
 	private Boolean rail;
 	
-	@Column(name = "road")
 	private Boolean road;
 	
-	@Column(name = "airport")
 	private Boolean airport;
 	
 	@Column(name = "postal_exchange_office")
