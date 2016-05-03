@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+@SuppressWarnings("serial")
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "mdr_cr_nafo_stock")
