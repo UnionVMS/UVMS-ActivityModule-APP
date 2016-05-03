@@ -35,7 +35,7 @@ public class GearProblem {
 	@Column(name = "recovery_measure_code_list_id", nullable = false)
 	private String recoveryMeasureCodeListId;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "GearProblem", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
 	private FluxLocation fluxLocations;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem")	
