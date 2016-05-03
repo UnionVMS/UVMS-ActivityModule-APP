@@ -16,6 +16,7 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
+            <scope>provided</scope>
         </dependency>
         
         <dependency>
@@ -26,16 +27,19 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>service</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>message</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

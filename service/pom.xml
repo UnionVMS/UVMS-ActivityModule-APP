@@ -17,7 +17,6 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
