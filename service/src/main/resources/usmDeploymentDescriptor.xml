@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:deployApplicationRequest  xmlns:ns2="module.user.wsdl.fisheries.ec.eu.europa.ec.fisheries.uvms.activityropa.eu.europa.ec.fisheries.uvms.activity">
+<ns2:deployApplicationRequest xmlns:ns2="module.user.wsdl.fisheries.ec.europa.eu">
     <method>DEPLOY_APPLICATION</method>
     <application>
         <name>${activity.name}</name>
