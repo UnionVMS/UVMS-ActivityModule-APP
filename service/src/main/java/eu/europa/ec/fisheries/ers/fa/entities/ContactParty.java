@@ -1,23 +1,17 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_contact_party", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "contact_person_id"),
 		@UniqueConstraint(columnNames = "structured_address_id") })
-public class ContactParty {
+public class ContactParty implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@OneToOne(fetch = FetchType.LAZY)

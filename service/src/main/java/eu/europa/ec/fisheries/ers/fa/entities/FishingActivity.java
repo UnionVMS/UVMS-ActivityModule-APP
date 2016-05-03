@@ -1,30 +1,21 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_fishing_activity", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "dest_vessel_char_id"),
 		@UniqueConstraint(columnNames = "fishing_trip_id"),
 		@UniqueConstraint(columnNames = "source_vessel_char_id") })
-public class FishingActivity {
+public class FishingActivity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

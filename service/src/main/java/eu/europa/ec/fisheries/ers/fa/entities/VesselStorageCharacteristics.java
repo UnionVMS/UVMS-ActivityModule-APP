@@ -1,13 +1,15 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_vessel_storage_characteristics")
-public class VesselStorageCharacteristics {
+public class VesselStorageCharacteristics implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name = "vessel_id")

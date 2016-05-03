@@ -1,26 +1,19 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_flux_location", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "physical_structured_address_id"),
 		@UniqueConstraint(columnNames = "gear_problem_id") })
-public class FluxLocation {
+public class FluxLocation implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@OneToOne(fetch = FetchType.LAZY)
