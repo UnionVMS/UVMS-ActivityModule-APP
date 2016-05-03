@@ -48,7 +48,7 @@ public class FluxReportDocument {
 	@Column(name = "owner_flux_party_name")
 	private String ownerFluxPartyName;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "FluxReportDocument", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
 	private FaReportDocument faReportDocuments;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")

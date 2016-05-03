@@ -37,11 +37,11 @@ public class FishingActivity {
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "source_vessel_char_id", nullable = true)
-	private VesselStorageCharacteristics vesselStorageCharctersticsBySourceVesselCharId;
+	private VesselStorageCharacteristics sourceVesselCharacteristics;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "dest_vessel_char_id", nullable = true)
-	private VesselStorageCharacteristics vesselStorageCharctersticsByDestVesselCharId;
+	private VesselStorageCharacteristics destVesselCharacteristics;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_trip_id", nullable = true)
@@ -117,8 +117,8 @@ public class FishingActivity {
 			int id,
 			FaReportDocument faReportDocument,
 			DelimitedPeriod delimitedPeriod,
-			VesselStorageCharacteristics vesselStorageCharctersticsBySourceVesselCharId,
-			VesselStorageCharacteristics vesselStorageCharctersticsByDestVesselCharId,
+			VesselStorageCharacteristics sourceVesselCharacteristics,
+			VesselStorageCharacteristics destVesselCharacteristics,
 			FishingTrip fishingTrip, String typeCode, String typeCodeListid,
 			Date occurence, String reasonCode, String reasonCodeListId,
 			String vesselActivityCode, String vesselActivityCodeListId,
@@ -131,8 +131,8 @@ public class FishingActivity {
 		this.id = id;
 		this.faReportDocument = faReportDocument;
 		this.delimitedPeriod = delimitedPeriod;
-		this.vesselStorageCharctersticsBySourceVesselCharId = vesselStorageCharctersticsBySourceVesselCharId;
-		this.vesselStorageCharctersticsByDestVesselCharId = vesselStorageCharctersticsByDestVesselCharId;
+		this.sourceVesselCharacteristics = sourceVesselCharacteristics;
+		this.destVesselCharacteristics = destVesselCharacteristics;
 		this.fishingTrip = fishingTrip;
 		this.typeCode = typeCode;
 		this.typeCodeListid = typeCodeListid;
@@ -181,27 +181,22 @@ public class FishingActivity {
 		this.delimitedPeriod = delimitedPeriod;
 	}
 
-	
-	public VesselStorageCharacteristics getVesselStorageCharctersticsBySourceVesselCharId() {
-		return this.vesselStorageCharctersticsBySourceVesselCharId;
+	public VesselStorageCharacteristics getSourceVesselCharacteristics() {
+		return sourceVesselCharacteristics;
 	}
 
-	public void setVesselStorageCharctersticsBySourceVesselCharId(
-			VesselStorageCharacteristics vesselStorageCharctersticsBySourceVesselCharId) {
-		this.vesselStorageCharctersticsBySourceVesselCharId = vesselStorageCharctersticsBySourceVesselCharId;
+	public void setSourceVesselCharacteristics(VesselStorageCharacteristics sourceVesselCharacteristics) {
+		this.sourceVesselCharacteristics = sourceVesselCharacteristics;
 	}
 
-	
-	public VesselStorageCharacteristics getVesselStorageCharctersticsByDestVesselCharId() {
-		return this.vesselStorageCharctersticsByDestVesselCharId;
+	public VesselStorageCharacteristics getDestVesselCharacteristics() {
+		return destVesselCharacteristics;
 	}
 
-	public void setVesselStorageCharctersticsByDestVesselCharId(
-			VesselStorageCharacteristics vesselStorageCharctersticsByDestVesselCharId) {
-		this.vesselStorageCharctersticsByDestVesselCharId = vesselStorageCharctersticsByDestVesselCharId;
+	public void setDestVesselCharacteristics(VesselStorageCharacteristics destVesselCharacteristics) {
+		this.destVesselCharacteristics = destVesselCharacteristics;
 	}
 
-	
 	public FishingTrip getFishingTrip() {
 		return this.fishingTrip;
 	}

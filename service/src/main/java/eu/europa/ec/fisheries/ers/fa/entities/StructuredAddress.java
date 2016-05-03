@@ -56,11 +56,11 @@ public class StructuredAddress {
 	@Column(name = "streetname", length = 1000)
 	private String streetname;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "StructuredAddress", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "structuredAddress", cascade = CascadeType.ALL)
 	private FluxLocation fluxLocations;
 	
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "StructuredAddress", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "structuredAddress", cascade = CascadeType.ALL)
 	private ContactParty contactParties;
 
 	public StructuredAddress() {

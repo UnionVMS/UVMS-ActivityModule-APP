@@ -44,7 +44,7 @@ public class ContactPerson {
 	@Column(name = "alias")
 	private String alias;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "ContactPerson", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "contactPerson", cascade = CascadeType.ALL)
 	private ContactParty contactParties;
 
 	public ContactPerson() {

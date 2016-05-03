@@ -32,7 +32,7 @@ public class SizeDistribution {
 	@Column(name = "category_code_list_id")
 	private String categoryCodeListId;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "SizeDistribution", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "sizeDistribution", cascade = CascadeType.ALL)
 	private FaCatch faCatchs;
 
 	public SizeDistribution() {

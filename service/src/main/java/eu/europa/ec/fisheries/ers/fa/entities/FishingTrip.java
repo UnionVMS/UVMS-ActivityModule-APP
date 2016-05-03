@@ -49,10 +49,10 @@ public class FishingTrip {
 	@Column(name = "duration_unit_code", precision = 17, scale = 17)
 	private Double durationUnitCode;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "FishingTrip", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
 	private FaCatch faCatchs;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "FishingTrip", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
 	private FishingActivity fishingActivities ;
 
 	public FishingTrip() {
