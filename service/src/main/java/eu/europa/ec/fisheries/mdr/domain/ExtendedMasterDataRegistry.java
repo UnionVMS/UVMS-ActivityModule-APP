@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.mdr.domain;
 
-import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 import lombok.EqualsAndHashCode;
@@ -18,10 +17,8 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ExtendedMasterDataRegistry extends MasterDataRegistry {
 
-	@Column(name = "code")
 	private String code;
 	
-	@Column(name = "description")
 	private String description;
 	
 	public String getCode() {
