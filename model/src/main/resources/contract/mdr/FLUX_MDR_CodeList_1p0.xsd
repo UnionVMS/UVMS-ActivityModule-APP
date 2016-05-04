@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== -->
+<!-- ===== FLUX Master Data Register Code Lsit Schema Module          ===== -->
+<!-- ====================================================================== -->
+<!--
+Schema agency:  DG MARE
+Schema version: 1.0.2
+Schema date:    29/01/2014
+
+Copyright (C) EU DG MARE (2013). All Rights Reserved.
+
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:rsm="urn:xeu:ec:fisheries:flux-bl:FLUX_MDR_CodeList:1" xmlns:ccts="urn:un:unece:uncefact:documentation:standard:CoreComponentsTechnicalSpecification:2" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:13" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:12" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12" xmlns:flux_ram="urn:xeu:ec:fisheries:flux-bl:FLUX_AggregateBusinessInformationEntity:1:1" targetNamespace="urn:xeu:ec:fisheries:flux-bl:FLUX_MDR_CodeList:1" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<!-- ======================================================================= -->
+	<!-- ===== Imports                                                     ===== -->
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<!-- ===== Import of Unqualified DataType Schema Module                ===== -->
+	<!-- ======================================================================= -->
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:13" schemaLocation="http://www.unece.org/uncefact/data/standard/UnqualifiedDataType_13p0.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===== Import of Qualified DataType Schema Module                  ===== -->
+	<!-- ======================================================================= -->
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:12" schemaLocation="http://www.unece.org/uncefact/data/standard/QualifiedDataType_12p0.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===== Import of Reusable Aggregate Business Information Entity Schema Module ===== -->
+	<!-- ======================================================================= -->
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12" schemaLocation="http://www.unece.org/uncefact/data/standard/ReusableAggregateBusinessInformationEntity_12p0.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===== Import of FLUX Reusable Aggregate Business Information Entity Schema Module    ===== -->
+	<!-- ======================================================================= -->
+	<xsd:import namespace="urn:xeu:ec:fisheries:flux-bl:FLUX_AggregateBusinessInformationEntity:1:1" schemaLocation="FLUX_AggregateBusinessInformationEntity_1p1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===== Element Declarations                                        ===== -->
+	<!-- ======================================================================= -->
+	<!-- ===== Root Element Declarations                                   ===== -->
+	<!-- ======================================================================= -->
+	<xsd:element name="BasicAttribute" type="rsm:BasicAttributeType"/>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definitions                                       ===== -->
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: BasicAttributeType                    ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="BasicAttributeType">
+		<xsd:sequence>
+			<xsd:element name="MessageID" type="udt:IDType"/>
+			<xsd:element name="Creation" type="udt:DateTimeType"/>
+			<xsd:element name="Response" type="rsm:ResponseType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: ResponseType                                                                  ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="ResponseType">
+		<xsd:sequence>
+			<xsd:element name="ReferencedMessage" type="udt:IDType"/>
+			<xsd:element name="Status" type="udt:CodeType"/>
+			<xsd:element name="StatusDescription" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="StatusDetails" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="MDR-CodeList" type="rsm:MDR-CodeListType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: MDR-CodeListType                      ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="MDR-CodeListType">
+		<xsd:sequence>
+			<xsd:element name="ObjAcronym" type="udt:IDType"/>
+			<xsd:element name="Version" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ValidityPeriod" type="flux_ram:FLUX_PeriodType"/>
+			<xsd:element name="ObjName" type="udt:TextType"/>
+			<xsd:element name="ObjDescription" type="udt:TextType"/>
+			<xsd:element name="Source" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CodeElement" type="rsm:CodeElementType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: CodeElementType                       ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="CodeElementType">
+		<xsd:sequence>
+			<xsd:element name="Identification" type="udt:IDType"/>
+			<xsd:element name="ValidityPeriod" type="flux_ram:FLUX_PeriodType"/>
+			<xsd:element name="Level" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="ParentIdentification" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Field" type="rsm:FieldType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: ItemType                              ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="FieldType">
+		<xsd:sequence>
+			<xsd:element name="FieldName" type="udt:NameType"/>
+			<xsd:element name="FieldValue" type="udt:TextType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

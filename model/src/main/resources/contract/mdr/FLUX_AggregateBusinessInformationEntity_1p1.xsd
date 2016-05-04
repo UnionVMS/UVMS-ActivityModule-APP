@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== -->
+<!-- ===== FLUX Aggregate Business Information Entity Schema Module                              ===== -->
+<!-- ====================================================================== -->
+<!--
+Schema agency:  DG MARE
+Schema version: 1.1.1
+Schema date:    06/12/2013
+
+Copyright (C) EU DG MARE (2013). All Rights Reserved.
+
+Release notes:
+- Change datatype from DateTime to Date for FLUX_PeriodType complextype
+- Change cardinality for StartDate & EndDate
+- Create specific ACDR_VesselIdentificationType
+
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flux_ram="urn:xeu:ec:fisheries:flux-bl:FLUX_AggregateBusinessInformationEntity:1:1" xmlns:ccts="urn:un:unece:uncefact:documentation:standard:CoreComponentsTechnicalSpecification:2" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:13" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:12" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12" targetNamespace="urn:xeu:ec:fisheries:flux-bl:FLUX_AggregateBusinessInformationEntity:1:1" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1">
+	<!-- ======================================================================= -->
+	<!-- ===== Imports                                                     ===== -->
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<!-- ===== Import of Unqualified DataType Schema Module                ===== -->
+	<!-- ======================================================================= -->
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:13" schemaLocation="http://www.unece.org/uncefact/data/standard/UnqualifiedDataType_13p0.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===== Import of Qualified DataType Schema Module                  ===== -->
+	<!-- ======================================================================= -->
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:12" schemaLocation="http://www.unece.org/uncefact/data/standard/QualifiedDataType_12p0.xsd"/>
+	<!-- ================================================================================== -->
+	<!-- ===== Import of Reusable Aggregate Business Information Entity Schema Module ===== -->
+	<!-- ================================================================================== -->
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12" schemaLocation="http://www.unece.org/uncefact/data/standard/ReusableAggregateBusinessInformationEntity_12p0.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===== Element Declarations                                        ===== -->
+	<!-- ======================================================================= -->
+	<!-- ===== Root Element Declarations                                   ===== -->
+	<!-- ======================================================================= -->
+	<!-- ================================================================== -->
+	<!-- ===== Type Definitions                                       ===== -->
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: FLUX_ACDR_PartyType                   ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="FLUX_ACDR_PartyType">
+		<xsd:sequence>
+			<xsd:element name="Identification" type="udt:IDType"/>
+			<xsd:element name="Name" type="udt:TextType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: VesselIdentificationType              ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="VesselIdentificationType">
+		<xsd:sequence>
+			<xsd:element name="FlagState" type="udt:CodeType"/>
+			<xsd:element name="UVI" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="regionalID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ExternalMarking" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="RadioCallSign" type="udt:IDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: ACDR_VesselIdentificationType         ===== -->
+	<!-- ===== Reduce of VesselIdentificationType for ACDR            ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="ACDR_VesselIdentificationType">
+		<xsd:sequence>
+			<xsd:element name="FlagState" type="udt:CodeType"/>
+			<xsd:element name="regionalID" type="udt:IDType" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: ReportedAreaType                      ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="ReportedAreaType">
+		<xsd:sequence>
+			<xsd:element name="FAOArea" type="udt:CodeType"/>
+			<xsd:element name="SovereigntyWater" type="udt:CodeType"/>
+			<xsd:element name="LandingPlace" type="udt:CodeType"/>
+			<xsd:element name="QuantifiesReportedCatch" type="flux_ram:ReportedCatchType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ================================================================== -->
+	<!-- ===== Type Definition: ReportedCatchType                     ===== -->
+	<!-- ================================================================== -->
+	<xsd:complexType name="ReportedCatchType">
+		<xsd:sequence>
+			<xsd:element name="Species" type="udt:CodeType"/>
+			<xsd:element name="Quantity" type="udt:MeasureType"/>
+			<xsd:element name="LandingIndicator" type="udt:CodeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ========================================================================================================= -->
+	<!-- ===== Type Definition: FLUX_PeriodType: Reduction of UN01002800 ABIE DelimitedPeriodType defined in  ==== -->
+	<!-- ===== "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12" domain     ==== -->
+	<!-- ========================================================================================================= -->
+	<xsd:complexType name="FLUX_PeriodType">
+		<xsd:sequence>
+			<xsd:element name="StartDate" type="udt:DateType">
+			</xsd:element>
+			<xsd:element name="EndDate" type="udt:DateType">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

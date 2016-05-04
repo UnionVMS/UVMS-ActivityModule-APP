@@ -130,7 +130,7 @@
 
                         <configuration>
                             <schemaLanguage>XMLSCHEMA</schemaLanguage>
-                            <forceRegenerate>false</forceRegenerate>
+                            <forceRegenerate>true</forceRegenerate>
                             <!-- Default to the schemaDirectory -->
                             <bindingDirectory>${project.basedir}/src/main/resources</bindingDirectory>
                             <bindingIncludes>
@@ -140,7 +140,7 @@
                             <bindingExcludes>
                                 <include>**/*.xj</include>
                             </bindingExcludes>
-                            <schemaDirectory>${project.basedir}/src/main/resources/contract</schemaDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/resources/contract/mdr</schemaDirectory>
                             <extension>true</extension>
                             <args>
                                 <arg>-XtoString</arg>
@@ -148,6 +148,8 @@
                                 <arg>-Xvalue-constructor</arg>
                                 <arg>-Xsetters-mode=direct</arg>
                                 <arg>-Xannotate</arg>
+                                <arg>-Xequals</arg>
+                                <arg>-XhashCode</arg>  
                             </args>
 
                             <plugins>
