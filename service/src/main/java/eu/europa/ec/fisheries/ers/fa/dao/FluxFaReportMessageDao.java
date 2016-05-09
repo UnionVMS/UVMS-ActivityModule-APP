@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessage;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 

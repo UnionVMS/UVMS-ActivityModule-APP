@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatch;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
@@ -18,6 +19,6 @@ public class FaCatchDao extends AbstractDAO<FaCatch> {
 
     @Override
     public EntityManager getEntityManager() {
-        return null;
+        return em;
     }
 }
