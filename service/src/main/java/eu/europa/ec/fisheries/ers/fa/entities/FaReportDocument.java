@@ -35,7 +35,7 @@ public class FaReportDocument implements java.io.Serializable {
 	private String relatedReport;
 	private Date acceptedDatetime;
 	private String fmcMarker;
-	private String mcMarkerListId;
+	private String fmcMarkerListId;
 	private Set<FaReportIdentifier> faReportIdentifiers = new HashSet<FaReportIdentifier>(
 			0);
 	private Set<FishingActivity> fishingActivities = new HashSet<FishingActivity>(
@@ -62,7 +62,7 @@ public class FaReportDocument implements java.io.Serializable {
 			VesselTransportMeans vesselTransportMeans,
 			FluxReportDocument fluxReportDocument,
 			String typeCode, String typeCodeListId, String relatedReport,
-			Date acceptedDatetime, String fmcMarker, String mcMarkerListId,
+			Date acceptedDatetime, String fmcMarker, String fmcMarkerListId,
 			Set<FaReportIdentifier> faReportIdentifiers,
 			Set<FishingActivity> fishingActivities) {
 		this.id = id;
@@ -74,7 +74,7 @@ public class FaReportDocument implements java.io.Serializable {
 		this.relatedReport = relatedReport;
 		this.acceptedDatetime = acceptedDatetime;
 		this.fmcMarker = fmcMarker;
-		this.mcMarkerListId = mcMarkerListId;
+		this.fmcMarkerListId = fmcMarkerListId;
 		this.faReportIdentifiers = faReportIdentifiers;
 		this.fishingActivities = fishingActivities;
 	}
@@ -168,13 +168,13 @@ public class FaReportDocument implements java.io.Serializable {
 		this.fmcMarker = fmcMarker;
 	}
 
-	@Column(name = "mc_marker_list_id")
-	public String getMcMarkerListId() {
-		return this.mcMarkerListId;
+	@Column(name = "fmc_marker_list_id")
+	public String getFmcMarkerListId() {
+		return this.fmcMarkerListId;
 	}
 
-	public void setMcMarkerListId(String mcMarkerListId) {
-		this.mcMarkerListId = mcMarkerListId;
+	public void setFmcMarkerListId(String fmcMarkerListId) {
+		this.fmcMarkerListId = fmcMarkerListId;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument")

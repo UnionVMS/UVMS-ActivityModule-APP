@@ -1,25 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
-    <persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+	<persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>eu.europa.ec.fisheries.mdr.domain.CrNafoStock</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.CrNafoStock</class>
+		
+		<!-- ERS Activity entities -->
+		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistribution</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FaCatch</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTrip</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProcess</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingGear</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.GearProblem</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxLocation</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristic</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.StructuredAddress</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristic</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactParty</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactPerson</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeans</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriod</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselCountry</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportDocument</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessage</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocument</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristics</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProduct</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationEvent</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocation</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AppStock</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifier</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifier</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.RelatedFishingActivity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifier</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifier</class>
 
-        <properties>
 
-            <property name="hibernate.default_schema" value="activity"/>
-            <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
-            <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
-            <property name="javax.persistence.schema-generation.scripts.create-target" value="target/jpa/sql/create-schema.dll"/>
-            <property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS activity;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=2;"/>
-            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-            <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.h2geodb.GeoDBDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value=""/>
-            <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
-        </properties>
-    </persistence-unit>
- </persistence>
+
+
+
+		<properties>
+			<property name="hibernate.default_schema" value="activity" />
+			<property name="javax.persistence.schema-generation.scripts.action"
+				value="create" />
+			<property name="javax.persistence.schema-generation.create-source"
+				value="metadata" />
+			<property name="javax.persistence.schema-generation.scripts.create-target"
+				value="target/jpa/sql/create-schema.dll" />
+			<property name="hibernate.connection.url"
+				value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS activity;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=2;" />
+			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+			<property name="hibernate.dialect"
+				value="org.hibernate.spatial.dialect.h2geodb.GeoDBDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.connection.username" value="sa" />
+			<property name="hibernate.connection.password" value="" />
+			<property
+				name="javax.persistence.schema-generation.create-database-schemas"
+				value="true" />
+		</properties>
+	</persistence-unit>
+</persistence>
