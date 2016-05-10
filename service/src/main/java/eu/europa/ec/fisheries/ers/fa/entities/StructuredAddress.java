@@ -32,6 +32,7 @@ public class StructuredAddress implements java.io.Serializable {
 	private String postOfficeBox;
 	private String postcode;
 	private String streetname;
+	private String structuredAddressType;
 
 	public StructuredAddress() {
 	}
@@ -50,7 +51,7 @@ public class StructuredAddress implements java.io.Serializable {
 			String buildingName, String cityName, String citySubdivisionName,
 			int countryCharacter, String countryName,
 			String countrySubdivisionName, String addressId, String plotId,
-			String postOfficeBox, String postcode, String streetname) {
+			String postOfficeBox, String postcode, String streetname, String structuredAddressType) {
 		this.id = id;
 		this.contactParty = contactParty;
 		this.fluxLocation = fluxLocation;
@@ -66,6 +67,7 @@ public class StructuredAddress implements java.io.Serializable {
 		this.postOfficeBox = postOfficeBox;
 		this.postcode = postcode;
 		this.streetname = streetname;
+		this.structuredAddressType = structuredAddressType;
 	}
 
 	@Id
@@ -207,5 +209,19 @@ public class StructuredAddress implements java.io.Serializable {
 	public void setStreetname(String streetname) {
 		this.streetname = streetname;
 	}
+
+	
+	@Column(name = "structured_address_type", length = 255)
+	public String getStructuredAddressType() {
+		return structuredAddressType;
+	}
+
+	public void setStructuredAddressType(String structuredAddressType) {
+		this.structuredAddressType = structuredAddressType;
+	}
+	
+	
+	
+	
 
 }
