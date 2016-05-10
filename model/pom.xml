@@ -140,7 +140,7 @@
                             <bindingExcludes>
                                 <include>**/*.xj</include>
                             </bindingExcludes>
-                            <schemaDirectory>${project.basedir}/src/main/resources/contract/mdr</schemaDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/resources/contract</schemaDirectory>
                             <extension>true</extension>
                             <args>
                                 <arg>-XtoString</arg>
