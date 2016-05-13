@@ -23,6 +23,8 @@
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
         <activity.model>0.5.1-SNAPSHOT</activity.model>
+        <activity.model.fa>0.5.1-SNAPSHOT</activity.model.fa>
+        <activity.model.mdr>0.5.1-SNAPSHOT</activity.model.mdr>
         <reporting.model>0.5.0</reporting.model>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -60,6 +62,18 @@
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
                 <artifactId>activity-model</artifactId>
                 <version>${activity.model}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+                <artifactId>activity-model-fa</artifactId>
+                <version>${activity.model.fa}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+                <artifactId>activity-model-mdr</artifactId>
+                <version>${activity.model.mdr}</version>
             </dependency>
         
         	<dependency>
