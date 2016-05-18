@@ -3,10 +3,10 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 import javax.persistence.EntityManager;
 
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistribution;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
-public class SizeDistributionDao extends AbstractDAO<SizeDistribution>{
+public class SizeDistributionDao extends AbstractDAO<SizeDistributionEntity>{
 	
 	private EntityManager em;
 	
