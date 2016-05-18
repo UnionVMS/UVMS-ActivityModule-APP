@@ -1,11 +1,13 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
+
+import java.util.List;
 
 /**
  * Created by padhyad on 5/13/2016.
  */
 public interface FluxResponseMessageService {
 
-    void saveFluxFishingActivityReport(FLUXFAReportMessage fluxFaReportMessage);
+    void saveFluxFishingActivityReport(List<FAReportDocument> faReportDocuments) ;
 }

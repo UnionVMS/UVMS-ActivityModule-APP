@@ -1,19 +1,15 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static junit.framework.TestCase.assertNotNull;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-
-
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivity;
 import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.Test;
+
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+import static junit.framework.TestCase.assertNotNull;
 
 public class FishingActivityDaoTest extends BaseErsFaDaoTest{
 
@@ -32,7 +28,7 @@ private FishingActivityDao dao=new FishingActivityDao(em);
    public void testFindEntityById(){
 
       dbSetupTracker.skipNextLaunch();
-      FishingActivity entity=dao.findEntityById(FishingActivity.class, 1);
+      FishingActivityEntity entity=dao.findEntityById(FishingActivityEntity.class, 1);
       assertNotNull(entity);
       
   }

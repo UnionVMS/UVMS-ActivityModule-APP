@@ -1,20 +1,16 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static junit.framework.TestCase.assertNotNull;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-
 import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
-import eu.europa.ec.fisheries.ers.fa.entities.BaseErsFaDaoTest;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessage;
 import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.Test;
+
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+import static junit.framework.TestCase.assertNotNull;
 
 public class FluxFaReportMessageDaoTest extends BaseErsFaDaoTest{
 	
@@ -34,7 +30,7 @@ public class FluxFaReportMessageDaoTest extends BaseErsFaDaoTest{
     public void testFindEntityById(){
 
        dbSetupTracker.skipNextLaunch();
-          FluxFaReportMessage entity=dao.findEntityById(FluxFaReportMessage.class, 1);
+          FluxFaReportMessageEntity entity=dao.findEntityById(FluxFaReportMessageEntity.class, 1);
          assertNotNull(entity);     
    }
 

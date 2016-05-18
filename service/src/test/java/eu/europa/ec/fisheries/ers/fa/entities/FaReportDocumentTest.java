@@ -1,18 +1,15 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static junit.framework.TestCase.assertNotNull;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocument;
 import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.Test;
+
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+import static junit.framework.TestCase.assertNotNull;
 
 public class FaReportDocumentTest extends BaseErsFaDaoTest {
 		
@@ -31,7 +28,7 @@ public class FaReportDocumentTest extends BaseErsFaDaoTest {
     public void testFindEntityById(){
 
        dbSetupTracker.skipNextLaunch();
-        FaReportDocument entity=dao.findEntityById(FaReportDocument.class, 1);
+        FaReportDocumentEntity entity=dao.findEntityById(FaReportDocumentEntity.class, 1);
          assertNotNull(entity);
       
    }

@@ -13,7 +13,6 @@ import eu.europa.ec.fisheries.uvms.BaseDAOTest;
 public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	
 	 protected static final Operation DELETE_ALL = sequenceOf(
-	           // deleteAllFrom("activity.activity_fa_catch")
 			  deleteAllFrom("activity.activity_size_distribution"),
 	            deleteAllFrom("activity.activity_fa_catch"),
 	            deleteAllFrom("activity.activity_fa_report_document"),
@@ -38,7 +37,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	                    .build()
 	   );
 
-	    
+
 		protected static final Operation INSERT_ERS_SIZE_DISTRIBUTION_DATA = sequenceOf(
 	            insertInto("activity.activity_size_distribution")
 	                    .columns("id", "class_code", "class_code_list_id", "category_code", "category_code_list_id")
@@ -85,8 +84,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 		protected static final Operation INSERT_ERS_FA_REPORT_DOCUMENT_DATA = sequenceOf(
 	            insertInto("activity.activity_fa_report_document")
-	                    .columns("id", "flux_fa_report_message_id", "type_code", "type_code_list_id", "related_report", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
-	                    .values(1, 1,"AREA","FLUX_LOCATION_TYPE","REPORT_ID",java.sql.Date.valueOf("2014-12-12"),1,1,"fmc","fmc_list")
+	                    .columns("id", "flux_fa_report_message_id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
+	                    .values(1, 1,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),1,1,"fmc","fmc_list")
 	                    .build()
 	  );
 

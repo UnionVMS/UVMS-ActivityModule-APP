@@ -9,35 +9,34 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.CrNafoStock</class>
 		
 		<!-- ERS Activity entities -->
-		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistribution</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FaCatch</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivity</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTrip</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProcess</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingGear</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.GearProblem</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxLocation</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristic</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.StructuredAddress</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristic</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactParty</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactPerson</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeans</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriod</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselCountry</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportDocument</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessage</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocument</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristics</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProduct</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationEvent</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocation</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.AppStock</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifier</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifier</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.RelatedFishingActivity</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifier</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifier</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.CountryEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AppStockEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity</class>
 
 
 
