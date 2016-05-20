@@ -7,9 +7,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "activity_fa_report_document", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "flux_report_document_id"),
-		@UniqueConstraint(columnNames = "vessel_transport_means_id") })
+@Table(name = "activity_fa_report_document")
 public class FaReportDocumentEntity implements Serializable {
 
 	@Id
@@ -18,15 +16,15 @@ public class FaReportDocumentEntity implements Serializable {
 	private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "flux_fa_report_message_id", nullable = false)
+	@JoinColumn(name = "flux_fa_report_message_id")
 	private FluxFaReportMessageEntity fluxFaReportMessage;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "vessel_transport_means_id", unique = true, nullable = false)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "vessel_transport_means_id", nullable = false)
 	private VesselTransportMeansEntity vesselTransportMeans;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "flux_report_document_id", unique = true, nullable = false)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "flux_report_document_id", nullable = false)
 	private FluxReportDocumentEntity fluxReportDocument;
 
 	@Column(name = "type_code", nullable = false)
@@ -45,10 +43,10 @@ public class FaReportDocumentEntity implements Serializable {
 	@Column(name = "fmc_marker_list_id")
 	private String fmcMarkerListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
 	private Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<FaReportIdentifierEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
 	private Set<FishingActivityEntity> fishingActivities = new HashSet<FishingActivityEntity>(0);
 
 	public FaReportDocumentEntity() {

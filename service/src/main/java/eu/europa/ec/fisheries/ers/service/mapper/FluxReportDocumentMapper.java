@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.TextType;
@@ -17,6 +18,8 @@ import java.util.List;
  */
 @Mapper
 public abstract class FluxReportDocumentMapper {
+
+    public static FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
 
     @Mappings({
             @Mapping(target = "fluxReportDocumentId", expression = "java(getId(fluxReportDocument.getIDS()))"),

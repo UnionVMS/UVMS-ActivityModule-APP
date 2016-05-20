@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
@@ -17,6 +18,8 @@ import java.util.List;
  */
 @Mapper
 public abstract class FaReportDocumentMapper {
+
+    public static FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(faReportDocument.getTypeCode().getValue())"),

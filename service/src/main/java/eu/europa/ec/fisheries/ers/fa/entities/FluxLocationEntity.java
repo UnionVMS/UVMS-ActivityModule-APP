@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "activity_flux_location", uniqueConstraints = @UniqueConstraint(columnNames = "gear_problem_id"))
+@Table(name = "activity_flux_location")
 public class FluxLocationEntity implements Serializable {
 
 	@Id
@@ -15,7 +15,7 @@ public class FluxLocationEntity implements Serializable {
 	private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "gear_problem_id", unique = true)
+	@JoinColumn(name = "gear_problem_id")
 	private GearProblemEntity gearProblem;
 
 	@ManyToOne(fetch = FetchType.LAZY)

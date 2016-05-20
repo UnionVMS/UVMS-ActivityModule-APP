@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FACatch;
 
 /**
@@ -11,6 +12,8 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
  */
 @Mapper
 public abstract class FaCatchMapper {
+
+    public static FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(faCatch.getTypeCode().getValue())"),

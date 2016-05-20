@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 
 import java.util.List;
@@ -9,5 +10,5 @@ import java.util.List;
  */
 public interface FluxResponseMessageService {
 
-    void saveFluxFishingActivityReport(List<FAReportDocument> faReportDocuments) ;
+    void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments) throws ServiceException;
 }

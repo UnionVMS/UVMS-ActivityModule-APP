@@ -7,9 +7,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "activity_fishing_activity", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "source_vessel_char_id"),
-		@UniqueConstraint(columnNames = "dest_vessel_char_id") })
+@Table(name = "activity_fishing_activity")
 public class FishingActivityEntity implements Serializable {
 
 	@Id
@@ -22,11 +20,11 @@ public class FishingActivityEntity implements Serializable {
 	private FaReportDocumentEntity faReportDocument;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "source_vessel_char_id", unique = true)
+	@JoinColumn(name = "source_vessel_char_id")
 	private VesselStorageCharacteristicsEntity vesselStorageCharacteristicsBySourceVesselCharId;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "dest_vessel_char_id", unique = true)
+	@JoinColumn(name = "dest_vessel_char_id")
 	private VesselStorageCharacteristicsEntity vesselStorageCharacteristicsByDestVesselCharId;
 
 	@Column(name = "type_code", nullable = false)

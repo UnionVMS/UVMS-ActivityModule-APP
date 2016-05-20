@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
@@ -17,6 +18,8 @@ import java.util.List;
  */
 @Mapper
 public abstract class FishingActivityMapper {
+
+    public static FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(fishingActivity.getTypeCode().getValue())"),
@@ -37,13 +40,13 @@ public abstract class FishingActivityMapper {
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity);
 
-    public abstract List<FishingActivityIdentifierEntity> mapToFishingActivityEntities(List<IDType> idTypes);
+    public abstract List<FishingActivityIdentifierEntity> mapToFishingActivityIdentifierEntities(List<IDType> idTypes);
 
     @Mappings({
             @Mapping(target = "faIdentifierId", expression = "java(idType.getValue())"),
             @Mapping(target = "faIdentifierSchemeId", expression = "java(idType.getSchemeID())")
     })
-    public abstract FishingActivityIdentifierEntity mapToFishingActivityEntity(IDType idType);
+    public abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
 
     protected Date convertToDate(XMLGregorianCalendar dateTime) {
         return dateTime == null ? null : dateTime.toGregorianCalendar().getTime();

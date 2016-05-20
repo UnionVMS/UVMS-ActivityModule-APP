@@ -25,7 +25,7 @@ private FishingActivityDao dao=new FishingActivityDao(em);
 	
 	@Test
     @SneakyThrows
-   public void testFindEntityById(){
+   public void testFindEntityById() throws Exception {
 
       dbSetupTracker.skipNextLaunch();
       FishingActivityEntity entity=dao.findEntityById(FishingActivityEntity.class, 1);

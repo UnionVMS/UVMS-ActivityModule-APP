@@ -14,7 +14,7 @@ public class RegistrationEventEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "registration_location_id", nullable = false)
 	private RegistrationLocationEntity registrationLocation;
 

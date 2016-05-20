@@ -27,7 +27,7 @@ public class FluxFaReportMessageDaoTest extends BaseErsFaDaoTest{
 	
 	@Test
     @SneakyThrows
-    public void testFindEntityById(){
+    public void testFindEntityById() throws Exception {
 
        dbSetupTracker.skipNextLaunch();
           FluxFaReportMessageEntity entity=dao.findEntityById(FluxFaReportMessageEntity.class, 1);

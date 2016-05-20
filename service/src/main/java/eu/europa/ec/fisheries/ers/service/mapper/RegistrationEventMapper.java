@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.RegistrationEvent;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.TextType;
 
@@ -16,6 +17,8 @@ import java.util.List;
  */
 @Mapper
 public abstract class RegistrationEventMapper {
+
+    public static RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
 
     @Mappings({
             @Mapping(target = "description", expression = "java(getDescription(registrationEvent.getDescriptions()))"),

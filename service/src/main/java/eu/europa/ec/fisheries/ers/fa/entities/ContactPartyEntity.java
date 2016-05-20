@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "activity_contact_party", uniqueConstraints = @UniqueConstraint(columnNames = "contact_person_id"))
+@Table(name = "activity_contact_party")
 public class ContactPartyEntity implements Serializable {
 
 	@Id
@@ -15,7 +15,7 @@ public class ContactPartyEntity implements Serializable {
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "contact_person_id", unique = true, nullable = false)
+	@JoinColumn(name = "contact_person_id", nullable = false)
 	private ContactPersonEntity contactPerson;
 	
 	@OneToOne(fetch = FetchType.LAZY)

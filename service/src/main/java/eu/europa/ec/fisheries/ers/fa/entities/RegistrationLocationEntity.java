@@ -32,11 +32,14 @@ public class RegistrationLocationEntity implements Serializable {
 	@Column(name = "type_code_list_id")
 	private String typeCodeListId;
 
+	@Column(name = "location_country_id")
+	private String locationCountryId;
+
+	@Column(name = "location_country_scheme_id")
+	private String locationCountrySchemeId;
+
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "registrationLocation")
 	private RegistrationEventEntity registrationEvent;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "registrationLocation")
-	private Set<CountryEntity> vesselCountries = new HashSet<CountryEntity>(0);
 
 	public RegistrationLocationEntity() {
 	}
@@ -93,7 +96,6 @@ public class RegistrationLocationEntity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-
 	}
 
 	public String getTypeCode() {
@@ -120,12 +122,19 @@ public class RegistrationLocationEntity implements Serializable {
 		this.registrationEvent = registrationEvent;
 	}
 
-	public Set<CountryEntity> getVesselCountries() {
-		return this.vesselCountries;
+	public String getLocationCountryId() {
+		return locationCountryId;
 	}
 
-	public void setVesselCountries(
-			Set<CountryEntity> vesselCountries) {
-		this.vesselCountries = vesselCountries;
+	public void setLocationCountryId(String locationCountryId) {
+		this.locationCountryId = locationCountryId;
+	}
+
+	public String getLocationCountrySchemeId() {
+		return locationCountrySchemeId;
+	}
+
+	public void setLocationCountrySchemeId(String locationCountrySchemeId) {
+		this.locationCountrySchemeId = locationCountrySchemeId;
 	}
 }

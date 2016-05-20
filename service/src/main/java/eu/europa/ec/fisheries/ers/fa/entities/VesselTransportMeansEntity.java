@@ -14,7 +14,7 @@ public class VesselTransportMeansEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "registration_event_id")
     private RegistrationEventEntity registrationEvent;
 
@@ -23,9 +23,6 @@ public class VesselTransportMeansEntity implements Serializable {
 
     @Column(name = "role_code_list_id")
     private String roleCodeListId;
-
-    @Column(name = "means_schema_id")
-    private String meansSchemaId;
 
     @Column(columnDefinition = "text", name = "name")
     private String name;
@@ -39,10 +36,10 @@ public class VesselTransportMeansEntity implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
     private FaReportDocumentEntity faReportDocument;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private ContactPartyEntity contactParty;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<VesselIdentifierEntity> vesselIdentifiers = new HashSet<VesselIdentifierEntity>(0);
 
     public VesselTransportMeansEntity() {
@@ -57,7 +54,6 @@ public class VesselTransportMeansEntity implements Serializable {
         this.registrationEvent = registrationEvent;
         this.roleCode = roleCode;
         this.roleCodeListId = roleCodeListId;
-        this.meansSchemaId = meansSchemaId;
         this.name = name;
         this.flapDocumentId = flapDocumentId;
         this.flapDocumentSchemeId = flapDocumentSchemeId;
@@ -97,14 +93,6 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setRoleCodeListId(String roleCodeListId) {
         this.roleCodeListId = roleCodeListId;
-    }
-
-    public String getMeansSchemaId() {
-        return this.meansSchemaId;
-    }
-
-    public void setMeansSchemaId(String meansSchemaId) {
-        this.meansSchemaId = meansSchemaId;
     }
 
     public String getName() {

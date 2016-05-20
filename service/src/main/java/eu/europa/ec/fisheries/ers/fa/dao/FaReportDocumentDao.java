@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 /**
  * Created by padhyad on 5/3/2016.
  */
-public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
+public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
 
     private EntityManager em;
 

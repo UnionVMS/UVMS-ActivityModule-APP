@@ -29,7 +29,7 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest{
 		
 		@Test
 	    @SneakyThrows
-	    public void testFindEntityById(){
+	    public void testFindEntityById() throws Exception {
 
 		       dbSetupTracker.skipNextLaunch();
 		       FaCatchEntity entity=dao.findEntityById(FaCatchEntity.class, 1);

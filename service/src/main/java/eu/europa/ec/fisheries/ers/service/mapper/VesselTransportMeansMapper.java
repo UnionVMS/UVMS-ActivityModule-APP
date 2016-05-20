@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLAPDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
@@ -17,6 +18,8 @@ import java.util.List;
  */
 @Mapper
 public abstract class VesselTransportMeansMapper {
+
+    public static VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
 
     @Mappings({
             @Mapping(target = "roleCode", expression = "java(vesselTransportMeans.getRoleCode().getValue())"),

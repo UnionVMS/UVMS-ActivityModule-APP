@@ -25,7 +25,7 @@ public class FaReportDocumentTest extends BaseErsFaDaoTest {
 	
 	@Test
 	@SneakyThrows
-    public void testFindEntityById(){
+    public void testFindEntityById() throws Exception {
 
        dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity entity=dao.findEntityById(FaReportDocumentEntity.class, 1);

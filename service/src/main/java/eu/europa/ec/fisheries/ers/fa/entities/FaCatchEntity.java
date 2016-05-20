@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "activity_fa_catch", uniqueConstraints = @UniqueConstraint(columnNames = "size_distribution_id"))
+@Table(name = "activity_fa_catch")
 public class FaCatchEntity implements Serializable {
 
 	@Id
@@ -19,7 +19,7 @@ public class FaCatchEntity implements Serializable {
 	private FishingActivityEntity fishingActivity;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "size_distribution_id", unique = true, nullable = false)
+	@JoinColumn(name = "size_distribution_id", nullable = false)
 	private SizeDistributionEntity sizeDistribution;
 
 	@Column(name = "type_code", nullable = false)

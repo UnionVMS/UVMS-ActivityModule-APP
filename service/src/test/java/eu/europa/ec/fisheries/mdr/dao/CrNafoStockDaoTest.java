@@ -25,7 +25,7 @@ public class CrNafoStockDaoTest extends BaseActivityDaoTest {
 
     @Test
     @SneakyThrows
-    public void testFindEntityById(){
+    public void testFindEntityById() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
 
