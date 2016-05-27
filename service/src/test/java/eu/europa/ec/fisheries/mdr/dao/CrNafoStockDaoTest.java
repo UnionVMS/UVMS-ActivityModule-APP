@@ -1,15 +1,18 @@
 package eu.europa.ec.fisheries.mdr.dao;
 
-import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.destination.DataSourceDestination;
-import com.ninja_squad.dbsetup.operation.Operation;
-import eu.europa.ec.fisheries.mdr.domain.CrNafoStock;
-import lombok.SneakyThrows;
-import org.junit.Before;
-import org.junit.Test;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.ninja_squad.dbsetup.DbSetup;
+import com.ninja_squad.dbsetup.destination.DataSourceDestination;
+import com.ninja_squad.dbsetup.operation.Operation;
+
+import eu.europa.ec.fisheries.mdr.domain.CrNafoStock;
+import lombok.SneakyThrows;
 
 public class CrNafoStockDaoTest extends BaseActivityDaoTest {
 
@@ -18,7 +21,7 @@ public class CrNafoStockDaoTest extends BaseActivityDaoTest {
     @Before
     @SneakyThrows
     public void prepare(){
-        Operation operation = sequenceOf(DELETE_ALL, INSERT_MDR_CR_NAFO_STOCK_REFERENCE_DATA);
+        Operation operation = sequenceOf(DELETE_ALL_MDR_CR_NAFO_STOCK, INSERT_MDR_CR_NAFO_STOCK_REFERENCE_DATA);
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);
     }
