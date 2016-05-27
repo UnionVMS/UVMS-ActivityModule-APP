@@ -15,12 +15,22 @@ import lombok.ToString;
 @MappedSuperclass
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class ExtendedMasterDataRegistry extends MasterDataRegistry {
+public abstract class ExtendedMasterDataRegistry extends MasterDataRegistry {
 
 	private String code;
-	
 	private String description;
 	
+	protected final static String CODE        = "CODE";
+	protected final static String DESCRIPTION = "DESCRIPTION";
+	
+	public ExtendedMasterDataRegistry() {
+	}
+	
+	public ExtendedMasterDataRegistry(String code, String desc) {
+		this.code 		 = code;
+		this.description = desc;
+	}
+
 	public String getCode() {
 		return code;
 	}
