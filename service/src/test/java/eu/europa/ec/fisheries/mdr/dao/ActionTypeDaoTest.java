@@ -73,11 +73,11 @@ public class ActionTypeDaoTest extends BaseActivityDaoTest {
     	List<List<? extends MasterDataRegistry>> masterDataGenericList = new ArrayList<List<? extends MasterDataRegistry>>();
     	masterDataGenericList.addAll(Arrays.asList(actTypeList, codelocTypeList));
     	
-    	try {
-    		dao.multiEntityBulkDeleteAndInsert(masterDataGenericList);
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
+//    	try {
+//    		dao.multiEntityBulkDeleteAndInsert(masterDataGenericList);
+//		} catch (ServiceException e) {
+//			e.printStackTrace();
+//		}
     }
     
 }
