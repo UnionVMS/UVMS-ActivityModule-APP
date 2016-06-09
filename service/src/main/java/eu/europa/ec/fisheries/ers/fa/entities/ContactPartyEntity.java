@@ -14,7 +14,7 @@ public class ContactPartyEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "contact_person_id", nullable = false)
 	private ContactPersonEntity contactPerson;
 	
