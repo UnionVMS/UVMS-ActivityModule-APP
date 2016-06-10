@@ -5,9 +5,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,10 +24,12 @@ import java.util.Set;
  * Created by padhyad on 5/13/2016.
  */
 @Stateless
+@Local(value = FluxResponseMessageService.class)
 @Transactional
 @Slf4j
 public class FluxResponseMessageServiceBean implements FluxResponseMessageService {
 
+    final static Logger LOG = LoggerFactory.getLogger(FluxResponseMessageServiceBean.class);
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
@@ -38,11 +43,14 @@ public class FluxResponseMessageServiceBean implements FluxResponseMessageServic
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
     public void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments) throws ServiceException {
+        LOG.info("saveFishingActivityReportDocuments starts");
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
             faReportDocumentEntities.add(getFaReportDocumentEntity(faReportDocument));
         }
+        LOG.info("mapping entities is complete");
         faReportDocumentDao.bulkUploadFaData(faReportDocumentEntities);
+        LOG.info("bulkUploadFaData is complete");
     }
 
     private FaReportDocumentEntity getFaReportDocumentEntity(FAReportDocument faReportDocument) {
