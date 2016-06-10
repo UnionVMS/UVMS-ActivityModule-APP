@@ -1,25 +1,12 @@
 package eu.europa.ec.fisheries.mdr.dao;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-
-import eu.europa.ec.fisheries.mdr.domain.ActionType;
-import eu.europa.ec.fisheries.mdr.domain.CodeLocation;
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
+import org.junit.Before;
+
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 
 public class ActionTypeDaoTest extends BaseActivityDaoTest {
 	
@@ -34,13 +21,18 @@ public class ActionTypeDaoTest extends BaseActivityDaoTest {
         dbSetupTracker.launchIfNecessary(dbSetup);
     }
 
-    @Test
+  /*  @Test
     @SneakyThrows
     public void testFindActionTypeById(){
 
         dbSetupTracker.skipNextLaunch();
 
-        ActionType entity =  dao.findEntityById(ActionType.class, 1L);
+        ActionType entity = null;
+        try {
+            entity = dao.findEntityById(ActionType.class, 1L);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
 
         assertNotNull(entity);
         assertEquals("2014-12-12 00:00:00.0", entity.getAudit().getCreatedOn().toString());
@@ -49,9 +41,9 @@ public class ActionTypeDaoTest extends BaseActivityDaoTest {
 //        assertEquals("N3NO", entity.getAreaCode());
 //        assertEquals("ANG", entity.getSpeciesCode());
 //        assertEquals("Lophius americanus", entity.getSpeciesName());
-    }
+    }*/
     
-    @Test
+    /*  @Test
     @SneakyThrows
     public void persistMasterDataRows(List<? extends MasterDataRegistry> mDataRegistryList){
     	
@@ -78,6 +70,6 @@ public class ActionTypeDaoTest extends BaseActivityDaoTest {
 //		} catch (ServiceException e) {
 //			e.printStackTrace();
 //		}
-    }
+    }*/
     
 }

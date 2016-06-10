@@ -184,7 +184,7 @@
     </profiles>
 
     <build>
-        <finalName>${project.parent.artifactId}-model-${project.version}</finalName>
+        <finalName>${project.name}-model-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

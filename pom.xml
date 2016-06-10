@@ -364,7 +364,7 @@
         </profile>
 	</profiles>
   <modules>
-    <module>model</module>
+   <!-- <module>model</module>-->
     <module>rest</module>
     <module>service</module>
     <module>message</module>

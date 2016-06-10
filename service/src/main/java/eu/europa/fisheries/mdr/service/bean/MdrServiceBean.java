@@ -1,22 +1,19 @@
 package eu.europa.fisheries.mdr.service.bean;
 
-import javax.ejb.EJB;
-import javax.ejb.MessageDriven;
-import javax.jms.JMSException;
-import javax.xml.bind.JAXBException;
-
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.fisheries.mdr.service.MdrService;
-import lombok.extern.slf4j.Slf4j;
+
+import javax.jms.JMSException;
+import javax.xml.bind.JAXBException;
 
 //@Stateless
-@Slf4j
-@MessageDriven
+//@Slf4j
+//@MessageDriven
 public class MdrServiceBean implements MdrService {
 
-	@EJB
-	private MdrRepository mdrRepository;
+//	@EJB
+//	private MdrRepository mdrRepository;
 	
 	 //@Schedule(minute="*", hour="*", persistent=false, info="AUTO_TIMER_0")
 	    public void atSchedule() throws InterruptedException, JAXBException, MessageException, JMSException, ServiceException {
