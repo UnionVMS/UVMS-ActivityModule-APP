@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MasterDataRegistryEntityCacheFactory {
 
 	private static Map<String, Object> acronymsCache;
+	private static List<String> acronymsList;
+	
 	private static MasterDataRegistryEntityCacheFactory instance;
 	private static final String METHOD_ACRONYM   = "getAcronym";
 	private static final String ENTITIES_PACKAGE = "eu.europa.ec.fisheries.mdr.domain";
@@ -45,7 +48,7 @@ public class MasterDataRegistryEntityCacheFactory {
 			if(acronymsCache == null){
 				initializeCache();
 			}
-			return (acronymsCache.get(entityAcronym)).getClass().newInstance();
+			return acronymsCache.get(entityAcronym).getClass().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
 			throw new NullPointerException();
 		}
@@ -55,11 +58,13 @@ public class MasterDataRegistryEntityCacheFactory {
 			InvocationTargetException, NoSuchMethodException, SecurityException {
 		List<Class<?>> classes = ClassFinder.find(ENTITIES_PACKAGE);
 		acronymsCache = new HashMap<>();
+		acronymsList  = new ArrayList<String>();
 		for (Class<?> aClass : classes) {
 			if(!Modifier.isAbstract(aClass.getModifiers())){
 				String classAcronym     = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
 				Object classReference =  aClass.newInstance();
 				acronymsCache.put(classAcronym, classReference);
+				acronymsList.add(classAcronym);
 				log.info("Creating cache instance for : " + aClass.getCanonicalName());
 			}
 		}
@@ -111,6 +116,26 @@ public class MasterDataRegistryEntityCacheFactory {
 			return classes;
 		}
 
+	}
+
+	/**
+	 * Returns the List of all available Acronyms fro MDR.
+	 * 
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	public static List<String> getAcronymsList() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		
+		if(acronymsList == null){
+			initializeCache();
+		}
+		
+		return acronymsList;
 	}
 
 }

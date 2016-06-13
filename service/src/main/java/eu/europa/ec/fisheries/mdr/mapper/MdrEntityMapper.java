@@ -9,15 +9,14 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
 /**
- * Mapper class that can be used to map entities that simply extend the ExtendedMasterDataRegistry
- * without declaring any further attributes (onlu CODE, DESCRIPTION and VALIDITY = Inhereted).
+ * Mapper class that can be used to map entities from MDR
  * 
  * @author kovian
  */
 @Slf4j
 public class MdrEntityMapper {
 	
-	private static MasterDataRegistryEntityCacheFactory factory = MasterDataRegistryEntityCacheFactory.getInstance();
+	private static MasterDataRegistryEntityCacheFactory mdrEntityFactory = MasterDataRegistryEntityCacheFactory.getInstance();
 	
 	// This class isn't supposed to have instances.
 	private MdrEntityMapper(){}
@@ -46,7 +45,7 @@ public class MdrEntityMapper {
 		for(CodeElementType actualJaxbElement : codeElements){
 			MasterDataRegistry entity = null;
 			try {
-				entity = (MasterDataRegistry) factory.getNewInstanceForEntity(acronym);
+				entity = (MasterDataRegistry) mdrEntityFactory.getNewInstanceForEntity(acronym);
 				entity.populateFromJAXBFields(actualJaxbElement);
 			} catch (NullPointerException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				log.error("Exception while attempting to map JAXBObject to MDR Entity. (MdrEntityMapper class)");
