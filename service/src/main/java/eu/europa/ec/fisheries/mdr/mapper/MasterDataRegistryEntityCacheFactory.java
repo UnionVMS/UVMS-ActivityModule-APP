@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -60,7 +61,7 @@ public class MasterDataRegistryEntityCacheFactory {
 		acronymsCache = new HashMap<>();
 		acronymsList  = new ArrayList<String>();
 		for (Class<?> aClass : classes) {
-			if(!Modifier.isAbstract(aClass.getModifiers())){
+			if(!Modifier.isAbstract(aClass.getModifiers()) && MasterDataRegistry.class.isAssignableFrom(aClass.getClass())){
 				String classAcronym     = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
 				Object classReference =  aClass.newInstance();
 				acronymsCache.put(classAcronym, classReference);
