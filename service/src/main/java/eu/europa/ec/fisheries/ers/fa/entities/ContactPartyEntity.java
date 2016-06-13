@@ -29,7 +29,7 @@ public class ContactPartyEntity implements Serializable {
 	private String roleCodeListId;
 	
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses = new HashSet<StructuredAddressEntity>(
 			0);
 

@@ -13,21 +13,22 @@ import java.util.List;
 /**
  * Created by padhyad on 6/8/2016.
  */
-public abstract class ContactPartyEntityMapper {
+@Mapper
+public abstract class ContactPartyMapper {
 
-    public static ContactPartyEntityMapper INSTANCE = Mappers.getMapper(ContactPartyEntityMapper.class);
+    public static ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
 
     @Mappings({
-            @Mapping(target = "title", expression = "java(getRoleCode(contactParty.getRoleCodes()))"),
+            @Mapping(target = "roleCode", expression = "java(getRoleCode(contactParty.getRoleCodes()))"),
             @Mapping(target = "roleCodeListId", expression = "java(getRoleCodeListId(contactParty.getRoleCodes()))")
     })
     public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty);
 
     protected String getRoleCode(List<CodeType> codeTypes) {
-        return (codeTypes == null || !codeTypes.isEmpty()) ? null : codeTypes.get(0).getValue();
+        return (codeTypes == null || codeTypes.isEmpty()) ? null : codeTypes.get(0).getValue();
     }
 
     protected String getRoleCodeListId(List<CodeType> codeTypes) {
-        return (codeTypes == null || !codeTypes.isEmpty()) ? null : codeTypes.get(0).getListID();
+        return (codeTypes == null || codeTypes.isEmpty()) ? null : codeTypes.get(0).getListID();
     }
 }

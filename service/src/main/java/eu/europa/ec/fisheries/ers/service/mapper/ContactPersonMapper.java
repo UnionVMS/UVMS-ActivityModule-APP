@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
@@ -9,9 +10,10 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 /**
  * Created by padhyad on 6/8/2016.
  */
-public abstract class ContactPersonEntityMapper {
+@Mapper
+public abstract class ContactPersonMapper {
 
-    public static ContactPersonEntityMapper INSTANCE = Mappers.getMapper(ContactPersonEntityMapper.class);
+    public static ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
 
     @Mappings({
             @Mapping(target = "title", expression = "java(contactPerson.getTitle().getValue())"),

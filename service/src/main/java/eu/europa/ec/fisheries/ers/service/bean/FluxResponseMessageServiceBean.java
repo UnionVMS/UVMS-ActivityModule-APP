@@ -5,12 +5,9 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,12 +21,10 @@ import java.util.Set;
  * Created by padhyad on 5/13/2016.
  */
 @Stateless
-@Local(value = FluxResponseMessageService.class)
 @Transactional
 @Slf4j
 public class FluxResponseMessageServiceBean implements FluxResponseMessageService {
 
-    final static Logger LOG = LoggerFactory.getLogger(FluxResponseMessageServiceBean.class);
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
@@ -40,17 +35,21 @@ public class FluxResponseMessageServiceBean implements FluxResponseMessageServic
         faReportDocumentDao = new FaReportDocumentDao(em);
     }
 
+    /**
+     * This Service saves Fishing activity report received in the module into Activity Database.
+     * It receives a list of FAReportDocuments which is converted into FaReportDocumentEntity and cascade saved into database.
+     *
+     * @param faReportDocuments
+     * @throws ServiceException
+     */
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
     public void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments) throws ServiceException {
-        LOG.info("saveFishingActivityReportDocuments starts");
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
             faReportDocumentEntities.add(getFaReportDocumentEntity(faReportDocument));
         }
-        LOG.info("mapping entities is complete");
         faReportDocumentDao.bulkUploadFaData(faReportDocumentEntities);
-        LOG.info("bulkUploadFaData is complete");
     }
 
     private FaReportDocumentEntity getFaReportDocumentEntity(FAReportDocument faReportDocument) {
@@ -68,6 +67,7 @@ public class FluxResponseMessageServiceBean implements FluxResponseMessageServic
     }
 
     private void updateFishingActivity(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
+        Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
         for (FishingActivity fishingActivity : fishingActivities) {
             FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity);
             fishingActivityEntity.setFaReportDocument(faReportDocumentEntity);
@@ -76,7 +76,9 @@ public class FluxResponseMessageServiceBean implements FluxResponseMessageServic
                 fishingActivityIdentifierEntity.setFishingActivity(fishingActivityEntity);
             }
             fishingActivityEntity.setFishingActivityIdentifiers(fishingActivityIdentifierEntities);
+            fishingActivityEntities.add(fishingActivityEntity);
         }
+        faReportDocumentEntity.setFishingActivities(fishingActivityEntities);
     }
 
     private void updateVesselTransportMeans(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
@@ -90,7 +92,36 @@ public class FluxResponseMessageServiceBean implements FluxResponseMessageServic
         if (vesselTransportMeans.getSpecifiedRegistrationEvents() != null && !vesselTransportMeans.getSpecifiedRegistrationEvents().isEmpty()) {
             updateRegistrationEvent(vesselTransportMeans.getSpecifiedRegistrationEvents().get(0), vesselTransportMeansEntity);
         }
+        if (vesselTransportMeans.getSpecifiedContactParties() != null && !vesselTransportMeans.getSpecifiedContactParties().isEmpty()) {
+            updateContactParty(vesselTransportMeans.getSpecifiedContactParties().get(0), vesselTransportMeansEntity);
+        }
         faReportDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
+    }
+
+    private void updateContactParty(ContactParty contactParty, VesselTransportMeansEntity vesselTransportMeansEntity) {
+        ContactPartyEntity contactPartyEntity = ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty);
+        contactPartyEntity.setVesselTransportMeans(vesselTransportMeansEntity);
+        if (contactParty.getSpecifiedContactPersons() != null && !contactParty.getSpecifiedContactPersons().isEmpty()) {
+            updateContactPerson(contactParty.getSpecifiedContactPersons().get(0), contactPartyEntity);
+        }
+        updateContactPartyStructuredAddress(contactParty.getSpecifiedStructuredAddresses(), contactPartyEntity);
+        vesselTransportMeansEntity.setContactParty(contactPartyEntity);
+    }
+
+    private void updateContactPartyStructuredAddress(List<StructuredAddress> structuredAddresses, ContactPartyEntity contactPartyEntity) {
+        Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();
+        for (StructuredAddress structuredAddress : structuredAddresses) {
+            StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress);
+            structuredAddressEntity.setContactParty(contactPartyEntity);
+            structuredAddressEntities.add(structuredAddressEntity);
+        }
+        contactPartyEntity.setStructuredAddresses(structuredAddressEntities);
+    }
+
+    private void updateContactPerson(ContactPerson contactPerson, ContactPartyEntity contactPartyEntity) {
+        ContactPersonEntity contactPersonEntity = ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPerson);
+        contactPersonEntity.setContactParty(contactPartyEntity);
+        contactPartyEntity.setContactPerson(contactPersonEntity);
     }
 
     private void updateRegistrationEvent(RegistrationEvent registrationEvent, VesselTransportMeansEntity vesselTransportMeansEntity) {

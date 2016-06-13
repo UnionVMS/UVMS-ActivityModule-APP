@@ -70,8 +70,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "flap_document_id")
 	private String flapDocumentId;
 
-	@Column(name = "flap_document_schema_id")
-	private String flapDocumentSchemaId;
+	@Column(name = "flap_document_scheme_id")
+	private String flapDocumentSchemeId;
 
 	@Column(name = "related_fishing_activity_id")
 	private Integer relatedFishingActivityId;
@@ -82,7 +82,7 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
 	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<DelimitedPeriodEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers = new HashSet<FishingActivityIdentifierEntity>(0);
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
@@ -124,7 +124,7 @@ public class FishingActivityEntity implements Serializable {
 			Long operationQuantity,
 			Double fishingDurationMeasure,
 			String flapDocumentId,
-			String flapDocumentSchemaId,
+			String flapDocumentSchemeId,
 			Set<FaCatchEntity> faCatchs,
 			Set<DelimitedPeriodEntity> delimitedPeriods,
 			Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers,
@@ -150,7 +150,7 @@ public class FishingActivityEntity implements Serializable {
 		this.operationQuantity = operationQuantity;
 		this.fishingDurationMeasure = fishingDurationMeasure;
 		this.flapDocumentId = flapDocumentId;
-		this.flapDocumentSchemaId = flapDocumentSchemaId;
+		this.flapDocumentSchemeId = flapDocumentSchemeId;
 		this.faCatchs = faCatchs;
 		this.delimitedPeriods = delimitedPeriods;
 		this.fishingActivityIdentifiers = fishingActivityIdentifiers;
@@ -308,10 +308,6 @@ public class FishingActivityEntity implements Serializable {
 		this.flapDocumentId = flapDocumentId;
 	}
 
-	public String getFlapDocumentSchemaId() {
-		return this.flapDocumentSchemaId;
-	}
-
 	public Integer getRelatedFishingActivityId() {
 		return relatedFishingActivityId;
 	}
@@ -320,8 +316,12 @@ public class FishingActivityEntity implements Serializable {
 		this.relatedFishingActivityId = relatedFishingActivityId;
 	}
 
-	public void setFlapDocumentSchemaId(String flapDocumentSchemaId) {
-		this.flapDocumentSchemaId = flapDocumentSchemaId;
+	public String getFlapDocumentSchemeId() {
+		return this.flapDocumentSchemeId;
+	}
+
+	public void setFlapDocumentSchemeId(String flapDocumentSchemeId) {
+		this.flapDocumentSchemeId = flapDocumentSchemeId;
 	}
 
 	public Set<FaCatchEntity> getFaCatchs() {

@@ -32,8 +32,8 @@ public class StructuredAddressEntity implements Serializable {
 	@Column(name = "city_subdivision_name")
 	private String citySubdivisionName;
 
-	@Column(name = "country_character", nullable = false)
-	private int countryCharacter;
+	@Column(name = "country", nullable = false)
+	private int country;
 
 	@Column(name = "country_name")
 	private String countryName;
@@ -60,16 +60,16 @@ public class StructuredAddressEntity implements Serializable {
 	}
 
 	public StructuredAddressEntity(String cityName,
-								   int countryCharacter, String postcode) {
+								   int country, String postcode) {
 		this.cityName = cityName;
-		this.countryCharacter = countryCharacter;
+		this.country = country;
 		this.postcode = postcode;
 	}
 
 	public StructuredAddressEntity(ContactPartyEntity contactParty,
 								   FluxLocationEntity fluxLocation, String blockName,
 								   String buildingName, String cityName, String citySubdivisionName,
-								   int countryCharacter, String countryName,
+								   int country, String countryName,
 								   String countrySubdivisionName, String addressId, String plotId,
 								   String postOfficeBox, String postcode, String streetname) {
 		this.contactParty = contactParty;
@@ -78,7 +78,7 @@ public class StructuredAddressEntity implements Serializable {
 		this.buildingName = buildingName;
 		this.cityName = cityName;
 		this.citySubdivisionName = citySubdivisionName;
-		this.countryCharacter = countryCharacter;
+		this.country = country;
 		this.countryName = countryName;
 		this.countrySubdivisionName = countrySubdivisionName;
 		this.addressId = addressId;
@@ -142,12 +142,12 @@ public class StructuredAddressEntity implements Serializable {
 		this.citySubdivisionName = citySubdivisionName;
 	}
 
-	public int getCountryCharacter() {
-		return this.countryCharacter;
+	public int getCountry() {
+		return this.country;
 	}
 
-	public void setCountryCharacter(int countryCharacter) {
-		this.countryCharacter = countryCharacter;
+	public void setCountry(int countryCharacter) {
+		this.country = country;
 	}
 
 	public String getCountryName() {

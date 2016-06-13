@@ -36,7 +36,7 @@ public abstract class FishingActivityMapper {
             @Mapping(target = "operationQuantity", expression = "java(fishingActivity.getOperationsQuantity().getValue().longValue())"),
             @Mapping(target = "fishingDurationMeasure", expression = "java(fishingActivity.getFishingDurationMeasure().getValue().doubleValue())"),
             @Mapping(target = "flapDocumentId", expression = "java(fishingActivity.getSpecifiedFLAPDocument().getID().getValue())"),
-            @Mapping(target = "flapDocumentSchemaId", expression = "java(fishingActivity.getSpecifiedFLAPDocument().getID().getSchemeID())")
+            @Mapping(target = "flapDocumentSchemeId", expression = "java(fishingActivity.getSpecifiedFLAPDocument().getID().getSchemeID())")
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity);
 
