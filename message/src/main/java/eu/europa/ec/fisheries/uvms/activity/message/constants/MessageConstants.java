@@ -9,5 +9,7 @@ public class MessageConstants {
     public static final String ACTIVITY_MESSAGE_IN_QUEUE = "java:/jms/queue/UVMSActivityEvent";
     public static final String COMPONENT_MESSAGE_IN_QUEUE_NAME = "UVMSActivityEvent";
 
-
+    public static final String EXCHANGE_MODULE_QUEUE = "java:/jms/queue/UVMSExchangeEvent";
+    
+	public static final String MODULE_NAME = "activity";
 }
