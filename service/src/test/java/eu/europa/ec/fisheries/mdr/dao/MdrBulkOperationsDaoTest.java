@@ -57,8 +57,8 @@ public class MdrBulkOperationsDaoTest extends BaseActivityDaoTest {
 		em.flush();
 		em.getTransaction().commit();
 
-		assertEquals(1122, bulkDao.getEntityManager().createQuery("FROM " + CrNafoStock.class.getSimpleName(), CrNafoStock.class).getResultList().size());
-		assertEquals(1110, bulkDao.getEntityManager().createQuery("FROM " + ActionType.class.getSimpleName(), ActionType.class).getResultList().size());
+		assertEquals(11, bulkDao.getEntityManager().createQuery("FROM " + CrNafoStock.class.getSimpleName(), CrNafoStock.class).getResultList().size());
+		assertEquals(11, bulkDao.getEntityManager().createQuery("FROM " + ActionType.class.getSimpleName(), ActionType.class).getResultList().size());
 
 		
 	}
@@ -66,7 +66,7 @@ public class MdrBulkOperationsDaoTest extends BaseActivityDaoTest {
 	private List<CrNafoStock> mockNafoStocks() {
 		List<CrNafoStock> crNafoStockEntityRows = new ArrayList<CrNafoStock>();
 		// Creating new CrNafoStocs entity to persist and adding it to this entity list (rows);
-		for(int i = 0; i < 1122; i++){
+		for(int i = 0; i < 11; i++){
 			CrNafoStock crNafoStockToPersist = new CrNafoStock();
 			crNafoStockToPersist.setAreaCode("areaCode"+i);
 			crNafoStockToPersist.setAreaDescription("someDescription"+i);
@@ -81,7 +81,7 @@ public class MdrBulkOperationsDaoTest extends BaseActivityDaoTest {
 	private List<ActionType> mockActionType() {
 		List<ActionType> actionTypeRows = new ArrayList<ActionType>();
 		// Creating new CrNafoStocs entity to persist and adding it to this entity list (rows);
-		for(int i = 0; i < 1110; i++){			
+		for(int i = 0; i < 11; i++){			
 			ActionType actionType = new ActionType();
 			actionType.setCode("areaCode"+i);
 			actionType.setDescription("someDescription"+i);
