@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -76,32 +77,36 @@ public class MdrBulkOperationsDao {
      */
     public void singleEntityBulkDeleteAndInsert(List<? extends MasterDataRegistry> entityRows) throws ServiceException {
         
-    	StatelessSession session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openStatelessSession();
-        Transaction tx = session.beginTransaction();
-        
-        try {
-    		log.info("Persisting entity entries for : " + entityRows.getClass().getSimpleName());
-
-    		// DELETION PHASE (Deleting old entries)
-    		session.createQuery(HQL_DELETE + entityRows.get(0).getClass().getSimpleName()).executeUpdate();
+    	if(!CollectionUtils.isEmpty(entityRows)){
     		
-    		// INSERTION PHASE (Inserting new entries)
-    		for(MasterDataRegistry actualEnityRow : entityRows){
-    			log.info("Persisting entity : " + actualEnityRow.getClass().getSimpleName());
-    			actualEnityRow.createAudit();
-    			session.insert(actualEnityRow);
-    		}
-        	log.debug("Committing transaction.");
-            tx.commit();
-        
-        } catch (Exception e){
-            tx.rollback();
-            throw new ServiceException("Rollbacking transaction for reason : ", e);
-        }
-        finally {
-            log.debug("Closing session");
-            session.close();
-        }
+        	StatelessSession session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openStatelessSession();
+            Transaction tx = session.beginTransaction();
+            
+            try {
+        		log.info("Persisting entity entries for : " + entityRows.getClass().getSimpleName());
+
+        		// DELETION PHASE (Deleting old entries)
+        		session.createQuery(HQL_DELETE + entityRows.get(0).getClass().getSimpleName()).executeUpdate();
+        		
+        		// INSERTION PHASE (Inserting new entries)
+        		for(MasterDataRegistry actualEnityRow : entityRows){
+        			log.info("Persisting entity : " + actualEnityRow.getClass().getSimpleName());
+        			actualEnityRow.createAudit();
+        			session.insert(actualEnityRow);
+        		}
+            	log.debug("Committing transaction.");
+                tx.commit();
+            
+            } catch (Exception e){
+                tx.rollback();
+                throw new ServiceException("Rollbacking transaction for reason : ", e);
+            }
+            finally {
+                log.debug("Closing session");
+                session.close();
+            }
+    	}
+    	
     }
 
     public MdrBulkOperationsDao(EntityManager em) {
