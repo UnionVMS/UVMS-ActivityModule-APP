@@ -16,6 +16,7 @@ public interface MdrRepository {
 	
 	<T extends MasterDataRegistry> List<T> findEntityByHqlQuery(Class<T> type, String hqlQuery, Map<Integer, String> parameters,
 			int maxResultLimit) throws ServiceException;
+
+	void updateMdrEntity(ResponseType response);
 	
-	public void updateMdrEntity(ResponseType response);
 }

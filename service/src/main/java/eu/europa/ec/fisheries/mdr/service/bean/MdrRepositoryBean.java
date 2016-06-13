@@ -33,8 +33,8 @@ public class MdrRepositoryBean implements MdrRepository {
     }
 
 	@SuppressWarnings("unchecked")
-	public <T extends MasterDataRegistry> List<T> findAllForEntity(Class<T> mdrEntity) throws ServiceException {
-		return mdrDao.findAllEntity(mdrEntity.getClass());
+	public <T extends MasterDataRegistry> List<T> findAllForEntity(Class<T> mdr) throws ServiceException {
+		return mdrDao.findAllEntity(mdr.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
