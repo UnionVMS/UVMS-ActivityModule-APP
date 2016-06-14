@@ -14,6 +14,8 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.AbstractMessageProducer;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
@@ -44,7 +46,7 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 	 * @return messageID
 	 */
 	public String sendExchangeModuleMessage(String text){
-		String messageID = "";
+		String messageID = StringUtils.EMPTY;
 		try {
 			messageID = sendModuleMessage(text, ModuleQueue.EXCHANGE);
 		} catch (ActivityMessageException e) {

@@ -1,15 +1,6 @@
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -20,6 +11,17 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
+
 @MessageDriven(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE, activationConfig = {
     @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
@@ -29,13 +31,13 @@ public class MessageConsumerBean implements MessageListener {
 
     final static Logger LOG = LoggerFactory.getLogger(MessageConsumerBean.class);
 
-
-
     @Inject
     @GetFLUXFAReportMessageEvent
     Event<EventMessage> getFLUXFAReportMessageEvent;
-
-
+        
+    @Inject
+    @GetFLUXFMDRSyncMessageEvent
+    Event<EventMessage> getFLUXFMDRSyncMessageEvent;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -69,7 +71,9 @@ public class MessageConsumerBean implements MessageListener {
                 case GET_FLUX_FA_REPORT:
                     getFLUXFAReportMessageEvent.fire(new EventMessage(textMessage));
                     break;
-
+                case GET_FLUX_MDR_ENTITY : 
+                	 getFLUXFMDRSyncMessageEvent.fire(new EventMessage(textMessage));
+                     break;
 
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());
