@@ -1,31 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<xs:schema xmlns="http://europa.eu/ec/fisheries/uvms/activity/model/schemas" id="FISH2015_SPATIAL2015" targetNamespace="http://europa.eu/ec/fisheries/uvms/activity/model/schemas" version="1.0"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns="http://europa.eu/ec/fisheries/uvms/activity/model/schemas"
+	id="FISH2015_SPATIAL2015" targetNamespace="http://europa.eu/ec/fisheries/uvms/activity/model/schemas"
+	version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <xs:complexType name="ActivityModuleRequest" abstract="true">
-        <xs:sequence>
-            <xs:element name="method" type="ActivityModuleMethod" minOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="ActivityModuleRequest" abstract="true">
+		<xs:sequence>
+			<xs:element name="method" type="ActivityModuleMethod"
+				minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
 
-    <xs:simpleType name="ActivityModuleMethod">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="GET_FLUX_FA_REPORT"/>
-        </xs:restriction>
-    </xs:simpleType>
-		
+	<xs:simpleType name="ActivityModuleMethod">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GET_FLUX_FA_REPORT" />
+			<xs:enumeration value="GET_FLUX_MDR_ENTITY" />
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:element name="SetFLUXFAReportMessageRequest">
-                <xs:complexType>
-                    <xs:complexContent>
-                        <xs:extension base="ActivityModuleRequest">
-                            <xs:sequence>
-                                <xs:element name="request" type="xs:string"/>
-                            </xs:sequence>
-                        </xs:extension>
-                    </xs:complexContent>
-                </xs:complexType>
-    </xs:element>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="ActivityModuleRequest">
+					<xs:sequence>
+						<xs:element name="request" type="xs:string" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
 
-      
+	<xs:element name="SetFLUXMDRSyncMessageRequest">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="ActivityModuleRequest">
+					<xs:sequence>
+						<xs:element name="request" type="xs:string" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
 
 </xs:schema>
