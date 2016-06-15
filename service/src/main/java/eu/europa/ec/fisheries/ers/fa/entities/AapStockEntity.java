@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "activity_app_stock")
-public class AppStockEntity implements Serializable {
+@Table(name = "activity_aap_stock")
+public class AapStockEntity implements Serializable {
 
 	
 	@Id
@@ -23,14 +23,14 @@ public class AppStockEntity implements Serializable {
 	@Column(name = "stock_scheme_id")
 	private String stockSchemeId;
 
-	public AppStockEntity() {
+	public AapStockEntity() {
 	}
 
-	public AppStockEntity(int id) {
+	public AapStockEntity(int id) {
 		this.id = id;
 	}
 
-	public AppStockEntity(int id, FaCatchEntity faCatch,
+	public AapStockEntity(int id, FaCatchEntity faCatch,
 						  String stockId, String stockSchemeId) {
 		this.id = id;
 		this.faCatch = faCatch;
