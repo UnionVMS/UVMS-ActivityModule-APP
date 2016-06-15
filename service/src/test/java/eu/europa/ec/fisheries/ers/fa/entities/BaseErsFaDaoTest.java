@@ -17,8 +17,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	            deleteAllFrom("activity.activity_fa_catch"),
 	            deleteAllFrom("activity.activity_fa_report_document"),
 	            deleteAllFrom("activity.activity_flux_report_document"),
-	           deleteAllFrom("activity.activity_vessel_transport_means"),
-	            deleteAllFrom("activity.activity_flux_fa_report_message")
+	           deleteAllFrom("activity.activity_vessel_transport_means")
 
 
 	    );
@@ -31,7 +30,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	  	protected static final Operation INSERT_ERS_FISHING_ACTIVITY_DATA = sequenceOf(
 	            insertInto("activity.activity_fishing_activity")
 	                    .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code","vessel_activity_code_list_id",
-	                    		"fishery_type_code","fishery_type_code_list_id","species_target_code","species_target_code_list_id","operation_quantity","fishing_duration_measure","source_vessel_char_id","dest_vessel_char_id","flap_document_id","flap_document_schema_id","fa_report_document_id")
+	                    		"fishery_type_code","fishery_type_code_list_id","species_target_code","species_target_code_list_id","operation_quantity","fishing_duration_measure","source_vessel_char_id","dest_vessel_char_id","flap_document_id","flap_document_scheme_id","fa_report_document_id")
 	                 .values(1, "TYPECODE","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),"REASONCODE","REASON_CODE_LIST","VESSEL_ACTIVITY","VESSEL_CODE_LIST",
 	                   		"FISHERY_CODE","FISHERY_CODE_LIST","SPECIES_CODE","SPECIES_CODE_LIST",23,11.20,null,null,null,null,null)
 	                    .build()
@@ -52,15 +51,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	                    .build()
 	   );
 		
-		
 
-		//flux_fa_report_message_id
-		protected static final Operation INSERT_ERS_FLUX_FA_REPORT_MESSAGE_DATA = sequenceOf(
-	            insertInto("activity.activity_flux_fa_report_message")
-	                    .columns("id", "flux_report_document_id")
-	                    .values(1, null)
-	                    .build()
-	   );
 		
 		//flux_report_document_id
 		protected static final Operation INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA = sequenceOf(
@@ -84,8 +75,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 		protected static final Operation INSERT_ERS_FA_REPORT_DOCUMENT_DATA = sequenceOf(
 	            insertInto("activity.activity_fa_report_document")
-	                    .columns("id", "flux_fa_report_message_id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
-	                    .values(1, 1,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),1,1,"fmc","fmc_list")
+	                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
+	                    .values(1,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),1,1,"fmc","fmc_list")
 	                    .build()
 	  );
 
