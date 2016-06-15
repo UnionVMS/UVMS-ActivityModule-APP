@@ -11,19 +11,19 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
  * Created by padhyad on 6/8/2016.
  */
 @Mapper
-public abstract class ContactPersonMapper {
+public abstract class ContactPersonMapper extends BaseMapper {
 
     public static ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
 
     @Mappings({
-            @Mapping(target = "title", expression = "java(contactPerson.getTitle().getValue())"),
-            @Mapping(target = "givenName", expression = "java(contactPerson.getGivenName().getValue())"),
-            @Mapping(target = "middleName", expression = "java(contactPerson.getMiddleName().getValue())"),
-            @Mapping(target = "familyName", expression = "java(contactPerson.getFamilyName().getValue())"),
-            @Mapping(target = "familyNamePrefix", expression = "java(contactPerson.getFamilyNamePrefix().getValue())"),
-            @Mapping(target = "nameSuffix", expression = "java(contactPerson.getNameSuffix().getValue())"),
-            @Mapping(target = "gender", expression = "java(contactPerson.getGenderCode().getValue())"),
-            @Mapping(target = "alias", expression = "java(contactPerson.getAlias().getValue())")
+            @Mapping(target = "title", expression = "java(getTextType(contactPerson.getTitle()))"),
+            @Mapping(target = "givenName", expression = "java(getTextType(contactPerson.getGivenName()))"),
+            @Mapping(target = "middleName", expression = "java(getTextType(contactPerson.getMiddleName()))"),
+            @Mapping(target = "familyName", expression = "java(getTextType(contactPerson.getFamilyName()))"),
+            @Mapping(target = "familyNamePrefix", expression = "java(getTextType(contactPerson.getFamilyNamePrefix()))"),
+            @Mapping(target = "nameSuffix", expression = "java(getTextType(contactPerson.getNameSuffix()))"),
+            @Mapping(target = "gender", expression = "java(getCodeType(contactPerson.getGenderCode()))"),
+            @Mapping(target = "alias", expression = "java(getTextType(contactPerson.getAlias()))")
     })
     public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
 }

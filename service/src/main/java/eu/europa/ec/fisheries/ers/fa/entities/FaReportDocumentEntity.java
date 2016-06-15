@@ -15,10 +15,6 @@ public class FaReportDocumentEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "flux_fa_report_message_id")
-	private FluxFaReportMessageEntity fluxFaReportMessage;
-
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "vessel_transport_means_id", nullable = false)
 	private VesselTransportMeansEntity vesselTransportMeans;
@@ -52,48 +48,10 @@ public class FaReportDocumentEntity implements Serializable {
 	public FaReportDocumentEntity() {
 	}
 
-	public FaReportDocumentEntity(FluxFaReportMessageEntity fluxFaReportMessage,
-								  VesselTransportMeansEntity vesselTransportMeans,
-								  FluxReportDocumentEntity fluxReportDocument,
-								  String typeCode, String typeCodeListId) {
-		this.fluxFaReportMessage = fluxFaReportMessage;
-		this.vesselTransportMeans = vesselTransportMeans;
-		this.fluxReportDocument = fluxReportDocument;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public FaReportDocumentEntity(FluxFaReportMessageEntity fluxFaReportMessage,
-								  VesselTransportMeansEntity vesselTransportMeans,
-								  FluxReportDocumentEntity fluxReportDocument,
-								  String typeCode, String typeCodeListId,
-								  Date acceptedDatetime, String fmcMarker, String fmcMarkerListId,
-								  Set<FaReportIdentifierEntity> faReportIdentifiers,
-								  Set<FishingActivityEntity> fishingActivities) {
-		this.fluxFaReportMessage = fluxFaReportMessage;
-		this.vesselTransportMeans = vesselTransportMeans;
-		this.fluxReportDocument = fluxReportDocument;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.acceptedDatetime = acceptedDatetime;
-		this.fmcMarker = fmcMarker;
-		this.fmcMarkerListId = fmcMarkerListId;
-		this.faReportIdentifiers = faReportIdentifiers;
-		this.fishingActivities = fishingActivities;
-	}
 
 
 	public int getId() {
 		return this.id;
-	}
-
-	public FluxFaReportMessageEntity getFluxFaReportMessage() {
-		return this.fluxFaReportMessage;
-	}
-
-	public void setFluxFaReportMessage(
-			FluxFaReportMessageEntity fluxFaReportMessage) {
-		this.fluxFaReportMessage = fluxFaReportMessage;
 	}
 
 	public VesselTransportMeansEntity getVesselTransportMeans() {

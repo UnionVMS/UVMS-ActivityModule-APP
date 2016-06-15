@@ -30,28 +30,11 @@ public class DelimitedPeriodEntity implements Serializable {
 	@Column(name = "end_date", length = 29)
 	private Date endDate;
 	
-	@Column(name = "duration")
-	private String duration;
+	@Column(name = "duration", precision = 17, scale = 17)
+	private Double duration;
 
 	public DelimitedPeriodEntity() {
 	}
-
-	public DelimitedPeriodEntity(int id) {
-		this.id = id;
-	}
-
-	public DelimitedPeriodEntity(int id,
-								 FishingActivityEntity fishingActivity,
-								 FishingTripEntity fishingTrip, Date startDate,
-								 Date endDate, String duration) {
-		this.id = id;
-		this.fishingActivity = fishingActivity;
-		this.fishingTrip = fishingTrip;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.duration = duration;
-	}
-
 	
 	public int getId() {
 		return this.id;
@@ -99,11 +82,11 @@ public class DelimitedPeriodEntity implements Serializable {
 	}
 
 	
-	public String getDuration() {
+	public Double getDuration() {
 		return this.duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(Double duration) {
 		this.duration = duration;
 	}
 

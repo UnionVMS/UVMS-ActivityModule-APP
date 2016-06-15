@@ -110,15 +110,13 @@
 		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.CountryEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity</class>
-		<class>eu.europa.ec.fisheries.ers.fa.entities.AppStockEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity</class>

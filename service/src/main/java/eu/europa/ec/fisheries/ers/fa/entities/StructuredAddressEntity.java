@@ -33,7 +33,7 @@ public class StructuredAddressEntity implements Serializable {
 	private String citySubdivisionName;
 
 	@Column(name = "country", nullable = false)
-	private int country;
+	private String country;
 
 	@Column(name = "country_name")
 	private String countryName;
@@ -57,35 +57,6 @@ public class StructuredAddressEntity implements Serializable {
 	private String streetname;
 
 	public StructuredAddressEntity() {
-	}
-
-	public StructuredAddressEntity(String cityName,
-								   int country, String postcode) {
-		this.cityName = cityName;
-		this.country = country;
-		this.postcode = postcode;
-	}
-
-	public StructuredAddressEntity(ContactPartyEntity contactParty,
-								   FluxLocationEntity fluxLocation, String blockName,
-								   String buildingName, String cityName, String citySubdivisionName,
-								   int country, String countryName,
-								   String countrySubdivisionName, String addressId, String plotId,
-								   String postOfficeBox, String postcode, String streetname) {
-		this.contactParty = contactParty;
-		this.fluxLocation = fluxLocation;
-		this.blockName = blockName;
-		this.buildingName = buildingName;
-		this.cityName = cityName;
-		this.citySubdivisionName = citySubdivisionName;
-		this.country = country;
-		this.countryName = countryName;
-		this.countrySubdivisionName = countrySubdivisionName;
-		this.addressId = addressId;
-		this.plotId = plotId;
-		this.postOfficeBox = postOfficeBox;
-		this.postcode = postcode;
-		this.streetname = streetname;
 	}
 
 	public int getId() {
@@ -142,11 +113,11 @@ public class StructuredAddressEntity implements Serializable {
 		this.citySubdivisionName = citySubdivisionName;
 	}
 
-	public int getCountry() {
+	public String getCountry() {
 		return this.country;
 	}
 
-	public void setCountry(int countryCharacter) {
+	public void setCountry(String country) {
 		this.country = country;
 	}
 

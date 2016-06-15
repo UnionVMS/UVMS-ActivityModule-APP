@@ -21,6 +21,4 @@ public abstract class AapProcessMapper extends BaseMapper {
             @Mapping(target = "conversionFactor", expression = "java(getNumericInteger(aapProcess.getConversionFactorNumeric()))")
     })
     public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
-
-
 }

@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +17,10 @@ public abstract class BaseMapper {
 
     protected String getIdTypeSchemaId(IDType idType) {
         return (idType == null) ? null : idType.getSchemeID();
+    }
+
+    protected String getIdTypeFromList(List<IDType> ids) {
+        return (ids == null || ids.isEmpty()) ? null : ids.get(0).getValue();
     }
 
     protected String getTextType(TextType textType) {
@@ -79,11 +82,32 @@ public abstract class BaseMapper {
         return quantityType.getValue().doubleValue();
     }
 
+    protected Long getQuantityInLong(QuantityType quantityType) {
+        if (quantityType == null) {
+            return null;
+        }
+        return quantityType.getValue().longValue();
+    }
+
     protected Double getMeasure(MeasureType measureType) {
         if (measureType == null) {
             return null;
         }
         return measureType.getValue().doubleValue();
+    }
+
+    protected String getMeasureUnitCode(MeasureType measureType) {
+        if (measureType == null) {
+            return null;
+        }
+        return measureType.getUnitCode();
+    }
+
+    protected String getMeasureListId(MeasureType measureType) {
+        if (measureType == null) {
+            return null;
+        }
+        return measureType.getUnitCodeListVersionID();
     }
 
     protected Integer getNumericInteger(NumericType numericType) {

@@ -17,32 +17,24 @@ import java.util.List;
  * Created by padhyad on 5/13/2016.
  */
 @Mapper
-public abstract class FaReportDocumentMapper {
+public abstract class FaReportDocumentMapper extends BaseMapper {
 
     public static FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(faReportDocument.getTypeCode().getValue())"),
-            @Mapping(target = "typeCodeListId", expression = "java(faReportDocument.getTypeCode().getListID())"),
-            @Mapping(target = "acceptedDatetime", expression = "java(convertToDate(faReportDocument.getAcceptanceDateTime().getDateTime()))"),
-            @Mapping(target = "fmcMarker", expression = "java(faReportDocument.getFMCMarkerCode().getValue())"),
-            @Mapping(target = "fmcMarkerListId", expression = "java(faReportDocument.getFMCMarkerCode().getListID())")
+            @Mapping(target = "typeCode", expression = "java(getCodeType(faReportDocument.getTypeCode()))"),
+            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(faReportDocument.getTypeCode()))"),
+            @Mapping(target = "acceptedDatetime", expression = "java(convertToDate(faReportDocument.getAcceptanceDateTime()))"),
+            @Mapping(target = "fmcMarker", expression = "java(getCodeType(faReportDocument.getFMCMarkerCode()))"),
+            @Mapping(target = "fmcMarkerListId", expression = "java(getCodeTypeListId(faReportDocument.getFMCMarkerCode()))")
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument);
 
     public abstract List<FaReportIdentifierEntity> mapToFAReportIdentifierEntities(List<IDType> idTypes);
 
     @Mappings({
-            @Mapping(target = "faReportIdentifierId", expression = "java(idType.getValue())"),
-            @Mapping(target = "faReportIdentifierSchemeId", expression = "java(idType.getSchemeID())")
+            @Mapping(target = "faReportIdentifierId", expression = "java(getIdType(idType))"),
+            @Mapping(target = "faReportIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
     public abstract FaReportIdentifierEntity mapToFAReportIdentifierEntity(IDType idType);
-
-    protected String getId(List<IDType> ids) {
-        return (ids == null || ids.isEmpty()) ? null : ids.get(0).getValue();
-    }
-
-    protected Date convertToDate(XMLGregorianCalendar dateTime) {
-        return dateTime == null ? null : dateTime.toGregorianCalendar().getTime();
-    }
 }

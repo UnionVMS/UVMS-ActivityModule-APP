@@ -16,20 +16,15 @@ import java.util.List;
  * Created by padhyad on 5/17/2016.
  */
 @Mapper
-public abstract class RegistrationEventMapper {
+public abstract class RegistrationEventMapper extends BaseMapper {
 
     public static RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
 
     @Mappings({
             @Mapping(target = "description", expression = "java(getDescription(registrationEvent.getDescriptions()))"),
-            @Mapping(target = "occurrenceDatetime", expression = "java(convertToDate(registrationEvent.getOccurrenceDateTime().getDateTime()))")
+            @Mapping(target = "occurrenceDatetime", expression = "java(convertToDate(registrationEvent.getOccurrenceDateTime()))")
     })
     public abstract RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);
-
-
-    protected Date convertToDate(XMLGregorianCalendar dateTime) {
-        return dateTime == null ? null : dateTime.toGregorianCalendar().getTime();
-    }
 
     protected String getDescription(List<TextType> descriptions) {
         return (descriptions == null || descriptions.isEmpty()) ? null : descriptions.get(0).getValue();

@@ -7,9 +7,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXGeographicalCoordinate;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXLocation;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.TextType;
-
-import java.util.List;
 
 /**
  * Created by padhyad on 6/14/2016.

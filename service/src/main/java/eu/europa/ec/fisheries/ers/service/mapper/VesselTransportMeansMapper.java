@@ -17,13 +17,13 @@ import java.util.List;
  * Created by padhyad on 5/17/2016.
  */
 @Mapper
-public abstract class VesselTransportMeansMapper {
+public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public static VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
 
     @Mappings({
-            @Mapping(target = "roleCode", expression = "java(vesselTransportMeans.getRoleCode().getValue())"),
-            @Mapping(target = "roleCodeListId", expression = "java(vesselTransportMeans.getRoleCode().getListID())"),
+            @Mapping(target = "roleCode", expression = "java(getCodeType(vesselTransportMeans.getRoleCode()))"),
+            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(vesselTransportMeans.getRoleCode()))"),
             @Mapping(target = "name", expression = "java(getTextType(vesselTransportMeans.getNames()))"),
             @Mapping(target = "flapDocumentId", expression = "java(getFlapDocumentId(vesselTransportMeans.getGrantedFLAPDocuments()))"),
             @Mapping(target = "flapDocumentSchemeId", expression = "java(getFlapDocumentschemaId(vesselTransportMeans.getGrantedFLAPDocuments()))")
@@ -33,8 +33,8 @@ public abstract class VesselTransportMeansMapper {
     public abstract List<VesselIdentifierEntity> mapToVesselIdentifierEntities(List<IDType> idTypes);
 
     @Mappings({
-            @Mapping(target = "vesselIdentifierId", expression = "java(idType.getValue())"),
-            @Mapping(target = "vesselIdentifierSchemeId", expression = "java(idType.getSchemeID())")
+            @Mapping(target = "vesselIdentifierId", expression = "java(getIdType(idType))"),
+            @Mapping(target = "vesselIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
     public abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
 
@@ -47,13 +47,13 @@ public abstract class VesselTransportMeansMapper {
         if (flapDocuments == null || flapDocuments.isEmpty()) {
             return null;
         }
-        return flapDocuments.get(0).getID().getValue();
+        return (flapDocuments.get(0).getID() == null) ? null : flapDocuments.get(0).getID().getValue();
     }
 
     protected String getFlapDocumentschemaId(List<FLAPDocument> flapDocuments) {
         if (flapDocuments == null || flapDocuments.isEmpty()) {
             return null;
         }
-        return flapDocuments.get(0).getID().getSchemeID();
+        return (flapDocuments.get(0).getID() == null) ? null : flapDocuments.get(0).getID().getSchemeID();
     }
 }

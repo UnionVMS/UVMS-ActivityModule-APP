@@ -79,22 +79,22 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs = new HashSet<FaCatchEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<DelimitedPeriodEntity>(0);
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers = new HashSet<FishingActivityIdentifierEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingTripEntity> fishingTrips = new HashSet<FishingTripEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingGearEntity> fishingGears = new HashSet<FishingGearEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<FluxCharacteristicEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<GearProblemEntity> gearProblems = new HashSet<GearProblemEntity>(0);
 
 	public FishingActivityEntity() {

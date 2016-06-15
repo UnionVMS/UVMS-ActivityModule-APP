@@ -17,7 +17,7 @@ public class FaReportDocumentTest extends BaseErsFaDaoTest {
 	
 	@Before
     public void prepare(){
-       Operation operation = sequenceOf(DELETE_ALL, INSERT_ERS_FLUX_FA_REPORT_MESSAGE_DATA,INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA);
+       Operation operation = sequenceOf(DELETE_ALL, INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA);
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
        dbSetupTracker.launchIfNecessary(dbSetup);
    }

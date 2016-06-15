@@ -28,10 +28,10 @@ public class FishingTripEntity implements Serializable {
 	@Column(name = "type_code_list_id")
 	private String typeCodeListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
 	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<DelimitedPeriodEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
 	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<FishingTripIdentifierEntity>(0);
 
 	public FishingTripEntity() {

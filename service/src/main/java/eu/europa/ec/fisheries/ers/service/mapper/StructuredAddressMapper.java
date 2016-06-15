@@ -11,23 +11,23 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
  * Created by padhyad on 6/13/2016.
  */
 @Mapper
-public abstract class StructuredAddressMapper {
+public abstract class StructuredAddressMapper extends BaseMapper {
 
     public static StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
 
     @Mappings({
-            @Mapping(target = "blockName", expression = "java(structuredAddress.getBlockName().getValue())"),
-            @Mapping(target = "buildingName", expression = "java(structuredAddress.getBuildingName().getValue())"),
-            @Mapping(target = "cityName", expression = "java(structuredAddress.getCityName().getValue())"),
-            @Mapping(target = "citySubdivisionName", expression = "java(structuredAddress.getCitySubDivisionName().getValue())"),
-            @Mapping(target = "country", expression = "java(Integer.parseInt(structuredAddress.getCountryID().getValue()))"),
-            @Mapping(target = "countryName", expression = "java(structuredAddress.getCountryName().getValue())"),
-            @Mapping(target = "countrySubdivisionName", expression = "java(structuredAddress.getCountrySubDivisionName().getValue())"),
-            @Mapping(target = "addressId", expression = "java(structuredAddress.getID().getValue())"),
-            @Mapping(target = "plotId", expression = "java(structuredAddress.getPlotIdentification().getValue())"),
-            @Mapping(target = "postOfficeBox", expression = "java(structuredAddress.getPostOfficeBox().getValue())"),
-            @Mapping(target = "postcode", expression = "java(structuredAddress.getPostcodeCode().getValue())"),
-            @Mapping(target = "streetname", expression = "java(structuredAddress.getStreetName().getValue())")
+            @Mapping(target = "blockName", expression = "java(getTextType(structuredAddress.getBlockName()))"),
+            @Mapping(target = "buildingName", expression = "java(getTextType(structuredAddress.getBuildingName()))"),
+            @Mapping(target = "cityName", expression = "java(getTextType(structuredAddress.getCityName()))"),
+            @Mapping(target = "citySubdivisionName", expression = "java(getTextType(structuredAddress.getCitySubDivisionName()))"),
+            @Mapping(target = "country", expression = "java(getIdType(structuredAddress.getCountryID()))"),
+            @Mapping(target = "countryName", expression = "java(getTextType(structuredAddress.getCountryName()))"),
+            @Mapping(target = "countrySubdivisionName", expression = "java(getTextType(structuredAddress.getCountrySubDivisionName()))"),
+            @Mapping(target = "addressId", expression = "java(getIdType(structuredAddress.getID()))"),
+            @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
+            @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
+            @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
+            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))")
     })
     public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress);
 }

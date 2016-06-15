@@ -39,30 +39,9 @@ public class FluxReportDocumentEntity implements Serializable {
     private String ownerFluxPartyName;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")
-    private FluxFaReportMessageEntity fluxFaReportMessage;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
 
     public FluxReportDocumentEntity() {
-    }
-
-
-    public FluxReportDocumentEntity(String fluxReportDocumentId,
-                                    String referenceId, Date creationDatetime, String purposeCode,
-                                    String purposeCodeListId, String purpose, String ownerFluxPartyId,
-                                    String ownerFluxPartyName, FluxFaReportMessageEntity fluxFaReportMessage,
-                                    FaReportDocumentEntity faReportDocument) {
-        this.fluxReportDocumentId = fluxReportDocumentId;
-        this.referenceId = referenceId;
-        this.creationDatetime = creationDatetime;
-        this.purposeCode = purposeCode;
-        this.purposeCodeListId = purposeCodeListId;
-        this.purpose = purpose;
-        this.ownerFluxPartyId = ownerFluxPartyId;
-        this.ownerFluxPartyName = ownerFluxPartyName;
-        this.fluxFaReportMessage = fluxFaReportMessage;
-        this.faReportDocument = faReportDocument;
     }
 
     public int getId() {
@@ -131,14 +110,6 @@ public class FluxReportDocumentEntity implements Serializable {
 
     public void setOwnerFluxPartyName(String ownerFluxPartyName) {
         this.ownerFluxPartyName = ownerFluxPartyName;
-    }
-
-    public FluxFaReportMessageEntity getFluxFaReportMessage() {
-        return fluxFaReportMessage;
-    }
-
-    public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
-        this.fluxFaReportMessage = fluxFaReportMessage;
     }
 
     public FaReportDocumentEntity getFaReportDocument() {
