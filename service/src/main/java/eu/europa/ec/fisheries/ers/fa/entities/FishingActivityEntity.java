@@ -19,13 +19,13 @@ public class FishingActivityEntity implements Serializable {
 	@JoinColumn(name = "fa_report_document_id")
 	private FaReportDocumentEntity faReportDocument;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "source_vessel_char_id")
-	private VesselStorageCharacteristicsEntity vesselStorageCharacteristicsBySourceVesselCharId;
+	private VesselStorageCharacteristicsEntity sourceVesselCharId;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "dest_vessel_char_id")
-	private VesselStorageCharacteristicsEntity vesselStorageCharacteristicsByDestVesselCharId;
+	private VesselStorageCharacteristicsEntity destVesselCharId;
 
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
@@ -76,7 +76,7 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "related_fishing_activity_id")
 	private Integer relatedFishingActivityId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs = new HashSet<FaCatchEntity>(0);
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
@@ -100,67 +100,6 @@ public class FishingActivityEntity implements Serializable {
 	public FishingActivityEntity() {
 	}
 
-	public FishingActivityEntity(String typeCode,
-								 String typeCodeListid) {
-		this.typeCode = typeCode;
-		this.typeCodeListid = typeCodeListid;
-	}
-
-	public FishingActivityEntity(
-			FaReportDocumentEntity faReportDocument,
-			VesselStorageCharacteristicsEntity vesselStorageCharacteristicsBySourceVesselCharId,
-			VesselStorageCharacteristicsEntity vesselStorageCharacteristicsByDestVesselCharId,
-			String typeCode,
-			String typeCodeListid,
-			Date occurence,
-			String reasonCode,
-			String reasonCodeListId,
-			String vesselActivityCode,
-			String vesselActivityCodeListId,
-			String fisheryTypeCode,
-			String fisheryTypeCodeListId,
-			String speciesTargetCode,
-			String speciesTargetCodeListId,
-			Long operationQuantity,
-			Double fishingDurationMeasure,
-			String flapDocumentId,
-			String flapDocumentSchemeId,
-			Set<FaCatchEntity> faCatchs,
-			Set<DelimitedPeriodEntity> delimitedPeriods,
-			Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers,
-			Set<FishingTripEntity> fishingTrips,
-			Set<FishingGearEntity> fishingGears,
-			Set<FluxCharacteristicEntity> fluxCharacteristics,
-			Set<GearProblemEntity> gearProblems,
-			Integer relatedFishingActivityId) {
-		this.faReportDocument = faReportDocument;
-		this.vesselStorageCharacteristicsBySourceVesselCharId = vesselStorageCharacteristicsBySourceVesselCharId;
-		this.vesselStorageCharacteristicsByDestVesselCharId = vesselStorageCharacteristicsByDestVesselCharId;
-		this.typeCode = typeCode;
-		this.typeCodeListid = typeCodeListid;
-		this.occurence = occurence;
-		this.reasonCode = reasonCode;
-		this.reasonCodeListId = reasonCodeListId;
-		this.vesselActivityCode = vesselActivityCode;
-		this.vesselActivityCodeListId = vesselActivityCodeListId;
-		this.fisheryTypeCode = fisheryTypeCode;
-		this.fisheryTypeCodeListId = fisheryTypeCodeListId;
-		this.speciesTargetCode = speciesTargetCode;
-		this.speciesTargetCodeListId = speciesTargetCodeListId;
-		this.operationQuantity = operationQuantity;
-		this.fishingDurationMeasure = fishingDurationMeasure;
-		this.flapDocumentId = flapDocumentId;
-		this.flapDocumentSchemeId = flapDocumentSchemeId;
-		this.faCatchs = faCatchs;
-		this.delimitedPeriods = delimitedPeriods;
-		this.fishingActivityIdentifiers = fishingActivityIdentifiers;
-		this.fishingTrips = fishingTrips;
-		this.fishingGears = fishingGears;
-		this.fluxCharacteristics = fluxCharacteristics;
-		this.gearProblems = gearProblems;
-		this.relatedFishingActivityId = relatedFishingActivityId;
-	}
-
 	public int getId() {
 		return this.id;
 	}
@@ -178,22 +117,22 @@ public class FishingActivityEntity implements Serializable {
 		this.faReportDocument = faReportDocument;
 	}
 
-	public VesselStorageCharacteristicsEntity getVesselStorageCharacteristicsBySourceVesselCharId() {
-		return this.vesselStorageCharacteristicsBySourceVesselCharId;
+	public VesselStorageCharacteristicsEntity getSourceVesselCharId() {
+		return this.sourceVesselCharId;
 	}
 
-	public void setVesselStorageCharacteristicsBySourceVesselCharId(
-			VesselStorageCharacteristicsEntity vesselStorageCharacteristicsBySourceVesselCharId) {
-		this.vesselStorageCharacteristicsBySourceVesselCharId = vesselStorageCharacteristicsBySourceVesselCharId;
+	public void setSourceVesselCharId(
+			VesselStorageCharacteristicsEntity sourceVesselCharId) {
+		this.sourceVesselCharId = sourceVesselCharId;
 	}
 
-	public VesselStorageCharacteristicsEntity getVesselStorageCharacteristicsByDestVesselCharId() {
-		return this.vesselStorageCharacteristicsByDestVesselCharId;
+	public VesselStorageCharacteristicsEntity getDestVesselCharId() {
+		return this.destVesselCharId;
 	}
 
-	public void setVesselStorageCharacteristicsByDestVesselCharId(
-			VesselStorageCharacteristicsEntity vesselStorageCharacteristicsByDestVesselCharId) {
-		this.vesselStorageCharacteristicsByDestVesselCharId = vesselStorageCharacteristicsByDestVesselCharId;
+	public void setDestVesselCharId(
+			VesselStorageCharacteristicsEntity destVesselCharId) {
+		this.destVesselCharId = destVesselCharId;
 	}
 
 	public String getTypeCode() {

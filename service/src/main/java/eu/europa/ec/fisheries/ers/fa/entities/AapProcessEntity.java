@@ -27,7 +27,7 @@ public class AapProcessEntity implements Serializable {
 	@Column(name = "conversion_factor")
 	private Integer conversionFactor;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess", cascade = CascadeType.ALL)
 	private Set<AapProductEntity> aapProducts = new HashSet<AapProductEntity>(
 			0);
 

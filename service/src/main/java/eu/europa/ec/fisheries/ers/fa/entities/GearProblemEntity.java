@@ -18,6 +18,14 @@ public class GearProblemEntity implements Serializable {
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fishing_gear_id")
+	private FishingGearEntity fishingGear;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "flux_location_id")
+	private FluxLocationEntity fluxLocation;
+
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
 
@@ -33,38 +41,7 @@ public class GearProblemEntity implements Serializable {
 	@Column(name = "recovery_measure_code_list_id", nullable = false)
 	private String recoveryMeasureCodeListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem")
-	private Set<FluxLocationEntity> fluxLocations = new HashSet<FluxLocationEntity>(0);
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem")
-	private Set<FishingGearEntity> fishingGears = new HashSet<FishingGearEntity>(0);
-
 	public GearProblemEntity() {
-	}
-
-	public GearProblemEntity(String typeCode, String typeCodeListId,
-							 int affectedQuantity, String recoveryMeasureCode,
-							 String recoveryMeasureCodeListId) {
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.affectedQuantity = affectedQuantity;
-		this.recoveryMeasureCode = recoveryMeasureCode;
-		this.recoveryMeasureCodeListId = recoveryMeasureCodeListId;
-	}
-
-	public GearProblemEntity(FishingActivityEntity fishingActivity, String typeCode,
-							 String typeCodeListId, int affectedQuantity,
-							 String recoveryMeasureCode, String recoveryMeasureCodeListId,
-							 Set<FluxLocationEntity> fluxLocations,
-							 Set<FishingGearEntity> FishingGears) {
-		this.fishingActivity = fishingActivity;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.affectedQuantity = affectedQuantity;
-		this.recoveryMeasureCode = recoveryMeasureCode;
-		this.recoveryMeasureCodeListId = recoveryMeasureCodeListId;
-		this.fluxLocations = fluxLocations;
-		this.fishingGears = fishingGears;
 	}
 
 	public int getId() {
@@ -124,22 +101,19 @@ public class GearProblemEntity implements Serializable {
 		this.recoveryMeasureCodeListId = recoveryMeasureCodeListId;
 	}
 
-	public Set<FluxLocationEntity> getFluxLocations() {
-		return this.fluxLocations;
+	public FishingGearEntity getFishingGear() {
+		return fishingGear;
 	}
 
-	public void setFluxLocations(
-			Set<FluxLocationEntity> fluxLocations) {
-		this.fluxLocations = fluxLocations;
+	public void setFishingGear(FishingGearEntity fishingGear) {
+		this.fishingGear = fishingGear;
 	}
 
-	public Set<FishingGearEntity> getFishingGears() {
-		return this.fishingGears;
+	public FluxLocationEntity getFluxLocation() {
+		return fluxLocation;
 	}
 
-	public void setFishingGears(
-			Set<FishingGearEntity> fishingGears) {
-		this.fishingGears = fishingGears;
+	public void setFluxLocation(FluxLocationEntity fluxLocation) {
+		this.fluxLocation = fluxLocation;
 	}
-
 }

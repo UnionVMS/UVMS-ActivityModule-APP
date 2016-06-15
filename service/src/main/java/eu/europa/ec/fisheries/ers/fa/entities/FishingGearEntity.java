@@ -15,10 +15,6 @@ public class FishingGearEntity implements Serializable {
 	private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "gear_problem_id")
-	private GearProblemEntity gearProblem;
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 
@@ -39,46 +35,17 @@ public class FishingGearEntity implements Serializable {
 	private String roleCodeListId;
 
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
 	private Set<GearCharacteristicEntity> gearCharacteristics = new HashSet<GearCharacteristicEntity>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
+	private Set<GearProblemEntity> gearProblems = new HashSet<GearProblemEntity>(0);
 
 	public FishingGearEntity() {
 	}
 
-	public FishingGearEntity(String typeCode, String typeCodeListId,
-							 String roleCode, String roleCodeListId) {
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.roleCode = roleCode;
-		this.roleCodeListId = roleCodeListId;
-	}
-
-	public FishingGearEntity(GearProblemEntity gearProblem,
-							 FaCatchEntity faCatch,
-							 FishingActivityEntity fishingActivity, String typeCode,
-							 String typeCodeListId, String roleCode, String roleCodeListId,
-							 Set<GearCharacteristicEntity> gearCharacteristics) {
-		this.gearProblem = gearProblem;
-		this.faCatch = faCatch;
-		this.fishingActivity = fishingActivity;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.roleCode = roleCode;
-		this.roleCodeListId = roleCodeListId;
-		this.gearCharacteristics = gearCharacteristics;
-	}
-
-
 	public int getId() {
 		return this.id;
-	}
-
-	public GearProblemEntity getGearProblem() {
-		return this.gearProblem;
-	}
-
-	public void setGearProblem(GearProblemEntity gearProblem) {
-		this.gearProblem = gearProblem;
 	}
 
 	public FaCatchEntity getFaCatch() {
@@ -139,4 +106,11 @@ public class FishingGearEntity implements Serializable {
 		this.gearCharacteristics = gearCharacteristics;
 	}
 
+	public Set<GearProblemEntity> getGearProblems() {
+		return gearProblems;
+	}
+
+	public void setGearProblems(Set<GearProblemEntity> gearProblems) {
+		this.gearProblems = gearProblems;
+	}
 }

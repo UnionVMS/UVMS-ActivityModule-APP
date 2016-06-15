@@ -25,6 +25,9 @@ import java.util.Set;
 @Slf4j
 public class FluxResponseMessageServiceBean implements FluxResponseMessageService {
 
+    private static final String SOURCE = "source";
+    private static final String DESTINATION = "destination";
+
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
@@ -76,9 +79,26 @@ public class FluxResponseMessageServiceBean implements FluxResponseMessageServic
                 fishingActivityIdentifierEntity.setFishingActivity(fishingActivityEntity);
             }
             fishingActivityEntity.setFishingActivityIdentifiers(fishingActivityIdentifierEntities);
+            updateVesselStorageCharacteristics(fishingActivityEntity, fishingActivity.getSourceVesselStorageCharacteristic(), SOURCE);
+            updateVesselStorageCharacteristics(fishingActivityEntity, fishingActivity.getDestinationVesselStorageCharacteristic(), DESTINATION);
+
             fishingActivityEntities.add(fishingActivityEntity);
         }
         faReportDocumentEntity.setFishingActivities(fishingActivityEntities);
+    }
+
+    private void updateVesselStorageCharacteristics(FishingActivityEntity fishingActivityEntity, VesselStorageCharacteristic vesselStorageCharacteristic, String type) {
+        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = VesselStorageCharacteristicsMapper.INSTANCE.mapToVesselStorageCharEntity(vesselStorageCharacteristic);
+        switch (type) {
+            case SOURCE:
+                vesselStorageCharacteristicsEntity.setFishingActivitiesForSourceVesselCharId(fishingActivityEntity);
+                fishingActivityEntity.setSourceVesselCharId(vesselStorageCharacteristicsEntity);
+                break;
+            case DESTINATION:
+                vesselStorageCharacteristicsEntity.setFishingActivitiesForDestVesselCharId(fishingActivityEntity);
+                fishingActivityEntity.setDestVesselCharId(vesselStorageCharacteristicsEntity);
+                break;
+        }
     }
 
     private void updateVesselTransportMeans(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {

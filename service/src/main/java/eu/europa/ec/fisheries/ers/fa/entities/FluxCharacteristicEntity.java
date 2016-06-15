@@ -44,13 +44,13 @@ public class FluxCharacteristicEntity implements Serializable {
 	@Column(name = "value_code")
 	private String valueCode;
 
-	@Column(name = "value_text")
+	@Column(columnDefinition = "text", name = "value_text")
 	private String valueText;
 
 	@Column(name = "value_quantity", precision = 17, scale = 17)
 	private Double valueQuantity;
 
-	@Column(name = "description")
+	@Column(columnDefinition = "text", name = "description")
 	private String description;
 
 	public FluxCharacteristicEntity() {

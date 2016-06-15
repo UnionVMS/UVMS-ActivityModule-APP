@@ -18,7 +18,7 @@ public class FaCatchEntity implements Serializable {
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "size_distribution_id", nullable = false)
 	private SizeDistributionEntity sizeDistribution;
 
@@ -58,10 +58,10 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "weighing_means_code_list_id")
 	private String weighingMeansCodeListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapProcessEntity> aapProcesses = new HashSet<AapProcessEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FishingGearEntity> fishingGears = new HashSet<FishingGearEntity>(0);
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch")
@@ -77,50 +77,6 @@ public class FaCatchEntity implements Serializable {
 	private Set<FishingTripEntity> fishingTrips = new HashSet<FishingTripEntity>(0);
 
 	public FaCatchEntity() {
-	}
-
-	public FaCatchEntity(SizeDistributionEntity sizeDistribution, String typeCode,
-						 String typeCodeListId, String speciesCode, String speciesCodeListid) {
-		this.sizeDistribution = sizeDistribution;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.speciesCode = speciesCode;
-		this.speciesCodeListid = speciesCodeListid;
-	}
-
-	public FaCatchEntity(FishingActivityEntity fishingActivity,
-						 SizeDistributionEntity sizeDistribution, String typeCode,
-						 String typeCodeListId, String speciesCode,
-						 String speciesCodeListid, Long unitQuantity, Double weightMeasure,
-						 String weightMeasureUnitCode, String weightMeasureListId,
-						 String usageCode, String usageCodeListId, String weighingMeansCode,
-						 String weighingMeansCodeListId,
-						 Set<AapProcessEntity> aapProcesses,
-						 Set<FishingGearEntity> fishingGears,
-						 Set<FluxLocationEntity> fluxLocations,
-						 Set<FluxCharacteristicEntity> fluxCharacteristics,
-						 Set<AppStockEntity> appStocks,
-						 Set<FishingTripEntity> fishingTrips) {
-		this.fishingActivity = fishingActivity;
-		this.sizeDistribution = sizeDistribution;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.speciesCode = speciesCode;
-		this.speciesCodeListid = speciesCodeListid;
-		this.unitQuantity = unitQuantity;
-		this.weightMeasure = weightMeasure;
-		this.weightMeasureUnitCode = weightMeasureUnitCode;
-		this.weightMeasureListId = weightMeasureListId;
-		this.usageCode = usageCode;
-		this.usageCodeListId = usageCodeListId;
-		this.weighingMeansCode = weighingMeansCode;
-		this.weighingMeansCodeListId = weighingMeansCodeListId;
-		this.aapProcesses = aapProcesses;
-		this.fishingGears = fishingGears;
-		this.fluxLocations = fluxLocations;
-		this.fluxCharacteristics = fluxCharacteristics;
-		this.appStocks = appStocks;
-		this.fishingTrips = fishingTrips;
 	}
 
 	public int getId() {

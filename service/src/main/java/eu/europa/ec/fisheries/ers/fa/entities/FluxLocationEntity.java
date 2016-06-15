@@ -15,10 +15,6 @@ public class FluxLocationEntity implements Serializable {
 	private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "gear_problem_id")
-	private GearProblemEntity gearProblem;
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 
@@ -36,6 +32,9 @@ public class FluxLocationEntity implements Serializable {
 
 	@Column(name = "rfmo_code")
 	private String rfmoCode;
+
+	@Column(name = "longitude", precision = 17, scale = 17)
+	private Double longitude;
 
 	@Column(name = "latitude", precision = 17, scale = 17)
 	private Double latitude;
@@ -58,7 +57,7 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "geopolitical_region_code_list_id")
 	private String geopoliticalRegionCodeListId;
 
-	@Column(name = "name")
+	@Column(columnDefinition = "text", name = "name")
 	private String name;
 
 	@Column(name = "sovereign_rights_country_code")
@@ -79,60 +78,14 @@ public class FluxLocationEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation")
 	private Set<StructuredAddressEntity> structuredAddresses = new HashSet<StructuredAddressEntity>(0);
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
+	private Set<GearProblemEntity> gearProblems = new HashSet<GearProblemEntity>(0);
+
 	public FluxLocationEntity() {
-	}
-
-	public FluxLocationEntity(String typeCode, String typeCodeListId,
-							  String fluxLocationType) {
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.fluxLocationType = fluxLocationType;
-	}
-
-	public FluxLocationEntity(GearProblemEntity gearProblem,
-							  FaCatchEntity faCatch, Long fishingActivityId,
-							  String typeCode, String typeCodeListId, String countryId,
-							  String rfmoCode, Double latitude, String fluxLocationType,
-							  String countryIdSchemeId, String fluxLocationIdentifier,
-							  String fluxLocationIdentifierSchemeId,
-							  String geopoliticalRegionCode, String geopoliticalRegionCodeListId,
-							  String name, String sovereignRightsCountryCode,
-							  String jurisdictionCountryCode, Double altitude, String systemId,
-							  Set<FluxCharacteristicEntity> fluxCharacteristics,
-							  Set<StructuredAddressEntity> structuredAddresses) {
-		this.gearProblem = gearProblem;
-		this.faCatch = faCatch;
-		this.fishingActivityId = fishingActivityId;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.countryId = countryId;
-		this.rfmoCode = rfmoCode;
-		this.latitude = latitude;
-		this.fluxLocationType = fluxLocationType;
-		this.countryIdSchemeId = countryIdSchemeId;
-		this.fluxLocationIdentifier = fluxLocationIdentifier;
-		this.fluxLocationIdentifierSchemeId = fluxLocationIdentifierSchemeId;
-		this.geopoliticalRegionCode = geopoliticalRegionCode;
-		this.geopoliticalRegionCodeListId = geopoliticalRegionCodeListId;
-		this.name = name;
-		this.sovereignRightsCountryCode = sovereignRightsCountryCode;
-		this.jurisdictionCountryCode = jurisdictionCountryCode;
-		this.altitude = altitude;
-		this.systemId = systemId;
-		this.fluxCharacteristics = fluxCharacteristics;
-		this.structuredAddresses = structuredAddresses;
 	}
 
 	public int getId() {
 		return this.id;
-	}
-
-	public GearProblemEntity getGearProblem() {
-		return this.gearProblem;
-	}
-
-	public void setGearProblem(GearProblemEntity gearProblem) {
-		this.gearProblem = gearProblem;
 	}
 
 	public FaCatchEntity getFaCatch() {
@@ -299,4 +252,19 @@ public class FluxLocationEntity implements Serializable {
 		this.structuredAddresses = structuredAddresses;
 	}
 
+	public Set<GearProblemEntity> getGearProblems() {
+		return gearProblems;
+	}
+
+	public void setGearProblems(Set<GearProblemEntity> gearProblems) {
+		this.gearProblems = gearProblems;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
 }

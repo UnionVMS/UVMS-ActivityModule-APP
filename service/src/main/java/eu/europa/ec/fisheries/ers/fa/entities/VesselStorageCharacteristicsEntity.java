@@ -24,10 +24,10 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	@Column(name = "vessel_type_code_list_id")
 	private String vesselTypeCodeListId;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselStorageCharacteristicsByDestVesselCharId")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "destVesselCharId")
 	private FishingActivityEntity fishingActivitiesForDestVesselCharId;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselStorageCharacteristicsBySourceVesselCharId")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "sourceVesselCharId")
 	private FishingActivityEntity fishingActivitiesForSourceVesselCharId;
 
 	public VesselStorageCharacteristicsEntity() {
