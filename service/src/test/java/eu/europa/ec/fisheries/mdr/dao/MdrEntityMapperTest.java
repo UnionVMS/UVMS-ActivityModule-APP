@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.mdr.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -11,6 +12,8 @@ import org.junit.Test;
 
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
+import eu.europa.ec.fisheries.mdr.util.ClassFinder;
+import lombok.SneakyThrows;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
@@ -34,6 +37,13 @@ public class MdrEntityMapperTest {
 		List<MasterDataRegistry> mdrEntity = MdrEntityMapper.mappJAXBObjectToMasterDataType(responseType);
 		assertNotNull(mdrEntity);
 		assertEquals(2, mdrEntity.size());
+	}
+	
+	@Test
+	@SneakyThrows
+	public void testJarFilesExtractor(){	
+		List<Class<? extends MasterDataRegistry>> classList = ClassFinder.extractEntityInstancesFromPackage();		
+		System.out.println("DONE"+classList);
 	}
 
 	private ResponseType mockJaxbCodeElementType() {

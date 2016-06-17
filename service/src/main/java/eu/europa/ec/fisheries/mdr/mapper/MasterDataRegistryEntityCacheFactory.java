@@ -1,20 +1,28 @@
 package eu.europa.ec.fisheries.mdr.mapper;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.util.ClassFinder;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author kovian
+ *
+ * This class is designed to perform a scanning of the MDR Entities Package and build a cache to furtherly 
+ * be used to construct request objects to send request to FLUX.
+ *
+ */
 @Slf4j
 public class MasterDataRegistryEntityCacheFactory {
 
@@ -24,6 +32,20 @@ public class MasterDataRegistryEntityCacheFactory {
 	private static MasterDataRegistryEntityCacheFactory instance;
 	private static final String METHOD_ACRONYM   = "getAcronym";
 	private static final String ENTITIES_PACKAGE = "eu.europa.ec.fisheries.mdr.domain";
+	
+	@PostConstruct
+	private void initializeClass(){
+		instance = new MasterDataRegistryEntityCacheFactory();
+		try {
+			log.info("Initializing MasterDataRegistryEntityCacheFactory class.");
+			initializeCache();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			log.error("Failed to initiate MasterDataRegistryEntityCacheFactory class.");
+			e.printStackTrace();
+		}
+		
+	}
 
 	public static MasterDataRegistryEntityCacheFactory getInstance(){
 		if(instance == null){
@@ -46,7 +68,7 @@ public class MasterDataRegistryEntityCacheFactory {
 	
 	public Object getNewInstanceForEntity(String entityAcronym) throws NullPointerException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		try {
-			if(acronymsCache == null){
+			if(MapUtils.isEmpty(acronymsCache)){
 				initializeCache();
 			}
 			return acronymsCache.get(entityAcronym).getClass().newInstance();
@@ -57,11 +79,18 @@ public class MasterDataRegistryEntityCacheFactory {
 	
 	private static void initializeCache() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
-		List<Class<?>> classes = ClassFinder.find(ENTITIES_PACKAGE);
+		List<Class<? extends MasterDataRegistry>> entitiesList = null;
+		
+		try {
+			entitiesList = ClassFinder.extractEntityInstancesFromPackage();
+		} catch(Exception ex){
+			log.error("Couldn't extract entities from package "+ENTITIES_PACKAGE+" \n The following exception was thrown : \n"+ex.getMessage());
+		}
+		
 		acronymsCache = new HashMap<>();
 		acronymsList  = new ArrayList<String>();
-		for (Class<?> aClass : classes) {
-			if(!Modifier.isAbstract(aClass.getModifiers()) && MasterDataRegistry.class.isAssignableFrom(aClass.getClass())){
+		for (Class<?> aClass : entitiesList) {
+			if(!Modifier.isAbstract(aClass.getModifiers())){
 				String classAcronym     = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
 				Object classReference =  aClass.newInstance();
 				acronymsCache.put(classAcronym, classReference);
@@ -70,55 +99,7 @@ public class MasterDataRegistryEntityCacheFactory {
 			}
 		}
 	}
-
-	private final static class ClassFinder {
-
-		private final static char DOT 				  = '.';
-		private final static char SLASH 			  = '/';
-		private final static String CLASS_SUFFIX 	  = ".class";
-		private final static String BAD_PACKAGE_ERROR = "Unable to get resources from path '%s'. Are you sure the given '%s' package exists?";
-
-		public final static List<Class<?>> find(final String scannedPackage) {
-			final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			final String scannedPath = scannedPackage.replace(DOT, SLASH);
-			final Enumeration<URL> resources;
-			try {
-				resources = classLoader.getResources(scannedPath);
-			} catch (IOException e) {
-				throw new IllegalArgumentException(String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage), e);
-			}
-			final List<Class<?>> classes = new LinkedList<Class<?>>();
-			while (resources.hasMoreElements()) {
-				final File file = new File(resources.nextElement().getFile());
-				classes.addAll(find(file, scannedPackage));
-			}
-			return classes;
-		}
-
-		private final static List<Class<?>> find(final File file, final String scannedPackage) {
-			final List<Class<?>> classes = new LinkedList<Class<?>>();
-			if (file.isDirectory()) {
-				for (File nestedFile : file.listFiles()) {
-					classes.addAll(find(nestedFile, scannedPackage));
-				}
-				// File names with the $1, $2 holds the anonymous inner classes,
-				// we are not interested on them.
-			} else if (file.getName().endsWith(CLASS_SUFFIX) && !file.getName().contains("$")) {
-
-				final int beginIndex = 0;
-				final int endIndex = file.getName().length() - CLASS_SUFFIX.length();
-				final String className = file.getName().substring(beginIndex, endIndex);
-				try {
-					final String resource = scannedPackage + DOT + className;
-					classes.add(Class.forName(resource));
-				} catch (ClassNotFoundException ignore) {
-				}
-			}
-			return classes;
-		}
-
-	}
-
+	
 	/**
 	 * Returns the List of all available Acronyms fro MDR.
 	 * 
@@ -130,13 +111,13 @@ public class MasterDataRegistryEntityCacheFactory {
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
 	 */
-	public static List<String> getAcronymsList() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		
-		if(acronymsList == null){
+	public static List<String> getAcronymsList() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {		
+		if(CollectionUtils.isEmpty(acronymsList)){
 			initializeCache();
-		}
-		
+		}		
 		return acronymsList;
 	}
+
+	
 
 }
