@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.RegistrationLocation;
@@ -23,7 +25,8 @@ public abstract class RegistrationLocationMapper extends BaseMapper {
             @Mapping(target = "typeCode", expression = "java(getCodeType(registrationLocation.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(registrationLocation.getTypeCode()))"),
             @Mapping(target = "locationCountryId", expression = "java(getIdType(registrationLocation.getCountryID()))"),
-            @Mapping(target = "locationCountrySchemeId", expression = "java(getIdTypeSchemaId(registrationLocation.getCountryID()))")
+            @Mapping(target = "locationCountrySchemeId", expression = "java(getIdTypeSchemaId(registrationLocation.getCountryID()))"),
+            @Mapping(target = "registrationEvent", expression = "java(registrationEventEntity)")
     })
-    public abstract RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation);
+    public abstract RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity, @MappingTarget RegistrationLocationEntity registrationLocationEntity);
 }

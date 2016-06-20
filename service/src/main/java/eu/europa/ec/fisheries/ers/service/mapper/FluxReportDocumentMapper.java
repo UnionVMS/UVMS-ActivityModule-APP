@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXParty;
@@ -30,9 +32,10 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
             @Mapping(target = "purposeCodeListId", expression = "java(getCodeTypeListId(fluxReportDocument.getPurposeCode()))"),
             @Mapping(target = "purpose", expression = "java(getTextType(fluxReportDocument.getPurpose()))"),
             @Mapping(target = "ownerFluxPartyId", expression = "java(getFluxPartyId(fluxReportDocument.getOwnerFLUXParty()))"),
-            @Mapping(target = "ownerFluxPartyName", expression = "java(getFluxPartyName(fluxReportDocument.getOwnerFLUXParty()))")
+            @Mapping(target = "ownerFluxPartyName", expression = "java(getFluxPartyName(fluxReportDocument.getOwnerFLUXParty()))"),
+            @Mapping(target = "faReportDocument", expression = "java(faReportDocumentEntity)")
     })
-    public abstract FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument);
+    public abstract FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FluxReportDocumentEntity fluxReportDocumentEntity);
 
     protected String getFluxPartyId(FLUXParty fluxParty) {
         if(fluxParty == null) {

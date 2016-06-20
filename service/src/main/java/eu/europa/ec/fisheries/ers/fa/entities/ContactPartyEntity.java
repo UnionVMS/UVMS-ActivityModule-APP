@@ -17,8 +17,8 @@ public class ContactPartyEntity implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "contact_person_id", nullable = false)
 	private ContactPersonEntity contactPerson;
-	
-	@OneToOne(fetch = FetchType.LAZY)
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vessel_transport_means_id")
 	private VesselTransportMeansEntity vesselTransportMeans;
 	

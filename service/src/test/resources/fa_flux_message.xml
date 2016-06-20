@@ -1846,7 +1846,8 @@
         <ram:SpecifiedRegistrationEvent>
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:OccurrenceDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
           </ram:OccurrenceDateTime>
           <ram:RelatedRegistrationLocation>
             <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>
@@ -3681,7 +3682,8 @@
       <ram:SpecifiedRegistrationEvent>
         <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
         <ram:OccurrenceDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
         </ram:OccurrenceDateTime>
         <ram:RelatedRegistrationLocation>
           <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>

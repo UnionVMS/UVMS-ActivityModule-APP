@@ -11,6 +11,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/15/2016.
@@ -22,11 +23,12 @@ public abstract class FishingTripMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingTrip.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingTrip.getTypeCode()))")
+            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingTrip.getTypeCode()))"),
+            @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS()))")
     })
     public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
 
-    public abstract List<FishingTripIdentifierEntity> mapToFishingTripIdentifierEntities(List<IDType> idTypes);
+    public abstract Set<FishingTripIdentifierEntity> mapToFishingTripIdentifierEntities(List<IDType> idTypes);
 
     @Mappings({
             @Mapping(target = "tripId", expression = "java(getIdType(idType))"),

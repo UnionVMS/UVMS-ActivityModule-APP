@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
@@ -27,7 +29,8 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
             @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
             @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
-            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))")
+            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "contactParty", expression = "java(contactPartyEntity)")
     })
-    public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress);
+    public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, ContactPartyEntity contactPartyEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
 }

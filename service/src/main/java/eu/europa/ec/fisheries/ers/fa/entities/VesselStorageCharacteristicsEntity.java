@@ -15,7 +15,7 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	@Column(name = "vessel_id")
 	private String vesselId;
 
-	@Column(name = "vessel_schema_id")
+	@Column(name = "vessel_scheme_id")
 	private String vesselSchemaId;
 
 	@Column(name = "vessel_type_code")

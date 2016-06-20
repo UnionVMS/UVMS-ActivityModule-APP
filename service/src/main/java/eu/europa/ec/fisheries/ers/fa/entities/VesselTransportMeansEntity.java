@@ -36,30 +36,13 @@ public class VesselTransportMeansEntity implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
     private FaReportDocumentEntity faReportDocument;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
-    private ContactPartyEntity contactParty;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    private Set<ContactPartyEntity> contactParty;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<VesselIdentifierEntity> vesselIdentifiers = new HashSet<VesselIdentifierEntity>(0);
 
     public VesselTransportMeansEntity() {
-    }
-
-    public VesselTransportMeansEntity(RegistrationEventEntity registrationEvent,
-                                      String roleCode, String roleCodeListId, String meansSchemaId,
-                                      String name, String flapDocumentId, String flapDocumentSchemeId,
-                                      ContactPartyEntity contactParty,
-                                      Set<VesselIdentifierEntity> vesselIdentifiers,
-                                      FaReportDocumentEntity faReportDocument) {
-        this.registrationEvent = registrationEvent;
-        this.roleCode = roleCode;
-        this.roleCodeListId = roleCodeListId;
-        this.name = name;
-        this.flapDocumentId = flapDocumentId;
-        this.flapDocumentSchemeId = flapDocumentSchemeId;
-        this.contactParty = contactParty;
-        this.vesselIdentifiers = vesselIdentifiers;
-        this.faReportDocument = faReportDocument;
     }
 
     public int getId() {
@@ -136,11 +119,11 @@ public class VesselTransportMeansEntity implements Serializable {
         this.faReportDocument = faReportDocument;
     }
 
-    public ContactPartyEntity getContactParty() {
+    public Set<ContactPartyEntity> getContactParty() {
         return contactParty;
     }
 
-    public void setContactParty(ContactPartyEntity contactParty) {
+    public void setContactParty(Set<ContactPartyEntity> contactParty) {
         this.contactParty = contactParty;
     }
 }
