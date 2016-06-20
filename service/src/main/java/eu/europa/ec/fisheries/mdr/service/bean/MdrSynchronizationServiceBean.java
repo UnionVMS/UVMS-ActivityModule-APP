@@ -13,6 +13,7 @@ import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -71,13 +72,17 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 
 				// Create request object and send message to exchange module
 				String strReqObj = null;
-				try {
-					strReqObj = MdrRequestMapper.mapMDRQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
-				} catch (ModelMarshallException e) {
-					log.error("Error while trying to map MDRQueryType.");
-					e.printStackTrace();
-				}
+			
+					try {
+						strReqObj = MdrRequestMapper.mapMDRQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
+					} catch (ExchangeModelMarshallException | ModelMarshallException e) {
+						log.error("Error while trying to map MDRQueryType.");
+						e.printStackTrace();
+					}
+				 
+				log.info("Sending Request to Exchange module.");
 				producer.sendExchangeModuleMessage(strReqObj);
+				log.info("Request Sent for "+actualAcronym+" Entity.");
 			}
 		}
 	}

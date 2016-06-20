@@ -26,6 +26,7 @@
         <activity.model.fa>0.5.1-SNAPSHOT</activity.model.fa>
         <activity.model.mdr>0.5.1-SNAPSHOT</activity.model.mdr>
         <reporting.model>0.5.0</reporting.model>
+        <exchange.model>2.0.6-SNAPSHOT</exchange.model>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <javaee.version>7.0</javaee.version>
@@ -51,7 +52,7 @@
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
-        <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
+        <maven.scm.provider.version>2.1.1</maven.scm.provider.version>        
         <database.dialect>oracle</database.dialect>
     </properties>
 
@@ -80,6 +81,12 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
+                <artifactId>exchange-model</artifactId>
+                <version>${exchange.model}</version>
             </dependency>
             
             <dependency>

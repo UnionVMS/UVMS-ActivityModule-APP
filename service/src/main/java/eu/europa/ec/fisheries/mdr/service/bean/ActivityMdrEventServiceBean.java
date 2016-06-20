@@ -46,7 +46,7 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 	 * @return ResponseType
 	 */
 	private ResponseType extractFluxResponseFromEvenetMessage(EventMessage message) {
-		// TODO : Implement this part
+		// TODO : Implement this part depending on the message type received
 		return new ResponseType();
 	}
 }

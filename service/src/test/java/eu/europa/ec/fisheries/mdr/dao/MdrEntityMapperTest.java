@@ -7,11 +7,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
+import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.util.ClassFinder;
 import lombok.SneakyThrows;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
@@ -33,10 +35,22 @@ public class MdrEntityMapperTest {
 	}
 	
 	@Test
+	@SneakyThrows
 	public void testLoadingOfTheClassesInTheCache() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
 		List<MasterDataRegistry> mdrEntity = MdrEntityMapper.mappJAXBObjectToMasterDataType(responseType);
 		assertNotNull(mdrEntity);
 		assertEquals(2, mdrEntity.size());
+	}
+	
+	
+	@Test
+	@SneakyThrows
+	public void testMdrEntityJaxBMarshalling(){
+		
+		@SuppressWarnings("unused")
+		String strReqObj = MdrRequestMapper.mapMDRQueryTypeToString(entityName, "ALL");
+		@SuppressWarnings("unused")
+		String empty = StringUtils.EMPTY;
 	}
 	
 	@Test
