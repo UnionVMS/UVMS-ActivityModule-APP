@@ -45,11 +45,9 @@ public class ActivityEventServiceBean implements EventService {
             repository.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments());
 
         } catch (ModelMarshallException e) {
-            LOG.error("xception while trying to unmarshall SetFLUXFAReportMessageRequest in Activity");
-            e.printStackTrace();
+            LOG.error("Exception while trying to unmarshall SetFLUXFAReportMessageRequest in Activity",e);
         } catch (ServiceException e) {
-            LOG.error("xception while trying to saveFishingActivityReportDocuments in Activity");
-            e.printStackTrace();
+            LOG.error("Exception while trying to saveFishingActivityReportDocuments in Activity",e);
         }
     }
 

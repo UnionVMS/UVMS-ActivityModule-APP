@@ -1,6 +1,16 @@
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
+import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -10,17 +20,6 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 
 @MessageDriven(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE, activationConfig = {
     @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
@@ -52,7 +51,7 @@ public class MessageConsumerBean implements MessageListener {
             LOG.info("Message received in activity");
 
             ActivityModuleRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
-        //    SetFLUXFAReportMessageRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, SetFLUXFAReportMessageRequest.class);
+
             LOG.info("Message unmarshalled successfully in activity");
 
             if(request==null){
@@ -62,7 +61,11 @@ public class MessageConsumerBean implements MessageListener {
 
             if (request.getMethod() == null) {
                 LOG.error("[ Request method is null ]");
-             //   errorEvent.fire(new EventMessage(textMessage, "Error when receiving message in movement: "));
+                return;
+            }
+
+            if(getFLUXFAReportMessageEvent==null){
+                LOG.error("[ getFLUXFAReportMessageEvent is null ]");
                 return;
             }
 
