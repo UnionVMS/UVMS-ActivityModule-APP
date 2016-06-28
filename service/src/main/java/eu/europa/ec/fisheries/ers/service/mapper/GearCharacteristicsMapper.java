@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearCharacteristic;
@@ -24,7 +26,8 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "valueIndicator", expression = "java(getIndicatorType(gearCharacteristic.getValueIndicator()))"),
             @Mapping(target = "valueCode", expression = "java(getCodeType(gearCharacteristic.getValueCode()))"),
             @Mapping(target = "valueText", expression = "java(getTextType(gearCharacteristic.getValue()))"),
-            @Mapping(target = "valueQuantity", expression = "java(getQuantity(gearCharacteristic.getValueQuantity()))")
+            @Mapping(target = "valueQuantity", expression = "java(getQuantity(gearCharacteristic.getValueQuantity()))"),
+            @Mapping(target = "fishingGear", expression = "java(fishingGearEntity)")
     })
-    public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic);
+    public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);
 }

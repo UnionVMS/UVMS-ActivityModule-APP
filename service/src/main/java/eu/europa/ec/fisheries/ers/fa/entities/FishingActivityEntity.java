@@ -97,6 +97,10 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<GearProblemEntity> gearProblems = new HashSet<GearProblemEntity>(0);
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
+	private Set<FluxLocationEntity> fluxLocations = new HashSet<FluxLocationEntity>(0);
+
+
 	public FishingActivityEntity() {
 	}
 
@@ -298,7 +302,6 @@ public class FishingActivityEntity implements Serializable {
 		this.fishingTrips = fishingTrips;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
 	public Set<FishingGearEntity> getFishingGears() {
 		return this.fishingGears;
 	}
@@ -308,7 +311,6 @@ public class FishingActivityEntity implements Serializable {
 		this.fishingGears = fishingGears;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
 	public Set<FluxCharacteristicEntity> getFluxCharacteristics() {
 		return this.fluxCharacteristics;
 	}
@@ -318,7 +320,6 @@ public class FishingActivityEntity implements Serializable {
 		this.fluxCharacteristics = fluxCharacteristics;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
 	public Set<GearProblemEntity> getGearProblems() {
 		return this.gearProblems;
 	}
@@ -328,4 +329,11 @@ public class FishingActivityEntity implements Serializable {
 		this.gearProblems = gearProblems;
 	}
 
+	public Set<FluxLocationEntity> getFluxLocations() {
+		return fluxLocations;
+	}
+
+	public void setFluxLocations(Set<FluxLocationEntity> fluxLocations) {
+		this.fluxLocations = fluxLocations;
+	}
 }

@@ -1,15 +1,17 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingTrip;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,15 +26,49 @@ public abstract class FishingTripMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingTrip.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingTrip.getTypeCode()))"),
-            @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS()))")
+            @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS(), fishingTripEntity))"),
+            @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)"),
+            @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
     })
-    public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
+    public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity, @MappingTarget FishingTripEntity fishingTripEntity);
 
-    public abstract Set<FishingTripIdentifierEntity> mapToFishingTripIdentifierEntities(List<IDType> idTypes);
+    @Mappings({
+            @Mapping(target = "typeCode", expression = "java(getCodeType(fishingTrip.getTypeCode()))"),
+            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingTrip.getTypeCode()))"),
+            @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS(), fishingTripEntity))"),
+            @Mapping(target = "faCatch", expression = "java(faCatchEntity)"),
+            @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
+    })
+    public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FaCatchEntity faCatchEntity, @MappingTarget FishingTripEntity fishingTripEntity);
 
     @Mappings({
             @Mapping(target = "tripId", expression = "java(getIdType(idType))"),
             @Mapping(target = "tripSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
-    public abstract FishingTripIdentifierEntity mapToFishingTripIdentifierEntity(IDType idType);
+    protected abstract FishingTripIdentifierEntity mapToFishingTripIdentifierEntity(IDType idType);
+
+    protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingTripEntity fishingTripEntity) {
+        if (delimitedPeriods == null || delimitedPeriods.isEmpty()) {
+            return null;
+        }
+        Set<DelimitedPeriodEntity> delimitedPeriodEntities = new HashSet<>();
+        for (DelimitedPeriod delimitedPeriod : delimitedPeriods) {
+            DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingTripEntity, new DelimitedPeriodEntity());
+            delimitedPeriodEntities.add(delimitedPeriodEntity);
+        }
+        return delimitedPeriodEntities;
+    }
+
+    protected Set<FishingTripIdentifierEntity> mapToFishingTripIdentifierEntities(List<IDType> idTypes, FishingTripEntity fishingTripEntity) {
+        if (idTypes == null || idTypes.isEmpty()) {
+            return null;
+        }
+        Set<FishingTripIdentifierEntity> identifierEntities = new HashSet<>();
+        for (IDType idType : idTypes) {
+            FishingTripIdentifierEntity identifierEntity = FishingTripMapper.INSTANCE.mapToFishingTripIdentifierEntity(idType);
+            identifierEntity.setFishingTrip(fishingTripEntity);
+            identifierEntities.add(identifierEntity);
+        }
+        return identifierEntities;
+    }
 }

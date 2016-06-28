@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,4 +34,23 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "contactParty", expression = "java(contactPartyEntity)")
     })
     public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, ContactPartyEntity contactPartyEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
+
+    @Mappings({
+            @Mapping(target = "blockName", expression = "java(getTextType(structuredAddress.getBlockName()))"),
+            @Mapping(target = "buildingName", expression = "java(getTextType(structuredAddress.getBuildingName()))"),
+            @Mapping(target = "cityName", expression = "java(getTextType(structuredAddress.getCityName()))"),
+            @Mapping(target = "citySubdivisionName", expression = "java(getTextType(structuredAddress.getCitySubDivisionName()))"),
+            @Mapping(target = "country", expression = "java(getIdType(structuredAddress.getCountryID()))"),
+            @Mapping(target = "countryName", expression = "java(getTextType(structuredAddress.getCountryName()))"),
+            @Mapping(target = "countrySubdivisionName", expression = "java(getTextType(structuredAddress.getCountrySubDivisionName()))"),
+            @Mapping(target = "addressId", expression = "java(getIdType(structuredAddress.getID()))"),
+            @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
+            @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
+            @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
+            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "fluxLocation", expression = "java(fluxLocationEntity)")
+    })
+    public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, FluxLocationEntity fluxLocationEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
+
+
 }

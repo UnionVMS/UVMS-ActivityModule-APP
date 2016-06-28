@@ -31,22 +31,6 @@ public class AapProductEntity implements Serializable {
 	public AapProductEntity() {
 	}
 
-	public AapProductEntity(int id) {
-		this.id = id;
-	}
-
-	public AapProductEntity(int id, AapProcessEntity aapProcess,
-							String packagingTypeCode, String packagingTypeCodeListId,
-							Double packagingUnitAvarageWeight, Double packagingUnitCount) {
-		this.id = id;
-		this.aapProcess = aapProcess;
-		this.packagingTypeCode = packagingTypeCode;
-		this.packagingTypeCodeListId = packagingTypeCodeListId;
-		this.packagingUnitAvarageWeight = packagingUnitAvarageWeight;
-		this.packagingUnitCount = packagingUnitCount;
-	}
-
-	
 	public int getId() {
 		return this.id;
 	}

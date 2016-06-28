@@ -34,22 +34,6 @@ public class AapProcessEntity implements Serializable {
 	public AapProcessEntity() {
 	}
 
-	public AapProcessEntity(String typeCode, String typeCodeListId) {
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public AapProcessEntity(FaCatchEntity faCatch,
-							String typeCode, String typeCodeListId, Integer conversionFactor,
-							Set<AapProductEntity> aapProducts) {
-		this.faCatch = faCatch;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.conversionFactor = conversionFactor;
-		this.aapProducts = aapProducts;
-	}
-
-	
 	public int getId() {
 		return this.id;
 	}

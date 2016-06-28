@@ -39,7 +39,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "vesselIdentifierId", expression = "java(getIdType(idType))"),
             @Mapping(target = "vesselIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
-    public abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
+    protected abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
 
     protected Set<ContactPartyEntity> getContactPartyEntity(List<ContactParty> contactParties, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (contactParties == null || contactParties.isEmpty()) {

@@ -1,18 +1,17 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLAPDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 5/17/2016.
@@ -37,17 +36,125 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "operationQuantity", expression = "java(getQuantityInLong(fishingActivity.getOperationsQuantity()))"),
             @Mapping(target = "fishingDurationMeasure", expression = "java(getMeasure(fishingActivity.getFishingDurationMeasure()))"),
             @Mapping(target = "flapDocumentId", expression = "java(getFlapDocId(fishingActivity.getSpecifiedFLAPDocument()))"),
-            @Mapping(target = "flapDocumentSchemeId", expression = "java(getFlapDocSchemeId(fishingActivity.getSpecifiedFLAPDocument()))")
+            @Mapping(target = "flapDocumentSchemeId", expression = "java(getFlapDocSchemeId(fishingActivity.getSpecifiedFLAPDocument()))"),
+            @Mapping(target = "faReportDocument", expression = "java(faReportDocumentEntity)"),
+            @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
+            @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
+            @Mapping(target = "fishingActivityIdentifiers", expression = "java(mapToFishingActivityIdentifierEntities(fishingActivity.getIDS(), fishingActivityEntity))"),
+            @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
+            @Mapping(target = "fishingTrips", expression = "java(getFishingTripEntities(fishingActivity.getSpecifiedFishingTrip(), fishingActivityEntity))"),
+            @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(fishingActivity.getSpecifiedFishingGears(), fishingActivityEntity))"),
+            @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsEntities(fishingActivity.getSpecifiedFLUXCharacteristics(), fishingActivityEntity))"),
+            @Mapping(target = "gearProblems", expression = "java(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), fishingActivityEntity))"),
+            @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), fishingActivityEntity))"),
+            @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))")
     })
-    public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity);
-
-    public abstract List<FishingActivityIdentifierEntity> mapToFishingActivityIdentifierEntities(List<IDType> idTypes);
+    public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
     @Mappings({
             @Mapping(target = "faIdentifierId", expression = "java(getIdType(idType))"),
             @Mapping(target = "faIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
-    public abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
+    protected abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
+
+    protected Set<FaCatchEntity> getFaCatchEntities(List<FACatch> faCatches, FishingActivityEntity fishingActivityEntity) {
+        if (faCatches == null || faCatches.isEmpty()) {
+            return null;
+        }
+        Set<FaCatchEntity> faCatchEntities = new HashSet<>();
+        for (FACatch faCatch : faCatches) {
+            FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, fishingActivityEntity, new FaCatchEntity());
+            faCatchEntities.add(faCatchEntity);
+        }
+        return faCatchEntities;
+    }
+
+    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {
+        if (fluxLocations == null || fluxLocations.isEmpty()) {
+            return null;
+        }
+        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
+        for (FLUXLocation fluxLocation : fluxLocations) {
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fishingActivityEntity, new FluxLocationEntity());
+            fluxLocationEntities.add(fluxLocationEntity);
+        }
+        return fluxLocationEntities;
+    }
+
+    protected Set<GearProblemEntity> getGearProblemEntities(List<GearProblem> gearProblems, FishingActivityEntity fishingActivityEntity) {
+        if (gearProblems == null || gearProblems.isEmpty()) {
+            return null;
+        }
+        Set<GearProblemEntity> gearProblemEntities = new HashSet<>();
+        for (GearProblem gearProblem : gearProblems) {
+            GearProblemEntity gearProblemEntity =GearProblemMapper.INSTANCE.mapToGearProblemEntity(gearProblem, fishingActivityEntity, new GearProblemEntity());
+            gearProblemEntities.add(gearProblemEntity);
+        }
+        return gearProblemEntities;
+    }
+
+    protected Set<FluxCharacteristicEntity> getFluxCharacteristicsEntities(List<FLUXCharacteristic> fluxCharacteristics, FishingActivityEntity fishingActivityEntity) {
+        if (fluxCharacteristics == null || fluxCharacteristics.isEmpty()) {
+            return null;
+        }
+        Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
+        for (FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
+            FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, fishingActivityEntity, new FluxCharacteristicEntity());
+            fluxCharacteristicEntities.add(fluxCharacteristicEntity);
+        }
+        return fluxCharacteristicEntities;
+    }
+
+    protected Set<FishingGearEntity> getFishingGearEntities(List<FishingGear> fishingGears, FishingActivityEntity fishingActivityEntity) {
+        if (fishingGears == null || fishingGears.isEmpty()) {
+            return null;
+        }
+        Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
+        for (FishingGear fishingGear : fishingGears) {
+            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, fishingActivityEntity, new FishingGearEntity());
+            fishingGearEntities.add(fishingGearEntity);
+        }
+        return fishingGearEntities;
+    }
+
+    protected Set<FishingTripEntity> getFishingTripEntities(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
+        Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
+        fishingTripEntities.add(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity()));
+        return fishingTripEntities;
+    }
+
+    protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
+        if (delimitedPeriods == null || delimitedPeriods.isEmpty()) {
+            return null;
+        }
+        Set<DelimitedPeriodEntity> delimitedPeriodEntities =  new HashSet<>();
+        for (DelimitedPeriod delimitedPeriod : delimitedPeriods) {
+            DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingActivityEntity, new DelimitedPeriodEntity());
+            delimitedPeriodEntities.add(delimitedPeriodEntity);
+        }
+       return delimitedPeriodEntities;
+    }
+
+    protected Set<FishingActivityIdentifierEntity> mapToFishingActivityIdentifierEntities(List<IDType> idTypes, FishingActivityEntity fishingActivityEntity) {
+        if (idTypes == null && idTypes.isEmpty()) {
+            return null;
+        }
+        Set<FishingActivityIdentifierEntity> identifierEntities = new HashSet<>();
+        for (IDType idType : idTypes) {
+            FishingActivityIdentifierEntity identifier = FishingActivityMapper.INSTANCE.mapToFishingActivityIdentifierEntity(idType);
+            identifier.setFishingActivity(fishingActivityEntity);
+            identifierEntities.add(identifier);
+        }
+        return identifierEntities;
+    }
+
+    protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
+        return VesselStorageCharacteristicsMapper.INSTANCE.mapToSourceVesselStorageCharEntity(sourceVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
+    }
+
+    protected VesselStorageCharacteristicsEntity getDestVesselStorageCharacteristics(VesselStorageCharacteristic destVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
+        return VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
+    }
 
     protected String getFlapDocId(FLAPDocument flapDocument) {
         if (flapDocument == null) {

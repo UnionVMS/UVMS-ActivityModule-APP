@@ -1,13 +1,11 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
@@ -33,7 +31,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fmcMarkerListId", expression = "java(getCodeTypeListId(faReportDocument.getFMCMarkerCode()))"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(faReportDocument.getSpecifiedVesselTransportMeans(), faReportDocumentEntity))"),
             @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
-            @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedReportIDs(), faReportDocumentEntity))")
+            @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedReportIDs(), faReportDocumentEntity))"),
+            @Mapping(target = "fishingActivities", expression = "java(getFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))")
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, @MappingTarget FaReportDocumentEntity faReportDocumentEntity);
 
@@ -41,7 +40,19 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "faReportIdentifierId", expression = "java(getIdType(idType))"),
             @Mapping(target = "faReportIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
-    public abstract FaReportIdentifierEntity mapToFAReportIdentifierEntity(IDType idType);
+    protected abstract FaReportIdentifierEntity mapToFAReportIdentifierEntity(IDType idType);
+
+    protected Set<FishingActivityEntity> getFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
+        if (fishingActivities == null || fishingActivities.isEmpty()) {
+            return null;
+        }
+        Set<FishingActivityEntity> fishingActivityEntities =  new HashSet<>();
+        for (FishingActivity fishingActivity : fishingActivities) {
+            FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
+            fishingActivityEntities.add(fishingActivityEntity);
+        }
+        return fishingActivityEntities;
+    }
 
     protected VesselTransportMeansEntity getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
         return VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans, faReportDocumentEntity, new VesselTransportMeansEntity());

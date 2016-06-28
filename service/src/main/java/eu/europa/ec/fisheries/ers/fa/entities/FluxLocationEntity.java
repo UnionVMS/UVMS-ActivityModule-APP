@@ -18,8 +18,9 @@ public class FluxLocationEntity implements Serializable {
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 
-	@Column(name = "fishing_activity_id")
-	private Long fishingActivityId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fishing_activity_id")
+	private FishingActivityEntity fishingActivity;
 
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
@@ -78,9 +79,6 @@ public class FluxLocationEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation")
 	private Set<StructuredAddressEntity> structuredAddresses = new HashSet<StructuredAddressEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity")
-	private Set<GearProblemEntity> gearProblems = new HashSet<GearProblemEntity>(0);
-
 	public FluxLocationEntity() {
 	}
 
@@ -96,12 +94,12 @@ public class FluxLocationEntity implements Serializable {
 		this.faCatch = faCatch;
 	}
 
-	public Long getFishingActivityId() {
-		return this.fishingActivityId;
+	public FishingActivityEntity getFishingActivity() {
+		return fishingActivity;
 	}
 
-	public void setFishingActivityId(Long fishingActivityId) {
-		this.fishingActivityId = fishingActivityId;
+	public void setFishingActivity(FishingActivityEntity fishingActivity) {
+		this.fishingActivity = fishingActivity;
 	}
 
 	public String getTypeCode() {
@@ -250,14 +248,6 @@ public class FluxLocationEntity implements Serializable {
 	public void setStructuredAddresses(
 			Set<StructuredAddressEntity> StructuredAddresses) {
 		this.structuredAddresses = structuredAddresses;
-	}
-
-	public Set<GearProblemEntity> getGearProblems() {
-		return gearProblems;
-	}
-
-	public void setGearProblems(Set<GearProblemEntity> gearProblems) {
-		this.gearProblems = gearProblems;
 	}
 
 	public Double getLongitude() {

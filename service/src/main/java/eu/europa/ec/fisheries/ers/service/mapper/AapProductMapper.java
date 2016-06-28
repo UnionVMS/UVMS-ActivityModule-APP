@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPProduct;
@@ -19,7 +21,8 @@ public abstract class AapProductMapper extends BaseMapper {
             @Mapping(target = "packagingTypeCode", expression = "java(getCodeType(aapProduct.getPackagingTypeCode()))"),
             @Mapping(target = "packagingTypeCodeListId", expression = "java(getCodeTypeListId(aapProduct.getPackagingTypeCode()))"),
             @Mapping(target = "packagingUnitAvarageWeight", expression = "java(getMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
-            @Mapping(target = "packagingUnitCount", expression = "java(getQuantity(aapProduct.getPackagingUnitQuantity()))")
+            @Mapping(target = "packagingUnitCount", expression = "java(getQuantity(aapProduct.getPackagingUnitQuantity()))"),
+            @Mapping(target = "aapProcess", expression = "java(aapProcessEntity)")
     })
-    public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct);
+    public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct, AapProcessEntity aapProcessEntity, @MappingTarget AapProductEntity aapProductEntity);
 }

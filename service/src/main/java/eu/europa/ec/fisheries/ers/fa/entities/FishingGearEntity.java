@@ -22,6 +22,10 @@ public class FishingGearEntity implements Serializable {
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "gear_problem_id")
+	private GearProblemEntity gearProblem;
+
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
 
@@ -37,9 +41,6 @@ public class FishingGearEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
 	private Set<GearCharacteristicEntity> gearCharacteristics = new HashSet<GearCharacteristicEntity>(0);
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<GearProblemEntity> gearProblems = new HashSet<GearProblemEntity>(0);
 
 	public FishingGearEntity() {
 	}
@@ -106,11 +107,11 @@ public class FishingGearEntity implements Serializable {
 		this.gearCharacteristics = gearCharacteristics;
 	}
 
-	public Set<GearProblemEntity> getGearProblems() {
-		return gearProblems;
+	public GearProblemEntity getGearProblem() {
+		return gearProblem;
 	}
 
-	public void setGearProblems(Set<GearProblemEntity> gearProblems) {
-		this.gearProblems = gearProblems;
+	public void setGearProblem(GearProblemEntity gearProblem) {
+		this.gearProblem = gearProblem;
 	}
 }
