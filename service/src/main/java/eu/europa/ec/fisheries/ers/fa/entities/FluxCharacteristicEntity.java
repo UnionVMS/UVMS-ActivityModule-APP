@@ -56,32 +56,6 @@ public class FluxCharacteristicEntity implements Serializable {
 	public FluxCharacteristicEntity() {
 	}
 
-	public FluxCharacteristicEntity(String typeCode,
-									String typeCodeListId) {
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public FluxCharacteristicEntity(FaCatchEntity faCatch,
-									FishingActivityEntity fishingActivity,
-									FluxLocationEntity fluxLocation, String typeCode,
-									String typeCodeListId, Double valueMeasure, Date valueDateTime,
-									String valueIndicator, String valueCode, String valueText,
-									Double valueQuantity, String description) {
-		this.faCatch = faCatch;
-		this.fishingActivity = fishingActivity;
-		this.fluxLocation = fluxLocation;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.valueMeasure = valueMeasure;
-		this.valueDateTime = valueDateTime;
-		this.valueIndicator = valueIndicator;
-		this.valueCode = valueCode;
-		this.valueText = valueText;
-		this.valueQuantity = valueQuantity;
-		this.description = description;
-	}
-
 	public int getId() {
 		return this.id;
 	}

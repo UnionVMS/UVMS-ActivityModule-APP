@@ -13,7 +13,7 @@ public class AapProductEntity implements Serializable {
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "app_process_id")
+	@JoinColumn(name = "aap_process_id")
 	private AapProcessEntity aapProcess;
 	
 	@Column(name = "packaging_type_code")

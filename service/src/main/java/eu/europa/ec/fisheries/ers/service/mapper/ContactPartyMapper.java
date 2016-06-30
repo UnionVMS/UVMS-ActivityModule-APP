@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -47,7 +48,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
         }
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();
         for (StructuredAddress structuredAddress : structuredAddresses) {
-            StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress, contactPartyEntity, new StructuredAddressEntity());
+            StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress, StructuredAddressTypeEnum.CANTACT_PARTY_SPECIFIED, contactPartyEntity, new StructuredAddressEntity());
             structuredAddressEntities.add(structuredAddressEntity);
         }
         return structuredAddressEntities;

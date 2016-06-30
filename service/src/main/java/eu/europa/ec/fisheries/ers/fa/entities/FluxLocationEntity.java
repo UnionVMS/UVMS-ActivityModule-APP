@@ -73,10 +73,10 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "system_id")
 	private String systemId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
 	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<FluxCharacteristicEntity>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses = new HashSet<StructuredAddressEntity>(0);
 
 	public FluxLocationEntity() {
@@ -246,7 +246,7 @@ public class FluxLocationEntity implements Serializable {
 	}
 
 	public void setStructuredAddresses(
-			Set<StructuredAddressEntity> StructuredAddresses) {
+			Set<StructuredAddressEntity> structuredAddresses) {
 		this.structuredAddresses = structuredAddresses;
 	}
 

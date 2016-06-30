@@ -20,7 +20,8 @@
     <ram:FMCMarkerCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:FMCMarkerCode>
     <ram:RelatedReportID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:RelatedReportID>
     <ram:AcceptanceDateTime>
-      <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+      <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+      <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
     </ram:AcceptanceDateTime>
     <ram:RelatedFLUXReportDocument>
       <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
@@ -41,7 +42,8 @@
       <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
       <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
       <ram:OccurrenceDateTime>
-        <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+        <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+        <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
       </ram:OccurrenceDateTime>
       <ram:ReasonCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:ReasonCode>
       <ram:VesselRelatedActivityCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:VesselRelatedActivityCode>
@@ -61,10 +63,12 @@
           <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
           <ram:SpecifiedDelimitedPeriod>
             <ram:StartDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:StartDateTime>
             <ram:EndDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:EndDateTime>
             <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
           </ram:SpecifiedDelimitedPeriod>
@@ -187,7 +191,8 @@
                 <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
                 <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
                 <ram:ValueDateTime>
-                  <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                  <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                  <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
                 </ram:ValueDateTime>
                 <ram:ValueIndicator>
                   <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -314,7 +319,8 @@
                 <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
                 <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
                 <ram:ValueDateTime>
-                  <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                  <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                  <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
                 </ram:ValueDateTime>
                 <ram:ValueIndicator>
                   <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -420,7 +426,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -448,7 +455,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -463,7 +471,7 @@
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -562,7 +570,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -663,7 +672,8 @@
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -767,7 +777,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -795,7 +806,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -811,7 +823,8 @@
         <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
         <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
         <ram:ValueDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:ValueDateTime>
         <ram:ValueIndicator>
           <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -838,7 +851,8 @@
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -883,7 +897,8 @@
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -902,19 +917,23 @@
         </ram:SpecifiedVesselCrew>
         <ram:ApplicableDelimitedPeriod>
           <ram:StartDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:StartDateTime>
           <ram:EndDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:EndDateTime>
           <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
         </ram:ApplicableDelimitedPeriod>
         <ram:EntryIntoForceDelimitedPeriod>
           <ram:StartDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:StartDateTime>
           <ram:EndDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:EndDateTime>
           <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
         </ram:EntryIntoForceDelimitedPeriod>
@@ -922,10 +941,12 @@
           <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
           <ram:ApplicableDelimitedPeriod>
             <ram:StartDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:StartDateTime>
             <ram:EndDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:EndDateTime>
             <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
           </ram:ApplicableDelimitedPeriod>
@@ -938,23 +959,23 @@
             <ram:ResidenceCountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:ResidenceCountryID>
             <ram:RoleCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:RoleCode>
             <ram:SpecifiedStructuredAddress>
-              <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
-              <ram:PostcodeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:PostcodeCode>
-              <ram:BuildingName languageID="token" languageLocaleID="token">ram:BuildingName</ram:BuildingName>
-              <ram:StreetName languageID="token" languageLocaleID="token">ram:StreetName</ram:StreetName>
-              <ram:CityName languageID="token" languageLocaleID="token">ram:CityName</ram:CityName>
-              <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>
-              <ram:CitySubDivisionName languageID="token" languageLocaleID="token">ram:CitySubDivisionName</ram:CitySubDivisionName>
-              <ram:CountryName languageID="token" languageLocaleID="token">ram:CountryName</ram:CountryName>
-              <ram:CountrySubDivisionName languageID="token" languageLocaleID="token">ram:CountrySubDivisionName</ram:CountrySubDivisionName>
-              <ram:BlockName languageID="token" languageLocaleID="token">ram:BlockName</ram:BlockName>
-              <ram:PlotIdentification languageID="token" languageLocaleID="token">ram:PlotIdentification</ram:PlotIdentification>
-              <ram:PostOfficeBox languageID="token" languageLocaleID="token">ram:PostOfficeBox</ram:PostOfficeBox>
-              <ram:BuildingNumber languageID="token" languageLocaleID="token">ram:BuildingNumber</ram:BuildingNumber>
-              <ram:StaircaseNumber languageID="token" languageLocaleID="token">ram:StaircaseNumber</ram:StaircaseNumber>
-              <ram:FloorIdentification languageID="token" languageLocaleID="token">ram:FloorIdentification</ram:FloorIdentification>
-              <ram:RoomIdentification languageID="token" languageLocaleID="token">ram:RoomIdentification</ram:RoomIdentification>
-            </ram:SpecifiedStructuredAddress>
+            <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
+            <ram:PostcodeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:PostcodeCode>
+            <ram:BuildingName languageID="token" languageLocaleID="token">ram:BuildingName</ram:BuildingName>
+            <ram:StreetName languageID="token" languageLocaleID="token">ram:StreetName</ram:StreetName>
+            <ram:CityName languageID="token" languageLocaleID="token">ram:CityName</ram:CityName>
+            <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>
+            <ram:CitySubDivisionName languageID="token" languageLocaleID="token">ram:CitySubDivisionName</ram:CitySubDivisionName>
+            <ram:CountryName languageID="token" languageLocaleID="token">ram:CountryName</ram:CountryName>
+            <ram:CountrySubDivisionName languageID="token" languageLocaleID="token">ram:CountrySubDivisionName</ram:CountrySubDivisionName>
+            <ram:BlockName languageID="token" languageLocaleID="token">ram:BlockName</ram:BlockName>
+            <ram:PlotIdentification languageID="token" languageLocaleID="token">ram:PlotIdentification</ram:PlotIdentification>
+            <ram:PostOfficeBox languageID="token" languageLocaleID="token">ram:PostOfficeBox</ram:PostOfficeBox>
+            <ram:BuildingNumber languageID="token" languageLocaleID="token">ram:BuildingNumber</ram:BuildingNumber>
+            <ram:StaircaseNumber languageID="token" languageLocaleID="token">ram:StaircaseNumber</ram:StaircaseNumber>
+            <ram:FloorIdentification languageID="token" languageLocaleID="token">ram:FloorIdentification</ram:FloorIdentification>
+            <ram:RoomIdentification languageID="token" languageLocaleID="token">ram:RoomIdentification</ram:RoomIdentification>
+          </ram:SpecifiedStructuredAddress>
             <ram:SpecifiedContactPerson>
               <ram:Title languageID="token" languageLocaleID="token">ram:Title</ram:Title>
               <ram:GivenName languageID="token" languageLocaleID="token">ram:GivenName</ram:GivenName>
@@ -1702,7 +1723,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -1757,7 +1779,8 @@
                 <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
                 <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
                 <ram:ValueDateTime>
-                  <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                  <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                  <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
                 </ram:ValueDateTime>
                 <ram:ValueIndicator>
                   <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -1793,10 +1816,12 @@
       </ram:SpecifiedFLAPDocument>
       <ram:SpecifiedDelimitedPeriod>
         <ram:StartDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:StartDateTime>
         <ram:EndDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:EndDateTime>
         <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
       </ram:SpecifiedDelimitedPeriod>
@@ -1805,10 +1830,12 @@
         <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
         <ram:SpecifiedDelimitedPeriod>
           <ram:StartDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:StartDateTime>
           <ram:EndDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:EndDateTime>
           <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
         </ram:SpecifiedDelimitedPeriod>
@@ -1831,7 +1858,8 @@
         </ram:RegistrationVesselCountry>
         <ram:SpecifiedVesselPositionEvent>
           <ram:ObtainedOccurrenceDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ObtainedOccurrenceDateTime>
           <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
           <ram:SpeedValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:SpeedValueMeasure>
@@ -1879,7 +1907,8 @@
         <ram:SpecifiedConstructionEvent>
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:OccurrenceDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:OccurrenceDateTime>
           <ram:RelatedConstructionLocation>
             <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>
@@ -2285,7 +2314,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -2302,7 +2332,8 @@
           <ram:Value languageID="token" languageLocaleID="token">ram:Value</ram:Value>
           <ram:ValueCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:ValueCode>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -2324,7 +2355,8 @@
           <ram:Value languageID="token" languageLocaleID="token">ram:Value</ram:Value>
           <ram:ValueCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:ValueCode>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -2706,7 +2738,8 @@
           <ram:Value languageID="token" languageLocaleID="token">ram:Value</ram:Value>
           <ram:ValueCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:ValueCode>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -2739,7 +2772,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -2758,19 +2792,23 @@
           </ram:SpecifiedVesselCrew>
           <ram:ApplicableDelimitedPeriod>
             <ram:StartDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:StartDateTime>
             <ram:EndDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:EndDateTime>
             <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
           </ram:ApplicableDelimitedPeriod>
           <ram:EntryIntoForceDelimitedPeriod>
             <ram:StartDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:StartDateTime>
             <ram:EndDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:EndDateTime>
             <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
           </ram:EntryIntoForceDelimitedPeriod>
@@ -2778,10 +2816,12 @@
             <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
             <ram:ApplicableDelimitedPeriod>
               <ram:StartDateTime>
-                <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
               </ram:StartDateTime>
               <ram:EndDateTime>
-                <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
               </ram:EndDateTime>
               <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
             </ram:ApplicableDelimitedPeriod>
@@ -3484,23 +3524,23 @@
               <ram:SystemID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:SystemID>
             </ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
             <ram:PostalStructuredAddress>
-              <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
-              <ram:PostcodeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:PostcodeCode>
-              <ram:BuildingName languageID="token" languageLocaleID="token">ram:BuildingName</ram:BuildingName>
-              <ram:StreetName languageID="token" languageLocaleID="token">ram:StreetName</ram:StreetName>
-              <ram:CityName languageID="token" languageLocaleID="token">ram:CityName</ram:CityName>
-              <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>
-              <ram:CitySubDivisionName languageID="token" languageLocaleID="token">ram:CitySubDivisionName</ram:CitySubDivisionName>
-              <ram:CountryName languageID="token" languageLocaleID="token">ram:CountryName</ram:CountryName>
-              <ram:CountrySubDivisionName languageID="token" languageLocaleID="token">ram:CountrySubDivisionName</ram:CountrySubDivisionName>
-              <ram:BlockName languageID="token" languageLocaleID="token">ram:BlockName</ram:BlockName>
-              <ram:PlotIdentification languageID="token" languageLocaleID="token">ram:PlotIdentification</ram:PlotIdentification>
-              <ram:PostOfficeBox languageID="token" languageLocaleID="token">ram:PostOfficeBox</ram:PostOfficeBox>
-              <ram:BuildingNumber languageID="token" languageLocaleID="token">ram:BuildingNumber</ram:BuildingNumber>
-              <ram:StaircaseNumber languageID="token" languageLocaleID="token">ram:StaircaseNumber</ram:StaircaseNumber>
-              <ram:FloorIdentification languageID="token" languageLocaleID="token">ram:FloorIdentification</ram:FloorIdentification>
-              <ram:RoomIdentification languageID="token" languageLocaleID="token">ram:RoomIdentification</ram:RoomIdentification>
-            </ram:PostalStructuredAddress>
+            <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
+            <ram:PostcodeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:PostcodeCode>
+            <ram:BuildingName languageID="token" languageLocaleID="token">ram:BuildingName</ram:BuildingName>
+            <ram:StreetName languageID="token" languageLocaleID="token">ram:StreetName</ram:StreetName>
+            <ram:CityName languageID="token" languageLocaleID="token">ram:CityName</ram:CityName>
+            <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>
+            <ram:CitySubDivisionName languageID="token" languageLocaleID="token">ram:CitySubDivisionName</ram:CitySubDivisionName>
+            <ram:CountryName languageID="token" languageLocaleID="token">ram:CountryName</ram:CountryName>
+            <ram:CountrySubDivisionName languageID="token" languageLocaleID="token">ram:CountrySubDivisionName</ram:CountrySubDivisionName>
+            <ram:BlockName languageID="token" languageLocaleID="token">ram:BlockName</ram:BlockName>
+            <ram:PlotIdentification languageID="token" languageLocaleID="token">ram:PlotIdentification</ram:PlotIdentification>
+            <ram:PostOfficeBox languageID="token" languageLocaleID="token">ram:PostOfficeBox</ram:PostOfficeBox>
+            <ram:BuildingNumber languageID="token" languageLocaleID="token">ram:BuildingNumber</ram:BuildingNumber>
+            <ram:StaircaseNumber languageID="token" languageLocaleID="token">ram:StaircaseNumber</ram:StaircaseNumber>
+            <ram:FloorIdentification languageID="token" languageLocaleID="token">ram:FloorIdentification</ram:FloorIdentification>
+            <ram:RoomIdentification languageID="token" languageLocaleID="token">ram:RoomIdentification</ram:RoomIdentification>
+          </ram:PostalStructuredAddress>
             <ram:PhysicalStructuredAddress>
               <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
               <ram:PostcodeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:PostcodeCode>
@@ -3558,7 +3598,8 @@
               <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
               <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
               <ram:ValueDateTime>
-                <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
               </ram:ValueDateTime>
               <ram:ValueIndicator>
                 <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -3613,7 +3654,8 @@
                   <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
                   <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
                   <ram:ValueDateTime>
-                    <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                    <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                    <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
                   </ram:ValueDateTime>
                   <ram:ValueIndicator>
                     <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -3667,7 +3709,8 @@
       </ram:RegistrationVesselCountry>
       <ram:SpecifiedVesselPositionEvent>
         <ram:ObtainedOccurrenceDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:ObtainedOccurrenceDateTime>
         <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
         <ram:SpeedValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:SpeedValueMeasure>
@@ -3715,7 +3758,8 @@
       <ram:SpecifiedConstructionEvent>
         <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
         <ram:OccurrenceDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:OccurrenceDateTime>
         <ram:RelatedConstructionLocation>
           <ram:CountryID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">123</ram:CountryID>
@@ -4121,7 +4165,8 @@
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -4138,7 +4183,8 @@
         <ram:Value languageID="token" languageLocaleID="token">ram:Value</ram:Value>
         <ram:ValueCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:ValueCode>
         <ram:ValueDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:ValueDateTime>
         <ram:ValueIndicator>
           <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -4160,7 +4206,8 @@
         <ram:Value languageID="token" languageLocaleID="token">ram:Value</ram:Value>
         <ram:ValueCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:ValueCode>
         <ram:ValueDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:ValueDateTime>
         <ram:ValueIndicator>
           <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -4542,7 +4589,8 @@
         <ram:Value languageID="token" languageLocaleID="token">ram:Value</ram:Value>
         <ram:ValueCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:ValueCode>
         <ram:ValueDateTime>
-          <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+          <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+          <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
         </ram:ValueDateTime>
         <ram:ValueIndicator>
           <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -4575,7 +4623,8 @@
           <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
           <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
           <ram:ValueDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:ValueDateTime>
           <ram:ValueIndicator>
             <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -4594,19 +4643,23 @@
         </ram:SpecifiedVesselCrew>
         <ram:ApplicableDelimitedPeriod>
           <ram:StartDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:StartDateTime>
           <ram:EndDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+           <!-- <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:EndDateTime>
           <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
         </ram:ApplicableDelimitedPeriod>
         <ram:EntryIntoForceDelimitedPeriod>
           <ram:StartDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+           <!-- <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:StartDateTime>
           <ram:EndDateTime>
-            <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+            <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+            <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
           </ram:EndDateTime>
           <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
         </ram:EntryIntoForceDelimitedPeriod>
@@ -4614,10 +4667,12 @@
           <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>
           <ram:ApplicableDelimitedPeriod>
             <ram:StartDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:StartDateTime>
             <ram:EndDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:EndDateTime>
             <ram:DurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:DurationMeasure>
           </ram:ApplicableDelimitedPeriod>
@@ -5394,7 +5449,8 @@
             <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
             <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
             <ram:ValueDateTime>
-              <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+              <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+              <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
             </ram:ValueDateTime>
             <ram:ValueIndicator>
               <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>
@@ -5449,7 +5505,8 @@
                 <ram:Description languageID="token" languageLocaleID="token">ram:Description</ram:Description>
                 <ram:ValueMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:ValueMeasure>
                 <ram:ValueDateTime>
-                  <udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>
+                  <!--<udt:DateTimeString format="">udt:DateTimeString</udt:DateTimeString>-->
+                  <udt:DateTime>2013-01-18T07:46:00.000</udt:DateTime>
                 </ram:ValueDateTime>
                 <ram:ValueIndicator>
                   <udt:IndicatorString format="">udt:IndicatorString</udt:IndicatorString>

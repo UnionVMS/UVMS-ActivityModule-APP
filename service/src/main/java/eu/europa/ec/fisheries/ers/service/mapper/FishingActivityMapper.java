@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -75,7 +76,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fishingActivityEntity, new FluxLocationEntity());
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, FluxLocationTypeEnum.FA_RELATED, fishingActivityEntity, new FluxLocationEntity());
             fluxLocationEntities.add(fluxLocationEntity);
         }
         return fluxLocationEntities;

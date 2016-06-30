@@ -37,19 +37,6 @@ public class FishingTripEntity implements Serializable {
 	public FishingTripEntity() {
 	}
 
-	public FishingTripEntity(FaCatchEntity faCatch,
-							 FishingActivityEntity fishingActivity, String typeCode,
-							 String typeCodeListId,
-							 Set<DelimitedPeriodEntity> delimitedPeriods,
-							 Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
-		this.faCatch = faCatch;
-		this.fishingActivity = fishingActivity;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.delimitedPeriods = delimitedPeriods;
-		this.fishingTripIdentifiers = fishingTripIdentifiers;
-	}
-
 	public int getId() {
 		return this.id;
 	}
