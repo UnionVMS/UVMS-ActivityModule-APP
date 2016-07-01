@@ -7,4 +7,6 @@ public interface MdrSynchronizationService {
 
 	void manualStartMdrSynchronization();
 
+	void sendMockedMessageToERSMDRQueue();
+
 }

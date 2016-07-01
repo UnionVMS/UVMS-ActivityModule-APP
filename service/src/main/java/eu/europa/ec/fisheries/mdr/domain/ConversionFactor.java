@@ -17,7 +17,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "conversion_factor")
+@Table(name = "mdr_conversion_factor")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)	
 public class ConversionFactor extends ExtendedMasterDataRegistry {

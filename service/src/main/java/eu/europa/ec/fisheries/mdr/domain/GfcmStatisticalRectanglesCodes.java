@@ -20,13 +20,13 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "gfcm_statistical_rectangles_codes")
+@Table(name = "mdr_gfcm_statistical_rectangles_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 	
 	@Column(name = "code")
-	private String code;
+	private String code; 
 	
 	@Embedded
 	private RectangleCoordinates rectangle;
@@ -49,7 +49,7 @@ public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "GF_STAT_RECTANGLE";
+		return "GFCM_STAT_RECTANGLE";
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "effort_target_species_codes")
+@Table(name = "mdr_effort_target_species_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class EffortTargetSpeciesCodes extends ExtendedMasterDataRegistry {

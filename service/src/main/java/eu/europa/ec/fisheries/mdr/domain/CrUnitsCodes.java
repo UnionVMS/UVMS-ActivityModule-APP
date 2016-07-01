@@ -16,7 +16,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "cr_units_codes")
+@Table(name = "mdr_cr_units_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class CrUnitsCodes extends ExtendedMasterDataRegistry {
@@ -24,7 +24,7 @@ public class CrUnitsCodes extends ExtendedMasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "UNIT_CODES";
+		return "CR_UNIT";
 	}
 	
 	@Override

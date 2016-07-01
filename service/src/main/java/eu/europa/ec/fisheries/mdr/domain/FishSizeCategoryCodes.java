@@ -17,11 +17,11 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 
 @Entity
-@Table(name = "fish_size_category_codes")
+@Table(name = "mdr_fish_size_category_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FishSizeCategoryCodes extends ExtendedMasterDataRegistry {
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
 	
 	@Override
 	public String getAcronym() {

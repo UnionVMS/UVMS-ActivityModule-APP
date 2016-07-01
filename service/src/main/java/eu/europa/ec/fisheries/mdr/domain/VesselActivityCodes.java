@@ -13,14 +13,14 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "vessel_activity_codes")
+@Table(name = "mdr_vessel_activity_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class VesselActivityCodes extends ExtendedMasterDataRegistry {
 
 	
 	@Override
-	public String getAcronym() {
+	public String getAcronym() { 
 		return "VESSEL_ACTIVITY";
 	}
 	

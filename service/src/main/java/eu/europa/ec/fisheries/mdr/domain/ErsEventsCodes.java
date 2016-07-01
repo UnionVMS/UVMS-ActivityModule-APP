@@ -17,7 +17,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "ers_events_codes")
+@Table(name = "mdr_ers_events_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ErsEventsCodes extends ExtendedMasterDataRegistry {

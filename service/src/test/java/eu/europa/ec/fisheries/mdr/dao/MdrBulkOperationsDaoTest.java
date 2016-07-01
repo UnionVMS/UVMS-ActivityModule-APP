@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ninja_squad.dbsetup.DbSetup;
@@ -19,6 +20,7 @@ import eu.europa.ec.fisheries.mdr.domain.CrNafoStock;
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import lombok.SneakyThrows;
 
+@Ignore
 public class MdrBulkOperationsDaoTest extends BaseActivityDaoTest {
 
 	private MdrBulkOperationsDao bulkDao = new MdrBulkOperationsDao(em);

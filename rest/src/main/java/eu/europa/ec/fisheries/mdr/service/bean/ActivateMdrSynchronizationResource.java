@@ -24,9 +24,19 @@ public class ActivateMdrSynchronizationResource {
 	@GET
 	@Path("/sync")
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response getAreaTypes() {
+	public Response activateMdrSynchronization() {
 		log.info("Starting MDR Synchronization");
 		syncBean.manualStartMdrSynchronization();
+		log.info("Finished MDR Synchronization");
+		return createSuccessResponse();
+	}
+	
+	@GET
+	@Path("/flux")
+	@Produces(value = {MediaType.APPLICATION_JSON})
+	public Response recieveFluxMessage() {
+		log.info("Starting MDR Synchronization");
+		syncBean.sendMockedMessageToERSMDRQueue();
 		log.info("Finished MDR Synchronization");
 		return createSuccessResponse();
 	}

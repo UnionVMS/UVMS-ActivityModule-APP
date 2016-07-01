@@ -14,5 +14,5 @@ public interface MdrMessageProducer {
 
 	String sendModuleMessage(String text, ModuleQueue queue) throws ActivityMessageException;
 
-	String sendExchangeModuleMessage(String strReqObj);
+	String sendRulesModuleMessage(String strReqObj);
 }

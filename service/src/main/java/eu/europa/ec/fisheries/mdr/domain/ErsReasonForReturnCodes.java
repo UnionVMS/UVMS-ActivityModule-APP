@@ -16,7 +16,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "ers_reason_for_return_codes")
+@Table(name = "mdr_ers_reason_for_return_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ErsReasonForReturnCodes extends ExtendedMasterDataRegistry {

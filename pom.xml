@@ -25,8 +25,12 @@
         <activity.model>0.5.1-SNAPSHOT</activity.model>
         <activity.model.fa>0.5.1-SNAPSHOT</activity.model.fa>
         <activity.model.mdr>0.5.1-SNAPSHOT</activity.model.mdr>
+        
+        <!-- Other modules dependencies -->
         <reporting.model>0.5.0</reporting.model>
         <exchange.model>2.0.6-SNAPSHOT</exchange.model>
+        <rules.model>2.0.6-SNAPSHOT</rules.model>
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <javaee.version>7.0</javaee.version>
@@ -87,6 +91,12 @@
                 <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
                 <artifactId>exchange-model</artifactId>
                 <version>${exchange.model}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+                <artifactId>rules-model</artifactId>
+                <version>${rules.model}</version>
             </dependency>
             
             <dependency>

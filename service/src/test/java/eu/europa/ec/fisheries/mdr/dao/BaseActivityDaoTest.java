@@ -23,11 +23,11 @@ public abstract class BaseActivityDaoTest extends BaseDAOTest {
     );
     
     protected static final Operation DELETE_ALL_ACTION_TYPE = sequenceOf(
-            deleteAllFrom("activity.action_type")            
+            deleteAllFrom("activity.mdr_action_type")            
     );
 
     protected static final Operation INSERT_MDR_ACTION_TYPE = sequenceOf(
-            insertInto("activity.action_type")
+            insertInto("activity.mdr_action_type")
                     .columns("id", "created_on", "refreshable", "code", "description")
                     .values(1L, java.sql.Date.valueOf("2014-12-12"), "Y", "C", "Creation")
                     .build()

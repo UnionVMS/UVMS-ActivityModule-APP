@@ -17,7 +17,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "product_destination_codes")
+@Table(name = "mdr_product_destination_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ProductDestinationCodes extends MasterDataRegistry {

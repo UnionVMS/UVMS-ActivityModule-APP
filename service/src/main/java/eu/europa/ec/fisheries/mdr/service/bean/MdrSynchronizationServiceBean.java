@@ -1,6 +1,8 @@
 package eu.europa.ec.fisheries.mdr.service.bean;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -8,14 +10,31 @@ import javax.ejb.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
+import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
+import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._13.NameType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._13.TextType;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.BasicAttribute;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
+/**
+ * @author kovian
+ *
+ * EJB that provides the MDR Synchronization Functionality.
+ *
+ */
 @Slf4j
 @Singleton
 public class MdrSynchronizationServiceBean implements MdrSynchronizationService {
@@ -48,21 +67,19 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	 */
 
 	/**
-	 * Manually startable Job for synchronisation of the MDR Entities.
+	 * Manually startable Job for the MDR Entities synchronising.
 	 */
-	public void manualStartMdrSynchronization() {
+	public void manualStartMdrSynchronization() {	
+		log.info("\n\t\t--->>> SYNCHRONIZATION OF MDR ENTITIES INITIALIZED \n");
 		extractAcronymsAndUpdateMdr();
 	}
 
 	private void extractAcronymsAndUpdateMdr() {
-
-		// Get all the acronyms from the acronyms cache
-		log.info("Exctracting the available acronyms.");
 		List<String> acronymsList = null;
 		try {
 			acronymsList = extractMdrAcronyms();
-		} catch (Exception e1) {
-			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n\n" + e1.getMessage());
+		} catch (Exception exC) {
+			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n" + exC.getMessage());
 		}
 
 		// For each Acronym send a request object towards Exchange module.
@@ -72,33 +89,84 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 
 				// Create request object and send message to exchange module
 				String strReqObj = null;
-			
-					try {
-						strReqObj = MdrRequestMapper.mapMDRQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
-					} catch (ExchangeModelMarshallException | ModelMarshallException e) {
-						log.error("Error while trying to map MDRQueryType.");
-						e.printStackTrace();
-					}
-				 
-				log.info("Sending Request to Exchange module.");
-				producer.sendExchangeModuleMessage(strReqObj);
-				log.info("Request Sent for "+actualAcronym+" Entity.");
+				try {
+					strReqObj = MdrRequestMapper.createNewMDRQueryTypeAndMapItToString(actualAcronym, OBJ_DATA_ALL);
+				} catch (ExchangeModelMarshallException | ModelMarshallException e) {
+					log.error("Error while trying to map MDRQueryType.");
+					e.printStackTrace();
+				}				 
+				producer.sendRulesModuleMessage(strReqObj);
+				log.info("Synchronization Request Sent for Entity : "+actualAcronym);
 			}
 		}
+		log.info("\n\t\t--->>> SYNCHRONIZATION OF MDR ENTITIES FINISHED <<<---\n\n");
 	}
 
 	private List<String> extractMdrAcronyms() throws Exception {
 		List<String> acronymsList = null;
 		try {
+			// Get all the acronyms from the acronyms cache
+			log.info("Exctracting the available acronyms.");
 			acronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			throw new Exception(e);
 		}
 		if (!CollectionUtils.isEmpty(acronymsList)) {
-			log.info("Acronyms exctracted. There were found [" + acronymsList.size()
-					+ "] acronyms in the MDR domain package.");
+			log.info("Acronyms exctracted. \nThere were found [ " + acronymsList.size()+ " ] acronyms in the MDR domain package.");
 		}
 		return acronymsList;
+	}
+
+	@Override
+	public void sendMockedMessageToERSMDRQueue() {
+		
+		try {
+			producer.sendModuleMessage(mockAndMarshallResponse(), ModuleQueue.ERSMDRPLUGINQUEUE);
+		} catch (ActivityMessageException | ExchangeModelMarshallException e) {
+			log.error(e.getMessage());
+		}
+	}
+	
+	
+
+	private String mockAndMarshallResponse() throws ExchangeModelMarshallException {
+
+		ResponseType respType       = new ResponseType();
+		
+		IDType objAcronym = new IDType();
+		objAcronym.setValue("ACTION_TYPE");
+		
+		FieldType field_1= new FieldType();
+		field_1.setFieldName(new NameType("DESCRIPTION", "EN"));
+		TextType value = new TextType();
+		value.setLanguageID("EN");
+		value.setValue("English description of Action Type Entity.");
+		field_1.setFieldValue(value);
+		
+		FieldType field_2= new FieldType();
+		field_2.setFieldName(new NameType("CODE", "EN"));
+		TextType valu = new TextType();
+		valu.setLanguageID("EN");
+		valu.setValue("ACT_TYPE");
+		field_2.setFieldValue(valu);
+		
+		CodeElementType entity_1 = new CodeElementType();
+		entity_1.setFields(Arrays.asList(field_1, field_2));
+		
+		CodeElementType entity_2 = new CodeElementType();
+		entity_2.setFields(Arrays.asList(field_1, field_2));
+		
+		List<CodeElementType> entitiesList = new ArrayList<CodeElementType>();
+		entitiesList.addAll(Arrays.asList(entity_1, entity_2));
+
+		MDRCodeListType mdrCodeListType = new MDRCodeListType(objAcronym, null, null, null, null, null, entitiesList);
+		
+		respType.setMDRCodeList(mdrCodeListType);
+		
+		BasicAttribute respRootType = new BasicAttribute();
+		respRootType.setResponse(respType);
+
+		return JAXBMarshaller.marshallJaxBObjectToString(respRootType);
 	}
 }

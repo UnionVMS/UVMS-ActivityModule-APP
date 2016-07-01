@@ -17,7 +17,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "effort_zones_codes")
+@Table(name = "mdr_effort_zones_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class EffortZonesCodes extends ExtendedMasterDataRegistry {
@@ -36,7 +36,7 @@ public class EffortZonesCodes extends ExtendedMasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "EFFORT_ZONES";
+		return "EFFORT_ZONE";
 	}
 	
 	@Override

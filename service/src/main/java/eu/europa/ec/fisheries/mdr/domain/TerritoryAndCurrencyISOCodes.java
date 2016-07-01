@@ -18,7 +18,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "territory_and_currency_iso_codes")
+@Table(name = "mdr_territory_and_currency_iso_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class TerritoryAndCurrencyISOCodes extends MasterDataRegistry {
@@ -80,7 +80,7 @@ public class TerritoryAndCurrencyISOCodes extends MasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "TERRITORY_CURRENCY_ISO";
+		return "TERRITORY_CURR";
 	}
 	
 	@Override

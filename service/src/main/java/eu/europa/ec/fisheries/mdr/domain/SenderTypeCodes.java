@@ -17,7 +17,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "sender_type_codes")
+@Table(name = "mdr_sender_type_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class SenderTypeCodes extends ExtendedMasterDataRegistry {

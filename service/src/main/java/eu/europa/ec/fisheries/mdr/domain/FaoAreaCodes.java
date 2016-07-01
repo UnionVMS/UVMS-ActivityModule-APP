@@ -18,7 +18,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "fao_area_codes")
+@Table(name = "mdr_fao_area_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FaoAreaCodes extends MasterDataRegistry {
@@ -91,7 +91,7 @@ public class FaoAreaCodes extends MasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "FAO_AREA";
+		return "FAO_LIKE_AREA";
 	}
 	
 	@Override

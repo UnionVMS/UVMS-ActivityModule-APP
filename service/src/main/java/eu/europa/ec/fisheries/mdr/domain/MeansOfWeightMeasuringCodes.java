@@ -17,7 +17,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "means_of_weight_measuring_codes")
+@Table(name = "mdr_means_of_weight_measuring_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class MeansOfWeightMeasuringCodes extends MasterDataRegistry {

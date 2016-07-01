@@ -18,7 +18,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "species_iso3_codes")
+@Table(name = "mdr_species_iso3_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class SpeciesISO3Codes extends MasterDataRegistry {
@@ -37,11 +37,14 @@ public class SpeciesISO3Codes extends MasterDataRegistry {
 	@Column(name = "spanish_name")
 	private String spanishName;
 	
+	@Column(name = "author")
 	private String author;
 	
+	@Column(name = "family")
 	private String family;
 	
-	private String order;
+	@Column(name = "iso_order")
+	private String isoOrder;
 
 	public String getCode() {
 		return code;
@@ -99,17 +102,17 @@ public class SpeciesISO3Codes extends MasterDataRegistry {
 		this.family = family;
 	}
 
-	public String getOrder() {
-		return order;
+	public String getsetIsoOrder() {
+		return isoOrder;
 	}
 
-	public void setOrder(String order) {
-		this.order = order;
+	public void setIsoOrder(String order) {
+		this.isoOrder = order;
 	}
 	
 	@Override
 	public String getAcronym() {
-		return "SPECIES_ISO";
+		return "FAO_SPECIES";
 	}
 	
 	@Override

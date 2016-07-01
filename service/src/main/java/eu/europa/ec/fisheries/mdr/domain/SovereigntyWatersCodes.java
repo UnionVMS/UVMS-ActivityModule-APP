@@ -16,7 +16,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "sovereignty_waters_codes")
+@Table(name = "mdr_sovereignty_waters_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)	
 public class SovereigntyWatersCodes extends ExtendedMasterDataRegistry {
@@ -26,7 +26,7 @@ public class SovereigntyWatersCodes extends ExtendedMasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "SOVEREIGNTY_WATERS";
+		return "CR_SOV_WATERS";
 	}
 	
 	@Override

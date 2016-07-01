@@ -46,6 +46,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+			<artifactId>rules-model</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>message</artifactId>
 			<scope>provided</scope>

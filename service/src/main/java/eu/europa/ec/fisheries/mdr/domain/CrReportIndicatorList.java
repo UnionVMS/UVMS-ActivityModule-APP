@@ -16,7 +16,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "cr_report_indicator_list")
+@Table(name = "mdr_cr_report_indicator_list")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class CrReportIndicatorList extends ExtendedMasterDataRegistry {

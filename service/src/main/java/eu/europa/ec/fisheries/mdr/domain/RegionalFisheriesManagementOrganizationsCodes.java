@@ -17,7 +17,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "regional_fisheries_management_organizations_codes")
+@Table(name = "mdr_regional_fisheries_management_organizations_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class RegionalFisheriesManagementOrganizationsCodes extends ExtendedMasterDataRegistry {

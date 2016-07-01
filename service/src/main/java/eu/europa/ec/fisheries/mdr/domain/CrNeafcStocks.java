@@ -16,7 +16,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "cr_neafc_stocks")
+@Table(name = "mdr_cr_neafc_stocks")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class CrNeafcStocks extends ExtendedMasterDataRegistry {

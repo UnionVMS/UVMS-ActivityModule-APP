@@ -18,7 +18,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "location_codes")
+@Table(name = "mdr_location_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class LocationCodes extends ExtendedMasterDataRegistry {
@@ -183,7 +183,7 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "LOCATION_CODES";
+		return "LOCATION";
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "ices_statistical_rectangles_codes")
+@Table(name = "mdr_ices_statistical_rectangles_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class IcesStatisticalRectanglesCodes extends MasterDataRegistry {
@@ -49,7 +49,7 @@ public class IcesStatisticalRectanglesCodes extends MasterDataRegistry {
 	}
 	
 	@Override
-	public String getAcronym() {
+	public String getAcronym() { 
 		return "ICES_STAT_RECTANGLE";
 	}
 	

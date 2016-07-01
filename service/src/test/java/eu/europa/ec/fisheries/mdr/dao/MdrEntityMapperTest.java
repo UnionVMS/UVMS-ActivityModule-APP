@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,11 +45,8 @@ public class MdrEntityMapperTest {
 	@Test
 	@SneakyThrows
 	public void testMdrEntityJaxBMarshalling(){
-		
-		@SuppressWarnings("unused")
-		String strReqObj = MdrRequestMapper.mapMDRQueryTypeToString(entityName, "ALL");
-		@SuppressWarnings("unused")
-		String empty = StringUtils.EMPTY;
+		String strReqObj = MdrRequestMapper.createNewMDRQueryTypeAndMapItToString(entityName, "ALL");
+		assertNotNull(strReqObj);
 	}
 	
 	@Test

@@ -37,6 +37,12 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 
 	@Resource(mappedName = MessageConstants.EXCHANGE_MODULE_QUEUE)
 	private Queue exchangeQueue;
+	
+	@Resource(mappedName = MessageConstants.ERS_MDR_QUEUE)
+	private Queue ersMdrQueue;
+	
+	@Resource(mappedName = MessageConstants.RULES_EVENT_QUEUE)
+	private Queue rulesQueue;
 
 	
 	/**
@@ -45,10 +51,11 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 	 * @param  text (to be sent to the queue)
 	 * @return messageID
 	 */
-	public String sendExchangeModuleMessage(String text){
+	public String sendRulesModuleMessage(String text){
+		log.info("Sending Request to Exchange module.");		
 		String messageID = StringUtils.EMPTY;
 		try {
-			messageID = sendModuleMessage(text, ModuleQueue.EXCHANGE);
+			messageID = sendModuleMessage(text, ModuleQueue.RULES);
 		} catch (ActivityMessageException e) {
 			log.error("Error sending message to Exchange Module.");
 			e.printStackTrace();
@@ -69,11 +76,17 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
         try {
             Session session     = getNewSession();
             TextMessage message = session.createTextMessage();
-            message.setJMSReplyTo(responseQueue);
+            //message.setJMSReplyTo(responseQueue);
             message.setText(text);
             switch (queue) {
+            	case RULES:
+            		getProducer(session, rulesQueue).send(message);
+            		break;
                 case EXCHANGE:
                     getProducer(session, exchangeQueue).send(message);
+                    break;
+                case ERSMDRPLUGINQUEUE:
+                    getProducer(session, ersMdrQueue).send(message);
                     break;
                 default:
                     throw new ActivityMessageException("Queue not defined or implemented");

@@ -16,7 +16,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
  *
  */
 @Entity
-@Table(name = "action_type")
+@Table(name = "mdr_action_type")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ActionType extends ExtendedMasterDataRegistry {
