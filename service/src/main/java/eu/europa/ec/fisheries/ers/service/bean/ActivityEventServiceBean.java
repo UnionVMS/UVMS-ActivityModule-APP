@@ -27,7 +27,7 @@ import java.io.StringReader;
 public class ActivityEventServiceBean implements EventService {
     final static Logger LOG = LoggerFactory.getLogger(ActivityEventServiceBean.class);
 
-    private @EJB  FluxResponseMessageService repository;
+    private @EJB  FluxMessageService fluxMessageService;
 
     @Override
     public void GetFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
@@ -42,7 +42,7 @@ public class ActivityEventServiceBean implements EventService {
 
             FLUXFAReportMessage fluxFAReportMessage =extractFLUXFAReportMessage(baseRequest.getRequest());
 
-            repository.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments());
+            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments());
 
         } catch (ModelMarshallException e) {
             LOG.error("Exception while trying to unmarshall SetFLUXFAReportMessageRequest in Activity",e);
