@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by padhyad on 5/13/2016.
  */
-public interface FluxResponseMessageService {
+public interface FluxMessageService {
 
     void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments) throws ServiceException;
 }

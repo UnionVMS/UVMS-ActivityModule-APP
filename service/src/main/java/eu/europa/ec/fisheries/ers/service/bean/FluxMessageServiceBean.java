@@ -21,7 +21,7 @@ import java.util.List;
 @Stateless
 @Transactional
 @Slf4j
-public class FluxResponseMessageServiceBean implements FluxResponseMessageService {
+public class FluxMessageServiceBean implements FluxMessageService {
 
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;

@@ -73,8 +73,9 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "flap_document_scheme_id")
 	private String flapDocumentSchemeId;
 
-	@Column(name = "related_fishing_activity_id")
-	private Integer relatedFishingActivityId;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "related_fishing_activity_id")
+	private FishingActivityEntity relatedFishingActivity;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs = new HashSet<FaCatchEntity>(0);
@@ -99,6 +100,9 @@ public class FishingActivityEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FluxLocationEntity> fluxLocations = new HashSet<FluxLocationEntity>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relatedFishingActivity", cascade = CascadeType.ALL)
+	private Set<FishingActivityEntity> allRelatedFishingActivities;
 
 
 	public FishingActivityEntity() {
@@ -251,12 +255,12 @@ public class FishingActivityEntity implements Serializable {
 		this.flapDocumentId = flapDocumentId;
 	}
 
-	public Integer getRelatedFishingActivityId() {
-		return relatedFishingActivityId;
+	public FishingActivityEntity getRelatedFishingActivity() {
+		return relatedFishingActivity;
 	}
 
-	public void setRelatedFishingActivityId(Integer relatedFishingActivityId) {
-		this.relatedFishingActivityId = relatedFishingActivityId;
+	public void setRelatedFishingActivity(FishingActivityEntity relatedFishingActivity) {
+		this.relatedFishingActivity = relatedFishingActivity;
 	}
 
 	public String getFlapDocumentSchemeId() {
@@ -335,5 +339,13 @@ public class FishingActivityEntity implements Serializable {
 
 	public void setFluxLocations(Set<FluxLocationEntity> fluxLocations) {
 		this.fluxLocations = fluxLocations;
+	}
+
+	public Set<FishingActivityEntity> getAllRelatedFishingActivities() {
+		return allRelatedFishingActivities;
+	}
+
+	public void setAllRelatedFishingActivities(Set<FishingActivityEntity> allRelatedFishingActivities) {
+		this.allRelatedFishingActivities = allRelatedFishingActivities;
 	}
 }

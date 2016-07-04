@@ -48,7 +48,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsEntities(fishingActivity.getSpecifiedFLUXCharacteristics(), fishingActivityEntity))"),
             @Mapping(target = "gearProblems", expression = "java(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), fishingActivityEntity))"),
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), fishingActivityEntity))"),
-            @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))")
+            @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))"),
+            @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))")
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
@@ -57,6 +58,19 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
     protected abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
+
+    protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
+        if (fishingActivity == null || fishingActivity.isEmpty()) {
+            return null;
+        }
+        Set<FishingActivityEntity> relatedFishingActivityEntities = new HashSet<>();
+        for (FishingActivity relatedFishingActivity : fishingActivity) {
+            FishingActivityEntity relatedFishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(relatedFishingActivity, faReportDocumentEntity, parentFishingActivity);
+            relatedFishingActivityEntity.setRelatedFishingActivity(parentFishingActivity);
+            relatedFishingActivityEntities.add(relatedFishingActivityEntity);
+        }
+        return relatedFishingActivityEntities;
+    }
 
     protected Set<FaCatchEntity> getFaCatchEntities(List<FACatch> faCatches, FishingActivityEntity fishingActivityEntity) {
         if (faCatches == null || faCatches.isEmpty()) {
