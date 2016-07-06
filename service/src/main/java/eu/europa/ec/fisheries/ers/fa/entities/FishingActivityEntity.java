@@ -1,10 +1,10 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_fishing_activity")
@@ -347,5 +347,17 @@ public class FishingActivityEntity implements Serializable {
 
 	public void setAllRelatedFishingActivities(Set<FishingActivityEntity> allRelatedFishingActivities) {
 		this.allRelatedFishingActivities = allRelatedFishingActivities;
+	}
+
+	@Override
+	public String toString() {
+		return "FishingActivityEntity{" +
+				"id=" + id +
+				", typeCode='" + typeCode + '\'' +
+				", typeCodeListid='" + typeCodeListid + '\'' +
+				", occurence=" + occurence +
+				", reasonCode='" + reasonCode + '\'' +
+				", reasonCodeListId='" + reasonCodeListId + '\'' +
+				'}';
 	}
 }
