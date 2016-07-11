@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -17,7 +17,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.joda.time.DateTime;
 
 import eu.europa.ec.fisheries.schema.rules.module.v1.RulesModuleMethod;
-import eu.europa.ec.fisheries.schema.rules.module.v1.SetFLUXMDRSyncMessageRequest;
+import eu.europa.ec.fisheries.schema.rules.module.v1.SetFLUXMDRSyncMessageRulesRequest;
 import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
@@ -38,7 +38,7 @@ public class MdrRequestMapper {
 	 * @return
 	 * @throws ExchangeModelMarshallException 
 	 */
-	public static String createNewMDRQueryTypeAndMapItToString(String acronym, String serviceType) throws ModelMarshallException, ExchangeModelMarshallException {
+	public static String mapMdrQueryTypeToString(String acronym, String serviceType) throws ModelMarshallException, ExchangeModelMarshallException {
 		
 		IDType idType = new IDType();
 		idType.setValue(acronym);		
@@ -54,7 +54,7 @@ public class MdrRequestMapper {
 		reqOb.setMDRQuery(mdrQueryType);
 		reqOb.setCreation(createXMLDate());
 
-		SetFLUXMDRSyncMessageRequest fluxRequestObject = new SetFLUXMDRSyncMessageRequest();
+		SetFLUXMDRSyncMessageRulesRequest fluxRequestObject = new SetFLUXMDRSyncMessageRulesRequest();
 		fluxRequestObject.setRequest(JAXBMarshaller.marshallJaxBObjectToString(reqOb));
 		fluxRequestObject.setMethod(RulesModuleMethod.SET_FLUX_MDR_SYNC_REQUEST);
 		return JAXBMarshaller.marshallJaxBObjectToString(fluxRequestObject);

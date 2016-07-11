@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -23,7 +23,9 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.BasicAttribute;
 
-/*** 
+/**
+ * @author kovian
+ * 
  *  Observer class listening to events fired from MessageConsumerBean (Activity).
  *  Specifically to GetFLUXFMDRSyncMessageEvent event type.
  *  The message will contain the MDR Entity to be synchronised (As Flux XML Type at this moment).
@@ -64,6 +66,7 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 			log.error("Error while attempting to Unmarshall Flux Response Object (MDR Entity).");
 			e.printStackTrace();
 		}
+		log.info("BasicAttribute : /n"+respType);
 		return respType;
 	}
 }

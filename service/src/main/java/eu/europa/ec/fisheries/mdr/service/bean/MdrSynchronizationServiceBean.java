@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -39,7 +39,9 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
-/***
+/**
+ * @author kovian
+ *
  * EJB that provides the MDR Synchronization Functionality.
  *
  */
@@ -86,25 +88,27 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		List<String> acronymsList = null;
 		try {
 			acronymsList = extractMdrAcronyms();
+			log.info("\n\n>>>>>>>> Exctracted : "+acronymsList.size()+" acronyms!\n\n");
 		} catch (Exception exC) {
 			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n" + exC.getMessage());
 		}
 
 		// For each Acronym send a request object towards Exchange module.
+		int counter = 0;
 		if (CollectionUtils.isNotEmpty(acronymsList)) {
 			for (String actualAcronym : acronymsList) {
+				counter++;
 				log.info("Preparing Request Object for " + actualAcronym + " and sending message to Exchange queue.");
 
 				// Create request object and send message to exchange module
 				String strReqObj = null;
 				try {
-					strReqObj = MdrRequestMapper.createNewMDRQueryTypeAndMapItToString(actualAcronym, OBJ_DATA_ALL);
+					strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
 				} catch (ExchangeModelMarshallException | ModelMarshallException e) {
-					log.error("Error while trying to map MDRQueryType.");
-					e.printStackTrace();
-				}				 
+					log.error("Error while trying to map MDRQueryType."+e.getMessage());
+				}
 				producer.sendRulesModuleMessage(strReqObj);
-				log.info("Synchronization Request Sent for Entity : "+actualAcronym);
+				log.info(counter+". -> Synchronization Request Sent for Entity : "+actualAcronym);
 			}
 		}
 		log.info("\n\t\t--->>> SYNCHRONIZATION OF MDR ENTITIES FINISHED <<<---\n\n");

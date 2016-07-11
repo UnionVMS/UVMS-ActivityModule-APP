@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -53,27 +53,19 @@ public class MessageConsumerBean implements MessageListener {
     public void onMessage(Message message) {
 
         TextMessage textMessage = null;
-
         try {
-
             textMessage = (TextMessage) message;
-
             LOG.info("Message received in activity");
-
             ActivityModuleRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
-
             LOG.info("Message unmarshalled successfully in activity");
-
             if(request==null){
                 LOG.error("[ Request is null ]");
                 return;
             }
-
             if (request.getMethod() == null) {
                 LOG.error("[ Request method is null ]");
                 return;
             }
-
             if(getFLUXFAReportMessageEvent==null){
                 LOG.error("[ getFLUXFAReportMessageEvent is null ]");
                 return;

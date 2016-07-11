@@ -29,7 +29,7 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="SetFLUXMDRSyncMessageRequest">
+	<xs:element name="SetFLUXMDRSyncMessageActivityRequest">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="ActivityModuleRequest">
@@ -40,7 +40,18 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
-
+	
+	<xs:element name="SetFLUXMDRSyncMessageActivityResponse">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="ActivityModuleRequest">
+					<xs:sequence>
+						<xs:element name="request" type="xs:string" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
 
 
 </xs:schema>
