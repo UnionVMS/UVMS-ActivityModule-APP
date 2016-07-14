@@ -93,10 +93,6 @@ public class FaCatchEntity implements Serializable {
 		return this.id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public FishingActivityEntity getFishingActivity() {
 		return this.fishingActivity;
 	}

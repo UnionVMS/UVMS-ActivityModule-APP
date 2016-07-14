@@ -1718,7 +1718,6 @@
           <ram:UnitValueQuantity unitCode="token" unitCodeListAgencyID="token" unitCodeListAgencyName="" unitCodeListID="token">0.0</ram:UnitValueQuantity>
           <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
         </ram:DestinationVesselStorageCharacteristic>
-        <ram:RelatedFishingActivity/>
         <ram:SpecifiedFLAPDocument>
           <ram:ID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:ID>
           <ram:VesselID schemeAgencyID="token" schemeAgencyName="" schemeDataURI="http://tempuri.org" schemeID="token" schemeName="" schemeURI="http://tempuri.org" schemeVersionID="token">token</ram:VesselID>

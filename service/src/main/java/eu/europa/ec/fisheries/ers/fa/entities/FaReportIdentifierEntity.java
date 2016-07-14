@@ -35,13 +35,6 @@ public class FaReportIdentifierEntity implements Serializable {
 	public FaReportIdentifierEntity() {
 	}
 
-	public FaReportIdentifierEntity(FaReportDocumentEntity faReportDocument,
-									String faReportIdentifierId, String faReportIdentifierSchemeId) {
-		this.faReportDocument = faReportDocument;
-		this.faReportIdentifierId = faReportIdentifierId;
-		this.faReportIdentifierSchemeId = faReportIdentifierSchemeId;
-	}
-
 	public int getId() {
 		return this.id;
 	}

@@ -44,10 +44,6 @@ public class SizeDistributionEntity implements Serializable {
 		return this.id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getClassCode() {
 		return this.classCode;
 	}

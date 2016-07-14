@@ -43,27 +43,8 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	public VesselStorageCharacteristicsEntity() {
 	}
 
-	public VesselStorageCharacteristicsEntity(
-			String vesselId,
-			String vesselSchemaId,
-			String vesselTypeCode,
-			String vesselTypeCodeListId,
-			FishingActivityEntity fishingActivitiesForDestVesselCharId,
-			FishingActivityEntity fishingActivitiesForSourceVesselCharId) {
-		this.vesselId = vesselId;
-		this.vesselSchemaId = vesselSchemaId;
-		this.vesselTypeCode = vesselTypeCode;
-		this.vesselTypeCodeListId = vesselTypeCodeListId;
-		this.fishingActivitiesForDestVesselCharId = fishingActivitiesForDestVesselCharId;
-		this.fishingActivitiesForSourceVesselCharId = fishingActivitiesForSourceVesselCharId;
-	}
-
 	public int getId() {
 		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getVesselId() {

@@ -65,10 +65,16 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     }
 
     protected VesselTransportMeansEntity getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
+        if (vesselTransportMeans == null) {
+            return null;
+        }
         return VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans, faReportDocumentEntity, new VesselTransportMeansEntity());
     }
 
     protected FluxReportDocumentEntity getFluxReportDocument(FLUXReportDocument fluxReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
+        if (fluxReportDocument == null) {
+            return null;
+        }
         return FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument, faReportDocumentEntity, new FluxReportDocumentEntity());
     }
 

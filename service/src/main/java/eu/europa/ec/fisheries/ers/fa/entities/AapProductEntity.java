@@ -44,11 +44,6 @@ public class AapProductEntity implements Serializable {
 	public int getId() {
 		return this.id;
 	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	
 	public AapProcessEntity getAapProcess() {
 		return this.aapProcess;

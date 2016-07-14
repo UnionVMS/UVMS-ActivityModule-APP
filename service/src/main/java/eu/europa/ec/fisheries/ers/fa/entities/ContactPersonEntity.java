@@ -52,23 +52,6 @@ public class ContactPersonEntity implements Serializable {
 	public ContactPersonEntity() {
 	}
 
-
-	public ContactPersonEntity(String title, String givenName,
-							   String middleName, String familyName, String familyNamePrefix,
-							   String nameSuffix, String gender, String alias,
-							   ContactPartyEntity contactParty) {
-		this.title = title;
-		this.givenName = givenName;
-		this.middleName = middleName;
-		this.familyName = familyName;
-		this.familyNamePrefix = familyNamePrefix;
-		this.nameSuffix = nameSuffix;
-		this.gender = gender;
-		this.alias = alias;
-		this.contactParty = contactParty;
-	}
-
-
 	public int getId() {
 		return this.id;
 	}

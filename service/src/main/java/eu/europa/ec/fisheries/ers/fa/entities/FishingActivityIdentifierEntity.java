@@ -35,13 +35,6 @@ public class FishingActivityIdentifierEntity implements Serializable {
 	public FishingActivityIdentifierEntity() {
 	}
 
-	public FishingActivityIdentifierEntity(FishingActivityEntity fishingActivity,
-										   String faIdentifierId, String faIdentifierSchemeId) {
-		this.fishingActivity = fishingActivity;
-		this.faIdentifierId = faIdentifierId;
-		this.faIdentifierSchemeId = faIdentifierSchemeId;
-	}
-
 	public int getId() {
 		return this.id;
 	}

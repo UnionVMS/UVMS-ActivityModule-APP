@@ -56,6 +56,9 @@ public abstract class FaCatchMapper extends BaseMapper {
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch, FishingActivityEntity fishingActivityEntity, @MappingTarget FaCatchEntity faCatchEntity);
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
+        if (sizeDistribution == null) {
+            return null;
+        }
         return SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution, faCatchEntity, new SizeDistributionEntity());
     }
 

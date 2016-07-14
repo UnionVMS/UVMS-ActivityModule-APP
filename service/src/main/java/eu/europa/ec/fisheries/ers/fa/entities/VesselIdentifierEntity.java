@@ -35,13 +35,6 @@ public class VesselIdentifierEntity implements Serializable {
 	public VesselIdentifierEntity() {
 	}
 
-	public VesselIdentifierEntity(VesselTransportMeansEntity vesselTransportMeans,
-								  String vesselIdentifierId, String vesselIdentifierSchemeId) {
-		this.vesselTransportMeans = vesselTransportMeans;
-		this.vesselIdentifierId = vesselIdentifierId;
-		this.vesselIdentifierSchemeId = vesselIdentifierSchemeId;
-	}
-
 	public int getId() {
 		return this.id;
 	}

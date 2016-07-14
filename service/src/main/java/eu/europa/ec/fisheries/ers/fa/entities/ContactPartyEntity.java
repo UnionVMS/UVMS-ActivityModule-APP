@@ -45,30 +45,10 @@ public class ContactPartyEntity implements Serializable {
 
 	public ContactPartyEntity() {
 	}
-
-	public ContactPartyEntity(ContactPersonEntity contactPerson, String roleCode,
-							  String roleCodeListId) {
-		this.contactPerson = contactPerson;
-		this.roleCode = roleCode;
-		this.roleCodeListId = roleCodeListId;
-	}
-
-	public ContactPartyEntity(ContactPersonEntity contactPerson,
-							  VesselTransportMeansEntity vesselTransportMeans,
-							  String roleCode, String roleCodeListId,
-							  Set<StructuredAddressEntity> structuredAddresses) {
-		this.contactPerson = contactPerson;
-		this.vesselTransportMeans = vesselTransportMeans;
-		this.roleCode = roleCode;
-		this.roleCodeListId = roleCodeListId;
-		this.structuredAddresses = structuredAddresses;
-	}
-
 	
 	public int getId() {
 		return this.id;
 	}
-
 	
 	public ContactPersonEntity getContactPerson() {
 		return this.contactPerson;
@@ -78,7 +58,6 @@ public class ContactPartyEntity implements Serializable {
 			ContactPersonEntity contactPerson) {
 		this.contactPerson = contactPerson;
 	}
-
 
 	public VesselTransportMeansEntity getVesselTransportMeans() {
 		return this.vesselTransportMeans;

@@ -58,8 +58,6 @@ public class FaReportDocumentEntity implements Serializable {
 	public FaReportDocumentEntity() {
 	}
 
-
-
 	public int getId() {
 		return this.id;
 	}

@@ -59,10 +59,6 @@ public class VesselTransportMeansEntity implements Serializable {
         return this.id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public RegistrationEventEntity getRegistrationEvent() {
         return this.registrationEvent;
     }

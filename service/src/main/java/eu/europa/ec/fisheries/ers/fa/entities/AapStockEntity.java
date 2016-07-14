@@ -36,27 +36,9 @@ public class AapStockEntity implements Serializable {
 	public AapStockEntity() {
 	}
 
-	public AapStockEntity(int id) {
-		this.id = id;
-	}
-
-	public AapStockEntity(int id, FaCatchEntity faCatch,
-						  String stockId, String stockSchemeId) {
-		this.id = id;
-		this.faCatch = faCatch;
-		this.stockId = stockId;
-		this.stockSchemeId = stockSchemeId;
-	}
-
-	
 	public int getId() {
 		return this.id;
 	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	
 	public FaCatchEntity getFaCatch() {
 		return this.faCatch;

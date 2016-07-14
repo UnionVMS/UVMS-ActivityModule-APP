@@ -36,19 +36,6 @@ public class FishingTripIdentifierEntity implements Serializable {
 	public FishingTripIdentifierEntity() {
 	}
 
-	public FishingTripIdentifierEntity(String tripId,
-									   String tripSchemeId) {
-		this.tripId = tripId;
-		this.tripSchemeId = tripSchemeId;
-	}
-
-	public FishingTripIdentifierEntity(FishingTripEntity fishingTrip, String tripId,
-									   String tripSchemeId) {
-		this.fishingTrip = fishingTrip;
-		this.tripId = tripId;
-		this.tripSchemeId = tripSchemeId;
-	}
-
 	public int getId() {
 		return this.id;
 	}

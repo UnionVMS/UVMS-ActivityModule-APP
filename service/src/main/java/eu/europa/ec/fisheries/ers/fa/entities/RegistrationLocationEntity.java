@@ -54,26 +54,8 @@ public class RegistrationLocationEntity implements Serializable {
 	public RegistrationLocationEntity() {
 	}
 
-
-	public RegistrationLocationEntity(String description, String regionCode, String regionCodeListId,
-									  String name, String typeCode,
-									  String typeCodeListId,
-									  RegistrationEventEntity registrationEvent) {
-		this.description = description;
-		this.regionCode = regionCode;
-		this.regionCodeListId = regionCodeListId;
-		this.name = name;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.registrationEvent = registrationEvent;
-	}
-
 	public int getId() {
 		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getDescription() {

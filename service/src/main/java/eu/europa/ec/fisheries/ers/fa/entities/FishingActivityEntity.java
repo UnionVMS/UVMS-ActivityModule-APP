@@ -122,10 +122,6 @@ public class FishingActivityEntity implements Serializable {
 		return this.id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public FaReportDocumentEntity getFaReportDocument() {
 		return this.faReportDocument;
 	}

@@ -58,28 +58,6 @@ public class GearCharacteristicEntity implements Serializable {
 	public GearCharacteristicEntity() {
 	}
 
-	public GearCharacteristicEntity(String typeCode,
-									String typeCodeListId) {
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public GearCharacteristicEntity(FishingGearEntity fishingGear, String typeCode,
-									String typeCodeListId, String description, Double valueMeasure,
-									Date valueDateTime, String valueIndicator, String valueCode,
-									String valueText, Double valueQuantity) {
-		this.fishingGear = fishingGear;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.description = description;
-		this.valueMeasure = valueMeasure;
-		this.valueDateTime = valueDateTime;
-		this.valueIndicator = valueIndicator;
-		this.valueCode = valueCode;
-		this.valueText = valueText;
-		this.valueQuantity = valueQuantity;
-	}
-
 	public int getId() {
 		return this.id;
 	}

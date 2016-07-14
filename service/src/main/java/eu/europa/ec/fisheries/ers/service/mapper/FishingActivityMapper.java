@@ -20,6 +20,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,7 +76,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<FishingActivityEntity> relatedFishingActivityEntities = new HashSet<>();
         for (FishingActivity relatedFishingActivity : fishingActivity) {
-            FishingActivityEntity relatedFishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(relatedFishingActivity, faReportDocumentEntity, parentFishingActivity);
+            FishingActivityEntity relatedFishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(relatedFishingActivity, faReportDocumentEntity, new FishingActivityEntity());
             relatedFishingActivityEntity.setRelatedFishingActivity(parentFishingActivity);
             relatedFishingActivityEntities.add(relatedFishingActivityEntity);
         }
@@ -143,9 +144,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected Set<FishingTripEntity> getFishingTripEntities(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
-        Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
-        fishingTripEntities.add(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity()));
-        return fishingTripEntities;
+        if (fishingTrip == null) {
+            return null;
+        }
+        return new HashSet<FishingTripEntity>(Arrays.asList(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity())));
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
@@ -174,10 +176,16 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
+        if (sourceVesselStorageChar == null) {
+            return null;
+        }
         return VesselStorageCharacteristicsMapper.INSTANCE.mapToSourceVesselStorageCharEntity(sourceVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
     }
 
     protected VesselStorageCharacteristicsEntity getDestVesselStorageCharacteristics(VesselStorageCharacteristic destVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
+        if (destVesselStorageChar == null) {
+            return null;
+        }
         return VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
     }
 

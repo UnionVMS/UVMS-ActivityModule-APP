@@ -43,6 +43,9 @@ public abstract class RegistrationEventMapper extends BaseMapper {
     public abstract RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget RegistrationEventEntity registrationEventEntity);
 
     protected RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
+        if (registrationLocation == null) {
+            return null;
+        }
         return RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation, registrationEventEntity, new RegistrationLocationEntity());
     }
 

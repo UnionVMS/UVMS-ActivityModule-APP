@@ -41,19 +41,6 @@ public class RegistrationEventEntity implements Serializable {
 	public RegistrationEventEntity() {
 	}
 
-	public RegistrationEventEntity(RegistrationLocationEntity registrationLocation) {
-		this.registrationLocation = registrationLocation;
-	}
-
-	public RegistrationEventEntity(RegistrationLocationEntity registrationLocation,
-								   String description, Date occurrenceDatetime,
-								   VesselTransportMeansEntity vesselTransportMeans) {
-		this.registrationLocation = registrationLocation;
-		this.description = description;
-		this.occurrenceDatetime = occurrenceDatetime;
-		this.vesselTransportMeanses = vesselTransportMeans;
-	}
-
 	public int getId() {
 		return this.id;
 	}
