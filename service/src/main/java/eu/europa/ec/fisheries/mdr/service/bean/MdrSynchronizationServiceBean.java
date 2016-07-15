@@ -10,16 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.service.bean;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
@@ -30,14 +20,18 @@ import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.NameType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.TextType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.BasicAttribute;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.*;
+
+import javax.annotation.Resource;
+import javax.ejb.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author kovian
@@ -47,6 +41,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
  */
 @Slf4j
 @Singleton
+@Startup
 public class MdrSynchronizationServiceBean implements MdrSynchronizationService {
 
 	@EJB
@@ -54,6 +49,9 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 
 	@EJB
 	private MdrMessageProducer producer;
+
+	@Resource
+	private TimerService service;
 
 	private static final String OBJ_DATA_ALL = "OBJ_DATA_ALL";
 
@@ -81,6 +79,26 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	 */
 	public void manualStartMdrSynchronization() {	
 		log.info("\n\t\t--->>> SYNCHRONIZATION OF MDR ENTITIES INITIALIZED \n");
+		extractAcronymsAndUpdateMdr();
+	}
+
+	/**
+	 * Method for scheduling the MDR synchronization job.
+	 *
+	 * @params day,hour,minutes,seconds
+	 */
+	public void scheduleMdrSychronization(){
+		log.info("\n\t\t--->>> SCHEDULED JOB FOR MDR ENTITIES SYNCHRONIZATION HAS BEEN SET! \n");
+		ScheduleExpression exp  = new ScheduleExpression();
+		exp.hour("*")
+				.minute("*")
+				.second("*/10");
+		service.createCalendarTimer(exp);
+	}
+
+	@Timeout
+	public void timeOut(){
+		log.info("\n\t\t--->>> STARTING SCHEDULED SYNCHRONIZATION OF MDR ENTITIES! \n");
 		extractAcronymsAndUpdateMdr();
 	}
 

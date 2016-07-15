@@ -102,4 +102,28 @@ public class JAXBMarshaller {
         }
     }
 
+    public static <R> R unmarshallTextMessage(String textMessage, Class clazz) throws ModelMarshallException {
+
+        try {
+            JAXBContext jc = contexts.get(clazz.getName());
+            if (jc == null) {
+                long before = System.currentTimeMillis();
+                jc = JAXBContext.newInstance(clazz);
+                contexts.put(clazz.getName(), jc);
+                LOG.debug("Stored contexts: {}", contexts.size());
+                LOG.debug("JAXBContext creation time: {}", (System.currentTimeMillis() - before));
+            }
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+            StringReader sr = new StringReader(textMessage);
+            StreamSource source = new StreamSource(sr);
+            long before = System.currentTimeMillis();
+            R object = (R) unmarshaller.unmarshal(source);
+            LOG.debug("Unmarshalling time: {}", (System.currentTimeMillis() - before));
+            return object;
+        } catch (NullPointerException | JAXBException ex) {
+            //LOG.error("[ Error when marshalling Text message to object ] {} ", ex.getMessage());
+            throw new ModelMarshallException("[Error when unmarshalling response in ResponseMapper ]", ex);
+        }
+    }
+
 }

@@ -43,8 +43,9 @@ public class MdrEntityMapper {
 	/**
 	 * Common-Method for mapping Entities that extend the MasterDataRegistry.
 	 * 
-	 * @param  codeElementsTypeList
+	 * @param  codeElements
 	 * @param  acronym
+	 *
 	 * @return entityList
 	 */
 	private static List<MasterDataRegistry> mapJaxbToMDRType(List<CodeElementType> codeElements,

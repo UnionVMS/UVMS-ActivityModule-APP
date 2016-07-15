@@ -15,19 +15,14 @@ import eu.europa.ec.fisheries.uvms.domain.Audit;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.domain.CharBooleanConverter;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import xeu.ec.fisheries.flux_bl.flux_aggregatebusinessinformationentity._1._1.FLUXPeriodType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
+import javax.persistence.*;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Embedded;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
