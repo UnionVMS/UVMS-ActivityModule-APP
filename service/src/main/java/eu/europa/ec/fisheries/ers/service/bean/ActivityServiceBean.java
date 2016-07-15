@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +47,12 @@ public class ActivityServiceBean implements ActivityService{
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
     public void getFishingActivityDao(FishingActivityQuery query){
 
-        LOG.info("inside getFishingActivityDao");
-        fishingActivityDao.getFishingActivityListByQuery(query);
+        try {
+            fishingActivityDao.getFishingActivityListByQuery(query);
+        } catch (ServiceException e) {
+            LOG.error("Exception when trying to get Fishing Activity Report data.",e);
+        }
+
     }
 
 

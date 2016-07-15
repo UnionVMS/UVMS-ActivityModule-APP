@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries  European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -15,10 +15,9 @@ package eu.europa.ec.fisheries.ers.service.search;
  */
 public enum SearchKey {
 
-    typeCode,
-    occurence,
-    reasonCodeListId,
-    LOCATION;
+    FROM,PERIOD,VESSEL_IDENTIFIES,PURPOSE,REPORT_TYPE,ACTIVITY_TYPE,AREAS,PORT,GEAR,SPECIES,QUNTITIES,MASTER;
+
+
 
 
 }
