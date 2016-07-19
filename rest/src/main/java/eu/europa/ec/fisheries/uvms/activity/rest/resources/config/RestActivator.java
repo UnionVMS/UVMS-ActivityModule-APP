@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResour
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.ActivateMdrSynchronizationResource;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.MdrSynchronizationResource;
 
 @ApplicationPath("/rest")
 public class RestActivator extends Application {
@@ -31,7 +31,7 @@ public class RestActivator extends Application {
     private final Set<Class<?>> set = new HashSet<>();
 
     public RestActivator() {
-        set.add(ActivateMdrSynchronizationResource.class);
+        set.add(MdrSynchronizationResource.class);
         set.add(FishingActivityResource.class);
     }
 

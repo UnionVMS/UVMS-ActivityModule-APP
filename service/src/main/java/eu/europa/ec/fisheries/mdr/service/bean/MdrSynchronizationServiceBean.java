@@ -71,15 +71,16 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	 * @Schedule(hour="*", minute="*", persistent=false) public void
 	 * atSchedule() throws InterruptedException, JAXBException,
 	 * MessageException, JMSException, ServiceException {
+	 * log.info("Automatic scheduled MDR Synchronization Job initialized.");
 	 * extractAcronymsAndUpdateMdr(); }
 	 */
 
 	/**
 	 * Manually startable Job for the MDR Entities synchronising.
 	 */
-	public void manualStartMdrSynchronization() {	
+	public boolean manualStartMdrSynchronization() {
 		log.info("\n\t\t--->>> SYNCHRONIZATION OF MDR ENTITIES INITIALIZED \n");
-		extractAcronymsAndUpdateMdr();
+		return extractAcronymsAndUpdateMdr();
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	 * @params day,hour,minutes,seconds
 	 */
 	public void scheduleMdrSychronization(){
-		log.info("\n\t\t--->>> SCHEDULED JOB FOR MDR ENTITIES SYNCHRONIZATION HAS BEEN SET! \n");
+		log.info("\n\t---> SCHEDULED JOB FOR MDR ENTITIES SYNCHRONIZATION HAS BEEN SET! \n");
 		ScheduleExpression exp  = new ScheduleExpression();
 		exp.hour("*")
 				.minute("*")
@@ -98,38 +99,50 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 
 	@Timeout
 	public void timeOut(){
-		log.info("\n\t\t--->>> STARTING SCHEDULED SYNCHRONIZATION OF MDR ENTITIES! \n");
+		log.info("\n\t---> STARTING SCHEDULED SYNCHRONIZATION OF MDR ENTITIES! \n");
 		extractAcronymsAndUpdateMdr();
 	}
 
-	private void extractAcronymsAndUpdateMdr() {
-		List<String> acronymsList = null;
-		try {
-			acronymsList = extractMdrAcronyms();
-			log.info("\n\n>>>>>>>> Exctracted : "+acronymsList.size()+" acronyms!\n\n");
-		} catch (Exception exC) {
-			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n" + exC.getMessage());
-		}
+	/**
+	 * Extracts all the available acronyms and for each of those send an update request message.
+	 *
+	 */
+	private boolean extractAcronymsAndUpdateMdr() {
+		List<String> acronymsList = getAvailableMdrAcronyms();
 
 		// For each Acronym send a request object towards Exchange module.
-		int counter = 0;
+		boolean error = false;
 		if (CollectionUtils.isNotEmpty(acronymsList)) {
 			for (String actualAcronym : acronymsList) {
-				counter++;
 				log.info("Preparing Request Object for " + actualAcronym + " and sending message to Exchange queue.");
-
 				// Create request object and send message to exchange module
 				String strReqObj = null;
 				try {
 					strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
 				} catch (ExchangeModelMarshallException | ModelMarshallException e) {
 					log.error("Error while trying to map MDRQueryType."+e.getMessage());
+					error = true;
 				}
 				producer.sendRulesModuleMessage(strReqObj);
-				log.info(counter+". -> Synchronization Request Sent for Entity : "+actualAcronym);
+				log.info("Synchronization Request Sent for Entity : "+actualAcronym);
 			}
+		} else {
+			error = true;
 		}
-		log.info("\n\t\t--->>> SYNCHRONIZATION OF MDR ENTITIES FINISHED <<<---\n\n");
+		log.info("\n\t\t---> SYNCHRONIZATION OF MDR ENTITIES FINISHED <<<---\n\n");
+		return error;
+	}
+
+	@Override
+	public List<String> getAvailableMdrAcronyms() {
+		List<String> acronymsList = null;
+		try {
+			acronymsList = extractMdrAcronyms();
+			log.info("\n---> Exctracted : "+acronymsList.size()+" acronyms!\n");
+		} catch (Exception exC) {
+			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n" + exC.getMessage());
+		}
+		return acronymsList;
 	}
 
 	private List<String> extractMdrAcronyms() throws Exception {

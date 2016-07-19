@@ -11,11 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.service;
 
 import javax.ejb.Local;
+import java.util.List;
 
 @Local
 public interface MdrSynchronizationService {
 
-	void manualStartMdrSynchronization();
+	boolean manualStartMdrSynchronization();
+
+	List<String> getAvailableMdrAcronyms();
 
 	void sendMockedMessageToERSMDRQueue();
 

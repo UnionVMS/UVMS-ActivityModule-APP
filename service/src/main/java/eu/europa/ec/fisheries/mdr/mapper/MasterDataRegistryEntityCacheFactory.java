@@ -122,10 +122,10 @@ public class MasterDataRegistryEntityCacheFactory {
 	public static List<String> getAcronymsList() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {		
 		if(CollectionUtils.isEmpty(acronymsList)){
 			initializeCache();
-		}		
+		} else {
+			log.info("Getting acronyms from cached instance!");
+		}
 		return acronymsList;
 	}
-
-	
 
 }
