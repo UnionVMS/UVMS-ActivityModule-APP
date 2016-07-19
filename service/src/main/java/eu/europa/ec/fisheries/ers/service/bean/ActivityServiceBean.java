@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created by sanera on 29/06/2016.
@@ -45,14 +47,38 @@ public class ActivityServiceBean implements ActivityService{
     }
 
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
-    public void getFishingActivityDao(FishingActivityQuery query){
-
+    public void getFishingActivityListByQuery(FishingActivityQuery query){
+        LOG.info("inside  getFishingActivityDao:");
         try {
-            fishingActivityDao.getFishingActivityListByQuery(query);
+            List<FishingActivityEntity> activityList = fishingActivityDao.getFishingActivityListByQuery(query);
+            LOG.info("activityList size :"+activityList.size());
+            for(FishingActivityEntity entity: activityList){
+                entity.getFaReportDocument();
+                LOG.info("entity :"+entity);
+            }
+
+            LOG.info("show all fishing Activities:");
+
         } catch (ServiceException e) {
             LOG.error("Exception when trying to get Fishing Activity Report data.",e);
         }
 
+    }
+
+    public void getFishingActivityList(){
+
+        List<FishingActivityEntity> fishingActivityList =fishingActivityDao.getFishingActivityList();
+
+        for(FishingActivityEntity entity: fishingActivityList){
+            LOG.info("entity:"+entity);
+            LOG.info("FaReportDocument:"+entity.getFaReportDocument());
+            LOG.info("DelimitedPeriods:"+((entity.getDelimitedPeriods()!=null)?entity.getDelimitedPeriods().size() : null));
+            LOG.info("FaCatchs:"+((entity.getFaCatchs()!=null)?entity.getFaCatchs().size() : null));
+            LOG.info("FishingGears:"+((entity.getFishingGears()!=null)?entity.getFishingGears().size() : null));
+            LOG.info("FluxLocations:"+((entity.getFluxLocations()!=null)?entity.getFluxLocations().size() : null));
+
+           LOG.info("----------------------------------------------------");
+        }
     }
 
 
