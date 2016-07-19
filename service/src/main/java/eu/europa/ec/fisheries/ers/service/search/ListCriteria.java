@@ -17,16 +17,16 @@ import java.util.List;
  */
 public class ListCriteria {
 
-    private SearchKey key;
+    private Filters key;
     private List<SearchValue> value;
 
-    public void setKey(SearchKey key) {
+    public void setKey(Filters key) {
         this.key = key;
     }
 
 
 
-    public SearchKey getKey() {
+    public Filters getKey() {
 
         return key;
     }
@@ -34,7 +34,7 @@ public class ListCriteria {
     public ListCriteria(){
 
     }
-    public ListCriteria(SearchKey key, List<SearchValue> value) {
+    public ListCriteria(Filters key, List<SearchValue> value) {
         this.key = key;
         this.value = value;
     }

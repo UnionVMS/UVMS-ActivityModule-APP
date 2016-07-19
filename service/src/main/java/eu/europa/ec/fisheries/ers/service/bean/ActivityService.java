@@ -17,5 +17,6 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
  */
 
 public interface ActivityService {
-     void getFishingActivityDao(FishingActivityQuery query);
+     void getFishingActivityListByQuery(FishingActivityQuery query);
+     void getFishingActivityList();
 }

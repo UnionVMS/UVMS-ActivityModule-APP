@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.service.search;
 /**
  * Created by sanera on 24/06/2016.
  */
-public enum SearchKey {
+public enum Filters {
 
     FROM,PERIOD,VESSEL_IDENTIFIES,PURPOSE,REPORT_TYPE,ACTIVITY_TYPE,AREAS,PORT,GEAR,SPECIES,QUNTITIES,MASTER;
 

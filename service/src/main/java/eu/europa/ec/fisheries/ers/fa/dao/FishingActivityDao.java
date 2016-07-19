@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.DateUtil;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.ers.service.search.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
-
+    final static String FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 
     private EntityManager em;
@@ -46,32 +46,51 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return em;
     }
 
+    public List<FishingActivityEntity> getFishingActivityList(){
+        return getFishingActivityList(null);
+    }
+
+    public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
+        StringBuffer sql = new  StringBuffer("SELECT DISTINCT a from FishingActivityEntity a ");
+        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
+        if(pagination!=null) {
+            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
+            typedQuery.setMaxResults(pagination.getListSize());
+        }
+        List<FishingActivityEntity> resultList = typedQuery.getResultList();
+        return resultList;
+    }
+
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
-        Map<SearchKey, FilterDetails> mappings= FilterMap.getFilterMappings();
+        Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
         StringBuffer sql =createSQL(query);
+        LOG.info("sql :"+sql);
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
-       List<ListCriteria> criteriaList=query.getSearchCriteria();
-        // Assign values to created SQL Query
-        for(ListCriteria criteria :criteriaList){
-            SearchKey key= criteria.getKey();
-            List<SearchValue> valueList= criteria.getValue();
-           for(SearchValue searchValue:valueList) {
-               String parameterName= searchValue.getParameterName();
-               String parameterValue= searchValue.getParameterValue();
-               switch(key){
-                   case PERIOD :
-                       typedQuery.setParameter(parameterName, DateUtil.parseToUTCDate(parameterValue));
-                       break;
-                   case QUNTITIES :
-                       typedQuery.setParameter(parameterName, Long.parseLong(parameterValue));
-                       break;
-                   default :
-                       typedQuery.setParameter(parameterName, parameterValue);
-                       break;
-               }
-           }
-        }
+
+
+            List<ListCriteria> criteriaList = query.getSearchCriteria();
+            // Assign values to created SQL Query
+            for (ListCriteria criteria : criteriaList) {
+                Filters key = criteria.getKey();
+                List<SearchValue> valueList = criteria.getValue();
+                for (SearchValue searchValue : valueList) {
+                    String parameterName = searchValue.getParameterName();
+                    String parameterValue = searchValue.getParameterValue();
+                    switch (key) {
+                        case PERIOD:
+                            typedQuery.setParameter(parameterName, DateUtils.parseToUTCDate(parameterValue,FORMAT));
+                            break;
+                        case QUNTITIES:
+                            typedQuery.setParameter(parameterName, Long.parseLong(parameterValue));
+                            break;
+                        default:
+                            typedQuery.setParameter(parameterName, parameterValue);
+                            break;
+                    }
+                }
+            }
+
 
        Pagination pagination= query.getPagination();
 
@@ -81,6 +100,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
 
         List<FishingActivityEntity> resultList = typedQuery.getResultList();
+        LOG.info("resultList size :"+resultList.size());
         return resultList;
 
     }
@@ -91,12 +111,12 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         if(criteriaList.size()==0)
             throw new ServiceException("Fishing Activity Report Search Criteria is empty.");
 
-        Map<SearchKey, FilterDetails> mappings= FilterMap.getFilterMappings();
+        Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
         StringBuffer sql = new  StringBuffer("SELECT DISTINCT a from FishingActivityEntity a ");
 
         // Create join part of SQL query
        for(ListCriteria criteria :criteriaList){
-           SearchKey key= criteria.getKey();
+           Filters key= criteria.getKey();
 
            FilterDetails details=mappings.get(key);
            String joinString = details.getJoinString();
@@ -105,10 +125,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
            if(sql.indexOf(joinString)==-1){
 
                //If table join is already present in Query, we want to reuse that join alias. so, treat it differently
-               if(SearchKey.MASTER.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)!=-1 ){
+               if(Filters.MASTER.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)!=-1 ){
                    sql.append(" JOIN FETCH "+FilterMap.MASTER_MAPPING);
                }// Add table alias if not already present
-               else if(sql.indexOf(FilterMap.REPORT_DOCUMENT_TABLE_ALIAS)==-1 && (SearchKey.FROM.equals(key) || SearchKey.VESSEL_IDENTIFIES.equals(key) || SearchKey.PURPOSE.equals(key))) {
+               else if(sql.indexOf(FilterMap.REPORT_DOCUMENT_TABLE_ALIAS)==-1 && (Filters.FROM.equals(key) || Filters.VESSEL_IDENTIFIES.equals(key) || Filters.PURPOSE.equals(key))) {
                    sql.append(" JOIN FETCH "+FilterMap.REPORT_DOCUMENT_TABLE_ALIAS+" ");
                    sql.append(" JOIN FETCH "+details.getJoinString()+" ");
                }else{
@@ -117,19 +137,20 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
            }
        }
 
-        sql.append("where ");
+            sql.append("where ");
 
-        // Create Where part of SQL Query
-        int listSize =criteriaList.size();
-        for(int i=0;i<listSize;i++){
-            ListCriteria criteria=criteriaList.get(i);
-            String mapping= mappings.get(criteria.getKey()).getCondition();
-            if(i!=0){
-                sql.append(" and "+mapping);
-            }else{
-                sql.append(mapping);
+            // Create Where part of SQL Query
+            int listSize = criteriaList.size();
+            for (int i = 0; i < listSize; i++) {
+                ListCriteria criteria = criteriaList.get(i);
+                String mapping = mappings.get(criteria.getKey()).getCondition();
+                if (i != 0) {
+                    sql.append(" and " + mapping);
+                } else {
+                    sql.append(mapping);
+                }
             }
-        }
+
 
         return sql;
     }

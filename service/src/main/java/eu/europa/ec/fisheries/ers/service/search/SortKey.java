@@ -15,15 +15,15 @@ package eu.europa.ec.fisheries.ers.service.search;
  */
 public class SortKey {
 
-    private SearchKey field;
+    private Filters field;
     private SortOrder order;
 
 
-    public SearchKey getField() {
+    public Filters getField() {
         return field;
     }
 
-    public void setField(SearchKey field) {
+    public void setField(Filters field) {
         this.field = field;
     }
 
@@ -35,7 +35,7 @@ public class SortKey {
         this.order = order;
     }
 
-    public SortKey(SearchKey field, SortOrder order) {
+    public SortKey(Filters field, SortOrder order) {
         this.field = field;
         this.order = order;
     }

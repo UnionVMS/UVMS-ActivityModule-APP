@@ -38,25 +38,25 @@ public class FilterMap {
     public static String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static String REPORT_DOCUMENT_TABLE_ALIAS  = " a.faReportDocument fa ";
 
-    private static Map<SearchKey,FilterDetails> filterMappings = new HashMap<SearchKey,FilterDetails>();
+    private static Map<Filters,FilterDetails> filterMappings = new HashMap<Filters,FilterDetails>();
 
     static{
-        filterMappings.put(SearchKey.FROM,new FilterDetails("a.faReportDocument.fluxReportDocument flux","flux.ownerFluxPartyName =:"+FROM_NAME));
-        filterMappings.put(SearchKey.PERIOD,new FilterDetails("a.delimitedPeriods dp","(( dp.startDate >= :"+OCCURENCE_START_DATE + " and dp.endDate <= :"+OCCURENCE_END_DATE+" ) OR a.occurence BETWEEN :"+OCCURENCE_START_DATE +" and  :"+OCCURENCE_END_DATE+" )"));
-        filterMappings.put(SearchKey.VESSEL_IDENTIFIES,new FilterDetails("a.faReportDocument.vesselTransportMeans vt","vt.name =:"+VESSEL_IDENTITY_NAME));
-        filterMappings.put(SearchKey.PURPOSE,new FilterDetails("a.faReportDocument.fluxReportDocument flux","flux.purposeCode =:"+PURPOSE_CODE));
-        filterMappings.put(SearchKey.REPORT_TYPE,new FilterDetails("a.faReportDocument fa","fa.typeCode =:"+REPORT_TYPE_CODE));
-        filterMappings.put(SearchKey.ACTIVITY_TYPE,new FilterDetails("FishingActivityEntity a","a.typeCode =:"+ACTIVITY_TYPE_CODE));
-        filterMappings.put(SearchKey.AREAS,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:"+AREA_ID+" )"));
-        filterMappings.put(SearchKey.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )"));
-        filterMappings.put(SearchKey.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode =:"+FISHING_GEAR));
-        filterMappings.put(SearchKey.SPECIES,new FilterDetails("a.faCatchs faCatch","faCatch.speciesCode =:"+SPECIES_CODE));
-        filterMappings.put(SearchKey.QUNTITIES,new FilterDetails("a.faCatchs faCatch","faCatch.unitQuantity =:"+UNIT_QUANTITY));
-        filterMappings.put(SearchKey.MASTER,new FilterDetails("a.faReportDocument.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","cPerson.givenName =:"+CONTACT_PERSON_NAME));
+        filterMappings.put(Filters.FROM,new FilterDetails("a.faReportDocument.fluxReportDocument flux","flux.ownerFluxPartyName =:"+FROM_NAME));
+        filterMappings.put(Filters.PERIOD,new FilterDetails("a.delimitedPeriods dp","(( dp.startDate >= :"+OCCURENCE_START_DATE + " and dp.endDate <= :"+OCCURENCE_END_DATE+" ) OR a.occurence BETWEEN :"+OCCURENCE_START_DATE +" and  :"+OCCURENCE_END_DATE+" )"));
+        filterMappings.put(Filters.VESSEL_IDENTIFIES,new FilterDetails("a.faReportDocument.vesselTransportMeans vt","vt.name =:"+VESSEL_IDENTITY_NAME));
+        filterMappings.put(Filters.PURPOSE,new FilterDetails("a.faReportDocument.fluxReportDocument flux","flux.purposeCode =:"+PURPOSE_CODE));
+        filterMappings.put(Filters.REPORT_TYPE,new FilterDetails("a.faReportDocument fa","fa.typeCode =:"+REPORT_TYPE_CODE));
+        filterMappings.put(Filters.ACTIVITY_TYPE,new FilterDetails("FishingActivityEntity a","a.typeCode =:"+ACTIVITY_TYPE_CODE));
+        filterMappings.put(Filters.AREAS,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:"+AREA_ID+" )"));
+        filterMappings.put(Filters.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )"));
+        filterMappings.put(Filters.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode =:"+FISHING_GEAR));
+        filterMappings.put(Filters.SPECIES,new FilterDetails("a.faCatchs faCatch","faCatch.speciesCode =:"+SPECIES_CODE));
+        filterMappings.put(Filters.QUNTITIES,new FilterDetails("a.faCatchs faCatch","faCatch.unitQuantity =:"+UNIT_QUANTITY));
+        filterMappings.put(Filters.MASTER,new FilterDetails("a.faReportDocument.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","cPerson.givenName =:"+CONTACT_PERSON_NAME));
 
     }
 
-    public static Map<SearchKey, FilterDetails> getFilterMappings() {
+    public static Map<Filters, FilterDetails> getFilterMappings() {
         return filterMappings;
     }
 }
