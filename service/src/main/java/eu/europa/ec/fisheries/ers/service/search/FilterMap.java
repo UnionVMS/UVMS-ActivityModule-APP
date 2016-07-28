@@ -21,22 +21,22 @@ import java.util.Map;
  */
 public class FilterMap {
 
-    public static String FROM_NAME = "ownerName";
-    public static String OCCURENCE_START_DATE = "startDate";
-    public static String OCCURENCE_END_DATE = "endDate";
-    public static String VESSEL_IDENTITY_NAME = "vtName";
-    public static String PURPOSE_CODE = "purposeCode";
-    public static String REPORT_TYPE_CODE = "faReportTypeCode";
-    public static String ACTIVITY_TYPE_CODE = "activityTypecode";
-    public static String AREA_ID = "fluxAreaId";
-    public static String PORT_ID = "fluxPortId";
-    public static String FISHING_GEAR = "fishingGearType";
-    public static String SPECIES_CODE = "speciesCode";
-    public static String UNIT_QUANTITY = "unitQuantity";
-    public static String CONTACT_PERSON_NAME = "contactPersonName";
-    public static String VESSEL_TRANSPORT_TABLE_ALIAS = "a.faReportDocument.vesselTransportMeans vt";
-    public static String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
-    public static String REPORT_DOCUMENT_TABLE_ALIAS  = " a.faReportDocument fa ";
+    public static final String FROM_NAME = "ownerName";
+    public static final String OCCURENCE_START_DATE = "startDate";
+    public static final String OCCURENCE_END_DATE = "endDate";
+    public static final String VESSEL_IDENTITY_NAME = "vtName";
+    public static final String PURPOSE_CODE = "purposeCode";
+    public static final String REPORT_TYPE_CODE = "faReportTypeCode";
+    public static final String ACTIVITY_TYPE_CODE = "activityTypecode";
+    public static final String AREA_ID = "fluxAreaId";
+    public static final String PORT_ID = "fluxPortId";
+    public static final String FISHING_GEAR = "fishingGearType";
+    public static final String SPECIES_CODE = "speciesCode";
+    public static final String UNIT_QUANTITY = "unitQuantity";
+    public static final String CONTACT_PERSON_NAME = "contactPersonName";
+    public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "a.faReportDocument.vesselTransportMeans vt";
+    public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
+    public static final String REPORT_DOCUMENT_TABLE_ALIAS  = " a.faReportDocument fa ";
 
     private static Map<Filters,FilterDetails> filterMappings = new HashMap<Filters,FilterDetails>();
 

@@ -50,6 +50,8 @@ public class ActivityServiceBean implements ActivityService{
     }
 
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
+
+    @Override
     public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query){
 
         List<FishingActivityReportDTO> dtos = new ArrayList<FishingActivityReportDTO>();
@@ -62,6 +64,7 @@ public class ActivityServiceBean implements ActivityService{
        return dtos;
     }
 
+    @Override
     public List<FishingActivityReportDTO> getFishingActivityList(){
 
         List<FishingActivityEntity> fishingActivityList =fishingActivityDao.getFishingActivityList();

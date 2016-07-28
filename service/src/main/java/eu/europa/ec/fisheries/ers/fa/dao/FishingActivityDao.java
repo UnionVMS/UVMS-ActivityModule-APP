@@ -12,11 +12,10 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.ers.service.search.*;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,7 +107,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     private StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
 
         List<ListCriteria> criteriaList=query.getSearchCriteria();
-        if(criteriaList.size()==0)
+        if(criteriaList.isEmpty())
             throw new ServiceException("Fishing Activity Report Search Criteria is empty.");
 
         Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
@@ -156,7 +155,5 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return sql;
     }
 
-    private Session getSession() {
-        return em.unwrap(Session.class);
-    }
+
 }
