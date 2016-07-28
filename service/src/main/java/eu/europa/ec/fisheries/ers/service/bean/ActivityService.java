@@ -11,12 +11,16 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+
+import java.util.List;
 
 /**
  * Created by sanera on 29/06/2016.
  */
 
 public interface ActivityService {
-     void getFishingActivityListByQuery(FishingActivityQuery query);
-     void getFishingActivityList();
+     List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query);
+     List<FishingActivityReportDTO> getFishingActivityList();
+
 }

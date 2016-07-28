@@ -12,7 +12,9 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,50 +40,35 @@ public class ActivityServiceBean implements ActivityService{
 
     private FishingActivityDao fishingActivityDao;
 
+
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
     @PostConstruct
     public void init() {
-        LOG.info("inside  init creating FishingActivityDao");
         fishingActivityDao = new FishingActivityDao(em);
     }
 
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
-    public void getFishingActivityListByQuery(FishingActivityQuery query){
-        LOG.info("inside  getFishingActivityDao:");
+    public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query){
+
+        List<FishingActivityReportDTO> dtos = new ArrayList<FishingActivityReportDTO>();
         try {
             List<FishingActivityEntity> activityList = fishingActivityDao.getFishingActivityListByQuery(query);
-            LOG.info("activityList size :"+activityList.size());
-            for(FishingActivityEntity entity: activityList){
-                entity.getFaReportDocument();
-                LOG.info("entity :"+entity);
-            }
-
-            LOG.info("show all fishing Activities:");
-
+            dtos = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList);
         } catch (ServiceException e) {
             LOG.error("Exception when trying to get Fishing Activity Report data.",e);
         }
-
+       return dtos;
     }
 
-    public void getFishingActivityList(){
+    public List<FishingActivityReportDTO> getFishingActivityList(){
 
         List<FishingActivityEntity> fishingActivityList =fishingActivityDao.getFishingActivityList();
+        List<FishingActivityReportDTO> dtos = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(fishingActivityList);
 
-        for(FishingActivityEntity entity: fishingActivityList){
-            LOG.info("entity:"+entity);
-            LOG.info("FaReportDocument:"+entity.getFaReportDocument());
-            LOG.info("DelimitedPeriods:"+((entity.getDelimitedPeriods()!=null)?entity.getDelimitedPeriods().size() : null));
-            LOG.info("FaCatchs:"+((entity.getFaCatchs()!=null)?entity.getFaCatchs().size() : null));
-            LOG.info("FishingGears:"+((entity.getFishingGears()!=null)?entity.getFishingGears().size() : null));
-            LOG.info("FluxLocations:"+((entity.getFluxLocations()!=null)?entity.getFluxLocations().size() : null));
-
-           LOG.info("----------------------------------------------------");
-        }
+        return dtos;
     }
-
 
 
 }

@@ -51,7 +51,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
-        StringBuffer sql = new  StringBuffer("SELECT DISTINCT a from FishingActivityEntity a ");
+        StringBuilder sql = new  StringBuilder("SELECT DISTINCT a  from FishingActivityEntity a order by a.faReportDocument.id");
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
         if(pagination!=null) {
             typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
@@ -63,8 +63,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
-        Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
-        StringBuffer sql =createSQL(query);
+
+        StringBuilder sql =createSQL(query);
         LOG.info("sql :"+sql);
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
 
@@ -105,14 +105,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     }
 
-    private StringBuffer createSQL(FishingActivityQuery query) throws ServiceException {
+    private StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
 
         List<ListCriteria> criteriaList=query.getSearchCriteria();
         if(criteriaList.size()==0)
             throw new ServiceException("Fishing Activity Report Search Criteria is empty.");
 
         Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
-        StringBuffer sql = new  StringBuffer("SELECT DISTINCT a from FishingActivityEntity a ");
+        StringBuilder sql = new  StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ");
 
         // Create join part of SQL query
        for(ListCriteria criteria :criteriaList){
@@ -151,6 +151,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 }
             }
 
+            sql.append(" order by a.faReportDocument.id ");
 
         return sql;
     }
