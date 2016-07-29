@@ -10,22 +10,24 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.service.bean;
 
-import java.util.List;
-import java.util.Map;
+import eu.europa.ec.fisheries.mdr.dao.MasterDataRegistryDao;
+import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
+import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
+import eu.europa.ec.fisheries.mdr.service.MdrRepository;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import lombok.extern.slf4j.Slf4j;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import eu.europa.ec.fisheries.mdr.dao.MasterDataRegistryDao;
-import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
-import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
+import java.util.List;
+import java.util.Map;
 
 @Stateless
+@Slf4j
 public class MdrRepositoryBean implements MdrRepository {
 	
 	@PersistenceContext(unitName = "activityPU")
@@ -56,13 +58,12 @@ public class MdrRepositoryBean implements MdrRepository {
 	
 	@Override
 	public void updateMdrEntity(ResponseType response){
-		List<MasterDataRegistry> mdrEntityRows = MdrEntityMapper.mappJAXBObjectToMasterDataType(response);
+		List<MasterDataRegistry> mdrEntityRows = MdrEntityMapper.mapJAXBObjectToMasterDataType(response);
 		try {
 			bulkOperationsDao.singleEntityBulkDeleteAndInsert(mdrEntityRows);
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			log.error("Transaction rolled back! Couldn't persist mdr Entity : "+e.getMessage(),e);
 		}
 	}
-
 
 }

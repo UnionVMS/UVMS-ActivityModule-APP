@@ -46,7 +46,7 @@ public class MdrEntityMapperTest {
 	@Test
 	@SneakyThrows
 	public void testLoadingOfTheClassesInTheCache() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
-		List<MasterDataRegistry> mdrEntity = MdrEntityMapper.mappJAXBObjectToMasterDataType(responseType);
+		List<MasterDataRegistry> mdrEntity = MdrEntityMapper.mapJAXBObjectToMasterDataType(responseType);
 		assertNotNull(mdrEntity);
 		assertEquals(2, mdrEntity.size());
 	}

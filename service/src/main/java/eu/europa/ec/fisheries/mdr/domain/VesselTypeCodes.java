@@ -10,20 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-
-/***
- */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mdr_vessel_type_codes")
@@ -37,7 +34,6 @@ public class VesselTypeCodes extends ExtendedMasterDataRegistry {
 	public String getVesselType() {
 		return vesselType;
 	}
-
 	public void setVesselType(String vesselType) {
 		this.vesselType = vesselType;
 	}
@@ -46,18 +42,18 @@ public class VesselTypeCodes extends ExtendedMasterDataRegistry {
 	public String getAcronym() {
 		return "VESSEL_TYPE";
 	}
-	
+
 	@Override
-	public void populate(List<FieldType> fields) {
-		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION, fieldName)){
-				this.setDescription(fieldValue);
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		super.populate(fields);
+		String fieldName;
+		for (FieldType field : fields) {
+			fieldName = field.getFieldName().getValue();
+			if (StringUtils.equalsIgnoreCase("vesselType", fieldName)) {
+				this.setVesselType(field.getFieldValue().getValue());
+			} else {
+				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}
 		}
-		
 	}
 }

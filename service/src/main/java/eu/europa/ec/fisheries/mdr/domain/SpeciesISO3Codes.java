@@ -10,20 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-
-/***
- */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mdr_species_iso3_codes")
@@ -31,6 +28,7 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 @ToString(callSuper = true)
 public class SpeciesISO3Codes extends MasterDataRegistry {
 
+	@Column(name = "code")
 	private String code;
 	
 	@Column(name = "scientific_name")
@@ -57,63 +55,48 @@ public class SpeciesISO3Codes extends MasterDataRegistry {
 	public String getCode() {
 		return code;
 	}
-
 	public void setCode(String code) {
 		this.code = code;
 	}
-
 	public String getScientificName() {
 		return scientificName;
 	}
-
 	public void setScientificName(String scientificName) {
 		this.scientificName = scientificName;
 	}
-
 	public String getEnglishName() {
 		return englishName;
 	}
-
 	public void setEnglishName(String englishName) {
 		this.englishName = englishName;
 	}
-
 	public String getFrenchName() {
 		return frenchName;
 	}
-
 	public void setFrenchName(String frenchName) {
 		this.frenchName = frenchName;
 	}
-
 	public String getSpanishName() {
 		return spanishName;
 	}
-
 	public void setSpanishName(String spanishName) {
 		this.spanishName = spanishName;
 	}
-
 	public String getAuthor() {
 		return author;
 	}
-
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-
 	public String getFamily() {
 		return family;
 	}
-
 	public void setFamily(String family) {
 		this.family = family;
 	}
-
-	public String getsetIsoOrder() {
+	public String getIsoOrder() {
 		return isoOrder;
 	}
-
 	public void setIsoOrder(String order) {
 		this.isoOrder = order;
 	}
@@ -122,22 +105,32 @@ public class SpeciesISO3Codes extends MasterDataRegistry {
 	public String getAcronym() {
 		return "FAO_SPECIES";
 	}
-	
+
 	@Override
-	public void populate(List<FieldType> fields) {
-		for(FieldType field : fields){
-			
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			
-			if(StringUtils.equalsIgnoreCase(fieldName, "author")){
-				this.setAuthor(fieldValue);
-			
-			} else if(StringUtils.equalsIgnoreCase(fieldName, "")){
-				
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		String fieldName;
+		for (FieldType field : fields) {
+			fieldName = field.getFieldName().getValue();
+			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
+				this.setCode(field.getFieldValue().getValue());
+			} else if (StringUtils.equalsIgnoreCase("scientificName", fieldName)) {
+				this.setScientificName(field.getFieldValue().getValue());
+			} else if (StringUtils.equalsIgnoreCase("englishName", fieldName)) {
+				this.setEnglishName(field.getFieldValue().getValue());
+			} else if (StringUtils.equalsIgnoreCase("frenchName", fieldName)) {
+				this.setFrenchName(field.getFieldValue().getValue());
+			} else if (StringUtils.equalsIgnoreCase("spanishName", fieldName)) {
+				this.setSpanishName(field.getFieldValue().getValue());
+			} else if (StringUtils.equalsIgnoreCase("author", fieldName)) {
+				this.setAuthor(field.getFieldValue().getValue());
+			} else if (StringUtils.equalsIgnoreCase("family", fieldName)) {
+				this.setFamily(field.getFieldValue().getValue());
+			} else if (StringUtils.equalsIgnoreCase("isoOrder", fieldName)) {
+				this.setIsoOrder(field.getFieldValue().getValue());
+			} else {
+				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}
-		}	
+		}
 	}
-	
-	
+
 }

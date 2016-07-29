@@ -10,9 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import javax.persistence.EntityManager;
-
 import eu.europa.ec.fisheries.mdr.domain.ActionType;
+
+import javax.persistence.EntityManager;
 
 public class ActionTypeDao extends AbstractMdrDao<ActionType> {
 
@@ -26,6 +26,5 @@ public class ActionTypeDao extends AbstractMdrDao<ActionType> {
     public EntityManager getEntityManager() {
         return em;
     }
-    
-    
+
 }

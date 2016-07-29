@@ -10,19 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import org.apache.commons.lang3.StringUtils;
-
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
-/***
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.List;
+
 @Entity
 @Table(name = "mdr_fish_presentation_codes")
 @EqualsAndHashCode(callSuper = true)
@@ -30,13 +28,13 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 public class FishPresentationCodes extends ExtendedMasterDataRegistry {
 
 	private static final long serialVersionUID = 1L; 
-	
+
+	@Column(name = "presentation")
 	private String presentation;
 
 	public String getPresentation() {
 		return presentation;
 	}
-
 	public void setPresentation(String presentation) {
 		this.presentation = presentation;
 	}
@@ -45,19 +43,19 @@ public class FishPresentationCodes extends ExtendedMasterDataRegistry {
 	public String getAcronym() {
 		return "FISH_PRESENTATION";
 	}
-	
+
 	@Override
-	public void populate(List<FieldType> fields) {
-		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION, fieldName)){
-				this.setDescription(fieldValue);
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		super.populate(fields);
+		String fieldName;
+		for (FieldType field : fields) {
+			fieldName = field.getFieldName().getValue();
+			if (StringUtils.equalsIgnoreCase("presentation", fieldName)) {
+				this.setPresentation(field.getFieldValue().getValue());
+			} else {
+				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}
 		}
-		
 	}
 
 }

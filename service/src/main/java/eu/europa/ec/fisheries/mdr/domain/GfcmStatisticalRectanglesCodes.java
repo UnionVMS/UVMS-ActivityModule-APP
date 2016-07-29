@@ -10,22 +10,19 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-
-/***
- */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mdr_gfcm_statistical_rectangles_codes")
@@ -42,15 +39,12 @@ public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 	public String getCode() {
 		return code;
 	}
-
 	public void setCode(String code) {
 		this.code = code;
 	}
-
 	public RectangleCoordinates getRectangle() {
 		return rectangle;
 	}
-
 	public void setRectangle(RectangleCoordinates rectangle) {
 		this.rectangle = rectangle;
 	}
@@ -59,15 +53,19 @@ public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 	public String getAcronym() {
 		return "GFCM_STAT_RECTANGLE";
 	}
-	
+
+	// TODO ; check the response from flux for the RectangleCoordinates!! and change populate accordingly
 	@Override
-	public void populate(List<FieldType> fields) {
-		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(fieldName, "")){
-			} else if(StringUtils.equalsIgnoreCase(fieldName, "")){
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		String fieldName;
+		for (FieldType field : fields) {
+			fieldName = field.getFieldName().getValue();
+			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
+				this.setCode(field.getFieldValue().getValue());
+			} else {
+				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}
-		}	
+		}
 	}
+
 }

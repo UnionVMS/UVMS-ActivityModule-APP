@@ -13,10 +13,15 @@ package eu.europa.ec.fisheries.mdr.dao;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
+import eu.europa.ec.fisheries.mdr.domain.ActionType;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Before;
+import org.junit.Test;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ActionTypeDaoTest extends BaseActivityDaoTest {
 	
@@ -31,27 +36,20 @@ public class ActionTypeDaoTest extends BaseActivityDaoTest {
         dbSetupTracker.launchIfNecessary(dbSetup);
     }
 
-  /*  @Test
+    @Test
     @SneakyThrows
     public void testFindActionTypeById(){
-
         dbSetupTracker.skipNextLaunch();
-
         ActionType entity = null;
         try {
             entity = dao.findEntityById(ActionType.class, 1L);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-
         assertNotNull(entity);
         assertEquals("2014-12-12 00:00:00.0", entity.getAudit().getCreatedOn().toString());
         assertEquals(true, entity.getRefreshable().booleanValue());
-//        assertEquals("NAFO 3N, 3O = FAO 21.3.N + 21.3.O", entity.getAreaDescription());
-//        assertEquals("N3NO", entity.getAreaCode());
-//        assertEquals("ANG", entity.getSpeciesCode());
-//        assertEquals("Lophius americanus", entity.getSpeciesName());
-    }*/
+    }
     
     /*  @Test
     @SneakyThrows

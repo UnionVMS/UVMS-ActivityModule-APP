@@ -10,20 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-
-/***
- */
 @Entity
 @Table(name = "mdr_ers_gear_type_codes")
 @EqualsAndHashCode(callSuper = true)
@@ -40,35 +37,34 @@ public class ErsGearTypeCodes extends ExtendedMasterDataRegistry {
 	public String getGroupName() {
 		return groupName;
 	}
-	
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+	public String getSubGroupName() {
+		return subGroupName;
+	}
+	public void setSubGroupName(String subGroupName) {
+		this.subGroupName = subGroupName;
+	}
+
 	@Override
 	public String getAcronym() {
 		return "GEAR_TYPE";
 	}
 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
-	public String getSubGroupName() {
-		return subGroupName;
-	}
-
-	public void setSubGroupName(String subGroupName) {
-		this.subGroupName = subGroupName;
-	}
-	
 	@Override
-	public void populate(List<FieldType> fields) {
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		super.populate(fields);
+		String fieldName;
 		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION, fieldName)){
-				this.setDescription(fieldValue);
+			fieldName  = field.getFieldName().getValue();
+			if(StringUtils.equalsIgnoreCase("groupName", fieldName)){
+				this.setGroupName(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("subGroupName", fieldName)){
+				this.setSubGroupName(field.getFieldValue().getValue());
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
 			}
 		}
-		
 	}
 }

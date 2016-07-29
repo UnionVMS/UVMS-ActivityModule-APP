@@ -10,54 +10,50 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-
-/***
- */
 @Entity
 @Table(name = "mdr_effort_zones_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class EffortZonesCodes extends ExtendedMasterDataRegistry {
-	private static final long serialVersionUID = 1L;
-	
-	@Column(name = "legal_reference")
-	private String legalReference;
+    private static final long serialVersionUID = 1L;
 
-	public String getLegalReference() {
-		return legalReference;
-	}
+    @Column(name = "legal_reference")
+    private String legalReference;
 
-	public void setLegalReference(String legalReference) {
-		this.legalReference = legalReference;
-	}
-	
-	@Override
-	public String getAcronym() {
-		return "EFFORT_ZONE";
-	}
-	
-	@Override
-	public void populate(List<FieldType> fields) {
-		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION, fieldName)){
-				this.setDescription(fieldValue);
-			}
-		}
-		
-	}
+    public String getLegalReference() {
+        return legalReference;
+    }
+    public void setLegalReference(String legalReference) {
+        this.legalReference = legalReference;
+    }
+
+    @Override
+    public String getAcronym() {
+        return "EFFORT_ZONE";
+    }
+
+    @Override
+    public void populate(List<FieldType> fields) throws FieldNotMappedException {
+        super.populate(fields);
+        String fieldName;
+        for(FieldType field : fields){
+            fieldName  = field.getFieldName().getValue();
+            if(StringUtils.equalsIgnoreCase("legalReference", fieldName)){
+                this.setLegalReference(field.getFieldValue().getValue());
+            }  else {
+                throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
+            }
+        }
+    }
 }

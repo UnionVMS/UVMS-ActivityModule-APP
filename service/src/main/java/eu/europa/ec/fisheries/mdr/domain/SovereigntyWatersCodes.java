@@ -10,44 +10,50 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import org.apache.commons.lang3.StringUtils;
-
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
-/***
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.List;
+
 @Entity
 @Table(name = "mdr_sovereignty_waters_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)	
 public class SovereigntyWatersCodes extends ExtendedMasterDataRegistry {
 	private static final long serialVersionUID = 1L;
-	// TODO : See the excel for this class; further implementation is needed;
 
-	
+	@Column(name = "iso3_code")
+	private String iso3Code;
+
+	public String getIso3Code() {
+		return iso3Code;
+	}
+	public void setIso3Code(String iso3Code) {
+		this.iso3Code = iso3Code;
+	}
+
 	@Override
 	public String getAcronym() {
 		return "CR_SOV_WATERS";
 	}
-	
+
 	@Override
-	public void populate(List<FieldType> fields) {
-		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION, fieldName)){
-				this.setDescription(fieldValue);
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		super.populate(fields);
+		String fieldName;
+		for (FieldType field : fields) {
+			fieldName = field.getFieldName().getValue();
+			if (StringUtils.equalsIgnoreCase("iso3Code", fieldName)) {
+				this.setIso3Code(field.getFieldValue().getValue());
+			} else {
+				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}
 		}
-		
 	}
 }

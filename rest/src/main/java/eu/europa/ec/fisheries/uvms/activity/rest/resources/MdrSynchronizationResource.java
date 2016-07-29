@@ -36,7 +36,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	private MdrSynchronizationService syncBean;
 
     /**
-     * Resource fro triggering manual MDR synchronization.
+     * Resource for triggering manual MDR synchronization.
      *
      * @return
      */

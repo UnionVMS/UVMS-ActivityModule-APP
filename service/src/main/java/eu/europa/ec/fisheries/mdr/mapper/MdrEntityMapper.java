@@ -9,14 +9,15 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 package eu.europa.ec.fisheries.mdr.mapper;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.extern.slf4j.Slf4j;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Mapper class that can be used to map entities from MDR
@@ -26,7 +27,7 @@ public class MdrEntityMapper {
 	
 	private static MasterDataRegistryEntityCacheFactory mdrEntityFactory = MasterDataRegistryEntityCacheFactory.getInstance();
 	
-	// This class isn't supposed to have instances.
+	// This class isn't supposed to have instances (singleton).
 	private MdrEntityMapper(){}
 	
 	
@@ -36,7 +37,7 @@ public class MdrEntityMapper {
 	 * @param response
 	 * @return
 	 */
-	public static List<MasterDataRegistry> mappJAXBObjectToMasterDataType(ResponseType response){
+	public static List<MasterDataRegistry> mapJAXBObjectToMasterDataType(ResponseType response){
 		return mapJaxbToMDRType(response.getMDRCodeList().getCodeElements(), response.getMDRCodeList().getObjAcronym().getValue());
 	}
 
@@ -57,9 +58,10 @@ public class MdrEntityMapper {
 				entity = (MasterDataRegistry) mdrEntityFactory.getNewInstanceForEntity(acronym);
 				entity.populateFromJAXBFields(actualJaxbElement);
 			} catch (NullPointerException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				log.error("Exception while attempting to map JAXBObject to MDR Entity. (MdrEntityMapper class)");
-				e.printStackTrace();
-			}	
+				log.error("Exception while attempting to map JAXBObject to MDR Entity. (MdrEntityMapper class)", e);
+			} catch (FieldNotMappedException e) {
+				log.error("Exception while attempting to map field to MDR Entity. (MdrEntityMapper class)", e);
+			}
 			entityList.add(entity);
 		}
 		return entityList;

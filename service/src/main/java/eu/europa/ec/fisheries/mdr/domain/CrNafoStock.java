@@ -10,17 +10,15 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -41,38 +39,29 @@ public class CrNafoStock extends MasterDataRegistry {
     @Column(name = "area_description")
     private String areaDescription;
 
-    public CrNafoStock() {
-        // wyh JPA why
-    }
+    public CrNafoStock() {}
 
     public String getSpeciesCode() {
         return speciesCode;
     }
-
     public void setSpeciesCode(String speciesCode) {
         this.speciesCode = speciesCode;
     }
-
     public String getSpeciesName() {
         return speciesName;
     }
-
     public void setSpeciesName(String speciesName) {
         this.speciesName = speciesName;
     }
-
     public String getAreaCode() {
         return areaCode;
     }
-
     public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
     }
-
     public String getAreaDescription() {
         return areaDescription;
     }
-
     public void setAreaDescription(String areaDescription) {
         this.areaDescription = areaDescription;
     }
@@ -81,15 +70,24 @@ public class CrNafoStock extends MasterDataRegistry {
 	public String getAcronym() {
 		return "NAFO_STOCK";
 	}
-	
-	@Override
-	public void populate(List<FieldType> fields) {
-		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(fieldName, "")){
-			} else if(StringUtils.equalsIgnoreCase(fieldName, "")){
-			}
-		}	
-	}
+
+    @Override
+    public void populate(List<FieldType> fields) throws FieldNotMappedException {
+        String fieldName;
+        for(FieldType field : fields){
+            fieldName  = field.getFieldName().getValue();
+            if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("speciesCode", fieldName)){
+                this.setSpeciesCode(field.getFieldValue().getValue());
+            } else if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("speciesName", fieldName)){
+                this.setSpeciesName(field.getFieldValue().getValue());
+            } else if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("areaCode", fieldName)){
+                this.setAreaCode(field.getFieldValue().getValue());
+            } else if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("areaDescription", fieldName)){
+                this.setAreaDescription(field.getFieldValue().getValue());
+            }  else {
+                throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
+            }
+        }
+    }
+
 }

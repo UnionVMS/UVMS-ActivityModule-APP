@@ -10,14 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 @Entity
 @Table(name = "mdr_cr_landing_indicator_codes")
@@ -30,12 +27,6 @@ public class CrLandingIndicatorCodes extends ExtendedMasterDataRegistry {
 	@Override
 	public String getAcronym() {		
 		return "CR_LAND_IND";
-	}
-
-	@Override
-	public void populate(List<FieldType> fields) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

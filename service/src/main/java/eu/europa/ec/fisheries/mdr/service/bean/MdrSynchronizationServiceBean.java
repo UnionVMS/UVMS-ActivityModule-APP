@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
+import eu.europa.ec.fisheries.mdr.service.MdrRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
@@ -84,19 +85,24 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	}
 
 	/**
-	 * Method for scheduling the MDR synchronization job.
+	 * Method for scheduling the MDR synchronization job manually.
 	 *
 	 * @params day,hour,minutes,seconds
 	 */
 	public void scheduleMdrSychronization(){
 		log.info("\n\t---> SCHEDULED JOB FOR MDR ENTITIES SYNCHRONIZATION HAS BEEN SET! \n");
 		ScheduleExpression exp  = new ScheduleExpression();
-		exp.hour("*")
+		exp.dayOfWeek("*")
+				.hour("*")
 				.minute("*")
 				.second("*/10");
 		service.createCalendarTimer(exp);
 	}
 
+	/**
+	 * Method that will be called when a timer has been set for this EJB.
+	 *
+	 */
 	@Timeout
 	public void timeOut(){
 		log.info("\n\t---> STARTING SCHEDULED SYNCHRONIZATION OF MDR ENTITIES! \n");
@@ -104,12 +110,24 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	}
 
 	/**
-	 * Extracts all the available acronyms and for each of those send an update request message.
+	 * Extracts all the available acronyms and for each of those sends an update request message to the next module.
 	 *
 	 */
 	private boolean extractAcronymsAndUpdateMdr() {
 		List<String> acronymsList = getAvailableMdrAcronyms();
+		boolean error             = updateMdrEntities(acronymsList);
+		log.info("\n\t\t---> SYNCHRONIZATION OF MDR ENTITIES FINISHED!\n\n");
+		return error;
+	}
 
+	/**
+	 * Updates the given list of mdr entities.
+	 * The list given as input contains the acronyms.
+	 *
+	 * @param acronymsList
+	 * @return error
+     */
+	private boolean updateMdrEntities(List<String> acronymsList) {
 		// For each Acronym send a request object towards Exchange module.
 		boolean error = false;
 		if (CollectionUtils.isNotEmpty(acronymsList)) {
@@ -129,10 +147,15 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		} else {
 			error = true;
 		}
-		log.info("\n\t\t---> SYNCHRONIZATION OF MDR ENTITIES FINISHED <<<---\n\n");
 		return error;
 	}
 
+	/**
+	 *
+	 * Method that extracts all the available acronyms.
+	 *
+	 * @return acronymsList
+     */
 	@Override
 	public List<String> getAvailableMdrAcronyms() {
 		List<String> acronymsList = null;
@@ -170,8 +193,6 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 			log.error(e.getMessage());
 		}
 	}
-	
-	
 
 	private String mockAndMarshallResponse() throws ExchangeModelMarshallException {
 

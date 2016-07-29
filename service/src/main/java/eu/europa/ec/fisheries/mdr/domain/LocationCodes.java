@@ -10,20 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-
-/***
- */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mdr_location_codes")
@@ -33,9 +30,11 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 
 	@Column(name = "iso3_country_code")
 	private String iso3CountryCode;
-	
+
+	@Column(name = "latitude")
 	private Double latitude;
-	
+
+	@Column(name = "longitude")
 	private Double longitude;
 	
 	@Column(name = "fishing_port")
@@ -49,7 +48,8 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 	
 	@Column(name = "unlo_code")
 	private String unloCode ;
-	
+
+	@Column(name = "coordinates")
 	private String coordinates ;
 	
 	@Column(name = "un_function_code")
@@ -57,13 +57,17 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 	
 	@Column(name = "unknown_function")
 	private Boolean unknownFunction;
-	
+
+	@Column(name = "port")
 	private Boolean port;
-	
+
+	@Column(name = "rail")
 	private Boolean rail;
-	
+
+	@Column(name = "road")
 	private Boolean road;
-	
+
+	@Column(name = "airport")
 	private Boolean airport;
 	
 	@Column(name = "postal_exchange_office")
@@ -193,19 +197,53 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 	public String getAcronym() {
 		return "LOCATION";
 	}
-	
+
 	@Override
-	public void populate(List<FieldType> fields) {
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		super.populate(fields);
+		String fieldName;
 		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION, fieldName)){
-				this.setDescription(fieldValue);
+			fieldName  = field.getFieldName().getValue();
+			if(StringUtils.equalsIgnoreCase("iso3CountryCode", fieldName)){
+				this.setIso3CountryCode(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("latitude", fieldName)){
+				this.setLatitude(Double.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("longitude", fieldName)){
+				this.setLongitude(Double.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("fishingPort", fieldName)){
+				this.setFishingPort(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("landingPlace", fieldName)){
+				this.setLandingPlace(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("commercialPort", fieldName)){
+				this.setCommercialPort(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("unloCode", fieldName)){
+				this.setUnloCode(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("coordinates", fieldName)){
+				this.setCoordinates(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("unFunctionCode", fieldName)){
+				this.setUnFunctionCode(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("unknownFunction", fieldName)){
+				this.setUnknownFunction(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("port", fieldName)){
+				this.setPort(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("rail", fieldName)){
+				this.setRail(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("road", fieldName)){
+				this.setRoad(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("airport", fieldName)){
+				this.setAirport(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("postalExchangeOffice", fieldName)){
+				this.setPostalExchangeOffice(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("multimodalFunctions", fieldName)){
+				this.setMultimodalFunctions(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("fixedTransportFunctions", fieldName)){
+				this.setFixedTransportFunctions(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else if(StringUtils.equalsIgnoreCase("borderCrossingFunction", fieldName)){
+				this.setBorderCrossingFunction(Boolean.valueOf(field.getFieldValue().getValue()));
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
 			}
 		}
-		
 	}
 	
 	

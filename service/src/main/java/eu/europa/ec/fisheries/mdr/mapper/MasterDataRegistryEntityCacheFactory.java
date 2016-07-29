@@ -10,21 +10,19 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.mapper;
 
+import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.util.ClassFinder;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+
+import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
-import eu.europa.ec.fisheries.mdr.util.ClassFinder;
-import lombok.extern.slf4j.Slf4j;
 
 /***
  * This class is designed to perform a scanning of the MDR Entities Package and build a cache to furtherly 
@@ -40,7 +38,15 @@ public class MasterDataRegistryEntityCacheFactory {
 	private static MasterDataRegistryEntityCacheFactory instance;
 	private static final String METHOD_ACRONYM   = "getAcronym";
 	private static final String ENTITIES_PACKAGE = "eu.europa.ec.fisheries.mdr.domain";
-	
+
+	static {
+		try{
+			initializeCache();
+		} catch (Exception ex){
+			log.error("Exception thrown while trying to initialize MasterDataRegistryEntityCacheFactory Entity Cache!");
+		}
+	}
+
 	@PostConstruct
 	private void initializeClass(){
 		instance = new MasterDataRegistryEntityCacheFactory();
@@ -87,23 +93,23 @@ public class MasterDataRegistryEntityCacheFactory {
 	
 	private static void initializeCache() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
-		List<Class<? extends MasterDataRegistry>> entitiesList = null;
-		
-		try {
-			entitiesList = ClassFinder.extractEntityInstancesFromPackage();
-		} catch(Exception ex){
-			log.error("Couldn't extract entities from package "+ENTITIES_PACKAGE+" \n The following exception was thrown : \n"+ex.getMessage());
-		}
-		
-		acronymsCache = new HashMap<>();
-		acronymsList  = new ArrayList<String>();
-		for (Class<?> aClass : entitiesList) {
-			if(!Modifier.isAbstract(aClass.getModifiers())){
-				String classAcronym     = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
-				Object classReference =  aClass.newInstance();
-				acronymsCache.put(classAcronym, classReference);
-				acronymsList.add(classAcronym);
-				log.info("Creating cache instance for : " + aClass.getCanonicalName());
+		if(MapUtils.isEmpty(acronymsCache)){
+			List<Class<? extends MasterDataRegistry>> entitiesList = null;
+			try {
+				entitiesList = ClassFinder.extractEntityInstancesFromPackage();
+			} catch(Exception ex){
+				log.error("Couldn't extract entities from package "+ENTITIES_PACKAGE+" \n The following exception was thrown : \n"+ex.getMessage());
+			}
+			acronymsCache = new HashMap<>();
+			acronymsList  = new ArrayList<String>();
+			for (Class<?> aClass : entitiesList) {
+				if(!Modifier.isAbstract(aClass.getModifiers())){
+					String classAcronym     = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
+					Object classReference =  aClass.newInstance();
+					acronymsCache.put(classAcronym, classReference);
+					acronymsList.add(classAcronym);
+					log.info("Creating cache instance for : " + aClass.getCanonicalName());
+				}
 			}
 		}
 	}
@@ -128,4 +134,11 @@ public class MasterDataRegistryEntityCacheFactory {
 		return acronymsList;
 	}
 
+	public static void initialize() {
+		try {
+			initializeCache();
+		} catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
+			log.error("Error while trying to initialize MasterDataRegistryEntityCacheFactory.",ex);
+		}
+	}
 }

@@ -10,20 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import java.util.List;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
-
-/***
- */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mdr_territory_and_currency_iso_codes")
@@ -35,7 +32,7 @@ public class TerritoryAndCurrencyISOCodes extends MasterDataRegistry {
 	private String iso3Code;
 	
 	@Column(name = "iso4_code")
-	private String iso2Code;
+	private String iso4Code;
 	
 	@Column(name = "territory_name")
 	private String territoryName;
@@ -49,39 +46,30 @@ public class TerritoryAndCurrencyISOCodes extends MasterDataRegistry {
 	public String getIso3Code() {
 		return iso3Code;
 	}
-
 	public void setIso3Code(String iso3Code) {
 		this.iso3Code = iso3Code;
 	}
-
-	public String getIso2Code() {
-		return iso2Code;
+	public String getIso4Code() {
+		return iso4Code;
 	}
-
-	public void setIso2Code(String iso2Code) {
-		this.iso2Code = iso2Code;
+	public void setIso4Code(String iso4Code) {
+		this.iso4Code = iso4Code;
 	}
-
 	public String getTerritoryName() {
 		return territoryName;
 	}
-
 	public void setTerritoryName(String territoryName) {
 		this.territoryName = territoryName;
 	}
-
 	public String getCurrencyCode() {
 		return currencyCode;
 	}
-
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
 	}
-
 	public String getCurrencyDefinition() {
 		return currencyDefinition;
 	}
-
 	public void setCurrencyDefinition(String currencyDefinition) {
 		this.currencyDefinition = currencyDefinition;
 	}
@@ -90,16 +78,26 @@ public class TerritoryAndCurrencyISOCodes extends MasterDataRegistry {
 	public String getAcronym() {
 		return "TERRITORY_CURR";
 	}
-	
+
 	@Override
-	public void populate(List<FieldType> fields) {
+	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+		String fieldName;
 		for(FieldType field : fields){
-			String fieldName  = field.getFieldName().getValue();
-			String fieldValue = field.getFieldValue().getValue();
-			if(StringUtils.equalsIgnoreCase(fieldName, "")){
-			} else if(StringUtils.equalsIgnoreCase(fieldName, "")){
+			fieldName  = field.getFieldName().getValue();
+			if(StringUtils.equalsIgnoreCase("iso3Code", fieldName)){
+				this.setIso3Code(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("iso4Code", fieldName)){
+				this.setIso4Code(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("territoryName", fieldName)){
+				this.setTerritoryName(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("currencyCode", fieldName)){
+				this.setCurrencyCode(field.getFieldValue().getValue());
+			} else if(StringUtils.equalsIgnoreCase("currencyDefinition", fieldName)){
+				this.setCurrencyDefinition(field.getFieldValue().getValue());
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
 			}
-		}	
+		}
 	}
 	
 }
