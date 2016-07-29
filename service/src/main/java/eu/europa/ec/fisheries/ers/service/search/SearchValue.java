@@ -26,6 +26,10 @@ public class SearchValue {
         this.parameterValue = parameterValue;
     }
 
+    public SearchValue(){
+
+    }
+
     public String getParameterName() {
         return parameterName;
     }
@@ -41,4 +45,6 @@ public class SearchValue {
     public void setParameterValue(String parameterValue) {
         this.parameterValue = parameterValue;
     }
+
+
 }

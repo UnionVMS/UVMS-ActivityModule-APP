@@ -50,7 +50,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
-        StringBuilder sql = new  StringBuilder("SELECT DISTINCT a  from FishingActivityEntity a order by a.faReportDocument.id");
+       StringBuilder sql = new  StringBuilder("SELECT DISTINCT a  from FishingActivityEntity a order by a.faReportDocument.id asc");
+
+
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
         if(pagination!=null) {
             typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
@@ -150,7 +152,12 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 }
             }
 
-            sql.append(" order by a.faReportDocument.id ");
+        SortKey sort=   query.getSortKey();
+        if(sort!=null){
+            sql.append(" order by " +FilterMap.getFilterSortMappings().get(sort.getField()) + " "+sort.getOrder());
+        }else {
+            sql.append(" order by a.faReportDocument.id ASC ");
+        }
 
         return sql;
     }

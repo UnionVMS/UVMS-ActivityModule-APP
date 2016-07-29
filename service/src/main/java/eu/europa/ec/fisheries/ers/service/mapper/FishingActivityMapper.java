@@ -84,6 +84,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "uniqueId", expression = "java(getUniqueId(entity))"),
             @Mapping(target = "from", expression = "java(getFrom(entity))"),
+            @Mapping(source = "occurence", target = "occurence"),
             @Mapping(target = "vesselTransportMeansName", expression = "java(getVesselTransportMeansName(entity))"),
             @Mapping(target = "vesselTransportMeansIdList", expression = "java(getVesselTransportMeansId(entity))"),
             @Mapping(target = "purposeCode", expression = "java(getPurposeCode(entity))"),
@@ -226,7 +227,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
          for (FluxLocationEntity location: fluxLocations){
            if(locationType.equalsIgnoreCase(location.getTypeCode())) {
-               areas.add(location.getFluxLocationIdentifier());
+               areas.add(location.getTypeCodeListId());
            }
         }
         return areas;

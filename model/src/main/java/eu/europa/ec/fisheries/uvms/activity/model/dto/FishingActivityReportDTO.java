@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ public class FishingActivityReportDTO  implements Serializable  {
 
     private String uniqueId;
     private String from;
+    private Date occurence;
     private String vesselTransportMeansName;
     private List<String> vesselTransportMeansIdList;
     private String purposeCode;
@@ -39,7 +41,7 @@ public class FishingActivityReportDTO  implements Serializable  {
 
     }
 
-    public FishingActivityReportDTO(String uniqueId, String from, String vesselTransportMeansName, List<String> vesselTransportMeansIdList, String purposeCode, String FAReportType, List<String> areas, List<String> fishingGear, String activityType, List<String> port, List<String> speciesCode, List<Long> quantity, List<ContactPersonDTO> contactPerson) {
+    public FishingActivityReportDTO(String uniqueId, String from, String vesselTransportMeansName, List<String> vesselTransportMeansIdList, String purposeCode, String FAReportType, List<String> areas, List<String> fishingGear, String activityType, List<String> port, List<String> speciesCode, List<Long> quantity, List<ContactPersonDTO> contactPerson, Date occurence) {
         this.uniqueId = uniqueId;
         this.from = from;
         this.vesselTransportMeansName = vesselTransportMeansName;
@@ -53,6 +55,7 @@ public class FishingActivityReportDTO  implements Serializable  {
         this.speciesCode = speciesCode;
         this.quantity = quantity;
         this.contactPerson = contactPerson;
+        this.occurence = occurence;
     }
 
     public String getUniqueId() {
@@ -159,5 +162,11 @@ public class FishingActivityReportDTO  implements Serializable  {
         this.contactPerson = contactPerson;
     }
 
+    public Date getOccurence() {
+        return occurence;
+    }
 
+    public void setOccurence(Date occurence) {
+        this.occurence = occurence;
+    }
 }
