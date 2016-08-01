@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -29,11 +30,8 @@ public class ActivityResource  extends UnionVMSResource {
     @Context
     private UriInfo context;
 
-
     @EJB
     private ActivityService activityService;
-
-
 
 
 
@@ -43,17 +41,20 @@ public class ActivityResource  extends UnionVMSResource {
     @Path("/listByQuery")
     public Response listActivityReportsByQuery(FishingActivityQuery fishingActivityQuery) {
 
-        LOG.info("call getFishingActivityDao ");
-
+        LOG.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
+        Response responseMethod;
         if(fishingActivityQuery==null)
             return  createErrorResponse("Query to find list is null.");
 
-        List<FishingActivityReportDTO> dtoList=activityService.getFishingActivityListByQuery(fishingActivityQuery);
-        for(FishingActivityReportDTO dto: dtoList){
-            LOG.info("dto :"+dto.toString());
+        List<FishingActivityReportDTO> dtoList= null;
+        try {
+            dtoList = activityService.getFishingActivityListByQuery(fishingActivityQuery);
+            responseMethod = createSuccessResponse(dtoList);
+            LOG.info("successful");
+        } catch (ServiceException e) {
+            LOG.error("Exception while trying to get Fishing Activity Report list.",e);
+            responseMethod = createErrorResponse("Exception while trying to get Fishing Activity Report list.");
         }
-         Response responseMethod = createSuccessResponse(dtoList);
-        LOG.info("successful");
         return responseMethod;
     }
 
@@ -62,7 +63,7 @@ public class ActivityResource  extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listActivityReports() {
 
-        LOG.info("call getFishingActivityDao ");
+        LOG.info("listActivityReports ");
         List<FishingActivityReportDTO> dtoList=activityService.getFishingActivityList();
         Response responseMethod = createSuccessResponse(dtoList);
         LOG.info("successful");

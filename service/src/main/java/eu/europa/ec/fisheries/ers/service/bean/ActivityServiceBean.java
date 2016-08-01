@@ -26,7 +26,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,15 +52,17 @@ public class ActivityServiceBean implements ActivityService{
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
 
     @Override
-    public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query){
+    public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
-        List<FishingActivityReportDTO> dtos = new ArrayList<FishingActivityReportDTO>();
-        try {
-            List<FishingActivityEntity> activityList = fishingActivityDao.getFishingActivityListByQuery(query);
-            dtos = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList);
-        } catch (ServiceException e) {
-            LOG.error("Exception when trying to get Fishing Activity Report data.",e);
+
+        List<FishingActivityEntity> activityList = fishingActivityDao.getFishingActivityListByQuery(query);
+        if(activityList==null || activityList.isEmpty()){
+            LOG.info("Could not find FishingActivity entities matching search criteria");
+            return Collections.emptyList();
         }
+
+        List<FishingActivityReportDTO> dtos = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList);
+
        return dtos;
     }
 
