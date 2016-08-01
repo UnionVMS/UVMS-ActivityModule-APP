@@ -13,10 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
@@ -28,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -36,50 +35,37 @@ import static org.junit.Assert.assertNotNull;
 public class FaReportDocumentMapperTest {
 
     @Test
-    public void testFaReportDocumentEntityCreate() throws JAXBException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
-        JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
-        for (FAReportDocument faReportDocument : fluxfaReportMessage.getFAReportDocuments()) {
-            FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
-            faReportDocumentEntities.add(faReportDocumentEntity);
-        }
+    public void testFaReportDocumentMapper() {
+        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
+        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
+        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity);
 
-        assertNotNull(faReportDocumentEntities);
-        FaReportDocumentEntity faReportDocumentEntity = faReportDocumentEntities.get(0);
-        assertNotNull(faReportDocumentEntity);
-        assertNotNull(faReportDocumentEntity.getFluxReportDocument());
+        assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity);
+
         assertNotNull(faReportDocumentEntity.getFaReportIdentifiers());
-        assertVesselTransportMeans(faReportDocumentEntity);
-        assertFishingActivity(faReportDocumentEntity);
-    }
+        FaReportIdentifierEntity faReportIdentifierEntity = faReportDocumentEntity.getFaReportIdentifiers().iterator().next();
+        assertNotNull(faReportDocumentEntity);
+        assertEquals(faReportDocument.getRelatedReportIDs().get(0).getValue(), faReportIdentifierEntity.getFaReportIdentifierId());
+        assertEquals(faReportDocument.getRelatedReportIDs().get(0).getSchemeID(), faReportIdentifierEntity.getFaReportIdentifierSchemeId());
+        assertFaReportDocumentFields(faReportDocument, faReportIdentifierEntity.getFaReportDocument());
 
-    private void assertVesselTransportMeans(FaReportDocumentEntity faReportDocumentEntity) {
-        VesselTransportMeansEntity vesselTransportMeansEntity = faReportDocumentEntity.getVesselTransportMeans();
-        assertNotNull(vesselTransportMeansEntity);
-        assertNotNull(vesselTransportMeansEntity.getRegistrationEvent());
-        assertNotNull(vesselTransportMeansEntity.getRegistrationEvent().getRegistrationLocation());
-        assertNotNull(vesselTransportMeansEntity.getContactParty());
-        assertNotNull(vesselTransportMeansEntity.getVesselIdentifiers());
-
-        for (ContactPartyEntity contactPartyEntity : vesselTransportMeansEntity.getContactParty()) {
-            assertNotNull(contactPartyEntity);
-            assertNotNull(contactPartyEntity.getContactPerson());
-            assertNotNull(contactPartyEntity.getStructuredAddresses());
-        }
-    }
-
-    private void assertFishingActivity(FaReportDocumentEntity faReportDocumentEntity) {
         assertNotNull(faReportDocumentEntity.getFishingActivities());
-        for(FishingActivityEntity fishingActivityEntity : faReportDocumentEntity.getFishingActivities()) {
-            assertNotNull(fishingActivityEntity);
-            assertNotNull(fishingActivityEntity.getDestVesselCharId());
-            assertNotNull(fishingActivityEntity.getSourceVesselCharId());
-            assertNotNull(fishingActivityEntity.getFaCatchs());
-            assertNotNull(fishingActivityEntity.getFishingTrips());
-            assertNotNull(fishingActivityEntity.getFishingGears());
-        }
+        FishingActivityEntity fishingActivityEntity = faReportDocumentEntity.getFishingActivities().iterator().next();
+        assertNotNull(fishingActivityEntity);
+        assertFaReportDocumentFields(faReportDocument, fishingActivityEntity.getFaReportDocument());
+
+        assertNotNull(faReportDocumentEntity.getFluxReportDocument());
+        assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity.getFluxReportDocument().getFaReportDocument());
+
+        assertNotNull(faReportDocumentEntity.getVesselTransportMeans());
+        assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity.getVesselTransportMeans().getFaReportDocument());
+    }
+
+    private void assertFaReportDocumentFields(FAReportDocument faReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
+        assertEquals(faReportDocument.getTypeCode().getValue(), faReportDocumentEntity.getTypeCode());
+        assertEquals(faReportDocument.getTypeCode().getListID(), faReportDocumentEntity.getTypeCodeListId());
+        assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), faReportDocumentEntity.getAcceptedDatetime());
+        assertEquals(faReportDocument.getFMCMarkerCode().getValue(), faReportDocumentEntity.getFmcMarker());
+        assertEquals(faReportDocument.getFMCMarkerCode().getListID(), faReportDocumentEntity.getFmcMarkerListId());
     }
 }

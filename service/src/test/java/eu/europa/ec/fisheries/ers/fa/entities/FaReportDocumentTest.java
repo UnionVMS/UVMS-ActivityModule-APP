@@ -15,6 +15,7 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -26,10 +27,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 @Ignore
 public class FaReportDocumentTest extends BaseErsFaDaoTest {
@@ -58,18 +61,20 @@ public class FaReportDocumentTest extends BaseErsFaDaoTest {
     @SneakyThrows
     public void testInsertTable() throws Exception {
         dbSetupTracker.skipNextLaunch();
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
-        JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
-        for (FAReportDocument faReportDocument : fluxfaReportMessage.getFAReportDocuments()) {
-            FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
-            faReportDocumentEntities.add(faReportDocumentEntity);
-        }
+        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
+        FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
+        faReportDocumentEntities.add(faReportDocumentEntity);
+
         dao.bulkUploadFaData(faReportDocumentEntities);
-        FaReportDocumentEntity entity=dao.findEntityById(FaReportDocumentEntity.class, 1);
+        FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
+
         assertNotNull(entity);
+        assertEquals(faReportDocument.getTypeCode().getValue(), entity.getTypeCode());
+        assertEquals(faReportDocument.getTypeCode().getListID(), entity.getTypeCodeListId());
+        assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), entity.getAcceptedDatetime());
+        assertEquals(faReportDocument.getFMCMarkerCode().getValue(), entity.getFmcMarker());
+        assertEquals(faReportDocument.getFMCMarkerCode().getListID(), entity.getFmcMarkerListId());
     }
 
 }

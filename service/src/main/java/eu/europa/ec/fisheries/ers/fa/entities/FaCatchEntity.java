@@ -81,7 +81,7 @@ public class FaCatchEntity implements Serializable {
 	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<FluxCharacteristicEntity>(0);
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<AapStockEntity> appStocks = new HashSet<AapStockEntity>(0);
+	private Set<AapStockEntity> aapStocks = new HashSet<AapStockEntity>(0);
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FishingTripEntity> fishingTrips = new HashSet<FishingTripEntity>(0);
@@ -243,12 +243,12 @@ public class FaCatchEntity implements Serializable {
 		this.fluxCharacteristics = fluxCharacteristics;
 	}
 
-	public Set<AapStockEntity> getAppStocks() {
-		return this.appStocks;
+	public Set<AapStockEntity> getAapStocks() {
+		return this.aapStocks;
 	}
 
-	public void setAppStocks(Set<AapStockEntity> appStocks) {
-		this.appStocks = appStocks;
+	public void setAapStocks(Set<AapStockEntity> aapStocks) {
+		this.aapStocks = aapStocks;
 	}
 
 	public Set<FishingTripEntity> getFishingTrips() {
