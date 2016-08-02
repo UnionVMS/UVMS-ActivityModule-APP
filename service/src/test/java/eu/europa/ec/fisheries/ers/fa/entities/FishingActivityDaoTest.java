@@ -26,6 +26,7 @@ import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 
 @Ignore
 public class FishingActivityDaoTest extends BaseErsFaDaoTest{
@@ -34,11 +35,16 @@ private FishingActivityDao dao=new FishingActivityDao(em);
 
  @Before   
   public void prepare(){
-      Operation operation = sequenceOf(DELETE_ALL, INSERT_ERS_FISHING_ACTIVITY_DATA);
+      Operation operation = sequenceOf(DELETE_ALL,INSERT_ERS_SIZE_DISTRIBUTION_DATA,INSERT_ERS_FA_CATCH_DATA,INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA, INSERT_ERS_FISHING_ACTIVITY_DATA);
       DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
       dbSetupTracker.launchIfNecessary(dbSetup);
   }
-	
+
+
+    public  List<FishingActivityEntity> getFishingActivityList(){
+        dbSetupTracker.skipNextLaunch();
+       return dao.getFishingActivityList();
+    }
 	
 	@Test
     @SneakyThrows
@@ -88,9 +94,9 @@ private FishingActivityDao dao=new FishingActivityDao(em);
     public void testGetFishingActivityList() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
-
         List<FishingActivityEntity> finishingActivityList=dao.getFishingActivityList();
         assertNotNull(finishingActivityList);
+        assertNotEquals(0,finishingActivityList.size());
 
     }
 }

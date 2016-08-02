@@ -10,10 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_fishing_gear")
@@ -53,6 +53,18 @@ public class FishingGearEntity implements Serializable {
 	private Set<GearCharacteristicEntity> gearCharacteristics = new HashSet<GearCharacteristicEntity>(0);
 
 	public FishingGearEntity() {
+	}
+
+	public FishingGearEntity(int id, Set<GearCharacteristicEntity> gearCharacteristics, String roleCodeListId, String roleCode, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
+		this.id = id;
+		this.gearCharacteristics = gearCharacteristics;
+		this.roleCodeListId = roleCodeListId;
+		this.roleCode = roleCode;
+		this.typeCodeListId = typeCodeListId;
+		this.typeCode = typeCode;
+		this.fishingActivity = fishingActivity;
+		this.gearProblem = gearProblem;
+		this.faCatch = faCatch;
 	}
 
 	public int getId() {
@@ -123,5 +135,19 @@ public class FishingGearEntity implements Serializable {
 
 	public void setGearProblem(GearProblemEntity gearProblem) {
 		this.gearProblem = gearProblem;
+	}
+
+	@Override
+	public String toString() {
+		return "FishingGearEntity{" +
+				"id=" + id +
+				", faCatch=" + faCatch +
+				", fishingActivity=" + fishingActivity +
+				", gearProblem=" + gearProblem +
+				", typeCode='" + typeCode + '\'' +
+				", typeCodeListId='" + typeCodeListId + '\'' +
+				", roleCode='" + roleCode + '\'' +
+				", roleCodeListId='" + roleCodeListId + '\'' +
+				'}';
 	}
 }

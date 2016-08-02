@@ -10,11 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_fa_report_document")
@@ -56,6 +56,19 @@ public class FaReportDocumentEntity implements Serializable {
 	private Set<FishingActivityEntity> fishingActivities = new HashSet<FishingActivityEntity>(0);
 
 	public FaReportDocumentEntity() {
+	}
+
+	public FaReportDocumentEntity(int id, VesselTransportMeansEntity vesselTransportMeans, FluxReportDocumentEntity fluxReportDocument, String typeCode, String typeCodeListId, Date acceptedDatetime, String fmcMarker, String fmcMarkerListId, Set<FaReportIdentifierEntity> faReportIdentifiers, Set<FishingActivityEntity> fishingActivities) {
+		this.id = id;
+		this.vesselTransportMeans = vesselTransportMeans;
+		this.fluxReportDocument = fluxReportDocument;
+		this.typeCode = typeCode;
+		this.typeCodeListId = typeCodeListId;
+		this.acceptedDatetime = acceptedDatetime;
+		this.fmcMarker = fmcMarker;
+		this.fmcMarkerListId = fmcMarkerListId;
+		this.faReportIdentifiers = faReportIdentifiers;
+		this.fishingActivities = fishingActivities;
 	}
 
 	public int getId() {
@@ -138,4 +151,17 @@ public class FaReportDocumentEntity implements Serializable {
 		this.fishingActivities = fishingActivities;
 	}
 
+	@Override
+	public String toString() {
+		return "FaReportDocumentEntity{" +
+				"id=" + id +
+				", vesselTransportMeans=" + vesselTransportMeans +
+				", fluxReportDocument=" + fluxReportDocument +
+				", typeCode='" + typeCode + '\'' +
+				", typeCodeListId='" + typeCodeListId + '\'' +
+				", acceptedDatetime=" + acceptedDatetime +
+				", fmcMarker='" + fmcMarker + '\'' +
+				", fmcMarkerListId='" + fmcMarkerListId + '\'' +
+				'}';
+	}
 }

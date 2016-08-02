@@ -10,10 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_vessel_transport_means")
@@ -131,5 +131,18 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setContactParty(Set<ContactPartyEntity> contactParty) {
         this.contactParty = contactParty;
+    }
+
+    @Override
+    public String toString() {
+        return "VesselTransportMeansEntity{" +
+                "id=" + id +
+                ", registrationEvent=" + registrationEvent +
+                ", roleCode='" + roleCode + '\'' +
+                ", roleCodeListId='" + roleCodeListId + '\'' +
+                ", name='" + name + '\'' +
+                ", flapDocumentId='" + flapDocumentId + '\'' +
+                ", flapDocumentSchemeId='" + flapDocumentSchemeId + '\'' +
+                '}';
     }
 }

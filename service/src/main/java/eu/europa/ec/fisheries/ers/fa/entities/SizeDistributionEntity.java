@@ -10,8 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import java.io.Serializable;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_size_distribution")
@@ -38,6 +38,15 @@ public class SizeDistributionEntity implements Serializable {
 	private FaCatchEntity faCatch;
 
 	public SizeDistributionEntity() {
+	}
+
+	public SizeDistributionEntity(int id, String classCode, String classCodeListId, String categoryCode, String categoryCodeListId, FaCatchEntity faCatch) {
+		this.id = id;
+		this.classCode = classCode;
+		this.classCodeListId = classCodeListId;
+		this.categoryCode = categoryCode;
+		this.categoryCodeListId = categoryCodeListId;
+		this.faCatch = faCatch;
 	}
 
 	public int getId() {

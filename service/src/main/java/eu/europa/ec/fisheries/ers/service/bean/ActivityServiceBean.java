@@ -70,9 +70,14 @@ public class ActivityServiceBean implements ActivityService{
     public List<FishingActivityReportDTO> getFishingActivityList(){
 
         List<FishingActivityEntity> fishingActivityList =fishingActivityDao.getFishingActivityList();
-        List<FishingActivityReportDTO> dtos = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(fishingActivityList);
+        if(fishingActivityList==null || fishingActivityList.isEmpty()){
+            LOG.info("Could not find FishingActivity entities.");
+            return Collections.emptyList();
+        }
 
-        return dtos;
+        return FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(fishingActivityList);
+
+
     }
 
 

@@ -10,9 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_flux_report_document")
@@ -52,6 +52,19 @@ public class FluxReportDocumentEntity implements Serializable {
     private FaReportDocumentEntity faReportDocument;
 
     public FluxReportDocumentEntity() {
+    }
+
+    public FluxReportDocumentEntity(int id, String fluxReportDocumentId, String referenceId, Date creationDatetime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName, FaReportDocumentEntity faReportDocument) {
+        this.id = id;
+        this.fluxReportDocumentId = fluxReportDocumentId;
+        this.referenceId = referenceId;
+        this.creationDatetime = creationDatetime;
+        this.purposeCode = purposeCode;
+        this.purposeCodeListId = purposeCodeListId;
+        this.purpose = purpose;
+        this.ownerFluxPartyId = ownerFluxPartyId;
+        this.ownerFluxPartyName = ownerFluxPartyName;
+        this.faReportDocument = faReportDocument;
     }
 
     public int getId() {
@@ -128,5 +141,20 @@ public class FluxReportDocumentEntity implements Serializable {
 
     public void setFaReportDocument(FaReportDocumentEntity faReportDocument) {
         this.faReportDocument = faReportDocument;
+    }
+
+    @Override
+    public String toString() {
+        return "FluxReportDocumentEntity{" +
+                "id=" + id +
+                ", fluxReportDocumentId='" + fluxReportDocumentId + '\'' +
+                ", referenceId='" + referenceId + '\'' +
+                ", creationDatetime=" + creationDatetime +
+                ", purposeCode='" + purposeCode + '\'' +
+                ", purposeCodeListId='" + purposeCodeListId + '\'' +
+                ", purpose='" + purpose + '\'' +
+                ", ownerFluxPartyId='" + ownerFluxPartyId + '\'' +
+                ", ownerFluxPartyName='" + ownerFluxPartyName + '\'' +
+               '}';
     }
 }

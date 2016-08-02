@@ -10,9 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_delimited_period")
@@ -45,7 +45,16 @@ public class DelimitedPeriodEntity implements Serializable {
 
 	public DelimitedPeriodEntity() {
 	}
-	
+
+	public DelimitedPeriodEntity(int id, FishingActivityEntity fishingActivity, FishingTripEntity fishingTrip, Date startDate, Date endDate, Double duration) {
+		this.id = id;
+		this.fishingActivity = fishingActivity;
+		this.fishingTrip = fishingTrip;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.duration = duration;
+	}
+
 	public int getId() {
 		return this.id;
 	}
@@ -95,4 +104,15 @@ public class DelimitedPeriodEntity implements Serializable {
 		this.duration = duration;
 	}
 
+	@Override
+	public String toString() {
+		return "DelimitedPeriodEntity{" +
+				"id=" + id +
+				", fishingActivity=" + fishingActivity +
+				", fishingTrip=" + fishingTrip +
+				", startDate=" + startDate +
+				", endDate=" + endDate +
+				", duration=" + duration +
+				'}';
+	}
 }

@@ -10,10 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_fa_catch")
@@ -87,6 +87,24 @@ public class FaCatchEntity implements Serializable {
 	private Set<FishingTripEntity> fishingTrips = new HashSet<FishingTripEntity>(0);
 
 	public FaCatchEntity() {
+	}
+
+	public FaCatchEntity(int id, FishingActivityEntity fishingActivity, SizeDistributionEntity sizeDistribution, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Long unitQuantity, Double weightMeasure, String weightMeasureUnitCode, String weightMeasureListId, String usageCode, String usageCodeListId, String weighingMeansCodeListId, String weighingMeansCode) {
+		this.id = id;
+		this.fishingActivity = fishingActivity;
+		this.sizeDistribution = sizeDistribution;
+		this.typeCode = typeCode;
+		this.typeCodeListId = typeCodeListId;
+		this.speciesCode = speciesCode;
+		this.speciesCodeListid = speciesCodeListid;
+		this.unitQuantity = unitQuantity;
+		this.weightMeasure = weightMeasure;
+		this.weightMeasureUnitCode = weightMeasureUnitCode;
+		this.weightMeasureListId = weightMeasureListId;
+		this.usageCode = usageCode;
+		this.usageCodeListId = usageCodeListId;
+		this.weighingMeansCodeListId = weighingMeansCodeListId;
+		this.weighingMeansCode = weighingMeansCode;
 	}
 
 	public int getId() {
@@ -260,4 +278,24 @@ public class FaCatchEntity implements Serializable {
 		this.fishingTrips = fishingTrips;
 	}
 
+	@Override
+	public String toString() {
+		return "FaCatchEntity{" +
+				"id=" + id +
+				", fishingActivity=" + fishingActivity +
+				", sizeDistribution=" + sizeDistribution +
+				", typeCode='" + typeCode + '\'' +
+				", typeCodeListId='" + typeCodeListId + '\'' +
+				", speciesCode='" + speciesCode + '\'' +
+				", speciesCodeListid='" + speciesCodeListid + '\'' +
+				", unitQuantity=" + unitQuantity +
+				", weightMeasure=" + weightMeasure +
+				", weightMeasureUnitCode='" + weightMeasureUnitCode + '\'' +
+				", weightMeasureListId='" + weightMeasureListId + '\'' +
+				", usageCode='" + usageCode + '\'' +
+				", usageCodeListId='" + usageCodeListId + '\'' +
+				", weighingMeansCode='" + weighingMeansCode + '\'' +
+				", weighingMeansCodeListId='" + weighingMeansCodeListId + '\'' +
+				'}';
+	}
 }

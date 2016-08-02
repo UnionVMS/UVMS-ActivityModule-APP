@@ -18,9 +18,7 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by padhyad on 8/1/2016.
@@ -102,4 +100,14 @@ public class FishingActivityMapperTest {
         assertEquals(fishingActivity.getSpecifiedFLAPDocument().getID().getValue(), fishingActivityEntity.getFlapDocumentId());
         assertEquals(fishingActivity.getSpecifiedFLAPDocument().getID().getSchemeID(), fishingActivityEntity.getFlapDocumentSchemeId());
     }
+
+    @Test
+    public void testMapToFishingActivityReportDTOList() {
+        FishingActivityEntity entity= MapperUtil.getFishingActivityEntity();
+        assertNotNull(entity);
+        assertNotNull(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
+    }
+
+
+
 }
