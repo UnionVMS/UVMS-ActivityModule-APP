@@ -42,13 +42,13 @@ import java.util.List;
  */
 @Slf4j
 @Singleton
-@Startup
+//@Startup
 public class MdrSynchronizationServiceBean implements MdrSynchronizationService {
 
-	@EJB
+	//@EJB
 	private MdrRepository mdrRepository;
 
-	@EJB
+	//@EJB
 	private MdrMessageProducer producer;
 
 	@Resource

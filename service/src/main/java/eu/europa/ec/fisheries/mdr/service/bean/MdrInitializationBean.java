@@ -15,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import javax.ejb.TimerService;
 
 /**
@@ -25,10 +23,10 @@ import javax.ejb.TimerService;
  */
 @Slf4j
 @Singleton
-@Startup
+//@Startup
 public class MdrInitializationBean {
 
-    @EJB
+    //@EJB
     private MdrSynchronizationServiceBean synchBean;
 
     @Resource
