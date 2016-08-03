@@ -13,5 +13,11 @@
             <group>${activity.name}</group>
         </feature>
 
+        <feature>
+            <name>LIST_ACTIVITY_REPORTS</name>
+            <description>allows user to see Activity Reports</description>
+            <group>activity</group>
+        </feature>
+
     </application>
 </ns2:deployApplicationRequest>

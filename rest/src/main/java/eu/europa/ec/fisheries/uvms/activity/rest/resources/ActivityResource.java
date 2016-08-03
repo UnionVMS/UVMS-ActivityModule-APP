@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -39,10 +42,12 @@ public class ActivityResource  extends UnionVMSResource {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/listByQuery")
-    public Response listActivityReportsByQuery(FishingActivityQuery fishingActivityQuery) {
-
-        LOG.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
+    public Response listActivityReportsByQuery(@Context HttpServletRequest request,
+                                               @Context HttpServletResponse response, FishingActivityQuery fishingActivityQuery) {
         Response responseMethod;
+       if( request.isUserInRole("LIST_ACTIVITY_REPORTS")){
+         LOG.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
+
         if(fishingActivityQuery==null)
             return  createErrorResponse("Query to find list is null.");
 
@@ -55,18 +60,26 @@ public class ActivityResource  extends UnionVMSResource {
             LOG.error("Exception while trying to get Fishing Activity Report list.",e);
             responseMethod = createErrorResponse("Exception while trying to get Fishing Activity Report list.");
         }
+       }else{
+           responseMethod= createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+       }
         return responseMethod;
     }
 
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listActivityReports() {
-
-        LOG.info("listActivityReports ");
-        List<FishingActivityReportDTO> dtoList=activityService.getFishingActivityList();
-        Response responseMethod = createSuccessResponse(dtoList);
-        LOG.info("successful");
+    public Response listActivityReports(@Context HttpServletRequest request,
+                                        @Context HttpServletResponse response) {
+        Response responseMethod;
+        if( request.isUserInRole("LIST_ACTIVITY_REPORTS")) {
+            LOG.info("listActivityReports ");
+            List<FishingActivityReportDTO> dtoList = activityService.getFishingActivityList();
+             responseMethod = createSuccessResponse(dtoList);
+            LOG.info("successful");
+        }else{
+            responseMethod= createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+        }
         return responseMethod;
     }
 
