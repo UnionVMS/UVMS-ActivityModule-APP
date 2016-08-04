@@ -410,7 +410,7 @@ public class MapperUtil {
         return textType;
     }
 
-    private static IDType getIdType(String type, String schemeId) {
+    public static IDType getIdType(String type, String schemeId) {
         IDType idType = new IDType();
         idType.setValue(type);
         idType.setSchemeID(schemeId);
@@ -437,7 +437,7 @@ public class MapperUtil {
         return amountType;
     }
 
-    private static CodeType getCodeType(String value, String listId) {
+    public static CodeType getCodeType(String value, String listId) {
         CodeType codeType = new CodeType();
         codeType.setValue(value);
         codeType.setListID(listId);

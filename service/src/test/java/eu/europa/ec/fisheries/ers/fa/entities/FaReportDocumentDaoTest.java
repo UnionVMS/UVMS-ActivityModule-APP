@@ -16,6 +16,7 @@ import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import junit.framework.Assert;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,6 +29,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
@@ -35,13 +37,13 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 @Ignore
-public class FaReportDocumentTest extends BaseErsFaDaoTest {
+public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 		
 	private FaReportDocumentDao dao=new FaReportDocumentDao(em);
 	
 	@Before
     public void prepare(){
-       Operation operation = sequenceOf(DELETE_ALL, INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA);
+       Operation operation = sequenceOf(DELETE_ALL, INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA,INSERT_ERS_FA_REPORT_IDENTIFIER_DATA);
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
        dbSetupTracker.launchIfNecessary(dbSetup);
    }
@@ -50,12 +52,26 @@ public class FaReportDocumentTest extends BaseErsFaDaoTest {
 	@Test
 	@SneakyThrows
     public void testFindEntityById() throws Exception {
-
-       dbSetupTracker.skipNextLaunch();
-       FaReportDocumentEntity entity=dao.findEntityById(FaReportDocumentEntity.class, 1);
-       assertNotNull(entity);
-      
+        dbSetupTracker.skipNextLaunch();
+        FaReportDocumentEntity entity=dao.findEntityById(FaReportDocumentEntity.class, 1);
+        assertNotNull(entity);
     }
+
+    @Test
+    @SneakyThrows
+    public void testFindFaReportById() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
+        String identifier = entity.getFaReportIdentifiers().iterator().next().getFaReportIdentifierId();
+
+        List<FaReportDocumentEntity> entities = dao.findFaReportsByIds(new HashSet<String>(Arrays.asList(identifier)));
+        assertNotNull(entities);
+        assertEquals(entity.getTypeCode(), entities.get(0).getTypeCode());
+        assertEquals(entity.getTypeCodeListId(), entities.get(0).getTypeCodeListId());
+        assertEquals(entity.getFmcMarker(), entities.get(0).getFmcMarker());
+        assertEquals(entity.getFmcMarkerListId(), entities.get(0).getFmcMarkerListId());
+    }
+
 
     @Test
     @SneakyThrows
@@ -75,6 +91,30 @@ public class FaReportDocumentTest extends BaseErsFaDaoTest {
         assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), entity.getAcceptedDatetime());
         assertEquals(faReportDocument.getFMCMarkerCode().getValue(), entity.getFmcMarker());
         assertEquals(faReportDocument.getFMCMarkerCode().getListID(), entity.getFmcMarkerListId());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testUpdateTable() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
+        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
+        FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
+        faReportDocumentEntities.add(faReportDocumentEntity);
+
+        dao.bulkUploadFaData(faReportDocumentEntities);
+        FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
+
+        entity.setStatus("cancel");
+        entity.setTypeCode("Updated Type Code 1");
+        entity.setTypeCodeListId("gjtu67-fd484jf8-5ej8f58e-n58dj48f");
+        dao.updateAllFaData(Arrays.asList(entity));
+
+        FaReportDocumentEntity updatedEntity = dao.findEntityById(FaReportDocumentEntity.class, 1);
+        assertEquals("cancel", updatedEntity.getStatus());
+        assertEquals("Updated Type Code 1", updatedEntity.getTypeCode());
+        assertEquals("gjtu67-fd484jf8-5ej8f58e-n58dj48f", updatedEntity.getTypeCodeListId());
+
     }
 
 }

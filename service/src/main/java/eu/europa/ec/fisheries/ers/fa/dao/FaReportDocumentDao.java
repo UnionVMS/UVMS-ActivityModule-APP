@@ -12,9 +12,13 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 5/3/2016.
@@ -30,5 +34,20 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
     @Override
     public EntityManager getEntityManager() {
         return em;
+    }
+
+    private static final String REPORT_IDS = "reportIds";
+
+    /**
+     * Get FaReportDocument by one or more Report identifiers
+     *
+     * @param strings
+     * @return
+     * @throws ServiceException
+     */
+    public List<FaReportDocumentEntity> findFaReportsByIds(Set<String> strings) throws ServiceException {
+        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID, FaReportDocumentEntity.class);
+        query.setParameter(REPORT_IDS, strings);
+        return query.getResultList();
     }
 }

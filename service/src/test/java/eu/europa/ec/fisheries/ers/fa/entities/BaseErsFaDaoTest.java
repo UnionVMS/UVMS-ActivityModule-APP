@@ -74,7 +74,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 		protected static final Operation INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA = sequenceOf(
 	            insertInto("activity.activity_flux_report_document")
 	                    .columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
-	                    .values(1, "REPORT_ID","REF_ID",java.sql.Date.valueOf("2014-12-12"),"CODE11","CODELISTID","PURPOSE","OWNER_PARTY_ID","NAME")
+	                    .values(1, "ID 1","ID 1",java.sql.Date.valueOf("2014-12-12"),"CODE11","CODELISTID","PURPOSE","OWNER_PARTY_ID","NAME")
 	                    .build(),
 				insertInto("activity.activity_flux_report_document")
 						.columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
@@ -108,6 +108,13 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 						.values(2,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),2,2,"fmc","fmc_list")
 						.build()
 	  );
+
+		protected static final Operation INSERT_ERS_FA_REPORT_IDENTIFIER_DATA = sequenceOf(
+				insertInto("activity.activity_fa_report_identifier")
+					.columns("id", "fa_report_document_id", "fa_report_identifier_id", "fa_report_identifier_scheme_id")
+					.values(1, 1, "ID 1", "test schema id 1")
+					.build()
+		);
 
 		 @Override
 	    protected String getSchema() {

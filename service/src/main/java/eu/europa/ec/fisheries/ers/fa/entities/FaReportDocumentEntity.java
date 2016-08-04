@@ -16,9 +16,17 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedQueries({
+		@NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID,
+		query = "SELECT fareport FROM FaReportDocumentEntity fareport INNER JOIN FETCH fareport.fluxReportDocument fluxreport WHERE " +
+				"fluxreport.fluxReportDocumentId IN :reportIds")
+})
+
 @Entity
 @Table(name = "activity_fa_report_document")
 public class FaReportDocumentEntity implements Serializable {
+
+	public static final String FIND_BY_FA_ID = "findByFaId";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
@@ -48,6 +56,9 @@ public class FaReportDocumentEntity implements Serializable {
 
 	@Column(name = "fmc_marker_list_id")
 	private String fmcMarkerListId;
+
+	@Column(name = "status")
+	private String status;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
 	private Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<FaReportIdentifierEntity>(0);
@@ -131,6 +142,14 @@ public class FaReportDocumentEntity implements Serializable {
 
 	public void setFmcMarkerListId(String fmcMarkerListId) {
 		this.fmcMarkerListId = fmcMarkerListId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {
