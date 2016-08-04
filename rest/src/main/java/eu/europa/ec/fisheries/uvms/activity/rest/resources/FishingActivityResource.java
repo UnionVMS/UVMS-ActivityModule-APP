@@ -14,6 +14,10 @@ import eu.europa.ec.fisheries.ers.service.bean.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
+import un.unece.uncefact.data.standard.unqualifieddatatype._18.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -25,6 +29,8 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by padhyad on 7/6/2016.
@@ -45,7 +51,36 @@ public class FishingActivityResource extends UnionVMSResource {
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
+
+        for (FAReportDocument faReportDocument : fluxfaReportMessage.getFAReportDocuments()) {
+            CodeType purposeCode = new CodeType();
+            purposeCode.setValue("5");
+            purposeCode.setListID("Test scheme Id");
+            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
+        }
+
         fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage.getFAReportDocuments());
+
+        List<FAReportDocument> faReportDocumentList = fluxfaReportMessage.getFAReportDocuments();
+        for (FAReportDocument faReportDocument : faReportDocumentList) {
+            IDType id = faReportDocument.getRelatedFLUXReportDocument().getIDS().get(0);
+            faReportDocument.getRelatedFLUXReportDocument().setReferencedID(id);
+
+            IDType newId = new IDType();
+            newId.setValue("New Id 1");
+            newId.setSchemeID("New scheme Id 1");
+            faReportDocument.getRelatedFLUXReportDocument().setIDS(Arrays.asList(newId));
+
+            CodeType purposeCode = new CodeType();
+            purposeCode.setValue("5");
+            purposeCode.setListID("Test scheme Id");
+            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
+
+            for (FishingActivity fishingActivity : faReportDocument.getSpecifiedFishingActivities()) {
+                fishingActivity.setRelatedFishingActivities(null);
+            }
+        }
+        fluxResponseMessageService.saveFishingActivityReportDocuments(faReportDocumentList);
         return createSuccessResponse();
     }
 }
