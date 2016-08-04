@@ -16,7 +16,25 @@
         <feature>
             <name>LIST_ACTIVITY_REPORTS</name>
             <description>allows user to see Activity Reports</description>
-            <group>activity</group>
+            <group>${activity.name}</group>
+        </feature>
+
+        <feature>
+            <name>CONFIGURE_MDR_SCHEDULER</name>
+            <description>allows the user to view and modify the scheduler configuration</description>
+            <group>MDR</group>
+        </feature>
+
+        <feature>
+            <name>LIST_MDR_CODE_LISTS</name>
+            <description>allows the user to view all MDR code lists</description>
+            <group>MDR</group>
+        </feature>
+
+        <feature>
+            <name>UPDATE_MDR_CODE_LISTS</name>
+            <description>allows the user to update all or selected list of MDR code lists</description>
+            <group>MDR</group>
         </feature>
 
     </application>

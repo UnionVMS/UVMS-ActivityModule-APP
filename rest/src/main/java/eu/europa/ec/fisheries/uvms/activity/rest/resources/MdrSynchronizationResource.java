@@ -10,18 +10,23 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
+import eu.europa.ec.fisheries.mdr.domain2.MdrStatus;
+import eu.europa.ec.fisheries.mdr.service.MdrStatusRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collection;
 import java.util.List;
 
 @Path("/mdr")
@@ -35,24 +40,55 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@EJB
 	private MdrSynchronizationService syncBean;
 
+	@EJB
+	private MdrStatusRepository mdrStatusBean;
+
     /**
-     * Resource for triggering manual MDR synchronization.
+     * Requests synchronization of all "updatable" code lists.
      *
      * @return
      */
 	@GET
 	@Path("/sync")
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response activateMdrSynchronization() {
-		log.info("Starting MDR Synchronization...");
-		boolean withErrors = syncBean.manualStartMdrSynchronization();
-		log.info("Finished MDR Synchronization with error flag : "+withErrors);
-        if(withErrors){
-            return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
-        }
-		return createSuccessResponse();
+	public Response syncrhonizeNow(@Context HttpServletRequest request) {
+		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
+			log.info("Starting MDR Synchronization...");
+			boolean withErrors = syncBean.manualStartMdrSynchronization();
+			log.info("Finished MDR Synchronization with error flag : "+withErrors);
+			if(withErrors){
+				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
+			}
+			return createSuccessResponse();
+		} else {
+			return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
+		}
 	}
-	
+
+	/**
+	 * Requests synchronization of all code lists, specified as an array of acronyms.
+	 *
+	 * @return
+	 */
+	@POST
+	@Path("/sync")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(value = {MediaType.APPLICATION_JSON})
+	public Response syncrhonizeNow(@Context HttpServletRequest request, @Context HttpServletResponse response, Collection<String> acronymsToSynch) {
+		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
+			log.info("Starting MDR Synchronization...");
+			boolean withErrors = syncBean.manualStartMdrSynchronization();
+			log.info("Finished MDR Synchronization with error flag : " + withErrors);
+			if (withErrors) {
+				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
+			}
+			return createSuccessResponse();
+		} else {
+			return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
+		}
+	}
+
+
 	@GET
 	@Path("/flux")
 	@Produces(value = {MediaType.APPLICATION_JSON})
@@ -64,18 +100,64 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	}
 
     /**
-     * Resource for obtaing all the avalilable MDR acronyms (aka acronymsList)
+	 * returns an array with all MDR code lists and their details (last successful update, last update attempt datetime, status, etc.).
+	 * The details do not contain the individual MDR code lists content.
      *
      * @return createSuccessResponse(acronymsList)
      */
+	@GET
+	@Path("/acronyms/details")
+	@Produces(value = {MediaType.APPLICATION_JSON})
+	public Response getAvailableMdrAcronymsDetails(@Context HttpServletRequest request) {
+		log.debug("[START] getAvailableMdrAcronymsDetails ");
+
+		if (request.isUserInRole(ActivityFeaturesEnum.LIST_MDR_CODE_LISTS.toString())) {
+
+			List<MdrStatus> acronymsList = mdrStatusBean.getAllAcronymsStatuses();
+			if (CollectionUtils.isEmpty(acronymsList)) {
+				return createErrorResponse(ERROR_GETTING_AVAIL_MDR);
+			} else {
+				log.debug("{} MDR code lists returned.", acronymsList.size());
+				return createSuccessResponse(acronymsList);
+			}
+		} else {
+			return createAccessForbiddenResponse("User not allowed to list all MDR code lists details.");
+		}
+	}
+
+	/**
+	 * Resource for obtaing all the avalilable MDR acronyms (aka acronymsList)
+	 *
+	 * @return createSuccessResponse(acronymsList)
+	 */
 	@GET
 	@Path("/acronyms")
 	@Produces(value = {MediaType.APPLICATION_JSON})
 	public Response getAvailableMdrAcronyms() {
 		List<String> acronymsList =  syncBean.getAvailableMdrAcronyms();
-        if(CollectionUtils.isEmpty(acronymsList)){
-            return createErrorResponse(ERROR_GETTING_AVAIL_MDR);
-        }
-        return createSuccessResponse(acronymsList);
+		if(CollectionUtils.isEmpty(acronymsList)){
+			return createErrorResponse(ERROR_GETTING_AVAIL_MDR);
+		}
+		return createSuccessResponse(acronymsList);
+	}
+
+	@GET
+	@Path("/schedulerConfig")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSchedulerConfiguration() {
+		//TODO implement real DB call
+		return createSuccessResponse("0 1,13 * * *");
+	}
+
+	@PUT
+	@Path("/schedulerConfig")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response saveSchedulerConfiguration(@Context HttpServletRequest request) {
+		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
+			//TODO implement real DB call
+			return createSuccessResponse();
+		} else {
+			return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
+		}
 	}
 }

@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshal
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.NameType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.TextType;
@@ -32,6 +33,7 @@ import javax.ejb.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -44,6 +46,9 @@ import java.util.List;
 @Singleton
 //@Startup
 public class MdrSynchronizationServiceBean implements MdrSynchronizationService {
+
+	public static final String MDR_SYNCHRONIZATION_TIMER_НАМЕ = "MDRSynchronizationTimer";
+	private static final TimerConfig TIMER_CONFIG = new TimerConfig(MDR_SYNCHRONIZATION_TIMER_НАМЕ, false);
 
 	//@EJB
 	private MdrRepository mdrRepository;
@@ -91,12 +96,13 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	 */
 	public void scheduleMdrSychronization(){
 		log.info("\n\t---> SCHEDULED JOB FOR MDR ENTITIES SYNCHRONIZATION HAS BEEN SET! \n");
+		//TODO get the config from the DB and use the parseExpression(..) method
 		ScheduleExpression exp  = new ScheduleExpression();
 		exp.dayOfWeek("*")
 				.hour("*")
 				.minute("*")
 				.second("*/10");
-		service.createCalendarTimer(exp);
+		service.createCalendarTimer(exp, TIMER_CONFIG);
 	}
 
 	/**
@@ -192,6 +198,48 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		} catch (ActivityMessageException | ExchangeModelMarshallException e) {
 			log.error(e.getMessage());
 		}
+	}
+
+	/**
+	 * reconfigures the scheduler.
+	 *
+	 * @param schedulerExpressionStr
+	 */
+	@Override
+	public void reconfigureScheduler(String schedulerExpressionStr) {
+		log.info("[START] Re-configure MDR scheduler with expression: {}", schedulerExpressionStr);
+
+		if (StringUtils.isNotBlank(schedulerExpressionStr)) {
+			//TODO persist the new config into the DB
+			//parse the cron job expression
+			ScheduleExpression expression = parseExpression(schedulerExpressionStr);
+
+			//firstly, we need to cancle the current timer
+			Collection<Timer> allTimers = service.getTimers();
+			for (Timer currentTimer: allTimers) {
+				if (TIMER_CONFIG.getInfo().equals(currentTimer.getInfo())) {
+					currentTimer.cancel();
+					log.info("Current MDR scheduler timer cancelled.");
+					break;
+				}
+			}
+
+			service.createCalendarTimer(expression, TIMER_CONFIG);
+			log.info("New MDR scheduler timer created - [{}].", TIMER_CONFIG.getInfo());
+		} else {
+			log.info("[FAILED] Re-configure MDR scheduler with expression: {}. The Scheduler expression is blank.", schedulerExpressionStr);
+		}
+	}
+
+	private ScheduleExpression parseExpression(String schedulerExpressionStr) {
+		ScheduleExpression expression = new ScheduleExpression();
+		String[] args = schedulerExpressionStr.split("\\s");
+
+		if (args.length!=6) {
+			throw new IllegalArgumentException("Invalid scheduler expression: " + schedulerExpressionStr);
+		}
+
+		return expression.second(args[0]).minute(args[1]).hour(args[2]).dayOfMonth(args[3]).month(args[4]).year(args[5]);
 	}
 
 	private String mockAndMarshallResponse() throws ExchangeModelMarshallException {

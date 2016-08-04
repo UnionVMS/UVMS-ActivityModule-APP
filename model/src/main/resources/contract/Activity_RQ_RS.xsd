@@ -2,6 +2,7 @@
 <xs:schema xmlns="http://europa.eu/ec/fisheries/uvms/activity/model/schemas"
 	id="FISH2015_SPATIAL2015" targetNamespace="http://europa.eu/ec/fisheries/uvms/activity/model/schemas"
 	version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="Activity_CommonTypes.xsd"/>
 
 	<xs:complexType name="ActivityModuleRequest" abstract="true">
 		<xs:sequence>
@@ -52,6 +53,5 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
-
 
 </xs:schema>
