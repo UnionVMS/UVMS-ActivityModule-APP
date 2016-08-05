@@ -23,5 +23,6 @@ import java.util.List;
 public interface ActivityService {
      List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException;
      List<FishingActivityReportDTO> getFishingActivityList();
+     void getFishingActivityReportForFishingTrip();
 
 }

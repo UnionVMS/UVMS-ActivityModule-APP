@@ -13,12 +13,16 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FluxLocationDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXGeographicalCoordinate;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
 
 import java.util.HashSet;
 import java.util.List;
@@ -79,6 +83,19 @@ public abstract class FluxLocationMapper extends BaseMapper {
             @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntities(fluxLocation.getPostalStructuredAddresses(), fluxLocation.getPhysicalStructuredAddress(), fluxLocationEntity))")
     })
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation, FluxLocationTypeEnum fluxLocationTypeEnum, FaCatchEntity faCatchEntity, @MappingTarget FluxLocationEntity fluxLocationEntity);
+
+
+
+    @Mappings({
+            @Mapping(source = "typeCode",target = "locationType"),
+            @Mapping(source = "fluxLocationIdentifierSchemeId",target = "fluxLocationListId"),
+            @Mapping(source = "fluxLocationIdentifier",target = "fluxLocationIdentifier"),
+            @Mapping(source = "longitude",target = "longitude"),
+            @Mapping(source = "latitude",target = "latitude"),
+            @Mapping(source = "rfmoCode",target = "rfmoCode")
+    })
+    public abstract FluxLocationDTO mapToFluxLocationDTO(FluxLocationEntity fluxLocation);
+
 
     protected Set<StructuredAddressEntity> getStructuredAddressEntities(List<StructuredAddress> postalStructuredAddresses, StructuredAddress physicalStructuredAddress, FluxLocationEntity fluxLocationEntity) {
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();

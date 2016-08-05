@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.DelimitedPeriodDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -44,4 +45,10 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
     })
     public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod, FishingTripEntity fishingTripEntity, @MappingTarget DelimitedPeriodEntity delimitedPeriodEntity);
 
+    @Mappings({
+            @Mapping(source = "startDate",target = "startDate"),
+            @Mapping(source = "endDate",target = "endDate"),
+            @Mapping(source = "duration",target = "duration")
+    })
+    public abstract DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
 }

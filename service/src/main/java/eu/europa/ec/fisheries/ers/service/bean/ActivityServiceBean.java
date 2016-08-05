@@ -11,10 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.service.mapper.DelimitedPeriodMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FluxLocationDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -26,8 +30,10 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sanera on 29/06/2016.
@@ -78,6 +84,69 @@ public class ActivityServiceBean implements ActivityService{
         return FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(fishingActivityList);
 
 
+    }
+
+    public void getFishingActivityReportForFishingTrip(){
+        LOG.info("inside getFishingActivityReportForFishingTrip:");
+        List<FishingActivityEntity> fishingActivityList=fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706",null);
+
+        for(FishingActivityEntity activityEntity:fishingActivityList){
+            String faTypeCode =activityEntity.getTypeCode();
+            LOG.info("TYPE (Notification/Declaration) ::::"+faTypeCode + "("+activityEntity.getFaReportDocument().getTypeCode()+ ")");
+            LOG.info("Date ::::"+activityEntity.getOccurence() );
+
+            Set<FluxLocationEntity> fluxLocations= activityEntity.getFluxLocations();
+            StringBuilder location= new StringBuilder();
+            for(FluxLocationEntity fluxLoc :fluxLocations ) {
+                if (("DEPARTURE".equalsIgnoreCase(faTypeCode) || "ARRIVAL".equalsIgnoreCase(faTypeCode) || "LANDING".equalsIgnoreCase(faTypeCode) ||
+                        "TRANSSHIPMENT".equalsIgnoreCase(faTypeCode)) && "LOCATION".equals(fluxLoc.getFluxLocationType()) || "AREA".equals(fluxLoc.getFluxLocationType())) {
+                    location.append(fluxLoc.getFluxLocationIdentifierSchemeId() + "-");
+                }else{
+                    location.append(fluxLoc.getFluxLocationIdentifier()+ " ");
+                    location.append(fluxLoc.getLongitude() + " " + fluxLoc.getLatitude() + " ");
+                }
+
+                location.append(fluxLoc.getRfmoCode()+" ");
+            }
+
+            LOG.info("Location ::::"+location );
+            LOG.info("Reason ::::"+activityEntity.getReasonCode() );
+            StringBuilder remarks = new StringBuilder();
+            if ("DEPARTURE".equals(faTypeCode) || "FISHING_OPERATION".equals(faTypeCode)){
+                Set<FishingGearEntity> gears= activityEntity.getFishingGears();
+                for(FishingGearEntity fishingGear:gears){
+                    remarks.append(fishingGear.getTypeCode()+" ");
+                }
+            }else if("ARRIVAL".equals(faTypeCode) && "notification".equals(activityEntity.getFaReportDocument().getTypeCode())){
+                remarks.append(activityEntity.getFaReportDocument().getAcceptedDatetime());
+            }else if("ARRIVAL".equals(faTypeCode) && "declaration".equals(activityEntity.getFaReportDocument().getTypeCode())){
+                Set<FluxCharacteristicEntity> fluxCharacteristics=activityEntity.getFluxCharacteristics();
+                for(FluxCharacteristicEntity fluxCharacteristic:fluxCharacteristics){
+                    remarks.append(fluxCharacteristic.getValueDateTime()+" ");
+                }
+            }else if("LANDING".equals(faTypeCode) || "TRANSSHIPMENT".equals(faTypeCode)){
+                Set<DelimitedPeriodEntity> delimitedPeriodEntities=activityEntity.getDelimitedPeriods();
+                for(DelimitedPeriodEntity dp:delimitedPeriodEntities){
+                    remarks.append(dp.getEndDate()+" ");
+                }
+            }else if("ENTRY".equals(faTypeCode) || "EXIT".equals(faTypeCode) || "RELOCATION".equals(faTypeCode)){
+                remarks.append(activityEntity.getOccurence());
+            }
+
+            LOG.info("Remarks ::::"+remarks );
+            List<DelimitedPeriodDTO> delimitedPeriodDTOEntities=new ArrayList<>();
+            for(DelimitedPeriodEntity dp:activityEntity.getDelimitedPeriods()){
+                delimitedPeriodDTOEntities.add(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDTO(dp));
+            }
+
+
+
+            List<FluxLocationDTO> fluxLocationsDTO=new ArrayList<>();
+
+            for(FluxLocationEntity fluxLoc :fluxLocations ) {
+                fluxLocationsDTO.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDTO(fluxLoc));
+            }
+        }
     }
 
 

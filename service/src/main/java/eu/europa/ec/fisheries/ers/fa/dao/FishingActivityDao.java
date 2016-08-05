@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.search.*;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -50,9 +51,22 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
-        String sql = "SELECT DISTINCT a  from FishingActivityEntity a order by a.faReportDocument.id asc";
+        String sql = "SELECT DISTINCT a  from FishingActivityEntity a where a.faReportDocument.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by a.faReportDocument.id asc  ";
 
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
+        if(pagination!=null) {
+            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
+            typedQuery.setMaxResults(pagination.getListSize());
+        }
+        List<FishingActivityEntity> resultList = typedQuery.getResultList();
+        return resultList;
+    }
+
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination)  {
+        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId";
+
+        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
+        typedQuery.setParameter("fishingTripId", fishingTripId);
         if(pagination!=null) {
             typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
             typedQuery.setMaxResults(pagination.getListSize());

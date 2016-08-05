@@ -53,7 +53,7 @@ public class MapperUtil {
 
 
 
-            FishingActivityEntity fishingActivityEntity = new  FishingActivityEntity(
+        FishingActivityEntity fishingActivityEntity = new  FishingActivityEntity(
                     1,faReportDocumentEntity,null,null,"TYPECODE","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),
         "REASONCODE","REASON_CODE_LIST","VESSEL_ACTIVITY","VESSEL_CODE_LIST","FISHERY_CODE","FISHERY_CODE_LIST","SPECIES_CODE","speciesTargetCodeListId",12l,11d,"flapid","flapschemeid",null,faCatchs,delimitedPeriods,
          null,null,fishingGears,null,null,fluxLocations,null);

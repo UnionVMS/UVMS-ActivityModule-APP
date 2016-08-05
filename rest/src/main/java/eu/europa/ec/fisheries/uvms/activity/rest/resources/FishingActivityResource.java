@@ -10,9 +10,16 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
+import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
 import eu.europa.ec.fisheries.ers.service.bean.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
@@ -21,9 +28,10 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
@@ -39,9 +47,14 @@ import java.util.List;
 @Slf4j
 @Stateless
 public class FishingActivityResource extends UnionVMSResource {
+    private final static Logger LOG = LoggerFactory.getLogger(FishingActivityResource.class);
 
     @EJB
     private FluxMessageService fluxResponseMessageService;
+
+
+    @EJB
+    private ActivityService activityService;
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
@@ -82,5 +95,51 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         fluxResponseMessageService.saveFishingActivityReportDocuments(faReportDocumentList);
         return createSuccessResponse();
+    }
+
+
+    @POST
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/listByQuery")
+    public Response listActivityReportsByQuery(@Context HttpServletRequest request,
+                                               @Context HttpServletResponse response, FishingActivityQuery fishingActivityQuery) {
+        Response responseMethod;
+        if( request.isUserInRole("LIST_ACTIVITY_REPORTS")){
+            LOG.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
+
+            if(fishingActivityQuery==null)
+                return  createErrorResponse("Query to find list is null.");
+
+            List<FishingActivityReportDTO> dtoList= null;
+            try {
+                dtoList = activityService.getFishingActivityListByQuery(fishingActivityQuery);
+                responseMethod = createSuccessResponse(dtoList);
+                LOG.info("successful");
+            } catch (ServiceException e) {
+                LOG.error("Exception while trying to get Fishing Activity Report list.",e);
+                responseMethod = createErrorResponse("Exception while trying to get Fishing Activity Report list.");
+            }
+        }else{
+            responseMethod= createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+        }
+        return responseMethod;
+    }
+
+    @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listActivityReports(@Context HttpServletRequest request,
+                                        @Context HttpServletResponse response) {
+        Response responseMethod;
+        if( request.isUserInRole("LIST_ACTIVITY_REPORTS")) {
+            LOG.info("listActivityReports ");
+            List<FishingActivityReportDTO> dtoList = activityService.getFishingActivityList();
+            responseMethod = createSuccessResponse(dtoList);
+            LOG.info("successful");
+        }else{
+            responseMethod= createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+        }
+        return responseMethod;
     }
 }
