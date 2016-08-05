@@ -20,22 +20,19 @@ import java.util.List;
  * Created by sanera on 04/08/2016.
  */
 public class ReportDTO {
-    private String faReportIdentifier;
+
     private int fishingActivityId;
     private Date occurence;
+    private Date faReportAcceptedDateTime;
     private String activityType;
+    private String reason;
+    private String faReportDocumentType;
     private List<FluxLocationDTO> fluxLocations;
     private List<FishingGearDTO> fishingGears;
     private List<FluxCharacteristicsDTO> fluxCharacteristics;
     private List<DelimitedPeriodDTO> delimitedPeriod;
 
-    public String getFaReportIdentifier() {
-        return faReportIdentifier;
-    }
 
-    public void setFaReportIdentifier(String faReportIdentifier) {
-        this.faReportIdentifier = faReportIdentifier;
-    }
 
     public int getFishingActivityId() {
         return fishingActivityId;
@@ -91,5 +88,29 @@ public class ReportDTO {
 
     public void setDelimitedPeriod(List<DelimitedPeriodDTO> delimitedPeriod) {
         this.delimitedPeriod = delimitedPeriod;
+    }
+
+    public String getFaReportDocumentType() {
+        return faReportDocumentType;
+    }
+
+    public void setFaReportDocumentType(String faReportDocumentType) {
+        this.faReportDocumentType = faReportDocumentType;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Date getFaReportAcceptedDateTime() {
+        return faReportAcceptedDateTime;
+    }
+
+    public void setFaReportAcceptedDateTime(Date faReportAcceptedDateTime) {
+        this.faReportAcceptedDateTime = faReportAcceptedDateTime;
     }
 }

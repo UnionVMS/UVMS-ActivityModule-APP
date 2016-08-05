@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FluxCharacteristicsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -72,4 +73,9 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     })
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic, FluxLocationEntity fluxLocationEntity, @MappingTarget FluxCharacteristicEntity fluxCharacteristicEntity);
 
+
+    @Mappings({
+            @Mapping(source = "valueDateTime",target = "valueDateTime")
+    })
+    public abstract FluxCharacteristicsDTO mapToFluxCharacteristicsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
 }

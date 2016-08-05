@@ -62,7 +62,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return resultList;
     }
 
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination)  {
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination) throws ServiceException {
+        if(fishingTripId == null || fishingTripId.length() == 0)
+            throw new ServiceException("fishing Trip Id is null or empty. ");
+
         String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId";
 
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);

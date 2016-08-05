@@ -12,13 +12,10 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.service.mapper.DelimitedPeriodMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FluxLocationDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -86,67 +83,58 @@ public class ActivityServiceBean implements ActivityService{
 
     }
 
-    public void getFishingActivityReportForFishingTrip(){
-        LOG.info("inside getFishingActivityReportForFishingTrip:");
-        List<FishingActivityEntity> fishingActivityList=fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706",null);
+    public List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId) throws ServiceException {
 
+        List<FishingActivityEntity> fishingActivityList=fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId,null);
+
+        if(fishingActivityList.size()==0)
+            return Collections.emptyList();
+
+        List<ReportDTO> reportDTOList=new ArrayList<>();
         for(FishingActivityEntity activityEntity:fishingActivityList){
-            String faTypeCode =activityEntity.getTypeCode();
-            LOG.info("TYPE (Notification/Declaration) ::::"+faTypeCode + "("+activityEntity.getFaReportDocument().getTypeCode()+ ")");
-            LOG.info("Date ::::"+activityEntity.getOccurence() );
 
-            Set<FluxLocationEntity> fluxLocations= activityEntity.getFluxLocations();
-            StringBuilder location= new StringBuilder();
-            for(FluxLocationEntity fluxLoc :fluxLocations ) {
-                if (("DEPARTURE".equalsIgnoreCase(faTypeCode) || "ARRIVAL".equalsIgnoreCase(faTypeCode) || "LANDING".equalsIgnoreCase(faTypeCode) ||
-                        "TRANSSHIPMENT".equalsIgnoreCase(faTypeCode)) && "LOCATION".equals(fluxLoc.getFluxLocationType()) || "AREA".equals(fluxLoc.getFluxLocationType())) {
-                    location.append(fluxLoc.getFluxLocationIdentifierSchemeId() + "-");
-                }else{
-                    location.append(fluxLoc.getFluxLocationIdentifier()+ " ");
-                    location.append(fluxLoc.getLongitude() + " " + fluxLoc.getLatitude() + " ");
-                }
+            ReportDTO reportDTO=new ReportDTO();
+            reportDTO.setFishingActivityId(activityEntity.getId());
+            reportDTO.setActivityType(activityEntity.getTypeCode());
 
-                location.append(fluxLoc.getRfmoCode()+" ");
+            if(activityEntity.getFaReportDocument() !=null) {
+                reportDTO.setFaReportDocumentType(activityEntity.getFaReportDocument().getTypeCode());
+                reportDTO.setFaReportAcceptedDateTime(activityEntity.getFaReportDocument().getAcceptedDatetime());
             }
 
-            LOG.info("Location ::::"+location );
-            LOG.info("Reason ::::"+activityEntity.getReasonCode() );
-            StringBuilder remarks = new StringBuilder();
-            if ("DEPARTURE".equals(faTypeCode) || "FISHING_OPERATION".equals(faTypeCode)){
-                Set<FishingGearEntity> gears= activityEntity.getFishingGears();
-                for(FishingGearEntity fishingGear:gears){
-                    remarks.append(fishingGear.getTypeCode()+" ");
-                }
-            }else if("ARRIVAL".equals(faTypeCode) && "notification".equals(activityEntity.getFaReportDocument().getTypeCode())){
-                remarks.append(activityEntity.getFaReportDocument().getAcceptedDatetime());
-            }else if("ARRIVAL".equals(faTypeCode) && "declaration".equals(activityEntity.getFaReportDocument().getTypeCode())){
-                Set<FluxCharacteristicEntity> fluxCharacteristics=activityEntity.getFluxCharacteristics();
-                for(FluxCharacteristicEntity fluxCharacteristic:fluxCharacteristics){
-                    remarks.append(fluxCharacteristic.getValueDateTime()+" ");
-                }
-            }else if("LANDING".equals(faTypeCode) || "TRANSSHIPMENT".equals(faTypeCode)){
-                Set<DelimitedPeriodEntity> delimitedPeriodEntities=activityEntity.getDelimitedPeriods();
-                for(DelimitedPeriodEntity dp:delimitedPeriodEntities){
-                    remarks.append(dp.getEndDate()+" ");
-                }
-            }else if("ENTRY".equals(faTypeCode) || "EXIT".equals(faTypeCode) || "RELOCATION".equals(faTypeCode)){
-                remarks.append(activityEntity.getOccurence());
-            }
+            reportDTO.setOccurence(activityEntity.getOccurence());
+            reportDTO.setReason(activityEntity.getReasonCode());
 
-            LOG.info("Remarks ::::"+remarks );
+
             List<DelimitedPeriodDTO> delimitedPeriodDTOEntities=new ArrayList<>();
             for(DelimitedPeriodEntity dp:activityEntity.getDelimitedPeriods()){
                 delimitedPeriodDTOEntities.add(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDTO(dp));
             }
+            reportDTO.setDelimitedPeriod(delimitedPeriodDTOEntities);
 
-
-
-            List<FluxLocationDTO> fluxLocationsDTO=new ArrayList<>();
-
+            Set<FluxLocationEntity> fluxLocations= activityEntity.getFluxLocations();
+            List<FluxLocationDTO> fluxLocationsDTOList=new ArrayList<>();
             for(FluxLocationEntity fluxLoc :fluxLocations ) {
-                fluxLocationsDTO.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDTO(fluxLoc));
+                fluxLocationsDTOList.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDTO(fluxLoc));
             }
+            reportDTO.setFluxLocations(fluxLocationsDTOList);
+
+
+            List<FluxCharacteristicsDTO> fluxCharacteristicsDTOList=new ArrayList<>();
+            for(FluxCharacteristicEntity fluxCharacteristic:activityEntity.getFluxCharacteristics()){
+                fluxCharacteristicsDTOList.add(FluxCharacteristicsMapper.INSTANCE.mapToFluxCharacteristicsDTO(fluxCharacteristic));
+            }
+            reportDTO.setFluxCharacteristics(fluxCharacteristicsDTOList);
+
+            List<FishingGearDTO> fishingGearDTOList=new ArrayList<>();
+            for(FishingGearEntity fishingGear:activityEntity.getFishingGears()){
+               fishingGearDTOList.add(FishingGearMapper.INSTANCE.mapToFishingGearDTO(fishingGear));
+            }
+            reportDTO.setFishingGears(fishingGearDTOList);
+            reportDTOList.add(reportDTO);
         }
+
+        return reportDTOList;
     }
 
 
