@@ -101,7 +101,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/listByQuery")
+    @Path("/list")
     public Response listActivityReportsByQuery(@Context HttpServletRequest request,
                                                @Context HttpServletResponse response, FishingActivityQuery fishingActivityQuery) {
         Response responseMethod;
@@ -126,20 +126,5 @@ public class FishingActivityResource extends UnionVMSResource {
         return responseMethod;
     }
 
-    @GET
-    @Path("/list")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response listActivityReports(@Context HttpServletRequest request,
-                                        @Context HttpServletResponse response) {
-        Response responseMethod;
-        if( request.isUserInRole("LIST_ACTIVITY_REPORTS")) {
-            LOG.info("listActivityReports ");
-            List<FishingActivityReportDTO> dtoList = activityService.getFishingActivityList();
-            responseMethod = createSuccessResponse(dtoList);
-            LOG.info("successful");
-        }else{
-            responseMethod= createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-        }
-        return responseMethod;
-    }
+
 }

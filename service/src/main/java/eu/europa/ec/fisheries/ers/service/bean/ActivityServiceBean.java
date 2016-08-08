@@ -43,7 +43,6 @@ public class ActivityServiceBean implements ActivityService{
 
     private FishingActivityDao fishingActivityDao;
 
-
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
@@ -56,9 +55,14 @@ public class ActivityServiceBean implements ActivityService{
 
     @Override
     public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+        List<FishingActivityEntity> activityList;
+        if(query.getSearchCriteria() ==null || query.getSearchCriteria().size()==0){
+            activityList =  fishingActivityDao.getFishingActivityList(query.getPagination());
+        }else{
+            activityList = fishingActivityDao.getFishingActivityListByQuery(query);
+        }
 
 
-        List<FishingActivityEntity> activityList = fishingActivityDao.getFishingActivityListByQuery(query);
         if(activityList==null || activityList.isEmpty()){
             LOG.info("Could not find FishingActivity entities matching search criteria");
             return Collections.emptyList();
@@ -69,19 +73,7 @@ public class ActivityServiceBean implements ActivityService{
        return dtos;
     }
 
-    @Override
-    public List<FishingActivityReportDTO> getFishingActivityList(){
 
-        List<FishingActivityEntity> fishingActivityList =fishingActivityDao.getFishingActivityList();
-        if(fishingActivityList==null || fishingActivityList.isEmpty()){
-            LOG.info("Could not find FishingActivity entities.");
-            return Collections.emptyList();
-        }
-
-        return FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(fishingActivityList);
-
-
-    }
 
     public List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId) throws ServiceException {
 
@@ -97,9 +89,12 @@ public class ActivityServiceBean implements ActivityService{
             reportDTO.setFishingActivityId(activityEntity.getId());
             reportDTO.setActivityType(activityEntity.getTypeCode());
 
-            if(activityEntity.getFaReportDocument() !=null) {
-                reportDTO.setFaReportDocumentType(activityEntity.getFaReportDocument().getTypeCode());
-                reportDTO.setFaReportAcceptedDateTime(activityEntity.getFaReportDocument().getAcceptedDatetime());
+            FaReportDocumentEntity faReportDocumentEntity= activityEntity.getFaReportDocument();
+            if(faReportDocumentEntity !=null) {
+                reportDTO.setFaReportDocumentType(faReportDocumentEntity.getTypeCode());
+                reportDTO.setFaReportAcceptedDateTime(faReportDocumentEntity.getAcceptedDatetime());
+                if(faReportDocumentEntity.getFluxReportDocument() !=null )
+                    reportDTO.setUniqueReportId(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId());
             }
 
             reportDTO.setOccurence(activityEntity.getOccurence());

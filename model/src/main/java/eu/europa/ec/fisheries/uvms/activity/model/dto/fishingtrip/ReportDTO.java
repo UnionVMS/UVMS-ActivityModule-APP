@@ -22,6 +22,7 @@ import java.util.List;
 public class ReportDTO {
 
     private int fishingActivityId;
+    private String uniqueReportId;
     private Date occurence;
     private Date faReportAcceptedDateTime;
     private String activityType;
@@ -112,5 +113,13 @@ public class ReportDTO {
 
     public void setFaReportAcceptedDateTime(Date faReportAcceptedDateTime) {
         this.faReportAcceptedDateTime = faReportAcceptedDateTime;
+    }
+
+    public String getUniqueReportId() {
+        return uniqueReportId;
+    }
+
+    public void setUniqueReportId(String uniqueReportId) {
+        this.uniqueReportId = uniqueReportId;
     }
 }

@@ -50,6 +50,22 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return getFishingActivityList(null);
     }
 
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination) throws ServiceException {
+        if(fishingTripId == null || fishingTripId.length() == 0)
+            throw new ServiceException("fishing Trip Id is null or empty. ");
+
+        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId order by flux.fluxReportDocumentId";
+
+        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
+        typedQuery.setParameter("fishingTripId", fishingTripId);
+        if(pagination!=null) {
+            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
+            typedQuery.setMaxResults(pagination.getListSize());
+        }
+        List<FishingActivityEntity> resultList = typedQuery.getResultList();
+        return resultList;
+    }
+
     public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
         String sql = "SELECT DISTINCT a  from FishingActivityEntity a where a.faReportDocument.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by a.faReportDocument.id asc  ";
 
@@ -62,21 +78,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return resultList;
     }
 
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination) throws ServiceException {
-        if(fishingTripId == null || fishingTripId.length() == 0)
-            throw new ServiceException("fishing Trip Id is null or empty. ");
 
-        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId";
-
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
-        typedQuery.setParameter("fishingTripId", fishingTripId);
-        if(pagination!=null) {
-            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            typedQuery.setMaxResults(pagination.getListSize());
-        }
-        List<FishingActivityEntity> resultList = typedQuery.getResultList();
-        return resultList;
-    }
 
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
