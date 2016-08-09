@@ -11,7 +11,7 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
+package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
 import java.util.Date;
 

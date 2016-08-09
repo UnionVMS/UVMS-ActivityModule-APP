@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FluxLocationDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxLocationDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

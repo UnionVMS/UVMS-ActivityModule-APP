@@ -14,8 +14,8 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -93,8 +93,14 @@ public class ActivityServiceBean implements ActivityService{
             if(faReportDocumentEntity !=null) {
                 reportDTO.setFaReportDocumentType(faReportDocumentEntity.getTypeCode());
                 reportDTO.setFaReportAcceptedDateTime(faReportDocumentEntity.getAcceptedDatetime());
-                if(faReportDocumentEntity.getFluxReportDocument() !=null )
-                    reportDTO.setUniqueReportId(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId());
+                FluxReportDocumentEntity fluxReportDocument =faReportDocumentEntity.getFluxReportDocument();
+                if(fluxReportDocument !=null ) {
+                    reportDTO.setUniqueReportId(fluxReportDocument.getFluxReportDocumentId());
+                    boolean isCorrection =true;
+                    if(fluxReportDocument.getReferenceId() ==null || fluxReportDocument.getReferenceId().length()==0)
+                        isCorrection =false;
+                    reportDTO.setCorrection(isCorrection);
+                }
             }
 
             reportDTO.setOccurence(activityEntity.getOccurence());

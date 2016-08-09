@@ -54,7 +54,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
 
-        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId order by flux.fluxReportDocumentId";
+      //  String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId order by flux.fluxReportDocumentId";
+        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId order by a.typeCode, flux.fluxReportDocumentId";
 
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
         typedQuery.setParameter("fishingTripId", fishingTripId);
@@ -67,7 +68,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
-        String sql = "SELECT DISTINCT a  from FishingActivityEntity a where a.faReportDocument.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by a.faReportDocument.id asc  ";
+        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by flux.fluxReportDocumentId asc  ";
 
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
         if(pagination!=null) {

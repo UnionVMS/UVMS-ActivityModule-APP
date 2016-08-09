@@ -14,22 +14,19 @@
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by sanera on 19/07/2016.
  */
-public class FishingActivityReportDTO  implements Serializable  {
+public class FishingActivityReportDTO extends FishingActivityDTO implements Serializable  {
 
-    private String uniqueId;
+
     private String from;
-    private Date occurence;
     private String vesselTransportMeansName;
     private List<String> vesselTransportMeansIdList;
     private String purposeCode;
     private String FAReportType;
-    private String activityType;
     private List<String> areas;
     private List<String> port;
     private List<String> fishingGear;
@@ -39,31 +36,6 @@ public class FishingActivityReportDTO  implements Serializable  {
 
     public FishingActivityReportDTO(){
 
-    }
-
-    public FishingActivityReportDTO(String uniqueId, String from, String vesselTransportMeansName, List<String> vesselTransportMeansIdList, String purposeCode, String FAReportType, List<String> areas, List<String> fishingGear, String activityType, List<String> port, List<String> speciesCode, List<Long> quantity, List<ContactPersonDTO> contactPerson, Date occurence) {
-        this.uniqueId = uniqueId;
-        this.from = from;
-        this.vesselTransportMeansName = vesselTransportMeansName;
-        this.vesselTransportMeansIdList = vesselTransportMeansIdList;
-        this.purposeCode = purposeCode;
-        this.FAReportType = FAReportType;
-        this.areas = areas;
-        this.fishingGear = fishingGear;
-        this.activityType = activityType;
-        this.port = port;
-        this.speciesCode = speciesCode;
-        this.quantity = quantity;
-        this.contactPerson = contactPerson;
-        this.occurence = occurence;
-    }
-
-    public String getUniqueId() {
-        return uniqueId;
-    }
-
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
     }
 
     public String getFrom() {
@@ -106,13 +78,7 @@ public class FishingActivityReportDTO  implements Serializable  {
         this.FAReportType = FAReportType;
     }
 
-    public String getActivityType() {
-        return activityType;
-    }
 
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
-    }
 
     public List<String> getAreas() {
         return areas;
@@ -162,11 +128,5 @@ public class FishingActivityReportDTO  implements Serializable  {
         this.contactPerson = contactPerson;
     }
 
-    public Date getOccurence() {
-        return occurence;
-    }
 
-    public void setOccurence(Date occurence) {
-        this.occurence = occurence;
-    }
 }

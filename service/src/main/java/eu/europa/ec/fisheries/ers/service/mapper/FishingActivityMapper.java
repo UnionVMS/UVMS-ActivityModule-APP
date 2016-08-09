@@ -82,7 +82,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     @Mappings({
-            @Mapping(target = "uniqueId", expression = "java(getUniqueId(entity))"),
+            @Mapping(target = "uniqueReportId", expression = "java(getUniqueId(entity))"),
             @Mapping(target = "from", expression = "java(getFrom(entity))"),
             @Mapping(source = "occurence", target = "occurence"),
             @Mapping(target = "vesselTransportMeansName", expression = "java(getVesselTransportMeansName(entity))"),
@@ -95,6 +95,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingGear", expression = "java(getFishingGears(entity))"),
             @Mapping(target = "speciesCode", expression = "java(getSpeciesCode(entity))"),
             @Mapping(target = "quantity", expression = "java(getQuantity(entity))"),
+            @Mapping(target = "fluxLocations", expression = "java(null)"),
+            @Mapping(target = "fishingGears", expression = "java(null)"),
+            @Mapping(target = "fluxCharacteristics", expression = "java(null)"),
+            @Mapping(target = "delimitedPeriod", expression = "java(null)"),
             @Mapping(target = "contactPerson", expression = "java(getContactPerson(entity))")
     })
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);

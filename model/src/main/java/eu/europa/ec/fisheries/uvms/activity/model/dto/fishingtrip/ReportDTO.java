@@ -13,83 +13,20 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
 
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityDTO;
+
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by sanera on 04/08/2016.
  */
-public class ReportDTO {
+public class ReportDTO extends FishingActivityDTO{
 
-    private int fishingActivityId;
-    private String uniqueReportId;
-    private Date occurence;
+
     private Date faReportAcceptedDateTime;
-    private String activityType;
-    private String reason;
     private String faReportDocumentType;
-    private List<FluxLocationDTO> fluxLocations;
-    private List<FishingGearDTO> fishingGears;
-    private List<FluxCharacteristicsDTO> fluxCharacteristics;
-    private List<DelimitedPeriodDTO> delimitedPeriod;
+    private boolean isCorrection;
 
-
-
-    public int getFishingActivityId() {
-        return fishingActivityId;
-    }
-
-    public void setFishingActivityId(int fishingActivityId) {
-        this.fishingActivityId = fishingActivityId;
-    }
-
-    public Date getOccurence() {
-        return occurence;
-    }
-
-    public void setOccurence(Date occurence) {
-        this.occurence = occurence;
-    }
-
-    public String getActivityType() {
-        return activityType;
-    }
-
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
-    }
-
-    public List<FluxLocationDTO> getFluxLocations() {
-        return fluxLocations;
-    }
-
-    public void setFluxLocations(List<FluxLocationDTO> fluxLocations) {
-        this.fluxLocations = fluxLocations;
-    }
-
-    public List<FishingGearDTO> getFishingGears() {
-        return fishingGears;
-    }
-
-    public void setFishingGears(List<FishingGearDTO> fishingGears) {
-        this.fishingGears = fishingGears;
-    }
-
-    public List<FluxCharacteristicsDTO> getFluxCharacteristics() {
-        return fluxCharacteristics;
-    }
-
-    public void setFluxCharacteristics(List<FluxCharacteristicsDTO> fluxCharacteristics) {
-        this.fluxCharacteristics = fluxCharacteristics;
-    }
-
-    public List<DelimitedPeriodDTO> getDelimitedPeriod() {
-        return delimitedPeriod;
-    }
-
-    public void setDelimitedPeriod(List<DelimitedPeriodDTO> delimitedPeriod) {
-        this.delimitedPeriod = delimitedPeriod;
-    }
 
     public String getFaReportDocumentType() {
         return faReportDocumentType;
@@ -99,15 +36,7 @@ public class ReportDTO {
         this.faReportDocumentType = faReportDocumentType;
     }
 
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public Date getFaReportAcceptedDateTime() {
+   public Date getFaReportAcceptedDateTime() {
         return faReportAcceptedDateTime;
     }
 
@@ -115,11 +44,11 @@ public class ReportDTO {
         this.faReportAcceptedDateTime = faReportAcceptedDateTime;
     }
 
-    public String getUniqueReportId() {
-        return uniqueReportId;
+    public boolean isCorrection() {
+        return isCorrection;
     }
 
-    public void setUniqueReportId(String uniqueReportId) {
-        this.uniqueReportId = uniqueReportId;
+    public void setCorrection(boolean correction) {
+        isCorrection = correction;
     }
 }

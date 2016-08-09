@@ -11,28 +11,39 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
+package eu.europa.ec.fisheries.uvms.activity.model.dto;
+
+import java.util.Date;
 
 /**
  * Created by sanera on 04/08/2016.
  */
-public class FishingGearDTO {
-    private String gearTypeCode;
-    private String gearRoleCode;
+public class DelimitedPeriodDTO {
+    private Date startDate;
+    private Date endDate;
+    private Double duration;
 
-    public String getGearTypeCode() {
-        return gearTypeCode;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setGearTypeCode(String gearTypeCode) {
-        this.gearTypeCode = gearTypeCode;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public String getGearRoleCode() {
-        return gearRoleCode;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setGearRoleCode(String gearRoleCode) {
-        this.gearRoleCode = gearRoleCode;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Double duration) {
+        this.duration = duration;
     }
 }
