@@ -41,7 +41,7 @@ import java.util.Set;
 @Local(ActivityService.class)
 @Transactional
 @Slf4j
-public class ActivityServiceBean implements ActivityService{
+public class ActivityServiceBean implements ActivityService {
 
 
     @PersistenceContext(unitName = "activityPU")
@@ -81,7 +81,7 @@ public class ActivityServiceBean implements ActivityService{
         List<FaReportDocumentEntity> allFaReportDocuments = new ArrayList<>();
         List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByReferenceId(referenceId);
         allFaReportDocuments.addAll(faReportDocumentEntities);
-        for (FaReportDocumentEntity faReportDocumentEntity : faReportDocumentEntities) {
+        for (FaReportDocumentEntity faReportDocumentEntity : faReportDocumentEntities) {  //Find all the referenced FA Report recursively
             allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()));
         }
         return allFaReportDocuments;
