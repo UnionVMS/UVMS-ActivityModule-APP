@@ -23,13 +23,43 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	            deleteAllFrom("activity.activity_fa_catch"),
 	            deleteAllFrom("activity.activity_fa_report_document"),
 	            deleteAllFrom("activity.activity_flux_report_document"),
-	           deleteAllFrom("activity.activity_vessel_transport_means")
+	           deleteAllFrom("activity.activity_vessel_transport_means"),
+			 deleteAllFrom("activity.activity_fishing_trip"),
+			 deleteAllFrom("activity.activity_fishing_trip_Identifier")
 
 
 	    );
-	 
-	
 
+
+	protected static final Operation INSERT_ERS_FISHING_TRIP_DATA = sequenceOf(
+			insertInto("activity.activity_fishing_trip")
+					.columns("id", "type_code", "type_code_listid", "fa_catch_id", "fishing_activity_id")
+					.values(1, "JFO", "EU_TRIP_ID", 1, 1)
+					.build(),
+			insertInto("activity.activity_fishing_trip")
+					.columns("id", "type_code", "type_code_listid", "fa_catch_id", "fishing_activity_id")
+					.values(2, "JFO", "EU_TRIP_ID", 2, 2)
+					.build(),
+			insertInto("activity.activity_fishing_trip")
+					.columns("id", "type_code", "type_code_listid", "fa_catch_id", "fishing_activity_id")
+					.values(3, "JFO", "EU_TRIP_ID", 3, 3)
+					.build()
+	);
+
+	protected static final Operation INSERT_ERS_FISHING_TRIP_IDENTIFIER_DATA = sequenceOf(
+			insertInto("activity.activity_fishing_trip_Identifier")
+					.columns("id", "fishing_trip_id", "trip_id", "trip_scheme_id")
+					.values(1, 1, "NOR-TRP-20160517234053706", "EU_TRIP_ID")
+					.build(),
+			insertInto("activity.activity_fishing_trip_Identifier")
+					.columns("id", "fishing_trip_id", "trip_id", "trip_scheme_id")
+					.values(2, 2, "NOR-TRP-20160517234053706", "EU_TRIP_ID")
+					.build(),
+			insertInto("activity.activity_fishing_trip_Identifier")
+					.columns("id", "fishing_trip_id", "trip_id", "trip_scheme_id")
+					.values(3, 3, "NOR-TRP-20160517234053706", "EU_TRIP_ID")
+					.build()
+	);
 	    
 
 	  	protected static final Operation INSERT_ERS_FISHING_ACTIVITY_DATA = sequenceOf(
@@ -65,7 +95,15 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	            insertInto("activity.activity_fa_catch")
 	                    .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity","weight_measure","weight_measure_unit_code","weight_measure_list_id","usage_code","usage_code_list_id","weighing_means_code","weighing_means_code_list_id","size_distribution_id")
 	                    .values(1, 1,"AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12,10.00,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE",1)
-	                    .build()
+	                    .build(),
+				insertInto("activity.activity_fa_catch")
+						.columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity","weight_measure","weight_measure_unit_code","weight_measure_list_id","usage_code","usage_code_list_id","weighing_means_code","weighing_means_code_list_id","size_distribution_id")
+						.values(2, 1,"AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12,10.00,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE",1)
+						.build(),
+				insertInto("activity.activity_fa_catch")
+						.columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity","weight_measure","weight_measure_unit_code","weight_measure_list_id","usage_code","usage_code_list_id","weighing_means_code","weighing_means_code_list_id","size_distribution_id")
+						.values(3, 1,"AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12,10.00,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE",1)
+						.build()
 	   );
 		
 

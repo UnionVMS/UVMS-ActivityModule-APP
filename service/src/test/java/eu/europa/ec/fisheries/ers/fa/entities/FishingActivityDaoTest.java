@@ -35,7 +35,8 @@ private FishingActivityDao dao=new FishingActivityDao(em);
 
  @Before   
   public void prepare(){
-      Operation operation = sequenceOf(DELETE_ALL,INSERT_ERS_SIZE_DISTRIBUTION_DATA,INSERT_ERS_FA_CATCH_DATA,INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA, INSERT_ERS_FISHING_ACTIVITY_DATA);
+      Operation operation = sequenceOf(DELETE_ALL,INSERT_ERS_SIZE_DISTRIBUTION_DATA,INSERT_ERS_FA_CATCH_DATA,INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA, INSERT_ERS_FISHING_ACTIVITY_DATA,
+              INSERT_ERS_FISHING_TRIP_DATA,INSERT_ERS_FISHING_TRIP_IDENTIFIER_DATA);
       DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
       dbSetupTracker.launchIfNecessary(dbSetup);
   }
@@ -95,6 +96,17 @@ private FishingActivityDao dao=new FishingActivityDao(em);
 
         dbSetupTracker.skipNextLaunch();
         List<FishingActivityEntity> finishingActivityList=dao.getFishingActivityList();
+        assertNotNull(finishingActivityList);
+        assertNotEquals(0,finishingActivityList.size());
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingActivityListForFishingTrip() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+        List<FishingActivityEntity> finishingActivityList=dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706",null);
         assertNotNull(finishingActivityList);
         assertNotEquals(0,finishingActivityList.size());
 
