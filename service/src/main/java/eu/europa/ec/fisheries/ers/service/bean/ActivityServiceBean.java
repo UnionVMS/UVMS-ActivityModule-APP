@@ -10,11 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -41,17 +43,49 @@ import java.util.Set;
 @Slf4j
 public class ActivityServiceBean implements ActivityService{
 
-    private FishingActivityDao fishingActivityDao;
 
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
+    private FaReportDocumentDao faReportDocumentDao;
+
+    private FishingActivityDao fishingActivityDao;
+
     @PostConstruct
     public void init() {
         fishingActivityDao = new FishingActivityDao(em);
+        faReportDocumentDao = new FaReportDocumentDao(em);
     }
 
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<FaReportCorrectionDTO> getFaReportCorrections(String selectedFaReportId) throws ServiceException {
+        List<FaReportDocumentEntity> faReportDocumentEntities = getReferencedFaReportDocuments(selectedFaReportId);
+        List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(faReportDocumentEntities);
+        if (!faReportCorrectionDTOs.isEmpty()) {
+            log.info("Sort collection by date if the list is not empty");
+            Collections.sort(faReportCorrectionDTOs);
+        }
+        return faReportCorrectionDTOs;
+    }
+
+    private List<FaReportDocumentEntity> getReferencedFaReportDocuments(String referenceId) throws ServiceException {
+        if (referenceId == null) {
+            return Collections.emptyList();
+        }
+        log.info("Find reference fishing activity report for  : " + referenceId);
+        List<FaReportDocumentEntity> allFaReportDocuments = new ArrayList<>();
+        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByReferenceId(referenceId);
+        allFaReportDocuments.addAll(faReportDocumentEntities);
+        for (FaReportDocumentEntity faReportDocumentEntity : faReportDocumentEntities) {
+            allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()));
+        }
+        return allFaReportDocuments;
+    }
 
     @Override
     public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
@@ -72,7 +106,6 @@ public class ActivityServiceBean implements ActivityService{
 
        return dtos;
     }
-
 
 
     public List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId) throws ServiceException {

@@ -117,6 +117,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 				insertInto("activity.activity_flux_report_document")
 						.columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
 						 .values(2, "FLUX_REPORT_DOCUMENT2", null, "2016-06-27 07:47:31.711","PURPOSE", "PURPOSE_CODE_LIST", null, "OWNER_FLUX_ID_2","flux2")
+						.build(),
+				insertInto("activity.activity_flux_report_document")
+						.columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
+						.values(3, "ID 3","ID 1",java.sql.Date.valueOf("2014-12-12"),"CODE11","CODELISTID","PURPOSE","OWNER_PARTY_ID","NAME")
+						.build(),
+				insertInto("activity.activity_flux_report_document")
+						.columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
+						.values(4, "ID 4", "ID 3", java.sql.Date.valueOf("2015-12-12"),"PURPOSE", "PURPOSE_CODE_LIST", null, "OWNER_FLUX_ID_2","flux2")
 						.build()
 	  );
 
@@ -144,6 +152,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 				insertInto("activity.activity_fa_report_document")
 						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
 						.values(2,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),2,2,"fmc","fmc_list")
+						.build(),
+				insertInto("activity.activity_fa_report_document")
+						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
+						.values(3,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),3,1,"fmc","fmc_list")
+						.build(),
+				insertInto("activity.activity_fa_report_document")
+						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
+						.values(4,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),4,2,"fmc","fmc_list")
 						.build()
 	  );
 

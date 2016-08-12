@@ -42,12 +42,25 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
      * Get FaReportDocument by one or more Report identifiers
      *
      * @param strings
-     * @return
+     * @return List<FaReportDocumentEntity>
      * @throws ServiceException
      */
     public List<FaReportDocumentEntity> findFaReportsByIds(Set<String> strings) throws ServiceException {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID, FaReportDocumentEntity.class);
         query.setParameter(REPORT_IDS, strings);
+        return query.getResultList();
+    }
+
+    /**
+     * Find Fa Report document by reference id of a Fishing activity Report
+     *
+     * @param referenceId Reference Id
+     * @return List<FaReportDocumentEntity>
+     * @throws ServiceException
+     */
+    public List<FaReportDocumentEntity> findFaReportsByReferenceId(String referenceId) throws ServiceException {
+        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_REF_ID, FaReportDocumentEntity.class);
+        query.setParameter(REPORT_IDS, referenceId);
         return query.getResultList();
     }
 

@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
@@ -45,6 +46,16 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "status", expression = "java(setStatusAsNew())")
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, @MappingTarget FaReportDocumentEntity faReportDocumentEntity);
+
+    @Mappings({
+            @Mapping(target = "correctionType", source = "status"),
+            @Mapping(target = "correctionDate", source = "fluxReportDocument.creationDatetime"),
+            @Mapping(target = "faReportIdentifier", source = "fluxReportDocument.fluxReportDocumentId"),
+            @Mapping(target = "ownerFluxParty", source = "fluxReportDocument.ownerFluxPartyId")
+    })
+    public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
+
+    public abstract List<FaReportCorrectionDTO> mapToFaReportCorrectionDtoList(List<FaReportDocumentEntity> faReportDocumentEntities);
 
     @Mappings({
             @Mapping(target = "faReportIdentifierId", expression = "java(getIdType(idType))"),

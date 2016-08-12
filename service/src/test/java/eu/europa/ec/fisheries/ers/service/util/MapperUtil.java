@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.util;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
 
@@ -61,6 +62,40 @@ public class MapperUtil {
 
 
           return fishingActivityEntity;
+    }
+
+    public static FaReportDocumentEntity getFaReportDocumentEntity() {
+        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
+        faReportDocumentEntity.setStatus(FaReportStatusEnum.UPDATED.getStatus());
+        faReportDocumentEntity.setTypeCode("Type Code 1");
+        faReportDocumentEntity.setTypeCodeListId("57thfy-58tjd84-58thjf-58tjrj9");
+        faReportDocumentEntity.setAcceptedDatetime(new Date());
+        faReportDocumentEntity.setFmcMarker("FMC Marker");
+        faReportDocumentEntity.setFmcMarkerListId("FMC Marker list Id");
+
+        FaReportIdentifierEntity faReportIdentifierEntity = new FaReportIdentifierEntity();
+        faReportIdentifierEntity.setFaReportIdentifierId("Identifier Id 1");
+        faReportIdentifierEntity.setFaReportIdentifierSchemeId("57th785-tjf845-tjfui5-tjfuir8");
+        faReportIdentifierEntity.setFaReportDocument(faReportDocumentEntity);
+        faReportDocumentEntity.setFaReportIdentifiers(new HashSet<FaReportIdentifierEntity>(Arrays.asList(faReportIdentifierEntity)));
+
+        FluxReportDocumentEntity fluxReportDocumentEntity = getFluxReportDocumentEntity();
+        fluxReportDocumentEntity.setFaReportDocument(faReportDocumentEntity);
+        faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
+        return faReportDocumentEntity;
+    }
+
+    public static FluxReportDocumentEntity getFluxReportDocumentEntity() {
+        FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
+        fluxReportDocumentEntity.setCreationDatetime(new Date());
+        fluxReportDocumentEntity.setFluxReportDocumentId("Doc Id 1");
+        fluxReportDocumentEntity.setOwnerFluxPartyId("Flux party Id 1");
+        fluxReportDocumentEntity.setOwnerFluxPartyName("Flux party name");
+        fluxReportDocumentEntity.setPurpose("Test purpose");
+        fluxReportDocumentEntity.setPurposeCode("5");
+        fluxReportDocumentEntity.setPurposeCodeListId("57thf-58fj88-4d9834-thdue");
+        fluxReportDocumentEntity.setReferenceId("Ref Id 1");
+        return fluxReportDocumentEntity;
     }
 
 

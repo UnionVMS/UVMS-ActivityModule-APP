@@ -28,6 +28,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -47,11 +48,11 @@ import java.util.List;
 @Slf4j
 @Stateless
 public class FishingActivityResource extends UnionVMSResource {
-    private final static Logger LOG = LoggerFactory.getLogger(FishingActivityResource.class);
+
+    private static final String LIST_ACTIVITY_REPORTS = "LIST_ACTIVITY_REPORTS";
 
     @EJB
     private FluxMessageService fluxResponseMessageService;
-
 
     @EJB
     private ActivityService activityService;
@@ -106,7 +107,7 @@ public class FishingActivityResource extends UnionVMSResource {
                                                @Context HttpServletResponse response, FishingActivityQuery fishingActivityQuery) {
         Response responseMethod;
         if( request.isUserInRole("LIST_ACTIVITY_REPORTS")){
-            LOG.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
+            log.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
 
             if(fishingActivityQuery==null)
                 return  createErrorResponse("Query to find list is null.");
@@ -115,9 +116,9 @@ public class FishingActivityResource extends UnionVMSResource {
             try {
                 dtoList = activityService.getFishingActivityListByQuery(fishingActivityQuery);
                 responseMethod = createSuccessResponse(dtoList);
-                LOG.info("successful");
+                log.info("successful");
             } catch (ServiceException e) {
-                LOG.error("Exception while trying to get Fishing Activity Report list.",e);
+                log.error("Exception while trying to get Fishing Activity Report list.",e);
                 responseMethod = createErrorResponse("Exception while trying to get Fishing Activity Report list.");
             }
         }else{
@@ -126,5 +127,18 @@ public class FishingActivityResource extends UnionVMSResource {
         return responseMethod;
     }
 
+    @GET
+    @Path("/history/{referenceId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    public Response getAllCorrections(@Context HttpServletRequest request,
+                                      @Context HttpServletResponse response,
+                                      @PathParam("referenceId") String referenceId) throws ServiceException {
 
+        if( request.isUserInRole(LIST_ACTIVITY_REPORTS)) {
+            return createSuccessResponse(activityService.getFaReportCorrections(referenceId));
+        } else {
+            return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+        }
+    }
 }

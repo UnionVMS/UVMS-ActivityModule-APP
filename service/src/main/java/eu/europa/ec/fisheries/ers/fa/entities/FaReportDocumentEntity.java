@@ -18,8 +18,16 @@ import java.util.Set;
 
 @NamedQueries({
 		@NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID,
-		query = "SELECT fareport FROM FaReportDocumentEntity fareport INNER JOIN FETCH fareport.fluxReportDocument fluxreport WHERE " +
-				"fluxreport.fluxReportDocumentId IN :reportIds")
+				query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+						"INNER JOIN FETCH fareport.fluxReportDocument fluxreport " +
+						"WHERE fluxreport.fluxReportDocumentId IN :reportIds"),
+		@NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_REF_ID,
+				query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+						"INNER JOIN FETCH fareport.fluxReportDocument fluxreport " +
+						"WHERE fluxreport.fluxReportDocumentId = (" +
+						"SELECT report.referenceId FROM FaReportDocumentEntity fa " +
+						"INNER JOIN fa.fluxReportDocument report " +
+						"WHERE report.fluxReportDocumentId = :reportIds)")
 })
 
 @Entity
@@ -27,6 +35,7 @@ import java.util.Set;
 public class FaReportDocumentEntity implements Serializable {
 
 	public static final String FIND_BY_FA_ID = "findByFaId";
+	public static final String FIND_BY_FA_REF_ID = "findByFaRefId";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

@@ -26,8 +26,8 @@ public interface FluxMessageService {
      * If there is a correction (e.g. update, cancel, delete) than the original FaReportDocument is marked with the corresponding status.
      *</p>
      *
-     * @param faReportDocuments
-     * @throws ServiceException
+     * @param faReportDocuments Flux Fa Report Documents
+     * @throws ServiceException Exception
      */
     void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments) throws ServiceException;
 }

@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
@@ -25,5 +26,18 @@ public interface ActivityService {
      List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException;
 
      List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId) throws ServiceException;
+
+
+     /**
+      * <p>
+      * This service returns the list of corrections (e.g. deletes, cancels, updates) received previously for a Fishing Activity report
+      * Corrections are identified by the <code>referenceId</code> of the selected <code>FaReportDocumentId</code> recursively.
+      * </p>
+      *
+      * @param selectedFaReportId selected FA report Id
+      * @return List<FaReportCorrectionDTO> list of corrections made
+      * @throws ServiceException Exception
+      */
+     List<FaReportCorrectionDTO> getFaReportCorrections(String selectedFaReportId) throws ServiceException;
 
 }
