@@ -12,12 +12,16 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapStockDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPStock;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/15/2016.
@@ -33,4 +37,11 @@ public abstract class AapStockMapper extends BaseMapper {
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)")
     })
     public abstract AapStockEntity mapToAapStockEntity(AAPStock aapStock, FaCatchEntity faCatchEntity, @MappingTarget AapStockEntity aapStockEntity);
+
+    @Mappings({
+            @Mapping(target = "stockId", source = "stockId")
+    })
+    public abstract AapStockDetailsDTO mapToAapStockDetailsDTO(AapStockEntity aapStockEntity);
+
+    public abstract List<AapStockDetailsDTO> mapToAapStockDetailsDTOList(Set<AapStockEntity> aapStockEntities);
 }

@@ -66,10 +66,16 @@ public class FluxLocationDetailsDTO {
     @JsonProperty("fluxCharacteristics")
     private List<FluxCharacteristicsDetailsDTO> fluxCharacteristics;
 
+    @JsonProperty("physicalStructuredAddress")
+    private AddressDetailsDTO physicalStructuredAddress;
+
+    @JsonProperty("postalStructuredAddress")
+    private List<AddressDetailsDTO> postalStructuredAddress;
+
     public FluxLocationDetailsDTO() {
     }
 
-    public FluxLocationDetailsDTO(String typeCode, String countryId, String rfmoCode, Double longitude, Double latitude, Double altitude, String fluxLocationType, String fluxLocationIdentifier, String geopoliticalRegionCode, String name, String sovereignRightsCountryCode, String jurisdictionCountryCode, String systemId, List<FluxCharacteristicsDetailsDTO> fluxCharacteristics) {
+    public FluxLocationDetailsDTO(String typeCode, String countryId, String rfmoCode, Double longitude, Double latitude, Double altitude, String fluxLocationType, String fluxLocationIdentifier, String geopoliticalRegionCode, String name, String sovereignRightsCountryCode, String jurisdictionCountryCode, String systemId, List<FluxCharacteristicsDetailsDTO> fluxCharacteristics, AddressDetailsDTO physicalStructuredAddress, List<AddressDetailsDTO> postalStructuredAddress) {
         this.typeCode = typeCode;
         this.countryId = countryId;
         this.rfmoCode = rfmoCode;
@@ -84,6 +90,8 @@ public class FluxLocationDetailsDTO {
         this.jurisdictionCountryCode = jurisdictionCountryCode;
         this.systemId = systemId;
         this.fluxCharacteristics = fluxCharacteristics;
+        this.physicalStructuredAddress = physicalStructuredAddress;
+        this.postalStructuredAddress = postalStructuredAddress;
     }
 
     @JsonProperty("typeCode")
@@ -224,5 +232,25 @@ public class FluxLocationDetailsDTO {
     @JsonProperty("fluxCharacteristics")
     public void setFluxCharacteristics(List<FluxCharacteristicsDetailsDTO> fluxCharacteristics) {
         this.fluxCharacteristics = fluxCharacteristics;
+    }
+
+    @JsonProperty("physicalStructuredAddress")
+    public AddressDetailsDTO getPhysicalStructuredAddress() {
+        return physicalStructuredAddress;
+    }
+
+    @JsonProperty("physicalStructuredAddress")
+    public void setPhysicalStructuredAddress(AddressDetailsDTO physicalStructuredAddress) {
+        this.physicalStructuredAddress = physicalStructuredAddress;
+    }
+
+    @JsonProperty("postalStructuredAddress")
+    public List<AddressDetailsDTO> getPostalStructuredAddress() {
+        return postalStructuredAddress;
+    }
+
+    @JsonProperty("postalStructuredAddress")
+    public void setPostalStructuredAddress(List<AddressDetailsDTO> postalStructuredAddress) {
+        this.postalStructuredAddress = postalStructuredAddress;
     }
 }

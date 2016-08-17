@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.ContactPersonDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -54,5 +55,17 @@ public abstract class ContactPersonMapper extends BaseMapper {
 
     })
     public abstract ContactPersonDTO mapToContactPersonDTO(ContactPersonEntity person);
+
+    @Mappings({
+            @Mapping(target = "title", source = "title"),
+            @Mapping(target = "givenName", source = "givenName"),
+            @Mapping(target = "middleName", source = "middleName"),
+            @Mapping(target = "familyName", source = "familyName"),
+            @Mapping(target = "familyNamePrefix", source = "familyNamePrefix"),
+            @Mapping(target = "nameSuffix", source = "nameSuffix"),
+            @Mapping(target = "gender", source = "gender"),
+            @Mapping(target = "alias", source = "alias")
+    })
+    public abstract ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 
 }

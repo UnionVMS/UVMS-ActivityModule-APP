@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingGearDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -27,7 +28,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 6/14/2016.
  */
-@Mapper
+@Mapper(uses = {GearCharacteristicsMapper.class})
 public abstract class FishingGearMapper extends BaseMapper {
 
     public static FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
@@ -68,6 +69,15 @@ public abstract class FishingGearMapper extends BaseMapper {
             @Mapping(source = "roleCode",target = "gearRoleCode")
     })
     public abstract FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
+
+    @Mappings({
+            @Mapping(target = "gearType", source = "typeCode"),
+            @Mapping(target = "role", source = "roleCode"),
+            @Mapping(target = "gearCharacteristics", source = "gearCharacteristics")
+    })
+    public abstract FishingGearDetailsDTO mapToFishingGearDetailsDTO(FishingGearEntity fishingGearEntity);
+
+    public abstract List<FishingGearDetailsDTO> mapToFishingGearDetailsDTOList(Set<FishingGearEntity> fishingGearEntities);
 
     protected Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
         if (gearCharacteristics == null || gearCharacteristics.isEmpty()) {

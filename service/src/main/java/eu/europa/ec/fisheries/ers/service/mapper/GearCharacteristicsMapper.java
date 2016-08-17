@@ -12,12 +12,16 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.GearCharacteristicsDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearCharacteristic;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/14/2016.
@@ -40,4 +44,18 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "fishingGear", expression = "java(fishingGearEntity)")
     })
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);
+
+    @Mappings({
+            @Mapping(target = "typeCode", source = "typeCode"),
+            @Mapping(target = "description", source = "description"),
+            @Mapping(target = "valueMeasure", source = "valueMeasure"),
+            @Mapping(target = "dateTime", source = "valueDateTime"),
+            @Mapping(target = "indicator", source = "valueIndicator"),
+            @Mapping(target = "code", source = "valueCode"),
+            @Mapping(target = "text", source = "valueText"),
+            @Mapping(target = "quantity", source = "valueQuantity")
+    })
+    public abstract GearCharacteristicsDetailsDTO mapToGearCharacteristicsDetailsDTO(GearCharacteristicEntity gearCharacteristicEntity);
+
+    public abstract List<GearCharacteristicsDetailsDTO> mapToGearCharacteristicsDetailsDTOList(Set<GearCharacteristicEntity> gearCharacteristicEntities);
 }

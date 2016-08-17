@@ -12,6 +12,8 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaCatchDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -19,6 +21,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +29,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 5/17/2016.
  */
-@Mapper
+@Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class})
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
@@ -54,6 +57,46 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fishingTrips", expression = "java(getFishingTripEntities(faCatch.getRelatedFishingTrips(), faCatchEntity))")
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch, FishingActivityEntity fishingActivityEntity, @MappingTarget FaCatchEntity faCatchEntity);
+
+    @Mappings({
+            @Mapping(target = "typeCode", source = "typeCode"),
+            @Mapping(target = "speciesCode", source = "speciesCode"),
+            @Mapping(target = "unitQuantity", source = "unitQuantity"),
+            @Mapping(target = "weightMeasure", source = "weightMeasure"),
+            @Mapping(target = "weightMeasureUnitCode", source = "weightMeasureUnitCode"),
+            @Mapping(target = "usageCode", source = "usageCode"),
+            @Mapping(target = "weighingMeansCode", source = "weighingMeansCode"),
+            @Mapping(target = "sizeDistributionClassCode", source = "sizeDistribution.classCode"),
+            @Mapping(target = "sizeDistributionCategoryCode", source = "sizeDistribution.categoryCode"),
+            @Mapping(target = "fishingGears", source = "fishingGears"),
+            @Mapping(target = "specifiedFluxLocations", expression = "java(getSpecifiedFluxLocations(faCatchEntity.getFluxLocations()))"),
+            @Mapping(target = "destFluxLocations", expression = "java(getDestFluxLocations(faCatchEntity.getFluxLocations()))"),
+            @Mapping(target = "fluxCharacteristics", source = "fluxCharacteristics"),
+            @Mapping(target = "fishingTrips", source = "fishingTrips"),
+            @Mapping(target = "aapProcess", source = "aapProcesses"),
+            @Mapping(target = "aapStock", source = "aapStocks")
+    })
+    public abstract FaCatchDetailsDTO mapToFaCatchDetailsDTO(FaCatchEntity faCatchEntity);
+
+    protected List<FluxLocationDetailsDTO> getSpecifiedFluxLocations(Set<FluxLocationEntity> fluxLocations) {
+        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
+        for (FluxLocationEntity fluxLocationEntity : fluxLocations) {
+            if (fluxLocationEntity.getFluxLocationType().equalsIgnoreCase(FluxLocationTypeEnum.FA_CATCH_SPECIFIED.getType())) {
+                fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
+            }
+        }
+        return fluxLocationDetailsDTOs;
+    }
+
+    protected List<FluxLocationDetailsDTO> getDestFluxLocations(Set<FluxLocationEntity> fluxLocations) {
+        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
+        for (FluxLocationEntity fluxLocationEntity : fluxLocations) {
+            if (fluxLocationEntity.getFluxLocationType().equalsIgnoreCase(FluxLocationTypeEnum.FA_CATCH_DESTINATION.getType())) {
+                fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
+            }
+        }
+        return fluxLocationDetailsDTOs;
+    }
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
         if (sizeDistribution == null) {

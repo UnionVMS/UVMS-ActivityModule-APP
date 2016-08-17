@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
@@ -28,7 +29,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 5/13/2016.
  */
-@Mapper
+@Mapper(uses = {VesselTransportMeansMapper.class})
 public abstract class FaReportDocumentMapper extends BaseMapper {
 
     public static FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
@@ -56,6 +57,20 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
 
     public abstract List<FaReportCorrectionDTO> mapToFaReportCorrectionDtoList(List<FaReportDocumentEntity> faReportDocumentEntities);
+
+    @Mappings({
+            @Mapping(target = "typeCode", source = "typeCode"),
+            @Mapping(target = "fmcMarker", source = "fmcMarker"),
+            @Mapping(target = "acceptedDateTime", source = "acceptedDatetime"),
+            @Mapping(target = "creationDateTime", source = "fluxReportDocument.creationDatetime"),
+            @Mapping(target = "fluxReportDocumentId", source = "fluxReportDocument.fluxReportDocumentId"),
+            @Mapping(target = "purposeCode", source = "fluxReportDocument.purposeCode"),
+            @Mapping(target = "referenceId", source = "fluxReportDocument.referenceId"),
+            @Mapping(target = "ownerFluxPartyId", source = "fluxReportDocument.ownerFluxPartyId"),
+            @Mapping(target = "status", source = "status"),
+            @Mapping(target = "vesselDetails", source = "vesselTransportMeans")
+    })
+    public abstract FaReportDocumentDetailsDTO mapToFaReportDocumentDetailsDTO(FaReportDocumentEntity faReportDocumentEntity);
 
     @Mappings({
             @Mapping(target = "faReportIdentifierId", expression = "java(getIdType(idType))"),

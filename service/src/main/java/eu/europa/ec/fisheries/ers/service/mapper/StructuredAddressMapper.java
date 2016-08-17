@@ -14,12 +14,16 @@ import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AddressDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/13/2016.
@@ -65,5 +69,21 @@ public abstract class StructuredAddressMapper extends BaseMapper {
     })
     public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, StructuredAddressTypeEnum structuredAddressTypeEnum, FluxLocationEntity fluxLocationEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
 
+    @Mappings({
+            @Mapping(target = "blockName", source = "blockName"),
+            @Mapping(target = "buildingName", source = "buildingName"),
+            @Mapping(target = "cityName", source = "cityName"),
+            @Mapping(target = "citySubdivisionName", source = "citySubdivisionName"),
+            @Mapping(target = "country", source = "country"),
+            @Mapping(target = "countryName", source = "countryName"),
+            @Mapping(target = "countrySubdivisionName", source = "countrySubdivisionName"),
+            @Mapping(target = "addressId", source = "addressId"),
+            @Mapping(target = "plotId", source = "plotId"),
+            @Mapping(target = "postOfficeBox", source = "postOfficeBox"),
+            @Mapping(target = "postcode", source = "postcode"),
+            @Mapping(target = "streetname", source = "streetname")
+    })
+    public abstract AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
+    public abstract List<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
 }

@@ -15,12 +15,16 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxCharacteristicsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxCharacteristicsDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXCharacteristic;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/14/2016.
@@ -78,4 +82,18 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(source = "valueDateTime",target = "valueDateTime")
     })
     public abstract FluxCharacteristicsDTO mapToFluxCharacteristicsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
+
+    @Mappings({
+            @Mapping(target = "type", source = "typeCode"),
+            @Mapping(target = "measure", source = "valueMeasure"),
+            @Mapping(target = "dateTime", source = "valueDateTime"),
+            @Mapping(target = "indicator", source = "valueIndicator"),
+            @Mapping(target = "code", source = "valueCode"),
+            @Mapping(target = "text", source = "valueText"),
+            @Mapping(target = "quantity", source = "valueQuantity"),
+            @Mapping(target = "description", source = "description")
+    })
+    public abstract FluxCharacteristicsDetailsDTO mapToFluxCharacteristicsDetailsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
+
+    public abstract List<FluxCharacteristicsDetailsDTO> mapToFluxCharacteristicsDetailsDTOList(Set<FluxCharacteristicEntity> fluxCharacteristicEntities);
 }

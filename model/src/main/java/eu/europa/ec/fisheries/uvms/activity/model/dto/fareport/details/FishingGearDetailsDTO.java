@@ -31,16 +31,16 @@ public class FishingGearDetailsDTO {
     @JsonProperty("gearRole")
     private String role;
 
-    @JsonProperty("gearCharacterstics")
-    private List<GearCharacteristicsDetailsDTO> gearCharacterstics;
+    @JsonProperty("gearCharacteristics")
+    private List<GearCharacteristicsDetailsDTO> gearCharacteristics;
 
     public FishingGearDetailsDTO() {
     }
 
-    public FishingGearDetailsDTO(String gearType, String role, List<GearCharacteristicsDetailsDTO> gearCharacterstics) {
+    public FishingGearDetailsDTO(String gearType, String role, List<GearCharacteristicsDetailsDTO> gearCharacteristics) {
         this.gearType = gearType;
         this.role = role;
-        this.gearCharacterstics = gearCharacterstics;
+        this.gearCharacteristics = gearCharacteristics;
     }
 
     @JsonProperty("gearType")
@@ -64,12 +64,12 @@ public class FishingGearDetailsDTO {
     }
 
     @JsonProperty("gearCharacterstics")
-    public List<GearCharacteristicsDetailsDTO> getGearCharacterstics() {
-        return gearCharacterstics;
+    public List<GearCharacteristicsDetailsDTO> getGearCharacteristics() {
+        return gearCharacteristics;
     }
 
     @JsonProperty("gearCharacterstics")
-    public void setGearCharacterstics(List<GearCharacteristicsDetailsDTO> gearCharacterstics) {
-        this.gearCharacterstics = gearCharacterstics;
+    public void setGearCharacteristics(List<GearCharacteristicsDetailsDTO> gearCharacteristics) {
+        this.gearCharacteristics = gearCharacteristics;
     }
 }

@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.GearProblemDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -30,7 +31,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 6/14/2016.
  */
-@Mapper
+@Mapper(uses = {FishingGearMapper.class})
 public abstract class GearProblemMapper extends BaseMapper {
 
     public static GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
@@ -45,6 +46,14 @@ public abstract class GearProblemMapper extends BaseMapper {
             @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))")
     })
     public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem, FishingActivityEntity fishingActivityEntity, @MappingTarget GearProblemEntity gearProblemEntity);
+
+    @Mappings({
+            @Mapping(target = "problemType", source = "typeCode"),
+            @Mapping(target = "affectedQuantity", source = "affectedQuantity"),
+            @Mapping(target = "recoveryMeasure", source = "recoveryMeasureCode"),
+            @Mapping(target = "fishingGears", source = "fishingGears")
+    })
+    public abstract GearProblemDetailsDTO mapToGearProblemDetailsDTO(GearProblemEntity gearProblemEntity);
 
     protected Set<FishingGearEntity> getFishingGearsEntities(List<FishingGear> fishingGears, GearProblemEntity gearProblemEntity) {
         if (fishingGears == null || fishingGears.isEmpty()) {

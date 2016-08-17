@@ -14,6 +14,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.ContactPersonDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingActivityDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -30,14 +32,10 @@ import java.util.*;
 /**
  * Created by padhyad on 5/17/2016.
  */
-@Mapper
+@Mapper(uses = {FaCatchMapper.class, DelimitedPeriodMapper.class, FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class, FluxCharacteristicsMapper.class})
 public abstract class FishingActivityMapper extends BaseMapper {
 
-    final static Logger LOG = LoggerFactory.getLogger(FishingActivityMapper.class);
-
     public static final FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
-    public static final String LocationTypeArea ="AREA";
-    public static final String LocationTypePort ="LOCATION";
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingActivity.getTypeCode()))"),
@@ -102,6 +100,49 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "contactPerson", expression = "java(getContactPerson(entity))")
     })
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
+
+    @Mappings({
+            @Mapping(target = "sourceVesselId", source = "sourceVesselCharId.vesselId"),
+            @Mapping(target = "sourceVesselTypeCode", source = "sourceVesselCharId.vesselTypeCode"),
+            @Mapping(target = "destVesselId", source = "destVesselCharId.vesselId"),
+            @Mapping(target = "destVesselTypeCode", source = "destVesselCharId.vesselTypeCode"),
+            @Mapping(target = "activityTypeCode", source = "typeCode"),
+            @Mapping(target = "occurence", source = "occurence"),
+            @Mapping(target = "reasonCode", source = "reasonCode"),
+            @Mapping(target = "vesselActivityCode", source = "vesselActivityCode"),
+            @Mapping(target = "fisheryTypeCode", source = "fisheryTypeCode"),
+            @Mapping(target = "speciesTargetCode", source = "speciesTargetCode"),
+            @Mapping(target = "operationQuantity", source = "operationQuantity"),
+            @Mapping(target = "fishingDurationMeasure", source = "fishingDurationMeasure"),
+            @Mapping(target = "flapDocumentId", source = "flapDocumentId"),
+            @Mapping(target = "fishingActivityIds", expression = "java(getFishingActivityIds(fishingActivityEntity.getFishingActivityIdentifiers()))"),
+            @Mapping(target = "fishingTrip", source = "fishingTrips"),
+            @Mapping(target = "faCatches", source = "faCatchs"),
+            @Mapping(target = "fishingGears", source = "fishingGears"),
+            @Mapping(target = "gearProblems", source = "gearProblems"),
+            @Mapping(target = "delimitedPeriods", source = "delimitedPeriods"),
+            @Mapping(target = "fluxCharacteristics", source = "fluxCharacteristics"),
+            @Mapping(target = "fluxLocations", expression = "java(getFluxLocationDetailsDTOs(fishingActivityEntity.getFluxLocations()))")
+    })
+    public abstract FishingActivityDetailsDTO mapToFishingActivityDetailsDTO(FishingActivityEntity fishingActivityEntity);
+
+    protected List<FluxLocationDetailsDTO> getFluxLocationDetailsDTOs(Set<FluxLocationEntity> fluxLocationEntities) {
+        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
+        for (FluxLocationEntity fluxLocationEntity : fluxLocationEntities) {
+            fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
+        }
+        return fluxLocationDetailsDTOs;
+    }
+
+    public abstract List<FishingActivityDetailsDTO> mapToFishingActivityDetailsDTOList(List<FishingActivityEntity> fishingActivityEntities);
+
+    protected List<String> getFishingActivityIds(Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers) {
+        List<String> fishingActivityIds = new ArrayList<>();
+        for (FishingActivityIdentifierEntity identifierEntity : fishingActivityIdentifiers) {
+            fishingActivityIds.add(identifierEntity.getFaIdentifierId());
+        }
+        return fishingActivityIds;
+    }
 
     @Mappings({
             @Mapping(target = "faIdentifierId", expression = "java(getIdType(idType))"),

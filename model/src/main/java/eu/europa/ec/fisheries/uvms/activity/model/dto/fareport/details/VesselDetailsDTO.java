@@ -57,12 +57,12 @@ public class VesselDetailsDTO implements Serializable {
     private String registrationLocationCountryId;
 
     @JsonProperty("contactParty")
-    private ContactPartyDetailsDTO contactPartyDetails;
+    private List<ContactPartyDetailsDTO> contactPartyDetails;
 
     public VesselDetailsDTO() {
     }
 
-    public VesselDetailsDTO(String vesselRole, List<String> vesselIds, String vesselName, Date registrationDateTime, String registrationEventDescription, String registrationLocationDescription, String registrationRegion, String registrationLocationName, String registrationType, String registrationLocationCountryId, ContactPartyDetailsDTO contactPartyDetails) {
+    public VesselDetailsDTO(String vesselRole, List<String> vesselIds, String vesselName, Date registrationDateTime, String registrationEventDescription, String registrationLocationDescription, String registrationRegion, String registrationLocationName, String registrationType, String registrationLocationCountryId, List<ContactPartyDetailsDTO> contactPartyDetails) {
         this.vesselRole = vesselRole;
         this.vesselIds = vesselIds;
         this.vesselName = vesselName;
@@ -177,12 +177,12 @@ public class VesselDetailsDTO implements Serializable {
     }
 
     @JsonProperty("contactParty")
-    public ContactPartyDetailsDTO getContactPartyDetails() {
+    public List<ContactPartyDetailsDTO> getContactPartyDetails() {
         return contactPartyDetails;
     }
 
     @JsonProperty("contactParty")
-    public void setContactPartyDetails(ContactPartyDetailsDTO contactPartyDetails) {
+    public void setContactPartyDetails(List<ContactPartyDetailsDTO> contactPartyDetails) {
         this.contactPartyDetails = contactPartyDetails;
     }
 }

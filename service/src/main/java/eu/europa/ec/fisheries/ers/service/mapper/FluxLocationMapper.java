@@ -14,6 +14,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxLocationDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -24,6 +26,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +34,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 6/14/2016.
  */
-@Mapper
+@Mapper(uses = {FluxCharacteristicsMapper.class})
 public abstract class FluxLocationMapper extends BaseMapper {
 
     public static FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
@@ -84,8 +87,6 @@ public abstract class FluxLocationMapper extends BaseMapper {
     })
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation, FluxLocationTypeEnum fluxLocationTypeEnum, FaCatchEntity faCatchEntity, @MappingTarget FluxLocationEntity fluxLocationEntity);
 
-
-
     @Mappings({
             @Mapping(source = "typeCode",target = "locationType"),
             @Mapping(source = "fluxLocationIdentifierSchemeId",target = "fluxLocationListId"),
@@ -96,6 +97,46 @@ public abstract class FluxLocationMapper extends BaseMapper {
     })
     public abstract FluxLocationDTO mapToFluxLocationDTO(FluxLocationEntity fluxLocation);
 
+    @Mappings({
+            @Mapping(target = "typeCode", source = "typeCode"),
+            @Mapping(target = "countryId", source = "countryId"),
+            @Mapping(target = "rfmoCode", source = "rfmoCode"),
+            @Mapping(target = "longitude", source = "longitude"),
+            @Mapping(target = "latitude", source = "latitude"),
+            @Mapping(target = "altitude", source = "altitude"),
+            @Mapping(target = "fluxLocationType", source = "fluxLocationType"),
+            @Mapping(target = "fluxLocationIdentifier", source = "fluxLocationIdentifier"),
+            @Mapping(target = "geopoliticalRegionCode", source = "geopoliticalRegionCode"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryCode"),
+            @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryCode"),
+            @Mapping(target = "systemId", source = "systemId"),
+            @Mapping(target = "fluxCharacteristics", source = "fluxCharacteristics"),
+            @Mapping(target = "physicalStructuredAddress", expression = "java(getPhysicalAddressDetails(fluxLocationEntity.getStructuredAddresses()))"),
+            @Mapping(target = "postalStructuredAddress", expression = "java(getPostalAddressDetails(fluxLocationEntity.getStructuredAddresses()))")
+    })
+    public abstract FluxLocationDetailsDTO mapToFluxLocationDetailsDTO(FluxLocationEntity fluxLocationEntity);
+
+    public abstract List<FluxLocationDetailsDTO> mapToFluxLocationDetailsDTOList(Set<FluxLocationEntity> fluxLocationEntities);
+
+    protected AddressDetailsDTO getPhysicalAddressDetails(Set<StructuredAddressEntity> structuredAddresses) {
+        for (StructuredAddressEntity structuredAddressEntity : structuredAddresses) {
+            if (structuredAddressEntity.getStructuredAddressType().equalsIgnoreCase(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType())) {
+                return StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(structuredAddressEntity);
+            }
+        }
+        return null;
+    }
+
+    protected List<AddressDetailsDTO> getPostalAddressDetails(Set<StructuredAddressEntity> structuredAddresses) {
+        List<AddressDetailsDTO> addressDetailsDTOs = new ArrayList<>();
+        for (StructuredAddressEntity structuredAddressEntity : structuredAddresses) {
+            if (structuredAddressEntity.getStructuredAddressType().equalsIgnoreCase(StructuredAddressTypeEnum.FLUX_POSTAL.getType())) {
+                addressDetailsDTOs.add(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(structuredAddressEntity));
+            }
+        }
+        return addressDetailsDTOs;
+    }
 
     protected Set<StructuredAddressEntity> getStructuredAddressEntities(List<StructuredAddress> postalStructuredAddresses, StructuredAddress physicalStructuredAddress, FluxLocationEntity fluxLocationEntity) {
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();

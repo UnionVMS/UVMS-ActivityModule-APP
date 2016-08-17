@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.VesselDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -20,6 +21,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.TextType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +29,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 5/17/2016.
  */
-@Mapper(uses = {FaReportDocumentMapper.class})
+@Mapper(uses = {FaReportDocumentMapper.class, ContactPartyMapper.class})
 public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public static VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
@@ -46,10 +48,33 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
     public abstract VesselTransportMeansEntity mapToVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget VesselTransportMeansEntity vesselTransportMeansEntity);
 
     @Mappings({
+            @Mapping(target = "vesselRole", source = "roleCode"),
+            @Mapping(target = "vesselIds", expression = "java(getVesselIds(vesselTransportMeansEntity.getVesselIdentifiers()))"),
+            @Mapping(target = "vesselName", source = "name"),
+            @Mapping(target = "registrationDateTime", source = "registrationEvent.occurrenceDatetime"),
+            @Mapping(target = "registrationEventDescription", source = "registrationEvent.description"),
+            @Mapping(target = "registrationLocationDescription", source = "registrationEvent.registrationLocation.description"),
+            @Mapping(target = "registrationRegion", source = "registrationEvent.registrationLocation.regionCode"),
+            @Mapping(target = "registrationLocationName", source = "registrationEvent.registrationLocation.name"),
+            @Mapping(target = "registrationType", source = "registrationEvent.registrationLocation.typeCode"),
+            @Mapping(target = "registrationLocationCountryId", source = "registrationEvent.registrationLocation.locationCountryId"),
+            @Mapping(target = "contactPartyDetails", source = "contactParty")
+    })
+    public abstract VesselDetailsDTO mapToVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity);
+
+    @Mappings({
             @Mapping(target = "vesselIdentifierId", expression = "java(getIdType(idType))"),
             @Mapping(target = "vesselIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
     protected abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
+
+    protected List<String> getVesselIds(Set<VesselIdentifierEntity> vesselIdentifierEntities) {
+        List<String> ids = new ArrayList<>();
+        for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifierEntities) {
+            ids.add(vesselIdentifierEntity.getVesselIdentifierId());
+        }
+        return ids;
+    }
 
     protected Set<ContactPartyEntity> getContactPartyEntity(List<ContactParty> contactParties, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (contactParties == null || contactParties.isEmpty()) {

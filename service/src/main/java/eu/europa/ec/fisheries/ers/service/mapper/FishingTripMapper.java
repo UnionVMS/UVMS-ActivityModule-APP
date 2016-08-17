@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingTripDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -21,6 +22,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +30,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 6/15/2016.
  */
-@Mapper
+@Mapper(uses = {DelimitedPeriodMapper.class})
 public abstract class FishingTripMapper extends BaseMapper {
 
     public static FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
@@ -50,6 +52,30 @@ public abstract class FishingTripMapper extends BaseMapper {
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
     })
     public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FaCatchEntity faCatchEntity, @MappingTarget FishingTripEntity fishingTripEntity);
+
+    @Mappings({
+            @Mapping(target = "tripType", source = "typeCode"),
+            @Mapping(target = "tripIds", expression = "java(getTripIds(fishingTripEntity.getFishingTripIdentifiers()))"),
+            @Mapping(target = "delimitedPeriods", source = "delimitedPeriods")
+    })
+    public abstract FishingTripDetailsDTO mapToFishingTripDetailsDTO(FishingTripEntity fishingTripEntity);
+
+    public FishingTripDetailsDTO mapToFishingTripDetailsDTO(Set<FishingTripEntity> fishingTripEntities) {
+        if (fishingTripEntities != null && !fishingTripEntities.isEmpty()) {
+            return mapToFishingTripDetailsDTO(fishingTripEntities.iterator().next());
+        }
+        return null;
+    }
+
+    public abstract List<FishingTripDetailsDTO> mapToFishingTripDetailsDTOList(Set<FishingTripEntity> fishingTripEntities);
+
+    protected List<String> getTripIds(Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
+        List<String> ids = new ArrayList<>();
+        for (FishingTripIdentifierEntity identifierEntity : fishingTripIdentifiers) {
+            ids.add(identifierEntity.getTripId());
+        }
+        return ids;
+    }
 
     @Mappings({
             @Mapping(target = "tripId", expression = "java(getIdType(idType))"),

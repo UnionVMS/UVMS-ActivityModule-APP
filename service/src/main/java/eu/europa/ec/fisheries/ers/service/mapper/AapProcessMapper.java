@@ -13,6 +13,8 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProcessDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProductDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -28,7 +30,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 6/14/2016.
  */
-@Mapper
+@Mapper(uses = {AapProductMapper.class})
 public abstract class AapProcessMapper extends BaseMapper {
 
     public static AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
@@ -41,6 +43,15 @@ public abstract class AapProcessMapper extends BaseMapper {
             @Mapping(target = "aapProducts", expression = "java(getAapProductEntities(aapProcess.getResultAAPProducts(), aapProcessEntity))")
     })
     public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess, FaCatchEntity faCatchEntity, @MappingTarget AapProcessEntity aapProcessEntity);
+
+    @Mappings({
+            @Mapping(target = "typeCode", source = "typeCode"),
+            @Mapping(target = "conversionFactor", source = "conversionFactor"),
+            @Mapping(target = "aapProductDetails", source = "aapProducts")
+    })
+    public abstract AapProcessDetailsDTO mapToAapProcessDetailsDTO(AapProcessEntity aapProcessEntity);
+
+    public abstract List<AapProcessDetailsDTO> mapToAapProductDetailsDTOList(Set<AapProcessEntity> aapProcessEntities);
 
     protected Set<AapProductEntity> getAapProductEntities(List<AAPProduct> aapProducts, AapProcessEntity aapProcessEntity) {
         if (aapProducts == null || aapProducts.isEmpty()) {

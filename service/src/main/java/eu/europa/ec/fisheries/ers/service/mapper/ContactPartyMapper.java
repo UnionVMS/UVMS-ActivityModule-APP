@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPartyDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -31,7 +32,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 6/8/2016.
  */
-@Mapper
+@Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class})
 public abstract class ContactPartyMapper extends BaseMapper {
 
     public static ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
@@ -44,6 +45,15 @@ public abstract class ContactPartyMapper extends BaseMapper {
             @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)")
     })
     public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget ContactPartyEntity contactPartyEntity);
+
+    @Mappings({
+            @Mapping(target = "role", source = "roleCode"),
+            @Mapping(target = "contactPersonDetails", source = "contactPerson"),
+            @Mapping(target = "addressDetails", source = "structuredAddresses")
+    })
+    public abstract ContactPartyDetailsDTO mapToContactPartyDetailsDTO(ContactPartyEntity contactPartyEntity);
+
+    public abstract List<ContactPartyDetailsDTO> mapToContactPartyDetailsDTOList(Set<ContactPartyEntity> contactPartyEntities);
 
     protected ContactPersonEntity getContactPersonEntity(List<ContactPerson> contactPersons, ContactPartyEntity contactPartyEntity) {
         if(contactPersons == null || contactPersons.isEmpty()) {
