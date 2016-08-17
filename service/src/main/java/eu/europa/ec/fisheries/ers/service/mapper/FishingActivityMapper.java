@@ -36,6 +36,8 @@ import java.util.*;
 public abstract class FishingActivityMapper extends BaseMapper {
 
     public static final FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
+    public static final String LocationTypeArea ="AREA";
+    public static final String LocationTypePort ="LOCATION";
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingActivity.getTypeCode()))"),
