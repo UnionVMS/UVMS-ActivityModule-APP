@@ -10,15 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
-import java.util.List;
-
 /**
  * Created by sanera on 24/06/2016.
  */
 public class ListCriteria {
 
     private Filters key;
-    private List<SearchValue> value;
+    private String value;
 
     public void setKey(Filters key) {
         this.key = key;
@@ -34,16 +32,16 @@ public class ListCriteria {
     public ListCriteria(){
 
     }
-    public ListCriteria(Filters key, List<SearchValue> value) {
+    public ListCriteria(Filters key, String value) {
         this.key = key;
         this.value = value;
     }
 
-    public List<SearchValue> getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(List<SearchValue> value) {
+    public void setValue(String value) {
         this.value = value;
     }
 }

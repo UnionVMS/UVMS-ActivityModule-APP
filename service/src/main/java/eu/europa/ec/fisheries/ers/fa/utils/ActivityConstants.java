@@ -11,29 +11,15 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.model.dto;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
+package eu.europa.ec.fisheries.ers.fa.utils;
 
 /**
- * Created by sanera on 04/08/2016.
+ * Created by sanera on 17/08/2016.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class FluxCharacteristicsDTO {
+public class ActivityConstants {
 
-    @JsonProperty("valueDateTime")
-    private Date valueDateTime;
-
-    @JsonProperty("valueDateTime")
-    public Date getValueDateTime() {
-        return valueDateTime;
-    }
-
-    @JsonProperty("valueDateTime")
-    public void setValueDateTime(Date valueDateTime) {
-        this.valueDateTime = valueDateTime;
-    }
+    public static final String DEPARTURE ="DEPARTURE";
+    public static final String ARRIVAL ="ARRIVAL";
+    public static final String LANDING ="LANDING";
+    public static final String DECLARATION ="Declaration";
 }

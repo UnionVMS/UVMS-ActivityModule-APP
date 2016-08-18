@@ -40,17 +40,22 @@ public class FilterMap {
 
     private static Map<Filters,FilterDetails> filterMappings = new HashMap<Filters,FilterDetails>();
     private static Map<Filters,String> filterSortMappings = new HashMap<>();
+    private static Map<Filters,String> filterQueryParameterMappings = new HashMap<>();
 
 
     static{
         _populateFilterMappings();
+        _populateFilterQueryParameterMappings();
         _populateFilterSortMappings();
     }
 
     private static void _populateFilterMappings(){
 
         filterMappings.put(Filters.FROM,new FilterDetails("a.faReportDocument.fluxReportDocument flux","flux.ownerFluxPartyName =:"+FROM_NAME));
-        filterMappings.put(Filters.PERIOD,new FilterDetails("a.delimitedPeriods dp","(( dp.startDate >= :"+OCCURENCE_START_DATE + " and dp.endDate <= :"+OCCURENCE_END_DATE+" ) OR a.occurence BETWEEN :"+OCCURENCE_START_DATE +" and  :"+OCCURENCE_END_DATE+" )"));
+      //  filterMappings.put(Filters.PERIOD,new FilterDetails("a.delimitedPeriods dp","(( dp.startDate >= :"+OCCURENCE_START_DATE + " and dp.endDate <= :"+OCCURENCE_END_DATE+" ) OR a.occurence BETWEEN :"+OCCURENCE_START_DATE +" and  :"+OCCURENCE_END_DATE+" )"));
+
+        filterMappings.put(Filters.PERIOD,new FilterDetails("a.delimitedPeriods dp","(( dp.startDate >= :"+OCCURENCE_START_DATE +" ) OR a.occurence  >= :"+OCCURENCE_START_DATE +" )"));
+
         filterMappings.put(Filters.VESSEL_IDENTIFIES,new FilterDetails("a.faReportDocument.vesselTransportMeans vt","vt.name =:"+VESSEL_IDENTITY_NAME));
         filterMappings.put(Filters.PURPOSE,new FilterDetails("a.faReportDocument.fluxReportDocument flux","flux.purposeCode =:"+PURPOSE_CODE));
         filterMappings.put(Filters.REPORT_TYPE,new FilterDetails("a.faReportDocument fa","fa.typeCode =:"+REPORT_TYPE_CODE));
@@ -71,11 +76,33 @@ public class FilterMap {
 
     }
 
+    private static void _populateFilterQueryParameterMappings(){
+
+        filterQueryParameterMappings.put(Filters.FROM,FROM_NAME);
+        filterQueryParameterMappings.put(Filters.PERIOD,OCCURENCE_START_DATE );
+        filterQueryParameterMappings.put(Filters.VESSEL_IDENTIFIES,VESSEL_IDENTITY_NAME);
+        filterQueryParameterMappings.put(Filters.PURPOSE,PURPOSE_CODE);
+        filterQueryParameterMappings.put(Filters.REPORT_TYPE,REPORT_TYPE_CODE);
+        filterQueryParameterMappings.put(Filters.ACTIVITY_TYPE,ACTIVITY_TYPE_CODE);
+        filterQueryParameterMappings.put(Filters.AREAS,AREA_ID);
+        filterQueryParameterMappings.put(Filters.PORT,PORT_ID);
+        filterQueryParameterMappings.put(Filters.GEAR,FISHING_GEAR);
+        filterQueryParameterMappings.put(Filters.SPECIES,SPECIES_CODE);
+        filterQueryParameterMappings.put(Filters.QUNTITIES,UNIT_QUANTITY);
+        filterQueryParameterMappings.put(Filters.MASTER,CONTACT_PERSON_NAME);
+
+    }
+
+
     public static Map<Filters, FilterDetails> getFilterMappings() {
         return filterMappings;
     }
 
     public static Map<Filters,String> getFilterSortMappings() {
         return filterSortMappings;
+    }
+
+    public static Map<Filters,String> getFilterQueryParameterMappings() {
+        return filterQueryParameterMappings;
     }
 }

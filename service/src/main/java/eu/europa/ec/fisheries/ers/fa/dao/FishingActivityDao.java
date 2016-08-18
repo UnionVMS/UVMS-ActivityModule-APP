@@ -50,6 +50,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return getFishingActivityList(null);
     }
 
+
+
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination) throws ServiceException {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
@@ -83,7 +85,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
-
+        Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
         StringBuilder sql =createSQL(query);
         LOG.info("sql :"+sql);
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
@@ -93,22 +95,20 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             // Assign values to created SQL Query
             for (ListCriteria criteria : criteriaList) {
                 Filters key = criteria.getKey();
-                List<SearchValue> valueList = criteria.getValue();
-                for (SearchValue searchValue : valueList) {
-                    String parameterName = searchValue.getParameterName();
-                    String parameterValue = searchValue.getParameterValue();
+                String value= criteria.getValue();
+
                     switch (key) {
                         case PERIOD:
-                            typedQuery.setParameter(parameterName, DateUtils.parseToUTCDate(parameterValue,FORMAT));
+                            typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
                             break;
                         case QUNTITIES:
-                            typedQuery.setParameter(parameterName, Long.parseLong(parameterValue));
+                            typedQuery.setParameter(mappings.get(key), Long.parseLong(value));
                             break;
                         default:
-                            typedQuery.setParameter(parameterName, parameterValue);
+                            typedQuery.setParameter(mappings.get(key), value);
                             break;
                     }
-                }
+
             }
 
 

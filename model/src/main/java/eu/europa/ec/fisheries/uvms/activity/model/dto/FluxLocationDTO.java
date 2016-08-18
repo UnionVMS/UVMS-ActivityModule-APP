@@ -13,63 +13,89 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by sanera on 04/08/2016.
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FluxLocationDTO {
 
+    @JsonProperty("locationType")
     private String locationType;
+
+    @JsonProperty("fluxLocationListId")
     private String fluxLocationListId;
+
+    @JsonProperty("fluxLocationIdentifier")
     private String fluxLocationIdentifier;
+
+    @JsonProperty("longitude")
     private Double longitude;
+
+    @JsonProperty("latitude")
     private Double latitude;
+
+    @JsonProperty("rfmoCode")
     private String rfmoCode;
 
-
+    @JsonProperty("locationType")
     public String getLocationType() {
         return locationType;
     }
 
+    @JsonProperty("locationType")
     public void setLocationType(String locationType) {
         this.locationType = locationType;
     }
 
+    @JsonProperty("fluxLocationListId")
     public String getFluxLocationListId() {
         return fluxLocationListId;
     }
 
+    @JsonProperty("fluxLocationListId")
     public void setFluxLocationListId(String fluxLocationListId) {
         this.fluxLocationListId = fluxLocationListId;
     }
 
+    @JsonProperty("fluxLocationIdentifier")
     public String getFluxLocationIdentifier() {
         return fluxLocationIdentifier;
     }
 
+    @JsonProperty("fluxLocationIdentifier")
     public void setFluxLocationIdentifier(String fluxLocationIdentifier) {
         this.fluxLocationIdentifier = fluxLocationIdentifier;
     }
 
+    @JsonProperty("longitude")
     public Double getLongitude() {
         return longitude;
     }
 
+    @JsonProperty("longitude")
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
+    @JsonProperty("latitude")
     public Double getLatitude() {
         return latitude;
     }
 
+    @JsonProperty("latitude")
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
+    @JsonProperty("rfmoCode")
     public String getRfmoCode() {
         return rfmoCode;
     }
 
+    @JsonProperty("rfmoCode")
     public void setRfmoCode(String rfmoCode) {
         this.rfmoCode = rfmoCode;
     }

@@ -14,7 +14,7 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +25,14 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
 
 /**
  * Created by sanera on 04/08/2016.
@@ -50,23 +52,23 @@ public class FishingTripResource extends UnionVMSResource {
     private ActivityService activityService;
 
     @GET
-    @Path("/reports/{fishingTripId}")
+    @Path("/summary/{fishingTripId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listActivityReports(@Context HttpServletRequest request,
+    public Response getFishingTripSummary(@Context HttpServletRequest request,
                                         @Context HttpServletResponse response,
                                         @PathParam("fishingTripId") String fishingTripId) {
         Response responseMethod;
-        LOG.info("listActivityReports from fishing trip:"+fishingTripId);
-        List<ReportDTO> list= null;
+        LOG.info("Fishing Trip summary from fishing trip:"+fishingTripId);
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO= null;
         try {
-            list = activityService.getFishingActivityReportForFishingTrip(fishingTripId);
+             fishingTripSummaryViewDTO = activityService.getFishingTripSummary(fishingTripId);
         } catch (ServiceException e) {
-            LOG.error("Exception while trying to get Fishing Activity Report list For Fishing Trip:"+fishingTripId,e);
-            responseMethod = createErrorResponse("Exception while trying to get Fishing Activity Report list For Fishing Trip.");
+            LOG.error("Exception while trying to get Fishing trip summary For Fishing Trip:"+fishingTripId,e);
+            responseMethod = createErrorResponse("Exception while trying to get Fishing trip summary For Fishing Trip.");
         }
 
         LOG.info("successful");
-        responseMethod =createSuccessResponse(list);
+        responseMethod =createSuccessResponse(fishingTripSummaryViewDTO);
         return responseMethod;
     }
 }

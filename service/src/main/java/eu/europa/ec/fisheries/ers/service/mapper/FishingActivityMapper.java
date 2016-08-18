@@ -12,8 +12,8 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.ContactPersonDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingActivityDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import org.mapstruct.Mapper;
@@ -21,11 +21,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
-
 
 import java.util.*;
 
@@ -225,12 +222,12 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return speciesCode;
     }
 
-    protected List<ContactPersonDTO> getContactPerson(FishingActivityEntity entity){
+    protected List<ContactPersonDetailsDTO> getContactPerson(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() ==null
                 || entity.getFaReportDocument().getVesselTransportMeans().getContactParty() ==null){
             return Collections.emptyList();
         }
-        List<ContactPersonDTO> contactPersonList = new ArrayList<>();
+        List<ContactPersonDetailsDTO> contactPersonList = new ArrayList<>();
         Set<ContactPartyEntity> contactPartyList =entity.getFaReportDocument().getVesselTransportMeans().getContactParty();
 
         for (ContactPartyEntity contactParty: contactPartyList){

@@ -12,7 +12,10 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
 import eu.europa.ec.fisheries.ers.service.bean.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.ListCriteria;
+import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
@@ -39,6 +42,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,10 +117,10 @@ public class FishingActivityResource extends UnionVMSResource {
 
             List<FishingActivityReportDTO> dtoList= null;
             try {
-                dtoList = activityService.getFishingActivityListByQuery(fishingActivityQuery);
-                responseMethod = createSuccessResponse(dtoList);
+              dtoList = activityService.getFishingActivityListByQuery(fishingActivityQuery);
+              responseMethod = createSuccessResponse(dtoList);
                 log.info("successful");
-            } catch (ServiceException e) {
+           } catch (ServiceException e) {
                 log.error("Exception while trying to get Fishing Activity Report list.",e);
                 responseMethod = createErrorResponse("Exception while trying to get Fishing Activity Report list.");
             }

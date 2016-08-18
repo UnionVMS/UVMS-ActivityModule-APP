@@ -13,36 +13,52 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 /**
  * Created by sanera on 04/08/2016.
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DelimitedPeriodDTO {
+
+    @JsonProperty("startDate")
     private Date startDate;
+
+    @JsonProperty("endDate")
     private Date endDate;
+
+    @JsonProperty("duration")
     private Double duration;
 
+    @JsonProperty("startDate")
     public Date getStartDate() {
         return startDate;
     }
 
+    @JsonProperty("startDate")
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
+    @JsonProperty("endDate")
     public Date getEndDate() {
         return endDate;
     }
 
+    @JsonProperty("endDate")
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
+    @JsonProperty("duration")
     public Double getDuration() {
         return duration;
     }
 
+    @JsonProperty("duration")
     public void setDuration(Double duration) {
         this.duration = duration;
     }

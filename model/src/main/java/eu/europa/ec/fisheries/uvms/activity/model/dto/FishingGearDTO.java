@@ -13,25 +13,37 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by sanera on 04/08/2016.
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FishingGearDTO {
+
+    @JsonProperty("gearTypeCode")
     private String gearTypeCode;
+
+    @JsonProperty("gearRoleCode")
     private String gearRoleCode;
 
+    @JsonProperty("gearTypeCode")
     public String getGearTypeCode() {
         return gearTypeCode;
     }
 
+    @JsonProperty("gearTypeCode")
     public void setGearTypeCode(String gearTypeCode) {
         this.gearTypeCode = gearTypeCode;
     }
 
+    @JsonProperty("gearRoleCode")
     public String getGearRoleCode() {
         return gearRoleCode;
     }
 
+    @JsonProperty("gearRoleCode")
     public void setGearRoleCode(String gearRoleCode) {
         this.gearRoleCode = gearRoleCode;
     }

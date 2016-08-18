@@ -13,7 +13,12 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
+
+
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
+
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
@@ -41,6 +46,11 @@ public interface ActivityService {
       */
      List<FaReportCorrectionDTO> getFaReportCorrections(String selectedFaReportId) throws ServiceException;
 
+
+
+     FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException;
+
+
      /**
       * <p>
       *     This service returns the Fishing activity report details. It contains the complete detail of the fishing activity
@@ -51,5 +61,6 @@ public interface ActivityService {
       * @throws ServiceException Exception
       */
      FaReportDocumentDetailsDTO getFaReportDocumentDetails(String faReportDocumentId) throws ServiceException;
+
 
 }

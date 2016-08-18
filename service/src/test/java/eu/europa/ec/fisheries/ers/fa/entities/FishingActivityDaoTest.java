@@ -14,14 +14,15 @@ import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.service.search.*;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.ListCriteria;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
@@ -66,20 +67,18 @@ private FishingActivityDao dao=new FishingActivityDao(em);
         List<ListCriteria> list = new ArrayList<ListCriteria>();
 
 
-        list.add(new ListCriteria(Filters.VESSEL_IDENTIFIES, Arrays.asList(new SearchValue(FilterMap.VESSEL_IDENTITY_NAME,"vesselGroup1") )));
-        list.add(new ListCriteria(Filters.PURPOSE, Arrays.asList(new SearchValue(FilterMap.PURPOSE_CODE,"PURPOSE") )));
-        list.add(new ListCriteria(Filters.MASTER, Arrays.asList(new SearchValue(FilterMap.CONTACT_PERSON_NAME,"MARK") )));
-
-        list.add(new ListCriteria(Filters.REPORT_TYPE, Arrays.asList(new SearchValue(FilterMap.REPORT_TYPE_CODE,"DOC_TYPE_1") )));
-
-        list.add(new ListCriteria(Filters.REPORT_TYPE, Arrays.asList(new SearchValue(FilterMap.REPORT_TYPE_CODE,"DOC_TYPE_1") )));
-        list.add(new ListCriteria(Filters.ACTIVITY_TYPE, Arrays.asList(new SearchValue(FilterMap.ACTIVITY_TYPE_CODE,"FISHING_OPERATION") )));
-        list.add(new ListCriteria(Filters.AREAS, Arrays.asList(new SearchValue(FilterMap.AREA_ID,"FLUX_LOCATION_ID") )));
-        list.add(new ListCriteria(Filters.GEAR, Arrays.asList(new SearchValue(FilterMap.FISHING_GEAR,"GEAR_TYPE") )));
-        list.add(new ListCriteria(Filters.SPECIES, Arrays.asList(new SearchValue(FilterMap.SPECIES_CODE,"beagle1") )));
-        list.add(new ListCriteria(Filters.QUNTITIES, Arrays.asList(new SearchValue(FilterMap.UNIT_QUANTITY,"111") )));
-        list.add(new ListCriteria(Filters.PERIOD, Arrays.asList(new SearchValue(FilterMap.OCCURENCE_START_DATE,"2014-05-27 07:47:31"),new SearchValue(FilterMap.OCCURENCE_END_DATE,"2015-05-27 07:47:31") )));
-        list.add(new ListCriteria(Filters.FROM, Arrays.asList(new SearchValue(FilterMap.FROM_NAME,"flux1") )));
+        list.add(new ListCriteria(Filters.VESSEL_IDENTIFIES, "vesselGroup1" ));
+        list.add(new ListCriteria(Filters.PURPOSE, "PURPOSE"));
+        list.add(new ListCriteria(Filters.MASTER, "MARK") );
+        list.add(new ListCriteria(Filters.REPORT_TYPE, "DOC_TYPE_1"));
+        list.add(new ListCriteria(Filters.REPORT_TYPE, "DOC_TYPE_1"));
+        list.add(new ListCriteria(Filters.ACTIVITY_TYPE,"FISHING_OPERATION"));
+        list.add(new ListCriteria(Filters.AREAS, "FLUX_LOCATION_ID"));
+        list.add(new ListCriteria(Filters.GEAR, "GEAR_TYPE"));
+        list.add(new ListCriteria(Filters.SPECIES, "beagle1"));
+        list.add(new ListCriteria(Filters.QUNTITIES, "111"));
+        list.add(new ListCriteria(Filters.PERIOD, "2014-05-27 07:47:31"));
+        list.add(new ListCriteria(Filters.FROM, "flux1"));
 
         query.setSearchCriteria(list);
         // query.setPagination( new Pagination(1,2));
