@@ -14,12 +14,13 @@ import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
 import eu.europa.ec.fisheries.ers.service.bean.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
@@ -48,8 +49,6 @@ import java.util.List;
 @Slf4j
 @Stateless
 public class FishingActivityResource extends UnionVMSResource {
-
-    private static final String LIST_ACTIVITY_REPORTS = "LIST_ACTIVITY_REPORTS";
 
     @EJB
     private FluxMessageService fluxResponseMessageService;
@@ -131,14 +130,22 @@ public class FishingActivityResource extends UnionVMSResource {
     @Path("/history/{referenceId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getAllCorrections(@Context HttpServletRequest request,
                                       @Context HttpServletResponse response,
                                       @PathParam("referenceId") String referenceId) throws ServiceException {
 
-        if( request.isUserInRole(LIST_ACTIVITY_REPORTS)) {
-            return createSuccessResponse(activityService.getFaReportCorrections(referenceId));
-        } else {
-            return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-        }
+        return createSuccessResponse(activityService.getFaReportCorrections(referenceId));
+    }
+
+    @GET
+    @Path("/report/details/{uniqueId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.VIEW_FA_REPORT_DETAILS})
+    public Response getFaReportDetails(@Context HttpServletRequest request,
+                                       @Context HttpServletResponse response,
+                                       @PathParam("uniqueId") String uniqueId) throws ServiceException {
+        return createSuccessResponse(activityService.getFaReportDocumentDetails(uniqueId));
     }
 }

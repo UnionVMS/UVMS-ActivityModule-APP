@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
@@ -30,8 +31,8 @@ public interface ActivityService {
 
      /**
       * <p>
-      * This service returns the list of corrections (e.g. deletes, cancels, updates) received previously for a Fishing Activity report
-      * Corrections are identified by the <code>referenceId</code> of the selected <code>FaReportDocumentId</code> recursively.
+      *   This service returns the list of corrections (e.g. deletes, cancels, updates) received previously for a Fishing Activity report
+      *   Corrections are identified by the <code>referenceId</code> of the selected <code>FaReportDocumentId</code> recursively.
       * </p>
       *
       * @param selectedFaReportId selected FA report Id
@@ -39,5 +40,16 @@ public interface ActivityService {
       * @throws ServiceException Exception
       */
      List<FaReportCorrectionDTO> getFaReportCorrections(String selectedFaReportId) throws ServiceException;
+
+     /**
+      * <p>
+      *     This service returns the Fishing activity report details. It contains the complete detail of the fishing activity
+      *     along with catches, flux location, trips, vessels identity, contact address Etc.
+      * </p>
+      * @param faReportDocumentId unique identifier of the FA Report
+      * @return FaReportDocumentDetailsDTO
+      * @throws ServiceException Exception
+      */
+     FaReportDocumentDetailsDTO getFaReportDocumentDetails(String faReportDocumentId) throws ServiceException;
 
 }

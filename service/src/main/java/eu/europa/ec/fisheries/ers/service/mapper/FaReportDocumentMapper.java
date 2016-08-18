@@ -29,7 +29,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 5/13/2016.
  */
-@Mapper(uses = {VesselTransportMeansMapper.class})
+@Mapper(uses = {VesselTransportMeansMapper.class, FishingActivityMapper.class})
 public abstract class FaReportDocumentMapper extends BaseMapper {
 
     public static FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
@@ -68,7 +68,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "referenceId", source = "fluxReportDocument.referenceId"),
             @Mapping(target = "ownerFluxPartyId", source = "fluxReportDocument.ownerFluxPartyId"),
             @Mapping(target = "status", source = "status"),
-            @Mapping(target = "vesselDetails", source = "vesselTransportMeans")
+            @Mapping(target = "vesselDetails", source = "vesselTransportMeans"),
+            @Mapping(target = "fishingActivityDetails", source = "fishingActivities")
     })
     public abstract FaReportDocumentDetailsDTO mapToFaReportDocumentDetailsDTO(FaReportDocumentEntity faReportDocumentEntity);
 

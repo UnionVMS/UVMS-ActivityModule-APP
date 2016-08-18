@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,6 +37,7 @@ public class VesselDetailsDTO implements Serializable {
     private String vesselName;
 
     @JsonProperty("registrationDateTime")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private Date registrationDateTime;
 
     @JsonProperty("registrationEventDescription")

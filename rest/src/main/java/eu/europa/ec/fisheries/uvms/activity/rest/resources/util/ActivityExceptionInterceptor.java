@@ -11,7 +11,7 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.rest.resources;
+package eu.europa.ec.fisheries.uvms.activity.rest.resources.util;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
@@ -37,8 +37,8 @@ public class ActivityExceptionInterceptor extends UnionVMSResource {
         } catch (IllegalArgumentException e) {
             return createErrorResponse(ErrorCodes.INPUT_NOT_SUPPORTED);
         } catch (Exception e) {
-            if (e.getCause() instanceof ServiceException) {
-                return createErrorResponse(e.getCause().getMessage());
+            if (e instanceof ServiceException) {
+                return createErrorResponse(e.getMessage());
             }
             if (e.getCause() instanceof RuntimeException) {
                 return createErrorResponse(e.getCause().getMessage());

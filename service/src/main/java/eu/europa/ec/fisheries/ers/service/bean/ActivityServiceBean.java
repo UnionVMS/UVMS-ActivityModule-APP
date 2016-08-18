@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by sanera on 29/06/2016.
@@ -85,6 +83,22 @@ public class ActivityServiceBean implements ActivityService {
             allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()));
         }
         return allFaReportDocuments;
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public FaReportDocumentDetailsDTO getFaReportDocumentDetails(String faReportDocumentId) throws ServiceException {
+        log.info("Find Fa Report document for report Id : " + faReportDocumentId);
+        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByIds(Arrays.asList(faReportDocumentId));
+        if (faReportDocumentEntities == null || faReportDocumentEntities.isEmpty()) {
+            throw new ServiceException("Report Does not Exist");
+        }
+        FaReportDocumentEntity faReportDocumentEntity = faReportDocumentEntities.get(0);
+        log.info("Map first element from the list to DTO");
+        return FaReportDocumentMapper.INSTANCE.mapToFaReportDocumentDetailsDTO(faReportDocumentEntity);
     }
 
     @Override

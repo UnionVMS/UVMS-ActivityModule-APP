@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
      * @return List<FaReportDocumentEntity>
      * @throws ServiceException
      */
-    public List<FaReportDocumentEntity> findFaReportsByIds(Set<String> strings) throws ServiceException {
+    public List<FaReportDocumentEntity> findFaReportsByIds(Collection<String> strings) throws ServiceException {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID, FaReportDocumentEntity.class);
         query.setParameter(REPORT_IDS, strings);
         return query.getResultList();

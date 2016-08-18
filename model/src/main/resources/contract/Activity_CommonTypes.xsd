@@ -23,6 +23,7 @@
             <xs:enumeration value="CONFIGURE_MDR_SCHEDULER"/>
             <xs:enumeration value="LIST_MDR_CODE_LISTS"/>
             <xs:enumeration value="UPDATE_MDR_CODE_LISTS"/>
+            <xs:enumeration value="VIEW_FA_REPORT_DETAILS"/>
         </xs:restriction>
     </xs:simpleType>
 
