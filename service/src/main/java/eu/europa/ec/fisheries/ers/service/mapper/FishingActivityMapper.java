@@ -231,7 +231,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<ContactPartyEntity> contactPartyList =entity.getFaReportDocument().getVesselTransportMeans().getContactParty();
 
         for (ContactPartyEntity contactParty: contactPartyList){
-            contactPersonList.add(ContactPersonMapper.INSTANCE.mapToContactPersonDTO(contactParty.getContactPerson()));
+            contactPersonList.add(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactParty.getContactPerson()));
         }
         return contactPersonList;
     }
