@@ -20,6 +20,7 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="ACTIVITY_ALLOWED" />
             <xs:enumeration value="LIST_ACTIVITY_REPORTS"/>
+            <xs:enumeration value="FISHING_TRIP_SUMMARY"/>
             <xs:enumeration value="CONFIGURE_MDR_SCHEDULER"/>
             <xs:enumeration value="LIST_MDR_CODE_LISTS"/>
             <xs:enumeration value="UPDATE_MDR_CODE_LISTS"/>

@@ -103,30 +103,21 @@ public class FishingActivityResource extends UnionVMSResource {
 
 
     @POST
+    @Path("/list")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/list")
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response listActivityReportsByQuery(@Context HttpServletRequest request,
-                                               @Context HttpServletResponse response, FishingActivityQuery fishingActivityQuery) {
-        Response responseMethod;
-        if( request.isUserInRole("LIST_ACTIVITY_REPORTS")){
+                                               @Context HttpServletResponse response, FishingActivityQuery fishingActivityQuery) throws ServiceException {
+
             log.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
 
-            if(fishingActivityQuery==null)
+        if(fishingActivityQuery==null)
                 return  createErrorResponse("Query to find list is null.");
 
-            List<FishingActivityReportDTO> dtoList= null;
-            try {
-              dtoList = activityService.getFishingActivityListByQuery(fishingActivityQuery);
-              responseMethod = createSuccessResponse(dtoList);
-                log.info("successful");
-           } catch (ServiceException e) {
-                log.error("Exception while trying to get Fishing Activity Report list.",e);
-                responseMethod = createErrorResponse("Exception while trying to get Fishing Activity Report list.");
-            }
-        }else{
-            responseMethod= createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-        }
+         Response  responseMethod = createSuccessResponse(activityService.getFishingActivityListByQuery(fishingActivityQuery));
+             log.info("successful");
         return responseMethod;
     }
 

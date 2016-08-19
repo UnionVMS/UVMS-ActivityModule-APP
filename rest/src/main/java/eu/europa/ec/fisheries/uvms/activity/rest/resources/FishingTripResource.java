@@ -14,7 +14,9 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -54,21 +57,14 @@ public class FishingTripResource extends UnionVMSResource {
     @GET
     @Path("/summary/{fishingTripId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getFishingTripSummary(@Context HttpServletRequest request,
                                         @Context HttpServletResponse response,
-                                        @PathParam("fishingTripId") String fishingTripId) {
-        Response responseMethod;
-        LOG.info("Fishing Trip summary from fishing trip:"+fishingTripId);
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO= null;
-        try {
-             fishingTripSummaryViewDTO = activityService.getFishingTripSummary(fishingTripId);
-        } catch (ServiceException e) {
-            LOG.error("Exception while trying to get Fishing trip summary For Fishing Trip:"+fishingTripId,e);
-            responseMethod = createErrorResponse("Exception while trying to get Fishing trip summary For Fishing Trip.");
-        }
+                                        @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("successful");
-        responseMethod =createSuccessResponse(fishingTripSummaryViewDTO);
-        return responseMethod;
+        LOG.info("Fishing Trip summary from fishing trip:"+fishingTripId);
+
+        return createSuccessResponse(activityService.getFishingTripSummary(fishingTripId));
     }
 }

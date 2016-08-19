@@ -20,6 +20,12 @@
         </feature>
 
         <feature>
+            <name>FISHING_TRIP_SUMMARY</name>
+            <description>allows user to see Fishing Trip Summary</description>
+            <group>${activity.name}</group>
+        </feature>
+
+        <feature>
             <name>VIEW_FA_REPORT_DETAILS</name>
             <description>allows user to see fishing activity reports details</description>
             <group>${activity.name}</group>
