@@ -10,8 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.mdr.domain2.MdrStatus;
-import eu.europa.ec.fisheries.mdr.service.MdrStatusRepository;
+import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
@@ -51,7 +51,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@GET
 	@Path("/sync")
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response syncrhonizeNow(@Context HttpServletRequest request) {
+	public Response synchronizeNow(@Context HttpServletRequest request) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
 			boolean withErrors = syncBean.manualStartMdrSynchronization();
@@ -74,10 +74,10 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@Path("/sync")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response syncrhonizeNow(@Context HttpServletRequest request, @Context HttpServletResponse response, Collection<String> acronymsToSynch) {
+	public Response synchronizeNow(@Context HttpServletRequest request, @Context HttpServletResponse response, Collection<String> acronymsToSynch) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
-			boolean withErrors = syncBean.manualStartMdrSynchronization();
+			boolean withErrors = syncBean.updateMdrEntities((List<String>) acronymsToSynch);
 			log.info("Finished MDR Synchronization with error flag : " + withErrors);
 			if (withErrors) {
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
@@ -100,7 +100,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	}
 
     /**
-	 * returns an array with all MDR code lists and their details (last successful update, last update attempt datetime, status, etc.).
+	 * Returns an array with all the available MDR code lists and their details (last successful update, last update attempt datetime, status, etc.).
 	 * The details do not contain the individual MDR code lists content.
      *
      * @return createSuccessResponse(acronymsList)
@@ -108,11 +108,9 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@GET
 	@Path("/acronyms/details")
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response getAvailableMdrAcronymsDetails(@Context HttpServletRequest request) {
+	public Response getAvailableMdrAcronymsStatuses(@Context HttpServletRequest request) {
 		log.debug("[START] getAvailableMdrAcronymsDetails ");
-
 		if (request.isUserInRole(ActivityFeaturesEnum.LIST_MDR_CODE_LISTS.toString())) {
-
 			List<MdrStatus> acronymsList = mdrStatusBean.getAllAcronymsStatuses();
 			if (CollectionUtils.isEmpty(acronymsList)) {
 				return createErrorResponse(ERROR_GETTING_AVAIL_MDR);
@@ -126,7 +124,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	}
 
 	/**
-	 * Resource for obtaing all the avalilable MDR acronyms (aka acronymsList)
+	 * Resource for obtaining all the available MDR acronyms (aka acronymsList)
 	 *
 	 * @return createSuccessResponse(acronymsList)
 	 */
@@ -141,20 +139,30 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 		return createSuccessResponse(acronymsList);
 	}
 
+	/**
+	 * Gets the actual stored scheduler configuration. 
+	 * 
+	 * @return
+	 */
 	@GET
 	@Path("/schedulerConfig")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSchedulerConfiguration() {
-		//TODO implement real DB call
-		return createSuccessResponse("0 1,13 * * *");
+		return createSuccessResponse(syncBean.getActualSchedulerConfiguration());
 	}
 
+	/**
+	 * Saves the given cronConfigStr to the ActivityConfiguration Table.
+	 * 
+	 * @param request
+	 * @param cronConfigStr
+	 */
 	@PUT
 	@Path("/schedulerConfig")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response saveSchedulerConfiguration(@Context HttpServletRequest request) {
+	public Response saveSchedulerConfiguration(@Context HttpServletRequest request, String cronConfigStr) {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
-			//TODO implement real DB call
+			syncBean.reconfigureScheduler(cronConfigStr);
 			return createSuccessResponse();
 		} else {
 			return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");

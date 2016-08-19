@@ -8,12 +8,11 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.mdr.domain2;
+package eu.europa.ec.fisheries.mdr.domain;
 
 /**
  * Created by kovian on 29/07/2016.
  */
-
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -26,10 +25,10 @@ import javax.persistence.Table;
  * Entity that will map the configuration of Activity module.
  */
 @Entity
-@Table(name = "mdr_configuration")
+@Table(name = "activity_configuration")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class MdrConfiguration  extends BaseEntity {
+public class ActivityConfiguration extends BaseEntity {
 
     @Column(name = "config_name")
     private String configName;
@@ -37,7 +36,11 @@ public class MdrConfiguration  extends BaseEntity {
     @Column(name = "config_value")
     private String value;
 
-    public String getConfigName() {
+    public ActivityConfiguration(String configName, String configValue) {
+    	setConfigName(configName);
+    	setValue(configValue);
+	}
+	public String getConfigName() {
         return configName;
     }
     public void setConfigName(String configName) {

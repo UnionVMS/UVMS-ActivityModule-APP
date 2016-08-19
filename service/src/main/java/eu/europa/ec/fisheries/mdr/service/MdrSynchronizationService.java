@@ -22,10 +22,10 @@ public interface MdrSynchronizationService {
 
 	void sendMockedMessageToERSMDRQueue();
 
-	/**
-	 * reconfigures the scheduler and persists the expression.
-	 * @param schedulerExpression
-     */
 	void reconfigureScheduler(String schedulerExpression);
+
+	boolean updateMdrEntities(List<String> acronymsList);
+
+	String getActualSchedulerConfiguration();
 
 }

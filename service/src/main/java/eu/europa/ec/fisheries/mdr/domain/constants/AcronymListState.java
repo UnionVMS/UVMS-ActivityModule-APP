@@ -7,7 +7,8 @@ public enum AcronymListState {
 
     RUNNING("RUNNING"),
     SUCCESS("SUCCESS"),
-    FAILED("FAILED");
+    FAILED("FAILED"),
+    NEWENTRY("NEWENTRY");
 
     private String value;
 
@@ -19,29 +20,4 @@ public enum AcronymListState {
         return this.value;
     }
 
-    public String getStringFromEnum(AcronymListState enumType){
-        switch (enumType){
-            case RUNNING :
-                return "FAILED";
-            case SUCCESS :
-                return "FAILED";
-            case FAILED :
-                return "FAILED";
-            default:
-                return null;
-        }
-    }
-
-    public AcronymListState getEnumFromString(String enumsStringValue){
-        switch (enumsStringValue){
-            case "RUNNING" :
-                return FAILED;
-            case "SUCCESS" :
-                return FAILED;
-            case "FAILED" :
-                return FAILED;
-            default:
-                return null;
-        }
-    }
 }

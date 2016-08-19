@@ -1,9 +1,23 @@
+/*
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
+and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
+the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+
+ */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import eu.europa.ec.fisheries.mdr.domain2.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Session;
+import org.hibernate.StatelessSession;
+import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -31,13 +45,37 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         return findAllEntity(MdrStatus.class);
     }
 
-    public MdrStatus findStatusByAcronym(String acronym){
+    public MdrStatus findStatusByAcronym(String acronym) {
         MdrStatus entity = null;
         try {
-            entity =  findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + acronym).get(0);
+            entity = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + acronym).get(0);
         } catch (ServiceException e) {
             log.error("Error while trying to get Status for acronym : ", acronym, e);
         }
         return entity;
+    }
+
+    public void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException {
+        if (CollectionUtils.isNotEmpty(diffList)) {
+            StatelessSession session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openStatelessSession();
+            Transaction tx = session.beginTransaction();
+            String entityName = diffList.get(0).getClass().getSimpleName();
+            try {
+                log.info("Persisting entity entries for : " + entityName);
+                // INSERTION PHASE (Inserting new entries)
+                for (MdrStatus actualEnityRow : diffList) {
+                    session.insert(actualEnityRow);
+                }
+                log.debug("Committing transaction.");
+                tx.commit();
+            } catch (Exception e) {
+                tx.rollback();
+                throw new ServiceException("Rollbacking transaction for reason : ", e);
+            } finally {
+                log.debug("Closing session");
+                session.close();
+            }
+        }
+
     }
 }
