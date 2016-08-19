@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxCharacteristicsDetailsDTO;
 import org.junit.Ignore;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXCharacteristic;
@@ -86,5 +87,23 @@ public class FluxCharacteristicsMapperTest {
         assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getValueQuantity().intValue());
         assertTrue(fluxCharacteristicEntity.getDescription().startsWith(fluxCharacteristic.getDescriptions().get(0).getValue()));
         assertNull(fluxCharacteristicEntity.getFluxLocation());
+    }
+
+    @Test
+    public void testFluxCharacteristicsDetailsDTOMapper() {
+        FLUXCharacteristic fluxCharacteristic = MapperUtil.getFluxCharacteristics();
+        FluxCharacteristicEntity fluxCharacteristicEntity = new FluxCharacteristicEntity();
+        FishingActivityEntity fishingActivityEntity = null;
+        FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, fishingActivityEntity, fluxCharacteristicEntity);
+
+        FluxCharacteristicsDetailsDTO fluxCharacteristicsDetailsDTO = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharacteristicsDetailsDTO(fluxCharacteristicEntity);
+        assertEquals(fluxCharacteristicEntity.getTypeCode(), fluxCharacteristicsDetailsDTO.getType());
+        assertEquals(fluxCharacteristicEntity.getValueDateTime(), fluxCharacteristicsDetailsDTO.getDateTime());
+        assertEquals(fluxCharacteristicEntity.getDescription(), fluxCharacteristicsDetailsDTO.getDescription());
+        assertEquals(fluxCharacteristicEntity.getValueIndicator(), fluxCharacteristicsDetailsDTO.getIndicator());
+        assertEquals(fluxCharacteristicEntity.getValueMeasure(), fluxCharacteristicsDetailsDTO.getMeasure());
+        assertEquals(fluxCharacteristicEntity.getValueQuantity(), fluxCharacteristicsDetailsDTO.getQuantity());
+        assertEquals(fluxCharacteristicEntity.getValueText(), fluxCharacteristicsDetailsDTO.getText());
+        assertEquals(fluxCharacteristicEntity.getValueCode(), fluxCharacteristicsDetailsDTO.getCode());
     }
 }

@@ -18,8 +18,13 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingGearDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingGear;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -91,5 +96,29 @@ public class FishingGearMapperTest {
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
         assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
         assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
+    }
+
+    @Test
+    public void testFishingGearDetailsDTOMapper() {
+        FishingGear fishingGear = MapperUtil.getFishingGear();
+        FishingGearEntity fishingGearEntity = new FishingGearEntity();
+        FishingActivityEntity fishingActivityEntity = null;
+        FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, fishingActivityEntity, fishingGearEntity);
+
+        FishingGearDetailsDTO fishingGearDetailsDTO = FishingGearMapper.INSTANCE.mapToFishingGearDetailsDTO(fishingGearEntity);
+        assertEquals(fishingGearEntity.getTypeCode(), fishingGearDetailsDTO.getGearType());
+        assertEquals(fishingGearEntity.getRoleCode(), fishingGearDetailsDTO.getRole());
+    }
+
+    @Test
+    public void testFishingGearDetailsDTOListMapper() {
+        FishingGear fishingGear = MapperUtil.getFishingGear();
+        FishingGearEntity fishingGearEntity = new FishingGearEntity();
+        FishingActivityEntity fishingActivityEntity = null;
+        FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, fishingActivityEntity, fishingGearEntity);
+
+        List<FishingGearDetailsDTO> fishingGearDetailsDTO = FishingGearMapper.INSTANCE.mapToFishingGearDetailsDTOList(new HashSet<FishingGearEntity>(Arrays.asList(fishingGearEntity)));
+        assertEquals(fishingGearEntity.getTypeCode(), fishingGearDetailsDTO.get(0).getGearType());
+        assertEquals(fishingGearEntity.getRoleCode(), fishingGearDetailsDTO.get(0).getRole());
     }
 }

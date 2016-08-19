@@ -13,11 +13,17 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProcessDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPProcess;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -45,5 +51,29 @@ public class AapProcessMapperTest {
         assertNotNull(aapProductEntity);
 
         assertEquals(aapProcess.getTypeCodes().get(0).getValue(), aapProductEntity.getAapProcess().getTypeCode());
+    }
+
+    @Test
+    public void testAapProcessDetailsDTOMapper() {
+        AAPProcess aapProcess = MapperUtil.getAapProcess();
+        AapProcessEntity aapProcessEntity = new AapProcessEntity();
+        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
+
+        AapProcessDetailsDTO aapProcessDetailsDTO = AapProcessMapper.INSTANCE.mapToAapProcessDetailsDTO(aapProcessEntity);
+
+        assertEquals(aapProcessEntity.getTypeCode(), aapProcessDetailsDTO.getTypeCode());
+        assertEquals(aapProcessEntity.getConversionFactor(), aapProcessDetailsDTO.getConversionFactor());
+    }
+
+    @Test
+    public void testAapProcessDetailsDTOListMapper() {
+        AAPProcess aapProcess = MapperUtil.getAapProcess();
+        AapProcessEntity aapProcessEntity = new AapProcessEntity();
+        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
+
+        List<AapProcessDetailsDTO> aapProcessDetailsDTO = AapProcessMapper.INSTANCE.mapToAapProductDetailsDTOList(new HashSet<AapProcessEntity>(Arrays.asList(aapProcessEntity)));
+
+        assertEquals(aapProcessEntity.getTypeCode(), aapProcessDetailsDTO.get(0).getTypeCode());
+        assertEquals(aapProcessEntity.getConversionFactor(), aapProcessDetailsDTO.get(0).getConversionFactor());
     }
 }

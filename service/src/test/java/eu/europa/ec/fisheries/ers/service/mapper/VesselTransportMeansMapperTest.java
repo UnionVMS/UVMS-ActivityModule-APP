@@ -16,8 +16,13 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.VesselDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselTransportMeans;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -60,5 +65,32 @@ public class VesselTransportMeansMapperTest {
         assertTrue(vesselTransportMeansEntity.getName().startsWith(vesselTransportMeans.getNames().get(0).getValue()));
         assertEquals(vesselTransportMeans.getRoleCode().getValue(), vesselTransportMeansEntity.getRoleCode());
         assertEquals(vesselTransportMeans.getRoleCode().getListID(), vesselTransportMeansEntity.getRoleCodeListId());
+    }
+
+    @Test
+    public void testVesselTransportMeansDetailsDTOMapper() {
+        VesselTransportMeans vesselTransportMeans = MapperUtil.getVesselTransportMeans();
+        VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
+        VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans, null, vesselTransportMeansEntity);
+
+        VesselDetailsDTO vesselDetailsDTO = VesselTransportMeansMapper.INSTANCE.mapToVesselDetailsDTO(vesselTransportMeansEntity);
+        assertEquals(vesselTransportMeansEntity.getRegistrationEvent().getOccurrenceDatetime(), vesselDetailsDTO.getRegistrationDateTime());
+        assertEquals(vesselTransportMeansEntity.getRegistrationEvent().getDescription(), vesselDetailsDTO.getRegistrationEventDescription());
+        assertEquals(vesselTransportMeansEntity.getRegistrationEvent().getRegistrationLocation().getLocationCountryId(), vesselDetailsDTO.getRegistrationLocationCountryId());
+        assertEquals(vesselTransportMeansEntity.getRegistrationEvent().getRegistrationLocation().getDescription(), vesselDetailsDTO.getRegistrationLocationDescription());
+        assertEquals(vesselTransportMeansEntity.getRegistrationEvent().getRegistrationLocation().getName(), vesselDetailsDTO.getRegistrationLocationName());
+        assertEquals(vesselTransportMeansEntity.getRegistrationEvent().getRegistrationLocation().getRegionCode(), vesselDetailsDTO.getRegistrationRegion());
+        assertEquals(vesselTransportMeansEntity.getRegistrationEvent().getRegistrationLocation().getTypeCode(), vesselDetailsDTO.getRegistrationType());
+        assertEquals(getIds(vesselTransportMeansEntity.getVesselIdentifiers()), vesselDetailsDTO.getVesselIds());
+        assertEquals(vesselTransportMeansEntity.getName(), vesselDetailsDTO.getVesselName());
+        assertEquals(vesselTransportMeansEntity.getRoleCode(), vesselDetailsDTO.getVesselRole());
+    }
+
+    private List<String> getIds(Set<VesselIdentifierEntity> vesselIdentifierEntities) {
+        List<String> ids = new ArrayList<>();
+        for(VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifierEntities) {
+            ids.add(vesselIdentifierEntity.getVesselIdentifierId());
+        }
+        return ids;
     }
 }

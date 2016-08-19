@@ -15,8 +15,13 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.GearCharacteristicsDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearCharacteristic;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -43,5 +48,39 @@ public class GearCharacteristicsMapperTest {
         assertTrue(gearCharacteristicEntity.getValueText().startsWith(gearCharacteristic.getValue().getValue()));
         assertEquals(gearCharacteristic.getValueQuantity().getValue().intValue(), gearCharacteristicEntity.getValueQuantity().intValue());
         assertNull(gearCharacteristicEntity.getFishingGear());
+    }
+
+    @Test
+    public void testGearCharacteristicsDetailsDTOMapper() {
+        GearCharacteristic gearCharacteristic = MapperUtil.getGearCharacteristics();
+        GearCharacteristicEntity gearCharacteristicEntity = new GearCharacteristicEntity();
+        GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(gearCharacteristic, null, gearCharacteristicEntity);
+
+        GearCharacteristicsDetailsDTO gearCharacteristicsDetailsDTO = GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicsDetailsDTO(gearCharacteristicEntity);
+        assertEquals(gearCharacteristicEntity.getValueDateTime(), gearCharacteristicsDetailsDTO.getDateTime());
+        assertEquals(gearCharacteristicEntity.getTypeCode(), gearCharacteristicsDetailsDTO.getTypeCode());
+        assertEquals(gearCharacteristicEntity.getDescription(), gearCharacteristicsDetailsDTO.getDescription());
+        assertEquals(gearCharacteristicEntity.getValueIndicator(), gearCharacteristicsDetailsDTO.getIndicator());
+        assertEquals(gearCharacteristicEntity.getValueQuantity(), gearCharacteristicsDetailsDTO.getQuantity());
+        assertEquals(gearCharacteristicEntity.getValueText(), gearCharacteristicsDetailsDTO.getText());
+        assertEquals(gearCharacteristicEntity.getValueCode(), gearCharacteristicsDetailsDTO.getCode());
+        assertEquals(gearCharacteristicEntity.getValueMeasure(), gearCharacteristicsDetailsDTO.getValueMeasure());
+    }
+
+    @Test
+    public void testGearCharacteristicsDetailsDTOListMapper() {
+        GearCharacteristic gearCharacteristic = MapperUtil.getGearCharacteristics();
+        GearCharacteristicEntity gearCharacteristicEntity = new GearCharacteristicEntity();
+        GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(gearCharacteristic, null, gearCharacteristicEntity);
+
+        List<GearCharacteristicsDetailsDTO> gearCharacteristicsDetailsDTO = GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicsDetailsDTOList(new HashSet<GearCharacteristicEntity>(Arrays.asList(gearCharacteristicEntity)));
+        assertEquals(gearCharacteristicEntity.getValueDateTime(), gearCharacteristicsDetailsDTO.get(0).getDateTime());
+        assertEquals(gearCharacteristicEntity.getTypeCode(), gearCharacteristicsDetailsDTO.get(0).getTypeCode());
+        assertEquals(gearCharacteristicEntity.getDescription(), gearCharacteristicsDetailsDTO.get(0).getDescription());
+        assertEquals(gearCharacteristicEntity.getValueIndicator(), gearCharacteristicsDetailsDTO.get(0).getIndicator());
+        assertEquals(gearCharacteristicEntity.getValueQuantity(), gearCharacteristicsDetailsDTO.get(0).getQuantity());
+        assertEquals(gearCharacteristicEntity.getValueText(), gearCharacteristicsDetailsDTO.get(0).getText());
+        assertEquals(gearCharacteristicEntity.getValueCode(), gearCharacteristicsDetailsDTO.get(0).getCode());
+        assertEquals(gearCharacteristicEntity.getValueMeasure(), gearCharacteristicsDetailsDTO.get(0).getValueMeasure());
     }
 }

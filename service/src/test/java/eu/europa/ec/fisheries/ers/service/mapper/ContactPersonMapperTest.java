@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactPerson;
 
@@ -41,5 +42,23 @@ public class ContactPersonMapperTest {
         assertEquals(contactPerson.getNameSuffix().getValue(), contactPersonEntity.getNameSuffix());
         assertEquals(contactPerson.getTitle().getValue(), contactPersonEntity.getTitle());
         assertNull(contactPersonEntity.getContactParty());
+    }
+
+    @Test
+    public void testContactPersonDetailsDTOMapper() {
+        ContactPerson contactPerson = MapperUtil.getContactPerson();
+        ContactPersonEntity contactPersonEntity = new ContactPersonEntity();
+        ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPerson, null, contactPersonEntity);
+
+        ContactPersonDetailsDTO contactPersonDetailsDTO = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPersonEntity);
+
+        assertEquals(contactPersonEntity.getAlias(), contactPersonDetailsDTO.getAlias());
+        assertEquals(contactPersonEntity.getFamilyName(), contactPersonDetailsDTO.getFamilyName());
+        assertEquals(contactPersonEntity.getFamilyNamePrefix(), contactPersonDetailsDTO.getFamilyNamePrefix());
+        assertEquals(contactPersonEntity.getGender(), contactPersonDetailsDTO.getGender());
+        assertEquals(contactPersonEntity.getGivenName(), contactPersonDetailsDTO.getGivenName());
+        assertEquals(contactPersonEntity.getMiddleName(), contactPersonDetailsDTO.getMiddleName());
+        assertEquals(contactPersonEntity.getNameSuffix(), contactPersonDetailsDTO.getNameSuffix());
+        assertEquals(contactPersonEntity.getTitle(), contactPersonDetailsDTO.getTitle());
     }
 }

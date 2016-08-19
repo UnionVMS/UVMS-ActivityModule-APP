@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.GearProblemDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearProblem;
 
@@ -48,5 +49,17 @@ public class GearProblemMapperTest {
         assertEquals(gearProblem.getAffectedQuantity().getValue().intValue(), fishingGearEntity.getGearProblem().getAffectedQuantity());
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), fishingGearEntity.getGearProblem().getRecoveryMeasureCode());
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), fishingGearEntity.getGearProblem().getRecoveryMeasureCodeListId());
+    }
+
+    @Test
+    public void testGearProblemDetailsDTOMapper() {
+        GearProblem gearProblem = MapperUtil.getGearProblem();
+        GearProblemEntity gearProblemEntity = new GearProblemEntity();
+        GearProblemMapper.INSTANCE.mapToGearProblemEntity(gearProblem, null, gearProblemEntity);
+
+        GearProblemDetailsDTO gearProblemDetailsDTO = GearProblemMapper.INSTANCE.mapToGearProblemDetailsDTO(gearProblemEntity);
+        assertEquals(gearProblemEntity.getAffectedQuantity(), gearProblemDetailsDTO.getAffectedQuantity().intValue());
+        assertEquals(gearProblemEntity.getTypeCode(), gearProblemDetailsDTO.getProblemType());
+        assertEquals(gearProblemEntity.getRecoveryMeasureCode(), gearProblemDetailsDTO.getRecoveryMeasure());
     }
 }

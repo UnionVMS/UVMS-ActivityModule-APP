@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaCatchDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FACatch;
 
@@ -68,6 +69,24 @@ public class FaCatchMapperTest {
         FluxLocationEntity fluxLocationEntity = faCatchEntity.getFluxLocations().iterator().next();
         assertNotNull(fluxLocationEntity);
         assertFaCatchFields(faCatch, fluxLocationEntity.getFaCatch());
+    }
+
+    @Test
+    public void testFaCatchDetailsDTOMapper() {
+        FACatch faCatch = MapperUtil.getFaCatch();
+        FaCatchEntity faCatchEntity = new FaCatchEntity();
+        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, null, faCatchEntity);
+
+        FaCatchDetailsDTO faCatchDetailsDTO = FaCatchMapper.INSTANCE.mapToFaCatchDetailsDTO(faCatchEntity);
+        assertEquals(faCatchEntity.getSizeDistribution().getCategoryCode(), faCatchDetailsDTO.getSizeDistributionCategoryCode());
+        assertEquals(faCatchEntity.getSizeDistribution().getClassCode(), faCatchDetailsDTO.getSizeDistributionClassCode());
+        assertEquals(faCatchEntity.getSpeciesCode(), faCatchDetailsDTO.getSpeciesCode());
+        assertEquals(faCatchEntity.getTypeCode(), faCatchDetailsDTO.getTypeCode());
+        assertEquals(faCatchEntity.getUnitQuantity(), faCatchDetailsDTO.getUnitQuantity());
+        assertEquals(faCatchEntity.getUsageCode(), faCatchDetailsDTO.getUsageCode());
+        assertEquals(faCatchEntity.getWeighingMeansCode(), faCatchDetailsDTO.getWeighingMeansCode());
+        assertEquals(faCatchEntity.getWeightMeasure(), faCatchDetailsDTO.getWeightMeasure());
+        assertEquals(faCatchEntity.getWeightMeasureUnitCode(), faCatchDetailsDTO.getWeightMeasureUnitCode());
     }
 
     private void assertFaCatchFields(FACatch faCatch, FaCatchEntity faCatchEntity) {

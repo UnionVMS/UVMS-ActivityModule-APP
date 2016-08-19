@@ -18,8 +18,13 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AddressDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -77,5 +82,51 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddressTypeEnum.getType(), structuredAddressEntity.getStructuredAddressType());
 
         assertNull(structuredAddressEntity.getFluxLocation());
+    }
+
+    @Test
+    public void testStructuredAddressDetailsDTOMapper() {
+        StructuredAddress structuredAddress = MapperUtil.getStructuredAddress();
+        StructuredAddressEntity structuredAddressEntity = new StructuredAddressEntity();
+        StructuredAddressTypeEnum structuredAddressTypeEnum = StructuredAddressTypeEnum.FLUX_PHYSICAL;
+        FluxLocationEntity fluxLocationEntity = null;
+        StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress, structuredAddressTypeEnum, fluxLocationEntity, structuredAddressEntity);
+
+        AddressDetailsDTO addressDetailsDTO = StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(structuredAddressEntity);
+        assertEquals(structuredAddressEntity.getAddressId(), addressDetailsDTO.getAddressId());
+        assertEquals(structuredAddressEntity.getBlockName(), addressDetailsDTO.getBlockName());
+        assertEquals(structuredAddressEntity.getBuildingName(), addressDetailsDTO.getBuildingName());
+        assertEquals(structuredAddressEntity.getCityName(), addressDetailsDTO.getCityName());
+        assertEquals(structuredAddressEntity.getCitySubdivisionName(), addressDetailsDTO.getCitySubdivisionName());
+        assertEquals(structuredAddressEntity.getCountry(), addressDetailsDTO.getCountry());
+        assertEquals(structuredAddressEntity.getCountryName(), addressDetailsDTO.getCountryName());
+        assertEquals(structuredAddressEntity.getCountrySubdivisionName(), addressDetailsDTO.getCountrySubdivisionName());
+        assertEquals(structuredAddressEntity.getPlotId(), addressDetailsDTO.getPlotId());
+        assertEquals(structuredAddressEntity.getPostcode(), addressDetailsDTO.getPostcode());
+        assertEquals(structuredAddressEntity.getPostOfficeBox(), addressDetailsDTO.getPostOfficeBox());
+        assertEquals(structuredAddressEntity.getStreetname(), addressDetailsDTO.getStreetname());
+    }
+
+    @Test
+    public void testStructuredAddressDetailsDTOListMapper() {
+        StructuredAddress structuredAddress = MapperUtil.getStructuredAddress();
+        StructuredAddressEntity structuredAddressEntity = new StructuredAddressEntity();
+        StructuredAddressTypeEnum structuredAddressTypeEnum = StructuredAddressTypeEnum.FLUX_PHYSICAL;
+        FluxLocationEntity fluxLocationEntity = null;
+        StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress, structuredAddressTypeEnum, fluxLocationEntity, structuredAddressEntity);
+
+        List<AddressDetailsDTO> addressDetailsDTO = StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(new HashSet<StructuredAddressEntity>(Arrays.asList(structuredAddressEntity)));
+        assertEquals(structuredAddressEntity.getAddressId(), addressDetailsDTO.get(0).getAddressId());
+        assertEquals(structuredAddressEntity.getBlockName(), addressDetailsDTO.get(0).getBlockName());
+        assertEquals(structuredAddressEntity.getBuildingName(), addressDetailsDTO.get(0).getBuildingName());
+        assertEquals(structuredAddressEntity.getCityName(), addressDetailsDTO.get(0).getCityName());
+        assertEquals(structuredAddressEntity.getCitySubdivisionName(), addressDetailsDTO.get(0).getCitySubdivisionName());
+        assertEquals(structuredAddressEntity.getCountry(), addressDetailsDTO.get(0).getCountry());
+        assertEquals(structuredAddressEntity.getCountryName(), addressDetailsDTO.get(0).getCountryName());
+        assertEquals(structuredAddressEntity.getCountrySubdivisionName(), addressDetailsDTO.get(0).getCountrySubdivisionName());
+        assertEquals(structuredAddressEntity.getPlotId(), addressDetailsDTO.get(0).getPlotId());
+        assertEquals(structuredAddressEntity.getPostcode(), addressDetailsDTO.get(0).getPostcode());
+        assertEquals(structuredAddressEntity.getPostOfficeBox(), addressDetailsDTO.get(0).getPostOfficeBox());
+        assertEquals(structuredAddressEntity.getStreetname(), addressDetailsDTO.get(0).getStreetname());
     }
 }

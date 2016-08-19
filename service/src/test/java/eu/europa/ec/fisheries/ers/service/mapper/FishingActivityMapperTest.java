@@ -15,8 +15,13 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingActivityDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingActivity;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -81,6 +86,50 @@ public class FishingActivityMapperTest {
         assertEquals(fishingActivity.getIDS().get(0).getValue(), fishingActivityIdentifierEntity.getFaIdentifierId());
         assertEquals(fishingActivity.getIDS().get(0).getSchemeID(), fishingActivityIdentifierEntity.getFaIdentifierSchemeId());
         assertFishingActivityFields(fishingActivity, fishingActivityIdentifierEntity.getFishingActivity());
+    }
+
+    @Test
+    public void testFishingActivityDetailsDTOMapper() {
+        FishingActivity fishingActivity = MapperUtil.getFishingActivity();
+        FishingActivityEntity fishingActivityEntity = new FishingActivityEntity();
+        FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, fishingActivityEntity);
+
+        FishingActivityDetailsDTO fishingActivityDetailsDTO = FishingActivityMapper.INSTANCE.mapToFishingActivityDetailsDTO(fishingActivityEntity);
+        assertEquals(fishingActivityEntity.getTypeCode(), fishingActivityDetailsDTO.getActivityTypeCode());
+        assertEquals(fishingActivityEntity.getDestVesselCharId().getVesselId(), fishingActivityDetailsDTO.getDestVesselId());
+        assertEquals(fishingActivityEntity.getDestVesselCharId().getVesselTypeCode(), fishingActivityDetailsDTO.getDestVesselTypeCode());
+        assertEquals(fishingActivityEntity.getFisheryTypeCode(), fishingActivityDetailsDTO.getFisheryTypeCode());
+        assertEquals(fishingActivityEntity.getFishingDurationMeasure(), fishingActivityDetailsDTO.getFishingDurationMeasure());
+        assertEquals(fishingActivityEntity.getFlapDocumentId(), fishingActivityDetailsDTO.getFlapDocumentId());
+        assertEquals(fishingActivityEntity.getOccurence(), fishingActivityDetailsDTO.getOccurence());
+        assertEquals(fishingActivityEntity.getOperationQuantity(), fishingActivityDetailsDTO.getOperationQuantity());
+        assertEquals(fishingActivityEntity.getReasonCode(), fishingActivityDetailsDTO.getReasonCode());
+        assertEquals(fishingActivityEntity.getSourceVesselCharId().getVesselId(), fishingActivityDetailsDTO.getSourceVesselId());
+        assertEquals(fishingActivityEntity.getSourceVesselCharId().getVesselTypeCode(), fishingActivityDetailsDTO.getSourceVesselTypeCode());
+        assertEquals(fishingActivityEntity.getSpeciesTargetCode(), fishingActivityDetailsDTO.getSpeciesTargetCode());
+        assertEquals(fishingActivityEntity.getVesselActivityCode(), fishingActivityDetailsDTO.getVesselActivityCode());
+    }
+
+    @Test
+    public void testFishingActivityDetailsDTOListMapper() {
+        FishingActivity fishingActivity = MapperUtil.getFishingActivity();
+        FishingActivityEntity fishingActivityEntity = new FishingActivityEntity();
+        FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, fishingActivityEntity);
+
+        List<FishingActivityDetailsDTO> fishingActivityDetailsDTO = FishingActivityMapper.INSTANCE.mapToFishingActivityDetailsDTOList(new HashSet<FishingActivityEntity>(Arrays.asList(fishingActivityEntity)));
+        assertEquals(fishingActivityEntity.getTypeCode(), fishingActivityDetailsDTO.get(0).getActivityTypeCode());
+        assertEquals(fishingActivityEntity.getDestVesselCharId().getVesselId(), fishingActivityDetailsDTO.get(0).getDestVesselId());
+        assertEquals(fishingActivityEntity.getDestVesselCharId().getVesselTypeCode(), fishingActivityDetailsDTO.get(0).getDestVesselTypeCode());
+        assertEquals(fishingActivityEntity.getFisheryTypeCode(), fishingActivityDetailsDTO.get(0).getFisheryTypeCode());
+        assertEquals(fishingActivityEntity.getFishingDurationMeasure(), fishingActivityDetailsDTO.get(0).getFishingDurationMeasure());
+        assertEquals(fishingActivityEntity.getFlapDocumentId(), fishingActivityDetailsDTO.get(0).getFlapDocumentId());
+        assertEquals(fishingActivityEntity.getOccurence(), fishingActivityDetailsDTO.get(0).getOccurence());
+        assertEquals(fishingActivityEntity.getOperationQuantity(), fishingActivityDetailsDTO.get(0).getOperationQuantity());
+        assertEquals(fishingActivityEntity.getReasonCode(), fishingActivityDetailsDTO.get(0).getReasonCode());
+        assertEquals(fishingActivityEntity.getSourceVesselCharId().getVesselId(), fishingActivityDetailsDTO.get(0).getSourceVesselId());
+        assertEquals(fishingActivityEntity.getSourceVesselCharId().getVesselTypeCode(), fishingActivityDetailsDTO.get(0).getSourceVesselTypeCode());
+        assertEquals(fishingActivityEntity.getSpeciesTargetCode(), fishingActivityDetailsDTO.get(0).getSpeciesTargetCode());
+        assertEquals(fishingActivityEntity.getVesselActivityCode(), fishingActivityDetailsDTO.get(0).getVesselActivityCode());
     }
 
     private void assertFishingActivityFields(FishingActivity fishingActivity, FishingActivityEntity fishingActivityEntity) {

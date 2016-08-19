@@ -15,8 +15,13 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProductDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPProduct;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -37,5 +42,29 @@ public class AapProductMapperTest {
         assertNull(aapProductEntity.getAapProcess());
         assertEquals(aapProduct.getPackagingUnitAverageWeightMeasure().getValue().doubleValue(), aapProductEntity.getPackagingUnitAvarageWeight());
         assertEquals(aapProduct.getPackagingUnitQuantity().getValue().doubleValue(), aapProductEntity.getPackagingUnitCount());
+    }
+
+    @Test
+    public void testMapToAapProductDetailsDTO() {
+        AAPProduct aapProduct = MapperUtil.getAapProduct();
+        AapProductEntity aapProductEntity = new AapProductEntity();
+        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        AapProductDetailsDTO aapProductDetailsDTO = AapProductMapper.INSTANCE.mapToAapProductDetailsDTO(aapProductEntity);
+
+        assertEquals(aapProductEntity.getPackagingTypeCode(), aapProductDetailsDTO.getPackagingTypeCode());
+        assertEquals(aapProductEntity.getPackagingUnitAvarageWeight(), aapProductDetailsDTO.getPackagingUnitAvarageWeight());
+        assertEquals(aapProductEntity.getPackagingUnitCount(), aapProductDetailsDTO.getPackagingUnitCount());
+    }
+
+    @Test
+    public void testMapToAapProductDetailsDTOList() {
+        AAPProduct aapProduct = MapperUtil.getAapProduct();
+        AapProductEntity aapProductEntity = new AapProductEntity();
+        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        List<AapProductDetailsDTO> aapProductDetailsDTO = AapProductMapper.INSTANCE.mapToAapProductDetailsDTOList(new HashSet<AapProductEntity>(Arrays.asList(aapProductEntity)));
+
+        assertEquals(aapProductEntity.getPackagingTypeCode(), aapProductDetailsDTO.get(0).getPackagingTypeCode());
+        assertEquals(aapProductEntity.getPackagingUnitAvarageWeight(), aapProductDetailsDTO.get(0).getPackagingUnitAvarageWeight());
+        assertEquals(aapProductEntity.getPackagingUnitCount(), aapProductDetailsDTO.get(0).getPackagingUnitCount());
     }
 }

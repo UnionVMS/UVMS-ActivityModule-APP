@@ -23,6 +23,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.DelimitedPeriod;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/15/2016.
@@ -62,5 +63,5 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
     })
     public abstract DelimitedPeriodDetailsDTO mapToDelimitedPeriodDetailsDTO(DelimitedPeriodEntity delimitedPeriodEntity);
 
-    public abstract List<DelimitedPeriodDetailsDTO> mapToDelimitedPeriodDetailsDTOList(List<DelimitedPeriodEntity> delimitedPeriodEntities);
+    public abstract List<DelimitedPeriodDetailsDTO> mapToDelimitedPeriodDetailsDTOList(Set<DelimitedPeriodEntity> delimitedPeriodEntities);
 }

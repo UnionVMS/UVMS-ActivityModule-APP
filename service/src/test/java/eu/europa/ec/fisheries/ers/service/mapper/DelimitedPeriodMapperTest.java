@@ -17,9 +17,14 @@ import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.DelimitedPeriodDetailsDTO;
 import org.hibernate.type.EnumType;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.DelimitedPeriod;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -53,5 +58,33 @@ public class DelimitedPeriodMapperTest {
         assertEquals(delimitedPeriod.getEndDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getEndDate());
         assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getDuration().intValue());
         assertNull(delimitedPeriodEntity.getFishingTrip());
+    }
+
+    @Test
+    public void testDelimitedPeriodDetailsDTOMapper() {
+        DelimitedPeriod delimitedPeriod = MapperUtil.getDelimitedPeriod();
+        DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
+        FishingActivityEntity fishingActivity = null;
+        DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingActivity, delimitedPeriodEntity);
+
+        DelimitedPeriodDetailsDTO delimitedPeriodDetailsDTO = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDetailsDTO(delimitedPeriodEntity);
+
+        assertEquals(delimitedPeriodEntity.getDuration(), delimitedPeriodDetailsDTO.getDuration());
+        assertEquals(delimitedPeriodEntity.getEndDate(), delimitedPeriodDetailsDTO.getEndDate());
+        assertEquals(delimitedPeriodEntity.getStartDate(), delimitedPeriodDetailsDTO.getStartDate());
+    }
+
+    @Test
+    public void testDelimitedPeriodDetailsDTOListMapper() {
+        DelimitedPeriod delimitedPeriod = MapperUtil.getDelimitedPeriod();
+        DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
+        FishingActivityEntity fishingActivity = null;
+        DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingActivity, delimitedPeriodEntity);
+
+        List<DelimitedPeriodDetailsDTO> delimitedPeriodDetailsDTO = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDetailsDTOList(new HashSet<>(Arrays.asList(delimitedPeriodEntity)));
+
+        assertEquals(delimitedPeriodEntity.getDuration(), delimitedPeriodDetailsDTO.get(0).getDuration());
+        assertEquals(delimitedPeriodEntity.getEndDate(), delimitedPeriodDetailsDTO.get(0).getEndDate());
+        assertEquals(delimitedPeriodEntity.getStartDate(), delimitedPeriodDetailsDTO.get(0).getStartDate());
     }
 }

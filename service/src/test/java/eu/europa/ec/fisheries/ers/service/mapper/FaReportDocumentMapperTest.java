@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 
@@ -79,6 +80,25 @@ public class FaReportDocumentMapperTest {
 
         assertNotNull(faReportDocumentEntity.getVesselTransportMeans());
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity.getVesselTransportMeans().getFaReportDocument());
+    }
+
+    @Test
+    public void testFaReportDocumentDetailsDTOMapper() {
+        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
+        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
+        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity);
+
+        FaReportDocumentDetailsDTO faReportDocumentDetailsDTO = FaReportDocumentMapper.INSTANCE.mapToFaReportDocumentDetailsDTO(faReportDocumentEntity);
+
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportDocumentDetailsDTO.getCreationDateTime());
+        assertEquals(faReportDocumentEntity.getAcceptedDatetime(), faReportDocumentDetailsDTO.getAcceptedDateTime());
+        assertEquals(faReportDocumentEntity.getFmcMarker(), faReportDocumentDetailsDTO.getFmcMarker());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId(), faReportDocumentDetailsDTO.getFluxReportDocumentId());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getOwnerFluxPartyId(), faReportDocumentDetailsDTO.getOwnerFluxPartyId());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getPurposeCode(), faReportDocumentDetailsDTO.getPurposeCode());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getReferenceId(), faReportDocumentDetailsDTO.getReferenceId());
+        assertEquals(faReportDocumentEntity.getStatus(), faReportDocumentDetailsDTO.getStatus());
+        assertEquals(faReportDocumentEntity.getTypeCode(), faReportDocumentDetailsDTO.getTypeCode());
     }
 
     private void assertFaReportDocumentFields(FAReportDocument faReportDocument, FaReportDocumentEntity faReportDocumentEntity) {

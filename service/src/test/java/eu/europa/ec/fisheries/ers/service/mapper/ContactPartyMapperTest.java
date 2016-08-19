@@ -16,9 +16,14 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPartyDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -48,4 +53,23 @@ public class ContactPartyMapperTest {
         assertEquals(contactParty.getRoleCodes().get(0).getListID(), structuredAddressEntity.getContactParty().getRoleCodeListId());
     }
 
+    @Test
+    public void testContactPartyDetailsDTOMapper() {
+        ContactParty contactParty = MapperUtil.getContactParty();
+        ContactPartyEntity contactPartyEntity = new ContactPartyEntity();
+        ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty, null, contactPartyEntity);
+
+        ContactPartyDetailsDTO contactPartyDetailsDTO = ContactPartyMapper.INSTANCE.mapToContactPartyDetailsDTO(contactPartyEntity);
+        assertEquals(contactPartyEntity.getRoleCode(), contactPartyDetailsDTO.getRole());
+    }
+
+    @Test
+    public void testContactPartyDetailsDTOListMapper() {
+        ContactParty contactParty = MapperUtil.getContactParty();
+        ContactPartyEntity contactPartyEntity = new ContactPartyEntity();
+        ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty, null, contactPartyEntity);
+
+        List<ContactPartyDetailsDTO> contactPartyDetailsDTO = ContactPartyMapper.INSTANCE.mapToContactPartyDetailsDTOList(new HashSet<ContactPartyEntity>(Arrays.asList(contactPartyEntity)));
+        assertEquals(contactPartyEntity.getRoleCode(), contactPartyDetailsDTO.get(0).getRole());
+    }
 }

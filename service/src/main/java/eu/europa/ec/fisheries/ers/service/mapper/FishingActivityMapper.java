@@ -135,8 +135,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return fluxLocationDetailsDTOs;
     }
 
-    public abstract List<FishingActivityDetailsDTO> mapToFishingActivityDetailsDTOList(List<FishingActivityEntity> fishingActivityEntities);
-
     protected List<String> getFishingActivityIds(Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers) {
         List<String> fishingActivityIds = new ArrayList<>();
         for (FishingActivityIdentifierEntity identifierEntity : fishingActivityIdentifiers) {
