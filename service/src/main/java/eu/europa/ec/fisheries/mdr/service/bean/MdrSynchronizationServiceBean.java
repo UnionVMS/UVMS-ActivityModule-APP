@@ -181,7 +181,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	@Override
 	public String getActualSchedulerConfiguration(){
 		ActivityConfiguration mdrSynch = mdrRepository.getMdrSchedulerConfiguration();
-		return mdrSynch.getValue();
+		return mdrSynch.getConfigValue();
 	}
 
 	/**
@@ -207,7 +207,8 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		}
 	}
 
-	void setUpScheduler(String schedulerExpressionStr) {
+	@Override
+	public void setUpScheduler(String schedulerExpressionStr) {
 		// Parse the Cron-Job expression;
 		ScheduleExpression expression = parseExpression(schedulerExpressionStr);
 		// Firstly, we need to cancel the current timer, if already exists one;

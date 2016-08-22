@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
@@ -30,7 +29,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
 
     private EntityManager em;
 
-    private static final String SELECT_FROM_MDRSTATUS_WHERE_ACRONYM = "FROM MdrStatus WHERE objectAcronym eq ";
+    private static final String SELECT_FROM_MDRSTATUS_WHERE_ACRONYM = "FROM MdrStatus WHERE objectAcronym=";
 
     public MdrStatusDao(EntityManager em) {
         this.em = em;
@@ -48,7 +47,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
     public MdrStatus findStatusByAcronym(String acronym) {
         MdrStatus entity = null;
         try {
-            entity = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + acronym).get(0);
+            entity = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + ""+acronym).get(0);
         } catch (ServiceException e) {
             log.error("Error while trying to get Status for acronym : ", acronym, e);
         }
@@ -57,15 +56,11 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
 
     public void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException {
         if (CollectionUtils.isNotEmpty(diffList)) {
-            StatelessSession session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openStatelessSession();
+            Session session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
-            String entityName = diffList.get(0).getClass().getSimpleName();
             try {
-                log.info("Persisting entity entries for : " + entityName);
-                // INSERTION PHASE (Inserting new entries)
-                for (MdrStatus actualEnityRow : diffList) {
-                    session.insert(actualEnityRow);
-                }
+                log.info("Persisting entity entries for : MdrStatus");
+                session.save(diffList);
                 log.debug("Committing transaction.");
                 tx.commit();
             } catch (Exception e) {
@@ -76,6 +71,6 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
                 session.close();
             }
         }
-
+        em.flush();
     }
 }

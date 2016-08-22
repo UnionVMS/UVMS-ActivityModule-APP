@@ -34,11 +34,13 @@ public class ActivityConfiguration extends BaseEntity {
     private String configName;
 
     @Column(name = "config_value")
-    private String value;
+    private String configValue;
+
+    public ActivityConfiguration() {}
 
     public ActivityConfiguration(String configName, String configValue) {
     	setConfigName(configName);
-    	setValue(configValue);
+    	setConfigValue(configValue);
 	}
 	public String getConfigName() {
         return configName;
@@ -46,11 +48,11 @@ public class ActivityConfiguration extends BaseEntity {
     public void setConfigName(String configName) {
         this.configName = configName;
     }
-    public String getValue() {
-        return value;
+    public String getConfigValue() {
+        return configValue;
     }
-    public void setValue(String value) {
-        this.value = value;
+    public void setConfigValue(String value) {
+        this.configValue = value;
     }
 
 }

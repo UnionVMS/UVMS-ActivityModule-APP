@@ -7,6 +7,8 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
 		<!-- MDR Activity entities -->
+		<class>eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.MdrStatus</class>
 		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CodeLocation</class>
@@ -95,8 +97,6 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.VesselTypeCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.WithdrawnCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingIndicatorCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MdrStatus</class>
 
 		<!-- ERS Activity entities -->
 		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity</class>
@@ -135,7 +135,7 @@
 			<property name="javax.persistence.schema-generation.scripts.create-target" value="scripts/create-table.ddl" />
 			<property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS activity;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=2;" />
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.h2geodb.GeoDBDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="create" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />

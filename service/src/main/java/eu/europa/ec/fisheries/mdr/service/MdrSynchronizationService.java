@@ -28,4 +28,5 @@ public interface MdrSynchronizationService {
 
 	String getActualSchedulerConfiguration();
 
+	void setUpScheduler(String schedulerExpressionStr);
 }

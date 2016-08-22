@@ -14,31 +14,36 @@ import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
-import eu.europa.ec.fisheries.mdr.repository.bean.MdrStatusRepositoryBean;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
+import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
+import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
+import javax.ejb.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.ejb.ConcurrencyManagementType.BEAN;
 
 /**
  * Created by kovian on 29/07/2016.
  */
 @Slf4j
-//@Singleton
-//@Startup
+@Singleton
+@Startup
+@ConcurrencyManagement(BEAN)
+@DependsOn(value = {"MdrSynchronizationServiceBean", "MdrStatusRepositoryBean", "MdrRepositoryBean"})
 public class MdrInitializationBean {
 
     @EJB
-    private MdrSynchronizationServiceBean synchBean;
+    private MdrSynchronizationService synchBean;
 
     @EJB
-    MdrStatusRepositoryBean mdrStatusRepository;
+    private MdrStatusRepository mdrStatusRepository;
 
     @EJB
     private MdrRepository mdrRepository;
@@ -55,30 +60,33 @@ public class MdrInitializationBean {
     public void startUpMdrInitializationProcess(){
 
         log.info("[START] Starting up ActivityModule Initialization..");
-        log.info("Going to : \n1. Initailize acronymsCache..\n2.Update MDR status table..\n3. Set up MDR scheduler..  ");
+        log.info("Going to : \n\t\t1. Initailize acronymsCache..\n\t\t2. Update MDR status table..\n\t\t3. Set up MDR scheduler..  ");
 
         // 1. Initializing the acronyms cache;
+        log.info("\n\n\t\t1. Initailizing acronymsCache..\n");
         MasterDataRegistryEntityCacheFactory.initialize();
 
         // 2. Updating the acronyms status table (with eventually new added entities (acronyms)).
-        this.updateMdrStatusTable();
+        log.info("\n\n\t\t2. Updating MDR status table..\n");
+        updateMdrStatusTable();
 
         // 3. Setting up the scheduler timer for MDR synchronization at start up.
-        log.info("\n\t---> SCHEDULED JOB FOR MDR ENTITIES SYNCHRONIZATION HAS BEEN SET! \n");
+        log.info("\n\n\t\t3. Starting up MDR Synchronization Scheduler Initialization..\n");
         // Get the scheduler config from DB;
         ActivityConfiguration storedMdrSchedulerConfig = mdrRepository.getMdrSchedulerConfiguration();
         if(storedMdrSchedulerConfig != null){
             // Set up new scheduler at start up (deploy phase);
-            synchBean.setUpScheduler(storedMdrSchedulerConfig.getValue());
+            synchBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
         }
 
         log.info("[END] Finished Starting up ActivityModule Initialization..");
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     private void updateMdrStatusTable() {
         List<String> acronymsFromCache   = null;
         List<String> statusListFromDb = null;
-        List<MdrStatus> diffList = null;
+        List<MdrStatus> diffList = new ArrayList<MdrStatus>();
 
         try {
             acronymsFromCache = MasterDataRegistryEntityCacheFactory.getAcronymsList();
@@ -101,12 +109,15 @@ public class MdrInitializationBean {
             }
         }
 
-        try {
-            mdrStatusRepository.saveAcronymsStatusList(diffList);
-        } catch (ServiceException e) {
-            log.error("Error occurred while attempting to save the AcronymsStatusList.",e);
+        if (CollectionUtils.isNotEmpty(diffList)) {
+            try {
+                mdrStatusRepository.saveAcronymsStatusList(diffList);
+            } catch (ServiceException e) {
+                log.error("Error occurred while attempting to save the AcronymsStatusList.",e);
+            }
+        } else {
+            log.info("No new Acronyms were found for insertion into the MdrStatus Table..");
         }
-
     }
 
     private MdrStatus createNewAcronymSatus(String actualCacheAcronym) {
