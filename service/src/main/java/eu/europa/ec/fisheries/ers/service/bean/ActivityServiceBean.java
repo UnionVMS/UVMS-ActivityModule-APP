@@ -12,17 +12,18 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
-
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -51,13 +52,15 @@ public class ActivityServiceBean implements ActivityService {
     private EntityManager em;
 
     private FaReportDocumentDao faReportDocumentDao;
-
     private FishingActivityDao fishingActivityDao;
+    private FishingTripDao fishingTripDao;
+
 
     @PostConstruct
     public void init() {
         fishingActivityDao = new FishingActivityDao(em);
         faReportDocumentDao = new FaReportDocumentDao(em);
+        fishingTripDao = new FishingTripDao(em);
     }
 
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
@@ -129,23 +132,75 @@ public class ActivityServiceBean implements ActivityService {
 
     public FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException {
         FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
+
         FishingTripSummaryDTO fishingTripSummaryDTO = new FishingTripSummaryDTO();
         List<ReportDTO> activityReports=getFishingActivityReportForFishingTrip(fishingTripId,fishingTripSummaryDTO);
         fishingTripSummaryViewDTO.setActivityReports(activityReports);
         fishingTripSummaryViewDTO.setFishingTripSummaryDTO(fishingTripSummaryDTO);
         fishingTripSummaryViewDTO.setFishingTripId(fishingTripId);
+        fishingTripSummaryViewDTO.setVesselDetails(getVesselDetailsForFishingTrip(fishingTripId));
         return fishingTripSummaryViewDTO;
     }
 
-    public  List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId) throws ServiceException {
-        return getFishingActivityReportForFishingTrip(fishingTripId,null);
+    private VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId ){
+
+        VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
+        try {
+            FishingTripEntity fishingTrip = fishingTripDao.fetchVesselTransportDetailsForFishingTrip(fishingTripId);
+            VesselTransportMeansEntity vesselTransportMeansEntity = fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+
+
+            vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
+            Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
+            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+                if ("EXT_MARK".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+                    vesselDetailsTripDTO.setExMark(vesselIdentifier.getVesselIdentifierId());
+                } else if ("IRCS".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+                    vesselDetailsTripDTO.setIrcs(vesselIdentifier.getVesselIdentifierId());
+                } else if ("CFR".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+                    vesselDetailsTripDTO.setCfr(vesselIdentifier.getVesselIdentifierId());
+                }
+            }
+            RegistrationEventEntity registrationEventEntity = vesselTransportMeansEntity.getRegistrationEvent();
+            if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null)
+                vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
+
+            Set<ContactPartyEntity> contactParties = vesselTransportMeansEntity.getContactParty();
+            for (ContactPartyEntity contactParty : contactParties) {
+                ContactPersonEntity contactPerson = contactParty.getContactPerson();
+
+                Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
+
+                if (contactPerson != null && structuredAddresses != null && structuredAddresses.size() > 0) {
+                    vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
+                    for (StructuredAddressEntity sa : structuredAddresses) {
+                        vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(sa));
+                        break;
+                    }
+                }
+                break;
+            }
+        }catch(Exception e){
+            LOG.error("Error while trying to get Vessel Details.",e);
+        }
+
+       return vesselDetailsTripDTO;
     }
 
-    public  List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId, FishingTripSummaryDTO fishingTripSummaryDTO) throws ServiceException {
 
-        List<FishingActivityEntity> fishingActivityList=fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId,null);
 
-        if(fishingActivityList.size()==0)
+    private  List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId, FishingTripSummaryDTO fishingTripSummaryDTO) throws ServiceException {
+
+        List<FishingActivityEntity> fishingActivityList;
+
+        try {
+            fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
+        }catch(Exception e){
+            LOG.error("Error while trying to get Fishing Activity reports for fishing trip with Id:"+fishingTripId,e);
+            return Collections.emptyList();
+        }
+
+        if(fishingActivityList ==null || fishingActivityList.size()==0)
             return Collections.emptyList();
 
         List<ReportDTO> reportDTOList=new ArrayList<>();
@@ -161,6 +216,7 @@ public class ActivityServiceBean implements ActivityService {
                 reportDTO.setFaReportDocumentType(faReportDocumentEntity.getTypeCode());
                 reportDTO.setFaReportAcceptedDateTime(faReportDocumentEntity.getAcceptedDatetime());
                 FluxReportDocumentEntity fluxReportDocument =faReportDocumentEntity.getFluxReportDocument();
+
                 if(fluxReportDocument !=null ) {
                     reportDTO.setUniqueReportId(fluxReportDocument.getFluxReportDocumentId());
                     boolean isCorrection =true;

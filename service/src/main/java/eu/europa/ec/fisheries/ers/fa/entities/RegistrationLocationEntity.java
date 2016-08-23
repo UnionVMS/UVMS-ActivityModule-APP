@@ -10,10 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_registration_location")
@@ -128,5 +126,20 @@ public class RegistrationLocationEntity implements Serializable {
 
 	public void setLocationCountrySchemeId(String locationCountrySchemeId) {
 		this.locationCountrySchemeId = locationCountrySchemeId;
+	}
+
+	@Override
+	public String toString() {
+		return "RegistrationLocationEntity{" +
+				"id=" + id +
+				", description='" + description + '\'' +
+				", regionCode='" + regionCode + '\'' +
+				", regionCodeListId='" + regionCodeListId + '\'' +
+				", name='" + name + '\'' +
+				", typeCode='" + typeCode + '\'' +
+				", typeCodeListId='" + typeCodeListId + '\'' +
+				", locationCountryId='" + locationCountryId + '\'' +
+				", locationCountrySchemeId='" + locationCountrySchemeId + '\'' +
+				'}';
 	}
 }

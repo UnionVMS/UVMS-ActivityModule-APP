@@ -11,9 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_registration_event")
@@ -76,5 +76,14 @@ public class RegistrationEventEntity implements Serializable {
 
 	public void setVesselTransportMeanses(VesselTransportMeansEntity vesselTransportMeanses) {
 		this.vesselTransportMeanses = vesselTransportMeanses;
+	}
+
+	@Override
+	public String toString() {
+		return "RegistrationEventEntity{" +
+				"id=" + id +
+				", description='" + description + '\'' +
+				", occurrenceDatetime=" + occurrenceDatetime +
+				'}';
 	}
 }

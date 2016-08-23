@@ -135,4 +135,19 @@ public class ContactPersonEntity implements Serializable {
 	public void setContactParty(ContactPartyEntity contactParty) {
 		this.contactParty = contactParty;
 	}
+
+	@Override
+	public String toString() {
+		return "ContactPersonEntity{" +
+				"id=" + id +
+				", title='" + title + '\'' +
+				", givenName='" + givenName + '\'' +
+				", middleName='" + middleName + '\'' +
+				", familyName='" + familyName + '\'' +
+				", familyNamePrefix='" + familyNamePrefix + '\'' +
+				", nameSuffix='" + nameSuffix + '\'' +
+				", gender='" + gender + '\'' +
+				", alias='" + alias + '\'' +
+				'}';
+	}
 }

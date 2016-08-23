@@ -33,6 +33,9 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("activityReports")
     private List<ReportDTO> activityReports;
 
+    @JsonProperty("vesselDetails")
+    private VesselDetailsTripDTO vesselDetails;
+
     @JsonProperty("fishingTripId")
     public String getFishingTripId() {
         return fishingTripId;
@@ -61,5 +64,15 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("activityReports")
     public void setActivityReports(List<ReportDTO> activityReports) {
         this.activityReports = activityReports;
+    }
+
+    @JsonProperty("vesselDetails")
+    public VesselDetailsTripDTO getVesselDetails() {
+        return vesselDetails;
+    }
+
+    @JsonProperty("vesselDetails")
+    public void setVesselDetails(VesselDetailsTripDTO vesselDetails) {
+        this.vesselDetails = vesselDetails;
     }
 }

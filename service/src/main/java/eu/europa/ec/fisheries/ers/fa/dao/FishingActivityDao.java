@@ -56,8 +56,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
 
-      //  String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId order by flux.fluxReportDocumentId";
-        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId order by a.typeCode, flux.fluxReportDocumentId";
+
+      String sql = "SELECT DISTINCT a  from FishingActivityEntity a " +
+              "JOIN FETCH a.faReportDocument fa " +
+              "JOIN FETCH fa.fluxReportDocument flux " +
+              "JOIN FETCH a.fishingTrips ft " +
+              "JOIN FETCH ft.fishingTripIdentifiers fi " +
+              "where fi.tripId =:fishingTripId order by a.typeCode, flux.fluxReportDocumentId";
+
 
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
         typedQuery.setParameter("fishingTripId", fishingTripId);
