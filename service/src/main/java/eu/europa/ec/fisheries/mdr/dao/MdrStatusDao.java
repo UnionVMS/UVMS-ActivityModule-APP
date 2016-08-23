@@ -47,7 +47,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
     public MdrStatus findStatusByAcronym(String acronym) {
         MdrStatus entity = null;
         try {
-            entity = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + ""+acronym).get(0);
+            entity = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + "'"+acronym+"'").get(0);
         } catch (ServiceException e) {
             log.error("Error while trying to get Status for acronym : ", acronym, e);
         }

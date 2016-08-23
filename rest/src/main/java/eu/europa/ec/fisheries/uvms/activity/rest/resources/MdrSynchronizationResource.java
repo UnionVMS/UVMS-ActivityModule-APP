@@ -92,7 +92,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@GET
 	@Path("/flux")
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response recieveFluxMessage() {
+	public Response receiveFluxMessage() {
 		log.info("Starting MDR Synchronization");
 		syncBean.sendMockedMessageToERSMDRQueue();
 		log.info("Finished MDR Synchronization");
