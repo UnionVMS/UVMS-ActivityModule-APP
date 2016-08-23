@@ -30,7 +30,7 @@ public class AapProcessDetailsDTO {
     @JsonProperty("conversionFactor")
     private Integer conversionFactor;
 
-    @JsonProperty("aapProductDetails")
+    @JsonProperty("aapProduct")
     private List<AapProductDetailsDTO> aapProductDetails;
 
     public AapProcessDetailsDTO() {
@@ -62,12 +62,12 @@ public class AapProcessDetailsDTO {
         this.conversionFactor = conversionFactor;
     }
 
-    @JsonProperty("aapProductDetails")
+    @JsonProperty("aapProduct")
     public List<AapProductDetailsDTO> getAapProductDetails() {
         return aapProductDetails;
     }
 
-    @JsonProperty("aapProductDetails")
+    @JsonProperty("aapProduct")
     public void setAapProductDetails(List<AapProductDetailsDTO> aapProductDetails) {
         this.aapProductDetails = aapProductDetails;
     }

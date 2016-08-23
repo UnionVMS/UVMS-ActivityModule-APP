@@ -27,10 +27,10 @@ public class ContactPartyDetailsDTO {
     @JsonProperty("role")
     private String role;
 
-    @JsonProperty("contactPersonDetails")
+    @JsonProperty("contactPerson")
     private ContactPersonDetailsDTO contactPersonDetails;
 
-    @JsonProperty("addressDetails")
+    @JsonProperty("structuredAddress")
     private List<AddressDetailsDTO> addressDetails;
 
     public ContactPartyDetailsDTO() {
@@ -52,22 +52,22 @@ public class ContactPartyDetailsDTO {
         this.role = role;
     }
 
-    @JsonProperty("contactPersonDetails")
+    @JsonProperty("contactPerson")
     public ContactPersonDetailsDTO getContactPersonDetails() {
         return contactPersonDetails;
     }
 
-    @JsonProperty("contactPersonDetails")
+    @JsonProperty("contactPerson")
     public void setContactPersonDetails(ContactPersonDetailsDTO contactPersonDetails) {
         this.contactPersonDetails = contactPersonDetails;
     }
 
-    @JsonProperty("addressDetails")
+    @JsonProperty("structuredAddress")
     public List<AddressDetailsDTO> getAddressDetails() {
         return addressDetails;
     }
 
-    @JsonProperty("addressDetails")
+    @JsonProperty("structuredAddress")
     public void setAddressDetails(List<AddressDetailsDTO> addressDetails) {
         this.addressDetails = addressDetails;
     }

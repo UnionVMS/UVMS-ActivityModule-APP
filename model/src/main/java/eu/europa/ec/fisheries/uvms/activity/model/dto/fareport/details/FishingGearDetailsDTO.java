@@ -63,12 +63,12 @@ public class FishingGearDetailsDTO {
         this.role = role;
     }
 
-    @JsonProperty("gearCharacterstics")
+    @JsonProperty("gearCharacteristics")
     public List<GearCharacteristicsDetailsDTO> getGearCharacteristics() {
         return gearCharacteristics;
     }
 
-    @JsonProperty("gearCharacterstics")
+    @JsonProperty("gearCharacteristics")
     public void setGearCharacteristics(List<GearCharacteristicsDetailsDTO> gearCharacteristics) {
         this.gearCharacteristics = gearCharacteristics;
     }
