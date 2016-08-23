@@ -56,7 +56,7 @@ public class MdrInitializationBean {
      *  3. Updating the acronyms status table (with eventually new added entities (acronyms)).
      *
      */
-    @PostConstruct
+    //@PostConstruct
     public void startUpMdrInitializationProcess(){
 
         log.info("[START] Starting up ActivityModule Initialization..");
