@@ -22,4 +22,6 @@ public class ActivityConstants {
     public static final String ARRIVAL ="ARRIVAL";
     public static final String LANDING ="LANDING";
     public static final String DECLARATION ="Declaration";
+    public static final String NOTIFICATION ="Notification";
+    public static final String FISHING_OPERATION ="FISHING_OPERATION";
 }

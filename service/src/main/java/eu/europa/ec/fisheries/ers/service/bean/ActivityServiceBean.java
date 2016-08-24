@@ -20,10 +20,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -134,11 +131,13 @@ public class ActivityServiceBean implements ActivityService {
         FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
 
         FishingTripSummaryDTO fishingTripSummaryDTO = new FishingTripSummaryDTO();
-        List<ReportDTO> activityReports=getFishingActivityReportForFishingTrip(fishingTripId,fishingTripSummaryDTO);
+        MessageCountDTO messagesCount = new MessageCountDTO();
+        List<ReportDTO> activityReports=getFishingActivityReportDataForFishingTrip(fishingTripId,fishingTripSummaryDTO,messagesCount);
         fishingTripSummaryViewDTO.setActivityReports(activityReports);
         fishingTripSummaryViewDTO.setFishingTripSummaryDTO(fishingTripSummaryDTO);
         fishingTripSummaryViewDTO.setFishingTripId(fishingTripId);
         fishingTripSummaryViewDTO.setVesselDetails(getVesselDetailsForFishingTrip(fishingTripId));
+        fishingTripSummaryViewDTO.setMessagesCount(messagesCount);
         return fishingTripSummaryViewDTO;
     }
 
@@ -189,9 +188,15 @@ public class ActivityServiceBean implements ActivityService {
 
 
 
-    private  List<ReportDTO> getFishingActivityReportForFishingTrip(String fishingTripId, FishingTripSummaryDTO fishingTripSummaryDTO) throws ServiceException {
+    private  List<ReportDTO> getFishingActivityReportDataForFishingTrip(String fishingTripId, FishingTripSummaryDTO fishingTripSummaryDTO,MessageCountDTO messagesCount) throws ServiceException {
 
         List<FishingActivityEntity> fishingActivityList;
+        int reportsCnt=0;
+        int declarations=0;
+        int notifications=0;
+        int corrections=0;
+        int fishingOperations=0;
+
 
         try {
             fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
@@ -211,18 +216,31 @@ public class ActivityServiceBean implements ActivityService {
             String activityType=activityEntity.getTypeCode();
             reportDTO.setActivityType(activityType);
 
+            if(ActivityConstants.FISHING_OPERATION.equalsIgnoreCase(activityType))
+                fishingOperations++;
+
             FaReportDocumentEntity faReportDocumentEntity= activityEntity.getFaReportDocument();
+
             if(faReportDocumentEntity !=null) {
                 reportDTO.setFaReportDocumentType(faReportDocumentEntity.getTypeCode());
                 reportDTO.setFaReportAcceptedDateTime(faReportDocumentEntity.getAcceptedDatetime());
+                if(ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())){
+                    declarations++;
+                }else if(ActivityConstants.NOTIFICATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())){
+                    notifications++;
+                }
+                reportsCnt++;
                 FluxReportDocumentEntity fluxReportDocument =faReportDocumentEntity.getFluxReportDocument();
 
                 if(fluxReportDocument !=null ) {
                     reportDTO.setUniqueReportId(fluxReportDocument.getFluxReportDocumentId());
-                    boolean isCorrection =true;
-                    if(fluxReportDocument.getReferenceId() ==null || fluxReportDocument.getReferenceId().length()==0)
-                        isCorrection =false;
+                    boolean isCorrection =false;
+                    if(fluxReportDocument.getReferenceId() !=null && fluxReportDocument.getReferenceId().length()!=0) {
+                        isCorrection = true;
+                        corrections++;
+                    }
                     reportDTO.setCorrection(isCorrection);
+
                 }
             }
 
@@ -260,7 +278,15 @@ public class ActivityServiceBean implements ActivityService {
                 createFishingSummaryDTO(reportDTO,fishingTripSummaryDTO);
             }
             reportDTOList.add(reportDTO);
-        }
+        }// end of for loop
+
+
+        messagesCount.setNoOfCorrections(corrections);
+        messagesCount.setNoOfDeclarations(declarations);
+        messagesCount.setNoOfFishingOperations(fishingOperations);
+        messagesCount.setNoOfNotifications(notifications);
+        messagesCount.setNoOfReports(reportsCnt);
+
 
         return reportDTOList;
     }

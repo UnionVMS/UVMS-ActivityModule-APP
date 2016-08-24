@@ -36,6 +36,9 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("vesselDetails")
     private VesselDetailsTripDTO vesselDetails;
 
+    @JsonProperty("messagesCount")
+    private MessageCountDTO messagesCount;
+
     @JsonProperty("fishingTripId")
     public String getFishingTripId() {
         return fishingTripId;
@@ -74,5 +77,15 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("vesselDetails")
     public void setVesselDetails(VesselDetailsTripDTO vesselDetails) {
         this.vesselDetails = vesselDetails;
+    }
+
+    @JsonProperty("messagesCount")
+    public MessageCountDTO getMessagesCount() {
+        return messagesCount;
+    }
+
+    @JsonProperty("messagesCount")
+    public void setMessagesCount(MessageCountDTO messagesCount) {
+        this.messagesCount = messagesCount;
     }
 }
