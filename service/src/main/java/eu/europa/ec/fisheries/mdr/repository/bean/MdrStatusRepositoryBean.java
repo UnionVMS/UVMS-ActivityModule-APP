@@ -11,8 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.repository.bean;
 
 import eu.europa.ec.fisheries.mdr.dao.MdrStatusDao;
-import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,18 +53,10 @@ public class MdrStatusRepositoryBean implements MdrStatusRepository {
     }
 
     @Override
-    public MdrStatus getStatusForAcronym(String acronym){
-        return statusDao.findStatusByAcronym(acronym);
-    }
-
-    @Override
-    public void updateStatusForAcronym(String acronym, AcronymListState newStatus){
-        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
-        try {
-            statusDao.saveOrUpdateEntity(mdrCodeListElement);
-        } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
-        }
+    public List<MdrStatus> getAllUpdatableAcronymsStatuses() {
+        List<MdrStatus> statussesList = null;
+        statussesList =  statusDao.findAllUpdatableStatuses();
+        return statussesList;
     }
 
     @Override
@@ -72,9 +65,53 @@ public class MdrStatusRepositoryBean implements MdrStatusRepository {
     }
 
     @Override
-    public List<MdrStatus> getAllUpdatableAcronymsStatuses() {
-        List<MdrStatus> statussesList = null;
-        statussesList =  statusDao.findAllUpdatableStatuses();
-        return statussesList;
+    public MdrStatus getStatusForAcronym(String acronym){
+        return statusDao.findStatusByAcronym(acronym);
+    }
+
+    @Override
+    public void updateStatusAttemptForAcronym(String acronym, AcronymListState newStatus, Date lastAttempt){
+        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
+        mdrCodeListElement.setLastAttempt(lastAttempt);
+        mdrCodeListElement.setLastStatus(newStatus);
+        try {
+            statusDao.saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    @Override
+    public void updateStatusSuccessForAcronym(String acronym, AcronymListState newStatus, Date lastSuccess){
+        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
+        mdrCodeListElement.setLastSuccess(lastSuccess);
+        mdrCodeListElement.setLastStatus(newStatus);
+        try {
+            statusDao.saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    @Override
+    public void updateStatusFailedForAcronym(String acronym) {
+        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
+        mdrCodeListElement.setLastStatus(AcronymListState.FAILED);
+        try {
+            statusDao.saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    @Override
+    public void updateSchedulableForAcronym(String acronym, boolean schedulable){
+        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
+        mdrCodeListElement.setSchedulable(schedulable);
+        try {
+            statusDao.saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
     }
 }

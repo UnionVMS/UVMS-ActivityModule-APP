@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
+import eu.europa.ec.fisheries.mdr.service.MdrSchedulerService;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
@@ -41,6 +42,9 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	private MdrSynchronizationService syncBean;
 
 	@EJB
+	private MdrSchedulerService schedulerService;
+
+	@EJB
 	private MdrStatusRepository mdrStatusBean;
 
     /**
@@ -49,9 +53,9 @@ public class MdrSynchronizationResource extends UnionVMSResource {
      * @return
      */
 	@GET
-	@Path("/sync")
+	@Path("/sync/all")
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response synchronizeNow(@Context HttpServletRequest request) {
+	public Response synchronizeAllAcronyms(@Context HttpServletRequest request) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
 			boolean withErrors = syncBean.manualStartMdrSynchronization();
@@ -71,10 +75,10 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	 * @return
 	 */
 	@POST
-	@Path("/sync")
+	@Path("/sync/list")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response synchronizeNow(@Context HttpServletRequest request, @Context HttpServletResponse response, Collection<String> acronymsToSynch) {
+	public Response synchronizeListOfAcronyms(@Context HttpServletRequest request, @Context HttpServletResponse response, Collection<String> acronymsToSynch) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
 			boolean withErrors = syncBean.updateMdrEntities((List<String>) acronymsToSynch);
@@ -147,8 +151,12 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@GET
 	@Path("/schedulerConfig")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getSchedulerConfiguration() {
-		return createSuccessResponse(syncBean.getActualSchedulerConfiguration());
+	public Response getSchedulerConfiguration(@Context HttpServletRequest request) {
+		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
+			return createSuccessResponse(schedulerService.getActualSchedulerConfiguration());
+		} else {
+			return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
+		}
 	}
 
 	/**
@@ -162,10 +170,29 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response saveSchedulerConfiguration(@Context HttpServletRequest request, String cronConfigStr) {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
-			syncBean.reconfigureScheduler(cronConfigStr);
+			schedulerService.reconfigureScheduler(cronConfigStr);
 			return createSuccessResponse();
 		} else {
 			return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
+		}
+	}
+
+	/**
+	 * Requests synchronization of all code lists, specified as an array of acronyms.
+	 *
+	 * @return
+	 */
+	@PUT
+	@Path("/status/schedulable/update")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(value = {MediaType.APPLICATION_JSON})
+	public Response changeSchedulableForAcronym(@Context HttpServletRequest request, String acronym, Boolean schedulable) {
+		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_STATUS_TABLE.toString())) {
+			log.info("Changing schedulable for acronym : ", acronym);
+			mdrStatusBean.updateSchedulableForAcronym(acronym, schedulable);
+			return createSuccessResponse();
+		} else {
+			return createAccessForbiddenResponse("User not allowed to request MDR status table update!");
 		}
 	}
 }

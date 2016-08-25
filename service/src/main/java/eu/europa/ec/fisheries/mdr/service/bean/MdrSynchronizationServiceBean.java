@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.mdr.service.bean;
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
@@ -29,10 +30,14 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._13.NameType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.TextType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.*;
 
-import javax.ejb.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -106,6 +111,8 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	/**
 	 * Updates the given list of mdr entities.
 	 * The list given as input contains the acronyms.
+	 * For each acronym a request to flux will be sent and the status (Status Table)
+	 * will be set to running.
 	 *
 	 * @param acronymsList
 	 * @return error
@@ -122,10 +129,11 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 				try {
 					strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
 				} catch (ExchangeModelMarshallException | ModelMarshallException e) {
-					log.error("Error while trying to map MDRQueryType."+e.getMessage());
+					log.error("Error while trying to map MDRQueryType.",e);
 					error = true;
 				}
 				producer.sendRulesModuleMessage(strReqObj);
+				statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.RUNNING, new Date());
 				log.info("Synchronization Request Sent for Entity : "+actualAcronym);
 			}
 		} else {

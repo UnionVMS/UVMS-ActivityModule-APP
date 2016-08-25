@@ -73,10 +73,10 @@ public class MdrStatus extends BaseEntity {
     public void setObjectAcronym(String objectAcronym) {
         this.objectAcronym = objectAcronym;
     }
-    public Date getSuccess() {
+    public Date getLastSuccess() {
         return lastSuccess;
     }
-    public void setSuccess(Date lastUpdate) {
+    public void setLastSuccess(Date lastUpdate) {
         this.lastSuccess = lastUpdate;
     }
     public AcronymListState getLastStatus() {
@@ -97,11 +97,9 @@ public class MdrStatus extends BaseEntity {
     public void setLastAttempt(Date lastAttempt) {
         this.lastAttempt = lastAttempt;
     }
-
 	public String getObjectName() {
 		return objectName;
 	}
-
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
 	}

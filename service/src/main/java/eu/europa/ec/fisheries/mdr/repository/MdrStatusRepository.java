@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import javax.ejb.Local;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,9 +28,15 @@ public interface MdrStatusRepository {
 
     MdrStatus getStatusForAcronym(String acronym);
 
-    void updateStatusForAcronym(String acronym, AcronymListState newStatus);
+    void updateStatusAttemptForAcronym(String acronym, AcronymListState newStatus, Date lastAttempt);
+
+    void updateStatusSuccessForAcronym(String acronym, AcronymListState newStatus, Date lastSuccess);
 
     void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException;
 
     List<MdrStatus> getAllUpdatableAcronymsStatuses();
+
+    void updateStatusFailedForAcronym(String acronym);
+
+    void updateSchedulableForAcronym(String acronym, boolean schedulable);
 }
