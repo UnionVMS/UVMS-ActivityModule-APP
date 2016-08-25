@@ -11,27 +11,26 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.model.dto.config;
+package eu.europa.ec.fisheries.ers.service.bean;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+
+import javax.ejb.Local;
 
 /**
- * Created by padhyad on 8/23/2016.
+ * Created by padhyad on 8/24/2016.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ActivityConfigDTO {
+@Local
+public interface PreferenceConfigService {
 
-    @JsonProperty("faReportConfig")
-    private FaReportConfigDTO faReportConfig;
+    ActivityConfigDTO getAdminConfig(String adminConfig) throws ServiceException;
 
-    @JsonProperty("faReportConfig")
-    public FaReportConfigDTO getFaReportConfig() {
-        return faReportConfig;
-    }
+    ActivityConfigDTO getUserConfig(String userConfig, String adminConfig) throws ServiceException;
 
-    @JsonProperty("faReportConfig")
-    public void setFaReportConfig(FaReportConfigDTO faReportConfig) {
-        this.faReportConfig = faReportConfig;
-    }
+    String saveAdminConfig(ActivityConfigDTO config) throws ServiceException;
+
+    String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig) throws ServiceException;
+
+    String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) throws ServiceException;
 }
