@@ -12,55 +12,48 @@ package eu.europa.ec.fisheries.mdr.service.bean;
 
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
-import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
+import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
+import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.NameType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.TextType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.*;
 
-import javax.annotation.Resource;
 import javax.ejb.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * @author kovian
  *
  * EJB that provides the MDR Synchronization Functionality.
- * 	1. Methods for handeling the scheduler configuration
- *  2. Methods for synchronizing the MDR lists
- *  3. Method for getting the actual state of the MDR codeLists
+ *  1. Methods for synchronizing the MDR lists
+ *  2. Method for getting the actual state of the MDR codeLists
  */
 @Slf4j
 @Stateless
 public class MdrSynchronizationServiceBean implements MdrSynchronizationService {
 
-	public static final String MDR_SYNCHRONIZATION_TIMER_NАМЕ = "MDRSynchronizationTimer";
-	private static final TimerConfig TIMER_CONFIG             = new TimerConfig(MDR_SYNCHRONIZATION_TIMER_NАМЕ, false);
-
 	@EJB
 	private MdrRepository mdrRepository;
 
 	@EJB
-	private MdrMessageProducer producer;
+	private MdrStatusRepository statusRepository;
 
-	@Resource
-	private TimerService timerServ;
+	@EJB
+	private MdrMessageProducer producer;
 
 	private static final String OBJ_DATA_ALL = "OBJ_DATA_ALL";
 
@@ -73,23 +66,41 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	}
 
 	/**
-	 * Method that will be called when a timer has been set for this EJB.
-	 *
+	 * Extracts all the available acronyms and for each of those that are updatable
+	 * sends an update request message to the next module (that will propagate it to - other modules which will propagate it until the - flux node).
 	 */
-	@Timeout
-	public void timeOut(){
-		log.info("\n\t---> STARTING SCHEDULED SYNCHRONIZATION OF MDR ENTITIES! \n");
-		extractAcronymsAndUpdateMdr();
-	}
-
-	/**
-	 * Extracts all the available acronyms and for each of those sends an update request message to the next module.
-	 *
-	 */
-	private boolean extractAcronymsAndUpdateMdr() {
-		boolean error             = updateMdrEntities(getAvailableMdrAcronyms());
+	@Override
+	public boolean extractAcronymsAndUpdateMdr() {
+		List<String> updatableAcronyms = extractUpdatableAcronyms(getAvailableMdrAcronyms());
+		boolean error = updateMdrEntities(updatableAcronyms);
 		log.info("\n\t\t---> SYNCHRONIZATION OF MDR ENTITIES FINISHED!\n\n");
 		return error;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	private List<String> extractUpdatableAcronyms(List<String> availableAcronyms) {
+
+		List<String> statusListFromDb =  extractAcronymsListFromAcronymStatusList(statusRepository.getAllUpdatableAcronymsStatuses());
+		List<String> matchList = new ArrayList<String>();
+
+		if(CollectionUtils.isNotEmpty(availableAcronyms)){
+			if(CollectionUtils.isNotEmpty(statusListFromDb)) {
+				for (String actualCacheAcronym : availableAcronyms) {
+					if (statusListFromDb.contains(actualCacheAcronym)) {
+						matchList.add(actualCacheAcronym);
+					}
+				}
+			}
+		}
+		return matchList;
+	}
+
+	private List<String> extractAcronymsListFromAcronymStatusList(List<MdrStatus> allUpdatableAcronymsStatuses) {
+		List<String> updatableList = new ArrayList<String>();
+		for(MdrStatus actStatus : allUpdatableAcronymsStatuses){
+			updatableList.add(actStatus.getObjectAcronym());
+		}
+		return updatableList;
 	}
 
 	/**
@@ -173,71 +184,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		}
 	}
 
-	/**
-	 * Gets the actual MDR Synchronization Configuration;
-	 *
-	 * @return mdrSynch;
-	 */
-	@Override
-	public String getActualSchedulerConfiguration(){
-		ActivityConfiguration mdrSynch = mdrRepository.getMdrSchedulerConfiguration();
-		return mdrSynch.getConfigValue();
-	}
 
-	/**
-	 * Reconfigures the scheduler and saves the new configuration to MDR Config Table.
-	 *
-	 * @param schedulerExpressionStr
-	 */
-	@Override
-	public void reconfigureScheduler(String schedulerExpressionStr) {
-		log.info("[START] Re-configure MDR scheduler with expression: {}", schedulerExpressionStr);
-		if (StringUtils.isNotBlank(schedulerExpressionStr)) {
-			// Set up the new timer for this EJB;
-			setUpScheduler(schedulerExpressionStr);
-			// Persist the new config into DB;
-			try {
-				mdrRepository.changeMdrSchedulerConfiguration(schedulerExpressionStr);
-			} catch (ServiceException e) {
-				log.error("Error while trying to save the new configuration", e);
-			}
-			log.info("New MDR scheduler timer created - [{}] - and stored.", TIMER_CONFIG.getInfo());
-		} else {
-			log.info("[FAILED] Re-configure MDR scheduler with expression: {}. The Scheduler expression is blank.", schedulerExpressionStr);
-		}
-	}
-
-	@Override
-	public void setUpScheduler(String schedulerExpressionStr) {
-		// Parse the Cron-Job expression;
-		ScheduleExpression expression = parseExpression(schedulerExpressionStr);
-		// Firstly, we need to cancel the current timer, if already exists one;
-		Collection<Timer> allTimers = timerServ.getTimers();
-		for (Timer currentTimer: allTimers) {
-			if (TIMER_CONFIG.getInfo().equals(currentTimer.getInfo())) {
-				currentTimer.cancel();
-				log.info("Current MDR scheduler timer cancelled.");
-				break;
-			}
-		}
-		// Set up the new timer for this EJB;
-		timerServ.createCalendarTimer(expression, TIMER_CONFIG);
-	}
-	
-	/**
-	 * Creates a ScheduleExpression object with the given schedulerExpressionStr String expression.
-	 * 
-	 * @param schedulerExpressionStr
-	 * @return
-	 */
-	private ScheduleExpression parseExpression(String schedulerExpressionStr) {
-		ScheduleExpression expression = new ScheduleExpression();
-		String[] args = schedulerExpressionStr.split("\\s");
-		if (args.length != 6) {
-			throw new IllegalArgumentException("Invalid scheduler expression: " + schedulerExpressionStr);
-		}
-		return expression.second(args[0]).minute(args[1]).hour(args[2]).dayOfMonth(args[3]).month(args[4]).year(args[5]);
-	}
 
 	private String mockAndMarshallResponse() throws ExchangeModelMarshallException {
 

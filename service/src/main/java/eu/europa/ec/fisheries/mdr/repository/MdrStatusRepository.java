@@ -30,4 +30,6 @@ public interface MdrStatusRepository {
     void updateStatusForAcronym(String acronym, AcronymListState newStatus);
 
     void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException;
+
+    List<MdrStatus> getAllUpdatableAcronymsStatuses();
 }

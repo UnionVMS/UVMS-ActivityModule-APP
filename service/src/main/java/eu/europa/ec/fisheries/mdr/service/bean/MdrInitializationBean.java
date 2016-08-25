@@ -43,6 +43,9 @@ public class MdrInitializationBean {
     private MdrSynchronizationService synchBean;
 
     @EJB
+    private MdrSchedulerServiceBean schedulerBean;
+
+    @EJB
     private MdrStatusRepository mdrStatusRepository;
 
     @EJB
@@ -76,7 +79,7 @@ public class MdrInitializationBean {
         ActivityConfiguration storedMdrSchedulerConfig = mdrRepository.getMdrSchedulerConfiguration();
         if(storedMdrSchedulerConfig != null){
             // Set up new scheduler at start up (deploy phase);
-            synchBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
+            schedulerBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
         }
 
         log.info("[END] Finished Starting up ActivityModule Initialization..");

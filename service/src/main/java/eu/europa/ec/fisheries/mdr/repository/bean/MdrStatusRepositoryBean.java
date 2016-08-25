@@ -70,4 +70,11 @@ public class MdrStatusRepositoryBean implements MdrStatusRepository {
     public void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException {
         statusDao.saveAcronymsStatusList(diffList);
     }
+
+    @Override
+    public List<MdrStatus> getAllUpdatableAcronymsStatuses() {
+        List<MdrStatus> statussesList = null;
+        statussesList =  statusDao.findAllUpdatableStatuses();
+        return statussesList;
+    }
 }

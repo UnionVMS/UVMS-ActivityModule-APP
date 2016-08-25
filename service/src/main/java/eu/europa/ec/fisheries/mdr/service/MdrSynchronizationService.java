@@ -22,11 +22,8 @@ public interface MdrSynchronizationService {
 
 	void sendMockedMessageToERSMDRQueue();
 
-	void reconfigureScheduler(String schedulerExpression);
+	boolean extractAcronymsAndUpdateMdr();
 
 	boolean updateMdrEntities(List<String> acronymsList);
 
-	String getActualSchedulerConfiguration();
-
-	void setUpScheduler(String schedulerExpressionStr);
 }

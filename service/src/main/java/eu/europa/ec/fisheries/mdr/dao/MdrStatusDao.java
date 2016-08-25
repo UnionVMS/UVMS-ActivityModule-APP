@@ -30,6 +30,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
     private EntityManager em;
 
     private static final String SELECT_FROM_MDRSTATUS_WHERE_ACRONYM = "FROM MdrStatus WHERE objectAcronym=";
+    private static final String SELECT_UPDATABLE_FROM_MDRSTATUS = "FROM MdrStatus WHERE schedulable='Y'";
 
     public MdrStatusDao(EntityManager em) {
         this.em = em;
@@ -72,5 +73,15 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
             }
         }
         em.flush();
+    }
+
+    public List<MdrStatus> findAllUpdatableStatuses() {
+        List<MdrStatus> statuses = null;
+        try {
+            statuses = findEntityByHqlQuery(MdrStatus.class, SELECT_UPDATABLE_FROM_MDRSTATUS);
+        } catch (ServiceException e) {
+            log.error("Error while trying to get schedulable Acronyms list : ", e);
+        }
+        return statuses;
     }
 }
