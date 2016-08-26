@@ -55,13 +55,22 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         return entity;
     }
 
-    public void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException {
-        if (CollectionUtils.isNotEmpty(diffList)) {
+    public void saveAcronymsStatusList(List<MdrStatus> statusList) throws ServiceException {
+        if (CollectionUtils.isNotEmpty(statusList)) {
             Session session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
             try {
                 log.info("Persisting entity entries for : MdrStatus");
-                session.save(diffList);
+                int counter = 0;
+                for(MdrStatus actStatus : statusList){
+                    counter++;
+                    session.save(actStatus);
+                    if (counter % 20 == 0 ) {
+                        //Each 20 rows persist and release memory;
+                        session.flush();
+                        session.clear();
+                    }
+                }
                 log.debug("Committing transaction.");
                 tx.commit();
             } catch (Exception e) {
@@ -72,7 +81,6 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
                 session.close();
             }
         }
-        em.flush();
     }
 
     public List<MdrStatus> findAllUpdatableStatuses() {

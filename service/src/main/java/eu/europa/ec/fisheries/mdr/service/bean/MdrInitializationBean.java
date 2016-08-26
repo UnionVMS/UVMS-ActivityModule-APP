@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
+import eu.europa.ec.fisheries.mdr.service.MdrSchedulerService;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,14 +37,14 @@ import static javax.ejb.ConcurrencyManagementType.BEAN;
 @Singleton
 @Startup
 @ConcurrencyManagement(BEAN)
-@DependsOn(value = {"MdrSynchronizationServiceBean", "MdrStatusRepositoryBean", "MdrRepositoryBean"})
+@DependsOn(value = {"MdrSynchronizationServiceBean", "MdrStatusRepositoryBean", "MdrRepositoryBean", "MdrSchedulerServiceBean"})
 public class MdrInitializationBean {
 
     @EJB
     private MdrSynchronizationService synchBean;
 
     @EJB
-    private MdrSchedulerServiceBean schedulerBean;
+    private MdrSchedulerService schedulerBean;
 
     @EJB
     private MdrStatusRepository mdrStatusRepository;
@@ -59,7 +60,7 @@ public class MdrInitializationBean {
      *  3. Updating the acronyms status table (with eventually new added entities (acronyms)).
      *
      */
-    //@PostConstruct
+    @PostConstruct
     public void startUpMdrInitializationProcess(){
 
         log.info("[START] Starting up ActivityModule Initialization..");
@@ -80,6 +81,8 @@ public class MdrInitializationBean {
         if(storedMdrSchedulerConfig != null){
             // Set up new scheduler at start up (deploy phase);
             schedulerBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
+        } else {
+            schedulerBean.setUpScheduler("0 1 20 * * *");
         }
 
         log.info("[END] Finished Starting up ActivityModule Initialization..");
@@ -87,8 +90,8 @@ public class MdrInitializationBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     private void updateMdrStatusTable() {
-        List<String> acronymsFromCache   = null;
-        List<String> statusListFromDb = null;
+        List<String> acronymsFromCache = null;
+        List<String> statusListFromDb  = null;
         List<MdrStatus> diffList = new ArrayList<MdrStatus>();
 
         try {

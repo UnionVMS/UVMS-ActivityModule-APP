@@ -23,6 +23,7 @@ import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
 import javax.annotation.PostConstruct;
@@ -72,13 +73,18 @@ public class MdrRepositoryBean implements MdrRepository {
 	@Override
 	public void updateMdrEntity(ResponseType response){
 		List<MasterDataRegistry> mdrEntityRows = MdrEntityMapper.mapJAXBObjectToMasterDataType(response);
-		try {
-			bulkOperationsDao.singleEntityBulkDeleteAndInsert(mdrEntityRows);
-			statusRepository.updateStatusSuccessForAcronym(mdrEntityRows.get(0).getAcronym(), AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
-		} catch (ServiceException e) {
-			statusRepository.updateStatusFailedForAcronym(mdrEntityRows.get(0).getAcronym());
-			log.error("Transaction rolled back! Couldn't persist mdr Entity : "+e.getMessage(),e);
+		if(CollectionUtils.isNotEmpty(mdrEntityRows)){
+			try {
+				bulkOperationsDao.singleEntityBulkDeleteAndInsert(mdrEntityRows);
+				statusRepository.updateStatusSuccessForAcronym(mdrEntityRows.get(0).getAcronym(), AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
+			} catch (ServiceException e) {
+				statusRepository.updateStatusFailedForAcronym(mdrEntityRows.get(0).getAcronym());
+				log.error("Transaction rolled back! Couldn't persist mdr Entity : "+e.getMessage(),e);
+			}
+		} else {
+			log.error("Got Message from Flux related to MDR but, the list is empty! So, nothing is going to be persisted!");
 		}
+
 	}
 	
 	/*

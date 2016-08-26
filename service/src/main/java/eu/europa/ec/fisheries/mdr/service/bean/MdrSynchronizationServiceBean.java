@@ -121,20 +121,30 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	public boolean updateMdrEntities(List<String> acronymsList) {
 		// For each Acronym send a request object towards Exchange module.
 		boolean error = false;
-		if (CollectionUtils.isNotEmpty(acronymsList)) {
+		List<String> existingAcronymsList = null;
+		try {
+			existingAcronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			log.error("Error while trying to get acronymsList from cache");
+		}
+		if (CollectionUtils.isNotEmpty(acronymsList) && CollectionUtils.isNotEmpty(existingAcronymsList)) {
 			for (String actualAcronym : acronymsList) {
 				log.info("Preparing Request Object for " + actualAcronym + " and sending message to Exchange queue.");
 				// Create request object and send message to exchange module
-				String strReqObj = null;
-				try {
-					strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
-				} catch (ExchangeModelMarshallException | ModelMarshallException e) {
-					log.error("Error while trying to map MDRQueryType.",e);
-					error = true;
+				if(existingAcronymsList.contains(actualAcronym)){
+					String strReqObj = null;
+					try {
+						strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
+					} catch (ExchangeModelMarshallException | ModelMarshallException e) {
+						log.error("Error while trying to map MDRQueryType.",e);
+						error = true;
+					}
+					producer.sendRulesModuleMessage(strReqObj);
+					statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.RUNNING, new Date());
+					log.info("Synchronization Request Sent for Entity : "+actualAcronym);
+				} else {
+					log.error("Couldn't find the acronym'"+actualAcronym+"' in the cachedAcronymsList! Request for said acronym won't be sent to flux!");
 				}
-				producer.sendRulesModuleMessage(strReqObj);
-				statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.RUNNING, new Date());
-				log.info("Synchronization Request Sent for Entity : "+actualAcronym);
 			}
 		} else {
 			error = true;

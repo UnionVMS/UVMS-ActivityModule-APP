@@ -91,9 +91,6 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
 
     @Override
     public void setUpScheduler(String schedulerExpressionStr) {
-
-
-
         // Parse the Cron-Job expression;
         ScheduleExpression expression = parseExpression(schedulerExpressionStr);
         // Firstly, we need to cancel the current timer, if already exists one;

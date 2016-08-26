@@ -35,7 +35,7 @@ import java.util.List;
 @Stateless
 public class MdrSynchronizationResource extends UnionVMSResource {
 
-    private static final String ERROR_GETTING_AVAIL_MDR = "An error occured while trying to get MDR available Acronyms List.";
+    private static final String ERROR_GETTING_AVAIL_MDR = "An error occured while trying to get MDR available Acronyms List. The List is actually Empty! Have to reinitialize Activity Module!";
     private static final String ERROR_MANUAL_MDR_SYNC   = "An error occured while trying to manually update the MDR List.";
 
 	@EJB
@@ -149,7 +149,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	 * @return
 	 */
 	@GET
-	@Path("/schedulerConfig")
+	@Path("/scheduler/config")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSchedulerConfiguration(@Context HttpServletRequest request) {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
@@ -166,7 +166,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	 * @param cronConfigStr
 	 */
 	@PUT
-	@Path("/schedulerConfig")
+	@Path("/scheduler/config/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response saveSchedulerConfiguration(@Context HttpServletRequest request, String cronConfigStr) {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
