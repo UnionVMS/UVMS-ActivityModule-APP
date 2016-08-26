@@ -15,6 +15,8 @@ package eu.europa.ec.fisheries.ers.service.util;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FaReportConfigDTO;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
 
@@ -30,6 +32,58 @@ import java.util.*;
  * Created by padhyad on 7/27/2016.
  */
 public class MapperUtil {
+
+    public static ActivityConfigDTO getSourceActivityConfigDTO() {
+        ActivityConfigDTO activityConfigDTO = new ActivityConfigDTO();
+        FaReportConfigDTO faReportConfigDTO = new FaReportConfigDTO();
+        faReportConfigDTO.setFaReport(Arrays.asList("Report1", "Report2", "Report3"));
+        faReportConfigDTO.setFishingActivity(Arrays.asList("Activity1", "Activity2", "Activity3", "Activity4"));
+        faReportConfigDTO.setFishingTrip(Arrays.asList("Trip1", "Trip2", "Trip3", "Trip4"));
+        faReportConfigDTO.setDelimitedPeriod(Arrays.asList("Delimit1", "Delimit2", "Delimit3"));
+        faReportConfigDTO.setFaCatches(Arrays.asList("Catch1", "Catch2", "Catch3"));
+        faReportConfigDTO.setFishingGears(Arrays.asList("Gear1", "Gear2", "Gear3"));
+        faReportConfigDTO.setGearCharacteristics(Arrays.asList("char1", "char2", "char3"));
+        faReportConfigDTO.setFluxLocations(Arrays.asList("location1", "location2", "location3"));
+
+        faReportConfigDTO.setFluxCharacteristics(null);
+        faReportConfigDTO.setStructuredAddress(null);
+        faReportConfigDTO.setAapProcess(null);
+        faReportConfigDTO.setAapProduct(null);
+        faReportConfigDTO.setAapStock(null);
+        faReportConfigDTO.setGearProblems(null);
+        faReportConfigDTO.setVessel(null);
+        faReportConfigDTO.setContactParty(null);
+        faReportConfigDTO.setContactPerson(null);
+
+        activityConfigDTO.setFaReportConfig(faReportConfigDTO);
+        return activityConfigDTO;
+    }
+
+    public static ActivityConfigDTO getTargetActivityConfigDTO() {
+        ActivityConfigDTO activityConfigDTO = new ActivityConfigDTO();
+        FaReportConfigDTO faReportConfigDTO = new FaReportConfigDTO();
+        faReportConfigDTO.setFluxCharacteristics(Arrays.asList("char1", "char2", "char3"));
+        faReportConfigDTO.setStructuredAddress(Arrays.asList("Address1", "Address2", "Address3"));
+        faReportConfigDTO.setAapProcess(Arrays.asList("process1", "process2", "process3"));
+        faReportConfigDTO.setAapProduct(Arrays.asList("product1", "product2", "product3"));
+        faReportConfigDTO.setAapStock(Arrays.asList("Stock1", "Stock2", "Stock3"));
+        faReportConfigDTO.setGearProblems(Arrays.asList("problem1", "problem2", "problem3"));
+        faReportConfigDTO.setVessel(Arrays.asList("vessel1", "vessel2", "vessel3"));
+        faReportConfigDTO.setContactParty(Arrays.asList("Party1", "Party2", "Party3"));
+        faReportConfigDTO.setContactPerson(Arrays.asList("Person1", "Person2", "Person3"));
+
+        faReportConfigDTO.setFaReport(null);
+        faReportConfigDTO.setFishingActivity(null);
+        faReportConfigDTO.setFishingTrip(null);
+        faReportConfigDTO.setDelimitedPeriod(null);
+        faReportConfigDTO.setFaCatches(null);
+        faReportConfigDTO.setFishingGears(null);
+        faReportConfigDTO.setGearCharacteristics(null);
+        faReportConfigDTO.setFluxLocations(null);
+
+        activityConfigDTO.setFaReportConfig(faReportConfigDTO);
+        return activityConfigDTO;
+    }
 
     public static FishingActivityEntity getFishingActivityEntity(){
 
