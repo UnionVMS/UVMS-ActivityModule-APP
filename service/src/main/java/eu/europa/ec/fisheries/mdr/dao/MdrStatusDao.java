@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.dao;
 
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,8 +49,14 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
 
     public MdrStatus findStatusByAcronym(String acronym) {
         MdrStatus entity = null;
+        List<MdrStatus> stausList = null;
         try {
-            entity = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + "'"+acronym+"'").get(0);
+            stausList = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + "'"+acronym+"'");
+            if(CollectionUtils.isNotEmpty(stausList)){
+                entity = stausList.get(0);
+            } else {
+                log.error("Couldn't find Status for acronym : {}",acronym);
+            }
         } catch (ServiceException e) {
             log.error("Error while trying to get Status for acronym : ", acronym, e);
         }
@@ -91,5 +99,66 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
             log.error("Error while trying to get schedulable Acronyms list : ", e);
         }
         return statuses;
+    }
+
+    public void updateStatusSuccessForAcronym(String acronym, AcronymListState newStatus, Date lastSuccess) {
+        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        mdrCodeListElement.setLastSuccess(lastSuccess);
+        mdrCodeListElement.setLastStatus(newStatus);
+        try {
+            saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    public void updateStatusFailedForAcronym(String acronym) {
+        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        mdrCodeListElement.setLastStatus(AcronymListState.FAILED);
+        try {
+            saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    public void updateSchedulableForAcronym(String acronym, boolean schedulable) {
+        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        try {
+            mdrCodeListElement.setSchedulable(schedulable);
+            saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    public void updateStatusAttemptForAcronym(String acronym, AcronymListState newStatus, Date lastAttempt) {
+        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        mdrCodeListElement.setLastAttempt(lastAttempt);
+        mdrCodeListElement.setLastStatus(newStatus);
+        try {
+            saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    public List<MdrStatus> getAllUpdatableAcronymsStatuses() {
+        List<MdrStatus> statussesList =  findAllUpdatableStatuses();
+        return statussesList;
+    }
+
+    public List<MdrStatus> getAllAcronymsStatuses() {
+        List<MdrStatus> statussesList = null;
+        try {
+            statussesList =  findAllStatuses();
+        } catch (ServiceException e) {
+            log.error("Error while getting MDR Code List Statusses",e);
+        }
+        return statussesList;
+    }
+
+    public MdrStatus getStatusForAcronym(String acronym) {
+        return findStatusByAcronym(acronym);
     }
 }

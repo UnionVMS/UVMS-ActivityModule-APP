@@ -13,13 +13,13 @@ package eu.europa.ec.fisheries.mdr.repository.bean;
 import eu.europa.ec.fisheries.mdr.dao.ActivityConfigurationDao;
 import eu.europa.ec.fisheries.mdr.dao.MasterDataRegistryDao;
 import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
+import eu.europa.ec.fisheries.mdr.dao.MdrStatusDao;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
-import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,6 @@ import org.apache.commons.collections.CollectionUtils;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,10 +44,8 @@ public class MdrRepositoryBean implements MdrRepository {
 	
 	private ActivityConfigurationDao mdrConfigDao;
 
-	@EJB
-	private MdrStatusRepository statusRepository;
-    
-    @SuppressWarnings("rawtypes")
+	private MdrStatusDao statusDao;
+
 	private MasterDataRegistryDao mdrDao;
 
     @PostConstruct
@@ -56,6 +53,7 @@ public class MdrRepositoryBean implements MdrRepository {
     	bulkOperationsDao = new MdrBulkOperationsDao(em);
     	mdrDao 			  = new MasterDataRegistryDao<>(em);
     	mdrConfigDao      = new ActivityConfigurationDao(em);
+		statusDao         = new MdrStatusDao(em);
     }
 
 	@SuppressWarnings("unchecked")
@@ -76,9 +74,9 @@ public class MdrRepositoryBean implements MdrRepository {
 		if(CollectionUtils.isNotEmpty(mdrEntityRows)){
 			try {
 				bulkOperationsDao.singleEntityBulkDeleteAndInsert(mdrEntityRows);
-				statusRepository.updateStatusSuccessForAcronym(mdrEntityRows.get(0).getAcronym(), AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
+				statusDao.updateStatusSuccessForAcronym(mdrEntityRows.get(0).getAcronym(), AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
 			} catch (ServiceException e) {
-				statusRepository.updateStatusFailedForAcronym(mdrEntityRows.get(0).getAcronym());
+				statusDao.updateStatusFailedForAcronym(mdrEntityRows.get(0).getAcronym());
 				log.error("Transaction rolled back! Couldn't persist mdr Entity : "+e.getMessage(),e);
 			}
 		} else {
@@ -115,12 +113,12 @@ public class MdrRepositoryBean implements MdrRepository {
 	 */
 	@Override
     public List<MdrStatus> findAllStatuses() throws ServiceException {
-        return statusRepository.getAllAcronymsStatuses();
+        return statusDao.getAllAcronymsStatuses();
     }
 
 	@Override
     public MdrStatus findStatusByAcronym(String acronym){
-    	return statusRepository.getStatusForAcronym(acronym);
+    	return statusDao.getStatusForAcronym(acronym);
     }
 
 }

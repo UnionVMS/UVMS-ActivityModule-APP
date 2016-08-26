@@ -50,6 +50,12 @@
         </feature>
 
         <feature>
+            <name>UPDATE_STATUS_TABLE</name>
+            <description>allows the user to update the status table</description>
+            <group>MDR</group>
+        </feature>
+
+        <feature>
             <name>MANAGE_ADMIN_CONFIGURATIONS</name>
             <description>Allows you to view/update activity configurations located under the Admin tab</description>
             <group>${activity.name}</group>

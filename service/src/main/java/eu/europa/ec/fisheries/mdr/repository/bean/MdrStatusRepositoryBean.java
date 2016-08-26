@@ -43,20 +43,12 @@ public class MdrStatusRepositoryBean implements MdrStatusRepository {
 
     @Override
     public List<MdrStatus> getAllAcronymsStatuses(){
-        List<MdrStatus> statussesList = null;
-        try {
-            statussesList =  statusDao.findAllStatuses();
-        } catch (ServiceException e) {
-            log.error("Error while getting MDR Code List Statusses",e);
-        }
-        return statussesList;
+        return statusDao.getAllAcronymsStatuses();
     }
 
     @Override
     public List<MdrStatus> getAllUpdatableAcronymsStatuses() {
-        List<MdrStatus> statussesList = null;
-        statussesList =  statusDao.findAllUpdatableStatuses();
-        return statussesList;
+        return statusDao.getAllUpdatableAcronymsStatuses();
     }
 
     @Override
@@ -66,52 +58,26 @@ public class MdrStatusRepositoryBean implements MdrStatusRepository {
 
     @Override
     public MdrStatus getStatusForAcronym(String acronym){
-        return statusDao.findStatusByAcronym(acronym);
+        return statusDao.getStatusForAcronym(acronym);
     }
 
     @Override
     public void updateStatusAttemptForAcronym(String acronym, AcronymListState newStatus, Date lastAttempt){
-        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
-        mdrCodeListElement.setLastAttempt(lastAttempt);
-        mdrCodeListElement.setLastStatus(newStatus);
-        try {
-            statusDao.saveOrUpdateEntity(mdrCodeListElement);
-        } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
-        }
+        statusDao.updateStatusAttemptForAcronym(acronym, newStatus, lastAttempt);
     }
 
     @Override
     public void updateStatusSuccessForAcronym(String acronym, AcronymListState newStatus, Date lastSuccess){
-        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
-        mdrCodeListElement.setLastSuccess(lastSuccess);
-        mdrCodeListElement.setLastStatus(newStatus);
-        try {
-            statusDao.saveOrUpdateEntity(mdrCodeListElement);
-        } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
-        }
+        statusDao.updateStatusSuccessForAcronym(acronym, newStatus, lastSuccess);
     }
 
     @Override
     public void updateStatusFailedForAcronym(String acronym) {
-        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
-        mdrCodeListElement.setLastStatus(AcronymListState.FAILED);
-        try {
-            statusDao.saveOrUpdateEntity(mdrCodeListElement);
-        } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
-        }
+        statusDao.updateStatusFailedForAcronym(acronym);
     }
 
     @Override
     public void updateSchedulableForAcronym(String acronym, boolean schedulable){
-        MdrStatus mdrCodeListElement = statusDao.findStatusByAcronym(acronym);
-        mdrCodeListElement.setSchedulable(schedulable);
-        try {
-            statusDao.saveOrUpdateEntity(mdrCodeListElement);
-        } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
-        }
+        statusDao.updateSchedulableForAcronym(acronym, schedulable);
     }
 }

@@ -29,14 +29,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Path("/mdr")
 @Slf4j
 @Stateless
 public class MdrSynchronizationResource extends UnionVMSResource {
 
-    private static final String ERROR_GETTING_AVAIL_MDR = "An error occured while trying to get MDR available Acronyms List. The List is actually Empty! Have to reinitialize Activity Module!";
-    private static final String ERROR_MANUAL_MDR_SYNC   = "An error occured while trying to manually update the MDR List.";
+	private static final String ERROR_GETTING_AVAIL_MDR = "An error occured while trying to get MDR available Acronyms List. The List is actually Empty! Have to reinitialize Activity Module!";
+	private static final String ERROR_MANUAL_MDR_SYNC   = "An error occured while trying to manually update the MDR List.";
 
 	@EJB
 	private MdrSynchronizationService syncBean;
@@ -47,11 +48,11 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@EJB
 	private MdrStatusRepository mdrStatusBean;
 
-    /**
-     * Requests synchronization of all "updatable" code lists.
-     *
-     * @return
-     */
+	/**
+	 * Requests synchronization of all "updatable" code lists.
+	 *
+	 * @return
+	 */
 	@GET
 	@Path("/sync/all")
 	@Produces(value = {MediaType.APPLICATION_JSON})
@@ -103,12 +104,12 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 		return createSuccessResponse();
 	}
 
-    /**
+	/**
 	 * Returns an array with all the available MDR code lists and their details (last successful update, last update attempt datetime, status, etc.).
 	 * The details do not contain the individual MDR code lists content.
-     *
-     * @return createSuccessResponse(acronymsList)
-     */
+	 *
+	 * @return createSuccessResponse(acronymsList)
+	 */
 	@GET
 	@Path("/acronyms/details")
 	@Produces(value = {MediaType.APPLICATION_JSON})
@@ -144,8 +145,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	}
 
 	/**
-	 * Gets the actual stored scheduler configuration. 
-	 * 
+	 * Gets the actual stored scheduler configuration.
+	 *
 	 * @return
 	 */
 	@GET
@@ -161,7 +162,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 
 	/**
 	 * Saves the given cronConfigStr to the ActivityConfiguration Table.
-	 * 
+	 *
 	 * @param request
 	 * @param cronConfigStr
 	 */
@@ -186,8 +187,10 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@Path("/status/schedulable/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response changeSchedulableForAcronym(@Context HttpServletRequest request, String acronym, Boolean schedulable) {
+	public Response changeSchedulableForAcronym(@Context HttpServletRequest request, Map<String, Object> acronymAndSchedulableMap) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_STATUS_TABLE.toString())) {
+			String acronym = (String) acronymAndSchedulableMap.get("acronym");
+			Boolean schedulable = (Boolean) acronymAndSchedulableMap.get("schedulable");
 			log.info("Changing schedulable for acronym : ", acronym);
 			mdrStatusBean.updateSchedulableForAcronym(acronym, schedulable);
 			return createSuccessResponse();
