@@ -32,7 +32,7 @@ import java.util.Map;
 @Slf4j
 public class MasterDataRegistryEntityCacheFactory {
 
-	private static Map<String, Object> acronymsCache;
+	private static Map<String, MasterDataRegistry> acronymsCache;
 	private static List<String> acronymsList;
 	
 	private static MasterDataRegistryEntityCacheFactory instance;
@@ -79,8 +79,17 @@ public class MasterDataRegistryEntityCacheFactory {
 		}
 		return instance;
 	}
-	
-	public Object getNewInstanceForEntity(String entityAcronym) throws NullPointerException, InvocationTargetException, NoSuchMethodException, SecurityException {
+
+	/**
+	 *
+	 * @param entityAcronym
+	 * @return always an Entity instance, no null values will be returned.
+	 * @throws NullPointerException in case no valid entityAcronym is provided.
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+     */
+	public MasterDataRegistry getNewInstanceForEntity(String entityAcronym) throws NullPointerException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		try {
 			if(MapUtils.isEmpty(acronymsCache)){
 				initializeCache();
@@ -102,10 +111,10 @@ public class MasterDataRegistryEntityCacheFactory {
 			}
 			acronymsCache = new HashMap<>();
 			acronymsList  = new ArrayList<String>();
-			for (Class<?> aClass : entitiesList) {
+			for (Class<? extends  MasterDataRegistry> aClass : entitiesList) {
 				if(!Modifier.isAbstract(aClass.getModifiers())){
-					String classAcronym     = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
-					Object classReference =  aClass.newInstance();
+					String classAcronym   = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
+					MasterDataRegistry classReference =  aClass.newInstance();
 					acronymsCache.put(classAcronym, classReference);
 					acronymsList.add(classAcronym);
 					log.info("Creating cache instance for : " + aClass.getCanonicalName());

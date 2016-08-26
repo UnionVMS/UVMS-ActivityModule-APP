@@ -131,9 +131,9 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
     private ScheduleExpression parseExpression(String schedulerExpressionStr) {
         ScheduleExpression expression = new ScheduleExpression();
         String[] args = schedulerExpressionStr.split("\\s");
-        if (args.length != 6) {
+        if (args.length != 5) {
             throw new IllegalArgumentException("Invalid scheduler expression: " + schedulerExpressionStr);
         }
-        return expression.second(args[0]).minute(args[1]).hour(args[2]).dayOfMonth(args[3]).month(args[4]).year(args[5]);
+        return expression.minute(args[0]).hour(args[1]).dayOfMonth(args[2]).month(args[3]).year(args[4]);
     }
 }
