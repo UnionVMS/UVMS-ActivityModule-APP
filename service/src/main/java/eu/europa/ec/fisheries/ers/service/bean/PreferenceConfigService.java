@@ -24,13 +24,54 @@ import javax.ejb.Local;
 @Local
 public interface PreferenceConfigService {
 
+    /**
+     * This service converts the Admin Preferences config received from USM into Activity Config DTO
+     *
+     * @param adminConfig
+     * @return ActivityConfigDTO
+     * @throws ServiceException
+     */
     ActivityConfigDTO getAdminConfig(String adminConfig) throws ServiceException;
 
+    /**
+     * This service converts the user config received from USM into Activity Config DTO and merges non overridden values
+     * from Admin Configuration.
+     *
+     * @param userConfig
+     * @param adminConfig
+     * @return ActivityConfigDTO
+     * @throws ServiceException
+     */
     ActivityConfigDTO getUserConfig(String userConfig, String adminConfig) throws ServiceException;
 
+    /**
+     * This service converts updates Admin Configuration received from frontend to Json String for saving into USM
+     *
+     * @param config
+     * @return Admin config in Json String
+     * @throws ServiceException
+     */
     String saveAdminConfig(ActivityConfigDTO config) throws ServiceException;
 
+    /**
+     * This services updates the user configuration with the updated values received from fronend
+     * and returns the updated value in Json
+     *
+     * @param updatedConfig
+     * @param userConfig
+     * @return Admin config in Json String
+     * @throws ServiceException
+     */
     String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig) throws ServiceException;
 
+    /**
+     * This service reset selected properties in user configuration.
+     * The Reset values gets deleted from User config and fetch from default value set by admin.
+     *
+     * @param resetConfig
+     * @param userConfig
+     * @return
+     * @throws ServiceException
+     */
     String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) throws ServiceException;
 }

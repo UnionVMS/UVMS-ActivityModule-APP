@@ -35,6 +35,9 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
 
     @Override
     @SneakyThrows
+    /**
+     * {@inheritDoc}
+     */
     public ActivityConfigDTO getAdminConfig(String adminConfig) throws ServiceException {
         try {
             return getConfiguration(adminConfig);
@@ -45,6 +48,9 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
 
     @Override
     @SneakyThrows
+    /**
+     * {@inheritDoc}
+     */
     public ActivityConfigDTO getUserConfig(String userConfig, String adminConfig) throws ServiceException {
         try {
             return PreferenceConfigMapper.INSTANCE.mergeUserPreference(getConfiguration(adminConfig), getConfiguration(userConfig));
@@ -55,6 +61,9 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
 
     @Override
     @SneakyThrows
+    /**
+     * {@inheritDoc}
+     */
     public String saveAdminConfig(ActivityConfigDTO config) throws ServiceException {
         try {
             return getJson(config);
@@ -65,6 +74,9 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
 
     @Override
     @SneakyThrows
+    /**
+     * {@inheritDoc}
+     */
     public String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig) throws ServiceException {
         try {
             ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
@@ -77,6 +89,9 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
 
     @Override
     @SneakyThrows
+    /**
+     * {@inheritDoc}
+     */
     public String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) throws ServiceException {
         try {
             ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
