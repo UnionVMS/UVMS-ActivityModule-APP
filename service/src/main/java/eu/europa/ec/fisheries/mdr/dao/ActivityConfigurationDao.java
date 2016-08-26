@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -43,13 +44,19 @@ public class ActivityConfigurationDao extends AbstractDAO<ActivityConfiguration>
     }
 
     public ActivityConfiguration findConfiguration(String configName){
-    	ActivityConfiguration entity = null;
+    	ActivityConfiguration configEntry      = null;
+        List<ActivityConfiguration> configList = null;
         try {
-            entity =  findEntityByHqlQuery(ActivityConfiguration.class, SELECT_FROM_MDRCONFIG_WHERE_NAME_EQ + "'"+configName+"'").get(0);
+            configList = findEntityByHqlQuery(ActivityConfiguration.class, SELECT_FROM_MDRCONFIG_WHERE_NAME_EQ + "'"+configName+"'");
+            if(CollectionUtils.isNotEmpty(configList)){
+                configEntry =  configList.get(0);
+            } else {
+                log.error("No configuration found in the db regarding {} ", configName);
+            }
         } catch (ServiceException | NullPointerException e) {
             log.error("Error while trying to get Configuration for configName : ", configName, e);
         }
-        return entity;
+        return configEntry;
     }
     
     public ActivityConfiguration getMdrSchedulerConfiguration(){
@@ -57,8 +64,14 @@ public class ActivityConfigurationDao extends AbstractDAO<ActivityConfiguration>
     }
     
     public void changeMdrSchedulerConfiguration(String newCronExpression) throws ServiceException{
-    	ActivityConfiguration newConfig = new ActivityConfiguration(SCHEDULER_CONFIG_NAME, newCronExpression);
-    	saveOrUpdateEntity(newConfig);
+    	ActivityConfiguration newConfig = getMdrSchedulerConfiguration();
+        if(newConfig != null){
+            newConfig.setConfigValue(newCronExpression);
+        } else {
+            ActivityConfiguration newToSaveConfig = new ActivityConfiguration(SCHEDULER_CONFIG_NAME, newCronExpression);
+            saveOrUpdateEntity(newToSaveConfig);
+        }
+
     }
 
 }

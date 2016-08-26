@@ -75,6 +75,8 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
     public void reconfigureScheduler(String schedulerExpressionStr) {
         log.info("[START] Re-configure MDR scheduler with expression: {}", schedulerExpressionStr);
         if (StringUtils.isNotBlank(schedulerExpressionStr)) {
+            // Sometimes unneeded double quotes are present in the posted json string
+            schedulerExpressionStr = schedulerExpressionStr.replace("\"", "");
             // Set up the new timer for this EJB;
             setUpScheduler(schedulerExpressionStr);
             // Persist the new config into DB;
@@ -91,9 +93,25 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
 
     @Override
     public void setUpScheduler(String schedulerExpressionStr) {
-        // Parse the Cron-Job expression;
-        ScheduleExpression expression = parseExpression(schedulerExpressionStr);
-        // Firstly, we need to cancel the current timer, if already exists one;
+        Timer newTimer = null;
+        try{
+            // Parse the Cron-Job expression;
+            ScheduleExpression expression = parseExpression(schedulerExpressionStr);
+            // Firstly, we need to cancel the current timer, if already exists one;
+            cancelPreviousTimer();
+            // Set up the new timer for this EJB;
+            timerServ.createCalendarTimer(expression, TIMER_CONFIG);;
+        } catch(Exception ex){
+            log.error("Error creating new scheduled synchronization timer!");
+        }
+        log.info("New timer scheduler created successfully : ", schedulerExpressionStr);
+    }
+
+    /**
+     * Cancels the previous set up of the timer.
+     *
+     */
+    private void cancelPreviousTimer() {
         Collection<Timer> allTimers = timerServ.getTimers();
         for (Timer currentTimer: allTimers) {
             if (TIMER_CONFIG.getInfo().equals(currentTimer.getInfo())) {
@@ -102,8 +120,6 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
                 break;
             }
         }
-        // Set up the new timer for this EJB;
-        timerServ.createCalendarTimer(expression, TIMER_CONFIG);
     }
 
     /**

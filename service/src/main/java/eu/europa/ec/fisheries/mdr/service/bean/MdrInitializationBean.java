@@ -82,7 +82,7 @@ public class MdrInitializationBean {
             // Set up new scheduler at start up (deploy phase);
             schedulerBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
         } else {
-            schedulerBean.setUpScheduler("0 1 20 * * *");
+            schedulerBean.reconfigureScheduler("0 1 20 * * *");
         }
 
         log.info("[END] Finished Starting up ActivityModule Initialization..");
