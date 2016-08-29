@@ -1,12 +1,14 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
-
-This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
-and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
-the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
-details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
-
+ *
+ * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries European Union, 2015-2016.
+ *
+ * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
@@ -14,6 +16,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
@@ -24,10 +27,21 @@ import java.util.List;
  */
 
 public interface ActivityService {
+
+    /**
+     *  returns fishing Activity reports list based on Filters
+     * @param query
+     * @return
+     * @throws ServiceException
+     */
      List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException;
 
 
-
+    /**
+     * Get Current FishingTrip
+     * @return
+     */
+     String getCurrentTripId();
 
      /**
       * <p>
@@ -42,7 +56,12 @@ public interface ActivityService {
      List<FaReportCorrectionDTO> getFaReportCorrections(String selectedFaReportId) throws ServiceException;
 
 
-
+    /**
+     *  Return FishingTripSummary view screen data for specified Fishing Trip ID
+     * @param fishingTripId
+     * @return FishingTripSummaryViewDTO All of summary view data
+     * @throws ServiceException
+     */
      FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException;
 
 
@@ -56,6 +75,14 @@ public interface ActivityService {
       * @throws ServiceException Exception
       */
      FaReportDocumentDetailsDTO getFaReportDocumentDetails(String faReportDocumentId) throws ServiceException;
+
+    /**
+     *   This service returns cronological order of Fishing Trip Ids.
+     * @param tripID  TripID which will be used as a reference. Trips After and before this Id will be returned
+     * @param numberOfTripsBeforeAndAfter  These many trips before and after mentioned tripId will be returned
+     * @return List<CronologyDTO>  List of TripIds and dates associated with the trip
+     */
+     public List<CronologyDTO> getCronologyForTripIds(String tripID, int numberOfTripsBeforeAndAfter);
 
 
 }

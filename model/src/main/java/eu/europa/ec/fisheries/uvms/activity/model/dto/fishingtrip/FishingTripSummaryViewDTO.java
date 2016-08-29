@@ -39,6 +39,11 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("messagesCount")
     private MessageCountDTO messagesCount;
 
+    private List<CronologyDTO> cronology;
+
+    private String currentTripId;
+
+
     @JsonProperty("fishingTripId")
     public String getFishingTripId() {
         return fishingTripId;
@@ -88,4 +93,22 @@ public class FishingTripSummaryViewDTO {
     public void setMessagesCount(MessageCountDTO messagesCount) {
         this.messagesCount = messagesCount;
     }
+
+    public List<CronologyDTO> getCronology() {
+        return cronology;
+    }
+
+    public void setCronology(List<CronologyDTO> cronology) {
+        this.cronology = cronology;
+    }
+
+    public String getCurrentTripId() {
+        return currentTripId;
+    }
+
+    public void setCurrentTripId(String currentTripId) {
+        this.currentTripId = currentTripId;
+    }
+
+
 }

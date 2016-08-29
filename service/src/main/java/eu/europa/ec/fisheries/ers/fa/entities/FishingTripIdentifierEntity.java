@@ -13,9 +13,37 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 
+@NamedQueries({
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_LESS_THAN_TRIPID,
+				query = "select distinct fi.tripId,dp.startDate from FishingTripIdentifierEntity fi  " +
+				"INNER JOIN fi.fishingTrip ft " +
+				"INNER JOIN ft.delimitedPeriods dp where dp.startDate < " +
+				"(SELECT max(dp1.startDate) as sDate from FishingTripIdentifierEntity fi1  "+
+				"  INNER JOIN fi1.fishingTrip ft1 " +
+				"  INNER JOIN ft1.delimitedPeriods dp1 " +
+				"  where fi1.tripId = :fishingTripId ) and fi.tripId != :fishingTripId order by dp.startDate desc "),
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_GREATER_THAN_TRTIPID,
+				query = "select distinct fi.tripId,dp.startDate from FishingTripIdentifierEntity fi  " +
+						"INNER JOIN fi.fishingTrip ft " +
+						"INNER JOIN ft.delimitedPeriods dp where dp.startDate >= " +
+						"(SELECT max(dp1.startDate) as sDate from FishingTripIdentifierEntity fi1  "+
+						"  INNER JOIN fi1.fishingTrip ft1 " +
+						"  INNER JOIN ft1.delimitedPeriods dp1 " +
+						"  where fi1.tripId = :fishingTripId ) order by dp.startDate asc "),
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRTIPID,
+				query = "select max(fi.tripId) from FishingTripIdentifierEntity fi  " +
+						"INNER JOIN fi.fishingTrip ft " +
+						"INNER JOIN ft.delimitedPeriods dp where dp.startDate = " +
+						"(SELECT max(dp1.startDate) as sDate from DelimitedPeriodEntity dp1 )  ")
+})
+
 @Entity
 @Table(name = "activity_fishing_trip_identifier")
 public class FishingTripIdentifierEntity implements Serializable {
+
+	public static final String FIND_LESS_THAN_TRIPID = "findLessThanTripId";
+	public static final String FIND_GREATER_THAN_TRTIPID = "findGreaterThanTripId";
+	public static final String FIND_CURRENT_TRTIPID = "findCurrentTripId";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
@@ -64,4 +92,12 @@ public class FishingTripIdentifierEntity implements Serializable {
 		this.tripSchemeId = tripSchemeId;
 	}
 
+	@Override
+	public String toString() {
+		return "FishingTripIdentifierEntity{" +
+				"id=" + id +
+				", tripId='" + tripId + '\'' +
+				", tripSchemeId='" + tripSchemeId + '\'' +
+				'}';
+	}
 }

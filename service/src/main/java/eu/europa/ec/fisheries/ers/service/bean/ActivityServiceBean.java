@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
@@ -21,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -44,13 +46,14 @@ import java.util.*;
 @Slf4j
 public class ActivityServiceBean implements ActivityService {
 
-
+    final static String FORMAT = "yyyy-MM-dd HH:mm:ss";
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
     private FishingTripDao fishingTripDao;
+    private FishingTripIdentifierDao fishingTripIdentifierDao;
 
 
     @PostConstruct
@@ -58,6 +61,7 @@ public class ActivityServiceBean implements ActivityService {
         fishingActivityDao = new FishingActivityDao(em);
         faReportDocumentDao = new FaReportDocumentDao(em);
         fishingTripDao = new FishingTripDao(em);
+        fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
     }
 
     final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
@@ -127,20 +131,70 @@ public class ActivityServiceBean implements ActivityService {
     }
 
 
+    // Get data for Fishing Trip summary view
     public FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException {
         FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
 
+        // get short summary of Fishing Trip
         FishingTripSummaryDTO fishingTripSummaryDTO = new FishingTripSummaryDTO();
+
+        // Messages count box for Fishing Trip Summary view
         MessageCountDTO messagesCount = new MessageCountDTO();
+
+        // All Activity Reports list for Fishing Trip
         List<ReportDTO> activityReports=getFishingActivityReportDataForFishingTrip(fishingTripId,fishingTripSummaryDTO,messagesCount);
         fishingTripSummaryViewDTO.setActivityReports(activityReports);
         fishingTripSummaryViewDTO.setFishingTripSummaryDTO(fishingTripSummaryDTO);
+
+        // Fishing trip Id for the Fishing Trip summary view
         fishingTripSummaryViewDTO.setFishingTripId(fishingTripId);
+
+        // Vessel Details for specified Fishing Trip
         fishingTripSummaryViewDTO.setVesselDetails(getVesselDetailsForFishingTrip(fishingTripId));
         fishingTripSummaryViewDTO.setMessagesCount(messagesCount);
+
+        // Fishing TripID cronology
+        fishingTripSummaryViewDTO.setCronology(getCronologyForTripIds(fishingTripId,2));
+
+        // Current Fishing Trip ID
+        fishingTripSummaryViewDTO.setCurrentTripId(getCurrentTripId());
         return fishingTripSummaryViewDTO;
     }
 
+    // Current Fishing Trip ID in the system
+    public String getCurrentTripId(){
+        String currentTripId=null;
+       try {
+           currentTripId = fishingTripIdentifierDao.getCurrentTrip();
+       }catch(Exception e){
+           LOG.error("Error while trying to get current trip Id:",e);
+       }
+        return currentTripId;
+    }
+
+
+    public List<CronologyDTO> getCronologyForTripIds(String tripID,int numberOfTripsBeforeAndAfter){
+
+        List<CronologyDTO> cronologyList =  new ArrayList<CronologyDTO>();
+        try {
+            List<Object[]> tripIdListBefore = fishingTripIdentifierDao.getFishingTripsBefore(tripID, numberOfTripsBeforeAndAfter);
+            int size = tripIdListBefore.size();
+            for (int i = (size - 1); i >= 0; i--) {
+                Object[] tripIdAndDate = tripIdListBefore.get(i);
+                cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
+            }
+
+            List<Object[]> tripIdListAfter = fishingTripIdentifierDao.getFishingTripsAfter(tripID, numberOfTripsBeforeAndAfter);
+            for (Object[] tripIdAndDate : tripIdListAfter) {
+                cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
+            }
+
+        }catch(Exception e){
+            LOG.error("Error while trying to get Cronology for trip :"+tripID,e);
+        }
+
+        return cronologyList;
+    }
     private VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId ){
 
         VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
