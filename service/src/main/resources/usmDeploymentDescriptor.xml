@@ -50,8 +50,8 @@
         </feature>
 
         <feature>
-            <name>UPDATE_STATUS_TABLE</name>
-            <description>allows the user to update the status table</description>
+            <name>CODE_LISTS_ENABLE_DISABLE_SCHEDULED_UPDATE</name>
+            <description>allows the user to enable/disable the code lists scheduled update</description>
             <group>MDR</group>
         </feature>
 

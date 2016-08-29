@@ -26,7 +26,7 @@
             <xs:enumeration value="UPDATE_MDR_CODE_LISTS"/>
             <xs:enumeration value="VIEW_FA_REPORT_DETAILS"/>
             <xs:enumeration value="MANAGE_ADMIN_CONFIGURATIONS"/>
-            <xs:enumeration value="UPDATE_STATUS_TABLE"/>
+            <xs:enumeration value="CODE_LISTS_ENABLE_DISABLE_SCHEDULED_UPDATE"/>
         </xs:restriction>
     </xs:simpleType>
 

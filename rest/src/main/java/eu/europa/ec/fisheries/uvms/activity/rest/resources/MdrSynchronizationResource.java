@@ -189,7 +189,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(value = {MediaType.APPLICATION_JSON})
 	public Response changeSchedulableForAcronym(@Context HttpServletRequest request, @PathParam("acronym") String acronym, @PathParam("schedulable") Boolean schedulable) {
-		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_STATUS_TABLE.toString())) {
+		if (request.isUserInRole(ActivityFeaturesEnum.CODE_LISTS_ENABLE_DISABLE_SCHEDULED_UPDATE.toString())) {
 			log.info("Changing schedulable for acronym : ", acronym);
 			mdrStatusBean.updateSchedulableForAcronym(acronym, schedulable);
 			return createSuccessResponse();
