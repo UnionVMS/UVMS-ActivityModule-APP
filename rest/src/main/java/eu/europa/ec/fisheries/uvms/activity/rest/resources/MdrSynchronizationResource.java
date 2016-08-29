@@ -94,6 +94,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	}
 
 
+	//TODO to be removed after having the ERS-MDR communication sorted
 	@GET
 	@Path("/flux")
 	@Produces(value = {MediaType.APPLICATION_JSON})
@@ -179,18 +180,16 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	}
 
 	/**
-	 * Requests synchronization of all code lists, specified as an array of acronyms.
+	 * Updates the schedulable flag for a given acronym. This flag definies whether the acronym could be automatically updated, or not.
 	 *
 	 * @return
 	 */
 	@PUT
-	@Path("/status/schedulable/update")
+	@Path("/status/schedulable/update/{acronym}/{schedulable}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response changeSchedulableForAcronym(@Context HttpServletRequest request, Map<String, Object> acronymAndSchedulableMap) {
+	public Response changeSchedulableForAcronym(@Context HttpServletRequest request, @PathParam("acronym") String acronym, @PathParam("schedulable") Boolean schedulable) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_STATUS_TABLE.toString())) {
-			String acronym = (String) acronymAndSchedulableMap.get("acronym");
-			Boolean schedulable = (Boolean) acronymAndSchedulableMap.get("schedulable");
 			log.info("Changing schedulable for acronym : ", acronym);
 			mdrStatusBean.updateSchedulableForAcronym(acronym, schedulable);
 			return createSuccessResponse();
