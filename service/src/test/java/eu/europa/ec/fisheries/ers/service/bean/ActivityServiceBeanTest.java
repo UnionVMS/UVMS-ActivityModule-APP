@@ -15,11 +15,15 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
@@ -35,6 +39,7 @@ import javax.persistence.EntityManager;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by padhyad on 8/9/2016.
@@ -49,6 +54,12 @@ public class ActivityServiceBeanTest {
 
     @Mock
     FaReportDocumentDao faReportDocumentDao;
+
+    @Mock
+    FishingTripDao fishingTripDao;
+
+    @Mock
+    FishingTripIdentifierDao fishingTripIdentifierDao;
 
     @InjectMocks
     ActivityServiceBean activityService;
@@ -120,6 +131,50 @@ public class ActivityServiceBeanTest {
         //Verify
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportsByIds(Mockito.any(Collection.class));
     }
+
+    @Test
+    @SneakyThrows
+    public void testGetCurrentTripId() {
+
+        Mockito.doReturn(null).when(fishingTripIdentifierDao).getCurrentTrip();
+
+        //Trigger
+        String tripID=activityService.getCurrentTripId();
+
+        //Verify
+        Mockito.verify(fishingTripIdentifierDao, Mockito.times(1)).getCurrentTrip();
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetCronologyForTripIds() {
+
+        Mockito.doReturn(null).when(fishingTripIdentifierDao).getFishingTripsBefore(Mockito.any(String.class),Mockito.any(Integer.class));
+        Mockito.doReturn(null).when(fishingTripIdentifierDao).getFishingTripsAfter(Mockito.any(String.class),Mockito.any(Integer.class));
+
+        //Trigger
+        List<CronologyDTO> cronologyDTOList=activityService.getCronologyForTripIds("TRIPID_TEST",2);
+
+        //Verify
+        Mockito.verify(fishingTripIdentifierDao, Mockito.times(1)).getFishingTripsBefore(Mockito.any(String.class),Mockito.any(Integer.class));
+        Mockito.verify(fishingTripIdentifierDao, Mockito.times(1)).getFishingTripsAfter(Mockito.any(String.class),Mockito.any(Integer.class));
+
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripSummary() throws ServiceException {
+
+        when(activityService.getCurrentTripId()).thenReturn(MapperUtil.getCurrentTripID());
+        //Trigger
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=activityService.getFishingTripSummary("TEST_ID");
+
+        //Verify
+        assertEquals("currentTripID", fishingTripSummaryViewDTO.getCurrentTripId());
+
+    }
+
 
     private List<FaReportDocumentEntity> getMockedFishingActivityReportEntities() {
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();

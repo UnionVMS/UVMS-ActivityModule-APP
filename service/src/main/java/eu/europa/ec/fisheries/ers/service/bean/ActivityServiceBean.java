@@ -141,9 +141,10 @@ public class ActivityServiceBean implements ActivityService {
         // Messages count box for Fishing Trip Summary view
         MessageCountDTO messagesCount = new MessageCountDTO();
 
-        // All Activity Reports list for Fishing Trip
-        List<ReportDTO> activityReports=getFishingActivityReportDataForFishingTrip(fishingTripId,fishingTripSummaryDTO,messagesCount);
-        fishingTripSummaryViewDTO.setActivityReports(activityReports);
+        List<ReportDTO> reportDTOList = new ArrayList<>();
+        // All Activity Reports and related data  for Fishing Trip
+        getFishingActivityReportAndRelatedDataForFishingTrip(fishingTripId,reportDTOList,fishingTripSummaryDTO,messagesCount);
+        fishingTripSummaryViewDTO.setActivityReports(reportDTOList);
         fishingTripSummaryViewDTO.setFishingTripSummaryDTO(fishingTripSummaryDTO);
 
         // Fishing trip Id for the Fishing Trip summary view
@@ -178,15 +179,19 @@ public class ActivityServiceBean implements ActivityService {
         List<CronologyDTO> cronologyList =  new ArrayList<CronologyDTO>();
         try {
             List<Object[]> tripIdListBefore = fishingTripIdentifierDao.getFishingTripsBefore(tripID, numberOfTripsBeforeAndAfter);
-            int size = tripIdListBefore.size();
-            for (int i = (size - 1); i >= 0; i--) {
-                Object[] tripIdAndDate = tripIdListBefore.get(i);
-                cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
+
+            if(tripIdListBefore!=null && tripIdListBefore.size()>0 ) {
+                for (int i = (tripIdListBefore.size() - 1); i >= 0; i--) {
+                    Object[] tripIdAndDate = tripIdListBefore.get(i);
+                    cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
+                }
             }
 
             List<Object[]> tripIdListAfter = fishingTripIdentifierDao.getFishingTripsAfter(tripID, numberOfTripsBeforeAndAfter);
-            for (Object[] tripIdAndDate : tripIdListAfter) {
-                cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
+            if(tripIdListAfter!=null) {
+                for (Object[] tripIdAndDate : tripIdListAfter) {
+                    cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
+                }
             }
 
         }catch(Exception e){
@@ -195,44 +200,50 @@ public class ActivityServiceBean implements ActivityService {
 
         return cronologyList;
     }
-    private VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId ){
+
+    public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId ){
 
         VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
         try {
             FishingTripEntity fishingTrip = fishingTripDao.fetchVesselTransportDetailsForFishingTrip(fishingTripId);
+
+            if(fishingTrip ==null || fishingTrip.getFishingActivity() ==null || fishingTrip.getFishingActivity().getFaReportDocument() == null
+                    || fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans() ==null)
+                return vesselDetailsTripDTO;
+
             VesselTransportMeansEntity vesselTransportMeansEntity = fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
 
-
-            vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
-            Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
-                if ("EXT_MARK".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
-                    vesselDetailsTripDTO.setExMark(vesselIdentifier.getVesselIdentifierId());
-                } else if ("IRCS".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
-                    vesselDetailsTripDTO.setIrcs(vesselIdentifier.getVesselIdentifierId());
-                } else if ("CFR".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
-                    vesselDetailsTripDTO.setCfr(vesselIdentifier.getVesselIdentifierId());
-                }
-            }
-            RegistrationEventEntity registrationEventEntity = vesselTransportMeansEntity.getRegistrationEvent();
-            if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null)
-                vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
-
-            Set<ContactPartyEntity> contactParties = vesselTransportMeansEntity.getContactParty();
-            for (ContactPartyEntity contactParty : contactParties) {
-                ContactPersonEntity contactPerson = contactParty.getContactPerson();
-
-                Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
-
-                if (contactPerson != null && structuredAddresses != null && structuredAddresses.size() > 0) {
-                    vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
-                    for (StructuredAddressEntity sa : structuredAddresses) {
-                        vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(sa));
-                        break;
+                vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
+                Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
+                for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+                    if ("EXT_MARK".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+                        vesselDetailsTripDTO.setExMark(vesselIdentifier.getVesselIdentifierId());
+                    } else if ("IRCS".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+                        vesselDetailsTripDTO.setIrcs(vesselIdentifier.getVesselIdentifierId());
+                    } else if ("CFR".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+                        vesselDetailsTripDTO.setCfr(vesselIdentifier.getVesselIdentifierId());
                     }
                 }
-                break;
-            }
+                RegistrationEventEntity registrationEventEntity = vesselTransportMeansEntity.getRegistrationEvent();
+                if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null)
+                    vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
+
+                Set<ContactPartyEntity> contactParties = vesselTransportMeansEntity.getContactParty();
+                for (ContactPartyEntity contactParty : contactParties) {
+                    ContactPersonEntity contactPerson = contactParty.getContactPerson();
+
+                    Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
+
+                    if (contactPerson != null && structuredAddresses != null && structuredAddresses.size() > 0) {
+                        vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
+                        for (StructuredAddressEntity sa : structuredAddresses) {
+                            vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(sa));
+                            break;
+                        }
+                    }
+                    break;
+                }
+
         }catch(Exception e){
             LOG.error("Error while trying to get Vessel Details.",e);
         }
@@ -242,7 +253,7 @@ public class ActivityServiceBean implements ActivityService {
 
 
 
-    private  List<ReportDTO> getFishingActivityReportDataForFishingTrip(String fishingTripId, FishingTripSummaryDTO fishingTripSummaryDTO,MessageCountDTO messagesCount) throws ServiceException {
+    public void  getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, FishingTripSummaryDTO fishingTripSummaryDTO,MessageCountDTO messagesCount) throws ServiceException {
 
         List<FishingActivityEntity> fishingActivityList;
         int reportsCnt=0;
@@ -256,13 +267,16 @@ public class ActivityServiceBean implements ActivityService {
             fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
         }catch(Exception e){
             LOG.error("Error while trying to get Fishing Activity reports for fishing trip with Id:"+fishingTripId,e);
-            return Collections.emptyList();
+            return;
         }
 
         if(fishingActivityList ==null || fishingActivityList.size()==0)
-            return Collections.emptyList();
+             return;
 
-        List<ReportDTO> reportDTOList=new ArrayList<>();
+
+        if(reportDTOList ==null)
+              reportDTOList=new ArrayList<>();
+
         for(FishingActivityEntity activityEntity:fishingActivityList){
 
             ReportDTO reportDTO=new ReportDTO();
@@ -342,7 +356,7 @@ public class ActivityServiceBean implements ActivityService {
         messagesCount.setNoOfReports(reportsCnt);
 
 
-        return reportDTOList;
+
     }
 
      private void createFishingSummaryDTO(ReportDTO reportDTO,FishingTripSummaryDTO fishingTripSummaryDTO){

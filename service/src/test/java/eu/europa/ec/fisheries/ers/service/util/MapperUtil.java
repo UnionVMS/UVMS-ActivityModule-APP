@@ -33,6 +33,12 @@ import java.util.*;
  */
 public class MapperUtil {
 
+
+    public static String  getCurrentTripID(){
+        return "currentTripID";
+    }
+
+
     public static ActivityConfigDTO getSourceActivityConfigDTO() {
         ActivityConfigDTO activityConfigDTO = new ActivityConfigDTO();
         FaReportConfigDTO faReportConfigDTO = new FaReportConfigDTO();
@@ -85,6 +91,7 @@ public class MapperUtil {
         return activityConfigDTO;
     }
 
+
     public static FishingActivityEntity getFishingActivityEntity(){
 
 
@@ -117,6 +124,9 @@ public class MapperUtil {
 
           return fishingActivityEntity;
     }
+
+
+
 
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
