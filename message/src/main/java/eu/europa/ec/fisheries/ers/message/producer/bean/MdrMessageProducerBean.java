@@ -52,6 +52,7 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 	 * @param  text (to be sent to the queue)
 	 * @return messageID
 	 */
+    @Override
 	public String sendRulesModuleMessage(String text) throws ActivityMessageException {
 		log.info("Sending Request to Exchange module.");		
 		String messageID = StringUtils.EMPTY;
@@ -145,11 +146,11 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
              try {
                  connection = connectionFactory.createConnection();
                  connection.start();
+                 connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
              } catch (JMSException ex) {
                  log.error("Error when open connection to JMS broker", ex);
              }
         }
-        Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-        return session;
+        return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
     }
 }
