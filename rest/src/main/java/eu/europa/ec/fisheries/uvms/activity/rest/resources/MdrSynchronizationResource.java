@@ -66,9 +66,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
 			return createSuccessResponse();
-		} else {
-			return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
 		}
+		return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
 	}
 
 	/**
@@ -93,9 +92,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
 			return createSuccessResponse();
-		} else {
-			return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
 		}
+		return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
 	}
 
 
@@ -103,11 +101,14 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@GET
 	@Path("/flux")
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response receiveFluxMessage() {
-		log.info("Starting MDR Synchronization");
-		syncBean.sendMockedMessageToERSMDRQueue();
-		log.info("Finished MDR Synchronization");
-		return createSuccessResponse();
+	public Response receiveFluxMessage(@Context HttpServletRequest request) {
+		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())){
+			log.info("Starting MDR Synchronization");
+			syncBean.sendMockedMessageToERSMDRQueue();
+			log.info("Finished MDR Synchronization");
+			return createSuccessResponse();
+		}
+		return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
 	}
 
 	/**
@@ -129,9 +130,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 				log.debug("{} MDR code lists returned.", acronymsList.size());
 				return createSuccessResponse(acronymsList);
 			}
-		} else {
-			return createAccessForbiddenResponse("User not allowed to list all MDR code lists details.");
 		}
+		return createAccessForbiddenResponse("User not allowed to list all MDR code lists details.");
 	}
 
 	/**
@@ -162,9 +162,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	public Response getSchedulerConfiguration(@Context HttpServletRequest request) {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
 			return createSuccessResponse(schedulerService.getActualSchedulerConfiguration());
-		} else {
-			return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
 		}
+		return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
 	}
 
 	/**
@@ -180,9 +179,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
 			schedulerService.reconfigureScheduler(cronConfigStr);
 			return createSuccessResponse();
-		} else {
-			return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
 		}
+		return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
 	}
 
 	/**
@@ -202,8 +200,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 			log.info("Changing schedulable for acronym : ", acronym);
 			mdrStatusBean.updateSchedulableForAcronym(acronym, schedulable);
 			return createSuccessResponse();
-		} else {
-			return createAccessForbiddenResponse("User not allowed to request MDR status table update!");
 		}
+		return createAccessForbiddenResponse("User not allowed to request MDR status table update!");
 	}
 }

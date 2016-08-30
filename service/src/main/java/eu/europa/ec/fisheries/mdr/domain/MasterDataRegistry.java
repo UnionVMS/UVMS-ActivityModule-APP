@@ -22,7 +22,10 @@ import xeu.ec.fisheries.flux_bl.flux_aggregatebusinessinformationentity._1._1.FL
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
+import javax.persistence.MappedSuperclass;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -41,11 +44,6 @@ abstract public class MasterDataRegistry extends BaseEntity {
     @Embedded
     private DateRange validity;
 
-    @PrePersist
-    private void onCreate() {
-        audit = new Audit(DateUtils.nowUTC().toDate());
-    }
-
     public Boolean getRefreshable() {
         return refreshable;
     }
@@ -58,9 +56,8 @@ abstract public class MasterDataRegistry extends BaseEntity {
         return audit;
     }
 
-    // Manual creation of audit; TODO : If not needed anymore take this mathod off. See: @PrePersist
     public void createAudit() {
-        this.onCreate();
+        audit = new Audit(DateUtils.nowUTC().toDate());
     }
 
     public DateRange getValidity() {

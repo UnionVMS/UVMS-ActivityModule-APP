@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.mapper;
 
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
 import eu.europa.ec.fisheries.mdr.util.ClassFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,7 +44,7 @@ public class MasterDataRegistryEntityCacheFactory {
 		try{
 			initializeCache();
 		} catch (Exception ex){
-			log.error("Exception thrown while trying to initialize MasterDataRegistryEntityCacheFactory Entity Cache!");
+			log.error("Exception thrown while trying to initialize MasterDataRegistryEntityCacheFactory Entity Cache!", ex);
 		}
 	}
 
@@ -53,12 +54,10 @@ public class MasterDataRegistryEntityCacheFactory {
 		try {
 			log.info("Initializing MasterDataRegistryEntityCacheFactory class.");
 			initializeCache();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			log.error("Failed to initiate MasterDataRegistryEntityCacheFactory class.");
-			e.printStackTrace();
+		} catch (ActivityCacheInitException e) {
+			log.error("Failed to initiate MasterDataRegistryEntityCacheFactory class.", e);
 		}
-		
+
 	}
 
 	public static MasterDataRegistryEntityCacheFactory getInstance(){
@@ -66,15 +65,8 @@ public class MasterDataRegistryEntityCacheFactory {
 			instance = new MasterDataRegistryEntityCacheFactory();
 			try {
 				initializeCache();
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				MasterDataRegistryEntityCacheFactory.initializeCache();
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
+			} catch (ActivityCacheInitException e) {
+				log.error("Failed to initiate MasterDataRegistryEntityCacheFactory class.", e);
 			}
 		}
 		return instance;
@@ -89,19 +81,18 @@ public class MasterDataRegistryEntityCacheFactory {
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
      */
-	public MasterDataRegistry getNewInstanceForEntity(String entityAcronym) throws NullPointerException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public MasterDataRegistry getNewInstanceForEntity(String entityAcronym) throws ActivityCacheInitException {
 		try {
 			if(MapUtils.isEmpty(acronymsCache)){
 				initializeCache();
 			}
 			return acronymsCache.get(entityAcronym).getClass().newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-			throw new NullPointerException();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new ActivityCacheInitException();
 		}
 	}
 	
-	private static void initializeCache() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
+	private static void initializeCache() throws ActivityCacheInitException {
 		if(MapUtils.isEmpty(acronymsCache)){
 			List<Class<? extends MasterDataRegistry>> entitiesList = null;
 			try {
@@ -113,8 +104,14 @@ public class MasterDataRegistryEntityCacheFactory {
 			acronymsList  = new ArrayList<String>();
 			for (Class<? extends  MasterDataRegistry> aClass : entitiesList) {
 				if(!Modifier.isAbstract(aClass.getModifiers())){
-					String classAcronym   = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
-					MasterDataRegistry classReference =  aClass.newInstance();
+					String classAcronym   			  = null;
+					MasterDataRegistry classReference = null;
+					try {
+						classAcronym = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
+						classReference =  aClass.newInstance();
+					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+						throw new ActivityCacheInitException("Exeption thrown while trying to initialize acronymsCache.",e.getCause());
+					}
 					acronymsCache.put(classAcronym, classReference);
 					acronymsList.add(classAcronym);
 					log.info("Creating cache instance for : " + aClass.getCanonicalName());
@@ -134,7 +131,7 @@ public class MasterDataRegistryEntityCacheFactory {
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
 	 */
-	public static List<String> getAcronymsList() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {		
+	public static List<String> getAcronymsList() throws ActivityCacheInitException {
 		if(CollectionUtils.isEmpty(acronymsList)){
 			initializeCache();
 		} else {
@@ -146,7 +143,7 @@ public class MasterDataRegistryEntityCacheFactory {
 	public static void initialize() {
 		try {
 			initializeCache();
-		} catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
+		} catch (ActivityCacheInitException ex) {
 			log.error("Error while trying to initialize MasterDataRegistryEntityCacheFactory.",ex);
 		}
 	}

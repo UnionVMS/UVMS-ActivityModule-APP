@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.mapper;
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.extern.slf4j.Slf4j;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
@@ -51,16 +52,18 @@ public class MdrEntityMapper {
 	 */
 	private static List<MasterDataRegistry> mapJaxbToMDRType(List<CodeElementType> codeElements,
 			String acronym) {
-		List<MasterDataRegistry> entityList = new ArrayList<MasterDataRegistry>();
+		List<MasterDataRegistry> entityList = new ArrayList<>();
 		for(CodeElementType actualJaxbElement : codeElements){
 			MasterDataRegistry entity = null;
 			try {
 				entity = (MasterDataRegistry) mdrEntityFactory.getNewInstanceForEntity(acronym);
 				entity.populateFromJAXBFields(actualJaxbElement);
-			} catch (NullPointerException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			} catch (NullPointerException | SecurityException e) {
 				log.error("Exception while attempting to map JAXBObject to MDR Entity. (MdrEntityMapper class)", e);
 			} catch (FieldNotMappedException e) {
 				log.error("Exception while attempting to map field to MDR Entity. (MdrEntityMapper class)", e);
+			} catch (ActivityCacheInitException e) {
+				log.error("Exception while attempting to call mdrEntityFactory.getNewInstanceForEntity(acronym).", e);
 			}
 			entityList.add(entity);
 		}

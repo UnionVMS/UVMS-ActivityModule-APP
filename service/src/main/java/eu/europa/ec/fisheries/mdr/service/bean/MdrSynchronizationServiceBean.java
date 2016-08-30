@@ -1,12 +1,10 @@
 /*
 Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
-
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
 the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
-
  */
 package eu.europa.ec.fisheries.mdr.service.bean;
 
@@ -14,6 +12,7 @@ import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
+import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
@@ -37,7 +36,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,7 +136,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		List<String> existingAcronymsList      = null;
 		try {
 			existingAcronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+		} catch (ActivityCacheInitException e) {
 			log.error("Error while trying to get acronymsList from cache");
 			return new GenericOperationOutcome(OperationOutcome.NOK, "Error while trying to get acronymsList from cache");
 		}
@@ -161,18 +159,17 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 					log.error("Error while trying to send message from Activity to Rules module.",e);
 					errorContainer.addMessage("Error while trying to send message from Activity to Rules module for acronym {}"+actualAcronym);
 					isRequestToBeSent = false;
+				} finally {
+					if(isRequestToBeSent){
+						statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.RUNNING, DateUtils.nowUTC().toDate());
+						log.info("Synchronization Request Sent for Entity : "+actualAcronym);
+					} else {
+						statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.FAILED, DateUtils.nowUTC().toDate());
+						log.error("Synchronization Request could not be Sent for Entity : "+actualAcronym);
+					}
 				}
 			} else {
 				log.error("Couldn't find the acronym'"+actualAcronym+"' in the cachedAcronymsList! Request for said acronym won't be sent to flux!");
-				isRequestToBeSent = false;
-			}
-
-			if(isRequestToBeSent){
-				statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.RUNNING, DateUtils.nowUTC().toDate());
-				log.info("Synchronization Request Sent for Entity : "+actualAcronym);
-			} else {
-				statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.FAILED, DateUtils.nowUTC().toDate());
-				log.error("Synchronization Request could not be Sent for Entity : "+actualAcronym);
 			}
 		}
 		return errorContainer;
@@ -208,9 +205,8 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 			// Get all the acronyms from the acronyms cache
 			log.info("Exctracting the available acronyms.");
 			acronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new Exception(e);
+		} catch (ActivityCacheInitException e) {
+			throw new ActivityCacheInitException(e.getMessage());
 		}
 		if (!CollectionUtils.isEmpty(acronymsList)) {
 			log.info("Acronyms exctracted. \nThere were found [ " + acronymsList.size()+ " ] acronyms in the MDR domain package.");

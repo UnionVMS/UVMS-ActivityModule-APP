@@ -93,6 +93,7 @@ public class MdrBulkOperationsDao {
 
                 // INSERTION PHASE (Inserting new entries)
                 for (MasterDataRegistry actualEnityRow : entityRows) {
+                    actualEnityRow.createAudit();
                     session.insert(actualEnityRow);
                 }
                 log.debug("Committing transaction.");

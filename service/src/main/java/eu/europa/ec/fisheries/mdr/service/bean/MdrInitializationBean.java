@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.mdr.service.bean;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
+import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
 import eu.europa.ec.fisheries.mdr.exception.ActivityStatusTableException;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
@@ -25,7 +26,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +104,7 @@ public class MdrInitializationBean {
         try {
             acronymsFromCache = MasterDataRegistryEntityCacheFactory.getAcronymsList();
             statusListFromDb  = extractStringListFromAcronymStatusList(mdrStatusRepository.getAllAcronymsStatuses());
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (ActivityCacheInitException e) {
             log.error("Error occurred in updateMdrStatusTable() while attempting to get AcronymsList.",e);
             throw new ActivityStatusTableException(e.getMessage(), e.getCause());
         }
