@@ -10,20 +10,22 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.service;
 
+import eu.europa.ec.fisheries.mdr.util.GenericOperationOutcome;
+
 import javax.ejb.Local;
 import java.util.List;
 
 @Local
 public interface MdrSynchronizationService {
 
-	boolean manualStartMdrSynchronization();
+	GenericOperationOutcome manualStartMdrSynchronization();
 
 	List<String> getAvailableMdrAcronyms();
 
 	void sendMockedMessageToERSMDRQueue();
 
-	boolean extractAcronymsAndUpdateMdr();
+	GenericOperationOutcome extractAcronymsAndUpdateMdr();
 
-	boolean updateMdrEntities(List<String> acronymsList);
+	GenericOperationOutcome updateMdrEntities(List<String> acronymsList);
 
 }

@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSchedulerService;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
+import eu.europa.ec.fisheries.mdr.util.GenericOperationOutcome;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Path("/mdr")
 @Slf4j
@@ -50,6 +50,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 
 	/**
 	 * Requests synchronization of all "updatable" code lists.
+	 * Only those acronyms that are "schedulable" will be affected;
 	 *
 	 * @return
 	 */
@@ -59,9 +60,9 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	public Response synchronizeAllAcronyms(@Context HttpServletRequest request) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
-			boolean withErrors = syncBean.manualStartMdrSynchronization();
-			log.info("Finished MDR Synchronization with error flag : "+withErrors);
-			if(withErrors){
+			GenericOperationOutcome outcome = syncBean.manualStartMdrSynchronization();
+			log.info("Finished MDR Synchronization with error flag : "+outcome);
+			if(!outcome.isOK()){
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
 			return createSuccessResponse();
@@ -72,9 +73,13 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 
 	/**
 	 * Requests synchronization of all code lists, specified as an array of acronyms.
+	 * All the list regardless of "schedulability" will be updated.
 	 *
-	 * @return
-	 */
+	 * @param request
+	 * @param response
+	 * @param acronymsToSynch
+     * @return response
+     */
 	@POST
 	@Path("/sync/list")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -82,9 +87,9 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	public Response synchronizeListOfAcronyms(@Context HttpServletRequest request, @Context HttpServletResponse response, Collection<String> acronymsToSynch) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
-			boolean withErrors = syncBean.updateMdrEntities((List<String>) acronymsToSynch);
-			log.info("Finished MDR Synchronization with error flag : " + withErrors);
-			if (withErrors) {
+			GenericOperationOutcome outcome = syncBean.updateMdrEntities((List<String>) acronymsToSynch);
+			log.info("Finished MDR Synchronization with error flag : " + outcome);
+			if (!outcome.isOK()) {
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
 			return createSuccessResponse();
@@ -148,8 +153,9 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	/**
 	 * Gets the actual stored scheduler configuration.
 	 *
-	 * @return
-	 */
+	 * @param request
+	 * @return response
+     */
 	@GET
 	@Path("/scheduler/config")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -182,8 +188,11 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	/**
 	 * Updates the schedulable flag for a given acronym. This flag definies whether the acronym could be automatically updated, or not.
 	 *
-	 * @return
-	 */
+	 * @param request
+	 * @param acronym
+	 * @param schedulable
+     * @return response
+     */
 	@PUT
 	@Path("/status/schedulable/update/{acronym}/{schedulable}")
 	@Consumes(MediaType.APPLICATION_JSON)

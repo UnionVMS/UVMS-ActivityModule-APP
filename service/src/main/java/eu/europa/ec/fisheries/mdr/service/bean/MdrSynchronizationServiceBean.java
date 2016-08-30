@@ -19,7 +19,10 @@ import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
+import eu.europa.ec.fisheries.mdr.util.GenericOperationOutcome;
+import eu.europa.ec.fisheries.mdr.util.OperationOutcome;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
@@ -37,7 +40,6 @@ import javax.ejb.TransactionAttributeType;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,8 +66,10 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 
 	/**
 	 * Manually startable Job for the MDR Entities synchronising.
+	 * It will check if the acronym is schedulable before sending a request.
 	 */
-	public boolean manualStartMdrSynchronization() {
+	@Override
+	public GenericOperationOutcome manualStartMdrSynchronization() {
 		log.info("\n\t\t--->>> STARTING MDR SYNCHRONIZATION \n");
 		return extractAcronymsAndUpdateMdr();
 	}
@@ -73,83 +77,105 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	/**
 	 * Extracts all the available acronyms and for each of those that are updatable
 	 * sends an update request message to the next module (that will propagate it to - other modules which will propagate it until the - flux node).
-	 */
+	 *
+	 * @return errorContainer
+     */
 	@Override
-	public boolean extractAcronymsAndUpdateMdr() {
+	public GenericOperationOutcome extractAcronymsAndUpdateMdr() {
 		List<String> updatableAcronyms = extractUpdatableAcronyms(getAvailableMdrAcronyms());
-		boolean error = updateMdrEntities(updatableAcronyms);
+		GenericOperationOutcome errorContainer = updateMdrEntities(updatableAcronyms);
 		log.info("\n\t\t---> SYNCHRONIZATION OF MDR ENTITIES FINISHED!\n\n");
-		return error;
+		return errorContainer;
 	}
 
+
+	/**
+	 * Extract a sublist containing all the acronyms that are updatable by the scheduler (schedulable);
+	 *
+	 * @param availableAcronyms
+	 * @return matchList
+     */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private List<String> extractUpdatableAcronyms(List<String> availableAcronyms) {
-
 		List<String> statusListFromDb =  extractAcronymsListFromAcronymStatusList(statusRepository.getAllUpdatableAcronymsStatuses());
-		List<String> matchList = new ArrayList<String>();
-
-		if(CollectionUtils.isNotEmpty(availableAcronyms)){
-			if(CollectionUtils.isNotEmpty(statusListFromDb)) {
-				for (String actualCacheAcronym : availableAcronyms) {
-					if (statusListFromDb.contains(actualCacheAcronym)) {
-						matchList.add(actualCacheAcronym);
-					}
-				}
+		List<String> matchList = new ArrayList<>();
+		for (String actualCacheAcronym : availableAcronyms) {
+			if (statusListFromDb.contains(actualCacheAcronym)) {
+				matchList.add(actualCacheAcronym);
 			}
 		}
 		return matchList;
 	}
 
+
+	/**
+	 * Extracts the objectAcronyms from the list of MdrStatus objects;
+	 *
+	 * @param allUpdatableAcronymsStatuses
+	 * @return acronymsStrList
+     */
 	private List<String> extractAcronymsListFromAcronymStatusList(List<MdrStatus> allUpdatableAcronymsStatuses) {
-		List<String> updatableList = new ArrayList<String>();
+		List<String> acronymsStrList = new ArrayList<>();
 		for(MdrStatus actStatus : allUpdatableAcronymsStatuses){
-			updatableList.add(actStatus.getObjectAcronym());
+			acronymsStrList.add(actStatus.getObjectAcronym());
 		}
-		return updatableList;
+		return acronymsStrList;
 	}
 
 	/**
 	 * Updates the given list of mdr entities.
 	 * The list given as input contains the acronyms.
 	 * For each acronym a request to flux will be sent and the status (Status Table)
-	 * will be set to running.
+	 * will be set to RUNNING or FAILED depending on the outcome of the operation.
 	 *
 	 * @param acronymsList
-	 * @return error
+	 * @return errorContainer
      */
 	@Override
-	public boolean updateMdrEntities(List<String> acronymsList) {
+	public GenericOperationOutcome updateMdrEntities(List<String> acronymsList) {
 		// For each Acronym send a request object towards Exchange module.
-		boolean error = false;
-		List<String> existingAcronymsList = null;
+		GenericOperationOutcome errorContainer = new GenericOperationOutcome();
+		List<String> existingAcronymsList      = null;
 		try {
 			existingAcronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			log.error("Error while trying to get acronymsList from cache");
+			return new GenericOperationOutcome(OperationOutcome.NOK, "Error while trying to get acronymsList from cache");
 		}
-		if (CollectionUtils.isNotEmpty(acronymsList) && CollectionUtils.isNotEmpty(existingAcronymsList)) {
-			for (String actualAcronym : acronymsList) {
-				log.info("Preparing Request Object for " + actualAcronym + " and sending message to Exchange queue.");
-				// Create request object and send message to exchange module
-				if(existingAcronymsList.contains(actualAcronym)){
-					String strReqObj = null;
-					try {
-						strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
-					} catch (ExchangeModelMarshallException | ModelMarshallException e) {
-						log.error("Error while trying to map MDRQueryType.",e);
-						error = true;
-					}
+
+		boolean isRequestToBeSent;
+		for (String actualAcronym : acronymsList) {
+			log.info("Preparing Request Object for " + actualAcronym + " and sending message to Exchange queue.");
+			// Create request object and send message to exchange module
+			isRequestToBeSent = true;
+			if(existingAcronymsList.contains(actualAcronym)){
+				String strReqObj = null;
+				try {
+					strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
 					producer.sendRulesModuleMessage(strReqObj);
-					statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.RUNNING, new Date());
-					log.info("Synchronization Request Sent for Entity : "+actualAcronym);
-				} else {
-					log.error("Couldn't find the acronym'"+actualAcronym+"' in the cachedAcronymsList! Request for said acronym won't be sent to flux!");
+				} catch (ExchangeModelMarshallException | ModelMarshallException e) {
+					log.error("Error while trying to map MDRQueryType for acronym {}",actualAcronym,e);
+					errorContainer.addMessage("Error while trying to map MDRQueryType for acronym {}"+actualAcronym);
+					isRequestToBeSent = false;
+				} catch (ActivityMessageException e) {
+					log.error("Error while trying to send message from Activity to Rules module.",e);
+					errorContainer.addMessage("Error while trying to send message from Activity to Rules module for acronym {}"+actualAcronym);
+					isRequestToBeSent = false;
 				}
+			} else {
+				log.error("Couldn't find the acronym'"+actualAcronym+"' in the cachedAcronymsList! Request for said acronym won't be sent to flux!");
+				isRequestToBeSent = false;
 			}
-		} else {
-			error = true;
+
+			if(isRequestToBeSent){
+				statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.RUNNING, DateUtils.nowUTC().toDate());
+				log.info("Synchronization Request Sent for Entity : "+actualAcronym);
+			} else {
+				statusRepository.updateStatusAttemptForAcronym(actualAcronym, AcronymListState.FAILED, DateUtils.nowUTC().toDate());
+				log.error("Synchronization Request could not be Sent for Entity : "+actualAcronym);
+			}
 		}
-		return error;
+		return errorContainer;
 	}
 
 	/**
@@ -160,12 +186,12 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
      */
 	@Override
 	public List<String> getAvailableMdrAcronyms() {
-		List<String> acronymsList = null;
+		List<String> acronymsList = new ArrayList<>();
 		try {
 			acronymsList = extractMdrAcronyms();
 			log.info("\n---> Exctracted : "+acronymsList.size()+" acronyms!\n");
 		} catch (Exception exC) {
-			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n" + exC.getMessage());
+			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n" + exC);
 		}
 		return acronymsList;
 	}
@@ -201,7 +227,6 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 			log.error(e.getMessage());
 		}
 	}
-
 
 
 	private String mockAndMarshallResponse() throws ExchangeModelMarshallException {

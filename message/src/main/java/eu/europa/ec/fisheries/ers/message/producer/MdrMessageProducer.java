@@ -10,11 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.message.producer;
 
-import javax.ejb.Local;
-import javax.jms.TextMessage;
-
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
+
+import javax.ejb.Local;
+import javax.jms.TextMessage;
 
 
 @Local
@@ -24,5 +24,5 @@ public interface MdrMessageProducer {
 
 	String sendModuleMessage(String text, ModuleQueue queue) throws ActivityMessageException;
 
-	String sendRulesModuleMessage(String strReqObj);
+	String sendRulesModuleMessage(String strReqObj) throws ActivityMessageException;
 }

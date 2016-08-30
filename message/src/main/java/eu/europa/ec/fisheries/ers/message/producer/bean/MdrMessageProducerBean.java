@@ -10,28 +10,19 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.message.producer.bean;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
-import org.apache.commons.lang.StringUtils;
-
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.AbstractMessageProducer;
 import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.*;
 
 @Slf4j
 @Stateless
@@ -61,14 +52,14 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 	 * @param  text (to be sent to the queue)
 	 * @return messageID
 	 */
-	public String sendRulesModuleMessage(String text){
+	public String sendRulesModuleMessage(String text) throws ActivityMessageException {
 		log.info("Sending Request to Exchange module.");		
 		String messageID = StringUtils.EMPTY;
 		try {
 			messageID = sendModuleMessage(text, ModuleQueue.RULES);
 		} catch (ActivityMessageException e) {
-			log.error("Error sending message to Exchange Module.");
-			e.printStackTrace();
+			log.error("Error sending message to Exchange Module.",e);
+            throw e;
 		}
 		return messageID;
 	}
@@ -76,8 +67,8 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
     /**
      * Sends a message to a given Queue.
      * 
-     * @param  String text (the message to be sent)
-     * @param  ModuleQueue queue
+     * @param  text (the message to be sent)
+     * @param  queue
      * @return JMSMessageID
      */
     @Override
@@ -86,7 +77,6 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
         try {
             Session session     = getNewSession();
             TextMessage message = session.createTextMessage();
-            //message.setJMSReplyTo(responseQueue);
             message.setText(text);
             switch (queue) {
             	case RULES:
@@ -104,7 +94,7 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 
             return message.getJMSMessageID();
         } catch (Exception e) {
-            log.error("[ Error when sending data source message. ] {}", e.getMessage());
+            log.error("[ Error when sending data source message. ] {}", e);
             throw new ActivityMessageException(e.getMessage());
         }
     }
@@ -113,8 +103,8 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
     /**
      * Sends a message to the recipient of the message (once a response is recieved)
      * 
-     * @param TextMessage requestMessage
-     * @param String returnMessage
+     * @param requestMessage
+     * @param returnMessage
      * @return void
      */
     @Override
@@ -123,7 +113,7 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
         try {
             sendMessage(requestMessage.getJMSReplyTo(), returnMessage, requestMessage.getJMSMessageID());
         } catch (Exception e) {
-            log.error("[ Error when sending message. ] {}", e.getMessage());
+            log.error("[ Error when sending message. ] {}", e);
             throw new ActivityMessageException("[ Error when sending message. ]", e);
         }
     }
@@ -156,7 +146,7 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
                  connection = connectionFactory.createConnection();
                  connection.start();
              } catch (JMSException ex) {
-                 log.error("Error when open connection to JMS broker");
+                 log.error("Error when open connection to JMS broker", ex);
              }
         }
         Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);

@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.mdr.service.bean;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
+import eu.europa.ec.fisheries.mdr.exception.ActivityStatusTableException;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
@@ -39,6 +40,8 @@ import static javax.ejb.ConcurrencyManagementType.BEAN;
 @ConcurrencyManagement(BEAN)
 @DependsOn(value = {"MdrSynchronizationServiceBean", "MdrStatusRepositoryBean", "MdrRepositoryBean", "MdrSchedulerServiceBean"})
 public class MdrInitializationBean {
+
+    private static final String FIXED_SCHED_CONFIGURATION = "0 1 20 * * *";
 
     @EJB
     private MdrSynchronizationService synchBean;
@@ -72,7 +75,11 @@ public class MdrInitializationBean {
 
         // 2. Updating the acronyms status table (with eventually new added entities (acronyms)).
         log.info("\n\n\t\t2. Updating MDR status table..\n");
-        updateMdrStatusTable();
+        try {
+            updateMdrStatusTable();
+        } catch (ActivityStatusTableException e) {
+            log.error("Exception occured while attempting to update the Status table at Activity module deploy phase!", e);
+        }
 
         // 3. Setting up the scheduler timer for MDR synchronization at start up.
         log.info("\n\n\t\t3. Starting up MDR Synchronization Scheduler Initialization..\n");
@@ -82,36 +89,29 @@ public class MdrInitializationBean {
             // Set up new scheduler at start up (deploy phase);
             schedulerBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
         } else {
-            schedulerBean.reconfigureScheduler("0 1 20 * * *");
+            schedulerBean.reconfigureScheduler(FIXED_SCHED_CONFIGURATION);
         }
 
         log.info("[END] Finished Starting up ActivityModule Initialization..");
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    private void updateMdrStatusTable() {
+    private void updateMdrStatusTable() throws ActivityStatusTableException {
         List<String> acronymsFromCache = null;
         List<String> statusListFromDb  = null;
-        List<MdrStatus> diffList = new ArrayList<MdrStatus>();
+        List<MdrStatus> diffList = new ArrayList<>();
 
         try {
             acronymsFromCache = MasterDataRegistryEntityCacheFactory.getAcronymsList();
             statusListFromDb  = extractStringListFromAcronymStatusList(mdrStatusRepository.getAllAcronymsStatuses());
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.error("Error occurred in updateMdrStatusTable() while attempting to get AcronymsList.",e);
+            throw new ActivityStatusTableException(e.getMessage(), e.getCause());
         }
 
-        if(CollectionUtils.isNotEmpty(acronymsFromCache)){
-            if(CollectionUtils.isNotEmpty(statusListFromDb)) {
-                for (String actualCacheAcronym : acronymsFromCache) {
-                    if (!statusListFromDb.contains(actualCacheAcronym)) {
-                        diffList.add(createNewAcronymSatus(actualCacheAcronym));
-                    }
-                }
-            } else {
-                for (String actualCacheAcronym : acronymsFromCache) {
-                    diffList.add(createNewAcronymSatus(actualCacheAcronym));
-                }
+        for (String actualCacheAcronym : acronymsFromCache) {
+            if (!statusListFromDb.contains(actualCacheAcronym)) {
+                diffList.add(createNewAcronymSatus(actualCacheAcronym));
             }
         }
 
@@ -131,7 +131,7 @@ public class MdrInitializationBean {
     }
 
     private List<String> extractStringListFromAcronymStatusList(List<MdrStatus> allAcronymsStatuses) {
-        List<String> extractedList = new ArrayList<String>();
+        List<String> extractedList = new ArrayList<>();
         for(MdrStatus status : allAcronymsStatuses){
             extractedList.add(status.getObjectAcronym());
         }
