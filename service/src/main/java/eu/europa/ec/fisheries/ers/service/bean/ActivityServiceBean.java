@@ -22,7 +22,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -113,7 +113,7 @@ public class ActivityServiceBean implements ActivityService {
     @Override
     public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         List<FishingActivityEntity> activityList;
-        if(query.getSearchCriteria() ==null || query.getSearchCriteria().size()==0){
+        if(query.getSearchCriteria() ==null || query.getSearchCriteria().isEmpty()){
             activityList =  fishingActivityDao.getFishingActivityList(query.getPagination());
         }else{
             activityList = fishingActivityDao.getFishingActivityListByQuery(query);
@@ -132,6 +132,7 @@ public class ActivityServiceBean implements ActivityService {
 
 
     // Get data for Fishing Trip summary view
+    @Override
     public FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException {
         FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
 
@@ -163,6 +164,7 @@ public class ActivityServiceBean implements ActivityService {
     }
 
     // Current Fishing Trip ID in the system
+    @Override
     public String getCurrentTripId(){
         String currentTripId=null;
        try {
@@ -173,15 +175,15 @@ public class ActivityServiceBean implements ActivityService {
         return currentTripId;
     }
 
-
+    @Override
     public List<CronologyDTO> getCronologyForTripIds(String tripID,int numberOfTripsBeforeAndAfter){
 
-        List<CronologyDTO> cronologyList =  new ArrayList<CronologyDTO>();
+        List<CronologyDTO> cronologyList =  new ArrayList<>();
         try {
             List<Object[]> tripIdListBefore = fishingTripIdentifierDao.getFishingTripsBefore(tripID, numberOfTripsBeforeAndAfter);
 
             if(tripIdListBefore!=null && tripIdListBefore.size()>0 ) {
-                for (int i = (tripIdListBefore.size() - 1); i >= 0; i--) {
+                for (int i = tripIdListBefore.size() - 1; i >= 0; i--) {
                     Object[] tripIdAndDate = tripIdListBefore.get(i);
                     cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
                 }
@@ -201,6 +203,7 @@ public class ActivityServiceBean implements ActivityService {
         return cronologyList;
     }
 
+    @Override
     public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId ){
 
         VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
@@ -252,7 +255,7 @@ public class ActivityServiceBean implements ActivityService {
     }
 
 
-
+    @Override
     public void  getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, FishingTripSummaryDTO fishingTripSummaryDTO,MessageCountDTO messagesCount) throws ServiceException {
 
         List<FishingActivityEntity> fishingActivityList;
@@ -270,7 +273,7 @@ public class ActivityServiceBean implements ActivityService {
             return;
         }
 
-        if(fishingActivityList ==null || fishingActivityList.size()==0)
+        if(fishingActivityList ==null || fishingActivityList.isEmpty())
              return;
 
 
