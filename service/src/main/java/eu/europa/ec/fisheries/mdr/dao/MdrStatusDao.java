@@ -127,7 +127,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         try {
             mdrCodeListElement.setSchedulable(schedulable);
             saveOrUpdateEntity(mdrCodeListElement);
-        } catch (ServiceException e) {
+        } catch (ServiceException | NullPointerException e) {
             log.error("Error while trying to save/update new MDR Code List Status",e);
         }
     }
