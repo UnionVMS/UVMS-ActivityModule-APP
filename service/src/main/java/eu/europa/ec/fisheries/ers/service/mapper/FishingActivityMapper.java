@@ -373,7 +373,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected Set<FishingActivityIdentifierEntity> mapToFishingActivityIdentifierEntities(List<IDType> idTypes, FishingActivityEntity fishingActivityEntity) {
-        if (idTypes == null && idTypes.isEmpty()) {
+        if (idTypes == null || idTypes.isEmpty()) {
             return null;
         }
         Set<FishingActivityIdentifierEntity> identifierEntities = new HashSet<>();
