@@ -16,9 +16,22 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+
+@NamedQueries({
+		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
+				query = "SELECT DISTINCT a  from FishingActivityEntity a " +
+						"JOIN FETCH a.faReportDocument fa " +
+						"JOIN FETCH fa.fluxReportDocument flux " +
+						"JOIN FETCH a.fishingTrips ft " +
+						"JOIN FETCH ft.fishingTripIdentifiers fi " +
+						"where fi.tripId =:fishingTripId order by a.typeCode, flux.fluxReportDocumentId")
+})
+
 @Entity
 @Table(name = "activity_fishing_activity")
 public class FishingActivityEntity implements Serializable {
+
+	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

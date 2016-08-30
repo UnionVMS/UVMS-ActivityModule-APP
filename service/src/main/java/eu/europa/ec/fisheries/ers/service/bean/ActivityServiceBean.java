@@ -22,11 +22,11 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
-
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactParty;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
@@ -182,7 +182,7 @@ public class ActivityServiceBean implements ActivityService {
         try {
             List<Object[]> tripIdListBefore = fishingTripIdentifierDao.getFishingTripsBefore(tripID, numberOfTripsBeforeAndAfter);
 
-            if(tripIdListBefore!=null && tripIdListBefore.size()>0 ) {
+            if(tripIdListBefore!=null && !tripIdListBefore.isEmpty() ) {
                 for (int i = tripIdListBefore.size() - 1; i >= 0; i--) {
                     Object[] tripIdAndDate = tripIdListBefore.get(i);
                     cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
@@ -208,13 +208,13 @@ public class ActivityServiceBean implements ActivityService {
 
         VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
         try {
-            FishingTripEntity fishingTrip = fishingTripDao.fetchVesselTransportDetailsForFishingTrip(fishingTripId);
+                 FishingTripEntity fishingTrip = fishingTripDao.fetchVesselTransportDetailsForFishingTrip(fishingTripId);
 
-            if(fishingTrip ==null || fishingTrip.getFishingActivity() ==null || fishingTrip.getFishingActivity().getFaReportDocument() == null
+                if(fishingTrip ==null || fishingTrip.getFishingActivity() ==null || fishingTrip.getFishingActivity().getFaReportDocument() == null
                     || fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans() ==null)
                 return vesselDetailsTripDTO;
 
-            VesselTransportMeansEntity vesselTransportMeansEntity = fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+                VesselTransportMeansEntity vesselTransportMeansEntity = fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
 
                 vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
                 Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
@@ -232,20 +232,17 @@ public class ActivityServiceBean implements ActivityService {
                     vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
 
                 Set<ContactPartyEntity> contactParties = vesselTransportMeansEntity.getContactParty();
-                for (ContactPartyEntity contactParty : contactParties) {
-                    ContactPersonEntity contactPerson = contactParty.getContactPerson();
+                 if(contactParties !=null && !contactParties.isEmpty() ) {
+                     ContactPartyEntity contactParty= contactParties.iterator().next();
+                     ContactPersonEntity contactPerson = contactParties.iterator().next().getContactPerson();
+                     Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
 
-                    Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
+                     if (contactPerson != null && structuredAddresses != null && !structuredAddresses.isEmpty()) {
+                         vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
+                         vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(structuredAddresses.iterator().next()));
+                     }
+                 }
 
-                    if (contactPerson != null && structuredAddresses != null && structuredAddresses.size() > 0) {
-                        vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
-                        for (StructuredAddressEntity sa : structuredAddresses) {
-                            vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(sa));
-                            break;
-                        }
-                    }
-                    break;
-                }
 
         }catch(Exception e){
             LOG.error("Error while trying to get Vessel Details.",e);
@@ -366,32 +363,22 @@ public class ActivityServiceBean implements ActivityService {
          Date occurence= reportDTO.getOccurence();
          List<FluxLocationDTO> fluxLocations =reportDTO.getFluxLocations();
               switch(reportDTO.getActivityType()){
-                  case ActivityConstants.DEPARTURE:
-                                                     if( (fishingTripSummaryDTO.getDepartureDate() ==null && (fishingTripSummaryDTO.getDepartureLocations() == null || fishingTripSummaryDTO.getDepartureLocations().isEmpty()))
-                                                             || (reportDTO.isCorrection() && fishingTripSummaryDTO.getDepartureDate()!=null &&  occurence.compareTo(fishingTripSummaryDTO.getDepartureDate())>0)){
-                                                         // Check if it is the first time you are assigning the value. If it is the first time, assign whatever value you have for Departure
+                  case ActivityConstants.DEPARTURE:  // Check if it is the first time you are assigning the value. If it is the first time, assign whatever value you have for Departure
+                                                     if( (fishingTripSummaryDTO.getDepartureDate() ==null && (fishingTripSummaryDTO.getDepartureLocations() == null || fishingTripSummaryDTO.getDepartureLocations().isEmpty()))  || (reportDTO.isCorrection() && fishingTripSummaryDTO.getDepartureDate()!=null &&  occurence.compareTo(fishingTripSummaryDTO.getDepartureDate())>0)){
                                                           fishingTripSummaryDTO.setDepartureDate(occurence);
-                                                          fishingTripSummaryDTO.setDepartureLocations(fluxLocations);
-                                                     }
+                                                          fishingTripSummaryDTO.setDepartureLocations(fluxLocations);}
                                                      break;
-                  case ActivityConstants.ARRIVAL:
-                                                  if((fishingTripSummaryDTO.getArrivalDate() ==null && (fishingTripSummaryDTO.getArrivalLocations() == null || fishingTripSummaryDTO.getArrivalLocations().isEmpty()))
-                                                          || (reportDTO.isCorrection() && fishingTripSummaryDTO.getArrivalDate()!=null &&  occurence.compareTo(fishingTripSummaryDTO.getArrivalDate())>0)){
-                                                      // Check if it is the first time you are assigning the value. If it is the first time, assign whatever value you have for Departure
+                  case ActivityConstants.ARRIVAL:  // Check if it is the first time you are assigning the value. If it is the first time, assign whatever value you have for Departure
+                                                  if((fishingTripSummaryDTO.getArrivalDate() ==null && (fishingTripSummaryDTO.getArrivalLocations() == null || fishingTripSummaryDTO.getArrivalLocations().isEmpty())) || (reportDTO.isCorrection() && fishingTripSummaryDTO.getArrivalDate()!=null &&  occurence.compareTo(fishingTripSummaryDTO.getArrivalDate())>0)){
                                                       fishingTripSummaryDTO.setArrivalDate(occurence);
-                                                      fishingTripSummaryDTO.setArrivalLocations(fluxLocations);
-                                                  }
+                                                      fishingTripSummaryDTO.setArrivalLocations(fluxLocations);}
                                                     break;
-                  case ActivityConstants.LANDING:
-                                                  if(fishingTripSummaryDTO.getLandingDate() ==null && (fishingTripSummaryDTO.getLandingLocations() == null || fishingTripSummaryDTO.getLandingLocations().isEmpty())
-                                                          || (reportDTO.isCorrection() && fishingTripSummaryDTO.getLandingDate()!=null &&  occurence.compareTo(fishingTripSummaryDTO.getLandingDate())>0)){
-                                                      // Check if it is the first time you are assigning the value. If it is the first time, assign whatever value you have for Departure
+                  case ActivityConstants.LANDING:  // Check if it is the first time you are assigning the value. If it is the first time, assign whatever value you have for Departure
+                                                  if(fishingTripSummaryDTO.getLandingDate() ==null && (fishingTripSummaryDTO.getLandingLocations() == null || fishingTripSummaryDTO.getLandingLocations().isEmpty())  || (reportDTO.isCorrection() && fishingTripSummaryDTO.getLandingDate()!=null &&  occurence.compareTo(fishingTripSummaryDTO.getLandingDate())>0)){
                                                       fishingTripSummaryDTO.setLandingDate(occurence);
-                                                      fishingTripSummaryDTO.setLandingLocations(fluxLocations);
-                                                  }
-
+                                                      fishingTripSummaryDTO.setLandingLocations(fluxLocations); }
                                                   break;
-                  default: break;
+
               }
      }
 }

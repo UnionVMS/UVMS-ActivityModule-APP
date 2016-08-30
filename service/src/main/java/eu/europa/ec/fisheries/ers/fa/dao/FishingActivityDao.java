@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
@@ -55,24 +56,15 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination) throws ServiceException {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
+        Query query = getEntityManager().createNamedQuery(FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP);
 
-
-      String sql = "SELECT DISTINCT a  from FishingActivityEntity a " +
-              "JOIN FETCH a.faReportDocument fa " +
-              "JOIN FETCH fa.fluxReportDocument flux " +
-              "JOIN FETCH a.fishingTrips ft " +
-              "JOIN FETCH ft.fishingTripIdentifiers fi " +
-              "where fi.tripId =:fishingTripId order by a.typeCode, flux.fluxReportDocumentId";
-
-
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
-        typedQuery.setParameter("fishingTripId", fishingTripId);
+        query.setParameter("fishingTripId", fishingTripId);
         if(pagination!=null) {
-            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            typedQuery.setMaxResults(pagination.getListSize());
+            query.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
+            query.setMaxResults(pagination.getListSize());
         }
-        List<FishingActivityEntity> resultList = typedQuery.getResultList();
-        return resultList;
+
+        return query.getResultList();
     }
 
     public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
@@ -83,8 +75,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
             typedQuery.setMaxResults(pagination.getListSize());
         }
-        List<FishingActivityEntity> resultList = typedQuery.getResultList();
-        return resultList;
+
+        return typedQuery.getResultList();
     }
 
 
@@ -125,9 +117,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             typedQuery.setMaxResults(pagination.getListSize());
         }
 
-        List<FishingActivityEntity> resultList = typedQuery.getResultList();
-        LOG.info("resultList size :"+resultList.size());
-        return resultList;
+
+        return typedQuery.getResultList();
 
     }
 
