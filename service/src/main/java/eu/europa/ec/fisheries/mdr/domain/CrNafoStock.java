@@ -39,8 +39,6 @@ public class CrNafoStock extends MasterDataRegistry {
     @Column(name = "area_description")
     private String areaDescription;
 
-    public CrNafoStock() {}
-
     public String getSpeciesCode() {
         return speciesCode;
     }

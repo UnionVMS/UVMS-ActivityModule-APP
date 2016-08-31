@@ -29,7 +29,7 @@ import javax.interceptor.InvocationContext;
 @Slf4j
 public class ActivityExceptionInterceptor extends UnionVMSResource {
 
-    public static final String EXCEPTION_THROWN_IN_ACTIVITY_MODULE = "Exception thrown in Activity module while trying to call the following method : {}";
+    private static final String EXCEPTION_THROWN_IN_ACTIVITY_MODULE = "Exception thrown in Activity module while trying to call the following method : {}";
 
     @AroundInvoke
     public Object createResponse(final InvocationContext ic) {

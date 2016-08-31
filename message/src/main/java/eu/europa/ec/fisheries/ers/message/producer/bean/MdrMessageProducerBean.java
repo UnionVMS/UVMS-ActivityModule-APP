@@ -147,8 +147,9 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
                  connection = connectionFactory.createConnection();
                  connection.start();
                  return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-             } catch (JMSException ex) {
-                 log.error("Error when open connection to JMS broker", ex);
+             } catch (JMSException | NullPointerException ex) {
+                 log.error("Error when opening connection to JMS broker", ex);
+                 throw new JMSException(ex.getMessage());
              }
         }
         return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);

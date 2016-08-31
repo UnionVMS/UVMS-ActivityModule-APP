@@ -36,8 +36,6 @@ public class ActivityConfiguration extends BaseEntity {
     @Column(name = "config_value")
     private String configValue;
 
-    public ActivityConfiguration() {}
-
     public ActivityConfiguration(String configName, String configValue) {
     	setConfigName(configName);
     	setConfigValue(configValue);

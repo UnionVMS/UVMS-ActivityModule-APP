@@ -10,17 +10,18 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.util;
 
+import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import org.reflections.Reflections;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.reflections.Reflections;
-
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
-
 public final class ClassFinder {
 
 	private static final String MDR_DOMAIN_PACKAGE_WOUT_DOT = "eu.europa.ec.fisheries.mdr.domain";
+
+	private ClassFinder(){}
 
 	public static List<Class<? extends MasterDataRegistry>> extractEntityInstancesFromPackage(){		
 		Reflections reflections = new Reflections(MDR_DOMAIN_PACKAGE_WOUT_DOT);

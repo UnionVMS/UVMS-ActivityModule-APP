@@ -29,6 +29,8 @@ public class DateUtil {
     private static final Logger LOG = LoggerFactory.getLogger(DateUtil.class);
     final static String FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    private DateUtil(){}
+
     public static Date parseToUTCDate(String dateString) throws IllegalArgumentException {
         try {
             if (dateString != null) {

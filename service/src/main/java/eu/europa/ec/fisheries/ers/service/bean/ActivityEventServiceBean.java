@@ -69,7 +69,6 @@ public class ActivityEventServiceBean implements EventService {
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             StringReader sr = new StringReader(request);
             StreamSource source = new StreamSource(sr);
-            long before = System.currentTimeMillis();
              fluxFAReportMessage = (FLUXFAReportMessage) unmarshaller.unmarshal(source);
         } catch (JAXBException | NullPointerException e) {
             throw new ModelMarshallException("[Exception while trying to unmarshall FLUXFAReportMessage in Activity ]", e);

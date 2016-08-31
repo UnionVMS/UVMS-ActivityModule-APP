@@ -23,7 +23,6 @@ import org.apache.commons.collections.CollectionUtils;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -75,7 +74,6 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	 * All the list regardless of "schedulability" will be updated.
 	 *
 	 * @param request
-	 * @param response
 	 * @param acronymsToSynch
      * @return response
      */
@@ -83,7 +81,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@Path("/sync/list")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(value = {MediaType.APPLICATION_JSON})
-	public Response synchronizeListOfAcronyms(@Context HttpServletRequest request, @Context HttpServletResponse response, Collection<String> acronymsToSynch) {
+	public Response synchronizeListOfAcronyms(@Context HttpServletRequest request, Collection<String> acronymsToSynch) {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
 			GenericOperationOutcome outcome = syncBean.updateMdrEntities((List<String>) acronymsToSynch);
@@ -93,7 +91,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 			}
 			return createSuccessResponse();
 		}
-		return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
+		return createAccessForbiddenResponse("User not allowed to request a List of MDR code lists update");
 	}
 
 
@@ -108,7 +106,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 			log.info("Finished MDR Synchronization");
 			return createSuccessResponse();
 		}
-		return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
+		return createAccessForbiddenResponse("User not allowed to use this mocked up function");
 	}
 
 	/**
@@ -163,7 +161,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
 			return createSuccessResponse(schedulerService.getActualSchedulerConfiguration());
 		}
-		return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
+		return createAccessForbiddenResponse("User not allowed to get MDR scheduler configuration");
 	}
 
 	/**
@@ -201,6 +199,6 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 			mdrStatusBean.updateSchedulableForAcronym(acronym, schedulable);
 			return createSuccessResponse();
 		}
-		return createAccessForbiddenResponse("User not allowed to request MDR status table update!");
+		return createAccessForbiddenResponse("User not allowed to request MDR codeList schedulability change!");
 	}
 }

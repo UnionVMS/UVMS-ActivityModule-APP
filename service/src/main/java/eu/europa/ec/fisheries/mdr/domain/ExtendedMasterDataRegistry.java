@@ -38,9 +38,9 @@ public abstract class ExtendedMasterDataRegistry extends MasterDataRegistry {
 	@Column(name="description")
 	private String description;
 	
-	protected final static String CODE           = "code";
-	protected final static String DESCRIPTION    = "description";
-	protected final static String EN_DESCRIPTION = "EN_description";
+	protected static final String CODE           = "code";
+	protected static final String DESCRIPTION_STR = "description";
+	protected static final String EN_DESCRIPTION_STR = "EN_description";
 	
 	public ExtendedMasterDataRegistry() {
 	}
@@ -79,13 +79,13 @@ public abstract class ExtendedMasterDataRegistry extends MasterDataRegistry {
 	@Override
 	public void populate(List<FieldType> fields) throws FieldNotMappedException {
 		String fieldName;
-		List<FieldType> fieldsToRemove = new ArrayList<FieldType>();
+		List<FieldType> fieldsToRemove = new ArrayList<>();
 		for(FieldType field : fields){
 			fieldName  = field.getFieldName().getValue();
 			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
 				setCode(field.getFieldValue().getValue());
 				fieldsToRemove.add(field);
-			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION, fieldName) || StringUtils.equalsIgnoreCase(EN_DESCRIPTION, fieldName)){
+			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION_STR, fieldName) || StringUtils.equalsIgnoreCase(EN_DESCRIPTION_STR, fieldName)){
 				setDescription(field.getFieldValue().getValue());
 				fieldsToRemove.add(field);
 			}
