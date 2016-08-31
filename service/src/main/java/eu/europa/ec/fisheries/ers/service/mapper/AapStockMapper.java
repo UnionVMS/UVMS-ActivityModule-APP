@@ -29,7 +29,7 @@ import java.util.Set;
 @Mapper
 public abstract class AapStockMapper extends BaseMapper {
 
-    public static AapStockMapper INSTANCE = Mappers.getMapper(AapStockMapper.class);
+    public static final AapStockMapper INSTANCE = Mappers.getMapper(AapStockMapper.class);
 
     @Mappings({
             @Mapping(target = "stockId", expression = "java(getIdType(aapStock.getID()))"),

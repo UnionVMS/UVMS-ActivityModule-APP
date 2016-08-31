@@ -31,7 +31,7 @@ import java.util.Set;
 @Mapper
 public abstract class StructuredAddressMapper extends BaseMapper {
 
-    public static StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
+    public static final StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
 
     @Mappings({
             @Mapping(target = "blockName", expression = "java(getTextType(structuredAddress.getBlockName()))"),

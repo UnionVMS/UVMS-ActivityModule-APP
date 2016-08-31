@@ -25,7 +25,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 @Mapper
 public abstract class VesselStorageCharacteristicsMapper extends BaseMapper {
 
-    public static VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
+    public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
 
     @Mappings({
             @Mapping(target = "vesselId", expression = "java(getIdType(vesselStorageCharacteristic.getID()))"),

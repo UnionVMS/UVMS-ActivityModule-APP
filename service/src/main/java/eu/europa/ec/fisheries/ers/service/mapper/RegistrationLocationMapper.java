@@ -25,7 +25,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 @Mapper
 public abstract class RegistrationLocationMapper extends BaseMapper {
 
-    public static RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);
+    public static final RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);
 
     @Mappings({
             @Mapping(target = "description", expression = "java(getTextFromList(registrationLocation.getDescriptions()))"),

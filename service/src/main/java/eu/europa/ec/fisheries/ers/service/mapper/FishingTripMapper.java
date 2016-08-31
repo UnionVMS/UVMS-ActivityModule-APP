@@ -33,7 +33,7 @@ import java.util.Set;
 @Mapper(uses = {DelimitedPeriodMapper.class})
 public abstract class FishingTripMapper extends BaseMapper {
 
-    public static FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
+    public static final FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingTrip.getTypeCode()))"),

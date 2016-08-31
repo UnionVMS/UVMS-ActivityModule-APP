@@ -34,7 +34,7 @@ import java.util.Set;
 @Mapper(uses = {FishingGearMapper.class})
 public abstract class GearProblemMapper extends BaseMapper {
 
-    public static GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
+    public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(gearProblem.getTypeCode()))"),

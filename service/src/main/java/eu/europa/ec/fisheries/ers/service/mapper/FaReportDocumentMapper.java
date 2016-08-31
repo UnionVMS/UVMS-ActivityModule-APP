@@ -32,7 +32,7 @@ import java.util.Set;
 @Mapper(uses = {VesselTransportMeansMapper.class, FishingActivityMapper.class})
 public abstract class FaReportDocumentMapper extends BaseMapper {
 
-    public static FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
+    public static final FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(faReportDocument.getTypeCode()))"),

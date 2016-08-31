@@ -26,7 +26,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 @Mapper
 public abstract class ContactPersonMapper extends BaseMapper {
 
-    public static ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
+    public static final ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
 
     @Mappings({
             @Mapping(target = "title", expression = "java(getTextType(contactPerson.getTitle()))"),

@@ -39,11 +39,7 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
      * {@inheritDoc}
      */
     public ActivityConfigDTO getAdminConfig(String adminConfig) throws ServiceException {
-        try {
-            return getConfiguration(adminConfig);
-        } catch (IOException e) {
-            throw new ServiceException("Parse Exception Admin Configuration");
-        }
+        return getConfiguration(adminConfig);
     }
 
     @Override
@@ -52,11 +48,7 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
      * {@inheritDoc}
      */
     public ActivityConfigDTO getUserConfig(String userConfig, String adminConfig) throws ServiceException {
-        try {
-            return PreferenceConfigMapper.INSTANCE.mergeUserPreference(getConfiguration(adminConfig), getConfiguration(userConfig));
-        } catch (IOException e) {
-            throw new ServiceException("Parse Exception User Configuration");
-        }
+        return PreferenceConfigMapper.INSTANCE.mergeUserPreference(getConfiguration(adminConfig), getConfiguration(userConfig));
     }
 
     @Override
@@ -65,11 +57,7 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
      * {@inheritDoc}
      */
     public String saveAdminConfig(ActivityConfigDTO config) throws ServiceException {
-        try {
-            return getJson(config);
-        } catch (IOException e) {
-            throw new ServiceException("Parse Exception Save Admin Configuration");
-        }
+        return getJson(config);
     }
 
     @Override
@@ -78,13 +66,9 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
      * {@inheritDoc}
      */
     public String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig) throws ServiceException {
-        try {
-            ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
-            ActivityConfigDTO mergedConfig = PreferenceConfigMapper.INSTANCE.mergeUserPreference(usmUserConfig, updatedConfig);
-            return getJson(mergedConfig);
-        } catch (IOException e) {
-            throw new ServiceException("Parse Exception Save User Configuration");
-        }
+        ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
+        ActivityConfigDTO mergedConfig = PreferenceConfigMapper.INSTANCE.mergeUserPreference(usmUserConfig, updatedConfig);
+        return getJson(mergedConfig);
     }
 
     @Override
@@ -93,13 +77,9 @@ public class PreferenceConfigServiceBean implements PreferenceConfigService {
      * {@inheritDoc}
      */
     public String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) throws ServiceException {
-        try {
-            ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
-            ActivityConfigDTO mergedConfig = PreferenceConfigMapper.INSTANCE.resetUserPreference(usmUserConfig, resetConfig);
-            return getJson(mergedConfig);
-        } catch (IOException e) {
-            throw new ServiceException("Parse Exception Reset User Configuration");
-        }
+        ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
+        ActivityConfigDTO mergedConfig = PreferenceConfigMapper.INSTANCE.resetUserPreference(usmUserConfig, resetConfig);
+        return getJson(mergedConfig);
     }
 
     private ActivityConfigDTO getConfiguration(String configString) throws IOException {

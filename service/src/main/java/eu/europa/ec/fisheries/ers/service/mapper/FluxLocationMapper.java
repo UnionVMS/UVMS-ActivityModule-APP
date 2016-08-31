@@ -37,7 +37,7 @@ import java.util.Set;
 @Mapper(uses = {FluxCharacteristicsMapper.class})
 public abstract class FluxLocationMapper extends BaseMapper {
 
-    public static FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
+    public static final FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fluxLocation.getTypeCode()))"),

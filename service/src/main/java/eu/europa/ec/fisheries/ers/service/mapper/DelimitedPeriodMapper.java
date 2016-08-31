@@ -31,7 +31,7 @@ import java.util.Set;
 @Mapper
 public abstract class DelimitedPeriodMapper extends BaseMapper {
 
-    public static DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
+    public static final DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
 
     @Mappings({
             @Mapping(target = "startDate", expression = "java(convertToDate(delimitedPeriod.getStartDateTime()))"),

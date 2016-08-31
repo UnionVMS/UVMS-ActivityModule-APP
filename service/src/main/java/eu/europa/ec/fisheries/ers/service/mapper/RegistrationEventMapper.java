@@ -32,7 +32,7 @@ import java.util.List;
 @Mapper
 public abstract class RegistrationEventMapper extends BaseMapper {
 
-    public static RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
+    public static final RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
 
     @Mappings({
             @Mapping(target = "description", expression = "java(getDescription(registrationEvent.getDescriptions()))"),

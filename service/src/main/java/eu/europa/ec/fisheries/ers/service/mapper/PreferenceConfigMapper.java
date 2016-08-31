@@ -21,7 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FaReportConfigDTO;
  */
 public class PreferenceConfigMapper {
 
-    public static PreferenceConfigMapper INSTANCE;
+    public static final PreferenceConfigMapper INSTANCE;
 
     static {
         INSTANCE = new PreferenceConfigMapper();

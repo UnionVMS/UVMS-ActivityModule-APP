@@ -33,7 +33,7 @@ import java.util.Set;
 @Mapper(uses = {AapProductMapper.class})
 public abstract class AapProcessMapper extends BaseMapper {
 
-    public static AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
+    public static final AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeTypeFromList(aapProcess.getTypeCodes()))"),

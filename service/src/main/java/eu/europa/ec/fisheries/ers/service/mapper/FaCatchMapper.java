@@ -32,7 +32,7 @@ import java.util.Set;
 @Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class})
 public abstract class FaCatchMapper extends BaseMapper {
 
-    public static FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
+    public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(faCatch.getTypeCode()))"),

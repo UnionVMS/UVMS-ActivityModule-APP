@@ -29,7 +29,7 @@ import java.util.Set;
 @Mapper
 public abstract class GearCharacteristicsMapper extends BaseMapper {
 
-    public static GearCharacteristicsMapper INSTANCE = Mappers.getMapper(GearCharacteristicsMapper.class);
+    public static final GearCharacteristicsMapper INSTANCE = Mappers.getMapper(GearCharacteristicsMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(gearCharacteristic.getTypeCode()))"),

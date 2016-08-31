@@ -35,7 +35,7 @@ import java.util.Set;
 @Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class})
 public abstract class ContactPartyMapper extends BaseMapper {
 
-    public static ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
+    public static final ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
 
     @Mappings({
             @Mapping(target = "roleCode", expression = "java(getCodeTypeFromList(contactParty.getRoleCodes()))"),

@@ -32,7 +32,7 @@ import java.util.List;
 @Mapper
 public abstract class FluxReportDocumentMapper extends BaseMapper {
 
-    public static FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
+    public static final FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
 
     @Mappings({
             @Mapping(target = "fluxReportDocumentId", expression = "java(getIdTypeFromList(fluxReportDocument.getIDS()))"),

@@ -28,7 +28,7 @@ import java.util.List;
 @Mapper
 public abstract class SizeDistributionMapper extends BaseMapper {
 
-    public static SizeDistributionMapper INSTANCE = Mappers.getMapper(SizeDistributionMapper.class);
+    public static final SizeDistributionMapper INSTANCE = Mappers.getMapper(SizeDistributionMapper.class);
 
     @Mappings({
             @Mapping(target = "classCode", expression = "java(getCodeTypeFromList(sizeDistribution.getClassCodes()))"),
