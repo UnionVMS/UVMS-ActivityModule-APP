@@ -36,7 +36,6 @@ import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 		
 	private FaReportDocumentDao dao=new FaReportDocumentDao(em);
