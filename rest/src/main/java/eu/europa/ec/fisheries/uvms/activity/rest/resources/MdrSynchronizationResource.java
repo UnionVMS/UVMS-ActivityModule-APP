@@ -60,7 +60,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
 			GenericOperationOutcome outcome = syncBean.manualStartMdrSynchronization();
-			log.info("Finished MDR Synchronization with error flag : "+outcome);
+			log.info("Finished MDR Synchronization with error flag : "+outcome.getStatus().toString());
 			if(!outcome.isOK()){
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
@@ -85,7 +85,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 		if (request.isUserInRole(ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS.toString())) {
 			log.info("Starting MDR Synchronization...");
 			GenericOperationOutcome outcome = syncBean.updateMdrEntities((List<String>) acronymsToSynch);
-			log.info("Finished MDR Synchronization with error flag : " + outcome);
+			log.info("Finished MDR Synchronization with error flag : " + outcome.getStatus().toString());
 			if (!outcome.isOK()) {
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
