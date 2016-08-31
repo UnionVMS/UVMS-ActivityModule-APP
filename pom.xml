@@ -63,7 +63,7 @@
         <uvms.commons.version>2.0.12-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.3-SNAPSHOT</uvms.test.version>
         <hibernate.validator.version>5.2.1.Final</hibernate.validator.version>
-        <usm4uvms.version>2.0.3</usm4uvms.version>
+        <usm4uvms.version>2.0.15-SNAPSHOT</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
@@ -382,7 +382,7 @@
                         <svn>javasvn</svn>
                     </providerImplementations>
                     <tagBase>https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/Activity</tagBase>
-                    <tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
+                    <tagNameFormat>${project.artifactId}-${project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
             </plugin>

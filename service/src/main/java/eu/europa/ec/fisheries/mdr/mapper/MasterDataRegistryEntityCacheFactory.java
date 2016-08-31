@@ -50,7 +50,7 @@ public class MasterDataRegistryEntityCacheFactory {
 	}
 
 	@PostConstruct
-	private void initializeClass(){
+	private static void initializeClass(){
 		instance = new MasterDataRegistryEntityCacheFactory();
 		try {
 			log.info("Initializing MasterDataRegistryEntityCacheFactory class.");
