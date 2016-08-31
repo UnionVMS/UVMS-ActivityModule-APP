@@ -31,8 +31,8 @@ import java.util.Collection;
 @Stateless
 public class MdrSchedulerServiceBean implements MdrSchedulerService {
 
-    public static final String MDR_SYNCHRONIZATION_TIMER_NАМЕ = "MDRSynchronizationTimer";
-    private static final TimerConfig TIMER_CONFIG             = new TimerConfig(MDR_SYNCHRONIZATION_TIMER_NАМЕ, false);
+    public static final String MDR_SYNCHRONIZATION_TIMER = "MDRSynchronizationTimer";
+    private static final TimerConfig TIMER_CONFIG             = new TimerConfig(MDR_SYNCHRONIZATION_TIMER, false);
 
     @EJB
     private MdrRepository mdrRepository;
