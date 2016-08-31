@@ -29,7 +29,6 @@ import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
 
-@Ignore
 public class FishingActivityDaoTest extends BaseErsFaDaoTest{
 
 private FishingActivityDao dao=new FishingActivityDao(em);
