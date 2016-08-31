@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -90,8 +89,8 @@ public class FaCatchEntity implements Serializable {
 		super();
 	}
 
-	public FaCatchEntity(int id, FishingActivityEntity fishingActivity, SizeDistributionEntity sizeDistribution, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Long unitQuantity, Double weightMeasure, String weightMeasureUnitCode, String weightMeasureListId, String usageCode, String usageCodeListId, String weighingMeansCodeListId, String weighingMeansCode) {
-		this.id = id;
+	public FaCatchEntity( FishingActivityEntity fishingActivity, SizeDistributionEntity sizeDistribution, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Long unitQuantity, Double weightMeasure, String weightMeasureUnitCode, String weightMeasureListId, String usageCode, String usageCodeListId, String weighingMeansCodeListId, String weighingMeansCode) {
+
 		this.fishingActivity = fishingActivity;
 		this.sizeDistribution = sizeDistribution;
 		this.typeCode = typeCode;

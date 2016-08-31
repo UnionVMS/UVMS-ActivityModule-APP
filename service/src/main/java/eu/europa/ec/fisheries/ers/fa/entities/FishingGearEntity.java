@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -56,8 +55,8 @@ public class FishingGearEntity implements Serializable {
 		super();
 	}
 
-	public FishingGearEntity(int id, Set<GearCharacteristicEntity> gearCharacteristics, String roleCodeListId, String roleCode, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
-		this.id = id;
+	public FishingGearEntity(Set<GearCharacteristicEntity> gearCharacteristics, String roleCodeListId, String roleCode, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
+
 		this.gearCharacteristics = gearCharacteristics;
 		this.roleCodeListId = roleCodeListId;
 		this.roleCode = roleCode;

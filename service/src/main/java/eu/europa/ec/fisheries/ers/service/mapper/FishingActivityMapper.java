@@ -151,7 +151,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected List<FluxLocationDetailsDTO> getFluxLocationDetailsDTOs(FishingActivityEntity entity) {
         if(entity ==null || entity.getFluxLocations() == null || entity.getFluxLocations().isEmpty() ){
-            return null;
+            return Collections.emptyList();
         }
         List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
         for (FluxLocationEntity fluxLocationEntity : entity.getFluxLocations()) {
@@ -162,7 +162,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected List<FishingGearDTO> getFishingGearDTOList(FishingActivityEntity entity){
         if(entity ==null || entity.getFishingGears() == null || entity.getFishingGears().isEmpty() ){
-            return null;
+            return Collections.emptyList();
         }
 
         List<FishingGearDTO> fishingGearDTOList=new ArrayList<>();
@@ -174,7 +174,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected List<FluxCharacteristicsDTO> getFluxCharacteristicsDTOList(FishingActivityEntity entity){
         if(entity ==null || entity.getFluxCharacteristics() == null || entity.getFluxCharacteristics().isEmpty() ){
-            return null;
+            return Collections.emptyList();
         }
 
         List<FluxCharacteristicsDTO> fluxCharacteristicsDTOList=new ArrayList<>();
@@ -201,7 +201,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected List<DelimitedPeriodDTO> getDelimitedPeriodDTOList(FishingActivityEntity entity){
         if(entity ==null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty() ){
-            return null;
+            return Collections.emptyList();
         }
 
         List<DelimitedPeriodDTO> delimitedPeriodDTOEntities=new ArrayList<>();

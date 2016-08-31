@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import javax.persistence.EntityManager;
@@ -64,19 +63,5 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
         return query.getResultList();
     }
 
-    public List<FaReportDocumentEntity> getFishingActivityListForFishingTrip(String fishingTripId, Pagination pagination) throws ServiceException {
-        if(fishingTripId == null || fishingTripId.length() == 0)
-            throw new ServiceException("fishing Trip Id is null or empty. ");
 
-        String sql = "SELECT DISTINCT fa  from FaReportDocumentEntity fa JOIN FETCH  fa.fishingActivities a JOIN FETCH a.fishingTrips ft JOIN FETCH ft.fishingTripIdentifiers fi where fi.tripId =:fishingTripId order by fa.fluxReportDocument.fluxReportDocumentId";
-
-        TypedQuery<FaReportDocumentEntity> typedQuery = em.createQuery(sql, FaReportDocumentEntity.class);
-        typedQuery.setParameter("fishingTripId", fishingTripId);
-        if(pagination!=null) {
-            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            typedQuery.setMaxResults(pagination.getListSize());
-        }
-        List<FaReportDocumentEntity> resultList = typedQuery.getResultList();
-        return resultList;
-    }
 }

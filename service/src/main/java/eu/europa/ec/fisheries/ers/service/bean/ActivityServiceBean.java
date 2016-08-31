@@ -27,7 +27,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactParty;
+
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
@@ -47,7 +47,7 @@ import java.util.*;
 @Slf4j
 public class ActivityServiceBean implements ActivityService {
 
-    final static String FORMAT = "yyyy-MM-dd HH:mm:ss";
+     static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
@@ -65,7 +65,7 @@ public class ActivityServiceBean implements ActivityService {
         fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
     }
 
-    final static Logger LOG = LoggerFactory.getLogger(ActivityServiceBean.class);
+
 
     /**
      * {@inheritDoc}
@@ -122,13 +122,11 @@ public class ActivityServiceBean implements ActivityService {
 
 
         if(activityList==null || activityList.isEmpty()){
-            LOG.info("Could not find FishingActivity entities matching search criteria");
+            log.info("Could not find FishingActivity entities matching search criteria");
             return Collections.emptyList();
         }
 
-        List<FishingActivityReportDTO> dtos = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList);
-
-       return dtos;
+        return FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList);
     }
 
 
@@ -171,7 +169,7 @@ public class ActivityServiceBean implements ActivityService {
        try {
            currentTripId = fishingTripIdentifierDao.getCurrentTrip();
        }catch(Exception e){
-           LOG.error("Error while trying to get current trip Id:",e);
+           log.error("Error while trying to get current trip Id:",e);
        }
         return currentTripId;
     }
@@ -198,7 +196,7 @@ public class ActivityServiceBean implements ActivityService {
             }
 
         }catch(Exception e){
-            LOG.error("Error while trying to get Cronology for trip :"+tripID,e);
+            log.error("Error while trying to get Cronology for trip :"+tripID,e);
         }
 
         return cronologyList;
@@ -240,7 +238,7 @@ public class ActivityServiceBean implements ActivityService {
 
 
         }catch(Exception e){
-            LOG.error("Error while trying to get Vessel Details.",e);
+            log.error("Error while trying to get Vessel Details.",e);
         }
 
        return vesselDetailsTripDTO;
@@ -261,13 +259,17 @@ public class ActivityServiceBean implements ActivityService {
     public void  getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, FishingTripSummaryDTO fishingTripSummaryDTO,MessageCountDTO messagesCount) throws ServiceException {
 
         List<FishingActivityEntity> fishingActivityList;
-        int reportsCnt=0;  int declarations=0;  int notifications=0;  int corrections=0;  int fishingOperations=0;
+        int reportsCnt=0;
+        int declarations=0;
+        int notifications=0;
+        int corrections=0;
+        int fishingOperations=0;
 
 
         try {
             fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
         }catch(Exception e){
-            LOG.error("Error while trying to get Fishing Activity reports for fishing trip with Id:"+fishingTripId,e);
+            log.error("Error while trying to get Fishing Activity reports for fishing trip with Id:"+fishingTripId,e);
             return;
         }
 

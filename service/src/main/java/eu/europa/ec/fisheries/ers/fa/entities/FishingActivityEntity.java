@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -133,8 +132,8 @@ public class FishingActivityEntity implements Serializable {
 	}
 
 
-	public FishingActivityEntity(int id, FaReportDocumentEntity faReportDocument, VesselStorageCharacteristicsEntity sourceVesselCharId, VesselStorageCharacteristicsEntity destVesselCharId, String typeCode, String typeCodeListid, Date occurence, String reasonCode, String reasonCodeListId, String vesselActivityCode, String vesselActivityCodeListId, String fisheryTypeCode, String fisheryTypeCodeListId, String speciesTargetCode, String speciesTargetCodeListId, Long operationQuantity, Double fishingDurationMeasure, String flapDocumentId, String flapDocumentSchemeId, FishingActivityEntity relatedFishingActivity, Set<FaCatchEntity> faCatchs, Set<DelimitedPeriodEntity> delimitedPeriods, Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers, Set<FishingTripEntity> fishingTrips, Set<FishingGearEntity> fishingGears, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<GearProblemEntity> gearProblems, Set<FluxLocationEntity> fluxLocations, Set<FishingActivityEntity> allRelatedFishingActivities) {
-		this.id = id;
+	public FishingActivityEntity( FaReportDocumentEntity faReportDocument, VesselStorageCharacteristicsEntity sourceVesselCharId, VesselStorageCharacteristicsEntity destVesselCharId, String typeCode, String typeCodeListid, Date occurence, String reasonCode, String reasonCodeListId, String vesselActivityCode, String vesselActivityCodeListId, String fisheryTypeCode, String fisheryTypeCodeListId, String speciesTargetCode, String speciesTargetCodeListId, Long operationQuantity, Double fishingDurationMeasure, String flapDocumentId, String flapDocumentSchemeId, FishingActivityEntity relatedFishingActivity, Set<FaCatchEntity> faCatchs, Set<DelimitedPeriodEntity> delimitedPeriods, Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers, Set<FishingTripEntity> fishingTrips, Set<FishingGearEntity> fishingGears, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<GearProblemEntity> gearProblems, Set<FluxLocationEntity> fluxLocations, Set<FishingActivityEntity> allRelatedFishingActivities) {
+
 		this.faReportDocument = faReportDocument;
 		this.sourceVesselCharId = sourceVesselCharId;
 		this.destVesselCharId = destVesselCharId;

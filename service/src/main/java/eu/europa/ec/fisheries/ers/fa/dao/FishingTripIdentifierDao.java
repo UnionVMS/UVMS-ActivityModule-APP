@@ -15,12 +15,9 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -41,7 +38,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
 
 
     public String getCurrentTrip(){
-        Query query = (TypedQuery) getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_CURRENT_TRTIPID);
+        Query query =  getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_CURRENT_TRTIPID);
        return (String) query.getSingleResult();
     }
 

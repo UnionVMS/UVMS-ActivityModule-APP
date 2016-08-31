@@ -95,7 +95,7 @@ public class MapperUtil {
     public static FishingActivityEntity getFishingActivityEntity(){
 
 
-        FaCatchEntity faCatchEntity=new   FaCatchEntity(1,null,null, "AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12l,10d,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE");
+     /*   FaCatchEntity faCatchEntity=new   FaCatchEntity(1,null,null, "AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12l,10d,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE");
         SizeDistributionEntity SizeDistributionEntity = new SizeDistributionEntity(1,"LSC","FA_SIZE_CLASS","FA_SIZE_CATEGORY","FA_SIZE_CATEGORY", faCatchEntity);
         FaReportDocumentEntity faReportDocumentEntity=new  FaReportDocumentEntity(1,null,null,"AREA","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),"fmc","fmc_list",null,null) ;
         FluxReportDocumentEntity fluxReportDocumentEntity=new FluxReportDocumentEntity(1, "REPORT_ID","REF_ID",java.sql.Date.valueOf("2014-12-12"),"CODE11","CODELISTID","PURPOSE","OWNER_PARTY_ID","NAME", faReportDocumentEntity) ;
@@ -120,9 +120,9 @@ public class MapperUtil {
         "REASONCODE","REASON_CODE_LIST","VESSEL_ACTIVITY","VESSEL_CODE_LIST","FISHERY_CODE","FISHERY_CODE_LIST","SPECIES_CODE","speciesTargetCodeListId",12l,11d,"flapid","flapschemeid",null,faCatchs,delimitedPeriods,
          null,null,fishingGears,null,null,fluxLocations,null);
 
+*/
 
-
-          return fishingActivityEntity;
+          return new FishingActivityEntity();
     }
 
 

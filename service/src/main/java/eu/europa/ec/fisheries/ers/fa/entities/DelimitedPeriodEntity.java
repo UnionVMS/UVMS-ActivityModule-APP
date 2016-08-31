@@ -47,8 +47,8 @@ public class DelimitedPeriodEntity implements Serializable {
 		super();
 	}
 
-	public DelimitedPeriodEntity(int id, FishingActivityEntity fishingActivity, FishingTripEntity fishingTrip, Date startDate, Date endDate, Double duration) {
-		this.id = id;
+	public DelimitedPeriodEntity( FishingActivityEntity fishingActivity, FishingTripEntity fishingTrip, Date startDate, Date endDate, Double duration) {
+
 		this.fishingActivity = fishingActivity;
 		this.fishingTrip = fishingTrip;
 		this.startDate = startDate;

@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @NamedQueries({
@@ -79,8 +78,8 @@ public class FaReportDocumentEntity implements Serializable {
 		super();
 	}
 
-	public FaReportDocumentEntity(int id, VesselTransportMeansEntity vesselTransportMeans, FluxReportDocumentEntity fluxReportDocument, String typeCode, String typeCodeListId, Date acceptedDatetime, String fmcMarker, String fmcMarkerListId, Set<FaReportIdentifierEntity> faReportIdentifiers, Set<FishingActivityEntity> fishingActivities) {
-		this.id = id;
+	public FaReportDocumentEntity( VesselTransportMeansEntity vesselTransportMeans, FluxReportDocumentEntity fluxReportDocument, String typeCode, String typeCodeListId, Date acceptedDatetime, String fmcMarker, String fmcMarkerListId, Set<FaReportIdentifierEntity> faReportIdentifiers, Set<FishingActivityEntity> fishingActivities) {
+
 		this.vesselTransportMeans = vesselTransportMeans;
 		this.fluxReportDocument = fluxReportDocument;
 		this.typeCode = typeCode;
