@@ -29,7 +29,7 @@ import java.util.Set;
 @Mapper
 public abstract class AapProductMapper extends BaseMapper {
 
-    public static AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
+    public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
 
     @Mappings({
             @Mapping(target = "packagingTypeCode", expression = "java(getCodeType(aapProduct.getPackagingTypeCode()))"),
