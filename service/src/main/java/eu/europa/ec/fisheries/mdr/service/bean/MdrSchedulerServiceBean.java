@@ -74,26 +74,31 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
     @Override
     public void reconfigureScheduler(String schedulerExpressionStr) {
         log.info("[START] Re-configure MDR scheduler with expression: {}", schedulerExpressionStr);
+        String schedulerExpressionStrClean = null;
         if (StringUtils.isNotBlank(schedulerExpressionStr)) {
             // Sometimes unneeded double quotes are present in the posted json string
-            schedulerExpressionStr = schedulerExpressionStr.replace("\"", "");
+            schedulerExpressionStrClean = schedulerExpressionStr.replace("\"", "");
             // Set up the new timer for this EJB;
-            setUpScheduler(schedulerExpressionStr);
+            setUpScheduler(schedulerExpressionStrClean);
             // Persist the new config into DB;
             try {
-                mdrRepository.changeMdrSchedulerConfiguration(schedulerExpressionStr);
+                mdrRepository.changeMdrSchedulerConfiguration(schedulerExpressionStrClean);
             } catch (ServiceException e) {
                 log.error("Error while trying to save the new configuration", e);
             }
             log.info("New MDR scheduler timer created - [{}] - and stored.", TIMER_CONFIG.getInfo());
         } else {
-            log.info("[FAILED] Re-configure MDR scheduler with expression: {}. The Scheduler expression is blank.", schedulerExpressionStr);
+            log.info("[FAILED] Re-configure MDR scheduler with expression: {}. The Scheduler expression is blank.", schedulerExpressionStrClean);
         }
     }
 
+    /**
+     * Given the schedulerExpressionStr creates a new timer for this bean.
+     *
+     * @param schedulerExpressionStr
+     */
     @Override
     public void setUpScheduler(String schedulerExpressionStr) {
-        Timer newTimer = null;
         try{
             // Parse the Cron-Job expression;
             ScheduleExpression expression = parseExpression(schedulerExpressionStr);
@@ -102,13 +107,13 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
             // Set up the new timer for this EJB;
             timerServ.createCalendarTimer(expression, TIMER_CONFIG);;
         } catch(Exception ex){
-            log.error("Error creating new scheduled synchronization timer!");
+            log.error("Error creating new scheduled synchronization timer!", ex);
         }
         log.info("New timer scheduler created successfully : ", schedulerExpressionStr);
     }
 
     /**
-     * Cancels the previous set up of the timer.
+     * Cancels the previous set up of the timer for this bean.
      *
      */
     private void cancelPreviousTimer() {

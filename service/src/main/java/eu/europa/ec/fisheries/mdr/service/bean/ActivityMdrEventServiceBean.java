@@ -42,16 +42,14 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 	
 	@Override
 	public void recievedSyncMdrEntityMessage(@Observes @GetFLUXFMDRSyncMessageEvent EventMessage message){
-
 		log.info("-->> Recieved message from FLUX related to MDR Entity Synchronization.");
 		// Extract message from EventMessage Object
-		BasicAttribute responseObject = extractFluxResponseFromEvenetMessage(message);
-		if(responseObject != null){
+		try {
+			BasicAttribute responseObject = extractFluxResponseFromEvenetMessage(message);
 			mdrRepository.updateMdrEntity(responseObject.getResponse());
-		} else {
-			log.error("After unmarshalling BasicAttribute resulted NULL! Nothing to persist!");
+		} catch (ModelMarshallException e) {
+			log.error("ModelMarshallException while trying to extract response from FLUX message! After unmarshalling BasicAttribute resulted NULL! Nothing to persist!");
 		}
-
 	}
 
 	/**
@@ -60,7 +58,7 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 	 * @param message
 	 * @return ResponseType
 	 */
-	private BasicAttribute extractFluxResponseFromEvenetMessage(EventMessage message) {
+	private BasicAttribute extractFluxResponseFromEvenetMessage(EventMessage message) throws ModelMarshallException {
 		TextMessage textMessage = null;
 		BasicAttribute respType   = null;
 		try {
@@ -68,7 +66,8 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 			SetFLUXMDRSyncMessageActivityResponse activityResp = JAXBMarshaller.unmarshallTextMessage(textMessage, SetFLUXMDRSyncMessageActivityResponse.class);
 			respType    = JAXBMarshaller.unmarshallTextMessage(activityResp.getRequest(), BasicAttribute.class);
 		} catch (ModelMarshallException e) {
-			log.error("Error while attempting to Unmarshall Flux Response Object (MDR Entity) : \n"+e.getMessage());
+			log.error("Error while attempting to Unmarshall Flux Response Object (XML MDR Entity) : \n",e);
+			throw e;
 		}
 		log.info("BasicAttribute : /n"+respType);
 		return respType;

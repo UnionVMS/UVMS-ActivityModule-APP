@@ -29,20 +29,24 @@ import javax.interceptor.InvocationContext;
 @Slf4j
 public class ActivityExceptionInterceptor extends UnionVMSResource {
 
+    public static final String EXCEPTION_THROWN_IN_ACTIVITY_MODULE = "Exception thrown in Activity module while trying to call the following method : {}";
+
     @AroundInvoke
     public Object createResponse(final InvocationContext ic) {
         log.info("ExceptionInterceptor received");
         try {
             return ic.proceed();
         } catch (IllegalArgumentException e) {
+            log.error(EXCEPTION_THROWN_IN_ACTIVITY_MODULE,ic.getMethod(),e);
             return createErrorResponse(ErrorCodes.INPUT_NOT_SUPPORTED);
+        } catch(ServiceException e){
+            log.error(EXCEPTION_THROWN_IN_ACTIVITY_MODULE,ic.getMethod(),e);
+            return createErrorResponse(e.getMessage());
+        } catch (RuntimeException e){
+            log.error(EXCEPTION_THROWN_IN_ACTIVITY_MODULE,ic.getMethod(),e);
+            return createErrorResponse(e.getCause().getMessage());
         } catch (Exception e) {
-            if (e instanceof ServiceException) {
-                return createErrorResponse(e.getMessage());
-            }
-            if (e.getCause() instanceof RuntimeException) {
-                return createErrorResponse(e.getCause().getMessage());
-            }
+            log.error(EXCEPTION_THROWN_IN_ACTIVITY_MODULE,ic.getMethod(),e);
             return createErrorResponse(ErrorCodes.INTERNAL_SERVER_ERROR);
         }
     }

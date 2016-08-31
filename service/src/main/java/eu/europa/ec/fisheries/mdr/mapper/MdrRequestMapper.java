@@ -10,23 +10,27 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.mapper;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.joda.time.DateTime;
-
 import eu.europa.ec.fisheries.schema.rules.module.v1.RulesModuleMethod;
 import eu.europa.ec.fisheries.schema.rules.module.v1.SetFLUXMDRSyncMessageRulesRequest;
-import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
+import org.joda.time.DateTime;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_query._1.BasicAttribute;
 import xeu.ec.fisheries.flux_bl.flux_mdr_query._1.MDRQueryType;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 public class MdrRequestMapper {
+
+	/**
+	 * This class isn't supposed to have instances.
+	 *
+	 */
+	private MdrRequestMapper(){}
 
 	/**
 	 * Creates an MDRQueryType for qurying the FLUX with the acronym and serviceType parameters.
@@ -38,7 +42,7 @@ public class MdrRequestMapper {
 	 * @return
 	 * @throws ExchangeModelMarshallException 
 	 */
-	public static String mapMdrQueryTypeToString(String acronym, String serviceType) throws ModelMarshallException, ExchangeModelMarshallException {
+	public static String mapMdrQueryTypeToString(String acronym, String serviceType) throws  ExchangeModelMarshallException {
 		
 		IDType idType = new IDType();
 		idType.setValue(acronym);		
@@ -52,7 +56,13 @@ public class MdrRequestMapper {
 		
 		BasicAttribute reqOb = new BasicAttribute();
 		reqOb.setMDRQuery(mdrQueryType);
-		reqOb.setCreation(createXMLDate());
+		XMLGregorianCalendar date = null;
+		try {
+			date = createXMLDate();
+		} catch (DatatypeConfigurationException e) {
+			throw new ExchangeModelMarshallException("DatatypeConfigurationException Exception thrown while trying to create XML Calendar.");
+		}
+		reqOb.setCreation(date);
 
 		SetFLUXMDRSyncMessageRulesRequest fluxRequestObject = new SetFLUXMDRSyncMessageRulesRequest();
 		fluxRequestObject.setRequest(JAXBMarshaller.marshallJaxBObjectToString(reqOb));
@@ -60,14 +70,8 @@ public class MdrRequestMapper {
 		return JAXBMarshaller.marshallJaxBObjectToString(fluxRequestObject);
 	}
 
-	private static XMLGregorianCalendar createXMLDate() {
-		XMLGregorianCalendar xgc = null;
-		try {
-			xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime().toGregorianCalendar());
-		} catch (DatatypeConfigurationException e) {
-			e.printStackTrace();
-		}
-		return xgc;
+	private static XMLGregorianCalendar createXMLDate() throws DatatypeConfigurationException {
+		return DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime().toGregorianCalendar());
 	}
 	
 }

@@ -22,7 +22,6 @@ import eu.europa.ec.fisheries.mdr.util.GenericOperationOutcome;
 import eu.europa.ec.fisheries.mdr.util.OperationOutcome;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
@@ -137,7 +136,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		try {
 			existingAcronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
 		} catch (ActivityCacheInitException e) {
-			log.error("Error while trying to get acronymsList from cache");
+			log.error("Error while trying to get acronymsList from cache", e);
 			return new GenericOperationOutcome(OperationOutcome.NOK, "Error while trying to get acronymsList from cache");
 		}
 
@@ -151,7 +150,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 				try {
 					strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
 					producer.sendRulesModuleMessage(strReqObj);
-				} catch (ExchangeModelMarshallException | ModelMarshallException e) {
+				} catch (ExchangeModelMarshallException e) {
 					log.error("Error while trying to map MDRQueryType for acronym {}",actualAcronym,e);
 					errorContainer.addMessage("Error while trying to map MDRQueryType for acronym {}"+actualAcronym);
 					isRequestToBeSent = false;
@@ -187,8 +186,8 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		try {
 			acronymsList = extractMdrAcronyms();
 			log.info("\n---> Exctracted : "+acronymsList.size()+" acronyms!\n");
-		} catch (Exception exC) {
-			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n" + exC);
+		} catch (ActivityCacheInitException exC) {
+			log.error("Couldn't extract Entity Acronyms. The following Exception was thrown : \n", exC);
 		}
 		return acronymsList;
 	}
@@ -199,15 +198,10 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	 * @return acronymsList
 	 * @throws Exception
 	 */
-	private List<String> extractMdrAcronyms() throws Exception {
-		List<String> acronymsList = null;
-		try {
-			// Get all the acronyms from the acronyms cache
-			log.info("Exctracting the available acronyms.");
-			acronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
-		} catch (ActivityCacheInitException e) {
-			throw new ActivityCacheInitException(e.getMessage());
-		}
+	private List<String> extractMdrAcronyms() throws ActivityCacheInitException {
+		// Get all the acronyms from the acronyms cache
+		log.info("Exctracting the available acronyms.");
+		List<String> acronymsList = MasterDataRegistryEntityCacheFactory.getAcronymsList();
 		if (!CollectionUtils.isEmpty(acronymsList)) {
 			log.info("Acronyms exctracted. \nThere were found [ " + acronymsList.size()+ " ] acronyms in the MDR domain package.");
 		}
@@ -216,11 +210,10 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 
 	@Override
 	public void sendMockedMessageToERSMDRQueue() {
-		
 		try {
 			producer.sendModuleMessage(mockAndMarshallResponse(), ModuleQueue.ERSMDRPLUGINQUEUE);
 		} catch (ActivityMessageException | ExchangeModelMarshallException e) {
-			log.error(e.getMessage());
+			log.error("Error while sending mocked message to ERSMDRPLUGINQUEUE",e);
 		}
 	}
 
@@ -252,7 +245,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 		CodeElementType entity_2 = new CodeElementType();
 		entity_2.setFields(Arrays.asList(field_1, field_2));
 		
-		List<CodeElementType> entitiesList = new ArrayList<CodeElementType>();
+		List<CodeElementType> entitiesList = new ArrayList<>();
 		entitiesList.addAll(Arrays.asList(entity_1, entity_2));
 
 		MDRCodeListType mdrCodeListType = new MDRCodeListType(objAcronym, null, null, null, null, null, entitiesList);
