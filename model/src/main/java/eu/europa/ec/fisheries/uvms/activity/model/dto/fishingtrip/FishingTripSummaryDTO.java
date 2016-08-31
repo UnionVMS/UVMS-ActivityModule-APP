@@ -16,7 +16,7 @@ package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxLocationDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -32,7 +32,7 @@ public class FishingTripSummaryDTO {
     private Date departureDate;
 
     @JsonProperty("departureLocations")
-    private List<FluxLocationDTO> departureLocations;
+    private List<FluxLocationDetailsDTO> departureLocations;
 
 
     @JsonProperty("arrivalDate")
@@ -40,14 +40,14 @@ public class FishingTripSummaryDTO {
     private Date arrivalDate;
 
     @JsonProperty("arrivalLocations")
-    private List<FluxLocationDTO> arrivalLocations;
+    private List<FluxLocationDetailsDTO> arrivalLocations;
 
     @JsonProperty("landingDate")
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private Date landingDate;
 
     @JsonProperty("landingLocations")
-    private List<FluxLocationDTO> landingLocations;
+    private List<FluxLocationDetailsDTO> landingLocations;
 
     @JsonProperty("departureDate")
     public Date getDepartureDate() {
@@ -60,12 +60,12 @@ public class FishingTripSummaryDTO {
     }
 
     @JsonProperty("departureLocations")
-    public List<FluxLocationDTO> getDepartureLocations() {
+    public List<FluxLocationDetailsDTO> getDepartureLocations() {
         return departureLocations;
     }
 
     @JsonProperty("departureLocations")
-    public void setDepartureLocations(List<FluxLocationDTO> departureLocations) {
+    public void setDepartureLocations(List<FluxLocationDetailsDTO> departureLocations) {
         this.departureLocations = departureLocations;
     }
 
@@ -80,12 +80,12 @@ public class FishingTripSummaryDTO {
     }
 
     @JsonProperty("arrivalLocations")
-    public List<FluxLocationDTO> getArrivalLocations() {
+    public List<FluxLocationDetailsDTO> getArrivalLocations() {
         return arrivalLocations;
     }
 
     @JsonProperty("arrivalLocations")
-    public void setArrivalLocations(List<FluxLocationDTO> arrivalLocations) {
+    public void setArrivalLocations(List<FluxLocationDetailsDTO> arrivalLocations) {
         this.arrivalLocations = arrivalLocations;
     }
 
@@ -100,12 +100,12 @@ public class FishingTripSummaryDTO {
     }
 
     @JsonProperty("landingLocations")
-    public List<FluxLocationDTO> getLandingLocations() {
+    public List<FluxLocationDetailsDTO> getLandingLocations() {
         return landingLocations;
     }
 
     @JsonProperty("landingLocations")
-    public void setLandingLocations(List<FluxLocationDTO> landingLocations) {
+    public void setLandingLocations(List<FluxLocationDetailsDTO> landingLocations) {
         this.landingLocations = landingLocations;
     }
 }

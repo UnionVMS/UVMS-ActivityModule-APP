@@ -17,8 +17,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityDTO;
 
-import java.util.Date;
-
 /**
  * Created by sanera on 04/08/2016.
  */
@@ -26,13 +24,13 @@ import java.util.Date;
 public class ReportDTO extends FishingActivityDTO{
 
     @JsonProperty("faReportAcceptedDateTime")
-    private Date faReportAcceptedDateTime;
+    private String faReportAcceptedDateTime;
 
     @JsonProperty("faReportDocumentType")
     private String faReportDocumentType;
 
-    @JsonProperty("isCorrection")
-    private boolean isCorrection;
+    @JsonProperty("correction")
+    private boolean correction;
 
 
     @JsonProperty("faReportDocumentType")
@@ -46,22 +44,22 @@ public class ReportDTO extends FishingActivityDTO{
     }
 
     @JsonProperty("faReportAcceptedDateTime")
-   public Date getFaReportAcceptedDateTime() {
+   public String getFaReportAcceptedDateTime() {
         return faReportAcceptedDateTime;
     }
 
     @JsonProperty("faReportAcceptedDateTime")
-    public void setFaReportAcceptedDateTime(Date faReportAcceptedDateTime) {
+    public void setFaReportAcceptedDateTime(String faReportAcceptedDateTime) {
         this.faReportAcceptedDateTime = faReportAcceptedDateTime;
     }
 
-    @JsonProperty("isCorrection")
+    @JsonProperty("correction")
     public boolean isCorrection() {
-        return isCorrection;
+        return correction;
     }
 
-    @JsonProperty("isCorrection")
+    @JsonProperty("correction")
     public void setCorrection(boolean correction) {
-        isCorrection = correction;
+        this.correction = correction;
     }
 }

@@ -128,6 +128,9 @@ public class MapperUtil {
 
 
 
+
+
+
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setStatus(FaReportStatusEnum.UPDATED.getStatus());

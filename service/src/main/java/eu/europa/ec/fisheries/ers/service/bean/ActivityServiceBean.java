@@ -21,6 +21,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -211,21 +212,15 @@ public class ActivityServiceBean implements ActivityService {
                  FishingTripEntity fishingTrip = fishingTripDao.fetchVesselTransportDetailsForFishingTrip(fishingTripId);
 
                 if(fishingTrip ==null || fishingTrip.getFishingActivity() ==null || fishingTrip.getFishingActivity().getFaReportDocument() == null
-                    || fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans() ==null)
-                return vesselDetailsTripDTO;
+                    || fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans() ==null) {
+                    return vesselDetailsTripDTO;
+                }
 
                 VesselTransportMeansEntity vesselTransportMeansEntity = fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-
                 vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
                 Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
                 for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
-                    if ("EXT_MARK".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
-                        vesselDetailsTripDTO.setExMark(vesselIdentifier.getVesselIdentifierId());
-                    } else if ("IRCS".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
-                        vesselDetailsTripDTO.setIrcs(vesselIdentifier.getVesselIdentifierId());
-                    } else if ("CFR".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
-                        vesselDetailsTripDTO.setCfr(vesselIdentifier.getVesselIdentifierId());
-                    }
+                    setVesselIdentifierDetails(vesselIdentifier,vesselDetailsTripDTO);
                 }
                 RegistrationEventEntity registrationEventEntity = vesselTransportMeansEntity.getRegistrationEvent();
                 if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null)
@@ -251,16 +246,22 @@ public class ActivityServiceBean implements ActivityService {
        return vesselDetailsTripDTO;
     }
 
+    private void setVesselIdentifierDetails(VesselIdentifierEntity vesselIdentifier,VesselDetailsTripDTO vesselDetailsTripDTO){
+        if ("EXT_MARK".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+            vesselDetailsTripDTO.setExMark(vesselIdentifier.getVesselIdentifierId());
+        } else if ("IRCS".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+            vesselDetailsTripDTO.setIrcs(vesselIdentifier.getVesselIdentifierId());
+        } else if ("CFR".equalsIgnoreCase(vesselIdentifier.getVesselIdentifierSchemeId())) {
+            vesselDetailsTripDTO.setCfr(vesselIdentifier.getVesselIdentifierId());
+        }
+    }
+
 
     @Override
     public void  getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, FishingTripSummaryDTO fishingTripSummaryDTO,MessageCountDTO messagesCount) throws ServiceException {
 
         List<FishingActivityEntity> fishingActivityList;
-        int reportsCnt=0;
-        int declarations=0;
-        int notifications=0;
-        int corrections=0;
-        int fishingOperations=0;
+        int reportsCnt=0;  int declarations=0;  int notifications=0;  int corrections=0;  int fishingOperations=0;
 
 
         try {
@@ -273,76 +274,31 @@ public class ActivityServiceBean implements ActivityService {
         if(fishingActivityList ==null || fishingActivityList.isEmpty())
              return;
 
-
         if(reportDTOList ==null)
               reportDTOList=new ArrayList<>();
 
         for(FishingActivityEntity activityEntity:fishingActivityList){
 
-            ReportDTO reportDTO=new ReportDTO();
-            reportDTO.setFishingActivityId(activityEntity.getId());
-            String activityType=activityEntity.getTypeCode();
-            reportDTO.setActivityType(activityType);
+            ReportDTO reportDTO= FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
 
+            if(ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())){
+                declarations++;
+            }else if(ActivityConstants.NOTIFICATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())){
+                notifications++;
+            }
+
+            if(reportDTO.isCorrection())
+                corrections++;
+
+            if(reportDTO.getUniqueReportId() !=null)
+                reportsCnt++;
+
+            String activityType =reportDTO.getActivityType();
             if(ActivityConstants.FISHING_OPERATION.equalsIgnoreCase(activityType))
                 fishingOperations++;
 
-            FaReportDocumentEntity faReportDocumentEntity= activityEntity.getFaReportDocument();
-
-            if(faReportDocumentEntity !=null) {
-                reportDTO.setFaReportDocumentType(faReportDocumentEntity.getTypeCode());
-                reportDTO.setFaReportAcceptedDateTime(faReportDocumentEntity.getAcceptedDatetime());
-                if(ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())){
-                    declarations++;
-                }else if(ActivityConstants.NOTIFICATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())){
-                    notifications++;
-                }
-                reportsCnt++;
-                FluxReportDocumentEntity fluxReportDocument =faReportDocumentEntity.getFluxReportDocument();
-
-                if(fluxReportDocument !=null ) {
-                    reportDTO.setUniqueReportId(fluxReportDocument.getFluxReportDocumentId());
-                    boolean isCorrection =false;
-                    if(fluxReportDocument.getReferenceId() !=null && fluxReportDocument.getReferenceId().length()!=0) {
-                        isCorrection = true;
-                        corrections++;
-                    }
-                    reportDTO.setCorrection(isCorrection);
-
-                }
-            }
-
-            reportDTO.setOccurence(activityEntity.getOccurence());
-            reportDTO.setReason(activityEntity.getReasonCode());
-
-
-            List<DelimitedPeriodDTO> delimitedPeriodDTOEntities=new ArrayList<>();
-            for(DelimitedPeriodEntity dp:activityEntity.getDelimitedPeriods()){
-                delimitedPeriodDTOEntities.add(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDTO(dp));
-            }
-            reportDTO.setDelimitedPeriod(delimitedPeriodDTOEntities);
-
-            Set<FluxLocationEntity> fluxLocations= activityEntity.getFluxLocations();
-            List<FluxLocationDTO> fluxLocationsDTOList=new ArrayList<>();
-            for(FluxLocationEntity fluxLoc :fluxLocations ) {
-                fluxLocationsDTOList.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDTO(fluxLoc));
-            }
-            reportDTO.setFluxLocations(fluxLocationsDTOList);
-
-
-            List<FluxCharacteristicsDTO> fluxCharacteristicsDTOList=new ArrayList<>();
-            for(FluxCharacteristicEntity fluxCharacteristic:activityEntity.getFluxCharacteristics()){
-                fluxCharacteristicsDTOList.add(FluxCharacteristicsMapper.INSTANCE.mapToFluxCharacteristicsDTO(fluxCharacteristic));
-            }
-            reportDTO.setFluxCharacteristics(fluxCharacteristicsDTOList);
-
-            List<FishingGearDTO> fishingGearDTOList=new ArrayList<>();
-            for(FishingGearEntity fishingGear:activityEntity.getFishingGears()){
-               fishingGearDTOList.add(FishingGearMapper.INSTANCE.mapToFishingGearDTO(fishingGear));
-            }
-            reportDTO.setFishingGears(fishingGearDTOList);
-
-            if(fishingTripSummaryDTO!=null && (ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType()) && ((ActivityConstants.DEPARTURE.equalsIgnoreCase(activityType) || ActivityConstants.ARRIVAL.equalsIgnoreCase(activityType) || ActivityConstants.LANDING.equalsIgnoreCase(activityType)))) ){
+            // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
+            if(ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType()) ){
                 createFishingSummaryDTO(reportDTO,fishingTripSummaryDTO);
             }
             reportDTOList.add(reportDTO);
@@ -354,14 +310,11 @@ public class ActivityServiceBean implements ActivityService {
         messagesCount.setNoOfFishingOperations(fishingOperations);
         messagesCount.setNoOfNotifications(notifications);
         messagesCount.setNoOfReports(reportsCnt);
-
-
-
     }
 
      private void createFishingSummaryDTO(ReportDTO reportDTO,FishingTripSummaryDTO fishingTripSummaryDTO){
          Date occurence= reportDTO.getOccurence();
-         List<FluxLocationDTO> fluxLocations =reportDTO.getFluxLocations();
+         List<FluxLocationDetailsDTO> fluxLocations =reportDTO.getFluxLocations();
               switch(reportDTO.getActivityType()){
                   case ActivityConstants.DEPARTURE:  // Check if it is the first time you are assigning the value. If it is the first time, assign whatever value you have for Departure
                                                      if( (fishingTripSummaryDTO.getDepartureDate() ==null && (fishingTripSummaryDTO.getDepartureLocations() == null || fishingTripSummaryDTO.getDepartureLocations().isEmpty()))  || (reportDTO.isCorrection() && fishingTripSummaryDTO.getDepartureDate()!=null &&  occurence.compareTo(fishingTripSummaryDTO.getDepartureDate())>0)){
@@ -378,7 +331,6 @@ public class ActivityServiceBean implements ActivityService {
                                                       fishingTripSummaryDTO.setLandingDate(occurence);
                                                       fishingTripSummaryDTO.setLandingLocations(fluxLocations); }
                                                   break;
-
               }
      }
 }
