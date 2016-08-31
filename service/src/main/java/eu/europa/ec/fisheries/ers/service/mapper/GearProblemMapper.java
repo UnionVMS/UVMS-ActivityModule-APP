@@ -24,6 +24,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearProblem;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.QuantityType;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,7 @@ public abstract class GearProblemMapper extends BaseMapper {
 
     protected Set<FishingGearEntity> getFishingGearsEntities(List<FishingGear> fishingGears, GearProblemEntity gearProblemEntity) {
         if (fishingGears == null || fishingGears.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {

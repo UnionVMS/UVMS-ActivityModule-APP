@@ -26,10 +26,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by padhyad on 6/14/2016.
@@ -154,7 +151,7 @@ public abstract class FluxLocationMapper extends BaseMapper {
 
     protected Set<FluxCharacteristicEntity> getFluxCharacteristicEntities(List<FLUXCharacteristic> fluxCharacteristics, FluxLocationEntity fluxLocationEntity) {
         if (fluxCharacteristics == null || fluxCharacteristics.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
         for(FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {

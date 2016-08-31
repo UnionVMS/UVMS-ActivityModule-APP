@@ -21,10 +21,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.TextType;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by padhyad on 5/17/2016.
@@ -78,7 +75,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     protected Set<ContactPartyEntity> getContactPartyEntity(List<ContactParty> contactParties, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (contactParties == null || contactParties.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<ContactPartyEntity> contactPartyEntities = new HashSet<>();
         for (ContactParty contactParty : contactParties) {
@@ -97,7 +94,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     protected Set<VesselIdentifierEntity> mapToVesselIdentifierEntities(List<IDType> idTypes, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (idTypes == null || idTypes.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<VesselIdentifierEntity> vesselIdentifierEntities = new HashSet<>();
         for (IDType idType : idTypes) {

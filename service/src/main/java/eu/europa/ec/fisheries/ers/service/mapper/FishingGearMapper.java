@@ -21,6 +21,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearCharacteristic;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +82,7 @@ public abstract class FishingGearMapper extends BaseMapper {
 
     protected Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
         if (gearCharacteristics == null || gearCharacteristics.isEmpty()) {
-             return null;
+             return Collections.emptySet();
         }
         Set<GearCharacteristicEntity> gearCharacteristicEntities = new HashSet<>();
         for (GearCharacteristic gearCharacteristic : gearCharacteristics) {

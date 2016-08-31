@@ -25,6 +25,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +65,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
 
     protected Set<StructuredAddressEntity> getStructuredAddressEntity(List<StructuredAddress> structuredAddresses, ContactPartyEntity contactPartyEntity) {
         if (structuredAddresses == null || structuredAddresses.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();
         for (StructuredAddress structuredAddress : structuredAddresses) {

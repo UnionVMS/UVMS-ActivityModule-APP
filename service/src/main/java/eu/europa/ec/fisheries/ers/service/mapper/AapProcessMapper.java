@@ -14,7 +14,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProcessDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProductDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,6 +22,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPProduct;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,7 +55,7 @@ public abstract class AapProcessMapper extends BaseMapper {
 
     protected Set<AapProductEntity> getAapProductEntities(List<AAPProduct> aapProducts, AapProcessEntity aapProcessEntity) {
         if (aapProducts == null || aapProducts.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<AapProductEntity> aapProductEntities = new HashSet<>();
         for (AAPProduct aapProduct : aapProducts) {

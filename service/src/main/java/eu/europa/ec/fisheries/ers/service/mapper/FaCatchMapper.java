@@ -21,10 +21,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by padhyad on 5/17/2016.
@@ -107,7 +104,7 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     protected Set<FishingTripEntity> getFishingTripEntities(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {
         if (fishingTrips == null || fishingTrips.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
         for (FishingTrip fishingTrip : fishingTrips) {
@@ -118,7 +115,7 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     protected Set<AapStockEntity> getAapStockEntities(List<AAPStock> aapStocks, FaCatchEntity faCatchEntity) {
         if (aapStocks == null || aapStocks.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<AapStockEntity> aapStockEntities = new HashSet<>();
         for (AAPStock aapStock : aapStocks) {
@@ -129,7 +126,7 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     protected Set<FluxCharacteristicEntity> getFluxCharacteristicEntities(List<FLUXCharacteristic> fluxCharacteristics, FaCatchEntity faCatchEntity) {
         if (fluxCharacteristics == null || fluxCharacteristics.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
         for (FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
@@ -157,7 +154,7 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     protected Set<FishingGearEntity> getFishingGearEntities(List<FishingGear> fishingGears, FaCatchEntity faCatchEntity) {
         if (fishingGears == null || fishingGears.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
@@ -168,7 +165,7 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     protected Set<AapProcessEntity> getAapProcessEntities(List<AAPProcess> aapProcesses, FaCatchEntity faCatchEntity) {
         if (aapProcesses == null || aapProcesses.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<AapProcessEntity> aapProcessEntities = new HashSet<>();
         for (AAPProcess aapProcess : aapProcesses) {

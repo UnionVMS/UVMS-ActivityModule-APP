@@ -364,7 +364,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
         if (fishingActivity == null || fishingActivity.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingActivityEntity> relatedFishingActivityEntities = new HashSet<>();
         for (FishingActivity relatedFishingActivity : fishingActivity) {
@@ -377,7 +377,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<FaCatchEntity> getFaCatchEntities(List<FACatch> faCatches, FishingActivityEntity fishingActivityEntity) {
         if (faCatches == null || faCatches.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FaCatchEntity> faCatchEntities = new HashSet<>();
         for (FACatch faCatch : faCatches) {
@@ -389,7 +389,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
@@ -401,7 +401,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<GearProblemEntity> getGearProblemEntities(List<GearProblem> gearProblems, FishingActivityEntity fishingActivityEntity) {
         if (gearProblems == null || gearProblems.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<GearProblemEntity> gearProblemEntities = new HashSet<>();
         for (GearProblem gearProblem : gearProblems) {
@@ -413,7 +413,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<FluxCharacteristicEntity> getFluxCharacteristicsEntities(List<FLUXCharacteristic> fluxCharacteristics, FishingActivityEntity fishingActivityEntity) {
         if (fluxCharacteristics == null || fluxCharacteristics.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
         for (FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
@@ -425,7 +425,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<FishingGearEntity> getFishingGearEntities(List<FishingGear> fishingGears, FishingActivityEntity fishingActivityEntity) {
         if (fishingGears == null || fishingGears.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
@@ -437,14 +437,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<FishingTripEntity> getFishingTripEntities(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
         if (fishingTrip == null) {
-            return null;
+            return Collections.emptySet();
         }
         return new HashSet<>(Arrays.asList(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity())));
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
         if (delimitedPeriods == null || delimitedPeriods.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<DelimitedPeriodEntity> delimitedPeriodEntities =  new HashSet<>();
         for (DelimitedPeriod delimitedPeriod : delimitedPeriods) {
@@ -456,7 +456,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Set<FishingActivityIdentifierEntity> mapToFishingActivityIdentifierEntities(List<IDType> idTypes, FishingActivityEntity fishingActivityEntity) {
         if (idTypes == null || idTypes.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingActivityIdentifierEntity> identifierEntities = new HashSet<>();
         for (IDType idType : idTypes) {

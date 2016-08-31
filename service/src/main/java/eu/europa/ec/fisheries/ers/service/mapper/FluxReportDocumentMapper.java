@@ -19,12 +19,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FLUXReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.TextType;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by padhyad on 5/13/2016.
@@ -58,7 +52,7 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
         if(fluxParty == null) {
             return null;
         }
-        return (fluxParty.getNames() == null || fluxParty.getNames().isEmpty() ? null : fluxParty.getNames().get(0).getValue());
+        return fluxParty.getNames() == null || fluxParty.getNames().isEmpty() ? null : fluxParty.getNames().get(0).getValue();
     }
 
 }

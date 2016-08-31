@@ -22,10 +22,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by padhyad on 6/15/2016.
@@ -85,7 +82,7 @@ public abstract class FishingTripMapper extends BaseMapper {
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingTripEntity fishingTripEntity) {
         if (delimitedPeriods == null || delimitedPeriods.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<DelimitedPeriodEntity> delimitedPeriodEntities = new HashSet<>();
         for (DelimitedPeriod delimitedPeriod : delimitedPeriods) {
@@ -97,7 +94,7 @@ public abstract class FishingTripMapper extends BaseMapper {
 
     protected Set<FishingTripIdentifierEntity> mapToFishingTripIdentifierEntities(List<IDType> idTypes, FishingTripEntity fishingTripEntity) {
         if (idTypes == null || idTypes.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingTripIdentifierEntity> identifierEntities = new HashSet<>();
         for (IDType idType : idTypes) {

@@ -22,6 +22,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,7 +86,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
     protected Set<FishingActivityEntity> getFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
         if (fishingActivities == null || fishingActivities.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FishingActivityEntity> fishingActivityEntities =  new HashSet<>();
         for (FishingActivity fishingActivity : fishingActivities) {
@@ -111,7 +112,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
     protected Set<FaReportIdentifierEntity> mapToFAReportIdentifierEntities(List<IDType> idTypes, FaReportDocumentEntity faReportDocumentEntity) {
         if (idTypes == null || idTypes.isEmpty()) {
-            return null;
+            return Collections.emptySet();
         }
         Set<FaReportIdentifierEntity> faReportIdentifierEntities = new HashSet<>();
         for (IDType idType : idTypes) {
