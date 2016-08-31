@@ -11,6 +11,10 @@ public class ActivityCacheInitException extends Exception {
         super(message);
     }
 
+    public ActivityCacheInitException(Throwable cause) {
+        super(cause);
+    }
+
     public ActivityCacheInitException(String message, Throwable cause) {
         super(message, cause);
     }

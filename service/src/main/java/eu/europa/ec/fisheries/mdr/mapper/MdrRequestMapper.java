@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.mapper;
 
+import eu.europa.ec.fisheries.mdr.exception.ActivityMappingException;
 import eu.europa.ec.fisheries.schema.rules.module.v1.RulesModuleMethod;
 import eu.europa.ec.fisheries.schema.rules.module.v1.SetFLUXMDRSyncMessageRulesRequest;
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
@@ -42,7 +43,7 @@ public class MdrRequestMapper {
 	 * @return
 	 * @throws ExchangeModelMarshallException 
 	 */
-	public static String mapMdrQueryTypeToString(String acronym, String serviceType) throws  ExchangeModelMarshallException {
+	public static String mapMdrQueryTypeToString(String acronym, String serviceType) throws  ActivityMappingException {
 		
 		IDType idType = new IDType();
 		idType.setValue(acronym);		
@@ -56,18 +57,20 @@ public class MdrRequestMapper {
 		
 		BasicAttribute reqOb = new BasicAttribute();
 		reqOb.setMDRQuery(mdrQueryType);
+
 		XMLGregorianCalendar date = null;
+		String fluxStrReq = null;
+		SetFLUXMDRSyncMessageRulesRequest fluxRequestObject = new SetFLUXMDRSyncMessageRulesRequest();
 		try {
 			date = createXMLDate();
-		} catch (DatatypeConfigurationException e) {
-			throw new ExchangeModelMarshallException("DatatypeConfigurationException Exception thrown while trying to create XML Calendar."+e.getMessage());
+			reqOb.setCreation(date);
+			fluxRequestObject.setRequest(JAXBMarshaller.marshallJaxBObjectToString(reqOb));
+			fluxRequestObject.setMethod(RulesModuleMethod.SET_FLUX_MDR_SYNC_REQUEST);
+			fluxStrReq =  JAXBMarshaller.marshallJaxBObjectToString(fluxRequestObject);
+		} catch (ExchangeModelMarshallException | DatatypeConfigurationException e) {
+			throw new ActivityMappingException(e);
 		}
-		reqOb.setCreation(date);
-
-		SetFLUXMDRSyncMessageRulesRequest fluxRequestObject = new SetFLUXMDRSyncMessageRulesRequest();
-		fluxRequestObject.setRequest(JAXBMarshaller.marshallJaxBObjectToString(reqOb));
-		fluxRequestObject.setMethod(RulesModuleMethod.SET_FLUX_MDR_SYNC_REQUEST);
-		return JAXBMarshaller.marshallJaxBObjectToString(fluxRequestObject);
+		return fluxStrReq;
 	}
 
 	/**

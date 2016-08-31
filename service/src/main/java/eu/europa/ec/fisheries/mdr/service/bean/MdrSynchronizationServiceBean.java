@@ -13,6 +13,7 @@ import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
 import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
+import eu.europa.ec.fisheries.mdr.exception.ActivityMappingException;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
@@ -150,7 +151,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 				try {
 					strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
 					producer.sendRulesModuleMessage(strReqObj);
-				} catch (ExchangeModelMarshallException e) {
+				} catch (ActivityMappingException e) {
 					log.error("Error while trying to map MDRQueryType for acronym {}",actualAcronym,e);
 					errorContainer.addMessage("Error while trying to map MDRQueryType for acronym {}"+actualAcronym);
 					isRequestToBeSent = false;

@@ -56,7 +56,7 @@ public class MdrStatus extends BaseEntity {
     @Convert(converter = CharBooleanConverter.class)
     private Boolean schedulable;
 
-    private MdrStatus(){}
+    private MdrStatus(){super();}
 
     public MdrStatus(String objectAcronym, String objectName, Date lastUpdate, Date lastAttempt, AcronymListState state, Boolean schedulable) {
         this.objectAcronym = objectAcronym;

@@ -33,6 +33,7 @@ import java.util.Map;
 @Slf4j
 public class MasterDataRegistryEntityCacheFactory {
 
+	public static final String FAILED_TO_INITIATE_CACHE_FACTORY = "Failed to initiate MasterDataRegistryEntityCacheFactory class.";
 	private static Map<String, MasterDataRegistry> acronymsCache;
 	private static List<String> acronymsList;
 	
@@ -55,7 +56,7 @@ public class MasterDataRegistryEntityCacheFactory {
 			log.info("Initializing MasterDataRegistryEntityCacheFactory class.");
 			initializeCache();
 		} catch (ActivityCacheInitException e) {
-			log.error("Failed to initiate MasterDataRegistryEntityCacheFactory class.", e);
+			log.error(FAILED_TO_INITIATE_CACHE_FACTORY, e);
 		}
 
 	}
@@ -66,7 +67,7 @@ public class MasterDataRegistryEntityCacheFactory {
 			try {
 				initializeCache();
 			} catch (ActivityCacheInitException e) {
-				log.error("Failed to initiate MasterDataRegistryEntityCacheFactory class.", e);
+				log.error(FAILED_TO_INITIATE_CACHE_FACTORY, e);
 			}
 		}
 		return instance;
@@ -88,7 +89,7 @@ public class MasterDataRegistryEntityCacheFactory {
 			}
 			return acronymsCache.get(entityAcronym).getClass().newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
-			throw new ActivityCacheInitException();
+			throw new ActivityCacheInitException(e);
 		}
 	}
 	
@@ -98,10 +99,10 @@ public class MasterDataRegistryEntityCacheFactory {
 			try {
 				entitiesList = ClassFinder.extractEntityInstancesFromPackage();
 			} catch(Exception ex){
-				log.error("Couldn't extract entities from package "+ENTITIES_PACKAGE+" \n The following exception was thrown : \n"+ex.getMessage());
+				log.error("Couldn't extract entities from package "+ENTITIES_PACKAGE+" \n The following exception was thrown : \n", ex);
 			}
 			acronymsCache = new HashMap<>();
-			acronymsList  = new ArrayList<String>();
+			acronymsList  = new ArrayList<>();
 			for (Class<? extends  MasterDataRegistry> aClass : entitiesList) {
 				if(!Modifier.isAbstract(aClass.getModifiers())){
 					String classAcronym   			  = null;
@@ -110,7 +111,7 @@ public class MasterDataRegistryEntityCacheFactory {
 						classAcronym = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
 						classReference =  aClass.newInstance();
 					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
-						throw new ActivityCacheInitException("Exeption thrown while trying to initialize acronymsCache.",e.getCause());
+						throw new ActivityCacheInitException("Exeption thrown while trying to initialize acronymsCache.", e);
 					}
 					acronymsCache.put(classAcronym, classReference);
 					acronymsList.add(classAcronym);
