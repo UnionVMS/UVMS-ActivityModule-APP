@@ -169,7 +169,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 					}
 				}
 			} else {
-				log.error("Couldn't find the acronym'"+actualAcronym+"' in the cachedAcronymsList! Request for said acronym won't be sent to flux!");
+				log.debug("Couldn't find the acronym'"+actualAcronym+"' in the cachedAcronymsList! Request for said acronym won't be sent to flux!");
 			}
 		}
 		return errorContainer;
