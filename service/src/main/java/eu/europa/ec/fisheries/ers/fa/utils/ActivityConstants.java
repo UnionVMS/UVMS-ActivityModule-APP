@@ -18,6 +18,8 @@ package eu.europa.ec.fisheries.ers.fa.utils;
  */
 public class ActivityConstants {
 
+    private ActivityConstants(){}
+
     public static final String DEPARTURE ="DEPARTURE";
     public static final String ARRIVAL ="ARRIVAL";
     public static final String LANDING ="LANDING";
