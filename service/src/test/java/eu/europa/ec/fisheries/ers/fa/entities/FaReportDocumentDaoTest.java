@@ -24,6 +24,7 @@ import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 
+import javax.transaction.Transactional;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ import java.util.List;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 		
@@ -83,6 +85,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
+    @Transactional
     public void testInsertTable() throws Exception {
         dbSetupTracker.skipNextLaunch();
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
@@ -90,15 +93,31 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
         faReportDocumentEntities.add(faReportDocumentEntity);
 
-        dao.bulkUploadFaData(faReportDocumentEntities);
-        FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
+        //dao.bulkUploadFaData(faReportDocumentEntities);
+        insertIntoDB(faReportDocumentEntities);
+        List<FaReportDocumentEntity> entityList = dao.findAllEntity(FaReportDocumentEntity.class);
+
+        assertNotNull(entityList);
+        assertNotEquals(0, entityList.size());
+
+/*        FaReportDocumentEntity entity = null;
+        for (FaReportDocumentEntity faReport : entityList) {
+            if (faReport.getTypeCode().equalsIgnoreCase(faReportDocument.getTypeCode().getValue())) {
+                entity = faReport;
+            }
+        }
 
         assertNotNull(entity);
         assertEquals(faReportDocument.getTypeCode().getValue(), entity.getTypeCode());
         assertEquals(faReportDocument.getTypeCode().getListID(), entity.getTypeCodeListId());
         assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), entity.getAcceptedDatetime());
         assertEquals(faReportDocument.getFMCMarkerCode().getValue(), entity.getFmcMarker());
-        assertEquals(faReportDocument.getFMCMarkerCode().getListID(), entity.getFmcMarkerListId());
+        assertEquals(faReportDocument.getFMCMarkerCode().getListID(), entity.getFmcMarkerListId());*/
+    }
+
+    @Transactional
+    private void insertIntoDB(List<FaReportDocumentEntity> faReportDocumentEntities) {
+        dao.bulkUploadFaData(faReportDocumentEntities);
     }
 
     @Test
