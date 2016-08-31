@@ -105,22 +105,32 @@ public class MasterDataRegistryEntityCacheFactory {
 			acronymsList  = new ArrayList<>();
 			for (Class<? extends  MasterDataRegistry> aClass : entitiesList) {
 				if(!Modifier.isAbstract(aClass.getModifiers())){
-					String classAcronym   			  = null;
-					MasterDataRegistry classReference = null;
-					try {
-						classAcronym = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
-						classReference =  aClass.newInstance();
-					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
-						throw new ActivityCacheInitException("Exeption thrown while trying to initialize acronymsCache.", e);
-					}
-					acronymsCache.put(classAcronym, classReference);
-					acronymsList.add(classAcronym);
-					log.info("Creating cache instance for : " + aClass.getCanonicalName());
+					addAcronymToCache(aClass);
 				}
 			}
 		}
 	}
-	
+
+	/**
+	 * Adds the given Entity (aka CodeList) to the cache.
+	 *
+	 * @param aClass
+	 * @throws ActivityCacheInitException
+     */
+	private static void addAcronymToCache(Class<? extends MasterDataRegistry> aClass) throws ActivityCacheInitException {
+		String classAcronym   			  = null;
+		MasterDataRegistry classReference = null;
+		try {
+            classAcronym = (String) aClass.getMethod(METHOD_ACRONYM).invoke(aClass.newInstance());
+            classReference =  aClass.newInstance();
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+            throw new ActivityCacheInitException("Exeption thrown while trying to initialize acronymsCache.", e);
+        }
+		acronymsCache.put(classAcronym, classReference);
+		acronymsList.add(classAcronym);
+		log.info("Creating cache instance for : " + aClass.getCanonicalName());
+	}
+
 	/**
 	 * Returns the List of all available Acronyms fro MDR.
 	 * 
