@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -83,7 +82,7 @@ public class FluxMessageServiceBean implements FluxMessageService {
 
         List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByIds(referenceIdMap.keySet());
         for (FaReportDocumentEntity faReportDocumentEntity : faReportDocumentEntities) {
-            String purposeCode = null;
+            String purposeCode;
             if (referenceIdMap.get(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()) != null) {
                 purposeCode = referenceIdMap.get(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId());
                 log.debug("Purpose code : " + purposeCode);
