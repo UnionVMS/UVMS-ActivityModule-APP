@@ -11,8 +11,7 @@ import javax.persistence.Converter;
 @Converter
 public class CharAcronymListStateConverter implements AttributeConverter<AcronymListState, String> {
 
-    public CharAcronymListStateConverter() {
-    }
+    public CharAcronymListStateConverter() {super();}
 
     @Override
     public String convertToDatabaseColumn(AcronymListState attribute) {
