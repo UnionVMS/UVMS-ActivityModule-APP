@@ -35,17 +35,17 @@ import java.io.Serializable;
 public class UserRoleInterceptor implements Serializable {
 
     @Context
-    private HttpServletRequest request;
+    private transient HttpServletRequest request;
 
     @AroundInvoke
     public Object interceptRequest(final InvocationContext ic) throws Exception {
         IUserRoleInterceptor iUserRoleInterceptor = ic.getMethod().getAnnotation(IUserRoleInterceptor.class);
         ActivityFeaturesEnum[] features = iUserRoleInterceptor.requiredUserRole(); // Get User role defined in the Rest service
         Object[] parameters = ic.getParameters(); // Request parameters
-        HttpServletRequest request = getHttpServletRequest(parameters);
+        HttpServletRequest req = getHttpServletRequest(parameters);
         boolean isUserAuthorized = false;
         for (ActivityFeaturesEnum activityFeaturesEnum : features) {
-            isUserAuthorized = request.isUserInRole(activityFeaturesEnum.value());
+            isUserAuthorized = req.isUserInRole(activityFeaturesEnum.value());
         }
         if (!isUserAuthorized) {
             throw new ServiceException(ErrorCodes.NOT_AUTHORIZED);
@@ -56,7 +56,7 @@ public class UserRoleInterceptor implements Serializable {
     private HttpServletRequest getHttpServletRequest(Object[] parameters) throws ServiceException {
         for (Object object : parameters) {
             if (object instanceof HttpServletRequest) {
-                return ((HttpServletRequest) object);
+                return (HttpServletRequest) object;
             }
         }
         throw new ServiceException("REQUEST_NOT_FOUND");

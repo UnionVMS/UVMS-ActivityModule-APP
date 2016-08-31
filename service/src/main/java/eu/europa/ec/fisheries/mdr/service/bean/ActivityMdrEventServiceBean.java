@@ -48,7 +48,7 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 			BasicAttribute responseObject = extractFluxResponseFromEvenetMessage(message);
 			mdrRepository.updateMdrEntity(responseObject.getResponse());
 		} catch (ModelMarshallException e) {
-			log.error("ModelMarshallException while trying to extract response from FLUX message! After unmarshalling BasicAttribute resulted NULL! Nothing to persist!");
+			log.error("ModelMarshallException while trying to extract response from FLUX message! After unmarshalling BasicAttribute resulted NULL! Nothing to persist!", e);
 		}
 	}
 

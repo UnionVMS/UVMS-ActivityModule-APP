@@ -60,7 +60,7 @@ public class MdrRequestMapper {
 		try {
 			date = createXMLDate();
 		} catch (DatatypeConfigurationException e) {
-			throw new ExchangeModelMarshallException("DatatypeConfigurationException Exception thrown while trying to create XML Calendar.");
+			throw new ExchangeModelMarshallException("DatatypeConfigurationException Exception thrown while trying to create XML Calendar."+e.getMessage());
 		}
 		reqOb.setCreation(date);
 
@@ -70,6 +70,12 @@ public class MdrRequestMapper {
 		return JAXBMarshaller.marshallJaxBObjectToString(fluxRequestObject);
 	}
 
+	/**
+	 * Creates a new XMLGregorianCalendar instance.
+	 *
+	 * @return
+	 * @throws DatatypeConfigurationException
+     */
 	private static XMLGregorianCalendar createXMLDate() throws DatatypeConfigurationException {
 		return DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime().toGregorianCalendar());
 	}
