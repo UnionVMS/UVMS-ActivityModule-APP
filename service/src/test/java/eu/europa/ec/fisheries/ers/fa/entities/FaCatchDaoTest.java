@@ -22,7 +22,6 @@ import org.junit.Test;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 
-@Ignore
 public class FaCatchDaoTest extends BaseErsFaDaoTest{
 	
 	
