@@ -40,6 +40,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/save")
-    public Response saveFaReportDocument() throws Exception {
+    public Response saveFaReportDocument() throws JAXBException, ServiceException {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
