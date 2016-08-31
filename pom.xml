@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -13,24 +14,31 @@
             <name>Gregory Rinaldi</name>
             <email>gregory.rinaldi@ordina.be</email>
         </developer>
-		<developer>
+        <developer>
             <name>Georgi Georgiev</name>
             <email>georgi.georgiev@ordina.be</email>
         </developer>
     </developers>
 
     <properties>
+
+        <!-- sonar -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
+
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
         <activity.model>0.5.1-SNAPSHOT</activity.model>
         <activity.model.fa>0.5.1-SNAPSHOT</activity.model.fa>
         <activity.model.mdr>0.5.1-SNAPSHOT</activity.model.mdr>
-        
+
         <!-- Other modules dependencies -->
         <reporting.model>0.5.0</reporting.model>
         <exchange.model>2.0.6-SNAPSHOT</exchange.model>
         <rules.model>2.0.7-SNAPSHOT</rules.model>
-        
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <javaee.version>7.0</javaee.version>
@@ -43,9 +51,12 @@
         <movement.model.version>2.0.0</movement.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
-        <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
-        <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
-        <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
+        <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
+        </application.logfile>
+        <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log
+        </application.error.logfile>
+        <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
+        </application.logfile.boot>
         <hibernate.version>4.3.5.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14-M1</geotools.version>
@@ -80,25 +91,25 @@
                 <artifactId>activity-model-mdr</artifactId>
                 <version>${activity.model.mdr}</version>
             </dependency>
-        
-        	<dependency>
+
+            <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
                 <artifactId>exchange-model</artifactId>
                 <version>${exchange.model}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
@@ -130,11 +141,11 @@
                 <version>${project.parent.version}</version>
             </dependency>
 
-	        <dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate.validator.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validator.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.mapstruct</groupId>
@@ -181,7 +192,7 @@
                 <scope>provided</scope>
             </dependency>
 
-             <dependency>
+            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-spatial</artifactId>
                 <version>${hibernate-spatial.version}</version>
@@ -219,10 +230,10 @@
             </dependency>
 
             <dependency>
-            	<groupId>org.jboss.resteasy</groupId>
-			    <artifactId>resteasy-jaxb-provider</artifactId>
-			  	<version>3.0.11.Final</version>
-			</dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxb-provider</artifactId>
+                <version>3.0.11.Final</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
@@ -230,11 +241,11 @@
                 <version>3.0.11.Final</version>
             </dependency>
 
-			<dependency>
-			    <groupId>org.jboss.resteasy</groupId>
-			    <artifactId>jaxrs-api</artifactId>
-			    <version>3.0.11.Final</version>
-			</dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>jaxrs-api</artifactId>
+                <version>3.0.11.Final</version>
+            </dependency>
 
             <dependency>
                 <groupId>ojdbc</groupId>
@@ -263,10 +274,10 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.core.version}</version>
-        </dependency> 
+        </dependency>
     </dependencies>
 
-    	
+
     <distributionManagement>
         <repository>
             <id>digit-releases</id>
@@ -282,10 +293,11 @@
 
     <scm>
 
-		<!--connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</connection-->
-		<developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Activity/</developerConnection>
-		<!--url>https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</url-->
-       
+        <!--connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</connection-->
+        <developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Activity/
+        </developerConnection>
+        <!--url>https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</url-->
+
     </scm>
 
 
@@ -326,7 +338,7 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.0.1</version>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.7</version>
@@ -335,9 +347,34 @@
                     <format>xml</format>
                     <aggregate>true</aggregate>
                 </configuration>
+            </plugin>-->
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.6.201602180812</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
-			
-			 <plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven.release.plugin.version}</version>
@@ -414,20 +451,21 @@
             <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
         </repository>
     </repositories>
-	
-	<profiles>
-		<profile>
+
+    <profiles>
+        <profile>
             <id>postgres</id>
             <properties>
-                <database.dialect>postgres</database.dialect> <!-- the record -->
+                <database.dialect>postgres</database.dialect>
+                <!-- the record -->
             </properties>
         </profile>
-	</profiles>
-  <modules>
-   <!-- <module>model</module>-->
-    <module>rest</module>
-    <module>service</module>
-    <module>message</module>
-    <module>deploy</module>
-  </modules>
+    </profiles>
+    <modules>
+        <!-- <module>model</module>-->
+        <module>rest</module>
+        <module>service</module>
+        <module>message</module>
+        <module>deploy</module>
+    </modules>
 </project>
