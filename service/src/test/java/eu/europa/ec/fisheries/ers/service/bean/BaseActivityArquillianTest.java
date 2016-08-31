@@ -22,7 +22,7 @@ import java.io.File;
 /**
  * Created by padhyad on 5/19/2016.
  */
-public class BaseActivityArquillianTest extends BaseArquillianTest {
+public abstract class BaseActivityArquillianTest extends BaseArquillianTest {
 
     @Deployment
     public static WebArchive createDeployment() {
