@@ -101,34 +101,35 @@ public class FishingActivityEntity implements Serializable {
 	private FishingActivityEntity relatedFishingActivity;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FaCatchEntity> faCatchs = new HashSet<FaCatchEntity>(0);
+	private Set<FaCatchEntity> faCatchs;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<DelimitedPeriodEntity>(0);
+	private Set<DelimitedPeriodEntity> delimitedPeriods;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers = new HashSet<FishingActivityIdentifierEntity>(0);
+	private Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FishingTripEntity> fishingTrips = new HashSet<FishingTripEntity>(0);
+	private Set<FishingTripEntity> fishingTrips;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FishingGearEntity> fishingGears = new HashSet<FishingGearEntity>(0);
+	private Set<FishingGearEntity> fishingGears;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<FluxCharacteristicEntity>(0);
+	private Set<FluxCharacteristicEntity> fluxCharacteristics;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<GearProblemEntity> gearProblems = new HashSet<GearProblemEntity>(0);
+	private Set<GearProblemEntity> gearProblems;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FluxLocationEntity> fluxLocations = new HashSet<FluxLocationEntity>(0);
+	private Set<FluxLocationEntity> fluxLocations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relatedFishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingActivityEntity> allRelatedFishingActivities;
 
 
 	public FishingActivityEntity() {
+		super();
 	}
 
 

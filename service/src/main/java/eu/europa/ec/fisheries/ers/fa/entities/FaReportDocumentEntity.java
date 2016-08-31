@@ -70,12 +70,13 @@ public class FaReportDocumentEntity implements Serializable {
 	private String status;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
-	private Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<FaReportIdentifierEntity>(0);
+	private Set<FaReportIdentifierEntity> faReportIdentifiers;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
-	private Set<FishingActivityEntity> fishingActivities = new HashSet<FishingActivityEntity>(0);
+	private Set<FishingActivityEntity> fishingActivities;
 
 	public FaReportDocumentEntity() {
+		super();
 	}
 
 	public FaReportDocumentEntity(int id, VesselTransportMeansEntity vesselTransportMeans, FluxReportDocumentEntity fluxReportDocument, String typeCode, String typeCodeListId, Date acceptedDatetime, String fmcMarker, String fmcMarkerListId, Set<FaReportIdentifierEntity> faReportIdentifiers, Set<FishingActivityEntity> fishingActivities) {

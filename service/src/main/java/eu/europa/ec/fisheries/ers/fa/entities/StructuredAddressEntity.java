@@ -70,6 +70,7 @@ public class StructuredAddressEntity implements Serializable {
 	private String structuredAddressType;
 
 	public StructuredAddressEntity() {
+		super();
 	}
 
 	public int getId() {

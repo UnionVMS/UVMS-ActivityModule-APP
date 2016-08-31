@@ -64,6 +64,7 @@ public class FluxCharacteristicEntity implements Serializable {
 	private String description;
 
 	public FluxCharacteristicEntity() {
+		super();
 	}
 
 	public int getId() {

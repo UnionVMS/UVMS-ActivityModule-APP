@@ -56,6 +56,7 @@ public class GearCharacteristicEntity implements Serializable {
 	private Double valueQuantity;
 
 	public GearCharacteristicEntity() {
+		super();
 	}
 
 	public int getId() {

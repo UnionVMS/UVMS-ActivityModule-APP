@@ -62,6 +62,7 @@ public class FishingTripIdentifierEntity implements Serializable {
 	private String tripSchemeId;
 
 	public FishingTripIdentifierEntity() {
+		super();
 	}
 
 	public int getId() {

@@ -39,6 +39,7 @@ public class AapProductEntity implements Serializable {
 	private Double packagingUnitCount;
 
 	public AapProductEntity() {
+		super();
 	}
 
 	public int getId() {

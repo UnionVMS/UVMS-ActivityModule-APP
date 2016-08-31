@@ -33,6 +33,7 @@ public class VesselIdentifierEntity implements Serializable {
 	private String vesselIdentifierSchemeId;
 
 	public VesselIdentifierEntity() {
+		super();
 	}
 
 	public int getId() {

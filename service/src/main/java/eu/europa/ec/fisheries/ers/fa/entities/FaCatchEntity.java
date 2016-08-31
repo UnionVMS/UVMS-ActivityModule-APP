@@ -69,24 +69,25 @@ public class FaCatchEntity implements Serializable {
 	private String weighingMeansCodeListId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<AapProcessEntity> aapProcesses = new HashSet<AapProcessEntity>(0);
+	private Set<AapProcessEntity> aapProcesses;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<FishingGearEntity> fishingGears = new HashSet<FishingGearEntity>(0);
+	private Set<FishingGearEntity> fishingGears;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<FluxLocationEntity> fluxLocations = new HashSet<FluxLocationEntity>(0);
+	private Set<FluxLocationEntity> fluxLocations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<FluxCharacteristicEntity>(0);
+	private Set<FluxCharacteristicEntity> fluxCharacteristics;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<AapStockEntity> aapStocks = new HashSet<AapStockEntity>(0);
+	private Set<AapStockEntity> aapStocks;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<FishingTripEntity> fishingTrips = new HashSet<FishingTripEntity>(0);
+	private Set<FishingTripEntity> fishingTrips;
 
 	public FaCatchEntity() {
+		super();
 	}
 
 	public FaCatchEntity(int id, FishingActivityEntity fishingActivity, SizeDistributionEntity sizeDistribution, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Long unitQuantity, Double weightMeasure, String weightMeasureUnitCode, String weightMeasureListId, String usageCode, String usageCodeListId, String weighingMeansCodeListId, String weighingMeansCode) {

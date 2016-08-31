@@ -34,6 +34,7 @@ public class AapStockEntity implements Serializable {
 	private String stockSchemeId;
 
 	public AapStockEntity() {
+		super();
 	}
 
 	public int getId() {

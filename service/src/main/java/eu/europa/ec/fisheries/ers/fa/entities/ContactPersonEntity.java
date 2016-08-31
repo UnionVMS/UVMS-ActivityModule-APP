@@ -50,6 +50,7 @@ public class ContactPersonEntity implements Serializable {
 	private ContactPartyEntity contactParty;
 
 	public ContactPersonEntity() {
+		super();
 	}
 
 	public int getId() {

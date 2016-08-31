@@ -84,12 +84,13 @@ public class FluxLocationEntity implements Serializable {
 	private String systemId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
-	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<FluxCharacteristicEntity>(0);
+	private Set<FluxCharacteristicEntity> fluxCharacteristics;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
-	private Set<StructuredAddressEntity> structuredAddresses = new HashSet<StructuredAddressEntity>(0);
+	private Set<StructuredAddressEntity> structuredAddresses;
 
 	public FluxLocationEntity() {
+		super();
 	}
 
 	public FluxLocationEntity(int id, FaCatchEntity faCatch, FishingActivityEntity fishingActivity, String typeCode, String typeCodeListId, String countryId, String rfmoCode, Double longitude, Double latitude, String fluxLocationType, String countryIdSchemeId, String fluxLocationIdentifierSchemeId, String fluxLocationIdentifier, String geopoliticalRegionCode, String geopoliticalRegionCodeListId, String name, String sovereignRightsCountryCode, String jurisdictionCountryCode, Double altitude, String systemId, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<StructuredAddressEntity> structuredAddresses) {

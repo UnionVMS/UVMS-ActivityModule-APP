@@ -28,8 +28,6 @@ import java.util.List;
  */
 public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierEntity> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdentifierDao.class);
-
     private EntityManager em;
 
     public FishingTripIdentifierDao(EntityManager em) {

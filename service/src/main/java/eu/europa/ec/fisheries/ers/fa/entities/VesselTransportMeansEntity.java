@@ -50,9 +50,10 @@ public class VesselTransportMeansEntity implements Serializable {
     private Set<ContactPartyEntity> contactParty;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
-    private Set<VesselIdentifierEntity> vesselIdentifiers = new HashSet<VesselIdentifierEntity>(0);
+    private Set<VesselIdentifierEntity> vesselIdentifiers;
 
     public VesselTransportMeansEntity() {
+        super();
     }
 
     public int getId() {

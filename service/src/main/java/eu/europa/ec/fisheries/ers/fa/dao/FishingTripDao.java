@@ -25,7 +25,6 @@ import javax.persistence.TypedQuery;
  * Created by sanera on 23/08/2016.
  */
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
-    private static final Logger LOG = LoggerFactory.getLogger(FishingTripDao.class);
 
     private EntityManager em;
 

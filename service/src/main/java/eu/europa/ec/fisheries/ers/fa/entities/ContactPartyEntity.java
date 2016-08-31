@@ -40,12 +40,12 @@ public class ContactPartyEntity implements Serializable {
 	
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
-	private Set<StructuredAddressEntity> structuredAddresses = new HashSet<StructuredAddressEntity>(
-			0);
+	private Set<StructuredAddressEntity> structuredAddresses;
 
 	public ContactPartyEntity() {
+		super();
 	}
-	
+
 	public int getId() {
 		return this.id;
 	}

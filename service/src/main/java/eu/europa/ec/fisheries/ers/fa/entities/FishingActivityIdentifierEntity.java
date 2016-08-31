@@ -33,6 +33,7 @@ public class FishingActivityIdentifierEntity implements Serializable {
 	private String faIdentifierSchemeId;
 
 	public FishingActivityIdentifierEntity() {
+		super();
 	}
 
 	public int getId() {

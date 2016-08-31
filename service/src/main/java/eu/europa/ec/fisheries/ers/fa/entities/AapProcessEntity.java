@@ -38,10 +38,10 @@ public class AapProcessEntity implements Serializable {
 	private Integer conversionFactor;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess", cascade = CascadeType.ALL)
-	private Set<AapProductEntity> aapProducts = new HashSet<AapProductEntity>(
-			0);
+	private Set<AapProductEntity> aapProducts;
 
 	public AapProcessEntity() {
+		super();
 	}
 
 	public int getId() {

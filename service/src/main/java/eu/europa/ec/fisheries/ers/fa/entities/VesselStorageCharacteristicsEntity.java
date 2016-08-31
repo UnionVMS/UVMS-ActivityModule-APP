@@ -41,6 +41,7 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	private FishingActivityEntity fishingActivitiesForSourceVesselCharId;
 
 	public VesselStorageCharacteristicsEntity() {
+		super();
 	}
 
 	public int getId() {

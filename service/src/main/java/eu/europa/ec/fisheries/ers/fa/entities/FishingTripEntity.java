@@ -39,12 +39,13 @@ public class FishingTripEntity implements Serializable {
 	private String typeCodeListId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
-	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<DelimitedPeriodEntity>(0);
+	private Set<DelimitedPeriodEntity> delimitedPeriods;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
-	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<FishingTripIdentifierEntity>(0);
+	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers;
 
 	public FishingTripEntity() {
+		super();
 	}
 
 	public int getId() {

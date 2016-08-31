@@ -44,9 +44,10 @@ public class GearProblemEntity implements Serializable {
 	private String recoveryMeasureCodeListId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
-	private Set<FishingGearEntity> fishingGears = new HashSet<FishingGearEntity>(0);
+	private Set<FishingGearEntity> fishingGears;
 
 	public GearProblemEntity() {
+		super();
 	}
 
 	public int getId() {

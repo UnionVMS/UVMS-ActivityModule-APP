@@ -50,6 +50,7 @@ public class RegistrationLocationEntity implements Serializable {
 	private RegistrationEventEntity registrationEvent;
 
 	public RegistrationLocationEntity() {
+		super();
 	}
 
 	public int getId() {

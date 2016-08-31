@@ -39,6 +39,7 @@ public class RegistrationEventEntity implements Serializable {
 	private VesselTransportMeansEntity vesselTransportMeanses;
 
 	public RegistrationEventEntity() {
+		super();
 	}
 
 	public int getId() {

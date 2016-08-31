@@ -38,6 +38,7 @@ public class SizeDistributionEntity implements Serializable {
 	private FaCatchEntity faCatch;
 
 	public SizeDistributionEntity() {
+		super();
 	}
 
 	public SizeDistributionEntity(int id, String classCode, String classCodeListId, String categoryCode, String categoryCodeListId, FaCatchEntity faCatch) {

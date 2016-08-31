@@ -44,6 +44,7 @@ public class DelimitedPeriodEntity implements Serializable {
 	private Double duration;
 
 	public DelimitedPeriodEntity() {
+		super();
 	}
 
 	public DelimitedPeriodEntity(int id, FishingActivityEntity fishingActivity, FishingTripEntity fishingTrip, Date startDate, Date endDate, Double duration) {

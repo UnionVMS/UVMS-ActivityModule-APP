@@ -33,6 +33,7 @@ public class FaReportIdentifierEntity implements Serializable {
 	private String faReportIdentifierSchemeId;
 
 	public FaReportIdentifierEntity() {
+		super();
 	}
 
 	public int getId() {

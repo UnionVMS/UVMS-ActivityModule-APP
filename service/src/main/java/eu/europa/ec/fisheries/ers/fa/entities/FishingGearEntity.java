@@ -50,9 +50,10 @@ public class FishingGearEntity implements Serializable {
 
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
-	private Set<GearCharacteristicEntity> gearCharacteristics = new HashSet<GearCharacteristicEntity>(0);
+	private Set<GearCharacteristicEntity> gearCharacteristics;
 
 	public FishingGearEntity() {
+		super();
 	}
 
 	public FishingGearEntity(int id, Set<GearCharacteristicEntity> gearCharacteristics, String roleCodeListId, String roleCode, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
