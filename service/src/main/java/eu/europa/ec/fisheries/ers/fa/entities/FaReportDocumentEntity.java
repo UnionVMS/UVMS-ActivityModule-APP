@@ -78,8 +78,8 @@ public class FaReportDocumentEntity implements Serializable {
 		super();
 	}
 
-	public FaReportDocumentEntity( VesselTransportMeansEntity vesselTransportMeans, FluxReportDocumentEntity fluxReportDocument, String typeCode, String typeCodeListId, Date acceptedDatetime, String fmcMarker, String fmcMarkerListId, Set<FaReportIdentifierEntity> faReportIdentifiers, Set<FishingActivityEntity> fishingActivities) {
-
+	public FaReportDocumentEntity(int id, VesselTransportMeansEntity vesselTransportMeans, FluxReportDocumentEntity fluxReportDocument, String typeCode, String typeCodeListId, Date acceptedDatetime, String fmcMarker, String fmcMarkerListId, Set<FaReportIdentifierEntity> faReportIdentifiers, Set<FishingActivityEntity> fishingActivities) {
+        this.id = id;
 		this.vesselTransportMeans = vesselTransportMeans;
 		this.fluxReportDocument = fluxReportDocument;
 		this.typeCode = typeCode;

@@ -33,15 +33,15 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 	protected static final Operation INSERT_ERS_FISHING_TRIP_DATA = sequenceOf(
 			insertInto("activity.activity_fishing_trip")
-					.columns("id", "type_code", "type_code_listid", "fa_catch_id", "fishing_activity_id")
+					.columns("id", "type_code", "type_code_list_id", "fa_catch_id", "fishing_activity_id")
 					.values(1, "JFO", "EU_TRIP_ID", 1, 1)
 					.build(),
 			insertInto("activity.activity_fishing_trip")
-					.columns("id", "type_code", "type_code_listid", "fa_catch_id", "fishing_activity_id")
+					.columns("id", "type_code", "type_code_list_id", "fa_catch_id", "fishing_activity_id")
 					.values(2, "JFO", "EU_TRIP_ID", 2, 2)
 					.build(),
 			insertInto("activity.activity_fishing_trip")
-					.columns("id", "type_code", "type_code_listid", "fa_catch_id", "fishing_activity_id")
+					.columns("id", "type_code", "type_code_list_id", "fa_catch_id", "fishing_activity_id")
 					.values(3, "JFO", "EU_TRIP_ID", 3, 3)
 					.build()
 	);
@@ -98,11 +98,11 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	                    .build(),
 				insertInto("activity.activity_fa_catch")
 						.columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity","weight_measure","weight_measure_unit_code","weight_measure_list_id","usage_code","usage_code_list_id","weighing_means_code","weighing_means_code_list_id","size_distribution_id")
-						.values(2, 1,"AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12,10.00,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE",1)
+						.values(2, 2,"AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12,10.00,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE",1)
 						.build(),
 				insertInto("activity.activity_fa_catch")
 						.columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity","weight_measure","weight_measure_unit_code","weight_measure_list_id","usage_code","usage_code_list_id","weighing_means_code","weighing_means_code_list_id","size_distribution_id")
-						.values(3, 1,"AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12,10.00,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE",1)
+						.values(3, 3,"AREA","FLUX_LOCATION_TYPE","speciesCode","CODE_LIST",12,10.00,"kg","KG_LISTID","PROD_USAGE","PROD_USAGE_LISTID","WM_CODE","WEIGHT_MEASURE",1)
 						.build()
 	   );
 		

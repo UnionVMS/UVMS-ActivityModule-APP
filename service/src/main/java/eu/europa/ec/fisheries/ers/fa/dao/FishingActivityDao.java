@@ -143,13 +143,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
                //If table join is already present in Query, we want to reuse that join alias. so, treat it differently
                if(Filters.MASTER.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)!=-1 ){
-                   sql.append(" JOIN FETCH "+FilterMap.MASTER_MAPPING);
+                   sql.append(" JOIN FETCH ").append(FilterMap.MASTER_MAPPING).append(" ");
                }// Add table alias if not already present
                else if(sql.indexOf(FilterMap.REPORT_DOCUMENT_TABLE_ALIAS)==-1 && (Filters.FROM.equals(key) || Filters.VESSEL_IDENTIFIES.equals(key) || Filters.PURPOSE.equals(key))) {
-                   sql.append(" JOIN FETCH "+FilterMap.REPORT_DOCUMENT_TABLE_ALIAS+" ");
-                   sql.append(" JOIN FETCH "+details.getJoinString()+" ");
+                   sql.append(" JOIN FETCH ").append(FilterMap.REPORT_DOCUMENT_TABLE_ALIAS).append(" ");
+                   sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
                }else{
-                   sql.append(" JOIN FETCH "+details.getJoinString()+" ");
+                   sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
                }
            }
        }
@@ -162,7 +162,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 ListCriteria criteria = criteriaList.get(i);
                 String mapping = mappings.get(criteria.getKey()).getCondition();
                 if (i != 0) {
-                    sql.append(" and " + mapping);
+                    sql.append(" and ").append(mapping);
                 } else {
                     sql.append(mapping);
                 }

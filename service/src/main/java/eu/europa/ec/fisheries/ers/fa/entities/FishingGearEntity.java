@@ -55,8 +55,8 @@ public class FishingGearEntity implements Serializable {
 		super();
 	}
 
-	public FishingGearEntity(Set<GearCharacteristicEntity> gearCharacteristics, String roleCodeListId, String roleCode, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
-
+	public FishingGearEntity(int id,Set<GearCharacteristicEntity> gearCharacteristics, String roleCodeListId, String roleCode, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
+        this.id =id;
 		this.gearCharacteristics = gearCharacteristics;
 		this.roleCodeListId = roleCodeListId;
 		this.roleCode = roleCode;

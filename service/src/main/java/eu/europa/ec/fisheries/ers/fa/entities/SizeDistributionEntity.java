@@ -41,8 +41,8 @@ public class SizeDistributionEntity implements Serializable {
 		super();
 	}
 
-	public SizeDistributionEntity(String classCode, String classCodeListId, String categoryCode, String categoryCodeListId, FaCatchEntity faCatch) {
-
+	public SizeDistributionEntity(int id,String classCode, String classCodeListId, String categoryCode, String categoryCodeListId, FaCatchEntity faCatch) {
+                   this.id=id;
 		this.classCode = classCode;
 		this.classCodeListId = classCodeListId;
 		this.categoryCode = categoryCode;
