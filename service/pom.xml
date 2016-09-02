@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
 		<artifactId>activity</artifactId>
-		<version>0.5.1-SNAPSHOT</version>
+		<version>0.5.4-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -198,6 +198,14 @@
 						<param>eu.europa.ec.fisheries.uvms.spatial.service.mapper.*</param>
 					</targetTests>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
 			<!-- <plugin> <groupId>com.buschmais.jqassistant.scm</groupId> <artifactId>jqassistant-maven-plugin</artifactId> 
 				<version>1.1.0</version> <executions> <execution> <goals> <goal>scan</goal> 
