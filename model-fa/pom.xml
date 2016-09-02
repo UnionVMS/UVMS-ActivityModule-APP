@@ -5,7 +5,7 @@
     <artifactId>activity-model-fa</artifactId>
     <name>activity-model-fa</name>
     <packaging>ejb</packaging>
-    <version>0.5.3-SNAPSHOT</version>
+    <version>0.5.4-SNAPSHOT</version>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
     <properties>
