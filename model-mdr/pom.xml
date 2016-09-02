@@ -5,7 +5,7 @@
     <artifactId>activity-model-mdr</artifactId>
     <name>activity-model-mdr</name>
     <packaging>ejb</packaging>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.5.3-SNAPSHOT</version>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
     <properties>
@@ -220,6 +220,31 @@
                     <tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- This id must match the -Prelease-profile id value or else sources will be "uploaded" twice, which causes Nexus to fail -->
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
