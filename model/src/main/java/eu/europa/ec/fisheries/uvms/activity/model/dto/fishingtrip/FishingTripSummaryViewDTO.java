@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 17/08/2016.
@@ -27,8 +28,9 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("fishingTripId")
     private String fishingTripId;
 
-    @JsonProperty("fishingTripSummary")
-    private FishingTripSummaryDTO fishingTripSummary;
+
+    @JsonProperty("summary")
+    private Map<String,FishingActivityTypeDTO> summary;
 
     @JsonProperty("activityReports")
     private List<ReportDTO> activityReports;
@@ -39,8 +41,10 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("messagesCount")
     private MessageCountDTO messagesCount;
 
+    @JsonProperty("cronology")
     private List<CronologyDTO> cronology;
 
+    @JsonProperty("currentTripId")
     private String currentTripId;
 
 
@@ -54,15 +58,7 @@ public class FishingTripSummaryViewDTO {
         this.fishingTripId = fishingTripId;
     }
 
-    @JsonProperty("fishingTripSummary")
-    public FishingTripSummaryDTO getFishingTripSummaryDTO() {
-        return fishingTripSummary;
-    }
 
-    @JsonProperty("fishingTripSummary")
-    public void setFishingTripSummaryDTO(FishingTripSummaryDTO fishingTripSummary) {
-        this.fishingTripSummary = fishingTripSummary;
-    }
 
     @JsonProperty("activityReports")
     public List<ReportDTO> getActivityReports() {
@@ -94,21 +90,33 @@ public class FishingTripSummaryViewDTO {
         this.messagesCount = messagesCount;
     }
 
+    @JsonProperty("cronology")
     public List<CronologyDTO> getCronology() {
         return cronology;
     }
 
+    @JsonProperty("cronology")
     public void setCronology(List<CronologyDTO> cronology) {
         this.cronology = cronology;
     }
 
+    @JsonProperty("currentTripId")
     public String getCurrentTripId() {
         return currentTripId;
     }
 
+    @JsonProperty("currentTripId")
     public void setCurrentTripId(String currentTripId) {
         this.currentTripId = currentTripId;
     }
 
+    @JsonProperty("summary")
+    public Map<String, FishingActivityTypeDTO> getSummary() {
+        return summary;
+    }
 
+    @JsonProperty("summary")
+    public void setSummary(Map<String, FishingActivityTypeDTO> summary) {
+        this.summary = summary;
+    }
 }

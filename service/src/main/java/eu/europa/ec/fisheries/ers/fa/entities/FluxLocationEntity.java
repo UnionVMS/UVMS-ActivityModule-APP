@@ -92,8 +92,8 @@ public class FluxLocationEntity implements Serializable {
 		super();
 	}
 
-	public FluxLocationEntity(int id,FaCatchEntity faCatch, FishingActivityEntity fishingActivity, String typeCode, String typeCodeListId, String countryId, String rfmoCode, Double longitude, Double latitude, String fluxLocationType, String countryIdSchemeId, String fluxLocationIdentifierSchemeId, String fluxLocationIdentifier, String geopoliticalRegionCode, String geopoliticalRegionCodeListId, String name, String sovereignRightsCountryCode, String jurisdictionCountryCode, Double altitude, String systemId, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<StructuredAddressEntity> structuredAddresses) {
-		this.id=id;
+	public FluxLocationEntity(FaCatchEntity faCatch, FishingActivityEntity fishingActivity, String typeCode, String typeCodeListId, String countryId, String rfmoCode, Double longitude, Double latitude, String fluxLocationType, String countryIdSchemeId, String fluxLocationIdentifierSchemeId, String fluxLocationIdentifier, String geopoliticalRegionCode, String geopoliticalRegionCodeListId, String name, String sovereignRightsCountryCode, String jurisdictionCountryCode, Double altitude, String systemId, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<StructuredAddressEntity> structuredAddresses) {
+
 		this.faCatch = faCatch;
 		this.fishingActivity = fishingActivity;
 		this.typeCode = typeCode;

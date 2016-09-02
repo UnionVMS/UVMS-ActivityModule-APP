@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 29/06/2016.
@@ -102,10 +103,10 @@ public interface ActivityService {
      *
      * @param fishingTripId         ID for which data will be returned
      * @param reportDTOList         Refernce variable to store Fishing Activity Reports for specified fishingTripId
-     * @param fishingTripSummaryDTO Refernce variable to store short FishingTripSummary for specified fishingTripId
+     * @param summary Refernce variable to store short FishingTripSummary for specified fishingTripId
      * @param messagesCount         Refernce variable to store various message counts for specified fishingTripId
      * @throws ServiceException
      */
-    void getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, FishingTripSummaryDTO fishingTripSummaryDTO, MessageCountDTO messagesCount) throws ServiceException;
+    void getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, Map<String,FishingActivityTypeDTO> summary, MessageCountDTO messagesCount) throws ServiceException;
 
 }
