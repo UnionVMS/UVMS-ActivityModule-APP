@@ -5,7 +5,7 @@
     <artifactId>activity-model</artifactId>
     <name>activity-model</name>
     <packaging>ejb</packaging>
-    <version>0.5.4-SNAPSHOT</version>
+    <version>0.5.4</version>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
     <properties>
@@ -106,7 +106,7 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Activity/APP/model</connection>
+        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/Activity/activity-model-0.5.4</connection>
     </scm>
 
     <profiles>
