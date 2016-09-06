@@ -42,11 +42,7 @@ private FishingActivityDao dao=new FishingActivityDao(em);
   }
 
 
-    public  List<FishingActivityEntity> getFishingActivityList(){
-        dbSetupTracker.skipNextLaunch();
-       return dao.getFishingActivityList();
-    }
-	
+
 	@Test
     @SneakyThrows
    public void testFindEntityById() throws Exception {

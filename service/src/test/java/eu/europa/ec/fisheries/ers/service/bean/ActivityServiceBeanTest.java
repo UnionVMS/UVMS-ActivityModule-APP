@@ -23,8 +23,7 @@ import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
@@ -40,6 +39,7 @@ import javax.persistence.EntityManager;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -168,16 +168,61 @@ public class ActivityServiceBeanTest {
     public void testGetFishingTripSummary() throws ServiceException {
 
         when(activityService.getCurrentTripId()).thenReturn(MapperUtil.getCurrentTripID());
+        when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
+        when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706",null)).thenReturn(MapperUtil.getFishingActivityEntityList());
+
         //Trigger
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=activityService.getFishingTripSummary("TEST_ID");
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=activityService.getFishingTripSummary("NOR-TRP-20160517234053706");
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class),Mockito.any(Pagination.class));
         Mockito.verify(fishingTripDao, Mockito.times(1)).fetchVesselTransportDetailsForFishingTrip(Mockito.any(String.class));
         //Verify
         assertEquals("currentTripID", fishingTripSummaryViewDTO.getCurrentTripId());
-
+        assertNotNull( fishingTripSummaryViewDTO.getVesselDetails());
+        assertEquals("vesselGroup1", fishingTripSummaryViewDTO.getVesselDetails().getName());
+        assertEquals(3, fishingTripSummaryViewDTO.getSummary().size());
+        assertEquals(3, fishingTripSummaryViewDTO.getActivityReports().size());
+        assertNotNull( fishingTripSummaryViewDTO.getMessagesCount());
     }
 
+
+    @Test
+    @SneakyThrows
+    public void testGetVesselDetailsForFishingTrip() throws ServiceException {
+
+        when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
+
+        //Trigger
+        VesselDetailsTripDTO vesselDetailsTripDTO= activityService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+
+        Mockito.verify(fishingTripDao, Mockito.times(1)).fetchVesselTransportDetailsForFishingTrip(Mockito.any(String.class));
+        //Verify
+
+        assertNotNull( vesselDetailsTripDTO);
+        assertEquals("vesselGroup1", vesselDetailsTripDTO.getName());
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void getFishingActivityReportAndRelatedDataForFishingTrip() throws ServiceException {
+
+        when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706",null)).thenReturn(MapperUtil.getFishingActivityEntityList());
+
+        List<ReportDTO> reportDTOList = new ArrayList<>();
+        Map<String, FishingActivityTypeDTO > summary = new HashMap<>();
+        MessageCountDTO messagesCount = new MessageCountDTO();
+        //Trigger
+        activityService.getFishingActivityReportAndRelatedDataForFishingTrip("NOR-TRP-20160517234053706",reportDTOList,summary,messagesCount);
+
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class),Mockito.any(Pagination.class));
+        //Verify
+
+        assertEquals(3, summary.size());
+        assertEquals(3, reportDTOList.size());
+        assertEquals(3, messagesCount.getNoOfDeclarations());
+
+    }
 
     private List<FaReportDocumentEntity> getMockedFishingActivityReportEntities() {
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();

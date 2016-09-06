@@ -281,8 +281,6 @@ public class FaCatchEntity implements Serializable {
 	public String toString() {
 		return "FaCatchEntity{" +
 				"id=" + id +
-				", fishingActivity=" + fishingActivity +
-				", sizeDistribution=" + sizeDistribution +
 				", typeCode='" + typeCode + '\'' +
 				", typeCodeListId='" + typeCodeListId + '\'' +
 				", speciesCode='" + speciesCode + '\'' +

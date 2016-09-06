@@ -1,0 +1,138 @@
+/*
+ *
+ * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries European Union, 2015-2016.
+ *
+ * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ */
+
+package eu.europa.ec.fisheries.ers.service.util;
+
+import eu.europa.ec.fisheries.ers.fa.entities.*;
+
+import java.util.Date;
+
+/**
+ * Created by sanera on 31/08/2016.
+ */
+public class ActivityDataUtil {
+
+    public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID,  Date creationDateTime, String purposeCode, String purposeCodeListId,String purpose,String ownerFluxPartyId,String ownerFluxPartyName ){
+        FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
+        fluxReportDocumentEntity.setFluxReportDocumentId(fluxDocumentID);
+        fluxReportDocumentEntity.setCreationDatetime(creationDateTime);
+        fluxReportDocumentEntity.setOwnerFluxPartyId(ownerFluxPartyId);
+        fluxReportDocumentEntity.setOwnerFluxPartyName(ownerFluxPartyName);
+        fluxReportDocumentEntity.setPurpose(purpose);
+        fluxReportDocumentEntity.setPurposeCode(purposeCode);
+        fluxReportDocumentEntity.setPurposeCodeListId(purposeCodeListId);
+        fluxReportDocumentEntity.setReferenceId(referenceID);
+        return fluxReportDocumentEntity;
+    }
+
+    public static RegistrationLocationEntity getRegistrationLocationEntity(String description, String regionCode, String regionCodeListId, String name, String typeCode, String typeCodeListId, String locationCountryId, String locationCountrySchemeId){
+        RegistrationLocationEntity registrationLocationEntity = new RegistrationLocationEntity();
+        registrationLocationEntity.setDescription(description);
+        registrationLocationEntity.setRegionCode(regionCode);
+        registrationLocationEntity.setRegionCodeListId(regionCodeListId);
+        registrationLocationEntity.setName(name);
+        registrationLocationEntity.setTypeCode(typeCode);
+        registrationLocationEntity.setTypeCodeListId(typeCodeListId);
+        registrationLocationEntity.setLocationCountryId(locationCountryId);
+        registrationLocationEntity.setLocationCountrySchemeId(locationCountrySchemeId);
+        return registrationLocationEntity;
+    }
+
+    public static RegistrationEventEntity getRegistrationEventEntity(String description, Date OccurrenceDatetime, RegistrationLocationEntity registrationLocation ){
+        RegistrationEventEntity registrationEventEntity = new RegistrationEventEntity();
+        registrationEventEntity.setDescription(description);
+        registrationEventEntity.setOccurrenceDatetime(OccurrenceDatetime);
+        registrationEventEntity.setRegistrationLocation(registrationLocation);
+        return registrationEventEntity;
+    }
+
+
+    public static VesselTransportMeansEntity getVesselTransportMeansEntity(String roleCode, String roleCodeListId, String name,RegistrationEventEntity registrationEventEntity ){
+        VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
+        vesselTransportMeansEntity.setRoleCode(roleCode);
+        vesselTransportMeansEntity.setRoleCodeListId(roleCodeListId);
+        vesselTransportMeansEntity.setName(name);
+        vesselTransportMeansEntity.setRegistrationEvent(registrationEventEntity);
+        return vesselTransportMeansEntity;
+    }
+
+    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Date  acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity,VesselTransportMeansEntity vesselTransportMeansEntity,String status ){
+        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
+        faReportDocumentEntity.setTypeCode(typeCode);
+        faReportDocumentEntity.setTypeCodeListId(typeCodeListId);
+        faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
+        faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
+        faReportDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
+        faReportDocumentEntity.setStatus(status);
+        return faReportDocumentEntity;
+    }
+
+    public static FishingActivityEntity getFishingActivityEntity(String typeCode, String typeCodeListId, Date  occurence, String reasonCode,String reasonCodeListId,FaReportDocumentEntity faReportDocumentEntity,FishingActivityEntity relatedfishingActivityEntity ){
+        FishingActivityEntity fishingActivityEntity = new FishingActivityEntity();
+        fishingActivityEntity.setTypeCode(typeCode);
+        fishingActivityEntity.setTypeCodeListid(typeCodeListId);
+        fishingActivityEntity.setOccurence(occurence);
+        fishingActivityEntity.setReasonCode(reasonCode);
+        fishingActivityEntity.setReasonCodeListId(reasonCodeListId);
+        fishingActivityEntity.setFaReportDocument(faReportDocumentEntity);
+        fishingActivityEntity.setRelatedFishingActivity(relatedfishingActivityEntity);
+        return fishingActivityEntity;
+    }
+
+
+    public static SizeDistributionEntity getSizeDistributionEntity(String classCode, String classCodeListId, String  categoryCode, String categoryCodeListId ){
+        SizeDistributionEntity sizeDistributionEntity = new SizeDistributionEntity();
+        sizeDistributionEntity.setClassCode(classCode);
+        sizeDistributionEntity.setClassCodeListId(classCodeListId);
+        sizeDistributionEntity.setCategoryCode(categoryCode);
+        sizeDistributionEntity.setCategoryCodeListId(categoryCodeListId);
+        return sizeDistributionEntity;
+    }
+
+    public static FaCatchEntity getFaCatchEntity(FishingActivityEntity fishingActivityEntity,String typeCode, String typeCodeListId, String  speciesCode, String speciesCodeListid,Long unitQuantity,Double weightMeasure,String weightMeasureUnitCode,
+             String weighingMeansCode,String weighingMeansCodeListId,SizeDistributionEntity sizeDistributionEntity  ){
+        FaCatchEntity faCatchEntity = new FaCatchEntity();
+        faCatchEntity.setFishingActivity(fishingActivityEntity);
+        faCatchEntity.setTypeCode(typeCode);
+        faCatchEntity.setTypeCodeListId(typeCodeListId);
+        faCatchEntity.setSpeciesCode(speciesCode);
+        faCatchEntity.setSpeciesCodeListid(speciesCodeListid);
+        faCatchEntity.setUnitQuantity(unitQuantity);
+        faCatchEntity.setWeightMeasure(weightMeasure);
+        faCatchEntity.setWeightMeasureUnitCode(weightMeasureUnitCode);
+        faCatchEntity.setWeighingMeansCode(weighingMeansCode);
+        faCatchEntity.setSizeDistribution(sizeDistributionEntity);
+        faCatchEntity.setWeighingMeansCodeListId(weighingMeansCodeListId);
+        return faCatchEntity;
+    }
+
+
+    public static FishingTripEntity getFishingTripEntity(String typeCode, String typeCodeListId, FaCatchEntity  faCatchEntity, FishingActivityEntity fishingActivityEntity ){
+        FishingTripEntity fishingTripEntity = new FishingTripEntity();
+        fishingTripEntity.setTypeCode(typeCode);
+        fishingTripEntity.setTypeCodeListId(typeCodeListId);
+        fishingTripEntity.setFaCatch(faCatchEntity);
+        fishingTripEntity.setFishingActivity(fishingActivityEntity);
+        return fishingTripEntity;
+    }
+
+
+    public static FishingTripIdentifierEntity getFishingTripIdentifierEntity(FishingTripEntity fishingTripEntity, String tripId, String tripSchemeId ){
+        FishingTripIdentifierEntity fishingTripIdentifierEntity = new FishingTripIdentifierEntity();
+        fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
+        fishingTripIdentifierEntity.setTripId(tripId);
+        fishingTripIdentifierEntity.setTripSchemeId(tripSchemeId);
+        return fishingTripIdentifierEntity;
+    }
+
+}

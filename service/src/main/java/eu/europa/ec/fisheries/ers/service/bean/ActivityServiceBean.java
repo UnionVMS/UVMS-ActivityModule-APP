@@ -217,8 +217,10 @@ public class ActivityServiceBean implements ActivityService {
                 VesselTransportMeansEntity vesselTransportMeansEntity = fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
                 vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
                 Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
-                for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
-                    setVesselIdentifierDetails(vesselIdentifier,vesselDetailsTripDTO);
+                if(vesselIdentifiers!=null) {
+                    for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+                        setVesselIdentifierDetails(vesselIdentifier, vesselDetailsTripDTO);
+                    }
                 }
                 RegistrationEventEntity registrationEventEntity = vesselTransportMeansEntity.getRegistrationEvent();
                 if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null)
