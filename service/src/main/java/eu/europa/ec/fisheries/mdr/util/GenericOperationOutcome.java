@@ -19,11 +19,9 @@ public class GenericOperationOutcome {
     private OperationOutcome status       = OperationOutcome.OK;
     private Map<Integer, String> messages = new HashMap<>();
     private int counter                   = 0;
+    private Object includedObject         = null;
 
-    public GenericOperationOutcome(){
-        status = OperationOutcome.OK;
-        messages = new HashMap<>();
-    }
+    public GenericOperationOutcome(){}
 
     public GenericOperationOutcome(OperationOutcome status){
         this.status = status;
@@ -42,6 +40,7 @@ public class GenericOperationOutcome {
         setStatus(OperationOutcome.OK);
         setMessages(new HashMap<Integer, String>());
         setCounter(0);
+        setIncludedObject(null);
     }
 
     public boolean isOK(){
@@ -65,6 +64,12 @@ public class GenericOperationOutcome {
     }
     public void setCounter(int counter) {
         this.counter = counter;
+    }
+    public Object getIncludedObject() {
+        return includedObject;
+    }
+    public void setIncludedObject(Object includedObject) {
+        this.includedObject = includedObject;
     }
 
 }

@@ -8,7 +8,7 @@
 
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>java:jboss/datasources/uvms_activity</jta-data-source>
-    
+
     <properties>
         <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
         <property name="hibernate.default_schema" value="activity"/>

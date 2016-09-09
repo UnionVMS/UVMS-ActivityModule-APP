@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSchedulerService;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
@@ -64,7 +64,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 			if(!outcome.isOK()){
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
-			return createSuccessResponse();
+			outcome.setIncludedObject(mdrStatusBean.getAllAcronymsStatuses());
+			return createSuccessResponse(outcome);
 		}
 		return createAccessForbiddenResponse("User not allowed to request MDR code lists update");
 	}
@@ -89,7 +90,8 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 			if (!outcome.isOK()) {
 				return createErrorResponse(ERROR_MANUAL_MDR_SYNC);
 			}
-			return createSuccessResponse();
+			//outcome.setIncludedObject(mdrStatusBean.getAllAcronymsStatuses());
+			return createSuccessResponse(outcome);
 		}
 		return createAccessForbiddenResponse("User not allowed to request a List of MDR code lists update");
 	}
@@ -121,7 +123,7 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	public Response getAvailableMdrAcronymsStatuses(@Context HttpServletRequest request) {
 		log.debug("[START] getAvailableMdrAcronymsDetails ");
 		if (request.isUserInRole(ActivityFeaturesEnum.LIST_MDR_CODE_LISTS.toString())) {
-			List<MdrStatus> acronymsList = mdrStatusBean.getAllAcronymsStatuses();
+			List<MdrCodeListStatus> acronymsList = mdrStatusBean.getAllAcronymsStatuses();
 			if (CollectionUtils.isEmpty(acronymsList)) {
 				return createErrorResponse(ERROR_GETTING_AVAIL_MDR);
 			} else {
@@ -175,8 +177,13 @@ public class MdrSynchronizationResource extends UnionVMSResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response saveSchedulerConfiguration(@Context HttpServletRequest request, String cronConfigStr) {
 		if (request.isUserInRole(ActivityFeaturesEnum.CONFIGURE_MDR_SCHEDULER.toString())) {
-			schedulerService.reconfigureScheduler(cronConfigStr);
-			return createSuccessResponse();
+			try{
+				schedulerService.reconfigureScheduler(cronConfigStr);
+				return createSuccessResponse();
+			} catch (Exception ex){
+				log.debug("Error during Reconfiguration of the scheduler.",ex);
+				return createErrorResponse("Error during Reconfiguration of the scheduler."+ex.getMessage());
+			}
 		}
 		return createAccessForbiddenResponse("User not allowed to modify MDR scheduler");
 	}

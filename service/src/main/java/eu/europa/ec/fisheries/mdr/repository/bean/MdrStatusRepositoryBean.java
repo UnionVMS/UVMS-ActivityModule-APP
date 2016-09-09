@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.repository.bean;
 
 import eu.europa.ec.fisheries.mdr.dao.MdrStatusDao;
-import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -42,22 +42,22 @@ public class MdrStatusRepositoryBean implements MdrStatusRepository {
     }
 
     @Override
-    public List<MdrStatus> getAllAcronymsStatuses(){
+    public List<MdrCodeListStatus> getAllAcronymsStatuses(){
         return statusDao.getAllAcronymsStatuses();
     }
 
     @Override
-    public List<MdrStatus> getAllUpdatableAcronymsStatuses() {
+    public List<MdrCodeListStatus> getAllUpdatableAcronymsStatuses() {
         return statusDao.getAllUpdatableAcronymsStatuses();
     }
 
     @Override
-    public void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException {
+    public void saveAcronymsStatusList(List<MdrCodeListStatus> diffList) throws ServiceException {
         statusDao.saveAcronymsStatusList(diffList);
     }
 
     @Override
-    public MdrStatus getStatusForAcronym(String acronym){
+    public MdrCodeListStatus getStatusForAcronym(String acronym){
         return statusDao.getStatusForAcronym(acronym);
     }
 

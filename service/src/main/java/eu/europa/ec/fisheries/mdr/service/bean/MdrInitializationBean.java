@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.service.bean;
 
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
-import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
 import eu.europa.ec.fisheries.mdr.exception.ActivityStatusTableException;
@@ -56,7 +56,7 @@ public class MdrInitializationBean {
     private MdrRepository mdrRepository;
 
     /**
-     * Method for start up Jobs (Deploy phase)
+     * Method for start up Jobs of Activity Module (Deploy phase)
      *
      *  1. Initializing the acronyms cache.
      *  2. Setting up the scheduler timer for MDR synchronization at start up.
@@ -65,6 +65,8 @@ public class MdrInitializationBean {
      */
     @PostConstruct
     public void startUpMdrInitializationProcess(){
+
+        long startTime  = System.currentTimeMillis();
 
         log.info("[START] Starting up ActivityModule Initialization..");
         log.info("Going to : \n\t\t1. Initailize acronymsCache..\n\t\t2. Update MDR status table..\n\t\t3. Set up MDR scheduler..  ");
@@ -85,21 +87,29 @@ public class MdrInitializationBean {
         log.info("\n\n\t\t3. Starting up MDR Synchronization Scheduler Initialization..\n");
         // Get the scheduler config from DB;
         ActivityConfiguration storedMdrSchedulerConfig = mdrRepository.getMdrSchedulerConfiguration();
-        if(storedMdrSchedulerConfig != null){
-            // Set up new scheduler at start up (deploy phase);
-            schedulerBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
-        } else {
-            schedulerBean.reconfigureScheduler(FIXED_SCHED_CONFIGURATION);
+
+        // 4. Setting up the scheduler timer for MDR synchronization at start up.
+        try {
+            if(storedMdrSchedulerConfig != null){
+                log.info("\n\n\t\t4. Creating scheduler from cached expression.\n");
+                schedulerBean.setUpScheduler(storedMdrSchedulerConfig.getConfigValue());
+            } else {
+                log.info("\n\n\t\t4. Creating scheduler from fixed expression, because there was no config stored in DB..\n");
+                schedulerBean.reconfigureScheduler(FIXED_SCHED_CONFIGURATION);
+            }
+        } catch(Exception ex){
+            log.debug("\n\n\t\t Creating scheduler threw the following error : \n", ex);
         }
 
-        log.info("[END] Finished Starting up ActivityModule Initialization..");
+        log.info("[END] Finished Starting up ActivityModule Initialization.");
+        log.debug("\n\n -- It Took " + (System.currentTimeMillis() - startTime) + " milliseconds for startUp activities to finish.. -- \n\n");
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     private void updateMdrStatusTable() throws ActivityStatusTableException {
         List<String> acronymsFromCache = null;
         List<String> statusListFromDb  = null;
-        List<MdrStatus> diffList = new ArrayList<>();
+        List<MdrCodeListStatus> diffList = new ArrayList<>();
 
         try {
             acronymsFromCache = MasterDataRegistryEntityCacheFactory.getAcronymsList();
@@ -122,17 +132,17 @@ public class MdrInitializationBean {
                 log.error("Error occurred while attempting to save the AcronymsStatusList.",e);
             }
         } else {
-            log.info("No new Acronyms were found for insertion into the MdrStatus Table..");
+            log.info("No new Acronyms were found for insertion into the MdrCodeListStatus Table..");
         }
     }
 
-    private MdrStatus createNewAcronymSatus(String actualCacheAcronym) {
-        return new MdrStatus(actualCacheAcronym, "", null, null, AcronymListState.NEWENTRY, true);
+    private MdrCodeListStatus createNewAcronymSatus(String actualCacheAcronym) {
+        return new MdrCodeListStatus(actualCacheAcronym, "", null, null, AcronymListState.NEWENTRY, true);
     }
 
-    private List<String> extractStringListFromAcronymStatusList(List<MdrStatus> allAcronymsStatuses) {
+    private List<String> extractStringListFromAcronymStatusList(List<MdrCodeListStatus> allAcronymsStatuses) {
         List<String> extractedList = new ArrayList<>();
-        for(MdrStatus status : allAcronymsStatuses){
+        for(MdrCodeListStatus status : allAcronymsStatuses){
             extractedList.add(status.getObjectAcronym());
         }
         return extractedList;

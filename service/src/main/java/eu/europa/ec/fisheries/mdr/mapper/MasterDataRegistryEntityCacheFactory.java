@@ -100,6 +100,7 @@ public class MasterDataRegistryEntityCacheFactory {
 				entitiesList = ClassFinder.extractEntityInstancesFromPackage();
 			} catch(Exception ex){
 				log.error("Couldn't extract entities from package "+ENTITIES_PACKAGE+" \n The following exception was thrown : \n", ex);
+				throw new ActivityCacheInitException(ex);
 			}
 			acronymsCache = new HashMap<>();
 			acronymsList  = new ArrayList<>();

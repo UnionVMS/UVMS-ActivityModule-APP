@@ -15,11 +15,17 @@ public class CharAcronymListStateConverter implements AttributeConverter<Acronym
 
     @Override
     public String convertToDatabaseColumn(AcronymListState attribute) {
+        if(attribute == null){
+            return null;
+        }
         return attribute.getValue();
     }
 
     @Override
     public AcronymListState convertToEntityAttribute(String dbData) {
+        if(dbData == null){
+            return null;
+        }
         return AcronymListState.valueOf(dbData);
     }
 }

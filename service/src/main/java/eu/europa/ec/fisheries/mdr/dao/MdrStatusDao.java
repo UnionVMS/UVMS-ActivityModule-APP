@@ -10,14 +10,18 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
+import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import un.unece.uncefact.data.standard.unqualifieddatatype._13.TextType;
+import xeu.ec.fisheries.flux_bl.flux_aggregatebusinessinformationentity._1._1.FLUXPeriodType;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
@@ -27,12 +31,12 @@ import java.util.List;
  * Created by kovian on 29/07/2016.
  */
 @Slf4j
-public class MdrStatusDao extends AbstractDAO<MdrStatus> {
+public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
 
     private EntityManager em;
 
-    private static final String SELECT_FROM_MDRSTATUS_WHERE_ACRONYM = "FROM MdrStatus WHERE objectAcronym=";
-    private static final String SELECT_UPDATABLE_FROM_MDRSTATUS = "FROM MdrStatus WHERE schedulable='Y'";
+    private static final String SELECT_FROM_MDRSTATUS_WHERE_ACRONYM = "FROM MdrCodeListStatus WHERE objectAcronym=";
+    private static final String SELECT_UPDATABLE_FROM_MDRSTATUS = "FROM MdrCodeListStatus WHERE schedulable='Y'";
 
     public MdrStatusDao(EntityManager em) {
         this.em = em;
@@ -43,15 +47,15 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         return em;
     }
 
-    public List<MdrStatus> findAllStatuses() throws ServiceException {
-        return findAllEntity(MdrStatus.class);
+    public List<MdrCodeListStatus> findAllStatuses() throws ServiceException {
+        return findAllEntity(MdrCodeListStatus.class);
     }
 
-    public MdrStatus findStatusByAcronym(String acronym) {
-        MdrStatus entity = null;
-        List<MdrStatus> stausList = null;
+    public MdrCodeListStatus findStatusByAcronym(String acronym) {
+        MdrCodeListStatus entity = null;
+        List<MdrCodeListStatus> stausList = null;
         try {
-            stausList = findEntityByHqlQuery(MdrStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + "'"+acronym+"'");
+            stausList = findEntityByHqlQuery(MdrCodeListStatus.class, SELECT_FROM_MDRSTATUS_WHERE_ACRONYM + "'"+acronym+"'");
             if(CollectionUtils.isNotEmpty(stausList)){
                 entity = stausList.get(0);
             } else {
@@ -63,14 +67,14 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         return entity;
     }
 
-    public void saveAcronymsStatusList(List<MdrStatus> statusList) throws ServiceException {
+    public void saveAcronymsStatusList(List<MdrCodeListStatus> statusList) throws ServiceException {
         if (CollectionUtils.isNotEmpty(statusList)) {
             Session session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
             try {
-                log.info("Persisting entity entries for : MdrStatus");
+                log.info("Persisting entity entries for : MdrCodeListStatus");
                 int counter = 0;
-                for(MdrStatus actStatus : statusList){
+                for(MdrCodeListStatus actStatus : statusList){
                     counter++;
                     session.save(actStatus);
                     if (counter % 20 == 0 ) {
@@ -91,10 +95,10 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         }
     }
 
-    public List<MdrStatus> findAllUpdatableStatuses() {
-        List<MdrStatus> statuses = null;
+    public List<MdrCodeListStatus> findAllUpdatableStatuses() {
+        List<MdrCodeListStatus> statuses = null;
         try {
-            statuses = findEntityByHqlQuery(MdrStatus.class, SELECT_UPDATABLE_FROM_MDRSTATUS);
+            statuses = findEntityByHqlQuery(MdrCodeListStatus.class, SELECT_UPDATABLE_FROM_MDRSTATUS);
         } catch (ServiceException e) {
             log.error("Error while trying to get schedulable Acronyms list : ", e);
         }
@@ -102,7 +106,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
     }
 
     public void updateStatusSuccessForAcronym(String acronym, AcronymListState newStatus, Date lastSuccess) {
-        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(acronym);
         mdrCodeListElement.setLastSuccess(lastSuccess);
         mdrCodeListElement.setLastStatus(newStatus);
         try {
@@ -112,8 +116,37 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         }
     }
 
+    public void updateStatusSuccessForAcronym(MDRCodeListType codeListType, AcronymListState newStatus, Date lastSuccess) {
+        MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(codeListType.getObjAcronym().getValue());
+        fillMetaDataForMDRStatus(codeListType, mdrCodeListElement);
+        mdrCodeListElement.setLastSuccess(lastSuccess);
+        mdrCodeListElement.setLastStatus(newStatus);
+        try {
+            saveOrUpdateEntity(mdrCodeListElement);
+        } catch (ServiceException e) {
+            log.error("Error while trying to save/update new MDR Code List Status",e);
+        }
+    }
+
+    private void fillMetaDataForMDRStatus(MDRCodeListType xmlCodeListMetaData, MdrCodeListStatus codeListFromDB) {
+        codeListFromDB.setObjectSource(xmlCodeListMetaData.getSource().getValue());
+        codeListFromDB.setObjectDescription(xmlCodeListMetaData.getObjDescription().getValue());
+        codeListFromDB.setObjectName(xmlCodeListMetaData.getObjName().getValue());
+
+        FLUXPeriodType validityXml = xmlCodeListMetaData.getValidityPeriod();
+        DateRange validity =new DateRange(validityXml.getStartDate().toGregorianCalendar().getTime(),
+                validityXml.getEndDate().toGregorianCalendar().getTime());
+        codeListFromDB.setValidity(validity);
+
+        StringBuffer buffer = new StringBuffer();
+        for(TextType version : xmlCodeListMetaData.getVersions()){
+            buffer.append(version.getValue()).append(",");
+        }
+        codeListFromDB.setVersions(buffer.toString());
+    }
+
     public void updateStatusFailedForAcronym(String acronym) {
-        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(acronym);
         mdrCodeListElement.setLastStatus(AcronymListState.FAILED);
         try {
             saveOrUpdateEntity(mdrCodeListElement);
@@ -123,7 +156,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
     }
 
     public void updateSchedulableForAcronym(String acronym, boolean schedulable) {
-        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(acronym);
         try {
             mdrCodeListElement.setSchedulable(schedulable);
             saveOrUpdateEntity(mdrCodeListElement);
@@ -133,23 +166,25 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
     }
 
     public void updateStatusAttemptForAcronym(String acronym, AcronymListState newStatus, Date lastAttempt) {
-        MdrStatus mdrCodeListElement = findStatusByAcronym(acronym);
+        MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(acronym);
         mdrCodeListElement.setLastAttempt(lastAttempt);
         mdrCodeListElement.setLastStatus(newStatus);
         try {
-            saveOrUpdateEntity(mdrCodeListElement);
-        } catch (ServiceException e) {
+            if(mdrCodeListElement != null){
+                saveOrUpdateEntity(mdrCodeListElement);
+            }
+        } catch (NullPointerException | ServiceException e) {
             log.error("Error while trying to save/update new MDR Code List Status",e);
         }
     }
 
-    public List<MdrStatus> getAllUpdatableAcronymsStatuses() {
-        List<MdrStatus> statussesList =  findAllUpdatableStatuses();
+    public List<MdrCodeListStatus> getAllUpdatableAcronymsStatuses() {
+        List<MdrCodeListStatus> statussesList =  findAllUpdatableStatuses();
         return statussesList;
     }
 
-    public List<MdrStatus> getAllAcronymsStatuses() {
-        List<MdrStatus> statussesList = null;
+    public List<MdrCodeListStatus> getAllAcronymsStatuses() {
+        List<MdrCodeListStatus> statussesList = null;
         try {
             statussesList =  findAllStatuses();
         } catch (ServiceException e) {
@@ -158,7 +193,7 @@ public class MdrStatusDao extends AbstractDAO<MdrStatus> {
         return statussesList;
     }
 
-    public MdrStatus getStatusForAcronym(String acronym) {
+    public MdrCodeListStatus getStatusForAcronym(String acronym) {
         return findStatusByAcronym(acronym);
     }
 }

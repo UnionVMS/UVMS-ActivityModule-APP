@@ -25,7 +25,7 @@ import java.util.Collection;
  * @author kovian
  *
  * EJB that provides the MDR Synchronization Functionality.
- * 	1. Methods for handeling the automatic job scheduler configuration.
+ * Methods for handeling the automatic job scheduler configuration.
  */
 @Slf4j
 @Stateless
@@ -51,7 +51,7 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
     @Timeout
     public void timeOut(){
         log.info("\n\t---> STARTING SCHEDULED SYNCHRONIZATION OF MDR ENTITIES! \n");
-        synchBean.extractAcronymsAndUpdateMdr();
+        //synchBean.extractAcronymsAndUpdateMdr();
     }
 
 
@@ -72,21 +72,23 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
      * @param schedulerExpressionStr
      */
     @Override
-    public void reconfigureScheduler(String schedulerExpressionStr) {
+    public void reconfigureScheduler(String schedulerExpressionStr) throws IllegalArgumentException {
         log.info("[START] Re-configure MDR scheduler with expression: {}", schedulerExpressionStr);
         String schedulerExpressionStrClean = null;
         if (StringUtils.isNotBlank(schedulerExpressionStr)) {
             // Sometimes unneeded double quotes are present in the posted json string
             schedulerExpressionStrClean = schedulerExpressionStr.replace("\"", "");
-            // Set up the new timer for this EJB;
-            setUpScheduler(schedulerExpressionStrClean);
-            // Persist the new config into DB;
             try {
+                // Set up the new timer for this EJB;
+                setUpScheduler(schedulerExpressionStrClean);
+                // Persist the new config into DB;
                 mdrRepository.changeMdrSchedulerConfiguration(schedulerExpressionStrClean);
+                log.info("New MDR scheduler timer created - [{}] - and stored.", TIMER_CONFIG.getInfo());
             } catch (ServiceException e) {
                 log.error("Error while trying to save the new configuration", e);
+            } catch(IllegalArgumentException ex){
+                throw ex;
             }
-            log.info("New MDR scheduler timer created - [{}] - and stored.", TIMER_CONFIG.getInfo());
         } else {
             log.info("[FAILED] Re-configure MDR scheduler with expression: {}. The Scheduler expression is blank.", schedulerExpressionStrClean);
         }
@@ -98,7 +100,7 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
      * @param schedulerExpressionStr
      */
     @Override
-    public void setUpScheduler(String schedulerExpressionStr) {
+    public void setUpScheduler(String schedulerExpressionStr) throws IllegalArgumentException {
         try{
             // Parse the Cron-Job expression;
             ScheduleExpression expression = parseExpression(schedulerExpressionStr);
@@ -106,8 +108,9 @@ public class MdrSchedulerServiceBean implements MdrSchedulerService {
             cancelPreviousTimer();
             // Set up the new timer for this EJB;
             timerServ.createCalendarTimer(expression, TIMER_CONFIG);;
-        } catch(Exception ex){
-            log.error("Error creating new scheduled synchronization timer!", ex);
+        } catch(IllegalArgumentException ex){
+            log.warn("Error creating new scheduled synchronization timer!", ex);
+            throw ex;
         }
         log.info("New timer scheduler created successfully : ", schedulerExpressionStr);
     }

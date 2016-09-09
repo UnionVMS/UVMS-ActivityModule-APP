@@ -17,7 +17,7 @@ import javax.ejb.Local;
 
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
-import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
@@ -35,9 +35,9 @@ public interface MdrRepository {
 
 	ActivityConfiguration getConfigurationByName(String vonfigName);
 
-	List<MdrStatus> findAllStatuses() throws ServiceException;
+	List<MdrCodeListStatus> findAllStatuses() throws ServiceException;
 
-	MdrStatus findStatusByAcronym(String acronym);
+	MdrCodeListStatus findStatusByAcronym(String acronym);
 
 	void changeMdrSchedulerConfiguration(String newCronExpression) throws ServiceException;
 

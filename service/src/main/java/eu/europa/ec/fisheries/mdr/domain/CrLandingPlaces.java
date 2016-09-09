@@ -30,7 +30,7 @@ public class CrLandingPlaces extends ExtendedMasterDataRegistry {
 	
 	@Override
 	public String getAcronym() {
-		return "LANDING_PLACE";
+		return "CR_LAND_PLACE";
 	}
 
 	@Override

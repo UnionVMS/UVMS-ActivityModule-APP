@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.mdr.converter.CharAcronymListStateConverter;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.domain.CharBooleanConverter;
+import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -29,16 +30,22 @@ import java.util.Date;
  * should have the same value.
  */
 @Entity
-@Table(name = "mdr_status")
+@Table(name = "mdr_codelist_status")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class MdrStatus extends BaseEntity {
+public class MdrCodeListStatus extends BaseEntity {
 
     @Column(name = "object_acronym")
     private String objectAcronym;
     
     @Column(name = "object_name")
     private String objectName;
+
+    @Column(name = "object_description")
+    private String objectDescription;
+
+    @Column(name = "object_source")
+    private String objectSource;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_attempt")
@@ -48,6 +55,9 @@ public class MdrStatus extends BaseEntity {
     @Column(name = "last_success")
     private Date lastSuccess;
 
+    @Embedded
+    private DateRange validity;
+
     @Column(name = "last_status")
     @Convert(converter = CharAcronymListStateConverter.class)
     private AcronymListState lastStatus;
@@ -56,14 +66,28 @@ public class MdrStatus extends BaseEntity {
     @Convert(converter = CharBooleanConverter.class)
     private Boolean schedulable;
 
-    private MdrStatus(){super();}
+    @Column(name = "versions")
+    private String versions;
 
-    public MdrStatus(String objectAcronym, String objectName, Date lastUpdate, Date lastAttempt, AcronymListState state, Boolean schedulable) {
+    private MdrCodeListStatus(){super();}
+
+    public MdrCodeListStatus(String objectAcronym, String objectName, Date lastUpdate, Date lastAttempt, AcronymListState state, Boolean schedulable) {
         this.objectAcronym = objectAcronym;
         this.objectName  = objectName;
         this.lastSuccess = lastUpdate;
         this.lastAttempt = lastAttempt;
         this.lastStatus = state;
+        this.schedulable = schedulable;
+    }
+
+    public MdrCodeListStatus(String objectAcronym, String objectName, String objectDescription, String objectSource, Date lastAttempt, Date lastSuccess, AcronymListState lastStatus, Boolean schedulable) {
+        this.objectAcronym = objectAcronym;
+        this.objectName = objectName;
+        this.objectDescription = objectDescription;
+        this.objectSource = objectSource;
+        this.lastAttempt = lastAttempt;
+        this.lastSuccess = lastSuccess;
+        this.lastStatus = lastStatus;
         this.schedulable = schedulable;
     }
 
@@ -103,4 +127,28 @@ public class MdrStatus extends BaseEntity {
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
 	}
+    public String getObjectDescription() {
+        return objectDescription;
+    }
+    public void setObjectDescription(String objectDescription) {
+        this.objectDescription = objectDescription;
+    }
+    public String getObjectSource() {
+        return objectSource;
+    }
+    public void setObjectSource(String objectSource) {
+        this.objectSource = objectSource;
+    }
+    public String getVersions() {
+        return versions;
+    }
+    public void setVersions(String versions) {
+        this.versions = versions;
+    }
+    public DateRange getValidity() {
+        return validity;
+    }
+    public void setValidity(DateRange validity) {
+        this.validity = validity;
+    }
 }

@@ -8,7 +8,7 @@
 
 		<!-- MDR Activity entities -->
 		<class>eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MdrStatus</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus</class>
 		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CodeLocation</class>
@@ -136,7 +136,7 @@
 			<property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS activity;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=2;" />
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
-			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
 			<property name="javax.persistence.schema-generation.create-database-schemas" value="true" />

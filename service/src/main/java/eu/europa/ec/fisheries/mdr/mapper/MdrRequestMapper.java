@@ -24,6 +24,9 @@ import xeu.ec.fisheries.flux_bl.flux_mdr_query._1.MDRQueryType;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 public class MdrRequestMapper {
 
@@ -53,10 +56,14 @@ public class MdrRequestMapper {
 		
 		MDRQueryType mdrQueryType = new MDRQueryType();
 		mdrQueryType.setObjAcronym(idType);
-		mdrQueryType.setServiceType(codeType);	
-		
+		mdrQueryType.setServiceType(codeType);
+
+		IDType messageID = new IDType();
+		messageID.setValue(createBusinessUUID());
+
 		BasicAttribute reqOb = new BasicAttribute();
 		reqOb.setMDRQuery(mdrQueryType);
+		reqOb.setMessageID(messageID);
 
 		XMLGregorianCalendar date = null;
 		String fluxStrReq = null;
@@ -81,6 +88,18 @@ public class MdrRequestMapper {
      */
 	private static XMLGregorianCalendar createXMLDate() throws DatatypeConfigurationException {
 		return DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime().toGregorianCalendar());
+	}
+
+	/**
+	 *  BUSINESS_UUID has a prefix, a date-time combination and a serial - thus it is semi unique
+	 * @return String
+	 */
+	private static String createBusinessUUID(){
+		// Prepare unique Business Process ID
+		Random randomGenerator = new Random();
+		Date curDate = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("ddHHmmss");
+		return "MSID-" + format.format(curDate) + String.format("%02d", randomGenerator.nextInt(100));
 	}
 	
 }

@@ -10,8 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.repository;
 
+import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
-import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import javax.ejb.Local;
@@ -24,17 +24,17 @@ import java.util.List;
 @Local
 public interface MdrStatusRepository {
 
-    List<MdrStatus> getAllAcronymsStatuses();
+    List<MdrCodeListStatus> getAllAcronymsStatuses();
 
-    MdrStatus getStatusForAcronym(String acronym);
+    MdrCodeListStatus getStatusForAcronym(String acronym);
 
     void updateStatusAttemptForAcronym(String acronym, AcronymListState newStatus, Date lastAttempt);
 
     void updateStatusSuccessForAcronym(String acronym, AcronymListState newStatus, Date lastSuccess);
 
-    void saveAcronymsStatusList(List<MdrStatus> diffList) throws ServiceException;
+    void saveAcronymsStatusList(List<MdrCodeListStatus> diffList) throws ServiceException;
 
-    List<MdrStatus> getAllUpdatableAcronymsStatuses();
+    List<MdrCodeListStatus> getAllUpdatableAcronymsStatuses();
 
     void updateStatusFailedForAcronym(String acronym);
 

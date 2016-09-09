@@ -10,13 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import static com.ninja_squad.dbsetup.Operations.deleteAllFrom;
-import static com.ninja_squad.dbsetup.Operations.insertInto;
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-
 import com.ninja_squad.dbsetup.operation.Operation;
-
 import eu.europa.ec.fisheries.uvms.BaseDAOTest;
+
+import static com.ninja_squad.dbsetup.Operations.*;
 
 public abstract class BaseActivityDaoTest extends BaseDAOTest {
 
@@ -42,7 +39,13 @@ public abstract class BaseActivityDaoTest extends BaseDAOTest {
                     .values(1L, java.sql.Date.valueOf("2014-12-12"), "Y", "C", "Creation")
                     .build()
     );
-    
+
+    protected static final Operation INSERT_MDR_CODELIST_STATUS = sequenceOf(
+            insertInto("activity.mdr_codelist_status")
+                    .columns("id").values(1L)
+                    .build()
+    );
+
    
     protected String getSchema() {
         return "activity";

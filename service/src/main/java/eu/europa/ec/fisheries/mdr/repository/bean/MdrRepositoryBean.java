@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
 import eu.europa.ec.fisheries.mdr.dao.MdrStatusDao;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
-import eu.europa.ec.fisheries.mdr.domain.MdrStatus;
+import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
 import javax.annotation.PostConstruct;
@@ -71,13 +72,14 @@ public class MdrRepositoryBean implements MdrRepository {
 	@Override
 	public void updateMdrEntity(ResponseType response){
 		List<MasterDataRegistry> mdrEntityRows = MdrEntityMapper.mapJAXBObjectToMasterDataType(response);
+		MDRCodeListType codeListType = response.getMDRCodeList();
 		if(CollectionUtils.isNotEmpty(mdrEntityRows)){
 			try {
 				bulkOperationsDao.singleEntityBulkDeleteAndInsert(mdrEntityRows);
-				statusDao.updateStatusSuccessForAcronym(mdrEntityRows.get(0).getAcronym(), AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
+				statusDao.updateStatusSuccessForAcronym(codeListType, AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
 			} catch (ServiceException e) {
 				statusDao.updateStatusFailedForAcronym(mdrEntityRows.get(0).getAcronym());
-				log.error("Transaction rolled back! Couldn't persist mdr Entity : "+e.getMessage(),e);
+				log.error("Transaction rolled back! Couldn't persist mdr Entity : ",e);
 			}
 		} else {
 			log.error("Got Message from Flux related to MDR but, the list is empty! So, nothing is going to be persisted!");
@@ -112,12 +114,12 @@ public class MdrRepositoryBean implements MdrRepository {
 	 * MDR Acronym's statuses.
 	 */
 	@Override
-    public List<MdrStatus> findAllStatuses() throws ServiceException {
+    public List<MdrCodeListStatus> findAllStatuses() throws ServiceException {
         return statusDao.getAllAcronymsStatuses();
     }
 
 	@Override
-    public MdrStatus findStatusByAcronym(String acronym){
+    public MdrCodeListStatus findStatusByAcronym(String acronym){
     	return statusDao.getStatusForAcronym(acronym);
     }
 

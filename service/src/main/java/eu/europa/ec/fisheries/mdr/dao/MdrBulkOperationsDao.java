@@ -54,6 +54,7 @@ public class MdrBulkOperationsDao {
                 // INSERTION PHASE (Inserting new entries)
                 for (MasterDataRegistry actualEnityRow : entityRows) {
                     log.info("Persisting entity : " + actualEnityRow.getClass().getSimpleName());
+                    actualEnityRow.createAudit();
                     session.insert(actualEnityRow);
                 }
 
