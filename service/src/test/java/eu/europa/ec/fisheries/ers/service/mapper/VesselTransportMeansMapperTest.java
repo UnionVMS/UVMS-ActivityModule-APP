@@ -44,6 +44,8 @@ public class VesselTransportMeansMapperTest {
         assertTrue(vesselTransportMeansEntity.getName().startsWith(vesselTransportMeans.getNames().get(0).getValue()));
         assertEquals(vesselTransportMeans.getRoleCode().getValue(), vesselTransportMeansEntity.getRoleCode());
         assertEquals(vesselTransportMeans.getRoleCode().getListID(), vesselTransportMeansEntity.getRoleCodeListId());
+        assertEquals(vesselTransportMeans.getRegistrationVesselCountry().getID().getSchemeID(), vesselTransportMeansEntity.getCountrySchemeId());
+        assertEquals(vesselTransportMeans.getRegistrationVesselCountry().getID().getValue(), vesselTransportMeansEntity.getCountry());
 
         assertNotNull(vesselTransportMeansEntity.getVesselIdentifiers());
         VesselIdentifierEntity vesselIdentifierEntity = vesselTransportMeansEntity.getVesselIdentifiers().iterator().next();

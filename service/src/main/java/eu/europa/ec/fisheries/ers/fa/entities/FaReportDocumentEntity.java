@@ -68,6 +68,9 @@ public class FaReportDocumentEntity implements Serializable {
 	@Column(name = "status")
 	private String status;
 
+	@Column(name = "source")
+	private String source;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
 	private Set<FaReportIdentifierEntity> faReportIdentifiers;
 
@@ -158,6 +161,14 @@ public class FaReportDocumentEntity implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 	public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {

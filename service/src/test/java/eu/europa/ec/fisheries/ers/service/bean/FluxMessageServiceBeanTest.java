@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
@@ -80,7 +81,7 @@ public class FluxMessageServiceBeanTest {
         Mockito.doReturn(getMockedFishingActivityReportEntities()).when(faReportDocumentDao).findFaReportsByIds(Mockito.any(Set.class));
 
         // Trigger
-        fluxMessageService.saveFishingActivityReportDocuments(faReportDocuments);
+        fluxMessageService.saveFishingActivityReportDocuments(faReportDocuments, FaReportSourceEnum.FLUX);
 
         //Verify
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).bulkUploadFaData(Mockito.any(List.class));
@@ -96,7 +97,7 @@ public class FluxMessageServiceBeanTest {
     private List<FaReportDocumentEntity> getMockedFishingActivityReportEntities() {
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
-            faReportDocumentEntities.add(FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity()));
+            faReportDocumentEntities.add(FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.MANUAL));
         }
         return faReportDocumentEntities;
     }

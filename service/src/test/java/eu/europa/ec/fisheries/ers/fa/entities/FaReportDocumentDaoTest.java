@@ -14,6 +14,7 @@ import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import junit.framework.Assert;
@@ -90,7 +91,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         dbSetupTracker.skipNextLaunch();
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
+        FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.FLUX);
         faReportDocumentEntities.add(faReportDocumentEntity);
 
         //dao.bulkUploadFaData(faReportDocumentEntities);
@@ -126,7 +127,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         dbSetupTracker.skipNextLaunch();
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
+        FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.FLUX);
         faReportDocumentEntities.add(faReportDocumentEntity);
 
         dao.bulkUploadFaData(faReportDocumentEntities);
@@ -135,12 +136,14 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         entity.setStatus("cancel");
         entity.setTypeCode("Updated Type Code 1");
         entity.setTypeCodeListId("gjtu67-fd484jf8-5ej8f58e-n58dj48f");
+        entity.setSource(FaReportSourceEnum.MANUAL.getSourceType());
         dao.updateAllFaData(Arrays.asList(entity));
 
         FaReportDocumentEntity updatedEntity = dao.findEntityById(FaReportDocumentEntity.class, 1);
         assertEquals("cancel", updatedEntity.getStatus());
         assertEquals("Updated Type Code 1", updatedEntity.getTypeCode());
         assertEquals("gjtu67-fd484jf8-5ej8f58e-n58dj48f", updatedEntity.getTypeCodeListId());
+        assertEquals(FaReportSourceEnum.MANUAL.getSourceType(), updatedEntity.getSource());
 
     }
 

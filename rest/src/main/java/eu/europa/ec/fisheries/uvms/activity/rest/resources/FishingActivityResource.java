@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
 import eu.europa.ec.fisheries.ers.service.bean.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.Filters;
@@ -77,7 +78,7 @@ public class FishingActivityResource extends UnionVMSResource {
             faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
         }
 
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage.getFAReportDocuments());
+        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage.getFAReportDocuments(), FaReportSourceEnum.FLUX);
 
         List<FAReportDocument> faReportDocumentList = fluxfaReportMessage.getFAReportDocuments();
         for (FAReportDocument faReportDocument : faReportDocumentList) {
@@ -98,7 +99,7 @@ public class FishingActivityResource extends UnionVMSResource {
                 fishingActivity.setRelatedFishingActivities(null);
             }
         }
-        fluxResponseMessageService.saveFishingActivityReportDocuments(faReportDocumentList);
+        fluxResponseMessageService.saveFishingActivityReportDocuments(faReportDocumentList, FaReportSourceEnum.FLUX);
         return createSuccessResponse();
     }
 

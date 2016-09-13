@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
@@ -227,7 +228,7 @@ public class ActivityServiceBeanTest {
     private List<FaReportDocumentEntity> getMockedFishingActivityReportEntities() {
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        faReportDocumentEntities.add(FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity()));
+        faReportDocumentEntities.add(FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.MANUAL));
         return faReportDocumentEntities;
     }
 }

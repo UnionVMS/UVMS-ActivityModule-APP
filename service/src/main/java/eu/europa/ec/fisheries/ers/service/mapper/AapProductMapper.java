@@ -27,7 +27,7 @@ import java.util.Set;
  * Created by padhyad on 6/14/2016.
  */
 @Mapper
-public abstract class AapProductMapper extends BaseMapper {
+public abstract class  AapProductMapper extends BaseMapper {
 
     public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
 
@@ -36,6 +36,14 @@ public abstract class AapProductMapper extends BaseMapper {
             @Mapping(target = "packagingTypeCodeListId", expression = "java(getCodeTypeListId(aapProduct.getPackagingTypeCode()))"),
             @Mapping(target = "packagingUnitAvarageWeight", expression = "java(getMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
             @Mapping(target = "packagingUnitCount", expression = "java(getQuantity(aapProduct.getPackagingUnitQuantity()))"),
+            @Mapping(target = "speciesCode", expression = "java(getCodeType(aapProduct.getSpeciesCode()))"),
+            @Mapping(target = "speciesCodeListId", expression = "java(getCodeTypeListId(aapProduct.getSpeciesCode()))"),
+            @Mapping(target = "unitQuantity", expression = "java(getQuantity(aapProduct.getUnitQuantity()))"),
+            @Mapping(target = "weightMeasure", expression = "java(getMeasure(aapProduct.getWeightMeasure()))"),
+            @Mapping(target = "weighingMeansCode", expression = "java(getCodeType(aapProduct.getWeighingMeansCode()))"),
+            @Mapping(target = "weighingMeansCodeListId", expression = "java(getCodeTypeListId(aapProduct.getWeighingMeansCode()))"),
+            @Mapping(target = "usageCode", expression = "java(getCodeType(aapProduct.getUsageCode()))"),
+            @Mapping(target = "usageCodeListId", expression = "java(getCodeTypeListId(aapProduct.getUsageCode()))"),
             @Mapping(target = "aapProcess", expression = "java(aapProcessEntity)")
     })
     public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct, AapProcessEntity aapProcessEntity, @MappingTarget AapProductEntity aapProductEntity);

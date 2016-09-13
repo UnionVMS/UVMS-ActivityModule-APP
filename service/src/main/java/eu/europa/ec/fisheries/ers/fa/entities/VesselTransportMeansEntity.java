@@ -43,6 +43,12 @@ public class VesselTransportMeansEntity implements Serializable {
     @Column(name = "flap_document_scheme_id")
     private String flapDocumentSchemeId;
 
+    @Column(name = "country_scheme_id")
+    private String countrySchemeId;
+
+    @Column(name = "country")
+    private String country;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
     private FaReportDocumentEntity faReportDocument;
 
@@ -132,6 +138,22 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setContactParty(Set<ContactPartyEntity> contactParty) {
         this.contactParty = contactParty;
+    }
+
+    public String getCountrySchemeId() {
+        return countrySchemeId;
+    }
+
+    public void setCountrySchemeId(String countrySchemeId) {
+        this.countrySchemeId = countrySchemeId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     @Override

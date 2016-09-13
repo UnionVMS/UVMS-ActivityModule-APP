@@ -348,13 +348,14 @@ public class MapperUtil {
         List<IDType> ids = Arrays.asList(getIdType("ID 1", "fhtg56-5thd75-thf93-thfrye"));
         List<ContactParty> specifiedContactParties = Arrays.asList(getContactParty());
         List<RegistrationEvent> specifiedRegistrationEvents = Arrays.asList(getRegistrationEvent());
-
+        VesselCountry vesselCounty = new VesselCountry(getIdType("Country Id 1", "tu587r-5jt85-tjfur7-tjgut7"));
         vesselTransportMeans.setRoleCode(roleCode);
         vesselTransportMeans.setNames(names);
         vesselTransportMeans.setGrantedFLAPDocuments(grantedFLAPDocuments);
         vesselTransportMeans.setIDS(ids);
         vesselTransportMeans.setSpecifiedContactParties(specifiedContactParties);
         vesselTransportMeans.setSpecifiedRegistrationEvents(specifiedRegistrationEvents);
+        vesselTransportMeans.setRegistrationVesselCountry(vesselCounty);
         return vesselTransportMeans;
     }
 

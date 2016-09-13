@@ -38,6 +38,30 @@ public class AapProductEntity implements Serializable {
 	@Column(name = "packaging_unit_count", precision = 17, scale = 17)
 	private Double packagingUnitCount;
 
+	@Column(name = "species_code")
+	private String speciesCode;
+
+	@Column(name = "spacies_code_list_id")
+	private String speciesCodeListId;
+
+	@Column(name = "unit_quantity")
+	private Double unitQuantity;
+
+	@Column(name = "weight_measure")
+	private Double weightMeasure;
+
+	@Column(name = "weighing_means_code")
+	private String weighingMeansCode;
+
+	@Column(name = "weighting_means_code_list_id")
+	private String weighingMeansCodeListId;
+
+	@Column(name = "usage_code")
+	private String usageCode;
+
+	@Column(name = "usage_code_list_id")
+	private String usageCodeListId;
+
 	public AapProductEntity() {
 		super();
 	}
@@ -90,4 +114,67 @@ public class AapProductEntity implements Serializable {
 		this.packagingUnitCount = packagingUnitCount;
 	}
 
+	public String getSpeciesCode() {
+		return speciesCode;
+	}
+
+	public void setSpeciesCode(String speciesCode) {
+		this.speciesCode = speciesCode;
+	}
+
+	public String getSpeciesCodeListId() {
+		return speciesCodeListId;
+	}
+
+	public void setSpeciesCodeListId(String speciesCodeListId) {
+		this.speciesCodeListId = speciesCodeListId;
+	}
+
+	public Double getUnitQuantity() {
+		return unitQuantity;
+	}
+
+	public void setUnitQuantity(Double unitQuantity) {
+		this.unitQuantity = unitQuantity;
+	}
+
+	public Double getWeightMeasure() {
+		return weightMeasure;
+	}
+
+	public void setWeightMeasure(Double weightMeasure) {
+		this.weightMeasure = weightMeasure;
+	}
+
+	public String getWeighingMeansCode() {
+		return weighingMeansCode;
+	}
+
+	public void setWeighingMeansCode(String weighingMeansCode) {
+		this.weighingMeansCode = weighingMeansCode;
+	}
+
+	public String getWeighingMeansCodeListId() {
+		return weighingMeansCodeListId;
+	}
+
+	public void setWeighingMeansCodeListId(String weighingMeansCodeListId) {
+		this.weighingMeansCodeListId = weighingMeansCodeListId;
+	}
+
+	public String getUsageCode() {
+		return usageCode;
+	}
+
+	public void setUsageCode(String usageCode) {
+		this.usageCode = usageCode;
+	}
+
+	public String getUsageCodeListId() {
+		return usageCodeListId;
+	}
+
+	public void setUsageCodeListId(String usageCodeListId) {
+		this.usageCodeListId = usageCodeListId;
+	}
 }

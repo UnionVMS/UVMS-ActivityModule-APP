@@ -10,15 +10,21 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by padhyad on 6/14/2016.
  */
+@Slf4j
 public abstract class BaseMapper {
 
     protected String getIdType(IDType idType) {
@@ -61,10 +67,20 @@ public abstract class BaseMapper {
     }
 
     protected Date convertToDate(DateTimeType dateTime) {
-        if (dateTime == null) {
-            return null;
+        Date value = null;
+        try {
+            if (dateTime != null) {
+                if (dateTime.getDateTime() != null) {
+                    value = dateTime.getDateTime().toGregorianCalendar().getTime();
+                } else if (dateTime.getDateTimeString() != null) {
+                    DateFormat df = new SimpleDateFormat(dateTime.getDateTimeString().getFormat());
+                    value = df.parse(dateTime.getDateTimeString().getValue());
+                }
+            }
+        } catch (ParseException e) {
+            log.error(e.getMessage(), e);
         }
-        return dateTime.getDateTime() == null ? null : dateTime.getDateTime().toGregorianCalendar().getTime();
+        return value;
     }
 
     protected String getValueIndicator(IndicatorType indicatorType) {
@@ -123,5 +139,13 @@ public abstract class BaseMapper {
     protected Integer getNumericInteger(NumericType numericType) {
         BigDecimal conversionFactor = numericType.getValue();
         return conversionFactor != null ? conversionFactor.intValue() : null;
+    }
+
+    protected String getCountry(VesselCountry country) {
+        return getIdType(country.getID());
+    }
+
+    protected String getCountrySchemeId(VesselCountry country) {
+        return getIdTypeSchemaId(country.getID());
     }
 }

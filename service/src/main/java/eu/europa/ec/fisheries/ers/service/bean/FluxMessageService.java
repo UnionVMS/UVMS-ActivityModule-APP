@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 
@@ -27,7 +28,8 @@ public interface FluxMessageService {
      *</p>
      *
      * @param faReportDocuments Flux Fa Report Documents
+     * @param faReportSourceEnum Report source
      * @throws ServiceException Exception
      */
-    void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments) throws ServiceException;
+    void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum) throws ServiceException;
 }

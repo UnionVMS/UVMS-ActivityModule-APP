@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -52,7 +53,7 @@ public class ActivityEventServiceBean implements EventService {
 
             FLUXFAReportMessage fluxFAReportMessage =extractFLUXFAReportMessage(baseRequest.getRequest());
 
-            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments());
+            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments(), FaReportSourceEnum.FLUX);
 
         } catch (ModelMarshallException e) {
             LOG.error("Exception while trying to unmarshall SetFLUXFAReportMessageRequest in Activity",e);

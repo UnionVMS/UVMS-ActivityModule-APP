@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
@@ -59,7 +60,7 @@ public class FaReportDocumentMapperTest {
     public void testFaReportDocumentMapper() {
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity);
+        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity, FaReportSourceEnum.FLUX);
 
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity);
 
@@ -86,7 +87,7 @@ public class FaReportDocumentMapperTest {
     public void testFaReportDocumentDetailsDTOMapper() {
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity);
+        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity, FaReportSourceEnum.FLUX);
 
         FaReportDocumentDetailsDTO faReportDocumentDetailsDTO = FaReportDocumentMapper.INSTANCE.mapToFaReportDocumentDetailsDTO(faReportDocumentEntity);
 
@@ -108,5 +109,6 @@ public class FaReportDocumentMapperTest {
         assertEquals(faReportDocument.getFMCMarkerCode().getValue(), faReportDocumentEntity.getFmcMarker());
         assertEquals(faReportDocument.getFMCMarkerCode().getListID(), faReportDocumentEntity.getFmcMarkerListId());
         assertEquals(FaReportStatusEnum.NEW.getStatus(), faReportDocumentEntity.getStatus());
+        assertEquals(FaReportSourceEnum.FLUX.getSourceType(), faReportDocumentEntity.getSource());
     }
 }

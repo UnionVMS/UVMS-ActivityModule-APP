@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -53,10 +54,10 @@ public class FluxMessageServiceBean implements FluxMessageService {
      */
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
-    public void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments) throws ServiceException {
+    public void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
-            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity());
+            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), faReportSourceEnum);
             faReportDocumentEntities.add(entity);
             log.debug("fishing activity records to be saved : " + entity.getFluxReportDocument().getId());
         }
