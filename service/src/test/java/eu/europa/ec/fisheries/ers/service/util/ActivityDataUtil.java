@@ -135,4 +135,18 @@ public class ActivityDataUtil {
         return fishingTripIdentifierEntity;
     }
 
+    public static ContactPartyEntity getContactPartyEntity(String title, String givenName, String middleName, String familyName, String familyNamePrefix, String nameSuffix, String gender, String alias) {
+        ContactPartyEntity contPartEntity = new ContactPartyEntity();
+        ContactPersonEntity contactPersonEntity = new ContactPersonEntity();
+        contactPersonEntity.setTitle(title);
+        contactPersonEntity.setGivenName(givenName);
+        contactPersonEntity.setMiddleName(middleName);
+        contactPersonEntity.setFamilyName(familyName);
+        contactPersonEntity.setFamilyNamePrefix(familyNamePrefix);
+        contactPersonEntity.setNameSuffix(nameSuffix);
+        contactPersonEntity.setGender(gender);
+        contactPersonEntity.setAlias(alias);
+        contPartEntity.setContactPerson(contactPersonEntity);
+        return contPartEntity;
+    }
 }

@@ -203,6 +203,19 @@ public class ActivityServiceBeanTest {
         assertEquals("vesselGroup1", vesselDetailsTripDTO.getName());
     }
 
+    @Test
+    @SneakyThrows
+    public void testGetVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException {
+
+        when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntityWithContactParties());
+
+        VesselDetailsTripDTO vesselDetailsTripDTO = activityService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+
+        assertNotNull(vesselDetailsTripDTO);
+        assertEquals(2, vesselDetailsTripDTO.getContactPersons().size());
+        assertEquals("vesselGroup1", vesselDetailsTripDTO.getName());
+    }
+
 
     @Test
     @SneakyThrows

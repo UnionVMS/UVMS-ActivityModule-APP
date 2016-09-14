@@ -131,6 +131,23 @@ public class MapperUtil {
         return entity;
     }
 
+    public static FishingTripEntity getFishingTripEntityWithContactParties() {
+        FishingTripEntity fishingTripEntity = getFishingTripEntity();
+        VesselTransportMeansEntity vesselTransportEntity = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+
+        Set<ContactPartyEntity> contactParties = new HashSet<>();
+
+        ContactPartyEntity contPartEntity_1 = ActivityDataUtil.getContactPartyEntity("title1","givenName1","middleName1","familyName1","familyNamePrefix1","nameSuffix1","gender1","alias1");
+        ContactPartyEntity contPartEntity_2 = ActivityDataUtil.getContactPartyEntity("title2","givenName2","middleName2","familyName2","familyNamePrefix2","nameSuffix2","gender2","alias2");
+
+        contactParties.add(contPartEntity_1);
+        contactParties.add(contPartEntity_2);
+
+        vesselTransportEntity.setContactParty(contactParties);
+
+        return fishingTripEntity;
+    }
+
 
     public static List<FishingActivityEntity> getFishingActivityEntityList(){
         FishingTripEntity entity = new FishingTripEntity();
@@ -602,4 +619,5 @@ public class MapperUtil {
         measureType.setUnitCodeListVersionID(listId);
         return measureType;
     }
+
 }

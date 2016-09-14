@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.*;
 
 /**
  * Created by padhyad on 8/11/2016.
@@ -44,6 +45,9 @@ public class ContactPersonDetailsDTO {
     @JsonProperty("alias")
     private String alias;
 
+    @JsonProperty("adresses")
+    private List<AddressDetailsDTO> adresses;
+
     public ContactPersonDetailsDTO() {
     }
 
@@ -62,79 +66,72 @@ public class ContactPersonDetailsDTO {
     public String getTitle() {
         return title;
     }
-
     @JsonProperty("title")
     public void setTitle(String title) {
         this.title = title;
     }
-
     @JsonProperty("givenName")
     public String getGivenName() {
         return givenName;
     }
-
     @JsonProperty("givenName")
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
-
     @JsonProperty("middleName")
     public String getMiddleName() {
         return middleName;
     }
-
     @JsonProperty("middleName")
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
     }
-
     @JsonProperty("familyName")
     public String getFamilyName() {
         return familyName;
     }
-
     @JsonProperty("familyName")
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
     }
-
     @JsonProperty("familyNamePrefix")
     public String getFamilyNamePrefix() {
         return familyNamePrefix;
     }
-
     @JsonProperty("familyNamePrefix")
     public void setFamilyNamePrefix(String familyNamePrefix) {
         this.familyNamePrefix = familyNamePrefix;
     }
-
     @JsonProperty("nameSuffix")
     public String getNameSuffix() {
         return nameSuffix;
     }
-
     @JsonProperty("nameSuffix")
     public void setNameSuffix(String nameSuffix) {
         this.nameSuffix = nameSuffix;
     }
-
     @JsonProperty("gender")
     public String getGender() {
         return gender;
     }
-
     @JsonProperty("gender")
     public void setGender(String gender) {
         this.gender = gender;
     }
-
     @JsonProperty("alias")
     public String getAlias() {
         return alias;
     }
-
     @JsonProperty("alias")
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+    @JsonProperty("adresses")
+    public List<AddressDetailsDTO> getAdresses() {
+        return adresses;
+    }
+    @JsonProperty("adresses")
+    public void setAdresses(List<AddressDetailsDTO> adresses) {
+        this.adresses = adresses;
     }
 }

@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
+import java.util.*;
 
 /**
  * Created by sanera on 22/08/2016.
@@ -37,79 +38,83 @@ public class VesselDetailsTripDTO {
     @JsonProperty("cfr")
     private String cfr;
 
-    @JsonProperty("contactPerson")
-    private ContactPersonDetailsDTO contactPerson;
+    @JsonProperty("uvi")
+    private String uvi;
 
-    @JsonProperty("structuredAddress")
-    private AddressDetailsDTO structuredAddress;
+    @JsonProperty("iccat")
+    private String iccat;
+
+    @JsonProperty("gfcm")
+    private String gfcm;
+
+    @JsonProperty("contactPersons")
+    private Set<ContactPersonDetailsDTO> contactPersons = new HashSet<>();
 
     @JsonProperty("name")
     public String getName() {
         return name;
     }
-
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
-
     @JsonProperty("exMark")
     public String getExMark() {
         return exMark;
     }
-
     @JsonProperty("exMark")
     public void setExMark(String exMark) {
         this.exMark = exMark;
     }
-
     @JsonProperty("flagState")
     public String getFlagState() {
         return flagState;
     }
-
     @JsonProperty("flagState")
     public void setFlagState(String flagState) {
         this.flagState = flagState;
     }
-
     @JsonProperty("ircs")
     public String getIrcs() {
         return ircs;
     }
-
     @JsonProperty("ircs")
     public void setIrcs(String ircs) {
         this.ircs = ircs;
     }
-
     @JsonProperty("cfr")
     public String getCfr() {
         return cfr;
     }
-
     @JsonProperty("cfr")
     public void setCfr(String cfr) {
         this.cfr = cfr;
     }
-
-    @JsonProperty("contactPerson")
-    public ContactPersonDetailsDTO getContactPerson() {
-        return contactPerson;
+    public String getUvi() {
+        return uvi;
+    }
+    public void setUvi(String uvi) {
+        this.uvi = uvi;
+    }
+    public String getIccat() {
+        return iccat;
+    }
+    public void setIccat(String iccat) {
+        this.iccat = iccat;
+    }
+    public String getGfcm() {
+        return gfcm;
+    }
+    public void setGfcm(String gfcm) {
+        this.gfcm = gfcm;
+    }
+    @JsonProperty("contactPersons")
+    public Set<ContactPersonDetailsDTO> getContactPersons() {
+        return contactPersons;
+    }
+    @JsonProperty("contactPersons")
+    public void setContactPersons(Set<ContactPersonDetailsDTO> contPersons) {
+        this.contactPersons = contPersons;
     }
 
-    @JsonProperty("contactPerson")
-    public void setContactPerson(ContactPersonDetailsDTO contactPerson) {
-        this.contactPerson = contactPerson;
-    }
-
-    @JsonProperty("structuredAddress")
-    public AddressDetailsDTO getStructuredAddress() {
-        return structuredAddress;
-    }
-
-    @JsonProperty("structuredAddress")
-    public void setStructuredAddress(AddressDetailsDTO structuredAddress) {
-        this.structuredAddress = structuredAddress;
-    }
 }
