@@ -84,23 +84,32 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
         Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
-        StringBuilder sql =createSQL(query);
-        LOG.info("sql :"+sql);
+      StringBuilder sql =createSQL(query);
+
+       LOG.info("sql :"+sql);
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
 
-
-            List<ListCriteria> criteriaList = query.getSearchCriteria();
+          List<ListCriteria> criteriaList = query.getSearchCriteria();
             // Assign values to created SQL Query
             for (ListCriteria criteria : criteriaList) {
                 Filters key = criteria.getKey();
                 String value= criteria.getValue();
 
                     switch (key) {
-                        case PERIOD:
+                        case PERIOD_START:
                             typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
                             break;
-                        case QUNTITIES:
-                            typedQuery.setParameter(mappings.get(key), Long.parseLong(value));
+                        case PERIOD_END:
+                            typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
+                            break;
+                        case QUNTITY_MIN:
+                            typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
+                            break;
+                        case QUNTITY_MAX:
+                            typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
+                            break;
+                        case MASTER:
+                            typedQuery.setParameter(mappings.get(key), value.toUpperCase());
                             break;
                         default:
                             typedQuery.setParameter(mappings.get(key), value);
@@ -129,7 +138,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             throw new ServiceException("Fishing Activity Report Search Criteria is empty.");
 
         Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
-        StringBuilder sql = new  StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ");
+        StringBuilder sql = new  StringBuilder("SELECT DISTINCT a from FishingActivityEntity a JOIN FETCH a.faReportDocument fa ");
 
         // Create join part of SQL query
        for(ListCriteria criteria :criteriaList){
@@ -145,8 +154,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                if(Filters.MASTER.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)!=-1 ){
                    sql.append(" JOIN FETCH ").append(FilterMap.MASTER_MAPPING).append(" ");
                }// Add table alias if not already present
-               else if(sql.indexOf(FilterMap.REPORT_DOCUMENT_TABLE_ALIAS)==-1 && (Filters.FROM.equals(key) || Filters.VESSEL_IDENTIFIES.equals(key) || Filters.PURPOSE.equals(key))) {
-                   sql.append(" JOIN FETCH ").append(FilterMap.REPORT_DOCUMENT_TABLE_ALIAS).append(" ");
+                else if( Filters.VESSEL_IDENTIFIRE.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)==-1){
+                   sql.append(" JOIN FETCH ").append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
                    sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
                }else{
                    sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
@@ -168,12 +177,12 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 }
             }
 
-        SortKey sort=   query.getSortKey();
+      /*  SortKey sort=   query.getSortKey();
         if(sort!=null){
             sql.append(" order by " +FilterMap.getFilterSortMappings().get(sort.getField()) + " "+sort.getOrder());
         }else {
             sql.append(" order by a.faReportDocument.id ASC ");
-        }
+        }*/
 
         return sql;
     }
