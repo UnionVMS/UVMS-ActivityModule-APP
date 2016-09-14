@@ -157,7 +157,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 else if( Filters.VESSEL_IDENTIFIRE.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)==-1){
                    sql.append(" JOIN FETCH ").append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
                    sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
-               }else{
+               } else if( Filters.SPECIES.equals(key) && sql.indexOf(FilterMap.FA_CATCH_TABLE_ALIAS)==-1){
+                   sql.append(" JOIN FETCH ").append(FilterMap.FA_CATCH_TABLE_ALIAS);
+                   sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
+               } else{
                    sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
                }
            }
@@ -170,12 +173,18 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             for (int i = 0; i < listSize; i++) {
                 ListCriteria criteria = criteriaList.get(i);
                 String mapping = mappings.get(criteria.getKey()).getCondition();
-                if (i != 0) {
+                if(Filters.QUNTITY_MAX.equals(criteria.getKey())){
                     sql.append(" and ").append(mapping);
-                } else {
+                    sql.append(" OR (aprod.weightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX+")");
+                }else if (i != 0) {
+                    sql.append(" and ").append(mapping);
+                }
+                else {
                     sql.append(mapping);
                 }
             }
+
+             sql.append(" and fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"'");
 
       /*  SortKey sort=   query.getSortKey();
         if(sort!=null){

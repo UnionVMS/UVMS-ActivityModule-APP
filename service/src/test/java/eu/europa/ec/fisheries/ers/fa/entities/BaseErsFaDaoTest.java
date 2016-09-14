@@ -143,6 +143,42 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 						.build()
 	   );
 
+
+	protected static final Operation INSERT_ERS_AAP_PROCESS_DATA = sequenceOf(
+			insertInto("activity.activity_aap_process")
+					.columns("id", "type_code", "type_code_list_id", "conversion_factor", "fa_catch_id")
+					.values(1, "FISH_PRESENTATION", "FLUX_ PROCESS_TYPE", 3, 1)
+					.build(),
+			insertInto("activity.activity_aap_process")
+					.columns("id", "type_code", "type_code_list_id", "conversion_factor", "fa_catch_id")
+					.values(2, "FISH_PRESERVATION", "FLUX_ PROCESS_TYPE", 3, 1)
+					.build()
+	);
+
+	protected static final Operation INSERT_ERS_AAP_PRODUCT_DATA = sequenceOf(
+			insertInto("activity.activity_aap_product")
+					.columns("id", "packaging_type_code", "packaging_type_code_list_id", "packaging_unit_avarage_weight","packaging_unit_count", "aap_process_id", "unit_quantity", "weight_measure","species_code",
+							"spacies_code_list_id", "weighing_means_code", "weighting_means_code_list_id","usage_code", "usage_code_list_id")
+					.values(1, "FISH1", "FISH_PACKAGING", null,null, 1, 2, 15,"HAD", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS","IND", "PROD_USAGE")
+					.build(),
+			insertInto("activity.activity_aap_product")
+					.columns("id", "packaging_type_code", "packaging_type_code_list_id", "packaging_unit_avarage_weight","packaging_unit_count", "aap_process_id", "unit_quantity", "weight_measure","species_code",
+							"spacies_code_list_id", "weighing_means_code", "weighting_means_code_list_id","usage_code", "usage_code_list_id")
+					.values(2, "FISH1", "FISH_PACKAGING", null,null, 1, 2, 10,"HAD", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS","IND", "PROD_USAGE")
+					.build(),
+			insertInto("activity.activity_aap_product")
+					.columns("id", "packaging_type_code", "packaging_type_code_list_id", "packaging_unit_avarage_weight","packaging_unit_count", "aap_process_id", "unit_quantity", "weight_measure","species_code",
+							"spacies_code_list_id", "weighing_means_code", "weighting_means_code_list_id","usage_code", "usage_code_list_id")
+					.values(3, "FISH1", "FISH_PACKAGING", null,null, 1, 2, 34,"PLE", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS","IND", "PROD_USAGE")
+					.build(),
+			insertInto("activity.activity_aap_product")
+					.columns("id", "packaging_type_code", "packaging_type_code_list_id", "packaging_unit_avarage_weight","packaging_unit_count", "aap_process_id", "unit_quantity", "weight_measure","species_code",
+							"spacies_code_list_id", "weighing_means_code", "weighting_means_code_list_id","usage_code", "usage_code_list_id")
+					.values(4, "FISH1", "FISH_PACKAGING", null,null, 1, 2, 34,"PLE", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS","IND", "PROD_USAGE")
+					.build()
+	);
+
+
 	   protected static final Operation INSERT_ERS_FISHING_GEAR_DATA = sequenceOf(
 			insertInto("activity.activity_fishing_gear")
 					.columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id", "role_code", "role_code_list_id")
@@ -332,20 +368,20 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 	protected static final Operation INSERT_ERS_FA_REPORT_DOCUMENT_DATA = sequenceOf(
 	            insertInto("activity.activity_fa_report_document")
-	                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
-	                    .values(1,"DECLARATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),1,1,"fmc","fmc_list")
+	                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id","status","source")
+	                    .values(1,"DECLARATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),1,1,"fmc","fmc_list","new","FLUX")
 	                    .build(),
 				insertInto("activity.activity_fa_report_document")
-						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
-						.values(2,"DECLARATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),2,2,"fmc","fmc_list")
+						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id","status","source")
+						.values(2,"DECLARATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),2,2,"fmc","fmc_list","new","FLUX")
 						.build(),
 				insertInto("activity.activity_fa_report_document")
-						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
-						.values(3,"DECLARATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),3,3,"fmc","fmc_list")
+						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id","status","source")
+						.values(3,"DECLARATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),3,3,"fmc","fmc_list","new","FLUX")
 						.build(),
 				insertInto("activity.activity_fa_report_document")
-						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id")
-						.values(4,"NOTIFICATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),4,4,"fmc","fmc_list")
+						.columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id","vessel_transport_means_id","fmc_marker","fmc_marker_list_id","status","source")
+						.values(4,"NOTIFICATION","FLUX_LOCATION_TYPE",java.sql.Date.valueOf("2014-12-12"),4,4,"fmc","fmc_list","new","FLUX")
 						.build()
 	  );
 

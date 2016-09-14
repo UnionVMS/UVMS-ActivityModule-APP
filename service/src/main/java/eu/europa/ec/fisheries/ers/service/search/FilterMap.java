@@ -13,8 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
 /**
  * Created by sanera on 12/07/2016.
@@ -38,26 +37,30 @@ public class FilterMap {
     public static final String QUNTITY_MAX = "maxWeight";
     public static final String CONTACT_PERSON_NAME = "agent";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
+    public static final String FA_CATCH_TABLE_ALIAS = "a.faCatchs faCatch";
     public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
-    public static final String REPORT_DOCUMENT_TABLE_ALIAS  = " a.faReportDocument fa ";
+    public static final String DATASOURCE = "dataSource";
 
-    private static Map<Filters,FilterDetails> filterMappings = new HashMap<Filters,FilterDetails>();
-    private static Map<Filters,String> filterSortMappings = new HashMap<>();
-    private static Map<Filters,String> filterQueryParameterMappings = new HashMap<>();
+    private static EnumMap<Filters,FilterDetails> filterMappings = new EnumMap<>(Filters.class);
+    private static EnumMap<Filters,String> filterSortMappings = new EnumMap<>(Filters.class);
+    private static EnumMap<Filters,String> filterQueryParameterMappings = new EnumMap<>(Filters.class);
+
+
+    private FilterMap(){}
 
 
     static{
-        _populateFilterMappings();
-        _populateFilterQueryParameterMappings();
-        _populateFilterSortMappings();
+        populateFilterMappings();
+        populateFilterQueryParameterMappings();
+        populateFilterSortMappings();
     }
 
 
-    private static void _populateFilterMappings(){
+    private static void populateFilterMappings(){
 
+        filterMappings.put(Filters.SOURCE,new FilterDetails(" ","fa.source =:"+DATASOURCE));
         filterMappings.put(Filters.FROM_ID,new FilterDetails("fa.fluxReportDocument flux","flux.ownerFluxPartyId =:"+FROM_ID+ " "));
         filterMappings.put(Filters.FROM_NAME,new FilterDetails("fa.fluxReportDocument flux"," flux.ownerFluxPartyName=:"+FROM_NAME+" "));
-      //  filterMappings.put(Filters.PERIOD,new FilterDetails("a.delimitedPeriods dp","(( dp.startDate >= :"+OCCURENCE_START_DATE + " and dp.endDate <= :"+OCCURENCE_END_DATE+" ) OR a.occurence BETWEEN :"+OCCURENCE_START_DATE +" and  :"+OCCURENCE_END_DATE+" )"));
 
         filterMappings.put(Filters.PERIOD_START,new FilterDetails("a.delimitedPeriods dp","( dp.startDate >= :"+OCCURENCE_START_DATE +"  OR a.occurence  >= :"+OCCURENCE_START_DATE +" )"));
         filterMappings.put(Filters.PERIOD_END,new FilterDetails("a.delimitedPeriods dp"," dp.endDate <= :"+OCCURENCE_END_DATE));
@@ -70,24 +73,25 @@ public class FilterMap {
         filterMappings.put(Filters.AREAS,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:"+AREA_ID+" )"));
         filterMappings.put(Filters.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )"));
         filterMappings.put(Filters.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode =:"+FISHING_GEAR));
-        filterMappings.put(Filters.SPECIES,new FilterDetails("a.faCatchs faCatch","faCatch.speciesCode =:"+SPECIES_CODE));
-        filterMappings.put(Filters.QUNTITY_MIN,new FilterDetails("a.faCatchs faCatch","faCatch.weightMeasure BETWEEN :"+QUNTITY_MIN));
-        filterMappings.put(Filters.QUNTITY_MAX,new FilterDetails(" ","  :"+QUNTITY_MAX));
+        filterMappings.put(Filters.SPECIES,new FilterDetails("a.faCatchs faCatch JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod","faCatch.speciesCode =:"+SPECIES_CODE +" OR aprod.speciesCode =:"+SPECIES_CODE));
+        filterMappings.put(Filters.QUNTITY_MIN,new FilterDetails("a.faCatchs faCatch JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod"," (faCatch.weightMeasure  BETWEEN :"+QUNTITY_MIN ));
+        filterMappings.put(Filters.QUNTITY_MAX,new FilterDetails(" ","  :"+QUNTITY_MAX+") "));
         filterMappings.put(Filters.MASTER,new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","(UPPER(cPerson.title) =:"+CONTACT_PERSON_NAME+" or " +
                 "UPPER(cPerson.givenName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.middleName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.familyName) =:"+CONTACT_PERSON_NAME+" " +
                 "or UPPER(cPerson.familyNamePrefix) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.nameSuffix) =:"+CONTACT_PERSON_NAME+ " or UPPER(cPerson.alias) =:"+CONTACT_PERSON_NAME+")"));
 
     }
 
-    private static void _populateFilterSortMappings(){
+    private static void populateFilterSortMappings(){
       //  filterSortMappings.put(Filters.PERIOD,"a.occurence");
         filterSortMappings.put(Filters.REPORT_TYPE,"fa.typeCode");
         filterSortMappings.put(Filters.ACTIVITY_TYPE,"a.typeCode");
 
     }
 
-    private static void _populateFilterQueryParameterMappings(){
+    private static void populateFilterQueryParameterMappings(){
 
+        filterQueryParameterMappings.put(Filters.SOURCE,DATASOURCE);
         filterQueryParameterMappings.put(Filters.FROM_ID,FROM_ID);
         filterQueryParameterMappings.put(Filters.FROM_NAME,FROM_NAME);
         filterQueryParameterMappings.put(Filters.PERIOD_START,OCCURENCE_START_DATE );
@@ -108,15 +112,15 @@ public class FilterMap {
     }
 
 
-    public static Map<Filters, FilterDetails> getFilterMappings() {
+    public static EnumMap<Filters, FilterDetails> getFilterMappings() {
         return filterMappings;
     }
 
-    public static Map<Filters,String> getFilterSortMappings() {
+    public static EnumMap<Filters,String> getFilterSortMappings() {
         return filterSortMappings;
     }
 
-    public static Map<Filters,String> getFilterQueryParameterMappings() {
+    public static EnumMap<Filters,String> getFilterQueryParameterMappings() {
         return filterQueryParameterMappings;
     }
 }
