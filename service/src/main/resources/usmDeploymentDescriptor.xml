@@ -66,176 +66,27 @@
             <description>Default map configuation settings</description>
             <dataType>TEXT</dataType>
             <defaultValue>{
-                "faReportConfig": {
-                    "faReport": [
-                        "typeCode",
-                        "fmcMarker",
-                        "acceptedDateTime",
-                        "creationDateTime",
-                        "fluxReportDocumentId",
-                        "purposeCode",
-                        "referenceId",
-                        "ownerFluxPartyId",
-                        "status",
-                        "fishingActivity",
-                        "vessel"
-                    ],
-                    "fishingActivity": [
-                        "sourceVesselId",
-                        "sourceVesselTypeCode",
-                        "destVesselId",
-                        "destVesselTypeCode",
-                        "activityTypeCode",
-                        "occurence",
-                        "reasonCode",
-                        "vesselActivityCode",
-                        "fisheryTypeCode",
-                        "speciesTargetCode",
-                        "operationQuantity",
-                        "fishingDurationMeasure",
-                        "flapDocumentId",
-                        "fishingActivityIds",
-                        "fishingTrip",
-                        "faCatches",
-                        "fishingGears",
-                        "gearProblems",
-                        "delimitedPeriods",
-                        "fluxCharacteristics",
-                        "fluxLocations"
-                    ],
-                    "fishingTrip": [
-                        "tripType",
-                        "tripId",
-                        "delimitedPeriods"
-                    ],
-                    "delimitedPeriod": [
-                        "startDate",
-                        "endDate",
-                        "duration"
-                    ],
-                    "faCatches": [
-                        "typeCode",
-                        "speciesCode",
-                        "unitQuantity",
-                        "weightMeasure",
-                        "weightMeasureUnitCode",
-                        "usageCode",
-                        "weighingMeansCode",
-                        "sizeDistributionClassCode",
-                        "sizeDistributionCategoryCode",
-                        "fishingGears",
-                        "specifiedFluxLocations",
-                        "destFluxLocations",
-                        "fluxCharacteristics",
-                        "fishingTrips",
-                        "aapProcess",
-                        "aapStock"
-                    ],
-                    "fishingGears": [
-                        "gearType",
-                        "gearRole",
-                        "gearCharacteristics"
-                    ],
-                    "gearCharacteristics": [
-                        "typeCode",
-                        "description",
-                        "valueMeasure",
-                        "dateTime",
-                        "indicator",
-                        "code",
-                        "text",
-                        "quantity"
-                    ],
-                    "FluxLocations": [
-                        "typeCode",
-                        "countryId",
-                        "rfmoCode",
-                        "longitude",
-                        "latitude",
-                        "altitude",
-                        "fluxLocationType",
-                        "fluxLocationIdentifier",
-                        "geopoliticalRegionCode",
-                        "name",
-                        "sovereignRightsCountryCode",
-                        "jurisdictionCountryCode",
-                        "systemId",
-                        "fluxCharacteristics",
-                        "physicalStructuredAddress",
-                        "postalStructuredAddress"
-                    ],
-                    "fluxCharacteristics": [
-                        "type",
-                        "measure",
-                        "dateTime",
-                        "indicator",
-                        "code",
-                        "text",
-                        "quantity",
-                        "description"
-                    ],
-                    "structuredAddress": [
-                        "blockName",
-                        "buildingName",
-                        "cityName",
-                        "citySubdivisionName",
-                        "country",
-                        "countryName",
-                        "countrySubdivisionName",
-                        "addressId",
-                        "plotId",
-                        "postOfficeBox",
-                        "postcode",
-                        "streetname"
-                    ],
-                    "aapProcess": [
-                        "typeCode",
-                        "conversionFactor",
-                        "aapProduct"
-                    ],
-                    "aapProduct": [
-                        "packagingTypeCode",
-                        "packagingUnitAverageWeight",
-                        "packagingUnitCount"
-                    ],
-                    "aapStock": [
-                        "stockId"
-                    ],
-                    "gearProblems": [
-                        "problemType",
-                        "affectedQuantity",
-                        "recoveryMeasure",
-                        "fishingGears"
-                    ],
-                    "vessel": [
-                        "vesselRole",
-                        "vesselIds",
-                        "vesselName",
-                        "registrationDateTime",
-                        "registrationEventDescription",
-                        "registrationLocationDescription",
-                        "registrationRegion",
-                        "registrationLocationName",
-                        "registrationType",
-                        "registrationLocationCountryId",
-                        "contactParty"
-                    ],
-                    "contactParty": [
-                        "role",
-                        "contactPersonDetails",
-                        "addressDetails"
-                    ],
-                    "contactPerson": [
-                        "title",
-                        "givenName",
-                        "middleName",
-                        "familyName",
-                        "familyNamePrefix",
-                        "nameSuffix",
-                        "gender",
-                        "alias"
-                    ]
-                }
+                    "fishingActivityConfig": {
+                        "summaryReport": [
+                            "dataSource",
+                            "from",
+                            "startDate",
+                            "endDate",
+                            "cfr",
+                            "ircs",
+                            "extMark",
+                            "uvi",
+                            "iccat",
+                            "gfcm",
+                            "purposeCode",
+                            "reportType",
+                            "activityType",
+                            "area",
+                            "location",
+                            "gearType",
+                            "species"
+                        ]
+                    }
                 }
             </defaultValue>
         </option>

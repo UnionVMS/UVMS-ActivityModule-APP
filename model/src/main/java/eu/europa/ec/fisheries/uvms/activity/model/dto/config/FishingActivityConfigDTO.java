@@ -16,22 +16,24 @@ package eu.europa.ec.fisheries.uvms.activity.model.dto.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 /**
- * Created by padhyad on 8/23/2016.
+ * Created by padhyad on 9/14/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ActivityConfigDTO {
+public class FishingActivityConfigDTO {
 
-    @JsonProperty("fishingActivityConfig")
-    private FishingActivityConfigDTO fishingActivityConfig;
+    @JsonProperty("summaryReport")
+    private List<String> summaryReport;
 
-    @JsonProperty("fishingActivityConfig")
-    public FishingActivityConfigDTO getFishingActivityConfig() {
-        return fishingActivityConfig;
+    @JsonProperty("summaryReport")
+    public List<String> getSummaryReport() {
+        return summaryReport;
     }
 
-    @JsonProperty("fishingActivityConfig")
-    public void setFishingActivityConfig(FishingActivityConfigDTO fishingActivityConfig) {
-        this.fishingActivityConfig = fishingActivityConfig;
+    @JsonProperty("summaryReport")
+    public void setSummaryReport(List<String> summaryReport) {
+        this.summaryReport = summaryReport;
     }
 }
