@@ -331,13 +331,12 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	protected static final Operation INSERT_CONTACT_PARTY = sequenceOf(
 			insertInto("activity.activity_contact_party")
 					.columns("id", "vessel_transport_means_id", "role_code", "role_code_list_id","contact_person_id")
-					.values(1, 1, "ROLECODE1", "FLUX_CONTACT_ ROLE1",	1)
+					.values(1, 1, "MASTER", "FLUX_CONTACT_ ROLE",	1)
 					.build(),
 			insertInto("activity.activity_contact_party")
 					.columns("id", "vessel_transport_means_id", "role_code", "role_code_list_id","contact_person_id")
-					.values(2, 2, "ROLECODE2", "FLUX_CONTACT_ ROLE2",	2)
+					.values(2, 2, "AGENT", "FLUX_CONTACT_ ROLE",	2)
 					.build()
-
 	);
 
 

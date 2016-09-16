@@ -15,10 +15,11 @@ package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 19/07/2016.
@@ -26,14 +27,20 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FishingActivityReportDTO extends FishingActivityDTO implements Serializable  {
 
-    @JsonProperty("from")
-    private String from;
+    @JsonProperty("dataSource")
+    private String dataSource;
+
+    @JsonProperty("fromId")
+    private String fromId;
+
+    @JsonProperty("fromName")
+    private String fromName;
+
+    @JsonProperty("vesselIdTypes")
+    private Map<String,String> vesselIdTypes;
 
     @JsonProperty("vesselTransportMeansName")
     private String vesselTransportMeansName;
-
-    @JsonProperty("vesselTransportMeansIdList")
-    private List<String> vesselTransportMeansIdList;
 
     @JsonProperty("purposeCode")
     private String purposeCode;
@@ -54,23 +61,17 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private List<String> speciesCode;
 
     @JsonProperty("quantity")
-    private List<Long> quantity;
+    private List<Double> quantity;
 
-    @JsonProperty("contactPerson")
-    private List<ContactPersonDetailsDTO> contactPerson;
+    @JsonProperty("startDate")
+    private Date startDate;
+
+    @JsonProperty("endDate")
+    private Date endDate;
+
 
     public FishingActivityReportDTO(){
 
-    }
-
-    @JsonProperty("from")
-    public String getFrom() {
-        return from;
-    }
-
-    @JsonProperty("from")
-    public void setFrom(String from) {
-        this.from = from;
     }
 
     @JsonProperty("vesselTransportMeansName")
@@ -81,16 +82,6 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonProperty("vesselTransportMeansName")
     public void setVesselTransportMeansName(String vesselTransportMeansName) {
         this.vesselTransportMeansName = vesselTransportMeansName;
-    }
-
-    @JsonProperty("vesselTransportMeansIdList")
-    public List<String> getVesselTransportMeansIdList() {
-        return vesselTransportMeansIdList;
-    }
-
-    @JsonProperty("vesselTransportMeansIdList")
-    public void setVesselTransportMeansIdList(List<String> vesselTransportMeansIdList) {
-        this.vesselTransportMeansIdList = vesselTransportMeansIdList;
     }
 
     @JsonProperty("purposeCode")
@@ -154,24 +145,70 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     }
 
     @JsonProperty("quantity")
-    public List<Long> getQuantity() {
+    public List<Double> getQuantity() {
         return quantity;
     }
 
     @JsonProperty("quantity")
-    public void setQuantity(List<Long> quantity) {
+    public void setQuantity(List<Double> quantity) {
         this.quantity = quantity;
     }
 
-    @JsonProperty("contactPerson")
-    public List<ContactPersonDetailsDTO> getContactPerson() {
-        return contactPerson;
+    @JsonProperty("dataSource")
+    public String getDataSource() {
+        return dataSource;
     }
 
-    @JsonProperty("contactPerson")
-    public void setContactPerson(List<ContactPersonDetailsDTO> contactPerson) {
-        this.contactPerson = contactPerson;
+    @JsonProperty("dataSource")
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 
+    @JsonProperty("fromId")
+    public String getFromId() {
+        return fromId;
+    }
 
+    @JsonProperty("fromId")
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
+    }
+
+    @JsonProperty("fromName")
+    public String getFromName() {
+        return fromName;
+    }
+
+    @JsonProperty("fromName")
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
+    }
+
+    public Map<String, String> getVesselIdTypes() {
+        return vesselIdTypes;
+    }
+
+    public void setVesselIdTypes(Map<String, String> vesselIdTypes) {
+        this.vesselIdTypes = vesselIdTypes;
+    }
+
+    @JsonProperty("startDate")
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    @JsonProperty("startDate")
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    @JsonProperty("endDate")
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    @JsonProperty("endDate")
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 }

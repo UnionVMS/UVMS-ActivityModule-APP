@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.search;
 
 import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Created by sanera on 12/07/2016.
@@ -112,15 +113,15 @@ public class FilterMap {
     }
 
 
-    public static EnumMap<Filters, FilterDetails> getFilterMappings() {
+    public static Map<Filters, FilterDetails> getFilterMappings() {
         return filterMappings;
     }
 
-    public static EnumMap<Filters,String> getFilterSortMappings() {
+    public static Map<Filters,String> getFilterSortMappings() {
         return filterSortMappings;
     }
 
-    public static EnumMap<Filters,String> getFilterQueryParameterMappings() {
+    public static Map<Filters,String> getFilterQueryParameterMappings() {
         return filterQueryParameterMappings;
     }
 }
