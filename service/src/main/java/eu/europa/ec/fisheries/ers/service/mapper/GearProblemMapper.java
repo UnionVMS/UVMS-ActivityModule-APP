@@ -10,10 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.GearProblemDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,6 +19,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearProblem;
+import un.unece.uncefact.data.standard.unqualifieddatatype._18.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.QuantityType;
 
 import java.util.Collections;
@@ -41,20 +39,38 @@ public abstract class GearProblemMapper extends BaseMapper {
             @Mapping(target = "typeCode", expression = "java(getCodeType(gearProblem.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(gearProblem.getTypeCode()))"),
             @Mapping(target = "affectedQuantity", expression = "java(getAffectedQuantity(gearProblem.getAffectedQuantity()))"),
-            @Mapping(target = "recoveryMeasureCode", expression = "java(getCodeTypeFromList(gearProblem.getRecoveryMeasureCodes()))"),
-            @Mapping(target = "recoveryMeasureCodeListId", expression = "java(getCodeTypeListIdFromList(gearProblem.getRecoveryMeasureCodes()))"),
+            @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))"),
             @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))")
     })
     public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem, FishingActivityEntity fishingActivityEntity, @MappingTarget GearProblemEntity gearProblemEntity);
 
     @Mappings({
+            @Mapping(target = "recoveryMeasureCode", expression = "java(getCodeType(codeType))"),
+            @Mapping(target = "recoveryMeasureCodeListId", expression = "java(getCodeTypeListId(codeType))")
+    })
+    public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
+
+    @Mappings({
             @Mapping(target = "problemType", source = "typeCode"),
             @Mapping(target = "affectedQuantity", source = "affectedQuantity"),
-            @Mapping(target = "recoveryMeasure", source = "recoveryMeasureCode"),
+            //@Mapping(target = "recoveryMeasure", source = "recoveryMeasureCode"),
             @Mapping(target = "fishingGears", source = "fishingGears")
     })
     public abstract GearProblemDetailsDTO mapToGearProblemDetailsDTO(GearProblemEntity gearProblemEntity);
+
+    protected Set<GearProblemRecoveryEntity> mapToGearProblemRecoveries(List<CodeType> codeTypes, GearProblemEntity gearProblemEntity) {
+        if (codeTypes == null || codeTypes.isEmpty()) {
+            Collections.emptySet();
+        }
+        Set<GearProblemRecoveryEntity> gearProblemRecoveries = new HashSet<>();
+        for (CodeType codeType : codeTypes) {
+            GearProblemRecoveryEntity gearProblemRecovery = GearProblemMapper.INSTANCE.mapToGearProblemRecoveryEntity(codeType);
+            gearProblemRecovery.setGearProblem(gearProblemEntity);
+            gearProblemRecoveries.add(gearProblemRecovery);
+        }
+        return gearProblemRecoveries;
+    }
 
     protected Set<FishingGearEntity> getFishingGearsEntities(List<FishingGear> fishingGears, GearProblemEntity gearProblemEntity) {
         if (fishingGears == null || fishingGears.isEmpty()) {

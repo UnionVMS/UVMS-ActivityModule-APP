@@ -35,6 +35,7 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "typeCode", expression = "java(getCodeType(gearCharacteristic.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(gearCharacteristic.getTypeCode()))"),
             @Mapping(target = "description", expression = "java(getTextFromList(gearCharacteristic.getDescriptions()))"),
+            @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
             @Mapping(target = "valueMeasure", expression = "java(getMeasure(gearCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", expression = "java(convertToDate(gearCharacteristic.getValueDateTime()))"),
             @Mapping(target = "valueIndicator", expression = "java(getIndicatorType(gearCharacteristic.getValueIndicator()))"),

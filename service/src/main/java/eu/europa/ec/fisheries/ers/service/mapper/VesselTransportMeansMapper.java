@@ -35,8 +35,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "roleCode", expression = "java(getCodeType(vesselTransportMeans.getRoleCode()))"),
             @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(vesselTransportMeans.getRoleCode()))"),
             @Mapping(target = "name", expression = "java(getTextType(vesselTransportMeans.getNames()))"),
-            @Mapping(target = "flapDocumentId", expression = "java(getFlapDocumentId(vesselTransportMeans.getGrantedFLAPDocuments()))"),
-            @Mapping(target = "flapDocumentSchemeId", expression = "java(getFlapDocumentschemaId(vesselTransportMeans.getGrantedFLAPDocuments()))"),
+            @Mapping(target = "flapDocuments", expression = "java(getFlapDocumentEntities(vesselTransportMeans.getGrantedFLAPDocuments(), vesselTransportMeansEntity))"),
             @Mapping(target = "country", expression = "java(getCountry(vesselTransportMeans.getRegistrationVesselCountry()))"),
             @Mapping(target = "countrySchemeId", expression = "java(getCountrySchemeId(vesselTransportMeans.getRegistrationVesselCountry()))"),
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToVesselIdentifierEntities(vesselTransportMeans.getIDS(), vesselTransportMeansEntity))"),
@@ -66,6 +65,18 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "vesselIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
     protected abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
+
+    protected Set<FlapDocumentEntity> getFlapDocumentEntities(List<FLAPDocument> flapDocuments, VesselTransportMeansEntity vesselTransportMeansEntity) {
+        if (flapDocuments == null || flapDocuments.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<FlapDocumentEntity> flapDocumentEntities = new HashSet<>();
+        for (FLAPDocument flapDocument : flapDocuments) {
+            FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(flapDocument, vesselTransportMeansEntity, new FlapDocumentEntity());
+            flapDocumentEntities.add(entity);
+        }
+        return flapDocumentEntities;
+    }
 
     protected List<String> getVesselIds(Set<VesselIdentifierEntity> vesselIdentifierEntities) {
         List<String> ids = new ArrayList<>();

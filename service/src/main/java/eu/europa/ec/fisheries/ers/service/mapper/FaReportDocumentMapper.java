@@ -54,8 +54,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "correctionType", source = "status"),
             @Mapping(target = "correctionDate", source = "fluxReportDocument.creationDatetime"),
-            @Mapping(target = "faReportIdentifier", source = "fluxReportDocument.fluxReportDocumentId"),
-            @Mapping(target = "ownerFluxParty", source = "fluxReportDocument.ownerFluxPartyId")
+            //@Mapping(target = "faReportIdentifier", source = "fluxReportDocument.fluxReportDocumentId"),
+            //@Mapping(target = "ownerFluxParty", source = "fluxReportDocument.ownerFluxPartyId")
     })
     public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
 
@@ -66,10 +66,10 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fmcMarker", source = "fmcMarker"),
             @Mapping(target = "acceptedDateTime", source = "acceptedDatetime"),
             @Mapping(target = "creationDateTime", source = "fluxReportDocument.creationDatetime"),
-            @Mapping(target = "fluxReportDocumentId", source = "fluxReportDocument.fluxReportDocumentId"),
+            //@Mapping(target = "fluxReportDocumentId", source = "fluxReportDocument.fluxReportDocumentId"),
             @Mapping(target = "purposeCode", source = "fluxReportDocument.purposeCode"),
             @Mapping(target = "referenceId", source = "fluxReportDocument.referenceId"),
-            @Mapping(target = "ownerFluxPartyId", source = "fluxReportDocument.ownerFluxPartyId"),
+            //@Mapping(target = "ownerFluxPartyId", source = "fluxReportDocument.ownerFluxPartyId"),
             @Mapping(target = "status", source = "status"),
             @Mapping(target = "vesselDetails", source = "vesselTransportMeans"),
             @Mapping(target = "fishingActivityDetails", source = "fishingActivities")

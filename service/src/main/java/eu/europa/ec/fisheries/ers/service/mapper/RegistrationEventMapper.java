@@ -36,6 +36,7 @@ public abstract class RegistrationEventMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "description", expression = "java(getDescription(registrationEvent.getDescriptions()))"),
+            @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(registrationEvent.getDescriptions()))"),
             @Mapping(target = "occurrenceDatetime", expression = "java(convertToDate(registrationEvent.getOccurrenceDateTime()))"),
             @Mapping(target = "registrationLocation", expression = "java(mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))"),
             @Mapping(target = "vesselTransportMeanses", expression = "java(vesselTransportMeansEntity)")

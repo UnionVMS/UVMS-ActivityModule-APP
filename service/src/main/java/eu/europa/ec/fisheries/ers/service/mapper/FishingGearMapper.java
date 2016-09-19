@@ -20,6 +20,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.GearCharacteristic;
+import un.unece.uncefact.data.standard.unqualifieddatatype._18.CodeType;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,8 +38,7 @@ public abstract class FishingGearMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingGear.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingGear.getTypeCode()))"),
-            @Mapping(target = "roleCode", expression = "java(getCodeTypeFromList(fishingGear.getRoleCodes()))"),
-            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListIdFromList(fishingGear.getRoleCodes()))"),
+            @Mapping(target = "fishingGearRole", expression = "java(mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
             @Mapping(target = "gearCharacteristics", expression = "java(getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
             @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)")
     })
@@ -47,8 +47,7 @@ public abstract class FishingGearMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingGear.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingGear.getTypeCode()))"),
-            @Mapping(target = "roleCode", expression = "java(getCodeTypeFromList(fishingGear.getRoleCodes()))"),
-            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListIdFromList(fishingGear.getRoleCodes()))"),
+            @Mapping(target = "fishingGearRole", expression = "java(mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
             @Mapping(target = "gearCharacteristics", expression = "java(getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)")
     })
@@ -57,8 +56,7 @@ public abstract class FishingGearMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fishingGear.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingGear.getTypeCode()))"),
-            @Mapping(target = "roleCode", expression = "java(getCodeTypeFromList(fishingGear.getRoleCodes()))"),
-            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListIdFromList(fishingGear.getRoleCodes()))"),
+            @Mapping(target = "fishingGearRole", expression = "java(mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
             @Mapping(target = "gearCharacteristics", expression = "java(getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
             @Mapping(target = "gearProblem", expression = "java(gearProblemEntity)")
     })
@@ -67,18 +65,37 @@ public abstract class FishingGearMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(source = "typeCode",target = "gearTypeCode"),
-            @Mapping(source = "roleCode",target = "gearRoleCode")
+            //@Mapping(source = "roleCode",target = "gearRoleCode")
     })
     public abstract FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
 
     @Mappings({
             @Mapping(target = "gearType", source = "typeCode"),
-            @Mapping(target = "role", source = "roleCode"),
+            //@Mapping(target = "role", source = "roleCode"),
             @Mapping(target = "gearCharacteristics", source = "gearCharacteristics")
     })
     public abstract FishingGearDetailsDTO mapToFishingGearDetailsDTO(FishingGearEntity fishingGearEntity);
 
+    @Mappings({
+            @Mapping(target = "roleCode", expression = "java(getCodeType(codeType))"),
+            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(codeType))")
+    })
+    public abstract FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
+
     public abstract List<FishingGearDetailsDTO> mapToFishingGearDetailsDTOList(Set<FishingGearEntity> fishingGearEntities);
+
+    protected Set<FishingGearRoleEntity> mapToFishingGears(List<CodeType> codeTypes, FishingGearEntity fishingGearEntity) {
+        if (codeTypes == null || codeTypes.isEmpty()) {
+            Collections.emptySet();
+        }
+        Set<FishingGearRoleEntity> fishingGearRoles = new HashSet<>();
+        for (CodeType codeType : codeTypes) {
+            FishingGearRoleEntity gearRole = FishingGearMapper.INSTANCE.mapToFishingGearRoleEntity(codeType);
+            gearRole.setFishingGear(fishingGearEntity);
+            fishingGearRoles.add(gearRole);
+        }
+        return fishingGearRoles;
+    }
 
     protected Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
         if (gearCharacteristics == null || gearCharacteristics.isEmpty()) {

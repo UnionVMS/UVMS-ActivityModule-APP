@@ -63,7 +63,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "weightMeasureUnitCode", source = "weightMeasureUnitCode"),
             @Mapping(target = "usageCode", source = "usageCode"),
             @Mapping(target = "weighingMeansCode", source = "weighingMeansCode"),
-            @Mapping(target = "sizeDistributionClassCode", source = "sizeDistribution.classCode"),
+            //@Mapping(target = "sizeDistributionClassCode", source = "sizeDistribution.classCode"),
             @Mapping(target = "sizeDistributionCategoryCode", source = "sizeDistribution.categoryCode"),
             @Mapping(target = "fishingGears", source = "fishingGears"),
             @Mapping(target = "specifiedFluxLocations", expression = "java(getSpecifiedFluxLocations(faCatchEntity.getFluxLocations()))"),

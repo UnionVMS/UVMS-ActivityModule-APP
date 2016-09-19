@@ -42,8 +42,10 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "valueIndicator", expression = "java(getValueIndicator(fluxCharacteristic.getValueIndicator()))"),
             @Mapping(target = "valueCode", expression = "java(getCodeType(fluxCharacteristic.getValueCode()))"),
             @Mapping(target = "valueText", expression = "java(getTextFromList(fluxCharacteristic.getValues()))"),
+            @Mapping(target = "valueLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getValues()))"),
             @Mapping(target = "valueQuantity", expression = "java(getQuantity(fluxCharacteristic.getValueQuantity()))"),
             @Mapping(target = "description", expression = "java(getTextFromList(fluxCharacteristic.getDescriptions()))"),
+            @Mapping(target = "descriptionLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)")
     })
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic, FishingActivityEntity fishingActivityEntity, @MappingTarget FluxCharacteristicEntity fluxCharacteristicEntity);
@@ -56,8 +58,10 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "valueIndicator", expression = "java(getValueIndicator(fluxCharacteristic.getValueIndicator()))"),
             @Mapping(target = "valueCode", expression = "java(getCodeType(fluxCharacteristic.getValueCode()))"),
             @Mapping(target = "valueText", expression = "java(getTextFromList(fluxCharacteristic.getValues()))"),
+            @Mapping(target = "valueLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getValues()))"),
             @Mapping(target = "valueQuantity", expression = "java(getQuantity(fluxCharacteristic.getValueQuantity()))"),
             @Mapping(target = "description", expression = "java(getTextFromList(fluxCharacteristic.getDescriptions()))"),
+            @Mapping(target = "descriptionLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)")
     })
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic, FaCatchEntity faCatchEntity, @MappingTarget FluxCharacteristicEntity fluxCharacteristicEntity);
@@ -71,8 +75,10 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "valueIndicator", expression = "java(getValueIndicator(fluxCharacteristic.getValueIndicator()))"),
             @Mapping(target = "valueCode", expression = "java(getCodeType(fluxCharacteristic.getValueCode()))"),
             @Mapping(target = "valueText", expression = "java(getTextFromList(fluxCharacteristic.getValues()))"),
+            @Mapping(target = "valueLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getValues()))"),
             @Mapping(target = "valueQuantity", expression = "java(getQuantity(fluxCharacteristic.getValueQuantity()))"),
             @Mapping(target = "description", expression = "java(getTextFromList(fluxCharacteristic.getDescriptions()))"),
+            @Mapping(target = "descriptionLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "fluxLocation", expression = "java(fluxLocationEntity)")
     })
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic, FluxLocationEntity fluxLocationEntity, @MappingTarget FluxCharacteristicEntity fluxCharacteristicEntity);

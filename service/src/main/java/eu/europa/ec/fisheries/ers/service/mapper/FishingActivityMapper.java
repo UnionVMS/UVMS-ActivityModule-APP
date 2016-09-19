@@ -81,9 +81,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     @Mappings({
-            @Mapping(target = "uniqueReportId", expression = "java(getUniqueId(entity))"),
-            @Mapping(target = "fromId", expression = "java(getFromId(entity))"),
-            @Mapping(target = "fromName", expression = "java(getFrom(entity))"),
+            //@Mapping(target = "uniqueReportId", expression = "java(getUniqueId(entity))"),
+            //@Mapping(target = "fromId", expression = "java(getFromId(entity))"),
+            //@Mapping(target = "fromName", expression = "java(getFrom(entity))"),
+            //@Mapping(target = "uniqueReportId", expression = "java(getUniqueId(entity))"),
+
             @Mapping(source = "occurence", target = "occurence"),
             @Mapping(target = "vesselTransportMeansName", expression = "java(getVesselTransportMeansName(entity))"),
             @Mapping(target = "purposeCode", expression = "java(getPurposeCode(entity))"),
@@ -93,7 +95,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "port", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_PORT))"),
             @Mapping(target = "fishingGear", expression = "java(getFishingGears(entity))"),
             @Mapping(target = "speciesCode", expression = "java(getSpeciesCode(entity))"),
-            @Mapping(target = "quantity", expression = "java(getQuantity(entity))"),
+            //@Mapping(target = "quantity", expression = "java(getQuantity(entity))"),
             @Mapping(target = "fluxLocations", expression = "java(null)"),
             @Mapping(target = "fishingGears", expression = "java(null)"),
             @Mapping(target = "fluxCharacteristics", expression = "java(null)"),
@@ -102,15 +104,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselIdTypes", expression = "java(getVesselIdType(entity))"),
             @Mapping(target = "startDate", expression = "java(getStartDate(entity))"),
             @Mapping(target = "endDate", expression = "java(getEndDate(entity))")
-
     })
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
 
     @Mappings({
             @Mapping(target = "sourceVesselId", source = "sourceVesselCharId.vesselId"),
-            @Mapping(target = "sourceVesselTypeCode", source = "sourceVesselCharId.vesselTypeCode"),
+            //@Mapping(target = "sourceVesselTypeCode", source = "sourceVesselCharId.vesselTypeCode"),
             @Mapping(target = "destVesselId", source = "destVesselCharId.vesselId"),
-            @Mapping(target = "destVesselTypeCode", source = "destVesselCharId.vesselTypeCode"),
+           // @Mapping(target = "destVesselTypeCode", source = "destVesselCharId.vesselTypeCode"),
             @Mapping(target = "activityTypeCode", source = "typeCode"),
             @Mapping(target = "occurence", source = "occurence"),
             @Mapping(target = "reasonCode", source = "reasonCode"),
@@ -139,7 +140,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "reason", source = "reasonCode"),
             @Mapping(target = "faReportDocumentType", expression = "java(getFAReportTypeCode(entity))"),
             @Mapping(target = "faReportAcceptedDateTime", expression = "java(getAcceptedDateTime(entity))"),
-            @Mapping(target = "uniqueReportId", expression = "java(getUniqueId(entity))"),
+            //@Mapping(target = "uniqueReportId", expression = "java(getUniqueId(entity))"),
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"),
             @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))"),
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationDetailsDTOs(entity))"),
@@ -259,28 +260,29 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return DateUtils.parseUTCDateToString(entity.getFaReportDocument().getAcceptedDatetime());
     }
 
-    protected String getUniqueId(FishingActivityEntity entity){
+/*    protected String getUniqueId(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() ==null){
             return null;
         }
 
         return  entity.getFaReportDocument().getFluxReportDocument().getFluxReportDocumentId();
-    }
+    }*/
 
     protected String getFrom(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() ==null){
             return null;
         }
 
-        return  entity.getFaReportDocument().getFluxReportDocument().getOwnerFluxPartyName();
+        //return  entity.getFaReportDocument().getFluxReportDocument().getOwnerFluxPartyName();
+        return null;
     }
-    protected String getFromId(FishingActivityEntity entity){
+/*    protected String getFromId(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() ==null){
             return null;
         }
 
         return  entity.getFaReportDocument().getFluxReportDocument().getOwnerFluxPartyId();
-    }
+    }*/
 
     protected String getPurposeCode(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() ==null){

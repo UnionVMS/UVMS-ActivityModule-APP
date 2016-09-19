@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProcessDetailsDTO;
@@ -21,6 +22,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.AAPProduct;
+import un.unece.uncefact.data.standard.unqualifieddatatype._18.CodeType;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,22 +38,40 @@ public abstract class AapProcessMapper extends BaseMapper {
     public static final AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeTypeFromList(aapProcess.getTypeCodes()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListIdFromList(aapProcess.getTypeCodes()))"),
             @Mapping(target = "conversionFactor", expression = "java(getNumericInteger(aapProcess.getConversionFactorNumeric()))"),
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)"),
-            @Mapping(target = "aapProducts", expression = "java(getAapProductEntities(aapProcess.getResultAAPProducts(), aapProcessEntity))")
+            @Mapping(target = "aapProducts", expression = "java(getAapProductEntities(aapProcess.getResultAAPProducts(), aapProcessEntity))"),
+            @Mapping(target = "aapProcessCode", expression = "java(getAapProcessCodes(aapProcess.getTypeCodes(), aapProcessEntity))")
     })
     public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess, FaCatchEntity faCatchEntity, @MappingTarget AapProcessEntity aapProcessEntity);
 
     @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode"),
+            @Mapping(target = "typeCode", expression = "java(getCodeType(codeType))"),
+            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(codeType))")
+    })
+    public abstract AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
+
+    @Mappings({
+            //@Mapping(target = "typeCode", source = "typeCode"),
             @Mapping(target = "conversionFactor", source = "conversionFactor"),
             @Mapping(target = "aapProductDetails", source = "aapProducts")
     })
     public abstract AapProcessDetailsDTO mapToAapProcessDetailsDTO(AapProcessEntity aapProcessEntity);
 
     public abstract List<AapProcessDetailsDTO> mapToAapProductDetailsDTOList(Set<AapProcessEntity> aapProcessEntities);
+
+    protected Set<AapProcessCodeEntity> getAapProcessCodes(List<CodeType> codeTypes, AapProcessEntity aapProcessEntity) {
+        if (codeTypes == null || codeTypes.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<AapProcessCodeEntity> aapProcessCodeEntities = new HashSet<>();
+        for (CodeType codeType : codeTypes) {
+            AapProcessCodeEntity entity = AapProcessMapper.INSTANCE.mapToAapProcessCodeEntity(codeType);
+            entity.setAapProcess(aapProcessEntity);
+            aapProcessCodeEntities.add(entity);
+        }
+        return aapProcessCodeEntities;
+    }
 
     protected Set<AapProductEntity> getAapProductEntities(List<AAPProduct> aapProducts, AapProcessEntity aapProcessEntity) {
         if (aapProducts == null || aapProducts.isEmpty()) {

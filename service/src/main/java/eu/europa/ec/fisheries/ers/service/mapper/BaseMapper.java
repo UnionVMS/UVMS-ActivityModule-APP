@@ -35,12 +35,16 @@ public abstract class BaseMapper {
         return (idType == null) ? null : idType.getSchemeID();
     }
 
-    protected String getIdTypeFromList(List<IDType> ids) {
+/*    protected String getIdTypeFromList(List<IDType> ids) {
         return (ids == null || ids.isEmpty()) ? null : ids.get(0).getValue();
-    }
+    }*/
 
     protected String getTextType(TextType textType) {
         return textType == null ? null : textType.getValue();
+    }
+
+    protected String getLanguageId(TextType textType) {
+        return textType == null ? null : textType.getLanguageID();
     }
 
     protected String getIndicatorType(IndicatorType indicatorType) {
@@ -58,13 +62,13 @@ public abstract class BaseMapper {
         return (codeType == null) ? null : codeType.getListID();
     }
 
-    protected String getCodeTypeFromList(List<CodeType> codeTypes) {
+/*    protected String getCodeTypeFromList(List<CodeType> codeTypes) {
         return (codeTypes == null || codeTypes.isEmpty()) ? null : codeTypes.get(0).getValue();
     }
 
     protected String getCodeTypeListIdFromList(List<CodeType> codeTypes) {
         return (codeTypes == null || codeTypes.isEmpty()) ? null : codeTypes.get(0).getListID();
-    }
+    }*/
 
     protected Date convertToDate(DateTimeType dateTime) {
         Date value = null;
@@ -94,11 +98,14 @@ public abstract class BaseMapper {
         if (textTypes == null) {
             return null;
         }
-        StringBuilder builder = new StringBuilder();
-        for (TextType textType : textTypes) {
-            builder.append(textType.getValue()).append(" ");
+        return textTypes.get(0).getValue();
+    }
+
+    protected String getLanguageIdFromList(List<TextType> textTypes) {
+        if (textTypes == null) {
+            return null;
         }
-        return builder.toString();
+        return textTypes.get(0).getLanguageID();
     }
 
     protected Double getQuantity(QuantityType quantityType) {

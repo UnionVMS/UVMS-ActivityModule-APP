@@ -10,10 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPartyDetailsDTO;
 import org.mapstruct.Mapper;
@@ -24,6 +21,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.StructuredAddress;
+import un.unece.uncefact.data.standard.unqualifieddatatype._18.CodeType;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,22 +37,40 @@ public abstract class ContactPartyMapper extends BaseMapper {
     public static final ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
 
     @Mappings({
-            @Mapping(target = "roleCode", expression = "java(getCodeTypeFromList(contactParty.getRoleCodes()))"),
-            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListIdFromList(contactParty.getRoleCodes()))"),
             @Mapping(target = "contactPerson", expression = "java(getContactPersonEntity(contactParty.getSpecifiedContactPersons(), contactPartyEntity))"),
             @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntity(contactParty.getSpecifiedStructuredAddresses(), contactPartyEntity))"),
-            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)")
+            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
+            @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
     })
     public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget ContactPartyEntity contactPartyEntity);
 
     @Mappings({
-            @Mapping(target = "role", source = "roleCode"),
+            @Mapping(target = "roleCode", expression = "java(getCodeType(codeType))"),
+            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(codeType))")
+    })
+    public abstract ContactPartyRoleEntity mapToContactPartyRoleEntity(CodeType codeType);
+
+    @Mappings({
+           // @Mapping(target = "role", source = "roleCode"),
             @Mapping(target = "contactPersonDetails", source = "contactPerson"),
             @Mapping(target = "addressDetails", source = "structuredAddresses")
     })
     public abstract ContactPartyDetailsDTO mapToContactPartyDetailsDTO(ContactPartyEntity contactPartyEntity);
 
     public abstract List<ContactPartyDetailsDTO> mapToContactPartyDetailsDTOList(Set<ContactPartyEntity> contactPartyEntities);
+
+    protected Set<ContactPartyRoleEntity> getContactPartyRoles(List<CodeType> codeTypes, ContactPartyEntity contactPartyEntity) {
+        if (codeTypes == null || codeTypes.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<ContactPartyRoleEntity> contactPartyRoles = new HashSet<>();
+        for(CodeType codeType : codeTypes) {
+            ContactPartyRoleEntity contactPartyRoleEntity = ContactPartyMapper.INSTANCE.mapToContactPartyRoleEntity(codeType);
+            contactPartyRoleEntity.setContactParty(contactPartyEntity);
+            contactPartyRoles.add(contactPartyRoleEntity);
+        }
+        return contactPartyRoles;
+    }
 
     protected ContactPersonEntity getContactPersonEntity(List<ContactPerson> contactPersons, ContactPartyEntity contactPartyEntity) {
         if(contactPersons == null || contactPersons.isEmpty()) {

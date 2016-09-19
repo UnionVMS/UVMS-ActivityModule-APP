@@ -29,9 +29,11 @@ public abstract class RegistrationLocationMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "description", expression = "java(getTextFromList(registrationLocation.getDescriptions()))"),
+            @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(registrationLocation.getDescriptions()))"),
             @Mapping(target = "regionCode", expression = "java(getCodeType(registrationLocation.getGeopoliticalRegionCode()))"),
             @Mapping(target = "regionCodeListId", expression = "java(getCodeTypeListId(registrationLocation.getGeopoliticalRegionCode()))"),
             @Mapping(target = "name", expression = "java(getTextFromList(registrationLocation.getNames()))"),
+            @Mapping(target = "nameLanguageId", expression = "java(getLanguageIdFromList(registrationLocation.getNames()))"),
             @Mapping(target = "typeCode", expression = "java(getCodeType(registrationLocation.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(registrationLocation.getTypeCode()))"),
             @Mapping(target = "locationCountryId", expression = "java(getIdType(registrationLocation.getCountryID()))"),
