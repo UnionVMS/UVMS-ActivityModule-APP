@@ -11,7 +11,6 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus</class>
 		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CodeLocation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.ConversionFactor</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CrFishingCategoryCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingCountriesCodes</class>
@@ -54,7 +53,6 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.VesselTypeCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.WithdrawnCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CodeLocation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.ConversionFactor</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CrFishingCategoryCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingCountriesCodes</class>
@@ -99,6 +97,15 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingIndicatorCodes</class>
 
 		<!-- ERS Activity entities -->
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.GearProblemRecoveryEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity</class>
@@ -116,6 +123,7 @@
 		<class>eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity</class>
