@@ -31,13 +31,9 @@ public class ContactPartyEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vessel_transport_means_id")
 	private VesselTransportMeansEntity vesselTransportMeans;
-	
-	@Column(name = "role_code", nullable = false)
-	private String roleCode;
-	
-	@Column(name = "role_code_list_id", nullable = false)
-	private String roleCodeListId;
-	
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
+	private Set<ContactPartyRoleEntity> contactPartyRole;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses;
@@ -68,24 +64,6 @@ public class ContactPartyEntity implements Serializable {
 		this.vesselTransportMeans = vesselTransportMeans;
 	}
 
-	
-	public String getRoleCode() {
-		return this.roleCode;
-	}
-
-	public void setRoleCode(String roleCode) {
-		this.roleCode = roleCode;
-	}
-
-
-	public String getRoleCodeListId() {
-		return this.roleCodeListId;
-	}
-
-	public void setRoleCodeListId(String roleCodeListId) {
-		this.roleCodeListId = roleCodeListId;
-	}
-
 	public Set<StructuredAddressEntity> getStructuredAddresses() {
 		return this.structuredAddresses;
 	}
@@ -95,4 +73,11 @@ public class ContactPartyEntity implements Serializable {
 		this.structuredAddresses = structuredAddresses;
 	}
 
+	public Set<ContactPartyRoleEntity> getContactPartyRole() {
+		return contactPartyRole;
+	}
+
+	public void setContactPartyRole(Set<ContactPartyRoleEntity> contactPartyRole) {
+		this.contactPartyRole = contactPartyRole;
+	}
 }

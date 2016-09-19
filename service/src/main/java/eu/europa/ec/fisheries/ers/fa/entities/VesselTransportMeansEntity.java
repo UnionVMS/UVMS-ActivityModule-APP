@@ -37,12 +37,6 @@ public class VesselTransportMeansEntity implements Serializable {
     @Column(columnDefinition = "text", name = "name")
     private String name;
 
-    @Column(name = "flap_document_id")
-    private String flapDocumentId;
-
-    @Column(name = "flap_document_scheme_id")
-    private String flapDocumentSchemeId;
-
     @Column(name = "country_scheme_id")
     private String countrySchemeId;
 
@@ -57,6 +51,9 @@ public class VesselTransportMeansEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<VesselIdentifierEntity> vesselIdentifiers;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    private Set<FlapDocumentEntity> flapDocuments;
 
     public VesselTransportMeansEntity() {
         super();
@@ -97,22 +94,6 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getFlapDocumentId() {
-        return this.flapDocumentId;
-    }
-
-    public void setFlapDocumentId(String flapDocumentId) {
-        this.flapDocumentId = flapDocumentId;
-    }
-
-    public String getFlapDocumentSchemeId() {
-        return this.flapDocumentSchemeId;
-    }
-
-    public void setFlapDocumentSchemeId(String flapDocumentSchemeId) {
-        this.flapDocumentSchemeId = flapDocumentSchemeId;
     }
 
     public Set<VesselIdentifierEntity> getVesselIdentifiers() {
@@ -156,6 +137,14 @@ public class VesselTransportMeansEntity implements Serializable {
         this.country = country;
     }
 
+    public Set<FlapDocumentEntity> getFlapDocuments() {
+        return flapDocuments;
+    }
+
+    public void setFlapDocuments(Set<FlapDocumentEntity> flapDocuments) {
+        this.flapDocuments = flapDocuments;
+    }
+
     @Override
     public String toString() {
         return "VesselTransportMeansEntity{" +
@@ -164,8 +153,6 @@ public class VesselTransportMeansEntity implements Serializable {
                 ", roleCode='" + roleCode + '\'' +
                 ", roleCodeListId='" + roleCodeListId + '\'' +
                 ", name='" + name + '\'' +
-                ", flapDocumentId='" + flapDocumentId + '\'' +
-                ", flapDocumentSchemeId='" + flapDocumentSchemeId + '\'' +
                 '}';
     }
 }

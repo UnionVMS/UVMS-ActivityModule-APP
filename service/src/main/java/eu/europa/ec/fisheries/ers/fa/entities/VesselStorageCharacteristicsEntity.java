@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.*;
 
 @Entity
@@ -28,17 +29,14 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	@Column(name = "vessel_scheme_id")
 	private String vesselSchemaId;
 
-	@Column(name = "vessel_type_code")
-	private String vesselTypeCode;
-
-	@Column(name = "vessel_type_code_list_id")
-	private String vesselTypeCodeListId;
-
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "destVesselCharId")
 	private FishingActivityEntity fishingActivitiesForDestVesselCharId;
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "sourceVesselCharId")
 	private FishingActivityEntity fishingActivitiesForSourceVesselCharId;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselStorageCharacteristics", cascade = CascadeType.ALL)
+	private Set<VesselStorageCharCodeEntity> vesselStorageCharCode;
 
 	public VesselStorageCharacteristicsEntity() {
 		super();
@@ -64,22 +62,6 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 		this.vesselSchemaId = vesselSchemaId;
 	}
 
-	public String getVesselTypeCode() {
-		return this.vesselTypeCode;
-	}
-
-	public void setVesselTypeCode(String vesselTypeCode) {
-		this.vesselTypeCode = vesselTypeCode;
-	}
-
-	public String getVesselTypeCodeListId() {
-		return this.vesselTypeCodeListId;
-	}
-
-	public void setVesselTypeCodeListId(String vesselTypeCodeListId) {
-		this.vesselTypeCodeListId = vesselTypeCodeListId;
-	}
-
 	public FishingActivityEntity getFishingActivitiesForDestVesselCharId() {
 		return fishingActivitiesForDestVesselCharId;
 	}
@@ -94,5 +76,13 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 
 	public void setFishingActivitiesForSourceVesselCharId(FishingActivityEntity fishingActivitiesForSourceVesselCharId) {
 		this.fishingActivitiesForSourceVesselCharId = fishingActivitiesForSourceVesselCharId;
+	}
+
+	public Set<VesselStorageCharCodeEntity> getVesselStorageCharCode() {
+		return vesselStorageCharCode;
+	}
+
+	public void setVesselStorageCharCode(Set<VesselStorageCharCodeEntity> vesselStorageCharCode) {
+		this.vesselStorageCharCode = vesselStorageCharCode;
 	}
 }

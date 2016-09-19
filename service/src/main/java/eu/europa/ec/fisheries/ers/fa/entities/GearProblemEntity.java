@@ -37,11 +37,8 @@ public class GearProblemEntity implements Serializable {
 	@Column(name = "affected_quantity", nullable = false)
 	private int affectedQuantity;
 
-	@Column(name = "recovery_measure_code", nullable = false)
-	private String recoveryMeasureCode;
-
-	@Column(name = "recovery_measure_code_list_id", nullable = false)
-	private String recoveryMeasureCodeListId;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
+	private Set<GearProblemRecoveryEntity> gearProblemRecovery;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
 	private Set<FishingGearEntity> fishingGears;
@@ -87,20 +84,12 @@ public class GearProblemEntity implements Serializable {
 		this.affectedQuantity = affectedQuantity;
 	}
 
-	public String getRecoveryMeasureCode() {
-		return this.recoveryMeasureCode;
+	public Set<GearProblemRecoveryEntity> getGearProblemRecovery() {
+		return gearProblemRecovery;
 	}
 
-	public void setRecoveryMeasureCode(String recoveryMeasureCode) {
-		this.recoveryMeasureCode = recoveryMeasureCode;
-	}
-
-	public String getRecoveryMeasureCodeListId() {
-		return this.recoveryMeasureCodeListId;
-	}
-
-	public void setRecoveryMeasureCodeListId(String recoveryMeasureCodeListId) {
-		this.recoveryMeasureCodeListId = recoveryMeasureCodeListId;
+	public void setGearProblemRecovery(Set<GearProblemRecoveryEntity> gearProblemRecovery) {
+		this.gearProblemRecovery = gearProblemRecovery;
 	}
 
 	public Set<FishingGearEntity> getFishingGears() {

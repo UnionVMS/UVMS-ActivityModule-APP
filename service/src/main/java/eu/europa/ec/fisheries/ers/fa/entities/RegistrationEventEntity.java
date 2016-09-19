@@ -31,6 +31,9 @@ public class RegistrationEventEntity implements Serializable {
 	@Column(columnDefinition = "text", name = "description")
 	private String description;
 
+	@Column(name = "desc_language_id")
+	private String descLanguageId;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "occurrence_datetime", length = 29)
 	private Date occurrenceDatetime;
@@ -77,6 +80,14 @@ public class RegistrationEventEntity implements Serializable {
 
 	public void setVesselTransportMeanses(VesselTransportMeansEntity vesselTransportMeanses) {
 		this.vesselTransportMeanses = vesselTransportMeanses;
+	}
+
+	public String getDescLanguageId() {
+		return descLanguageId;
+	}
+
+	public void setDescLanguageId(String descLanguageId) {
+		this.descLanguageId = descLanguageId;
 	}
 
 	@Override

@@ -1,0 +1,67 @@
+/*
+ *
+ * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+ *
+ * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ */
+
+package eu.europa.ec.fisheries.ers.fa.entities;
+
+import javax.persistence.*;
+
+/**
+ * Created by padhyad on 9/16/2016.
+ */
+@Entity
+@Table(name = "activity_gear_problem_recovery")
+public class GearProblemRecoveryEntity {
+
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gear_problem_id")
+    private GearProblemEntity gearProblem;
+
+    @Column(name = "recovery_measure_code", nullable = false)
+    private String recoveryMeasureCode;
+
+    @Column(name = "recovery_measure_code_list_id", nullable = false)
+    private String recoveryMeasureCodeListId;
+
+    public int getId() {
+        return id;
+    }
+
+    public GearProblemEntity getGearProblem() {
+        return gearProblem;
+    }
+
+    public void setGearProblem(GearProblemEntity gearProblem) {
+        this.gearProblem = gearProblem;
+    }
+
+    public String getRecoveryMeasureCode() {
+        return recoveryMeasureCode;
+    }
+
+    public void setRecoveryMeasureCode(String recoveryMeasureCode) {
+        this.recoveryMeasureCode = recoveryMeasureCode;
+    }
+
+    public String getRecoveryMeasureCodeListId() {
+        return recoveryMeasureCodeListId;
+    }
+
+    public void setRecoveryMeasureCodeListId(String recoveryMeasureCodeListId) {
+        this.recoveryMeasureCodeListId = recoveryMeasureCodeListId;
+    }
+}

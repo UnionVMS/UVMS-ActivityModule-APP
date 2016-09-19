@@ -25,6 +25,9 @@ public class RegistrationLocationEntity implements Serializable {
 	@Column(columnDefinition = "text", name = "description")
 	private String description;
 
+	@Column(name = "desc_language_id")
+	private String descLanguageId;
+
 	@Column(name = "region_code")
 	private String regionCode;
 
@@ -33,6 +36,9 @@ public class RegistrationLocationEntity implements Serializable {
 
 	@Column(columnDefinition = "text", name = "name")
 	private String name;
+
+	@Column(name = "name_language_id")
+	private String nameLanguageId;
 
 	@Column(name = "type_code")
 	private String typeCode;
@@ -127,6 +133,22 @@ public class RegistrationLocationEntity implements Serializable {
 
 	public void setLocationCountrySchemeId(String locationCountrySchemeId) {
 		this.locationCountrySchemeId = locationCountrySchemeId;
+	}
+
+	public String getDescLanguageId() {
+		return descLanguageId;
+	}
+
+	public void setDescLanguageId(String descLanguageId) {
+		this.descLanguageId = descLanguageId;
+	}
+
+	public String getNameLanguageId() {
+		return nameLanguageId;
+	}
+
+	public void setNameLanguageId(String nameLanguageId) {
+		this.nameLanguageId = nameLanguageId;
 	}
 
 	@Override

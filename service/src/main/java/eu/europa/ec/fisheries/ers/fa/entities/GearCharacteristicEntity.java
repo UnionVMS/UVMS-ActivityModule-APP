@@ -36,6 +36,9 @@ public class GearCharacteristicEntity implements Serializable {
 	@Column(name = "description")
 	private String description;
 
+	@Column(name = "desc_language_id")
+	private String descLanguageId;
+
 	@Column(name = "value_measure", precision = 17, scale = 17)
 	private Double valueMeasure;
 
@@ -143,4 +146,11 @@ public class GearCharacteristicEntity implements Serializable {
 		this.valueQuantity = valueQuantity;
 	}
 
+	public String getDescLanguageId() {
+		return descLanguageId;
+	}
+
+	public void setDescLanguageId(String descLanguageId) {
+		this.descLanguageId = descLanguageId;
+	}
 }

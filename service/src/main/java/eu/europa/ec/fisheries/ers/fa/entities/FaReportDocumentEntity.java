@@ -19,14 +19,13 @@ import java.util.Set;
 		@NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID,
 				query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
 						"INNER JOIN FETCH fareport.fluxReportDocument fluxreport " +
-						"WHERE fluxreport.fluxReportDocumentId IN :reportIds"),
+						"INNER JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
+						"WHERE identifier.fluxReportIdentifierId IN :reportIds"),
 		@NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_REF_ID,
 				query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
 						"INNER JOIN FETCH fareport.fluxReportDocument fluxreport " +
-						"WHERE fluxreport.fluxReportDocumentId = (" +
-						"SELECT report.referenceId FROM FaReportDocumentEntity fa " +
-						"INNER JOIN fa.fluxReportDocument report " +
-						"WHERE report.fluxReportDocumentId = :reportIds)")
+						"INNER JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
+						"WHERE identifier.fluxReportIdentifierId IN :reportIds")
 })
 
 @Entity

@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "activity_size_distribution")
@@ -22,12 +23,6 @@ public class SizeDistributionEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "class_code", nullable = false)
-	private String classCode;
-
-	@Column(name = "class_code_list_id", nullable = false)
-	private String classCodeListId;
-
 	@Column(name = "category_code")
 	private String categoryCode;
 
@@ -37,14 +32,14 @@ public class SizeDistributionEntity implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "sizeDistribution")
 	private FaCatchEntity faCatch;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sizeDistribution", cascade = CascadeType.ALL)
+	private Set<SizeDistributionClassCodeEntity> sizeDistributionClassCode;
+
 	public SizeDistributionEntity() {
 		super();
 	}
 
-	public SizeDistributionEntity(String classCode, String classCodeListId, String categoryCode, String categoryCodeListId, FaCatchEntity faCatch) {
-
-		this.classCode = classCode;
-		this.classCodeListId = classCodeListId;
+	public SizeDistributionEntity(String categoryCode, String categoryCodeListId, FaCatchEntity faCatch) {
 		this.categoryCode = categoryCode;
 		this.categoryCodeListId = categoryCodeListId;
 		this.faCatch = faCatch;
@@ -52,22 +47,6 @@ public class SizeDistributionEntity implements Serializable {
 
 	public int getId() {
 		return this.id;
-	}
-
-	public String getClassCode() {
-		return this.classCode;
-	}
-
-	public void setClassCode(String classCode) {
-		this.classCode = classCode;
-	}
-
-	public String getClassCodeListId() {
-		return this.classCodeListId;
-	}
-
-	public void setClassCodeListId(String classCodeListId) {
-		this.classCodeListId = classCodeListId;
 	}
 
 	public String getCategoryCode() {
@@ -92,5 +71,13 @@ public class SizeDistributionEntity implements Serializable {
 
 	public void setFaCatch(FaCatchEntity faCatch) {
 		this.faCatch = faCatch;
+	}
+
+	public Set<SizeDistributionClassCodeEntity> getSizeDistributionClassCode() {
+		return sizeDistributionClassCode;
+	}
+
+	public void setSizeDistributionClassCode(Set<SizeDistributionClassCodeEntity> sizeDistributionClassCode) {
+		this.sizeDistributionClassCode = sizeDistributionClassCode;
 	}
 }

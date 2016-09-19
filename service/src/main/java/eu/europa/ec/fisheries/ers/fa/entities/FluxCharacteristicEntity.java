@@ -57,11 +57,17 @@ public class FluxCharacteristicEntity implements Serializable {
 	@Column(columnDefinition = "text", name = "value_text")
 	private String valueText;
 
+	@Column (name = "value_language_id")
+	private String valueLanguageId;
+
 	@Column(name = "value_quantity", precision = 17, scale = 17)
 	private Double valueQuantity;
 
 	@Column(columnDefinition = "text", name = "description")
 	private String description;
+
+	@Column(name = "description_language_id")
+	private String descriptionLanguageId;
 
 	public FluxCharacteristicEntity() {
 		super();
@@ -169,4 +175,19 @@ public class FluxCharacteristicEntity implements Serializable {
 		this.description = description;
 	}
 
+	public String getValueLanguageId() {
+		return valueLanguageId;
+	}
+
+	public void setValueLanguageId(String valueLanguageId) {
+		this.valueLanguageId = valueLanguageId;
+	}
+
+	public String getDescriptionLanguageId() {
+		return descriptionLanguageId;
+	}
+
+	public void setDescriptionLanguageId(String descriptionLanguageId) {
+		this.descriptionLanguageId = descriptionLanguageId;
+	}
 }

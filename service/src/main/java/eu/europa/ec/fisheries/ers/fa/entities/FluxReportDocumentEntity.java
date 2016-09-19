@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "activity_flux_report_document")
@@ -22,9 +23,6 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(name = "id", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "flux_report_document_id")
-    private String fluxReportDocumentId;
 
     @Column(name = "reference_id")
     private String referenceId;
@@ -42,42 +40,31 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(columnDefinition = "text", name = "purpose")
     private String purpose;
 
-    @Column(name = "owner_flux_party_id", nullable = false)
-    private String ownerFluxPartyId;
-
-    @Column(name = "owner_flux_party_name")
-    private String ownerFluxPartyName;
-
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "flux_party_id")
+    private FluxPartyEntity fluxParty;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
+    private Set<FluxReportIdentifierEntity> fluxReportIdentifiers;
 
     public FluxReportDocumentEntity() {
         super();
     }
 
     public FluxReportDocumentEntity(String fluxReportDocumentId, String referenceId, Date creationDatetime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName, FaReportDocumentEntity faReportDocument) {
-
-        this.fluxReportDocumentId = fluxReportDocumentId;
         this.referenceId = referenceId;
         this.creationDatetime = creationDatetime;
         this.purposeCode = purposeCode;
         this.purposeCodeListId = purposeCodeListId;
         this.purpose = purpose;
-        this.ownerFluxPartyId = ownerFluxPartyId;
-        this.ownerFluxPartyName = ownerFluxPartyName;
         this.faReportDocument = faReportDocument;
     }
 
     public int getId() {
         return this.id;
-    }
-
-    public String getFluxReportDocumentId() {
-        return this.fluxReportDocumentId;
-    }
-
-    public void setFluxReportDocumentId(String fluxReportDocumentId) {
-        this.fluxReportDocumentId = fluxReportDocumentId;
     }
 
     public String getReferenceId() {
@@ -120,22 +107,6 @@ public class FluxReportDocumentEntity implements Serializable {
         this.purpose = purpose;
     }
 
-    public String getOwnerFluxPartyId() {
-        return this.ownerFluxPartyId;
-    }
-
-    public void setOwnerFluxPartyId(String ownerFluxPartyId) {
-        this.ownerFluxPartyId = ownerFluxPartyId;
-    }
-
-    public String getOwnerFluxPartyName() {
-        return this.ownerFluxPartyName;
-    }
-
-    public void setOwnerFluxPartyName(String ownerFluxPartyName) {
-        this.ownerFluxPartyName = ownerFluxPartyName;
-    }
-
     public FaReportDocumentEntity getFaReportDocument() {
         return faReportDocument;
     }
@@ -144,18 +115,31 @@ public class FluxReportDocumentEntity implements Serializable {
         this.faReportDocument = faReportDocument;
     }
 
+    public Set<FluxReportIdentifierEntity> getFluxReportIdentifiers() {
+        return fluxReportIdentifiers;
+    }
+
+    public void setFluxReportIdentifiers(Set<FluxReportIdentifierEntity> fluxReportIdentifiers) {
+        this.fluxReportIdentifiers = fluxReportIdentifiers;
+    }
+
+    public FluxPartyEntity getFluxParty() {
+        return fluxParty;
+    }
+
+    public void setFluxParty(FluxPartyEntity fluxParty) {
+        this.fluxParty = fluxParty;
+    }
+
     @Override
     public String toString() {
         return "FluxReportDocumentEntity{" +
                 "id=" + id +
-                ", fluxReportDocumentId='" + fluxReportDocumentId + '\'' +
                 ", referenceId='" + referenceId + '\'' +
                 ", creationDatetime=" + creationDatetime +
                 ", purposeCode='" + purposeCode + '\'' +
                 ", purposeCodeListId='" + purposeCodeListId + '\'' +
                 ", purpose='" + purpose + '\'' +
-                ", ownerFluxPartyId='" + ownerFluxPartyId + '\'' +
-                ", ownerFluxPartyName='" + ownerFluxPartyName + '\'' +
                '}';
     }
 }

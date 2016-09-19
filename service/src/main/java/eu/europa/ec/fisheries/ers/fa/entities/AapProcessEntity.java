@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,17 +27,14 @@ public class AapProcessEntity implements Serializable {
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 	
-	@Column(name = "type_code", nullable = false)
-	private String typeCode;
-	
-	@Column(name = "type_code_list_id", nullable = false)
-	private String typeCodeListId;
-	
 	@Column(name = "conversion_factor")
 	private Integer conversionFactor;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess", cascade = CascadeType.ALL)
 	private Set<AapProductEntity> aapProducts;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess", cascade = CascadeType.ALL)
+	private Set<AapProcessCodeEntity> aapProcessCode;
 
 	public AapProcessEntity() {
 		super();
@@ -57,25 +53,6 @@ public class AapProcessEntity implements Serializable {
 		this.faCatch = faCatch;
 	}
 
-	
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	
-	public String getTypeCodeListId() {
-		return this.typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	
 	public Integer getConversionFactor() {
 		return this.conversionFactor;
 	}
@@ -94,4 +71,11 @@ public class AapProcessEntity implements Serializable {
 		this.aapProducts = aapProducts;
 	}
 
+	public Set<AapProcessCodeEntity> getAapProcessCode() {
+		return aapProcessCode;
+	}
+
+	public void setAapProcessCode(Set<AapProcessCodeEntity> aapProcessCode) {
+		this.aapProcessCode = aapProcessCode;
+	}
 }

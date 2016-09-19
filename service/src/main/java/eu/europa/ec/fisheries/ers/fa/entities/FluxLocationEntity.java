@@ -70,6 +70,9 @@ public class FluxLocationEntity implements Serializable {
 	@Column(columnDefinition = "text", name = "name")
 	private String name;
 
+	@Column(name = "name_laguage_id")
+	private String nameLanguageId;
+
 	@Column(name = "sovereign_rights_country_code")
 	private String sovereignRightsCountryCode;
 
@@ -291,6 +294,14 @@ public class FluxLocationEntity implements Serializable {
 
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+
+	public String getNameLanguageId() {
+		return nameLanguageId;
+	}
+
+	public void setNameLanguageId(String nameLanguageId) {
+		this.nameLanguageId = nameLanguageId;
 	}
 
 	@Override

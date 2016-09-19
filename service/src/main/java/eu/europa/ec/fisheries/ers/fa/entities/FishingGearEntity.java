@@ -41,12 +41,8 @@ public class FishingGearEntity implements Serializable {
 	@Column(name = "type_code_list_id", nullable = false)
 	private String typeCodeListId;
 
-	@Column(name = "role_code", nullable = false)
-	private String roleCode;
-
-	@Column(name = "role_code_list_id", nullable = false)
-	private String roleCodeListId;
-
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
+	private Set<FishingGearRoleEntity> fishingGearRole;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
 	private Set<GearCharacteristicEntity> gearCharacteristics;
@@ -55,15 +51,13 @@ public class FishingGearEntity implements Serializable {
 		super();
 	}
 
-	public FishingGearEntity(Set<GearCharacteristicEntity> gearCharacteristics, String roleCodeListId, String roleCode, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
+	public FishingGearEntity(Set<GearCharacteristicEntity> gearCharacteristics, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
        	this.gearCharacteristics = gearCharacteristics;
-		this.roleCodeListId = roleCodeListId;
-		this.roleCode = roleCode;
-		this.typeCodeListId = typeCodeListId;
 		this.typeCode = typeCode;
 		this.fishingActivity = fishingActivity;
 		this.gearProblem = gearProblem;
 		this.faCatch = faCatch;
+		this.typeCodeListId = typeCodeListId;
 	}
 
 	public int getId() {
@@ -95,29 +89,6 @@ public class FishingGearEntity implements Serializable {
 		this.typeCode = typeCode;
 	}
 
-	public String getTypeCodeListId() {
-		return this.typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public String getRoleCode() {
-		return this.roleCode;
-	}
-
-	public void setRoleCode(String roleCode) {
-		this.roleCode = roleCode;
-	}
-
-	public String getRoleCodeListId() {
-		return this.roleCodeListId;
-	}
-
-	public void setRoleCodeListId(String roleCodeListId) {
-		this.roleCodeListId = roleCodeListId;
-	}
 
 	public Set<GearCharacteristicEntity> getGearCharacteristics() {
 		return this.gearCharacteristics;
@@ -136,17 +107,19 @@ public class FishingGearEntity implements Serializable {
 		this.gearProblem = gearProblem;
 	}
 
-	@Override
-	public String toString() {
-		return "FishingGearEntity{" +
-				"id=" + id +
-				", faCatch=" + faCatch +
-				", fishingActivity=" + fishingActivity +
-				", gearProblem=" + gearProblem +
-				", typeCode='" + typeCode + '\'' +
-				", typeCodeListId='" + typeCodeListId + '\'' +
-				", roleCode='" + roleCode + '\'' +
-				", roleCodeListId='" + roleCodeListId + '\'' +
-				'}';
+	public Set<FishingGearRoleEntity> getFishingGearRole() {
+		return fishingGearRole;
+	}
+
+	public void setFishingGearRole(Set<FishingGearRoleEntity> fishingGearRole) {
+		this.fishingGearRole = fishingGearRole;
+	}
+
+	public String getTypeCodeListId() {
+		return typeCodeListId;
+	}
+
+	public void setTypeCodeListId(String typeCodeListId) {
+		this.typeCodeListId = typeCodeListId;
 	}
 }
