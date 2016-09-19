@@ -91,7 +91,7 @@ public class ActivityServiceBean implements ActivityService {
         List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByReferenceId(referenceId);
         allFaReportDocuments.addAll(faReportDocumentEntities);
         for (FaReportDocumentEntity faReportDocumentEntity : faReportDocumentEntities) {  //Find all the referenced FA Report recursively
-            allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()));
+            //allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()));
         }
         return allFaReportDocuments;
     }
@@ -236,6 +236,11 @@ public class ActivityServiceBean implements ActivityService {
                 ContactPartyEntity contactParty = contactParties.iterator().next();
                 ContactPersonEntity contactPerson = contactParties.iterator().next().getContactPerson();
                 Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
+                     if (contactPerson != null && structuredAddresses != null && !structuredAddresses.isEmpty()) {
+                         //vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
+                         //vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(structuredAddresses.iterator().next()));
+                     }
+                 }
 
                 if (contactPerson != null && structuredAddresses != null && !structuredAddresses.isEmpty()) {
                     vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
