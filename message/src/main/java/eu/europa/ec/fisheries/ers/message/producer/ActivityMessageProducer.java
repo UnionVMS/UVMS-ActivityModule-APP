@@ -14,11 +14,16 @@ import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 
 import javax.ejb.Local;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.TextMessage;
 
 
 @Local
-public interface MdrMessageProducer {
+public interface ActivityMessageProducer {
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	String sendAssetsModuleSynchronousMessage(String text) throws ActivityMessageException;
 
 	void sendMessageBackToRecipient(TextMessage requestMessage, String returnMessage) throws ActivityMessageException;
 

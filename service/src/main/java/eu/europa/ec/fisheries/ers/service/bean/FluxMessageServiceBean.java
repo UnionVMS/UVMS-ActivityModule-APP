@@ -14,7 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;

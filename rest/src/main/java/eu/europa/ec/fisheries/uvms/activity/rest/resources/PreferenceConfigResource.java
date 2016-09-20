@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.service.bean.PreferenceConfigService;
+import eu.europa.ec.fisheries.ers.service.PreferenceConfigService;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;

@@ -11,5 +11,5 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.message.constants;
 
 public enum ModuleQueue {
-    EXCHANGE, ERSMDRPLUGINQUEUE, RULES;
+    EXCHANGE, ERSMDRPLUGINQUEUE, RULES, ASSET;
 }

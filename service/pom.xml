@@ -135,7 +135,11 @@
 			<artifactId>annotations-java5</artifactId>
 			<version>RELEASE</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-model</artifactId>
+        </dependency>
+    </dependencies>
 
 	<profiles>
 		<profile>

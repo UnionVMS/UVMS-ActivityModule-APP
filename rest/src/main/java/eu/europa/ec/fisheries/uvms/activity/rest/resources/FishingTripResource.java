@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
@@ -63,8 +63,23 @@ public class FishingTripResource extends UnionVMSResource {
                                         @Context HttpServletResponse response,
                                         @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("Fishing Trip summary from fishing trip:"+fishingTripId);
+        LOG.info("Fishing Trip summary from fishing trip : "+fishingTripId);
 
         return createSuccessResponse(activityService.getFishingTripSummary(fishingTripId));
     }
+
+    @GET
+    @Path("/vessel/details/{fishingTripId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
+    public Response getVesselDetails(@Context HttpServletRequest request,
+                                          @Context HttpServletResponse response,
+                                          @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+
+        LOG.info("Getting Vessels details for trip : "+fishingTripId);
+
+        return createSuccessResponse(activityService.getVesselDetailsForFishingTrip(fishingTripId));
+    }
+
 }

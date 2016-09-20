@@ -16,10 +16,9 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
-import eu.europa.ec.fisheries.ers.service.mapper.ContactPersonMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.StructuredAddressMapper;
+import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
@@ -27,13 +26,19 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPe
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -50,6 +55,7 @@ import java.util.*;
 public class ActivityServiceBean implements ActivityService {
 
     static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
 
@@ -58,6 +64,11 @@ public class ActivityServiceBean implements ActivityService {
     private FishingTripDao fishingTripDao;
     private FishingTripIdentifierDao fishingTripIdentifierDao;
 
+    @EJB
+    private ActivityMessageProducer activityProducer;
+
+    @EJB
+    private AssetsMessageConsumerBean activityConsumer;
 
     @PostConstruct
     public void init() {
@@ -119,7 +130,6 @@ public class ActivityServiceBean implements ActivityService {
         } else {
             activityList = fishingActivityDao.getFishingActivityListByQuery(query);
         }
-
 
         if (activityList == null || activityList.isEmpty()) {
             log.info("Could not find FishingActivity entities matching search criteria");
@@ -215,8 +225,9 @@ public class ActivityServiceBean implements ActivityService {
                 return vesselDetailsTripDTO;
             }
 
-            // Fill the name and vesselIdentifier Details.
             VesselTransportMeansEntity vesselTransportMeansEntity = fishingTrip.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+
+            // Fill the name and vesselIdentifier Details.
             vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
             Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
             if (vesselIdentifiers != null) {
@@ -230,36 +241,23 @@ public class ActivityServiceBean implements ActivityService {
             if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null)
                 vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
 
-            // Fill the contactPersons List.
-            /*Set<ContactPartyEntity> contactParties = vesselTransportMeansEntity.getContactParty();
-            if (contactParties != null && !contactParties.isEmpty()) {
-                ContactPartyEntity contactParty = contactParties.iterator().next();
-                ContactPersonEntity contactPerson = contactParties.iterator().next().getContactPerson();
-                Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
-                     if (contactPerson != null && structuredAddresses != null && !structuredAddresses.isEmpty()) {
-                         //vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
-                         //vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(structuredAddresses.iterator().next()));
-                     }
-                 }
-
-                if (contactPerson != null && structuredAddresses != null && !structuredAddresses.isEmpty()) {
-                    vesselDetailsTripDTO.setContactPerson(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPerson));
-                    vesselDetailsTripDTO.setStructuredAddress(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTO(structuredAddresses.iterator().next()));
-                }
-            }*/
-
-            // Fill the contactPersons List.
+            // Fill the contactPersons List and check if is captain.
             Set<ContactPartyEntity> contactParties         = vesselTransportMeansEntity.getContactParty();
-            Set<ContactPersonDetailsDTO> contactPersonsDTO = vesselDetailsTripDTO.getContactPersons();
+            Set<ContactPersonDetailsDTO> contactPersonsListDTO = vesselDetailsTripDTO.getContactPersons();
             if(CollectionUtils.isNotEmpty(contactParties)){
                 for (ContactPartyEntity contactParty : contactParties) {
                     ContactPersonDetailsDTO contactPersDTO           = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactParty.getContactPerson());
                     Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
                     contactPersDTO.setAdresses(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses));
-                    contactPersonsDTO.add(contactPersDTO);
+                    checkAndSetIsCaptain(contactPersDTO, contactParty);
+                    contactPersonsListDTO.add(contactPersDTO);
                 }
-                vesselDetailsTripDTO.setContactPersons(contactPersonsDTO);
+                vesselDetailsTripDTO.setContactPersons(contactPersonsListDTO);
             }
+
+            // If some data are missing from the current DTOs then will make a call to
+            // ASSETS module with the data we already have to enrich it.
+            enrichWithAssetsModuleDataIfNeeded(vesselDetailsTripDTO);
 
         } catch (Exception e) {
             log.error("Error while trying to get Vessel Details.", e);
@@ -268,11 +266,90 @@ public class ActivityServiceBean implements ActivityService {
         return vesselDetailsTripDTO;
     }
 
-    private void setVesselIdentifierDetails(VesselIdentifierEntity vesselIdentifier, VesselDetailsTripDTO vesselDetailsTripDTO) {
+    /**
+     * Checks if the ContactPartyEntity has the captain Role and assigns it to ContactPersonDetailsDTO.isCaptain.
+     *
+     * @param contactPersDTO
+     * @param contactParty
+     */
+    private void checkAndSetIsCaptain(ContactPersonDetailsDTO contactPersDTO, ContactPartyEntity contactParty) {
+        Set<ContactPartyRoleEntity> contactPartyRoles = contactParty.getContactPartyRole();
+        for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
+            contactPersDTO.setCaptain(StringUtils.equalsIgnoreCase(roleEntity.getRoleCode(), "MASTER"));
+        }
+    }
 
+    /**
+     * Enriches the VesselDetailsTripDTO with data got from Assets module.
+     *
+     * @param vesselDetailsTripDTO
+     */
+
+    private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsTripDTO vesselDetailsTripDTO) {
+        if(someVesselDetailsAreMissing(vesselDetailsTripDTO)){
+            String response = null;
+            TextMessage message = null;
+            try {
+                // Create request object;
+                String assetsRequest = AssetsRequestMapper.mapToAssetsRequest(vesselDetailsTripDTO);
+                // Send message to Assets module and get response;
+                String messageID = activityProducer.sendAssetsModuleSynchronousMessage(assetsRequest);
+                message          = activityConsumer.getMessage(messageID, TextMessage.class);
+                response         = message.getText();
+            } catch (Exception e){
+                log.error("Error while trying to send message to Assets module.", e);
+            }
+            if(isFaultMessage(message)){
+                log.error("The Asset module responded with a fault message related to Vessel Details Enrichment: ",response);
+                return;
+            }
+            if(StringUtils.isNotEmpty(response)){
+                try {
+                    AssetsRequestMapper.mapAssetsResponseToVesselDetailsTripDTO(message, vesselDetailsTripDTO);
+                } catch (ModelMarshallException e) {
+                    log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment",e);
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Checks if the related message is a Fault message from Assets module;
+     *
+     * @param response
+     * @return true/false
+     */
+    private boolean isFaultMessage(TextMessage response) {
+        try {
+            AssetFault fault = JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
+            int code = fault.getCode();
+            return true;
+        } catch (ModelMarshallException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if some vessel details are missing
+     *
+     * @param vesselDetailsTripDTO
+     * @return
+     */
+    private boolean someVesselDetailsAreMissing(VesselDetailsTripDTO vesselDetailsTripDTO) {
+        return StringUtils.isEmpty(vesselDetailsTripDTO.getCfr())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getExMark())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getUvi())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getGfcm())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getIccat())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getIrcs())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getName())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getFlagState());
+    }
+
+    private void setVesselIdentifierDetails(VesselIdentifierEntity vesselIdentifier, VesselDetailsTripDTO vesselDetailsTripDTO) {
         String fieldName = vesselIdentifier.getVesselIdentifierSchemeId().toUpperCase();
         String fieldValue = vesselIdentifier.getVesselIdentifierId();
-
         switch (fieldName) {
             case "EXT_MARK":
                 vesselDetailsTripDTO.setExMark(fieldValue);

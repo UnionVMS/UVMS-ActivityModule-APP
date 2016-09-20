@@ -11,18 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.bean.ActivityService;
-import eu.europa.ec.fisheries.ers.service.bean.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.search.Filters;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.ListCriteria;
-import eu.europa.ec.fisheries.ers.service.search.Pagination;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
@@ -44,7 +39,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

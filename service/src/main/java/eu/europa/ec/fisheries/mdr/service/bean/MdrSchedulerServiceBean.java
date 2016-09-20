@@ -32,7 +32,7 @@ import java.util.Collection;
 public class MdrSchedulerServiceBean implements MdrSchedulerService {
 
     public static final String MDR_SYNCHRONIZATION_TIMER = "MDRSynchronizationTimer";
-    private static final TimerConfig TIMER_CONFIG             = new TimerConfig(MDR_SYNCHRONIZATION_TIMER, false);
+    private static final TimerConfig TIMER_CONFIG        = new TimerConfig(MDR_SYNCHRONIZATION_TIMER, false);
 
     @EJB
     private MdrRepository mdrRepository;

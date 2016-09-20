@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.europa.ec.fisheries.ers.service.PreferenceConfigService;
 import eu.europa.ec.fisheries.ers.service.mapper.PreferenceConfigMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;

@@ -21,6 +21,9 @@ import java.util.*;
  */
 public class ContactPersonDetailsDTO {
 
+    @JsonProperty("isCaptain")
+    private boolean isCaptain;
+
     @JsonProperty("title")
     private String title;
 
@@ -62,6 +65,14 @@ public class ContactPersonDetailsDTO {
         this.alias = alias;
     }
 
+    @JsonProperty("isCaptain")
+    public boolean isCaptain() {
+        return isCaptain;
+    }
+    @JsonProperty("isCaptain")
+    public void setCaptain(boolean captain) {
+        isCaptain = captain;
+    }
     @JsonProperty("title")
     public String getTitle() {
         return title;

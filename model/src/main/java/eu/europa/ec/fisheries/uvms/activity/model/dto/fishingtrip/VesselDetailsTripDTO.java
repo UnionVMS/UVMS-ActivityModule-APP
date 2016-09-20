@@ -25,27 +25,43 @@ public class VesselDetailsTripDTO {
 
     @JsonProperty("name")
     private String name;
+    @JsonProperty("nameEnriched")
+    private boolean nameEnriched;
 
     @JsonProperty("exMark")
     private String exMark;
+    @JsonProperty("exMarkEnriched")
+    private boolean exMarkEnriched;
 
     @JsonProperty("flagState")
     private String flagState;
+    @JsonProperty("flagStateEnriched")
+    private boolean flagStateEnriched;
 
     @JsonProperty("ircs")
     private String ircs;
+    @JsonProperty("ircsEnriched")
+    private boolean ircsEnriched;
 
     @JsonProperty("cfr")
     private String cfr;
+    @JsonProperty("cfrEnriched")
+    private boolean cfrEnriched;
 
     @JsonProperty("uvi")
     private String uvi;
+    @JsonProperty("uviEnriched")
+    private boolean uviEnriched;
 
     @JsonProperty("iccat")
     private String iccat;
+    @JsonProperty("iccatEnriched")
+    private boolean iccatEnriched;
 
     @JsonProperty("gfcm")
     private String gfcm;
+    @JsonProperty("gfcmEnriched")
+    private boolean gfcmEnriched;
 
     @JsonProperty("contactPersons")
     private Set<ContactPersonDetailsDTO> contactPersons = new HashSet<>();
@@ -116,5 +132,52 @@ public class VesselDetailsTripDTO {
     public void setContactPersons(Set<ContactPersonDetailsDTO> contPersons) {
         this.contactPersons = contPersons;
     }
-
+    public boolean isNameEnriched() {
+        return nameEnriched;
+    }
+    public void setNameEnriched(boolean nameEnriched) {
+        this.nameEnriched = nameEnriched;
+    }
+    public boolean isExMarkEnriched() {
+        return exMarkEnriched;
+    }
+    public void setExMarkEnriched(boolean exMarkEnriched) {
+        this.exMarkEnriched = exMarkEnriched;
+    }
+    public boolean isFlagStateEnriched() {
+        return flagStateEnriched;
+    }
+    public void setFlagStateEnriched(boolean flagStateEnriched) {
+        this.flagStateEnriched = flagStateEnriched;
+    }
+    public boolean isIrcsEnriched() {
+        return ircsEnriched;
+    }
+    public void setIrcsEnriched(boolean ircsEnriched) {
+        this.ircsEnriched = ircsEnriched;
+    }
+    public boolean isCfrEnriched() {
+        return cfrEnriched;
+    }
+    public void setCfrEnriched(boolean cfrEnriched) {
+        this.cfrEnriched = cfrEnriched;
+    }
+    public boolean isUviEnriched() {
+        return uviEnriched;
+    }
+    public void setUviEnriched(boolean uviEnriched) {
+        this.uviEnriched = uviEnriched;
+    }
+    public boolean isIccatEnriched() {
+        return iccatEnriched;
+    }
+    public void setIccatEnriched(boolean iccatEnriched) {
+        this.iccatEnriched = iccatEnriched;
+    }
+    public boolean isGfcmEnriched() {
+        return gfcmEnriched;
+    }
+    public void setGfcmEnriched(boolean gfcmEnriched) {
+        this.gfcmEnriched = gfcmEnriched;
+    }
 }

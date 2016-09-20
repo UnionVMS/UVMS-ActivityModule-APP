@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;

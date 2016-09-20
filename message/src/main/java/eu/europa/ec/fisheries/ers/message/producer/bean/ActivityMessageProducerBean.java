@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.ers.message.producer.bean;
 
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.AbstractMessageProducer;
-import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
+import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import javax.jms.*;
 
 @Slf4j
 @Stateless
-public class MdrMessageProducerBean extends AbstractMessageProducer implements MdrMessageProducer {
+public class ActivityMessageProducerBean extends AbstractMessageProducer implements ActivityMessageProducer {
 	
     @Resource(lookup = MessageConstants.CONNECTION_FACTORY)
     private ConnectionFactory connectionFactory;
@@ -34,7 +34,7 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
     private Connection connection;
 
 	@Resource(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE)
-	private Queue responseQueue;
+    private Queue responseQueue;
 
 	@Resource(mappedName = MessageConstants.EXCHANGE_MODULE_QUEUE)
 	private Queue exchangeQueue;
@@ -44,6 +44,12 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 	
 	@Resource(mappedName = MessageConstants.RULES_EVENT_QUEUE)
 	private Queue rulesQueue;
+
+    @Resource(mappedName = MessageConstants.ASSET_MODULE_QUEUE)
+    private Queue assetsQueue;
+
+    @Resource(mappedName = MessageConstants.ACTIVITY_MESSAGE_QUEUE)
+    private Queue activitySyncQueue;
 
 	
 	/**
@@ -67,7 +73,7 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
 	
     /**
      * Sends a message to a given Queue.
-     * 
+     *
      * @param  text (the message to be sent)
      * @param  queue
      * @return JMSMessageID
@@ -92,14 +98,35 @@ public class MdrMessageProducerBean extends AbstractMessageProducer implements M
                 default:
                     throw new ActivityMessageException("Queue not defined or implemented");
             }
-
             return message.getJMSMessageID();
         } catch (Exception e) {
             log.error("[ Error when sending data source message. ] {}", e);
             throw new ActivityMessageException(e.getMessage());
         }
     }
-	
+
+    /**
+     * Sends a message to Assets Module Queue
+     *
+     * @param text
+     * @return
+     * @throws ActivityMessageException
+     */
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public String sendAssetsModuleSynchronousMessage(String text) throws ActivityMessageException {
+        try {
+            Session session     = getNewSession();
+            TextMessage message = session.createTextMessage();
+            message.setJMSReplyTo(activitySyncQueue);
+            message.setText(text);
+            getProducer(session, assetsQueue).send(message);
+            return message.getJMSMessageID();
+        } catch (Exception e) {
+            log.error("[ Error when sending data source message. ] {}", e);
+            throw new ActivityMessageException(e.getMessage());
+        }
+    }
 	
     /**
      * Sends a message to the recipient of the message (once a response is recieved)

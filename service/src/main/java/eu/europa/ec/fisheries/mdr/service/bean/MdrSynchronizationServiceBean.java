@@ -9,7 +9,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.service.bean;
 
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
-import eu.europa.ec.fisheries.ers.message.producer.MdrMessageProducer;
+import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
@@ -58,7 +58,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 	private MdrStatusRepository statusRepository;
 
 	@EJB
-	private MdrMessageProducer producer;
+	private ActivityMessageProducer producer;
 
 	private static final String OBJ_DATA_ALL = "OBJ_DATA_ALL";
 

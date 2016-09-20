@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.EventService;
+import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
@@ -38,7 +39,8 @@ import java.io.StringReader;
 public class ActivityEventServiceBean implements EventService {
     final static Logger LOG = LoggerFactory.getLogger(ActivityEventServiceBean.class);
 
-    private @EJB  FluxMessageService fluxMessageService;
+    private @EJB
+    FluxMessageService fluxMessageService;
 
     @Override
     public void GetFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
