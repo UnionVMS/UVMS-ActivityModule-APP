@@ -39,6 +39,7 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "referenceId", expression = "java(getIdType(fluxReportDocument.getReferencedID()))"),
+            @Mapping(target = "referenceSchemeId", expression = "java(getIdTypeSchemaId(fluxReportDocument.getReferencedID()))"),
             @Mapping(target = "creationDatetime", expression = "java(convertToDate(fluxReportDocument.getCreationDateTime()))"),
             @Mapping(target = "purposeCode", expression = "java(getCodeType(fluxReportDocument.getPurposeCode()))"),
             @Mapping(target = "purposeCodeListId", expression = "java(getCodeTypeListId(fluxReportDocument.getPurposeCode()))"),

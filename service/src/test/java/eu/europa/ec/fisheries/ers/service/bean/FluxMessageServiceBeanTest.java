@@ -78,14 +78,14 @@ public class FluxMessageServiceBeanTest {
         //Mock the APIs
         Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
         Mockito.doNothing().when(faReportDocumentDao).updateAllFaData(Mockito.any(List.class));
-        Mockito.doReturn(getMockedFishingActivityReportEntities()).when(faReportDocumentDao).findFaReportsByIds(Mockito.any(Set.class));
+        Mockito.doReturn(getMockedFishingActivityReportEntities()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(Set.class));
 
         // Trigger
         fluxMessageService.saveFishingActivityReportDocuments(faReportDocuments, FaReportSourceEnum.FLUX);
 
         //Verify
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).bulkUploadFaData(Mockito.any(List.class));
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportsByIds(Mockito.any(Set.class));
+        Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportByIdAndScheme(Mockito.any(Set.class));
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).updateAllFaData(captor.capture());
 
         //Test

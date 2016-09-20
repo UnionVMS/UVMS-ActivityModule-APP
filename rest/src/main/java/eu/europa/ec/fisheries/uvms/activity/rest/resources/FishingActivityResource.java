@@ -118,25 +118,15 @@ public class FishingActivityResource extends UnionVMSResource {
     }
 
     @GET
-    @Path("/history/{referenceId}")
+    @Path("/history/{referenceId}/{schemeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getAllCorrections(@Context HttpServletRequest request,
                                       @Context HttpServletResponse response,
-                                      @PathParam("referenceId") String referenceId) throws ServiceException {
+                                      @PathParam("referenceId") String referenceId,
+                                      @PathParam("schemeId") String schemeId) throws ServiceException {
 
-        return createSuccessResponse(activityService.getFaReportCorrections(referenceId));
-    }
-
-    @GET
-    @Path("/report/details/{uniqueId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Interceptors(ActivityExceptionInterceptor.class)
-    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.VIEW_FA_REPORT_DETAILS})
-    public Response getFaReportDetails(@Context HttpServletRequest request,
-                                       @Context HttpServletResponse response,
-                                       @PathParam("uniqueId") String uniqueId) throws ServiceException {
-        return createSuccessResponse(activityService.getFaReportDocumentDetails(uniqueId));
+        return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
     }
 }

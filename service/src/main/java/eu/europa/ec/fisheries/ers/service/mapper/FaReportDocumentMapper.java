@@ -52,29 +52,17 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, @MappingTarget FaReportDocumentEntity faReportDocumentEntity, FaReportSourceEnum faReportSourceEnum);
 
     @Mappings({
+            @Mapping(target = "id", source = "id"),
             @Mapping(target = "correctionType", source = "status"),
-            @Mapping(target = "correctionDate", source = "fluxReportDocument.creationDatetime"),
-            //@Mapping(target = "faReportIdentifier", source = "fluxReportDocument.fluxReportDocumentId"),
-            //@Mapping(target = "ownerFluxParty", source = "fluxReportDocument.ownerFluxPartyId")
+            @Mapping(target = "creationDate", source = "fluxReportDocument.creationDatetime"),
+            @Mapping(target = "acceptedDate", source = "acceptedDatetime"),
+            @Mapping(target = "faReportIdentifiers", expression = "java(getReportIdMap(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers()))"),
+            @Mapping(target = "ownerFluxPartyName", source = "fluxReportDocument.fluxParty.fluxPartyName"),
+            @Mapping(target = "purposeCode", expression = "java(getPurposeCode(faReportDocumentEntity.getFluxReportDocument().getPurposeCode()))")
     })
     public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
 
     public abstract List<FaReportCorrectionDTO> mapToFaReportCorrectionDtoList(List<FaReportDocumentEntity> faReportDocumentEntities);
-
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode"),
-            @Mapping(target = "fmcMarker", source = "fmcMarker"),
-            @Mapping(target = "acceptedDateTime", source = "acceptedDatetime"),
-            @Mapping(target = "creationDateTime", source = "fluxReportDocument.creationDatetime"),
-            //@Mapping(target = "fluxReportDocumentId", source = "fluxReportDocument.fluxReportDocumentId"),
-            @Mapping(target = "purposeCode", source = "fluxReportDocument.purposeCode"),
-            @Mapping(target = "referenceId", source = "fluxReportDocument.referenceId"),
-            //@Mapping(target = "ownerFluxPartyId", source = "fluxReportDocument.ownerFluxPartyId"),
-            @Mapping(target = "status", source = "status"),
-            @Mapping(target = "vesselDetails", source = "vesselTransportMeans"),
-            @Mapping(target = "fishingActivityDetails", source = "fishingActivities")
-    })
-    public abstract FaReportDocumentDetailsDTO mapToFaReportDocumentDetailsDTO(FaReportDocumentEntity faReportDocumentEntity);
 
     @Mappings({
             @Mapping(target = "faReportIdentifierId", expression = "java(getIdType(idType))"),

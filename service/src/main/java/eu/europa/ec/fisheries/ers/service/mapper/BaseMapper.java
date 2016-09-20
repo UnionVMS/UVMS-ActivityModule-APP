@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
@@ -18,8 +19,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by padhyad on 6/14/2016.
@@ -154,5 +154,22 @@ public abstract class BaseMapper {
 
     protected String getCountrySchemeId(VesselCountry country) {
         return getIdTypeSchemaId(country.getID());
+    }
+
+    protected Map<String, String> getReportIdMap(Collection<FluxReportIdentifierEntity> identifiers) {
+        Map<String, String> recordMap = new HashMap<>();
+        for (FluxReportIdentifierEntity identifier : identifiers) {
+            recordMap.put(identifier.getFluxReportIdentifierId(), identifier.getFluxReportIdentifierSchemeId());
+        }
+        return recordMap;
+    }
+
+    protected Integer getPurposeCode(String purposeCode) {
+        try {
+            return Integer.parseInt(purposeCode);
+        } catch (NumberFormatException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 }

@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,33 +34,27 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
         return em;
     }
 
-    private static final String REPORT_IDS = "reportIds";
+    private static final String REPORT_ID = "reportId";
+    private static final String SCHEME_ID = "schemeId";
 
     /**
      * Get FaReportDocument by one or more Report identifiers
      *
-     * @param strings
-     * @return List<FaReportDocumentEntity>
+     * @param reportId
+     * @param schemeId
+     * @return FaReportDocumentEntity
      * @throws ServiceException
      */
-    public List<FaReportDocumentEntity> findFaReportsByIds(Collection<String> strings) throws ServiceException {
-        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID, FaReportDocumentEntity.class);
-        query.setParameter(REPORT_IDS, strings);
-        return query.getResultList();
+    public FaReportDocumentEntity findFaReportByIdAndScheme(String reportId, String schemeId) throws ServiceException {
+        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
+        query.setParameter(REPORT_ID, reportId);
+        query.setParameter(SCHEME_ID, schemeId);
+        query.setMaxResults(1);
+        List<FaReportDocumentEntity> entities = query.getResultList();
+        if (!entities.isEmpty()) {
+            return entities.get(0);
+        } else {
+            return null;
+        }
     }
-
-    /**
-     * Find Fa Report document by reference id of a Fishing activity Report
-     *
-     * @param referenceId Reference Id
-     * @return List<FaReportDocumentEntity>
-     * @throws ServiceException
-     */
-    public List<FaReportDocumentEntity> findFaReportsByReferenceId(String referenceId) throws ServiceException {
-        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_REF_ID, FaReportDocumentEntity.class);
-        query.setParameter(REPORT_IDS, referenceId);
-        return query.getResultList();
-    }
-
-
 }

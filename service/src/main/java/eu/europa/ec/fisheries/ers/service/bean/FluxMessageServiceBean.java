@@ -12,15 +12,13 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.IDType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -64,36 +62,24 @@ public class FluxMessageServiceBean implements FluxMessageService {
         updateFaReportCorrections(faReportDocuments);
     }
 
+    /**
+     * If there is a reference Id exist for any of the FaReport Document, than it means this is an update to an existing report.
+     */
     private void updateFaReportCorrections(List<FAReportDocument> faReportDocuments) throws ServiceException {
-        Map<String, String> referenceIdMap = new HashMap<>();
-        for (FAReportDocument faReportDocument : faReportDocuments) { // Get All the Report IDs that needs correction from the referenceId of FluxReport document
-            IDType referenceType = faReportDocument.getRelatedFLUXReportDocument().getReferencedID();
-            log.info("Reference Id to be corrected : " + referenceType);
-            CodeType purposeCodeType = faReportDocument.getRelatedFLUXReportDocument().getPurposeCode();
-            if (referenceType != null) {
-                referenceIdMap.put(referenceType.getValue(), purposeCodeType.getValue());
+        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
+        for (FAReportDocument faReportDocument : faReportDocuments) {
+            if (faReportDocument.getRelatedFLUXReportDocument().getReferencedID() != null &&
+                    faReportDocument.getRelatedFLUXReportDocument().getPurposeCode() != null) {
+                FaReportDocumentEntity faReportDocumentEntity = faReportDocumentDao.findFaReportByIdAndScheme(
+                        faReportDocument.getRelatedFLUXReportDocument().getReferencedID().getValue(),
+                        faReportDocument.getRelatedFLUXReportDocument().getReferencedID().getSchemeID()); // Find the existing report by using reference Id and scheme Id
+                if (faReportDocumentEntity != null) { // If found then update the entity with respect to purpose code in the Report
+                    FaReportStatusEnum faReportStatusEnum = FaReportStatusEnum.getFaReportStatusEnum(Integer.parseInt(faReportDocument.getRelatedFLUXReportDocument().getPurposeCode().getValue()));
+                    faReportDocumentEntity.setStatus(faReportStatusEnum.getStatus());
+                    faReportDocumentEntities.add(faReportDocumentEntity);
+                }
             }
+            faReportDocumentDao.updateAllFaData(faReportDocumentEntities); // Update all the Entities together
         }
-
-        // Find all the FA reports corresponds to the reference Id that need to be corrected.
-        // if any FluxReportDocument.referenceId is equals to FluxReportDocument.fluxReportDocumentId list then the later FAReport needs to be corrected
-        // Update all the records with the appropriate Status received in the message (status = purpose code)
-
-        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByIds(referenceIdMap.keySet());
-        for (FaReportDocumentEntity faReportDocumentEntity : faReportDocumentEntities) {
-            String purposeCode;
-            /*if (referenceIdMap.get(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()) != null) {
-                purposeCode = referenceIdMap.get(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId());
-                log.debug("Purpose code : " + purposeCode);
-                FaReportStatusEnum faReportStatusEnum = FaReportStatusEnum.getFaReportStatusEnum(Integer.parseInt(purposeCode));
-                faReportDocumentEntity.setStatus(faReportStatusEnum.getStatus());
-            }*/
-        }
-        log.info("Update the entities with status");
-        faReportDocumentDao.updateAllFaData(faReportDocumentEntities);
-    }
-
-    private String getFluxReportIdByReferenceId(Set<FluxReportIdentifierEntity> fluxReportIdentifiers, Map<String, String> referenceIdMap) {
-        return null;
     }
 }

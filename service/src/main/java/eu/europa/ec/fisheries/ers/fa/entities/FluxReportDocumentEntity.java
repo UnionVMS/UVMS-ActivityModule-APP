@@ -27,6 +27,9 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(name = "reference_id")
     private String referenceId;
 
+    @Column(name = "reference_scheme_id")
+    private String referenceSchemeId;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_datetime", nullable = false, length = 29)
     private Date creationDatetime;
@@ -73,6 +76,14 @@ public class FluxReportDocumentEntity implements Serializable {
 
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
+    }
+
+    public String getReferenceSchemeId() {
+        return referenceSchemeId;
+    }
+
+    public void setReferenceSchemeId(String referenceSchemeId) {
+        this.referenceSchemeId = referenceSchemeId;
     }
 
     public Date getCreationDatetime() {

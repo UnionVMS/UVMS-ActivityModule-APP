@@ -17,18 +17,12 @@ import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import junit.framework.Assert;
 import lombok.SneakyThrows;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 
 import javax.transaction.Transactional;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -75,7 +69,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
         String identifier = entity.getFaReportIdentifiers().iterator().next().getFaReportIdentifierId();
 
-        List<FaReportDocumentEntity> entities = dao.findFaReportsByIds(new HashSet<String>(Arrays.asList(identifier)));
+        List<FaReportDocumentEntity> entities = dao.findFaReportByIdAndScheme(new HashSet<String>(Arrays.asList(identifier)));
         assertNotNull(entities);
         assertEquals(entity.getTypeCode(), entities.get(0).getTypeCode());
         assertEquals(entity.getTypeCodeListId(), entities.get(0).getTypeCodeListId());

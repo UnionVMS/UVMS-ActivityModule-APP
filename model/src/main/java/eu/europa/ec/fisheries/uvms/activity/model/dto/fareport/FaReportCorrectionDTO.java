@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by padhyad on 8/5/2016.
@@ -26,26 +27,49 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FaReportCorrectionDTO implements Serializable, Comparable {
 
+    @JsonProperty("id")
+    private String id;
+
     @JsonProperty("correctionType")
     private String correctionType;
 
-    @JsonProperty("correctionDate")
+    @JsonProperty("creationDate")
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-    private Date correctionDate;
+    private Date creationDate;
 
-    @JsonProperty("faReportIdentifier")
-    private String faReportIdentifier;
+    @JsonProperty("acceptedDate")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    private Date acceptedDate;
 
-    @JsonProperty("ownerFluxParty")
-    private String ownerFluxParty;
+    @JsonProperty("faReportIdentifiers")
+    private Map<String, String> faReportIdentifiers;
+
+    @JsonProperty("ownerFluxPartyName")
+    private String ownerFluxPartyName;
+
+    @JsonProperty("purposeCode")
+    private Integer purposeCode;
 
     public FaReportCorrectionDTO() {}
 
-    public FaReportCorrectionDTO(String correctionType, Date correctionDate, String faReportIdentifier, String ownerFluxParty) {
+    public FaReportCorrectionDTO(String id, String correctionType, Date creationDate, Date acceptedDate, Map<String, String> faReportIdentifiers, String ownerFluxPartyName, Integer purposeCode) {
+        this.id = id;
         this.correctionType = correctionType;
-        this.correctionDate = correctionDate;
-        this.faReportIdentifier = faReportIdentifier;
-        this.ownerFluxParty = ownerFluxParty;
+        this.creationDate = creationDate;
+        this.acceptedDate = acceptedDate;
+        this.faReportIdentifiers = faReportIdentifiers;
+        this.ownerFluxPartyName = ownerFluxPartyName;
+        this.purposeCode = purposeCode;
+    }
+
+    @JsonProperty("id")
+    public String getId() {
+        return id;
+    }
+
+    @JsonProperty("id")
+    public void setId(String id) {
+        this.id = id;
     }
 
     @JsonProperty("correctionType")
@@ -58,38 +82,58 @@ public class FaReportCorrectionDTO implements Serializable, Comparable {
         this.correctionType = correctionType;
     }
 
-    @JsonProperty("correctionDate")
-    public Date getCorrectionDate() {
-        return correctionDate;
+    @JsonProperty("creationDate")
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    @JsonProperty("correctionDate")
-    public void setCorrectionDate(Date correctionDate) {
-        this.correctionDate = correctionDate;
+    @JsonProperty("creationDate")
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
-    @JsonProperty("faReportIdentifier")
-    public String getFaReportIdentifier() {
-        return faReportIdentifier;
+    @JsonProperty("acceptedDate")
+    public Date getAcceptedDate() {
+        return acceptedDate;
     }
 
-    @JsonProperty("faReportIdentifier")
-    public void setFaReportIdentifier(String faReportIdentifier) {
-        this.faReportIdentifier = faReportIdentifier;
+    @JsonProperty("acceptedDate")
+    public void setAcceptedDate(Date acceptedDate) {
+        this.acceptedDate = acceptedDate;
     }
 
-    @JsonProperty("ownerFluxParty")
-    public String getOwnerFluxParty() {
-        return ownerFluxParty;
+    @JsonProperty("faReportIdentifiers")
+    public Map<String, String> getFaReportIdentifiers() {
+        return faReportIdentifiers;
     }
 
-    @JsonProperty("ownerFluxParty")
-    public void setOwnerFluxParty(String ownerFluxParty) {
-        this.ownerFluxParty = ownerFluxParty;
+    @JsonProperty("faReportIdentifiers")
+    public void setFaReportIdentifiers(Map<String, String> faReportIdentifiers) {
+        this.faReportIdentifiers = faReportIdentifiers;
+    }
+
+    @JsonProperty("ownerFluxPartyName")
+    public String getOwnerFluxPartyName() {
+        return ownerFluxPartyName;
+    }
+
+    @JsonProperty("ownerFluxPartyName")
+    public void setOwnerFluxPartyName(String ownerFluxPartyName) {
+        this.ownerFluxPartyName = ownerFluxPartyName;
+    }
+
+    @JsonProperty("purposeCode")
+    public Integer getPurposeCode() {
+        return purposeCode;
+    }
+
+    @JsonProperty("purposeCode")
+    public void setPurposeCode(Integer purposeCode) {
+        this.purposeCode = purposeCode;
     }
 
     @Override
     public int compareTo(Object o) {
-        return correctionDate.compareTo(((FaReportCorrectionDTO) o).getCorrectionDate());
+        return acceptedDate.compareTo(((FaReportCorrectionDTO) o).getAcceptedDate());
     }
 }

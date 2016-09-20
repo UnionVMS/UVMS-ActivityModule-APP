@@ -80,48 +80,31 @@ public class ActivityServiceBean implements ActivityService {
         fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<FaReportCorrectionDTO> getFaReportCorrections(String selectedFaReportId) throws ServiceException {
-        List<FaReportDocumentEntity> faReportDocumentEntities = getReferencedFaReportDocuments(selectedFaReportId);
+    public List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException {
+        List<FaReportDocumentEntity> faReportDocumentEntities = getReferencedFaReportDocuments(refReportId, refSchemeId);
         List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(faReportDocumentEntities);
-        if (!faReportCorrectionDTOs.isEmpty()) {
-            log.info("Sort collection by date if the list is not empty");
-            Collections.sort(faReportCorrectionDTOs);
-        }
+        log.info("Sort collection by date before sending");
+        Collections.sort(faReportCorrectionDTOs);
         return faReportCorrectionDTOs;
     }
 
-    private List<FaReportDocumentEntity> getReferencedFaReportDocuments(String referenceId) throws ServiceException {
-        if (referenceId == null) {
+    private List<FaReportDocumentEntity> getReferencedFaReportDocuments(String refReportId, String refSchemeId) throws ServiceException {
+        if (refReportId == null || refSchemeId == null) {
             return Collections.emptyList();
         }
-        log.info("Find reference fishing activity report for  : " + referenceId);
+        log.info("Find reference fishing activity report for : " + refReportId + " scheme Id : " + refReportId);
         List<FaReportDocumentEntity> allFaReportDocuments = new ArrayList<>();
-        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByReferenceId(referenceId);
-        allFaReportDocuments.addAll(faReportDocumentEntities);
-        for (FaReportDocumentEntity faReportDocumentEntity : faReportDocumentEntities) {  //Find all the referenced FA Report recursively
-            //allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId()));
+        FaReportDocumentEntity faReportDocumentEntity = faReportDocumentDao.findFaReportByIdAndScheme(refReportId, refSchemeId);
+        if (faReportDocumentEntity != null) {
+            allFaReportDocuments.add(faReportDocumentEntity);
+            allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getReferenceId(),
+                    faReportDocumentEntity.getFluxReportDocument().getReferenceSchemeId()));
         }
         return allFaReportDocuments;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public FaReportDocumentDetailsDTO getFaReportDocumentDetails(String faReportDocumentId) throws ServiceException {
-        log.info("Find Fa Report document for report Id : " + faReportDocumentId);
-        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findFaReportsByIds(Arrays.asList(faReportDocumentId));
-        if (faReportDocumentEntities == null || faReportDocumentEntities.isEmpty()) {
-            throw new ServiceException("Report Does not Exist");
-        }
-        FaReportDocumentEntity faReportDocumentEntity = faReportDocumentEntities.get(0);
-        log.info("Map first element from the list to DTO");
-        return FaReportDocumentMapper.INSTANCE.mapToFaReportDocumentDetailsDTO(faReportDocumentEntity);
     }
 
     @Override

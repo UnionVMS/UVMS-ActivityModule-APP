@@ -48,14 +48,16 @@ public interface ActivityService {
     /**
      * <p>
      * This service returns the list of corrections (e.g. deletes, cancels, updates) received previously for a Fishing Activity report
-     * Corrections are identified by the <code>referenceId</code> of the selected <code>FaReportDocumentId</code> recursively.
+     * Corrections are identified by the <code>referenceId</code> of the selected <code>FluxReportDocument.FluxReportIdentifier</code> recursively.
      * </p>
      *
-     * @param selectedFaReportId selected FA report Id
+     * @param refReportId selected FA report Reference Id
+     * @param refSchemeId selected FA scheme Reference Id
      * @return List<FaReportCorrectionDTO> list of corrections made
      * @throws ServiceException Exception
      */
-    List<FaReportCorrectionDTO> getFaReportCorrections(String selectedFaReportId) throws ServiceException;
+    List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException;
+
 
 
     /**
@@ -66,19 +68,6 @@ public interface ActivityService {
      * @throws ServiceException
      */
     FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException;
-
-
-    /**
-     * <p>
-     * This service returns the Fishing activity report details. It contains the complete detail of the fishing activity
-     * along with catches, flux location, trips, vessels identity, contact address Etc.
-     * </p>
-     *
-     * @param faReportDocumentId unique identifier of the FA Report
-     * @return FaReportDocumentDetailsDTO
-     * @throws ServiceException Exception
-     */
-    FaReportDocumentDetailsDTO getFaReportDocumentDetails(String faReportDocumentId) throws ServiceException;
 
     /**
      * This service returns cronological order of Fishing Trip Ids.
