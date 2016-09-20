@@ -323,6 +323,42 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 	  );
 
+
+	protected static final Operation INSERT_ERS_FLUX_REPORT_IDENTIFIER_DATA = sequenceOf(
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(1, 1, "FLUX_REPORT_ID1", "FLUX_SCHEME_ID1")
+					.build(),
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(2, 1, "FLUX_REPORT_ID2", "FLUX_SCHEME_ID1")
+					.build(),
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(3, 1, "FLUX_REPORT_ID3", "FLUX_SCHEME_ID1")
+					.build(),
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(4, 2, "FLUX_REPORT_ID4", "FLUX_SCHEME_ID1")
+					.build(),
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(5, 3, "FLUX_REPORT_ID5", "FLUX_SCHEME_ID1")
+					.build(),
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(6, 4, "FLUX_REPORT_ID6", "FLUX_SCHEME_ID1")
+					.build(),
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(7, 5, "FLUX_REPORT_ID7", "FLUX_SCHEME_ID1")
+					.build(),
+			insertInto("activity.activity_flux_report_identifier")
+					.columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
+					.values(8, 5, "FLUX_REPORT_ID8", "FLUX_SCHEME_ID1")
+					.build()
+
+	);
 		
 			
 		//vessel_transport_means_id

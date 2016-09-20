@@ -122,10 +122,12 @@ public class FishingActivityDTO {
         this.delimitedPeriod = delimitedPeriod;
     }
 
+    @JsonProperty("uniqueReportId")
     public List<FluxReportIdentifierDTO> getUniqueFAReportId() {
         return uniqueFAReportId;
     }
 
+    @JsonProperty("uniqueReportId")
     public void setUniqueFAReportId(List<FluxReportIdentifierDTO> uniqueFAReportId) {
         this.uniqueFAReportId = uniqueFAReportId;
     }
