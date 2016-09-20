@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
@@ -27,15 +28,13 @@ import java.util.List;
 public class FishingActivityDTO {
 
     @JsonProperty("uniqueReportId")
-    private String uniqueReportId;
-
-    @JsonProperty("fishingActivityId")
-    private int fishingActivityId;
+    private List<FluxReportIdentifierDTO> uniqueFAReportId;
 
     @JsonProperty("activityType")
     private String activityType;
 
     @JsonProperty("occurence")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private Date occurence;
 
     @JsonProperty("reason")
@@ -52,26 +51,6 @@ public class FishingActivityDTO {
 
     @JsonProperty("delimitedPeriod")
     private List<DelimitedPeriodDTO> delimitedPeriod;
-
-    @JsonProperty("uniqueReportId")
-    public String getUniqueReportId() {
-        return uniqueReportId;
-    }
-
-    @JsonProperty("uniqueReportId")
-    public void setUniqueReportId(String uniqueReportId) {
-        this.uniqueReportId = uniqueReportId;
-    }
-
-    @JsonProperty("fishingActivityId")
-    public int getFishingActivityId() {
-        return fishingActivityId;
-    }
-
-    @JsonProperty("fishingActivityId")
-    public void setFishingActivityId(int fishingActivityId) {
-        this.fishingActivityId = fishingActivityId;
-    }
 
     @JsonProperty("activityType")
     public String getActivityType() {
@@ -141,5 +120,13 @@ public class FishingActivityDTO {
     @JsonProperty("delimitedPeriod")
     public void setDelimitedPeriod(List<DelimitedPeriodDTO> delimitedPeriod) {
         this.delimitedPeriod = delimitedPeriod;
+    }
+
+    public List<FluxReportIdentifierDTO> getUniqueFAReportId() {
+        return uniqueFAReportId;
+    }
+
+    public void setUniqueFAReportId(List<FluxReportIdentifierDTO> uniqueFAReportId) {
+        this.uniqueFAReportId = uniqueFAReportId;
     }
 }

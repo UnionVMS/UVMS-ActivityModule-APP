@@ -113,12 +113,23 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 	   );
 
 
-		protected static final Operation INSERT_ERS_SIZE_DISTRIBUTION_DATA = sequenceOf(
+	protected static final Operation INSERT_ERS_SIZE_DISTRIBUTION_DATA = sequenceOf(
 	            insertInto("activity.activity_size_distribution")
-	                    .columns("id", "class_code", "class_code_list_id", "category_code", "category_code_list_id")
-	                    .values(1, "LSC","FA_SIZE_CLASS","FA_SIZE_CATEGORY","FA_SIZE_CATEGORY")
+	                    .columns("id", "category_code", "category_code_list_id")
+	                    .values(1, "FA_SIZE_CATEGORY","FA_SIZE_CATEGORY")
 	                    .build()
-	    );
+	);
+
+	protected static final Operation INSERT_ERS_SIZE_DISTRIBUTION_CLASSCODE_DATA = sequenceOf(
+			insertInto("activity.activity_size_distribution_classcode")
+					.columns("id","size_distribution_id", "class_code", "class_code_list_id")
+					.values(1, 1,"LSC","FISH_SIZE_CLASS")
+					.build(),
+			insertInto("activity.activity_size_distribution_classcode")
+					.columns("id","size_distribution_id", "class_code", "class_code_list_id")
+					.values(2, 1,"BMS","FISH_SIZE_CLASS")
+					.build()
+	);
 		
 		protected static final Operation INSERT_ERS_FA_CATCH_DATA = sequenceOf(
 	            insertInto("activity.activity_fa_catch")
@@ -146,12 +157,23 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 	protected static final Operation INSERT_ERS_AAP_PROCESS_DATA = sequenceOf(
 			insertInto("activity.activity_aap_process")
-					.columns("id", "type_code", "type_code_list_id", "conversion_factor", "fa_catch_id")
-					.values(1, "FISH_PRESENTATION", "FLUX_ PROCESS_TYPE", 3, 1)
+					.columns("id", "conversion_factor", "fa_catch_id")
+					.values(1,  3, 1)
 					.build(),
 			insertInto("activity.activity_aap_process")
-					.columns("id", "type_code", "type_code_list_id", "conversion_factor", "fa_catch_id")
-					.values(2, "FISH_PRESERVATION", "FLUX_ PROCESS_TYPE", 3, 1)
+					.columns("id", "conversion_factor", "fa_catch_id")
+					.values(2,  3, 1)
+					.build()
+	);
+
+	protected static final Operation INSERT_ERS_AAP_PROCESS_CODE_DATA = sequenceOf(
+			insertInto("activity.activity_aap_process_code")
+					.columns("id", "aap_process_id","type_code", "type_code_list_id")
+					.values(1,1, "FISH_PRESENTATION", "FLUX_ PROCESS_TYPE")
+					.build(),
+			insertInto("activity.activity_aap_process_code")
+					.columns("id", "aap_process_id","type_code", "type_code_list_id")
+					.values(2, 1,"FISH_PRESERVATION", "FLUX_ PROCESS_TYPE")
 					.build()
 	);
 
@@ -181,43 +203,124 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 	   protected static final Operation INSERT_ERS_FISHING_GEAR_DATA = sequenceOf(
 			insertInto("activity.activity_fishing_gear")
-					.columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id", "role_code", "role_code_list_id")
-					.values(1, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST", "DEPLOYED", "FA_GEAR_ROLE")
+					.columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id")
+					.values(1, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST")
 					.build(),
 			   insertInto("activity.activity_fishing_gear")
-					   .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id", "role_code", "role_code_list_id")
-					   .values(2, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST", "DEPLOYED", "FA_GEAR_ROLE")
+					   .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id")
+					   .values(2, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST")
 					   .build(),
 			   insertInto("activity.activity_fishing_gear")
-					   .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id", "role_code", "role_code_list_id")
-					   .values(3, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST", "DEPLOYED", "FA_GEAR_ROLE")
+					   .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id")
+					   .values(3, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST")
 					   .build(),
 			   insertInto("activity.activity_fishing_gear")
-					   .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id", "role_code", "role_code_list_id")
-					   .values(4, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST", "DEPLOYED", "FA_GEAR_ROLE")
+					   .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code","type_code_list_id")
+					   .values(4, 1, 1, null, "GEAR_TYPE","GEAR_TYPE_LIST")
 					   .build()
 			  );
-		
 
+	protected static final Operation INSERT_ERS_FISHING_GEAR_ROLE_DATA = sequenceOf(
+			insertInto("activity.activity_fishing_gear_role")
+					.columns("id", "fishing_gear_id", "role_code", "role_code_list_id")
+					.values(1, 1,"DEPLOYED", "FA_GEAR_ROLE")
+					.build(),
+			insertInto("activity.activity_fishing_gear_role")
+					.columns("id", "fishing_gear_id", "role_code", "role_code_list_id")
+					.values(2, 1,  "DEPLOYED", "FA_GEAR_ROLE")
+					.build(),
+			insertInto("activity.activity_fishing_gear_role")
+					.columns("id", "fishing_gear_id",  "role_code", "role_code_list_id")
+					.values(3, 1, "DEPLOYED", "FA_GEAR_ROLE")
+					.build(),
+			insertInto("activity.activity_fishing_gear_role")
+					.columns("id", "fishing_gear_id", "role_code", "role_code_list_id")
+					.values(4, 1, "DEPLOYED", "FA_GEAR_ROLE")
+					.build()
+	);
+
+
+	protected static final Operation INSERT_ERS_FLUX_PARTY_DATA = sequenceOf(
+			insertInto("activity.activity_flux_party")
+					.columns("id", "flux_party_name", "name_language_id")
+					.values(1, "OWNER_NAME1", "EN")
+					.build(),
+			insertInto("activity.activity_flux_party")
+					.columns("id", "flux_party_name", "name_language_id")
+					.values(2, "OWNER_NAME2", "EN")
+					.build(),
+			insertInto("activity.activity_flux_party")
+					.columns("id", "flux_party_name", "name_language_id")
+					.values(3, "OWNER_NAME3", "EN")
+					.build(),
+			insertInto("activity.activity_flux_party")
+					.columns("id", "flux_party_name", "name_language_id")
+					.values(4, "OWNER_NAME4", "EN")
+					.build(),
+			insertInto("activity.activity_flux_party")
+					.columns("id", "flux_party_name", "name_language_id")
+					.values(5, "OWNER_NAME5", "EN")
+					.build()
+	);
+
+	protected static final Operation INSERT_ERS_FLUX_PARTY_IDENTIFIER_DATA = sequenceOf(
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(1,1,"OWNER1", "FLUX_PARTY_SCHEME_ID")
+					.build(),
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(2,1,"OWNER2", "FLUX_PARTY_SCHEME_ID")
+					.build(),
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(3,1,"OWNER3", "FLUX_PARTY_SCHEME_ID")
+					.build(),
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(4,2,"OWNER22", "FLUX_PARTY_SCHEME_ID")
+					.build(),
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(5,3,"OWNER33", "FLUX_PARTY_SCHEME_ID")
+					.build(),
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(6,4,"OWNER4", "FLUX_PARTY_SCHEME_ID")
+					.build(),
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(7,5,"OWNER5", "FLUX_PARTY_SCHEME_ID")
+					.build(),
+			insertInto("activity.activity_flux_party_identifier")
+					.columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
+					.values(8,5,"OWNER6", "FLUX_PARTY_SCHEME_ID")
+					.build()
+	);
 		
 		//flux_report_document_id
 		protected static final Operation INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA = sequenceOf(
 	            insertInto("activity.activity_flux_report_document")
-	                    .columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
-	                    .values(1, "ID 1","ID 1",java.sql.Date.valueOf("2014-12-12"),"9","CODELISTID","PURPOSE","OWNER1","OWNER_NAME1")
+	                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+	                    .values(1, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST",null, 1)
 	                    .build(),
 				insertInto("activity.activity_flux_report_document")
-						.columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
-						 .values(2, "FLUX_REPORT_DOCUMENT2", null, "2016-06-27 07:47:31.711","9", "PURPOSE_CODE_LIST", null, "OWNER2","OWNER_NAME2")
+						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(2, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST",null, 2)
 						.build(),
 				insertInto("activity.activity_flux_report_document")
-						.columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
-						.values(3, "ID 3","ID 1",java.sql.Date.valueOf("2014-12-12"),"5","CODELISTID","PURPOSE","OWNER3","OWNER_NAME3")
+						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(3, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 3)
 						.build(),
 				insertInto("activity.activity_flux_report_document")
-						.columns("id", "flux_report_document_id", "reference_id", "creation_datetime","purpose_code","purpose_code_list_id","purpose","owner_flux_party_id","owner_flux_party_name")
-						.values(4, "ID 4", "ID 3", java.sql.Date.valueOf("2015-12-12"),"5", "PURPOSE_CODE_LIST", null, "OWNER4","OWNER_NAME4")
+						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(4, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 4)
+						.build(),
+				insertInto("activity.activity_flux_report_document")
+						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(5, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 5)
 						.build()
+
 	  );
 
 		
@@ -225,20 +328,20 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 		//vessel_transport_means_id
 		protected static final Operation INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA = sequenceOf(
 	            insertInto("activity.activity_vessel_transport_means")
-	                    .columns("id", "role_code", "role_code_list_id", "name","registration_event_id","flap_document_id","flap_document_scheme_id")
-	                   .values(1, "ROLE_CODE","LIST_ID","vessel1",null,"SCHEMA_ID","NAME")
+	                    .columns("id", "role_code", "role_code_list_id", "name","registration_event_id","country_scheme_id","country")
+	                   .values(1, "ROLE_CODE","LIST_ID","vessel1",null,null,null)
 	                    .build(),
 				insertInto("activity.activity_vessel_transport_means")
-						.columns("id", "role_code", "role_code_list_id", "name","registration_event_id","flap_document_id","flap_document_scheme_id")
-						.values(2, "ROLE_CODE","LIST_ID","vessel2",null,"SCHEMA_ID","NAME")
+						.columns("id", "role_code", "role_code_list_id", "name","registration_event_id","country_scheme_id","country")
+						.values(2, "ROLE_CODE","LIST_ID","vessel2",null,null,null)
 						.build(),
 				insertInto("activity.activity_vessel_transport_means")
-						.columns("id", "role_code", "role_code_list_id", "name","registration_event_id","flap_document_id","flap_document_scheme_id")
-						.values(3, "ROLE_CODE","LIST_ID","vessel3",null,"SCHEMA_ID","NAME")
+						.columns("id", "role_code", "role_code_list_id", "name","registration_event_id","country_scheme_id","country")
+						.values(3, "ROLE_CODE","LIST_ID","vessel3",null,null,null)
 						.build(),
 				insertInto("activity.activity_vessel_transport_means")
-						.columns("id", "role_code", "role_code_list_id", "name","registration_event_id","flap_document_id","flap_document_scheme_id")
-						.values(4, "ROLE_CODE","LIST_ID","vessel4",null,"SCHEMA_ID","NAME")
+						.columns("id", "role_code", "role_code_list_id", "name","registration_event_id","country_scheme_id","country")
+						.values(4, "ROLE_CODE","LIST_ID","vessel4",null,null,null)
 						.build()
 	  );
 
@@ -330,12 +433,23 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 
 	protected static final Operation INSERT_CONTACT_PARTY = sequenceOf(
 			insertInto("activity.activity_contact_party")
-					.columns("id", "vessel_transport_means_id", "role_code", "role_code_list_id","contact_person_id")
-					.values(1, 1, "MASTER", "FLUX_CONTACT_ ROLE",	1)
+					.columns("id", "vessel_transport_means_id","contact_person_id")
+					.values(1, 1, 1)
 					.build(),
 			insertInto("activity.activity_contact_party")
-					.columns("id", "vessel_transport_means_id", "role_code", "role_code_list_id","contact_person_id")
-					.values(2, 2, "AGENT", "FLUX_CONTACT_ ROLE",	2)
+					.columns("id", "vessel_transport_means_id", "contact_person_id")
+					.values(2, 2, 2)
+					.build()
+	);
+
+	protected static final Operation INSERT_CONTACT_PARTY_ROLE = sequenceOf(
+			insertInto("activity.activity_contact_party_role")
+					.columns("id", "contact_party_id", "role_code", "role_code_list_id")
+					.values(1, 1, "MASTER", "FLUX_CONTACT_ROLE")
+					.build(),
+			insertInto("activity.activity_contact_party_role")
+					.columns("id", "contact_party_id", "role_code", "role_code_list_id")
+					.values(2, 1, "AGENT", "FLUX_CONTACT_ROLE")
 					.build()
 	);
 

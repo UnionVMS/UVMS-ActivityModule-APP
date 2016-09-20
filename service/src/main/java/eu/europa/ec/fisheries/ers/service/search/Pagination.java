@@ -27,12 +27,21 @@ public class Pagination {
         return page;
     }
 
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
     public int getListSize() {
         return listSize;
     }
 
     private int page;
     private int listSize;
+    private int totalPages;
 
     public Pagination(int page, int listSize) {
         this.page = page;

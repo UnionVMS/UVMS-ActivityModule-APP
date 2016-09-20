@@ -38,7 +38,9 @@ public class FilterMap {
     public static final String QUNTITY_MAX = "maxWeight";
     public static final String CONTACT_PERSON_NAME = "agent";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
-    public static final String FA_CATCH_TABLE_ALIAS = "a.faCatchs faCatch";
+    public static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
+    public static final String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
+    public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux JOIN FETCH flux.fluxParty fp  ";
     public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE = "dataSource";
 
@@ -60,11 +62,11 @@ public class FilterMap {
     private static void populateFilterMappings(){
 
         filterMappings.put(Filters.SOURCE,new FilterDetails(" ","fa.source =:"+DATASOURCE));
-        filterMappings.put(Filters.FROM_ID,new FilterDetails("fa.fluxReportDocument flux","flux.ownerFluxPartyId =:"+FROM_ID+ " "));
-        filterMappings.put(Filters.FROM_NAME,new FilterDetails("fa.fluxReportDocument flux"," flux.ownerFluxPartyName=:"+FROM_NAME+" "));
+        filterMappings.put(Filters.FROM_ID,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS + " JOIN FETCH fp.fluxPartyIdentifiers fpi","fpi.fluxPartyIdentifierId =:"+FROM_ID+ " "));
+        filterMappings.put(Filters.FROM_NAME,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS," fp.fluxPartyName=:"+FROM_NAME+" "));
 
-        filterMappings.put(Filters.PERIOD_START,new FilterDetails("a.delimitedPeriods dp","( dp.startDate >= :"+OCCURENCE_START_DATE +"  OR a.occurence  >= :"+OCCURENCE_START_DATE +" )"));
-        filterMappings.put(Filters.PERIOD_END,new FilterDetails("a.delimitedPeriods dp"," dp.endDate <= :"+OCCURENCE_END_DATE));
+        filterMappings.put(Filters.PERIOD_START,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS,"( dp.startDate >= :"+OCCURENCE_START_DATE +"  OR a.occurence  >= :"+OCCURENCE_START_DATE +" )"));
+        filterMappings.put(Filters.PERIOD_END,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS," dp.endDate <= :"+OCCURENCE_END_DATE));
 
         filterMappings.put(Filters.VESSEL_NAME,new FilterDetails("fa.vesselTransportMeans vt","vt.name =:"+VESSEL_IDENTITY_NAME));
         filterMappings.put(Filters.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierSchemeId =:"+VESSEL_IDENTIFIRE));
@@ -84,9 +86,13 @@ public class FilterMap {
     }
 
     private static void populateFilterSortMappings(){
-      //  filterSortMappings.put(Filters.PERIOD,"a.occurence");
+        filterSortMappings.put(Filters.PERIOD_START,"dp.startDate");
+        filterSortMappings.put(Filters.PERIOD_END,"dp.endDate");
         filterSortMappings.put(Filters.REPORT_TYPE,"fa.typeCode");
+        filterSortMappings.put(Filters.SOURCE,"fa.source");
         filterSortMappings.put(Filters.ACTIVITY_TYPE,"a.typeCode");
+        filterSortMappings.put(Filters.PURPOSE,"flux.purposeCode");
+        filterSortMappings.put(Filters.FROM_NAME,"flux.ownerFluxPartyName");
 
     }
 

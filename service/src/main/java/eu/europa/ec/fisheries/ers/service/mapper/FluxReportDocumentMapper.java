@@ -10,7 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -50,6 +54,12 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fluxReportIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
     protected abstract FluxReportIdentifierEntity mapToFluxReportIdentifierEntity(IDType idType);
+
+    @Mappings({
+            @Mapping(target = "fluxReportId", source = "fluxReportIdentifierId"),
+            @Mapping(target = "fluxReportSchemeId", source = "fluxReportIdentifierSchemeId")
+    })
+    public abstract FluxReportIdentifierDTO mapToFluxReportIdentifierDTO(FluxReportIdentifierEntity identifierEntity);
 
     protected FluxPartyEntity getFluxPartyEntity(FLUXParty fluxParty, FluxReportDocumentEntity fluxReportDocumentEntity) {
         if (fluxParty == null) {

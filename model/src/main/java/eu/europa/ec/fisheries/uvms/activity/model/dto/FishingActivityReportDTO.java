@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -31,7 +32,7 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private String dataSource;
 
     @JsonProperty("fromId")
-    private String fromId;
+    private List<String> fromId;
 
     @JsonProperty("fromName")
     private String fromName;
@@ -64,11 +65,15 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private List<Double> quantity;
 
     @JsonProperty("startDate")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private Date startDate;
 
     @JsonProperty("endDate")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private Date endDate;
 
+    @JsonProperty("hasCorrection")
+    private boolean hasCorrection;
 
     public FishingActivityReportDTO(){
 
@@ -165,12 +170,12 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     }
 
     @JsonProperty("fromId")
-    public String getFromId() {
+    public List<String> getFromId() {
         return fromId;
     }
 
     @JsonProperty("fromId")
-    public void setFromId(String fromId) {
+    public void setFromId(List<String> fromId) {
         this.fromId = fromId;
     }
 
@@ -210,5 +215,14 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonProperty("endDate")
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+
+    public boolean isHasCorrection() {
+        return hasCorrection;
+    }
+
+    public void setHasCorrection(boolean hasCorrection) {
+        this.hasCorrection = hasCorrection;
     }
 }

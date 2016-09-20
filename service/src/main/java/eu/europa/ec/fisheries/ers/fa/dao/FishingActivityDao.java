@@ -33,6 +33,11 @@ import java.util.Map;
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
     final static String FORMAT = "yyyy-MM-dd HH:mm:ss";
+    final static String JOIN =" JOIN FETCH ";
+    final static String FISHING_ACTIVITY_JOIN=" from FishingActivityEntity a JOIN FETCH a.faReportDocument fa ";
+    final static String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by flux.fluxReportDocumentId asc ";
+    final static String FISHING_ACTIVITY_LIST_ALL_DATA_COUNT="SELECT DISTINCT a from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by flux.fluxReportDocumentId asc ";
+
 
 
     private EntityManager em;
@@ -68,9 +73,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
-        String sql = "SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by flux.fluxReportDocumentId asc  ";
 
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
+        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA, FishingActivityEntity.class);
         if(pagination!=null) {
             typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
             typedQuery.setMaxResults(pagination.getListSize());
@@ -79,66 +83,82 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return typedQuery.getResultList();
     }
 
+    public Integer getCountForFishingActivityList(Pagination pagination)  {
 
+        TypedQuery<Integer> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA_COUNT, Integer.class);
+        return typedQuery.getResultList().size();
+    }
+
+
+    public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+        StringBuilder sqlToGetActivityListCount =createSQL(query,true);
+        Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount,query);
+        LOG.info("countQuery :"+countQuery);
+        return countQuery.getResultList().size();
+    }
 
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
-        Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
-      StringBuilder sql =createSQL(query);
 
-       LOG.info("sql :"+sql);
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql.toString(), FishingActivityEntity.class);
+        StringBuilder sqlToGetActivityList =createSQL(query,false);
+        Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query);
+        LOG.info("listQuery :"+listQuery);
+        Pagination pagination= query.getPagination();
 
-          List<ListCriteria> criteriaList = query.getSearchCriteria();
-            // Assign values to created SQL Query
-            for (ListCriteria criteria : criteriaList) {
-                Filters key = criteria.getKey();
-                String value= criteria.getValue();
-
-                    switch (key) {
-                        case PERIOD_START:
-                            typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
-                            break;
-                        case PERIOD_END:
-                            typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
-                            break;
-                        case QUNTITY_MIN:
-                            typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
-                            break;
-                        case QUNTITY_MAX:
-                            typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
-                            break;
-                        case MASTER:
-                            typedQuery.setParameter(mappings.get(key), value.toUpperCase());
-                            break;
-                        default:
-                            typedQuery.setParameter(mappings.get(key), value);
-                            break;
-                    }
-
-            }
-
-
-       Pagination pagination= query.getPagination();
 
         if(pagination!=null) {
-            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            typedQuery.setMaxResults(pagination.getListSize());
+            listQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
+            listQuery.setMaxResults(pagination.getListSize());
         }
 
-
-        return typedQuery.getResultList();
-
+        return listQuery.getResultList();
     }
 
-    private StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
+    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql,FishingActivityQuery query){
+        Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
+        Query typedQuery = em.createQuery(sql.toString());
+
+        List<ListCriteria> criteriaList = query.getSearchCriteria();
+        // Assign values to created SQL Query
+        for (ListCriteria criteria : criteriaList) {
+            Filters key = criteria.getKey();
+            String value= criteria.getValue();
+
+            switch (key) {
+                case PERIOD_START:
+                    typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
+                    break;
+                case PERIOD_END:
+                    typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
+                    break;
+                case QUNTITY_MIN:
+                    typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
+                    break;
+                case QUNTITY_MAX:
+                    typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
+                    break;
+                case MASTER:
+                    typedQuery.setParameter(mappings.get(key), value.toUpperCase());
+                    break;
+                default:
+                    typedQuery.setParameter(mappings.get(key), value);
+                    break;
+            }
+
+        }
+         return typedQuery;
+    }
+
+    private StringBuilder createSQL(FishingActivityQuery query, boolean skipSort) throws ServiceException {
 
         List<ListCriteria> criteriaList=query.getSearchCriteria();
         if(criteriaList.isEmpty())
             throw new ServiceException("Fishing Activity Report Search Criteria is empty.");
 
         Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
-        StringBuilder sql = new  StringBuilder("SELECT DISTINCT a from FishingActivityEntity a JOIN FETCH a.faReportDocument fa ");
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT DISTINCT a ");
+        sql.append(FISHING_ACTIVITY_JOIN);
 
         // Create join part of SQL query
        for(ListCriteria criteria :criteriaList){
@@ -152,19 +172,32 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
                //If table join is already present in Query, we want to reuse that join alias. so, treat it differently
                if(Filters.MASTER.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)!=-1 ){
-                   sql.append(" JOIN FETCH ").append(FilterMap.MASTER_MAPPING).append(" ");
+                   sql.append(JOIN).append(FilterMap.MASTER_MAPPING).append(" ");
                }// Add table alias if not already present
                 else if( Filters.VESSEL_IDENTIFIRE.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)==-1){
-                   sql.append(" JOIN FETCH ").append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
-                   sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
+                   sql.append(JOIN).append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                   sql.append(JOIN).append(details.getJoinString()).append(" ");
                } else if( Filters.SPECIES.equals(key) && sql.indexOf(FilterMap.FA_CATCH_TABLE_ALIAS)==-1){
-                   sql.append(" JOIN FETCH ").append(FilterMap.FA_CATCH_TABLE_ALIAS);
-                   sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
+                   sql.append(JOIN).append(FilterMap.FA_CATCH_TABLE_ALIAS);
+                   sql.append(JOIN).append(details.getJoinString()).append(" ");
                } else{
-                   sql.append(" JOIN FETCH ").append(details.getJoinString()).append(" ");
+                   sql.append(JOIN).append(details.getJoinString()).append(" ");
                }
            }
        }
+
+
+        SortKey sort = query.getSortKey();
+
+          if (sort != null && !skipSort) {
+              Filters field = sort.getField();
+              if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
+                  sql.append(JOIN).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
+              } else if (Filters.PURPOSE.equals(field) || Filters.FROM_NAME.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
+                  sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+              }
+          }
+
 
             sql.append("where ");
 
@@ -186,15 +219,18 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
              sql.append(" and fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"'");
 
-      /*  SortKey sort=   query.getSortKey();
-        if(sort!=null){
-            sql.append(" order by " +FilterMap.getFilterSortMappings().get(sort.getField()) + " "+sort.getOrder());
-        }else {
-            sql.append(" order by a.faReportDocument.id ASC ");
-        }*/
+         if(!skipSort) {
+                if (sort != null) {
+                    sql.append(" order by " + FilterMap.getFilterSortMappings().get(sort.getField()) + " " + sort.getOrder());
+                } else {
+                    sql.append(" order by fa.acceptedDatetime ASC ");
+                }
+         }
 
         return sql;
     }
+
+
 
 
 }

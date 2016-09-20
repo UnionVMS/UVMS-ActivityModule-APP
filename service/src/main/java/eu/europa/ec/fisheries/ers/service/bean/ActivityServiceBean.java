@@ -20,7 +20,9 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.ers.service.search.Pagination;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.PaginationDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
@@ -123,22 +125,44 @@ public class ActivityServiceBean implements ActivityService {
     }
 
     @Override
-    public List<FishingActivityReportDTO> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+    public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         List<FishingActivityEntity> activityList;
-        if (query.getSearchCriteria() == null || query.getSearchCriteria().isEmpty()) {
-            activityList = fishingActivityDao.getFishingActivityList(query.getPagination());
-        } else {
+        boolean isSearchFiltersPresent = true;
+        int totalPages=0;
+
+        if (query.getSearchCriteria() == null || query.getSearchCriteria().isEmpty())
+            isSearchFiltersPresent=false;
+
+        if(isSearchFiltersPresent)
             activityList = fishingActivityDao.getFishingActivityListByQuery(query);
+        else
+            activityList = fishingActivityDao.getFishingActivityList(query.getPagination());
+
+
+        Pagination pagination= query.getPagination();
+        if(pagination!=null && pagination.getTotalPages()==0 ){
+            totalPages= getTotalPagesCountForFilterFishingActivityReports(query);
         }
 
         if (activityList == null || activityList.isEmpty()) {
             log.info("Could not find FishingActivity entities matching search criteria");
-            return Collections.emptyList();
+            activityList= Collections.emptyList();
         }
 
-        return FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList);
+        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
+        filterFishingActivityReportResultDTO.setResultList(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList));
+        filterFishingActivityReportResultDTO.setPagination(new PaginationDTO(totalPages));
+
+        return filterFishingActivityReportResultDTO;
     }
 
+    private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
+        if (query.getSearchCriteria() == null || query.getSearchCriteria().isEmpty()){
+            return fishingActivityDao.getCountForFishingActivityList(query.getPagination());
+        }else{
+            return fishingActivityDao.getCountForFishingActivityListByQuery(query);
+        }
+    }
 
     // Get data for Fishing Trip summary view
     @Override
@@ -413,7 +437,7 @@ public class ActivityServiceBean implements ActivityService {
             if (reportDTO.isCorrection())
                 corrections++;
 
-            if (reportDTO.getUniqueReportId() != null)
+            if (reportDTO.getUniqueFAReportId() != null)
                 reportsCnt++;
 
             String activityType = reportDTO.getActivityType();

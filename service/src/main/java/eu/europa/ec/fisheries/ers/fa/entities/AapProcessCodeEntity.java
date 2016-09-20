@@ -19,7 +19,7 @@ import javax.persistence.*;
  * Created by padhyad on 9/15/2016.
  */
 @Entity
-@Table(name = "activity_aap_process_identifier")
+@Table(name = "activity_aap_process_code")
 public class AapProcessCodeEntity {
 
     @Id

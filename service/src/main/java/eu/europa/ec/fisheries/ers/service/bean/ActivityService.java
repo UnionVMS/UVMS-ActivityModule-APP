@@ -10,7 +10,7 @@
  *
  *
  */
-package eu.europa.ec.fisheries.ers.service;
+package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
