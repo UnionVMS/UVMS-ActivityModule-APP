@@ -52,24 +52,4 @@ public class ContactPartyMapperTest {
         assertEquals(contactParty.getRoleCodes().get(0).getValue(), structuredAddressEntity.getContactParty().getRoleCode());
         assertEquals(contactParty.getRoleCodes().get(0).getListID(), structuredAddressEntity.getContactParty().getRoleCodeListId());
     }
-
-    @Test
-    public void testContactPartyDetailsDTOMapper() {
-        ContactParty contactParty = MapperUtil.getContactParty();
-        ContactPartyEntity contactPartyEntity = new ContactPartyEntity();
-        ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty, null, contactPartyEntity);
-
-        ContactPartyDetailsDTO contactPartyDetailsDTO = ContactPartyMapper.INSTANCE.mapToContactPartyDetailsDTO(contactPartyEntity);
-        assertEquals(contactPartyEntity.getRoleCode(), contactPartyDetailsDTO.getRole());
-    }
-
-    @Test
-    public void testContactPartyDetailsDTOListMapper() {
-        ContactParty contactParty = MapperUtil.getContactParty();
-        ContactPartyEntity contactPartyEntity = new ContactPartyEntity();
-        ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty, null, contactPartyEntity);
-
-        List<ContactPartyDetailsDTO> contactPartyDetailsDTO = ContactPartyMapper.INSTANCE.mapToContactPartyDetailsDTOList(new HashSet<ContactPartyEntity>(Arrays.asList(contactPartyEntity)));
-        assertEquals(contactPartyEntity.getRoleCode(), contactPartyDetailsDTO.get(0).getRole());
-    }
 }

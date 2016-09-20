@@ -47,13 +47,4 @@ public abstract class  AapProductMapper extends BaseMapper {
             @Mapping(target = "aapProcess", expression = "java(aapProcessEntity)")
     })
     public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct, AapProcessEntity aapProcessEntity, @MappingTarget AapProductEntity aapProductEntity);
-
-    @Mappings({
-            @Mapping(target = "packagingTypeCode", source = "packagingTypeCode"),
-            @Mapping(target = "packagingUnitAvarageWeight", source = "packagingUnitAvarageWeight"),
-            @Mapping(target = "packagingUnitCount", source = "packagingUnitCount")
-    })
-    public abstract AapProductDetailsDTO mapToAapProductDetailsDTO(AapProductEntity aapProductEntity);
-
-    public abstract List<AapProductDetailsDTO> mapToAapProductDetailsDTOList(Set<AapProductEntity> aapProductEntities);
 }

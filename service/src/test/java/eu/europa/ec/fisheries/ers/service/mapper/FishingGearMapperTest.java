@@ -97,28 +97,4 @@ public class FishingGearMapperTest {
         assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
         assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
     }
-
-    @Test
-    public void testFishingGearDetailsDTOMapper() {
-        FishingGear fishingGear = MapperUtil.getFishingGear();
-        FishingGearEntity fishingGearEntity = new FishingGearEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, fishingActivityEntity, fishingGearEntity);
-
-        FishingGearDetailsDTO fishingGearDetailsDTO = FishingGearMapper.INSTANCE.mapToFishingGearDetailsDTO(fishingGearEntity);
-        assertEquals(fishingGearEntity.getTypeCode(), fishingGearDetailsDTO.getGearType());
-        assertEquals(fishingGearEntity.getRoleCode(), fishingGearDetailsDTO.getRole());
-    }
-
-    @Test
-    public void testFishingGearDetailsDTOListMapper() {
-        FishingGear fishingGear = MapperUtil.getFishingGear();
-        FishingGearEntity fishingGearEntity = new FishingGearEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, fishingActivityEntity, fishingGearEntity);
-
-        List<FishingGearDetailsDTO> fishingGearDetailsDTO = FishingGearMapper.INSTANCE.mapToFishingGearDetailsDTOList(new HashSet<FishingGearEntity>(Arrays.asList(fishingGearEntity)));
-        assertEquals(fishingGearEntity.getTypeCode(), fishingGearDetailsDTO.get(0).getGearType());
-        assertEquals(fishingGearEntity.getRoleCode(), fishingGearDetailsDTO.get(0).getRole());
-    }
 }

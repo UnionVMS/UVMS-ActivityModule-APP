@@ -83,25 +83,6 @@ public class FaReportDocumentMapperTest {
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity.getVesselTransportMeans().getFaReportDocument());
     }
 
-    @Test
-    public void testFaReportDocumentDetailsDTOMapper() {
-        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity, FaReportSourceEnum.FLUX);
-
-        FaReportDocumentDetailsDTO faReportDocumentDetailsDTO = FaReportDocumentMapper.INSTANCE.mapToFaReportDocumentDetailsDTO(faReportDocumentEntity);
-
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportDocumentDetailsDTO.getCreationDateTime());
-        assertEquals(faReportDocumentEntity.getAcceptedDatetime(), faReportDocumentDetailsDTO.getAcceptedDateTime());
-        assertEquals(faReportDocumentEntity.getFmcMarker(), faReportDocumentDetailsDTO.getFmcMarker());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId(), faReportDocumentDetailsDTO.getFluxReportDocumentId());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getOwnerFluxPartyId(), faReportDocumentDetailsDTO.getOwnerFluxPartyId());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getPurposeCode(), faReportDocumentDetailsDTO.getPurposeCode());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getReferenceId(), faReportDocumentDetailsDTO.getReferenceId());
-        assertEquals(faReportDocumentEntity.getStatus(), faReportDocumentDetailsDTO.getStatus());
-        assertEquals(faReportDocumentEntity.getTypeCode(), faReportDocumentDetailsDTO.getTypeCode());
-    }
-
     private void assertFaReportDocumentFields(FAReportDocument faReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
         assertEquals(faReportDocument.getTypeCode().getValue(), faReportDocumentEntity.getTypeCode());
         assertEquals(faReportDocument.getTypeCode().getListID(), faReportDocumentEntity.getTypeCodeListId());

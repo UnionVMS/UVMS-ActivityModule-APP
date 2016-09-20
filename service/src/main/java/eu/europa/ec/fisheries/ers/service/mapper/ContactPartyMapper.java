@@ -50,15 +50,6 @@ public abstract class ContactPartyMapper extends BaseMapper {
     })
     public abstract ContactPartyRoleEntity mapToContactPartyRoleEntity(CodeType codeType);
 
-    @Mappings({
-           // @Mapping(target = "role", source = "roleCode"),
-            @Mapping(target = "contactPersonDetails", source = "contactPerson"),
-            @Mapping(target = "addressDetails", source = "structuredAddresses")
-    })
-    public abstract ContactPartyDetailsDTO mapToContactPartyDetailsDTO(ContactPartyEntity contactPartyEntity);
-
-    public abstract List<ContactPartyDetailsDTO> mapToContactPartyDetailsDTOList(Set<ContactPartyEntity> contactPartyEntities);
-
     protected Set<ContactPartyRoleEntity> getContactPartyRoles(List<CodeType> codeTypes, ContactPartyEntity contactPartyEntity) {
         if (codeTypes == null || codeTypes.isEmpty()) {
             return Collections.emptySet();

@@ -88,18 +88,4 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(source = "valueDateTime",target = "valueDateTime")
     })
     public abstract FluxCharacteristicsDTO mapToFluxCharacteristicsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
-
-    @Mappings({
-            @Mapping(target = "type", source = "typeCode"),
-            @Mapping(target = "measure", source = "valueMeasure"),
-            @Mapping(target = "dateTime", source = "valueDateTime"),
-            @Mapping(target = "indicator", source = "valueIndicator"),
-            @Mapping(target = "code", source = "valueCode"),
-            @Mapping(target = "text", source = "valueText"),
-            @Mapping(target = "quantity", source = "valueQuantity"),
-            @Mapping(target = "description", source = "description")
-    })
-    public abstract FluxCharacteristicsDetailsDTO mapToFluxCharacteristicsDetailsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
-
-    public abstract List<FluxCharacteristicsDetailsDTO> mapToFluxCharacteristicsDetailsDTOList(Set<FluxCharacteristicEntity> fluxCharacteristicEntities);
 }

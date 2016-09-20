@@ -43,28 +43,4 @@ public class AapProductMapperTest {
         assertEquals(aapProduct.getPackagingUnitAverageWeightMeasure().getValue().doubleValue(), aapProductEntity.getPackagingUnitAvarageWeight());
         assertEquals(aapProduct.getPackagingUnitQuantity().getValue().doubleValue(), aapProductEntity.getPackagingUnitCount());
     }
-
-    @Test
-    public void testMapToAapProductDetailsDTO() {
-        AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = new AapProductEntity();
-        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
-        AapProductDetailsDTO aapProductDetailsDTO = AapProductMapper.INSTANCE.mapToAapProductDetailsDTO(aapProductEntity);
-
-        assertEquals(aapProductEntity.getPackagingTypeCode(), aapProductDetailsDTO.getPackagingTypeCode());
-        assertEquals(aapProductEntity.getPackagingUnitAvarageWeight(), aapProductDetailsDTO.getPackagingUnitAvarageWeight());
-        assertEquals(aapProductEntity.getPackagingUnitCount(), aapProductDetailsDTO.getPackagingUnitCount());
-    }
-
-    @Test
-    public void testMapToAapProductDetailsDTOList() {
-        AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = new AapProductEntity();
-        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
-        List<AapProductDetailsDTO> aapProductDetailsDTO = AapProductMapper.INSTANCE.mapToAapProductDetailsDTOList(new HashSet<AapProductEntity>(Arrays.asList(aapProductEntity)));
-
-        assertEquals(aapProductEntity.getPackagingTypeCode(), aapProductDetailsDTO.get(0).getPackagingTypeCode());
-        assertEquals(aapProductEntity.getPackagingUnitAvarageWeight(), aapProductDetailsDTO.get(0).getPackagingUnitAvarageWeight());
-        assertEquals(aapProductEntity.getPackagingUnitCount(), aapProductDetailsDTO.get(0).getPackagingUnitCount());
-    }
 }

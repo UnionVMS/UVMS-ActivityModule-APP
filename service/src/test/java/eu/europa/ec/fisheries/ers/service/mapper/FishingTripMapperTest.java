@@ -78,48 +78,4 @@ public class FishingTripMapperTest {
         assertEquals(fishingTrip.getTypeCode().getValue(), delimitedPeriodEntity.getFishingTrip().getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), delimitedPeriodEntity.getFishingTrip().getTypeCodeListId());
     }
-
-    @Test
-    public void testFishingTripDetailsDTOMapper() {
-        FishingTrip fishingTrip = MapperUtil.getFishingTrip();
-        FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, fishingTripEntity);
-
-        FishingTripDetailsDTO fishingTripDetailsDTO = FishingTripMapper.INSTANCE.mapToFishingTripDetailsDTO(fishingTripEntity);
-        assertEquals(fishingTripEntity.getTypeCode(), fishingTripDetailsDTO.getTripType());
-        assertEquals(getIds(fishingTripEntity.getFishingTripIdentifiers()), fishingTripDetailsDTO.getTripIds());
-    }
-
-    @Test
-    public void testFishingTripDetailsDTOMapper_InputList() {
-        FishingTrip fishingTrip = MapperUtil.getFishingTrip();
-        FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, fishingTripEntity);
-
-        FishingTripDetailsDTO fishingTripDetailsDTO = FishingTripMapper.INSTANCE.mapToFishingTripDetailsDTO(new HashSet<FishingTripEntity>(Arrays.asList(fishingTripEntity)));
-        assertEquals(fishingTripEntity.getTypeCode(), fishingTripDetailsDTO.getTripType());
-        assertEquals(getIds(fishingTripEntity.getFishingTripIdentifiers()), fishingTripDetailsDTO.getTripIds());
-    }
-
-    @Test
-    public void testFishingTripDetailsDTOListMapper() {
-        FishingTrip fishingTrip = MapperUtil.getFishingTrip();
-        FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, fishingTripEntity);
-
-        List<FishingTripDetailsDTO> fishingTripDetailsDTO = FishingTripMapper.INSTANCE.mapToFishingTripDetailsDTOList(new HashSet<FishingTripEntity>(Arrays.asList(fishingTripEntity)));
-        assertEquals(fishingTripEntity.getTypeCode(), fishingTripDetailsDTO.get(0).getTripType());
-        assertEquals(getIds(fishingTripEntity.getFishingTripIdentifiers()), fishingTripDetailsDTO.get(0).getTripIds());
-    }
-
-    private List<String> getIds(Collection<FishingTripIdentifierEntity> fishingTripIdentifierEntities) {
-        List<String> ids = new ArrayList<>();
-        for (FishingTripIdentifierEntity identifierEntity : fishingTripIdentifierEntities) {
-            ids.add(identifierEntity.getTripId());
-        }
-        return ids;
-    }
 }

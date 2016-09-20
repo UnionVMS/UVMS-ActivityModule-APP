@@ -46,21 +46,6 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
     public abstract VesselTransportMeansEntity mapToVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget VesselTransportMeansEntity vesselTransportMeansEntity);
 
     @Mappings({
-            @Mapping(target = "vesselRole", source = "roleCode"),
-            @Mapping(target = "vesselIds", expression = "java(getVesselIds(vesselTransportMeansEntity.getVesselIdentifiers()))"),
-            @Mapping(target = "vesselName", source = "name"),
-            @Mapping(target = "registrationDateTime", source = "registrationEvent.occurrenceDatetime"),
-            @Mapping(target = "registrationEventDescription", source = "registrationEvent.description"),
-            @Mapping(target = "registrationLocationDescription", source = "registrationEvent.registrationLocation.description"),
-            @Mapping(target = "registrationRegion", source = "registrationEvent.registrationLocation.regionCode"),
-            @Mapping(target = "registrationLocationName", source = "registrationEvent.registrationLocation.name"),
-            @Mapping(target = "registrationType", source = "registrationEvent.registrationLocation.typeCode"),
-            @Mapping(target = "registrationLocationCountryId", source = "registrationEvent.registrationLocation.locationCountryId"),
-            @Mapping(target = "contactPartyDetails", source = "contactParty")
-    })
-    public abstract VesselDetailsDTO mapToVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity);
-
-    @Mappings({
             @Mapping(target = "vesselIdentifierId", expression = "java(getIdType(idType))"),
             @Mapping(target = "vesselIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })

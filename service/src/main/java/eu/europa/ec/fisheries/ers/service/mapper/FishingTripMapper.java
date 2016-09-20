@@ -50,22 +50,6 @@ public abstract class FishingTripMapper extends BaseMapper {
     })
     public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FaCatchEntity faCatchEntity, @MappingTarget FishingTripEntity fishingTripEntity);
 
-    @Mappings({
-            @Mapping(target = "tripType", source = "typeCode"),
-            @Mapping(target = "tripIds", expression = "java(getTripIds(fishingTripEntity.getFishingTripIdentifiers()))"),
-            @Mapping(target = "delimitedPeriods", source = "delimitedPeriods")
-    })
-    public abstract FishingTripDetailsDTO mapToFishingTripDetailsDTO(FishingTripEntity fishingTripEntity);
-
-    public FishingTripDetailsDTO mapToFishingTripDetailsDTO(Set<FishingTripEntity> fishingTripEntities) {
-        if (fishingTripEntities != null && !fishingTripEntities.isEmpty()) {
-            return mapToFishingTripDetailsDTO(fishingTripEntities.iterator().next());
-        }
-        return null;
-    }
-
-    public abstract List<FishingTripDetailsDTO> mapToFishingTripDetailsDTOList(Set<FishingTripEntity> fishingTripEntities);
-
     protected List<String> getTripIds(Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
         List<String> ids = new ArrayList<>();
         for (FishingTripIdentifierEntity identifierEntity : fishingTripIdentifiers) {

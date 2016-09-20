@@ -96,28 +96,6 @@ public abstract class FluxLocationMapper extends BaseMapper {
     })
     public abstract FluxLocationDTO mapToFluxLocationDTO(FluxLocationEntity fluxLocation);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode"),
-            @Mapping(target = "countryId", source = "countryId"),
-            @Mapping(target = "rfmoCode", source = "rfmoCode"),
-            @Mapping(target = "longitude", source = "longitude"),
-            @Mapping(target = "latitude", source = "latitude"),
-            @Mapping(target = "altitude", source = "altitude"),
-            @Mapping(target = "fluxLocationType", source = "fluxLocationType"),
-            @Mapping(target = "fluxLocationIdentifier", source = "fluxLocationIdentifier"),
-            @Mapping(target = "geopoliticalRegionCode", source = "geopoliticalRegionCode"),
-            @Mapping(target = "name", source = "name"),
-            @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryCode"),
-            @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryCode"),
-            @Mapping(target = "systemId", source = "systemId"),
-            @Mapping(target = "fluxCharacteristics", source = "fluxCharacteristics"),
-            @Mapping(target = "physicalStructuredAddress", expression = "java(getPhysicalAddressDetails(fluxLocationEntity.getStructuredAddresses()))"),
-            @Mapping(target = "postalStructuredAddress", expression = "java(getPostalAddressDetails(fluxLocationEntity.getStructuredAddresses()))")
-    })
-    public abstract FluxLocationDetailsDTO mapToFluxLocationDetailsDTO(FluxLocationEntity fluxLocationEntity);
-
-    public abstract List<FluxLocationDetailsDTO> mapToFluxLocationDetailsDTOList(Set<FluxLocationEntity> fluxLocationEntities);
-
     protected AddressDetailsDTO getPhysicalAddressDetails(Set<StructuredAddressEntity> structuredAddresses) {
         for (StructuredAddressEntity structuredAddressEntity : structuredAddresses) {
             if (structuredAddressEntity.getStructuredAddressType().equalsIgnoreCase(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType())) {

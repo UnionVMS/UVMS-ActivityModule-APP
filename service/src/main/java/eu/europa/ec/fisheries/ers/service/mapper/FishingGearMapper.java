@@ -70,19 +70,10 @@ public abstract class FishingGearMapper extends BaseMapper {
     public abstract FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
 
     @Mappings({
-            @Mapping(target = "gearType", source = "typeCode"),
-            //@Mapping(target = "role", source = "roleCode"),
-            @Mapping(target = "gearCharacteristics", source = "gearCharacteristics")
-    })
-    public abstract FishingGearDetailsDTO mapToFishingGearDetailsDTO(FishingGearEntity fishingGearEntity);
-
-    @Mappings({
             @Mapping(target = "roleCode", expression = "java(getCodeType(codeType))"),
             @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(codeType))")
     })
     public abstract FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
-
-    public abstract List<FishingGearDetailsDTO> mapToFishingGearDetailsDTOList(Set<FishingGearEntity> fishingGearEntities);
 
     protected Set<FishingGearRoleEntity> mapToFishingGears(List<CodeType> codeTypes, FishingGearEntity fishingGearEntity) {
         if (codeTypes == null || codeTypes.isEmpty()) {

@@ -94,48 +94,4 @@ public class FluxLocationMapperTest {
         assertEquals(fluxLocation.getSovereignRightsCountryID().getValue(), fluxLocationEntity.getSovereignRightsCountryCode());
         assertEquals(fluxLocation.getJurisdictionCountryID().getValue(), fluxLocationEntity.getJurisdictionCountryCode());
     }
-
-    @Test
-    public void testFluxLocationMapperDetailsDTOMapper() {
-        FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
-        FluxLocationTypeEnum fluxLocationTypeEnum = FluxLocationTypeEnum.FA_RELATED;
-        FishingActivityEntity fishingActivityEntity = null;
-        FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, fishingActivityEntity, fluxLocationEntity);
-
-        FluxLocationDetailsDTO fluxLocationDetailsDTO = FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity);
-        assertEquals(fluxLocationEntity.getAltitude(), fluxLocationDetailsDTO.getAltitude());
-        assertEquals(fluxLocationEntity.getCountryId(), fluxLocationDetailsDTO.getCountryId());
-        assertEquals(fluxLocationEntity.getFluxLocationIdentifier(), fluxLocationDetailsDTO.getFluxLocationIdentifier());
-        assertEquals(fluxLocationEntity.getFluxLocationType(), fluxLocationDetailsDTO.getFluxLocationType());
-        assertEquals(fluxLocationEntity.getGeopoliticalRegionCode(), fluxLocationDetailsDTO.getGeopoliticalRegionCode());
-        assertEquals(fluxLocationEntity.getJurisdictionCountryCode(), fluxLocationDetailsDTO.getJurisdictionCountryCode());
-        assertEquals(fluxLocationEntity.getTypeCode(), fluxLocationDetailsDTO.getTypeCode());
-        assertEquals(fluxLocationEntity.getRfmoCode(), fluxLocationDetailsDTO.getRfmoCode());
-        assertEquals(fluxLocationEntity.getSovereignRightsCountryCode(), fluxLocationDetailsDTO.getSovereignRightsCountryCode());
-        assertEquals(fluxLocationEntity.getLatitude(), fluxLocationDetailsDTO.getLatitude());
-        assertEquals(fluxLocationEntity.getLongitude(), fluxLocationDetailsDTO.getLongitude());
-    }
-
-    @Test
-    public void testFluxLocationMapperDetailsDTOListMapper() {
-        FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
-        FluxLocationTypeEnum fluxLocationTypeEnum = FluxLocationTypeEnum.FA_RELATED;
-        FishingActivityEntity fishingActivityEntity = null;
-        FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, fishingActivityEntity, fluxLocationEntity);
-
-        List<FluxLocationDetailsDTO> fluxLocationDetailsDTO = FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTOList(new HashSet<FluxLocationEntity>(Arrays.asList(fluxLocationEntity)));
-        assertEquals(fluxLocationEntity.getAltitude(), fluxLocationDetailsDTO.get(0).getAltitude());
-        assertEquals(fluxLocationEntity.getCountryId(), fluxLocationDetailsDTO.get(0).getCountryId());
-        assertEquals(fluxLocationEntity.getFluxLocationIdentifier(), fluxLocationDetailsDTO.get(0).getFluxLocationIdentifier());
-        assertEquals(fluxLocationEntity.getFluxLocationType(), fluxLocationDetailsDTO.get(0).getFluxLocationType());
-        assertEquals(fluxLocationEntity.getGeopoliticalRegionCode(), fluxLocationDetailsDTO.get(0).getGeopoliticalRegionCode());
-        assertEquals(fluxLocationEntity.getJurisdictionCountryCode(), fluxLocationDetailsDTO.get(0).getJurisdictionCountryCode());
-        assertEquals(fluxLocationEntity.getTypeCode(), fluxLocationDetailsDTO.get(0).getTypeCode());
-        assertEquals(fluxLocationEntity.getRfmoCode(), fluxLocationDetailsDTO.get(0).getRfmoCode());
-        assertEquals(fluxLocationEntity.getSovereignRightsCountryCode(), fluxLocationDetailsDTO.get(0).getSovereignRightsCountryCode());
-        assertEquals(fluxLocationEntity.getLatitude(), fluxLocationDetailsDTO.get(0).getLatitude());
-        assertEquals(fluxLocationEntity.getLongitude(), fluxLocationDetailsDTO.get(0).getLongitude());
-    }
 }

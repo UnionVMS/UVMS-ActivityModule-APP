@@ -52,28 +52,4 @@ public class AapProcessMapperTest {
 
         assertEquals(aapProcess.getTypeCodes().get(0).getValue(), aapProductEntity.getAapProcess().getTypeCode());
     }
-
-    @Test
-    public void testAapProcessDetailsDTOMapper() {
-        AAPProcess aapProcess = MapperUtil.getAapProcess();
-        AapProcessEntity aapProcessEntity = new AapProcessEntity();
-        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
-
-        AapProcessDetailsDTO aapProcessDetailsDTO = AapProcessMapper.INSTANCE.mapToAapProcessDetailsDTO(aapProcessEntity);
-
-        assertEquals(aapProcessEntity.getTypeCode(), aapProcessDetailsDTO.getTypeCode());
-        assertEquals(aapProcessEntity.getConversionFactor(), aapProcessDetailsDTO.getConversionFactor());
-    }
-
-    @Test
-    public void testAapProcessDetailsDTOListMapper() {
-        AAPProcess aapProcess = MapperUtil.getAapProcess();
-        AapProcessEntity aapProcessEntity = new AapProcessEntity();
-        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
-
-        List<AapProcessDetailsDTO> aapProcessDetailsDTO = AapProcessMapper.INSTANCE.mapToAapProductDetailsDTOList(new HashSet<AapProcessEntity>(Arrays.asList(aapProcessEntity)));
-
-        assertEquals(aapProcessEntity.getTypeCode(), aapProcessDetailsDTO.get(0).getTypeCode());
-        assertEquals(aapProcessEntity.getConversionFactor(), aapProcessDetailsDTO.get(0).getConversionFactor());
-    }
 }

@@ -59,32 +59,4 @@ public class DelimitedPeriodMapperTest {
         assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getDuration().intValue());
         assertNull(delimitedPeriodEntity.getFishingTrip());
     }
-
-    @Test
-    public void testDelimitedPeriodDetailsDTOMapper() {
-        DelimitedPeriod delimitedPeriod = MapperUtil.getDelimitedPeriod();
-        DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
-        FishingActivityEntity fishingActivity = null;
-        DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingActivity, delimitedPeriodEntity);
-
-        DelimitedPeriodDetailsDTO delimitedPeriodDetailsDTO = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDetailsDTO(delimitedPeriodEntity);
-
-        assertEquals(delimitedPeriodEntity.getDuration(), delimitedPeriodDetailsDTO.getDuration());
-        assertEquals(delimitedPeriodEntity.getEndDate(), delimitedPeriodDetailsDTO.getEndDate());
-        assertEquals(delimitedPeriodEntity.getStartDate(), delimitedPeriodDetailsDTO.getStartDate());
-    }
-
-    @Test
-    public void testDelimitedPeriodDetailsDTOListMapper() {
-        DelimitedPeriod delimitedPeriod = MapperUtil.getDelimitedPeriod();
-        DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
-        FishingActivityEntity fishingActivity = null;
-        DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingActivity, delimitedPeriodEntity);
-
-        List<DelimitedPeriodDetailsDTO> delimitedPeriodDetailsDTO = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDetailsDTOList(new HashSet<>(Arrays.asList(delimitedPeriodEntity)));
-
-        assertEquals(delimitedPeriodEntity.getDuration(), delimitedPeriodDetailsDTO.get(0).getDuration());
-        assertEquals(delimitedPeriodEntity.getEndDate(), delimitedPeriodDetailsDTO.get(0).getEndDate());
-        assertEquals(delimitedPeriodEntity.getStartDate(), delimitedPeriodDetailsDTO.get(0).getStartDate());
-    }
 }

@@ -51,14 +51,6 @@ public abstract class GearProblemMapper extends BaseMapper {
     })
     public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
 
-    @Mappings({
-            @Mapping(target = "problemType", source = "typeCode"),
-            @Mapping(target = "affectedQuantity", source = "affectedQuantity"),
-            //@Mapping(target = "recoveryMeasure", source = "recoveryMeasureCode"),
-            @Mapping(target = "fishingGears", source = "fishingGears")
-    })
-    public abstract GearProblemDetailsDTO mapToGearProblemDetailsDTO(GearProblemEntity gearProblemEntity);
-
     protected Set<GearProblemRecoveryEntity> mapToGearProblemRecoveries(List<CodeType> codeTypes, GearProblemEntity gearProblemEntity) {
         if (codeTypes == null || codeTypes.isEmpty()) {
             Collections.emptySet();

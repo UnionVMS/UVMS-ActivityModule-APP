@@ -71,24 +71,6 @@ public class FaCatchMapperTest {
         assertFaCatchFields(faCatch, fluxLocationEntity.getFaCatch());
     }
 
-    @Test
-    public void testFaCatchDetailsDTOMapper() {
-        FACatch faCatch = MapperUtil.getFaCatch();
-        FaCatchEntity faCatchEntity = new FaCatchEntity();
-        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, null, faCatchEntity);
-
-        FaCatchDetailsDTO faCatchDetailsDTO = FaCatchMapper.INSTANCE.mapToFaCatchDetailsDTO(faCatchEntity);
-        assertEquals(faCatchEntity.getSizeDistribution().getCategoryCode(), faCatchDetailsDTO.getSizeDistributionCategoryCode());
-        assertEquals(faCatchEntity.getSizeDistribution().getClassCode(), faCatchDetailsDTO.getSizeDistributionClassCode());
-        assertEquals(faCatchEntity.getSpeciesCode(), faCatchDetailsDTO.getSpeciesCode());
-        assertEquals(faCatchEntity.getTypeCode(), faCatchDetailsDTO.getTypeCode());
-        assertEquals(faCatchEntity.getUnitQuantity(), faCatchDetailsDTO.getUnitQuantity());
-        assertEquals(faCatchEntity.getUsageCode(), faCatchDetailsDTO.getUsageCode());
-        assertEquals(faCatchEntity.getWeighingMeansCode(), faCatchDetailsDTO.getWeighingMeansCode());
-        assertEquals(faCatchEntity.getWeightMeasure(), faCatchDetailsDTO.getWeightMeasure());
-        assertEquals(faCatchEntity.getWeightMeasureUnitCode(), faCatchDetailsDTO.getWeightMeasureUnitCode());
-    }
-
     private void assertFaCatchFields(FACatch faCatch, FaCatchEntity faCatchEntity) {
         assertEquals(faCatch.getTypeCode().getValue(), faCatchEntity.getTypeCode());
         assertEquals(faCatch.getTypeCode().getListID(), faCatchEntity.getTypeCodeListId());

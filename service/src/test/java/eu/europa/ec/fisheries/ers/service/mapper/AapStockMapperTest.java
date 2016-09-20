@@ -42,26 +42,6 @@ public class AapStockMapperTest {
         assertEquals(aapStock.getID().getSchemeID(), aapStockEntity.getStockSchemeId());
         assertNull(aapStockEntity.getFaCatch());
     }
-
-    @Test
-    public void testAapStockDetailsDTOMapper() {
-        AAPStock aapStock = MapperUtil.getAapStock();
-        AapStockEntity aapStockEntity = new AapStockEntity();
-        AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock, null, aapStockEntity);
-
-        AapStockDetailsDTO aapStockDetailsDTO = AapStockMapper.INSTANCE.mapToAapStockDetailsDTO(aapStockEntity);
-        assertEquals(aapStockEntity.getStockId(), aapStockDetailsDTO.getStockId());
-    }
-
-    @Test
-    public void testAapStockDetailsDTOListMapper() {
-        AAPStock aapStock = MapperUtil.getAapStock();
-        AapStockEntity aapStockEntity = new AapStockEntity();
-        AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock, null, aapStockEntity);
-
-        List<AapStockDetailsDTO> aapStockDetailsDTO = AapStockMapper.INSTANCE.mapToAapStockDetailsDTOList(new HashSet<AapStockEntity>(Arrays.asList(aapStockEntity)));
-        assertEquals(aapStockEntity.getStockId(), aapStockDetailsDTO.get(0).getStockId());
-    }
 }
 
 

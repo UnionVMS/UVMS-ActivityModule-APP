@@ -37,11 +37,4 @@ public abstract class AapStockMapper extends BaseMapper {
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)")
     })
     public abstract AapStockEntity mapToAapStockEntity(AAPStock aapStock, FaCatchEntity faCatchEntity, @MappingTarget AapStockEntity aapStockEntity);
-
-    @Mappings({
-            @Mapping(target = "stockId", source = "stockId")
-    })
-    public abstract AapStockDetailsDTO mapToAapStockDetailsDTO(AapStockEntity aapStockEntity);
-
-    public abstract List<AapStockDetailsDTO> mapToAapStockDetailsDTOList(Set<AapStockEntity> aapStockEntities);
 }

@@ -50,16 +50,4 @@ public class GearProblemMapperTest {
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), fishingGearEntity.getGearProblem().getRecoveryMeasureCode());
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), fishingGearEntity.getGearProblem().getRecoveryMeasureCodeListId());
     }
-
-    @Test
-    public void testGearProblemDetailsDTOMapper() {
-        GearProblem gearProblem = MapperUtil.getGearProblem();
-        GearProblemEntity gearProblemEntity = new GearProblemEntity();
-        GearProblemMapper.INSTANCE.mapToGearProblemEntity(gearProblem, null, gearProblemEntity);
-
-        GearProblemDetailsDTO gearProblemDetailsDTO = GearProblemMapper.INSTANCE.mapToGearProblemDetailsDTO(gearProblemEntity);
-        assertEquals(gearProblemEntity.getAffectedQuantity(), gearProblemDetailsDTO.getAffectedQuantity().intValue());
-        assertEquals(gearProblemEntity.getTypeCode(), gearProblemDetailsDTO.getProblemType());
-        assertEquals(gearProblemEntity.getRecoveryMeasureCode(), gearProblemDetailsDTO.getRecoveryMeasure());
-    }
 }

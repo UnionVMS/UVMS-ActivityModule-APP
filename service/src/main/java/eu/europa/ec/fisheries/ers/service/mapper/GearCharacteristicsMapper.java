@@ -45,18 +45,4 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "fishingGear", expression = "java(fishingGearEntity)")
     })
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);
-
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode"),
-            @Mapping(target = "description", source = "description"),
-            @Mapping(target = "valueMeasure", source = "valueMeasure"),
-            @Mapping(target = "dateTime", source = "valueDateTime"),
-            @Mapping(target = "indicator", source = "valueIndicator"),
-            @Mapping(target = "code", source = "valueCode"),
-            @Mapping(target = "text", source = "valueText"),
-            @Mapping(target = "quantity", source = "valueQuantity")
-    })
-    public abstract GearCharacteristicsDetailsDTO mapToGearCharacteristicsDetailsDTO(GearCharacteristicEntity gearCharacteristicEntity);
-
-    public abstract List<GearCharacteristicsDetailsDTO> mapToGearCharacteristicsDetailsDTOList(Set<GearCharacteristicEntity> gearCharacteristicEntities);
 }

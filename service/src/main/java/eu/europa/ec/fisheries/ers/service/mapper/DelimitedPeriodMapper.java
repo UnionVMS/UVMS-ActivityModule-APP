@@ -55,13 +55,4 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
             @Mapping(source = "duration",target = "duration")
     })
     public abstract DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
-
-    @Mappings({
-            @Mapping(target = "startDate", source = "startDate"),
-            @Mapping(target = "endDate", source = "endDate"),
-            @Mapping(target = "duration", source = "duration")
-    })
-    public abstract DelimitedPeriodDetailsDTO mapToDelimitedPeriodDetailsDTO(DelimitedPeriodEntity delimitedPeriodEntity);
-
-    public abstract List<DelimitedPeriodDetailsDTO> mapToDelimitedPeriodDetailsDTOList(Set<DelimitedPeriodEntity> delimitedPeriodEntities);
 }

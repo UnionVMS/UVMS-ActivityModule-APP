@@ -55,27 +55,7 @@ public abstract class FaCatchMapper extends BaseMapper {
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch, FishingActivityEntity fishingActivityEntity, @MappingTarget FaCatchEntity faCatchEntity);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode"),
-            @Mapping(target = "speciesCode", source = "speciesCode"),
-            @Mapping(target = "unitQuantity", source = "unitQuantity"),
-            @Mapping(target = "weightMeasure", source = "weightMeasure"),
-            @Mapping(target = "weightMeasureUnitCode", source = "weightMeasureUnitCode"),
-            @Mapping(target = "usageCode", source = "usageCode"),
-            @Mapping(target = "weighingMeansCode", source = "weighingMeansCode"),
-            //@Mapping(target = "sizeDistributionClassCode", source = "sizeDistribution.classCode"),
-            @Mapping(target = "sizeDistributionCategoryCode", source = "sizeDistribution.categoryCode"),
-            @Mapping(target = "fishingGears", source = "fishingGears"),
-            @Mapping(target = "specifiedFluxLocations", expression = "java(getSpecifiedFluxLocations(faCatchEntity.getFluxLocations()))"),
-            @Mapping(target = "destFluxLocations", expression = "java(getDestFluxLocations(faCatchEntity.getFluxLocations()))"),
-            @Mapping(target = "fluxCharacteristics", source = "fluxCharacteristics"),
-            @Mapping(target = "fishingTrips", source = "fishingTrips"),
-            @Mapping(target = "aapProcess", source = "aapProcesses"),
-            @Mapping(target = "aapStock", source = "aapStocks")
-    })
-    public abstract FaCatchDetailsDTO mapToFaCatchDetailsDTO(FaCatchEntity faCatchEntity);
-
-    protected List<FluxLocationDetailsDTO> getSpecifiedFluxLocations(Set<FluxLocationEntity> fluxLocations) {
+/*    protected List<FluxLocationDetailsDTO> getSpecifiedFluxLocations(Set<FluxLocationEntity> fluxLocations) {
         List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
         for (FluxLocationEntity fluxLocationEntity : fluxLocations) {
             if (fluxLocationEntity.getFluxLocationType().equalsIgnoreCase(FluxLocationTypeEnum.FA_CATCH_SPECIFIED.getType())) {
@@ -93,7 +73,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             }
         }
         return fluxLocationDetailsDTOs;
-    }
+    }*/
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
         if (sizeDistribution == null) {

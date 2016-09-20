@@ -51,15 +51,6 @@ public abstract class AapProcessMapper extends BaseMapper {
     })
     public abstract AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
 
-    @Mappings({
-            //@Mapping(target = "typeCode", source = "typeCode"),
-            @Mapping(target = "conversionFactor", source = "conversionFactor"),
-            @Mapping(target = "aapProductDetails", source = "aapProducts")
-    })
-    public abstract AapProcessDetailsDTO mapToAapProcessDetailsDTO(AapProcessEntity aapProcessEntity);
-
-    public abstract List<AapProcessDetailsDTO> mapToAapProductDetailsDTOList(Set<AapProcessEntity> aapProcessEntities);
-
     protected Set<AapProcessCodeEntity> getAapProcessCodes(List<CodeType> codeTypes, AapProcessEntity aapProcessEntity) {
         if (codeTypes == null || codeTypes.isEmpty()) {
             return Collections.emptySet();
