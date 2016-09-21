@@ -16,9 +16,9 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.wsdl.asset.module.AssetListModuleRequest;
 import eu.europa.ec.fisheries.wsdl.asset.module.AssetModuleMethod;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import javax.jms.TextMessage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,37 +81,35 @@ public class AssetsRequestMapper {
         return assetListCrit;
     }
 
-    public static void mapAssetsResponseToVesselDetailsTripDTO(TextMessage respMessage,
-                                                               VesselDetailsTripDTO vesselDetailsTripDTO) throws ModelMarshallException {
+    public static void mapAssetsResponseToVesselDetailsTripDTO(ListAssetResponse listResp,
+                                                               VesselDetailsTripDTO vesselDetailsTripDTO) {
 
-        ListAssetResponse listResp = JAXBMarshaller.unmarshallTextMessage(respMessage, ListAssetResponse.class);
-        if(listResp.getTotalNumberOfPages() == 0){
+        if(listResp == null || listResp.getTotalNumberOfPages() == 0 || CollectionUtils.isEmpty(listResp.getAsset())){
             return;
         }
-
         Asset asset = listResp.getAsset().get(0);
 
-        if(!StringUtils.equalsIgnoreCase(vesselDetailsTripDTO.getCfr(), asset.getCfr())){
+        if(StringUtils.isEmpty(vesselDetailsTripDTO.getCfr())&& !StringUtils.isEmpty(asset.getCfr())){
             vesselDetailsTripDTO.setCfr(asset.getCfr());
             vesselDetailsTripDTO.setCfrEnriched(true);
         }
-        if(!StringUtils.equalsIgnoreCase(vesselDetailsTripDTO.getExMark(), asset.getExternalMarking())){
+        if(StringUtils.isEmpty(vesselDetailsTripDTO.getExMark()) && !StringUtils.isEmpty(asset.getExternalMarking())){
             vesselDetailsTripDTO.setExMark(asset.getExternalMarking());
             vesselDetailsTripDTO.setExMarkEnriched(true);
         }
-        if(!StringUtils.equalsIgnoreCase(vesselDetailsTripDTO.getFlagState(), asset.getCountryCode())){ // TODO:Check if this is the right value
+        if(StringUtils.isEmpty(vesselDetailsTripDTO.getFlagState()) && !StringUtils.isEmpty(asset.getCountryCode())){ // TODO:Check if this is the right value
             vesselDetailsTripDTO.setFlagState(asset.getCountryCode());
             vesselDetailsTripDTO.setFlagStateEnriched(true);
         }
-        if(!StringUtils.equalsIgnoreCase(vesselDetailsTripDTO.getIrcs(), asset.getIrcs())){
+        if(StringUtils.isEmpty(vesselDetailsTripDTO.getIrcs()) && !StringUtils.isEmpty(asset.getIrcs())){
             vesselDetailsTripDTO.setIrcs(asset.getIrcs());
             vesselDetailsTripDTO.setIrcsEnriched(true);
         }
-        if(!StringUtils.equalsIgnoreCase(vesselDetailsTripDTO.getName(), asset.getName())){
+        if(StringUtils.isEmpty(vesselDetailsTripDTO.getName()) && !StringUtils.isEmpty(asset.getName())){
             vesselDetailsTripDTO.setName(asset.getName());
             vesselDetailsTripDTO.setNameEnriched(true);
         }
-        if(!StringUtils.equalsIgnoreCase(vesselDetailsTripDTO.getUvi(), asset.getImo())){
+        if(StringUtils.isEmpty(vesselDetailsTripDTO.getUvi()) && !StringUtils.isEmpty(asset.getImo())){
             vesselDetailsTripDTO.setUvi(asset.getImo());
             vesselDetailsTripDTO.setUviEnriched(true);
         }

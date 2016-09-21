@@ -14,9 +14,11 @@
 package eu.europa.ec.fisheries.ers.service.util;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 
 import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.util.HashSet;
 
 /**
@@ -162,5 +164,27 @@ public class ActivityDataUtil {
         contactPersonEntity.setAlias(alias);
         contPartEntity.setContactPerson(contactPersonEntity);
         return contPartEntity;
+    }
+
+    public static Set<ContactPartyRoleEntity> getContactPartyRole(String roleCode, String roleID, ContactPartyEntity contPartEntity) {
+        Set<ContactPartyRoleEntity> rolesList = new HashSet<>();
+        ContactPartyRoleEntity entity_1 = new ContactPartyRoleEntity();
+        entity_1.setContactParty(contPartEntity);
+        entity_1.setRoleCode(roleCode);
+        entity_1.setRoleCodeListId(roleID);
+        rolesList.add(entity_1);
+       return rolesList;
+    }
+
+    public static ListAssetResponse getListAssetResponse(){
+        ListAssetResponse listResponse = new ListAssetResponse();
+        Asset asset = new Asset();
+        asset.setCfr("UPDATED_CFR");
+        asset.setImo("UPDATED_IMO");
+        asset.setIrcs("UPDATED_IRCS");
+        listResponse.setCurrentPage(1);
+        listResponse.setTotalNumberOfPages(1);
+        listResponse.getAsset().add(asset);
+        return listResponse;
     }
 }

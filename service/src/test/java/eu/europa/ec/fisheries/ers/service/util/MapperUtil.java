@@ -140,8 +140,12 @@ public class MapperUtil {
         ContactPartyEntity contPartEntity_1 = ActivityDataUtil.getContactPartyEntity("title1","givenName1","middleName1","familyName1","familyNamePrefix1","nameSuffix1","gender1","alias1");
         ContactPartyEntity contPartEntity_2 = ActivityDataUtil.getContactPartyEntity("title2","givenName2","middleName2","familyName2","familyNamePrefix2","nameSuffix2","gender2","alias2");
 
-        contactParties.add(contPartEntity_1);
-        contactParties.add(contPartEntity_2);
+        Set<ContactPartyRoleEntity> roleList_1 = ActivityDataUtil.getContactPartyRole("SOMEROLE", "ROLE_CODE1", contPartEntity_1);
+        Set<ContactPartyRoleEntity> roleList_2 = ActivityDataUtil.getContactPartyRole("MASTER", "ROLE_CODE2", contPartEntity_2);
+        contPartEntity_1.setContactPartyRole(roleList_1);
+        contPartEntity_2.setContactPartyRole(roleList_2);
+
+        contactParties.addAll(Arrays.asList(contPartEntity_1,contPartEntity_2));
 
         vesselTransportEntity.setContactParty(contactParties);
 

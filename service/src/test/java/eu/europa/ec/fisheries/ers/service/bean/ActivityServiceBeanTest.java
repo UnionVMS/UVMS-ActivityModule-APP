@@ -19,15 +19,16 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
+import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -37,11 +38,16 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 
+import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -66,6 +72,15 @@ public class ActivityServiceBeanTest {
 
     @InjectMocks
     ActivityServiceBean activityService;
+
+    @Mock
+    ActivityMessageProducerBean activityProducer;
+
+    @Mock
+    AssetsMessageConsumerBean activityConsumer;
+
+    @Mock
+    JAXBMarshaller marshaller;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -167,7 +182,6 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testGetVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException {
 
         when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntityWithContactParties());
@@ -177,6 +191,33 @@ public class ActivityServiceBeanTest {
         assertNotNull(vesselDetailsTripDTO);
         assertEquals(2, vesselDetailsTripDTO.getContactPersons().size());
         assertEquals("vesselGroup1", vesselDetailsTripDTO.getName());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException {
+
+        String response = JAXBMarshaller.marshallJaxBObjectToString(ActivityDataUtil.getListAssetResponse());
+        TextMessage mockTextMessage = mock(TextMessage.class);
+
+        when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntityWithContactParties());
+        when(activityProducer.sendAssetsModuleSynchronousMessage("")).thenReturn("0101");
+        when(activityConsumer.getMessage(null, TextMessage.class)).thenReturn(mockTextMessage);
+        when(mockTextMessage.getText()).thenReturn(response);
+
+        VesselDetailsTripDTO vesselDetailsTripDTO = activityService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+
+        assertNotNull(vesselDetailsTripDTO);
+
+        // Checking that the VesselDetailsTripDTO has been enriched;
+        assertEquals("UPDATED_IRCS", vesselDetailsTripDTO.getIrcs());
+        assertEquals(true, vesselDetailsTripDTO.isIrcsEnriched());
+
+        assertEquals("UPDATED_IMO", vesselDetailsTripDTO.getUvi());
+        assertEquals(true, vesselDetailsTripDTO.isUviEnriched());
+
+        assertEquals(false, vesselDetailsTripDTO.isExMarkEnriched());
+        assertEquals(false, vesselDetailsTripDTO.isFlagStateEnriched());
     }
 
 

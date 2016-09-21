@@ -25,13 +25,13 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityRepor
 import eu.europa.ec.fisheries.uvms.activity.model.dto.PaginationDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
+import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -281,8 +281,10 @@ public class ActivityServiceBean implements ActivityService {
      */
     private void checkAndSetIsCaptain(ContactPersonDetailsDTO contactPersDTO, ContactPartyEntity contactParty) {
         Set<ContactPartyRoleEntity> contactPartyRoles = contactParty.getContactPartyRole();
-        for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
-            contactPersDTO.setCaptain(StringUtils.equalsIgnoreCase(roleEntity.getRoleCode(), "MASTER"));
+        if(CollectionUtils.isNotEmpty(contactPartyRoles)){
+            for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
+                contactPersDTO.setCaptain(StringUtils.equalsIgnoreCase(roleEntity.getRoleCode(), "MASTER"));
+            }
         }
     }
 
@@ -312,7 +314,8 @@ public class ActivityServiceBean implements ActivityService {
             }
             if(StringUtils.isNotEmpty(response)){
                 try {
-                    AssetsRequestMapper.mapAssetsResponseToVesselDetailsTripDTO(message, vesselDetailsTripDTO);
+                    ListAssetResponse listResp = JAXBMarshaller.unmarshallTextMessage(response, ListAssetResponse.class);
+                    AssetsRequestMapper.mapAssetsResponseToVesselDetailsTripDTO(listResp, vesselDetailsTripDTO);
                 } catch (ModelMarshallException e) {
                     log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment",e);
                 }
