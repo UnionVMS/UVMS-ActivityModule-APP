@@ -167,12 +167,12 @@ public class MapperUtil {
                 vesselTransportMeansEntity1, "new");
         FaReportDocumentEntity faReportDocumentEntity2=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2015-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity2,
                 vesselTransportMeansEntity2, "new");
-        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2015-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity3,
+        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration", "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2015-06-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity3,
                 vesselTransportMeansEntity3, "new");
 
-        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE" , DateUtils.parseToUTCDate("2014-05-27 07:47:31","yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS",faReportDocumentEntity1,null);
+        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity1, null);
         FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , DateUtils.parseToUTCDate("2014-05-27 07:47:31","yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS",faReportDocumentEntity2,null);
-        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE" , DateUtils.parseToUTCDate("2014-05-27 07:47:31","yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS",faReportDocumentEntity3,null);
+        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE", DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity3, null);
 
         List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>();
         fishingActivityEntityList.add(fishingActivityEntity1);
@@ -208,9 +208,9 @@ public class MapperUtil {
     public static FluxReportDocumentEntity getFluxReportDocumentEntity() {
         FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
         fluxReportDocumentEntity.setCreationDatetime(new Date());
-        fluxReportDocumentEntity.setFluxReportDocumentId("Doc Id 1");
-        fluxReportDocumentEntity.setOwnerFluxPartyId("Flux party Id 1");
-        fluxReportDocumentEntity.setOwnerFluxPartyName("Flux party name");
+
+        fluxReportDocumentEntity.setFluxReportIdentifiers(new HashSet<FluxReportIdentifierEntity>(Arrays.asList(getFluxReportIdentifierEntity())));
+        fluxReportDocumentEntity.setFluxParty(getFluxPartyEntity());
         fluxReportDocumentEntity.setPurpose("Test purpose");
         fluxReportDocumentEntity.setPurposeCode("5");
         fluxReportDocumentEntity.setPurposeCodeListId("57thf-58fj88-4d9834-thdue");
@@ -218,6 +218,24 @@ public class MapperUtil {
         return fluxReportDocumentEntity;
     }
 
+    public static FluxReportIdentifierEntity getFluxReportIdentifierEntity() {
+        FluxReportIdentifierEntity fluxReportIdentifierEntity = new FluxReportIdentifierEntity();
+        fluxReportIdentifierEntity.setFluxReportIdentifierId("Report Id 1");
+        fluxReportIdentifierEntity.setFluxReportIdentifierSchemeId("Scheme Id 1");
+        return fluxReportIdentifierEntity;
+    }
+
+    public static FluxPartyEntity getFluxPartyEntity() {
+        FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
+        fluxPartyEntity.setFluxPartyName("Flux party Name 1");
+        fluxPartyEntity.setNameLanguageId("Flux party name language id 1");
+
+        FluxPartyIdentifierEntity entity = new FluxPartyIdentifierEntity();
+        entity.setFluxPartyIdentifierId("Flux party Id 1");
+        entity.setFluxPartyIdentifierSchemeId("Flux Scheme Id 1");
+        fluxPartyEntity.setFluxPartyIdentifiers(new HashSet<FluxPartyIdentifierEntity>(Arrays.asList(entity)));
+        return fluxPartyEntity;
+    }
 
     public static AAPProcess getAapProcess() {
         List<CodeType> codeList = Arrays.asList(getCodeType("AAPPROCESS", "qbdcg-3fhr5-rd4kd5-erigks5k"));

@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPartyDetailsDTO;
@@ -39,17 +40,20 @@ public class ContactPartyMapperTest {
         ContactPartyEntity contactPartyEntity = new ContactPartyEntity();
         ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty, null, contactPartyEntity);
 
-        assertEquals(contactParty.getRoleCodes().get(0).getValue(), contactPartyEntity.getRoleCode());
-        assertEquals(contactParty.getRoleCodes().get(0).getListID(), contactPartyEntity.getRoleCodeListId());
+        ContactPartyRoleEntity entity = contactPartyEntity.getContactPartyRole().iterator().next();
+        assertEquals(contactParty.getRoleCodes().get(0).getValue(), entity.getRoleCode());
+        assertEquals(contactParty.getRoleCodes().get(0).getListID(), entity.getRoleCodeListId());
 
         assertNotNull(contactPartyEntity.getContactPerson());
-        assertEquals(contactParty.getRoleCodes().get(0).getValue(), contactPartyEntity.getContactPerson().getContactParty().getRoleCode());
-        assertEquals(contactParty.getRoleCodes().get(0).getListID(), contactPartyEntity.getContactPerson().getContactParty().getRoleCodeListId());
+        entity = contactPartyEntity.getContactPerson().getContactParty().getContactPartyRole().iterator().next();
+        assertEquals(contactParty.getRoleCodes().get(0).getValue(), entity.getRoleCode());
+        assertEquals(contactParty.getRoleCodes().get(0).getListID(), entity.getRoleCodeListId());
 
         assertNotNull(contactPartyEntity.getStructuredAddresses());
         StructuredAddressEntity structuredAddressEntity = contactPartyEntity.getStructuredAddresses().iterator().next();
         assertNotNull(structuredAddressEntity);
-        assertEquals(contactParty.getRoleCodes().get(0).getValue(), structuredAddressEntity.getContactParty().getRoleCode());
-        assertEquals(contactParty.getRoleCodes().get(0).getListID(), structuredAddressEntity.getContactParty().getRoleCodeListId());
+        entity = structuredAddressEntity.getContactParty().getContactPartyRole().iterator().next();
+        assertEquals(contactParty.getRoleCodes().get(0).getValue(), entity.getRoleCode());
+        assertEquals(contactParty.getRoleCodes().get(0).getListID(), entity.getRoleCodeListId());
     }
 }

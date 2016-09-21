@@ -34,8 +34,8 @@ public class SizeDistributionMapperTest {
 
         assertEquals(sizeDistribution.getCategoryCode().getValue(), sizeDistributionEntity.getCategoryCode());
         assertEquals(sizeDistribution.getCategoryCode().getListID(), sizeDistributionEntity.getCategoryCodeListId());
-        assertEquals(sizeDistribution.getClassCodes().get(0).getValue(), sizeDistributionEntity.getClassCode());
-        assertEquals(sizeDistribution.getClassCodes().get(0).getListID(), sizeDistributionEntity.getClassCodeListId());
+        assertEquals(sizeDistribution.getClassCodes().get(0).getValue(), sizeDistributionEntity.getSizeDistributionClassCode().iterator().next().getClassCode());
+        assertEquals(sizeDistribution.getClassCodes().get(0).getListID(), sizeDistributionEntity.getSizeDistributionClassCode().iterator().next().getClassCodeListId());
         assertNull(sizeDistributionEntity.getFaCatch());
     }
 }

@@ -38,8 +38,8 @@ public class GearProblemMapperTest {
         assertEquals(gearProblem.getTypeCode().getValue(), gearProblemEntity.getTypeCode());
         assertEquals(gearProblem.getTypeCode().getListID(), gearProblemEntity.getTypeCodeListId());
         assertEquals(gearProblem.getAffectedQuantity().getValue().intValue(), gearProblemEntity.getAffectedQuantity());
-        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), gearProblemEntity.getRecoveryMeasureCode());
-        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), gearProblemEntity.getRecoveryMeasureCodeListId());
+        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), gearProblemEntity.getGearProblemRecovery().iterator().next().getRecoveryMeasureCode());
+        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), gearProblemEntity.getGearProblemRecovery().iterator().next().getRecoveryMeasureCodeListId());
         assertNull(gearProblemEntity.getFishingActivity());
 
         assertNotNull(gearProblemEntity.getFishingGears());
@@ -47,7 +47,7 @@ public class GearProblemMapperTest {
         assertEquals(gearProblem.getTypeCode().getValue(), fishingGearEntity.getGearProblem().getTypeCode());
         assertEquals(gearProblem.getTypeCode().getListID(), fishingGearEntity.getGearProblem().getTypeCodeListId());
         assertEquals(gearProblem.getAffectedQuantity().getValue().intValue(), fishingGearEntity.getGearProblem().getAffectedQuantity());
-        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), fishingGearEntity.getGearProblem().getRecoveryMeasureCode());
-        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), fishingGearEntity.getGearProblem().getRecoveryMeasureCodeListId());
+        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), fishingGearEntity.getGearProblem().getGearProblemRecovery().iterator().next().getRecoveryMeasureCode());
+        assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), fishingGearEntity.getGearProblem().getGearProblemRecovery().iterator().next().getRecoveryMeasureCodeListId());
     }
 }

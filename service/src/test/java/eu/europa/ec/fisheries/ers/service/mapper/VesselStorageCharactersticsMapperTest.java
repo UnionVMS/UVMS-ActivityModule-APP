@@ -34,8 +34,8 @@ public class VesselStorageCharactersticsMapperTest {
 
         assertEquals(vesselStorageCharacteristic.getID().getValue(), vesselStorageCharacteristicsEntity.getVesselId());
         assertEquals(vesselStorageCharacteristic.getID().getSchemeID(), vesselStorageCharacteristicsEntity.getVesselSchemaId());
-        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getValue(), vesselStorageCharacteristicsEntity.getVesselTypeCode());
-        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getListID(), vesselStorageCharacteristicsEntity.getVesselTypeCodeListId());
+        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getValue(), vesselStorageCharacteristicsEntity.getVesselStorageCharCode().iterator().next().getVesselTypeCode());
+        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getListID(), vesselStorageCharacteristicsEntity.getVesselStorageCharCode().iterator().next().getVesselTypeCodeListId());
         assertNull(vesselStorageCharacteristicsEntity.getFishingActivitiesForDestVesselCharId());
     }
 
@@ -47,8 +47,8 @@ public class VesselStorageCharactersticsMapperTest {
 
         assertEquals(vesselStorageCharacteristic.getID().getValue(), vesselStorageCharacteristicsEntity.getVesselId());
         assertEquals(vesselStorageCharacteristic.getID().getSchemeID(), vesselStorageCharacteristicsEntity.getVesselSchemaId());
-        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getValue(), vesselStorageCharacteristicsEntity.getVesselTypeCode());
-        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getListID(), vesselStorageCharacteristicsEntity.getVesselTypeCodeListId());
+        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getValue(), vesselStorageCharacteristicsEntity.getVesselStorageCharCode().iterator().next().getVesselTypeCode());
+        assertEquals(vesselStorageCharacteristic.getTypeCodes().get(0).getListID(), vesselStorageCharacteristicsEntity.getVesselStorageCharCode().iterator().next().getVesselTypeCodeListId());
         assertNull(vesselStorageCharacteristicsEntity.getFishingActivitiesForSourceVesselCharId());
     }
 }

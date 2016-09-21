@@ -33,14 +33,15 @@ public class FluxReportDocumentMapperTest {
         FluxReportDocumentEntity entity = new FluxReportDocumentEntity();
         FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument, null, entity);
 
-        assertEquals(fluxReportDocument.getIDS().get(0).getValue(), entity.getFluxReportDocumentId());
+        assertEquals(fluxReportDocument.getIDS().get(0).getValue(), entity.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId());
+        assertEquals(fluxReportDocument.getIDS().get(0).getSchemeID(), entity.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId());
         assertEquals(fluxReportDocument.getReferencedID().getValue(), entity.getReferenceId());
         assertEquals(fluxReportDocument.getCreationDateTime().getDateTime().toGregorianCalendar().getTime(), entity.getCreationDatetime());
         assertEquals(fluxReportDocument.getPurposeCode().getValue(), entity.getPurposeCode());
         assertEquals(fluxReportDocument.getPurposeCode().getListID(), entity.getPurposeCodeListId());
         assertTrue(entity.getPurpose().startsWith(fluxReportDocument.getPurpose().getValue()));
-        assertEquals(fluxReportDocument.getOwnerFLUXParty().getIDS().get(0).getValue(), entity.getOwnerFluxPartyId());
-        assertEquals(fluxReportDocument.getOwnerFLUXParty().getNames().get(0).getValue(), entity.getOwnerFluxPartyName());
+        assertEquals(fluxReportDocument.getOwnerFLUXParty().getIDS().get(0).getValue(), entity.getFluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierId());
+        assertEquals(fluxReportDocument.getOwnerFLUXParty().getNames().get(0).getValue(), entity.getFluxParty().getFluxPartyName());
         assertNull(entity.getFaReportDocument());
 
     }

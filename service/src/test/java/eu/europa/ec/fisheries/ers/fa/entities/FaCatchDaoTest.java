@@ -21,32 +21,26 @@ import org.junit.Test;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 
-public class FaCatchDaoTest extends BaseErsFaDaoTest{
-	
-	
-	private FaCatchDao dao = new FaCatchDao(em);
+public class FaCatchDaoTest extends BaseErsFaDaoTest {
 
 
-	
-		@Before
-	    @SneakyThrows
-	    public void prepare(){
-				Operation operation = sequenceOf(DELETE_ALL, INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA,INSERT_ERS_FISHING_ACTIVITY_DATA,
-						INSERT_ERS_SIZE_DISTRIBUTION_DATA,INSERT_ERS_FA_CATCH_DATA);
-		        DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
-		        dbSetupTracker.launchIfNecessary(dbSetup);
-	    }
-		
-		
-		@Test
-	    @SneakyThrows
-	    public void testFindEntityById() throws Exception {
+    private FaCatchDao dao = new FaCatchDao(em);
 
-		       dbSetupTracker.skipNextLaunch();
-		       FaCatchEntity entity=dao.findEntityById(FaCatchEntity.class, 1);
-		      assertNotNull(entity);
-	    }
-	    
-	   
+    @Before
+    @SneakyThrows
+    public void prepare() {
+        super.prepare();
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testFindEntityById() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+        FaCatchEntity entity = dao.findEntityById(FaCatchEntity.class, 1);
+        assertNotNull(entity);
+    }
+
 
 }

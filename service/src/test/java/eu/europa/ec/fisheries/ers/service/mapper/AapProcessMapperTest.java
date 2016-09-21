@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import com.google.common.collect.Sets;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
@@ -41,8 +42,9 @@ public class AapProcessMapperTest {
         AapProcessEntity aapProcessEntity = new AapProcessEntity();
         AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
 
-        assertEquals(aapProcess.getTypeCodes().get(0).getValue(), aapProcessEntity.getTypeCode());
-        assertEquals(aapProcess.getTypeCodes().get(0).getListID(), aapProcessEntity.getTypeCodeListId());
+        AapProcessCodeEntity entity = aapProcessEntity.getAapProcessCode().iterator().next();
+        assertEquals(aapProcess.getTypeCodes().get(0).getValue(), entity.getTypeCode());
+        assertEquals(aapProcess.getTypeCodes().get(0).getListID(), entity.getTypeCodeListId());
         assertEquals(aapProcess.getConversionFactorNumeric().getValue().intValue(), aapProcessEntity.getConversionFactor().intValue());
         assertNull(aapProcessEntity.getFaCatch());
 
@@ -50,6 +52,7 @@ public class AapProcessMapperTest {
         AapProductEntity aapProductEntity = aapProcessEntity.getAapProducts().iterator().next();
         assertNotNull(aapProductEntity);
 
-        assertEquals(aapProcess.getTypeCodes().get(0).getValue(), aapProductEntity.getAapProcess().getTypeCode());
+        aapProductEntity.getAapProcess().getAapProcessCode().iterator().next();
+        assertEquals(aapProcess.getTypeCodes().get(0).getValue(), entity.getTypeCode());
     }
 }

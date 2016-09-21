@@ -34,32 +34,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
-		
-	private FaReportDocumentDao dao=new FaReportDocumentDao(em);
-	
-	@Before
-    public void prepare(){
-       Operation operation = sequenceOf(DELETE_ALL, INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_ERS_FA_REPORT_DOCUMENT_DATA,INSERT_ERS_FA_REPORT_IDENTIFIER_DATA);
-        DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
-       dbSetupTracker.launchIfNecessary(dbSetup);
-   }
-	
-	
-	@Test
-	@SneakyThrows
-    public void testFindEntityById() throws Exception {
-        dbSetupTracker.skipNextLaunch();
-        FaReportDocumentEntity entity=dao.findEntityById(FaReportDocumentEntity.class, 1);
-        assertNotNull(entity);
+
+    private FaReportDocumentDao dao = new FaReportDocumentDao(em);
+
+    @Before
+    public void prepare() {
+        super.prepare();
     }
+
 
     @Test
     @SneakyThrows
-    public void testFindEntityByReferenceId() throws Exception {
+    public void testFindEntityById() throws Exception {
         dbSetupTracker.skipNextLaunch();
-        List<FaReportDocumentEntity> faReportDocumentEntities = dao.findFaReportsByReferenceId("ID 4");
-        assertNotNull(faReportDocumentEntities);
-        assertNotNull(faReportDocumentEntities.get(0));
+        FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
+        assertNotNull(entity);
     }
 
     @Test
@@ -67,14 +56,14 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
     public void testFindFaReportById() throws Exception {
         dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
-        String identifier = entity.getFaReportIdentifiers().iterator().next().getFaReportIdentifierId();
-
-        List<FaReportDocumentEntity> entities = dao.findFaReportByIdAndScheme(new HashSet<String>(Arrays.asList(identifier)));
-        assertNotNull(entities);
-        assertEquals(entity.getTypeCode(), entities.get(0).getTypeCode());
-        assertEquals(entity.getTypeCodeListId(), entities.get(0).getTypeCodeListId());
-        assertEquals(entity.getFmcMarker(), entities.get(0).getFmcMarker());
-        assertEquals(entity.getFmcMarkerListId(), entities.get(0).getFmcMarkerListId());
+        String identifier = entity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId();
+        String schemeId = entity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId();
+        FaReportDocumentEntity faReportDocumentEntity = dao.findFaReportByIdAndScheme(identifier, schemeId);
+        assertNotNull(faReportDocumentEntity);
+        assertEquals(entity.getTypeCode(), faReportDocumentEntity.getTypeCode());
+        assertEquals(entity.getTypeCodeListId(), faReportDocumentEntity.getTypeCodeListId());
+        assertEquals(entity.getFmcMarker(), faReportDocumentEntity.getFmcMarker());
+        assertEquals(entity.getFmcMarkerListId(), faReportDocumentEntity.getFmcMarkerListId());
     }
 
 
@@ -88,26 +77,11 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.FLUX);
         faReportDocumentEntities.add(faReportDocumentEntity);
 
-        //dao.bulkUploadFaData(faReportDocumentEntities);
         insertIntoDB(faReportDocumentEntities);
         List<FaReportDocumentEntity> entityList = dao.findAllEntity(FaReportDocumentEntity.class);
 
         assertNotNull(entityList);
         assertNotEquals(0, entityList.size());
-
-/*        FaReportDocumentEntity entity = null;
-        for (FaReportDocumentEntity faReport : entityList) {
-            if (faReport.getTypeCode().equalsIgnoreCase(faReportDocument.getTypeCode().getValue())) {
-                entity = faReport;
-            }
-        }
-
-        assertNotNull(entity);
-        assertEquals(faReportDocument.getTypeCode().getValue(), entity.getTypeCode());
-        assertEquals(faReportDocument.getTypeCode().getListID(), entity.getTypeCodeListId());
-        assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), entity.getAcceptedDatetime());
-        assertEquals(faReportDocument.getFMCMarkerCode().getValue(), entity.getFmcMarker());
-        assertEquals(faReportDocument.getFMCMarkerCode().getListID(), entity.getFmcMarkerListId());*/
     }
 
     @Transactional

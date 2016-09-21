@@ -27,6 +27,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportD
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -75,63 +76,24 @@ public class ActivityServiceBeanTest {
 
         //Mock
         FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
-     //   faReportDocumentEntity.getFluxReportDocument().setFluxReportDocumentId(null);
-        Mockito.doReturn(Arrays.asList(faReportDocumentEntity)).when(faReportDocumentDao).findFaReportsByReferenceId(Mockito.any(String.class));
+        Mockito.doReturn(faReportDocumentEntity).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         //Trigger
-        List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportCorrections("TEST ID");
+        List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportCorrections("TEST ID", "SCHEME ID");
 
         //Verify
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportsByReferenceId("TEST ID");
+        Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportByIdAndScheme("TEST ID", "SCHEME ID");
 
         //Test
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOList.get(0);
         assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCorrectionDate());
-       // assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportDocumentId(), faReportCorrectionDTO.getFaReportIdentifier());
-       // assertEquals(faReportDocumentEntity.getFluxReportDocument().getOwnerFluxPartyId(), faReportCorrectionDTO.getOwnerFluxParty());
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetFaReportDocumentDetails() throws Exception {
-
-        //Mock
-        List<FaReportDocumentEntity> faReportDocumentEntities = getMockedFishingActivityReportEntities();
-        Mockito.doReturn(getMockedFishingActivityReportEntities()).when(faReportDocumentDao).findFaReportsByIds(Mockito.any(Collection.class));
-
-        //Trigger
-        FaReportDocumentDetailsDTO faReportDocumentDetailsDTO = activityService.getFaReportDocumentDetails("TEST");
-
-        //Verify
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportsByIds(Mockito.any(Collection.class));
-
-        //Test
-        assertEquals(faReportDocumentEntities.get(0).getTypeCode(), faReportDocumentDetailsDTO.getTypeCode());
-        assertEquals(faReportDocumentEntities.get(0).getFmcMarker(), faReportDocumentDetailsDTO.getFmcMarker());
-        assertEquals(faReportDocumentEntities.get(0).getAcceptedDatetime(), faReportDocumentDetailsDTO.getAcceptedDateTime());
-        assertEquals(faReportDocumentEntities.get(0).getFluxReportDocument().getCreationDatetime(), faReportDocumentDetailsDTO.getCreationDateTime());
-     //   assertEquals(faReportDocumentEntities.get(0).getFluxReportDocument().getFluxReportDocumentId(), faReportDocumentDetailsDTO.getFluxReportDocumentId());
-        assertEquals(faReportDocumentEntities.get(0).getFluxReportDocument().getPurposeCode(), faReportDocumentDetailsDTO.getPurposeCode());
-        assertEquals(faReportDocumentEntities.get(0).getFluxReportDocument().getReferenceId(), faReportDocumentDetailsDTO.getReferenceId());
-       // assertEquals(faReportDocumentEntities.get(0).getFluxReportDocument().getOwnerFluxPartyId(), faReportDocumentDetailsDTO.getOwnerFluxPartyId());
-        assertEquals(faReportDocumentEntities.get(0).getStatus(), faReportDocumentDetailsDTO.getStatus());
-
-    }
-
-    @Test(expected = ServiceException.class)
-    @SneakyThrows
-    public void testGetFaReportDocumentDetails_ExpectedException() throws Exception {
-
-        //Mock
-        List<FaReportDocumentEntity> faReportDocumentEntities = getMockedFishingActivityReportEntities();
-        Mockito.doReturn(null).when(faReportDocumentDao).findFaReportsByIds(Mockito.any(Collection.class));
-
-        //Trigger
-        FaReportDocumentDetailsDTO faReportDocumentDetailsDTO = activityService.getFaReportDocumentDetails("TEST");
-
-        //Verify
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportsByIds(Mockito.any(Collection.class));
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
+        assertEquals(faReportDocumentEntity.getAcceptedDatetime(), faReportCorrectionDTO.getAcceptedDate());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId(),
+                faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId(),
+                faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
     }
 
     @Test
@@ -205,6 +167,7 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void testGetVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException {
 
         when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntityWithContactParties());

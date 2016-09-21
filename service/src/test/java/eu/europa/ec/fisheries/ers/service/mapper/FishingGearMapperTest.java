@@ -44,16 +44,16 @@ public class FishingGearMapperTest {
 
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
-        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
-        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
+        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCode());
+        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCodeListId());
         assertNull(fishingGearEntity.getFishingActivity());
 
         assertNotNull(fishingGearEntity.getGearCharacteristics());
         fishingGearEntity = fishingGearEntity.getGearCharacteristics().iterator().next().getFishingGear();
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
-        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
-        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
+        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCode());
+        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCodeListId());
     }
 
     @Test
@@ -65,16 +65,16 @@ public class FishingGearMapperTest {
 
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
-        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
-        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
+        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCode());
+        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCodeListId());
         assertNull(fishingGearEntity.getFaCatch());
 
         assertNotNull(fishingGearEntity.getGearCharacteristics());
         fishingGearEntity = fishingGearEntity.getGearCharacteristics().iterator().next().getFishingGear();
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
-        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
-        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
+        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCode());
+        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCodeListId());
     }
 
     @Test
@@ -86,15 +86,15 @@ public class FishingGearMapperTest {
 
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
-        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
-        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
+        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCode());
+        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCodeListId());
         assertNull(fishingGearEntity.getGearProblem());
 
         assertNotNull(fishingGearEntity.getGearCharacteristics());
         fishingGearEntity = fishingGearEntity.getGearCharacteristics().iterator().next().getFishingGear();
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
-        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getRoleCode());
-        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getRoleCodeListId());
+        assertEquals(fishingGear.getRoleCodes().get(0).getValue(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCode());
+        assertEquals(fishingGear.getRoleCodes().get(0).getListID(), fishingGearEntity.getFishingGearRole().iterator().next().getRoleCodeListId());
     }
 }

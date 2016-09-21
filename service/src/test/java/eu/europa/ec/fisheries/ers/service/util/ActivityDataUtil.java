@@ -15,7 +15,9 @@ package eu.europa.ec.fisheries.ers.service.util;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Created by sanera on 31/08/2016.
@@ -24,10 +26,18 @@ public class ActivityDataUtil {
 
     public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID,  Date creationDateTime, String purposeCode, String purposeCodeListId,String purpose,String ownerFluxPartyId,String ownerFluxPartyName ){
         FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
-        fluxReportDocumentEntity.setFluxReportDocumentId(fluxDocumentID);
+
+        FluxReportIdentifierEntity entity = new FluxReportIdentifierEntity();
+        entity.setFluxReportIdentifierId(fluxDocumentID);
+        fluxReportDocumentEntity.setFluxReportIdentifiers(new HashSet<>(Arrays.asList(entity)));
         fluxReportDocumentEntity.setCreationDatetime(creationDateTime);
-        fluxReportDocumentEntity.setOwnerFluxPartyId(ownerFluxPartyId);
-        fluxReportDocumentEntity.setOwnerFluxPartyName(ownerFluxPartyName);
+
+        FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
+        fluxPartyEntity.setFluxPartyName(ownerFluxPartyName);
+        FluxPartyIdentifierEntity fluxPartyIdentifierEntity = new FluxPartyIdentifierEntity();
+        fluxPartyIdentifierEntity.setFluxPartyIdentifierId(ownerFluxPartyId);
+        fluxReportDocumentEntity.setFluxParty(fluxPartyEntity);
+
         fluxReportDocumentEntity.setPurpose(purpose);
         fluxReportDocumentEntity.setPurposeCode(purposeCode);
         fluxReportDocumentEntity.setPurposeCodeListId(purposeCodeListId);
@@ -92,8 +102,12 @@ public class ActivityDataUtil {
 
     public static SizeDistributionEntity getSizeDistributionEntity(String classCode, String classCodeListId, String  categoryCode, String categoryCodeListId ){
         SizeDistributionEntity sizeDistributionEntity = new SizeDistributionEntity();
-        sizeDistributionEntity.setClassCode(classCode);
-        sizeDistributionEntity.setClassCodeListId(classCodeListId);
+
+        SizeDistributionClassCodeEntity entity = new SizeDistributionClassCodeEntity();
+        entity.setClassCode(classCode);
+        entity.setClassCodeListId(classCodeListId);
+        sizeDistributionEntity.setSizeDistributionClassCode(new HashSet<>(Arrays.asList(entity)));
+
         sizeDistributionEntity.setCategoryCode(categoryCode);
         sizeDistributionEntity.setCategoryCodeListId(categoryCodeListId);
         return sizeDistributionEntity;

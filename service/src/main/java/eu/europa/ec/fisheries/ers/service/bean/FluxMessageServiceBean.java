@@ -79,7 +79,7 @@ public class FluxMessageServiceBean implements FluxMessageService {
                     faReportDocumentEntities.add(faReportDocumentEntity);
                 }
             }
-            faReportDocumentDao.updateAllFaData(faReportDocumentEntities); // Update all the Entities together
         }
+        faReportDocumentDao.updateAllFaData(faReportDocumentEntities); // Update all the Entities together
     }
 }

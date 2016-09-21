@@ -39,8 +39,8 @@ public class VesselTransportMeansMapperTest {
         VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
         VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans, null, vesselTransportMeansEntity);
 
-        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getValue(), vesselTransportMeansEntity.getFlapDocumentId());
-        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getSchemeID(), vesselTransportMeansEntity.getFlapDocumentSchemeId());
+        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getValue(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentId());
+        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getSchemeID(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentSchemeId());
         assertTrue(vesselTransportMeansEntity.getName().startsWith(vesselTransportMeans.getNames().get(0).getValue()));
         assertEquals(vesselTransportMeans.getRoleCode().getValue(), vesselTransportMeansEntity.getRoleCode());
         assertEquals(vesselTransportMeans.getRoleCode().getListID(), vesselTransportMeansEntity.getRoleCodeListId());
@@ -54,16 +54,16 @@ public class VesselTransportMeansMapperTest {
 
         assertNotNull(vesselTransportMeansEntity.getContactParty());
         vesselTransportMeansEntity = vesselTransportMeansEntity.getContactParty().iterator().next().getVesselTransportMeans();
-        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getValue(), vesselTransportMeansEntity.getFlapDocumentId());
-        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getSchemeID(), vesselTransportMeansEntity.getFlapDocumentSchemeId());
+        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getValue(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentId());
+        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getSchemeID(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentSchemeId());
         assertTrue(vesselTransportMeansEntity.getName().startsWith(vesselTransportMeans.getNames().get(0).getValue()));
         assertEquals(vesselTransportMeans.getRoleCode().getValue(), vesselTransportMeansEntity.getRoleCode());
         assertEquals(vesselTransportMeans.getRoleCode().getListID(), vesselTransportMeansEntity.getRoleCodeListId());
 
         assertNotNull(vesselTransportMeansEntity.getRegistrationEvent());
         vesselTransportMeansEntity = vesselTransportMeansEntity.getRegistrationEvent().getVesselTransportMeanses();
-        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getValue(), vesselTransportMeansEntity.getFlapDocumentId());
-        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getSchemeID(), vesselTransportMeansEntity.getFlapDocumentSchemeId());
+        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getValue(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentId());
+        assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getSchemeID(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentSchemeId());
         assertTrue(vesselTransportMeansEntity.getName().startsWith(vesselTransportMeans.getNames().get(0).getValue()));
         assertEquals(vesselTransportMeans.getRoleCode().getValue(), vesselTransportMeansEntity.getRoleCode());
         assertEquals(vesselTransportMeans.getRoleCode().getListID(), vesselTransportMeansEntity.getRoleCodeListId());

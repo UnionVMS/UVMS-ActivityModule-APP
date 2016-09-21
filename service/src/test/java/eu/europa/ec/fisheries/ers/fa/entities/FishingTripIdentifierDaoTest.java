@@ -32,26 +32,21 @@ import static org.junit.Assert.assertEquals;
  */
 public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
 
-    private FishingTripIdentifierDao dao=new FishingTripIdentifierDao(em);
+    private FishingTripIdentifierDao dao = new FishingTripIdentifierDao(em);
 
     @Before
-    public void prepare(){
-        Operation operation = sequenceOf(DELETE_ALL,INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,INSERT_CONTACT_PERSON,INSERT_CONTACT_PARTY,
-                INSERT_ERS_FA_REPORT_DOCUMENT_DATA,INSERT_ERS_FISHING_ACTIVITY_DATA,INSERT_ERS_SIZE_DISTRIBUTION_DATA,INSERT_ERS_FA_CATCH_DATA,INSERT_FLUX_LOCATION,INSERT_STRUCTURED_ADDRESS,INSERT_ERS_FISHING_TRIP_DATA,
-                INSERT_ERS_FISHING_TRIP_IDENTIFIER_DATA,INSERT_DELIMITED_PERIOD);
-        DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
-        dbSetupTracker.launchIfNecessary(dbSetup);
+    public void prepare() {
+        super.prepare();
     }
-
 
     @Test
     @SneakyThrows
     public void testGetCurrentTrip() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
-        String tripId= dao.getCurrentTrip();
+        String tripId = dao.getCurrentTrip();
         assertNotNull(tripId);
-        assertEquals("NOR-TRP-20160517234053706",tripId);
+        assertEquals("NOR-TRP-20160517234053706", tripId);
     }
 
     @Test
@@ -59,9 +54,9 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
     public void testGetFishingTripsBefore() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
-        List<Object[]> objectList= dao.getFishingTripsBefore("NOR-TRP-20160517234053706",1);
+        List<Object[]> objectList = dao.getFishingTripsBefore("NOR-TRP-20160517234053706", 1);
         assertNotNull(objectList);
-        assertEquals(1,objectList.size());
+        assertEquals(1, objectList.size());
     }
 
     @Test
@@ -69,8 +64,8 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
     public void testGetFishingTripsAfter() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
-        List<Object[]> objectList= dao.getFishingTripsAfter("NOR-TRP-20160517234053706",1);
+        List<Object[]> objectList = dao.getFishingTripsAfter("NOR-TRP-20160517234053706", 1);
         assertNotNull(objectList);
-        assertEquals(1,objectList.size());
+        assertEquals(1, objectList.size());
     }
 }

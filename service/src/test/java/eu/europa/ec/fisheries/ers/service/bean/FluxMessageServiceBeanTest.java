@@ -67,6 +67,7 @@ public class FluxMessageServiceBeanTest {
 
         FAReportDocument faReportDocument1 = MapperUtil.getFaReportDocument();
         faReportDocument1.getRelatedFLUXReportDocument().setIDS(Arrays.asList(id));
+        faReportDocument1.getRelatedFLUXReportDocument().setPurposeCode(MapperUtil.getCodeType("3", "4f5yrh-58f7j4-5j5tu-58tj7r"));
 
         faReportDocuments = Arrays.asList(faReportDocument1, faReportDocument2);
     }
@@ -78,14 +79,14 @@ public class FluxMessageServiceBeanTest {
         //Mock the APIs
         Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
         Mockito.doNothing().when(faReportDocumentDao).updateAllFaData(Mockito.any(List.class));
-        Mockito.doReturn(getMockedFishingActivityReportEntities()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(Set.class));
+        Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
         fluxMessageService.saveFishingActivityReportDocuments(faReportDocuments, FaReportSourceEnum.FLUX);
 
         //Verify
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).bulkUploadFaData(Mockito.any(List.class));
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportByIdAndScheme(Mockito.any(Set.class));
+        Mockito.verify(faReportDocumentDao, Mockito.times(2)).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).updateAllFaData(captor.capture());
 
         //Test
@@ -94,11 +95,8 @@ public class FluxMessageServiceBeanTest {
                 faReportDocumentEntities.get(0).getStatus());
     }
 
-    private List<FaReportDocumentEntity> getMockedFishingActivityReportEntities() {
-        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
-        for (FAReportDocument faReportDocument : faReportDocuments) {
-            faReportDocumentEntities.add(FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.MANUAL));
-        }
-        return faReportDocumentEntities;
+    private FaReportDocumentEntity getMockedFishingActivityReportEntity() {
+        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
+        return FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.MANUAL);
     }
 }
