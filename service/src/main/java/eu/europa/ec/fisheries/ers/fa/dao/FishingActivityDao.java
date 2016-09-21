@@ -91,20 +91,21 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
 
     public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
-        StringBuilder sqlToGetActivityListCount =createSQL(query,true);
+        StringBuilder sqlToGetActivityListCount =createSQL(query);
+        LOG.info("countQuery :"+sqlToGetActivityListCount);
         Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount,query);
-        LOG.info("countQuery :"+countQuery);
+
         return countQuery.getResultList().size();
     }
 
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
 
-        StringBuilder sqlToGetActivityList =createSQL(query,false);
+        StringBuilder sqlToGetActivityList =createSQL(query);
+        LOG.info("listQuery :"+sqlToGetActivityList);
         Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query);
-        LOG.info("listQuery :"+listQuery);
-        Pagination pagination= query.getPagination();
 
+        Pagination pagination= query.getPagination();
 
         if(pagination!=null) {
             listQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
@@ -149,7 +150,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
          return typedQuery;
     }
 
-    private StringBuilder createSQL(FishingActivityQuery query, boolean skipSort) throws ServiceException {
+    private StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
 
         List<ListCriteria> criteriaList=query.getSearchCriteria();
         if(criteriaList.isEmpty())
@@ -189,12 +190,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
         SortKey sort = query.getSortKey();
 
-          if (sort != null && !skipSort) {
+          if (sort != null ) {
               Filters field = sort.getField();
               if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
                   sql.append(JOIN).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
-              } else if (Filters.PURPOSE.equals(field) || Filters.FROM_NAME.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
+              } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
                   sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+              } else if(Filters.FROM_NAME.equals(field) && sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1){
+                  sql.append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
               }
           }
 
@@ -219,13 +222,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
              sql.append(" and fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"'");
 
-         if(!skipSort) {
+
                 if (sort != null) {
                     sql.append(" order by " + FilterMap.getFilterSortMappings().get(sort.getField()) + " " + sort.getOrder());
                 } else {
                     sql.append(" order by fa.acceptedDatetime ASC ");
                 }
-         }
+
 
         return sql;
     }

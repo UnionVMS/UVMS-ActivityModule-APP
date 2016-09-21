@@ -14,8 +14,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingActivityDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.mapstruct.Mapper;

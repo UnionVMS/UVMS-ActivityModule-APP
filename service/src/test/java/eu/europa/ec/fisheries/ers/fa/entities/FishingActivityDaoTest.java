@@ -79,7 +79,7 @@ private FishingActivityDao dao=new FishingActivityDao(em);
 
         query.setSearchCriteria(list);
 
-    //    query.setSortKey(new SortKey(Filters.SOURCE, SortOrder.ASC));
+       query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
       //  query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
         // query.setPagination( new Pagination(1,2));
 

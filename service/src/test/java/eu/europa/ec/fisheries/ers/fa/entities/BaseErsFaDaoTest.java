@@ -301,24 +301,24 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest{
 		//flux_report_document_id
 		protected static final Operation INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA = sequenceOf(
 	            insertInto("activity.activity_flux_report_document")
-	                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
-	                    .values(1, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST",null, 1)
+	                    .columns("id", "reference_id", "reference_scheme_id","creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+	                    .values(1, null, null,"2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST",null, 1)
 	                    .build(),
 				insertInto("activity.activity_flux_report_document")
-						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
-						.values(2, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST",null, 2)
+						.columns("id", "reference_id", "reference_scheme_id","creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(2, null, null,"2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST",null, 2)
 						.build(),
 				insertInto("activity.activity_flux_report_document")
-						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
-						.values(3, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 3)
+						.columns("id", "reference_id", "reference_scheme_id","creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(3, null, null,"2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 3)
 						.build(),
 				insertInto("activity.activity_flux_report_document")
-						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
-						.values(4, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 4)
+						.columns("id", "reference_id", "reference_scheme_id","creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(4, null, null,"2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 4)
 						.build(),
 				insertInto("activity.activity_flux_report_document")
-						.columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
-						.values(5, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 5)
+						.columns("id", "reference_id", "reference_scheme_id","creation_datetime", "purpose_code", "purpose_code_list_id","purpose", "flux_party_id")
+						.values(5, null, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST",null, 5)
 						.build()
 
 	  );
