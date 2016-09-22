@@ -13,9 +13,23 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 
+@NamedQueries({
+		@NamedQuery(name = VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
+				query = "SELECT vi from FishingTripIdentifierEntity fti " +
+						"INNER JOIN fti.fishingTrip ft " +
+						"INNER JOIN ft.fishingActivity fa " +
+						"INNER JOIN fa.faReportDocument frd " +
+						"INNER JOIN frd.vesselTransportMeans vt " +
+						"INNER JOIN vt.vesselIdentifiers vi " +
+						"WHERE fti.tripId = :tripId " +
+						"ORDER BY frd.acceptedDatetime DESC")
+})
+
 @Entity
 @Table(name = "activity_vessel_identifier")
 public class VesselIdentifierEntity implements Serializable {
+
+	public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "findLatestVesselByTripId";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

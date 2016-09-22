@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
@@ -40,7 +41,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * Created by sanera on 04/08/2016.
  */
-@Path("/fishingTrip")
+@Path("/trip")
 @Slf4j
 @Stateless
 
@@ -53,6 +54,9 @@ public class FishingTripResource extends UnionVMSResource {
 
     @EJB
     private ActivityService activityService;
+
+    @EJB
+    private FishingTripService fishingTripService;
 
     @GET
     @Path("/summary/{fishingTripId}")
@@ -80,6 +84,18 @@ public class FishingTripResource extends UnionVMSResource {
         LOG.info("Getting Vessels details for trip : "+fishingTripId);
 
         return createSuccessResponse(activityService.getVesselDetailsForFishingTrip(fishingTripId));
+    }
+
+    @GET
+    @Path("/cronology/{tripId}/{count}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
+    public Response getCronologyOfFishingTrip(@Context HttpServletRequest request,
+                                     @Context HttpServletResponse response,
+                                     @PathParam("tripId") String tripId,
+                                     @PathParam("count") Integer count) throws ServiceException {
+        return createSuccessResponse(fishingTripService.getCronologyOfFishingTrip(tripId, count));
     }
 
 }

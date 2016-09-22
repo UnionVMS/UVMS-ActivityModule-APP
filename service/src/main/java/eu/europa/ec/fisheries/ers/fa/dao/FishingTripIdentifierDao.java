@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -27,6 +28,9 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
 
     private EntityManager em;
 
+    private static final String VESSEL_ID = "vesselId";
+    private static final String VESSEL_SCHEME_ID = "vesselSchemeId";
+
     public FishingTripIdentifierDao(EntityManager em) {
         this.em = em;
     }
@@ -34,6 +38,19 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
     @Override
     public EntityManager getEntityManager() {
         return em;
+    }
+
+    public FishingTripIdentifierEntity getCurrentTrip(String vesselId, String vesselSchemeId) {
+        TypedQuery query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_CURRENT_TRIP, FishingTripIdentifierEntity.class);
+        query.setParameter(VESSEL_ID, vesselId);
+        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
+        query.setMaxResults(1);
+        List<FishingTripIdentifierEntity> fishingTripIdentifies = query.getResultList();
+        if (fishingTripIdentifies != null && !fishingTripIdentifies.isEmpty()) {
+            return fishingTripIdentifies.get(0);
+        } else {
+            return null;
+        }
     }
 
 

@@ -14,6 +14,19 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @NamedQueries({
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRIP,
+		query = "SELECT fti from FishingTripIdentifierEntity fti " +
+				"INNER JOIN fti.fishingTrip ft " +
+				"INNER JOIN ft.fishingActivity fa " +
+				"INNER JOIN fa.faReportDocument frd " +
+				"INNER JOIN frd.vesselTransportMeans vtm " +
+				"INNER JOIN vtm.vesselIdentifiers vi " +
+				"WHERE vi.vesselIdentifierId = :vesselId " +
+				"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+				"ORDER BY frd.acceptedDatetime DESC"),
+
+
+
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_LESS_THAN_TRIPID,
 				query = "select distinct fi.tripId,dp.startDate from FishingTripIdentifierEntity fi  " +
 				"INNER JOIN fi.fishingTrip ft " +
@@ -41,6 +54,7 @@ import java.io.Serializable;
 @Table(name = "activity_fishing_trip_identifier")
 public class FishingTripIdentifierEntity implements Serializable {
 
+	public static final String FIND_CURRENT_TRIP = "findCurrentTrip";
 	public static final String FIND_LESS_THAN_TRIPID = "findLessThanTripId";
 	public static final String FIND_GREATER_THAN_TRTIPID = "findGreaterThanTripId";
 	public static final String FIND_CURRENT_TRTIPID = "findCurrentTripId";
