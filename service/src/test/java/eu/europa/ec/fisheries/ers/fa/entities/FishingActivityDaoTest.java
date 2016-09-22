@@ -10,9 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.destination.DataSourceDestination;
-import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.service.search.*;
 import lombok.SneakyThrows;
@@ -23,17 +20,19 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 
 public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     private FishingActivityDao dao = new FishingActivityDao(em);
 
+
     @Before
     public void prepare() {
         super.prepare();
     }
+
+
 
 
     @Test
@@ -74,11 +73,17 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         query.setSearchCriteria(list);
 
-       query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
+      // query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
       //  query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
-        //    query.setSortKey(new SortKey(Filters.SOURCE, SortOrder.ASC));
+
+         query.setPagination( new Pagination(1,2));
+
+        // query.setPagination( new Pagination(1,2));
+
+         query.setSortKey(new SortKey(Filters.SOURCE, SortOrder.ASC));
         //  query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
         // query.setPagination( new Pagination(1,2));
+
 
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
         System.out.println("done:" + finishingActivityList.size());

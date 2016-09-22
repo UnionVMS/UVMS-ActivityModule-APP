@@ -35,10 +35,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     final static String FORMAT = "yyyy-MM-dd HH:mm:ss";
     final static String JOIN =" JOIN FETCH ";
     final static String FISHING_ACTIVITY_JOIN=" from FishingActivityEntity a JOIN FETCH a.faReportDocument fa ";
-    final static String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by flux.fluxReportDocumentId asc ";
-    final static String FISHING_ACTIVITY_LIST_ALL_DATA_COUNT="SELECT DISTINCT a from FishingActivityEntity a JOIN FETCH a.faReportDocument fa JOIN FETCH fa.fluxReportDocument flux where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by flux.fluxReportDocumentId asc ";
-
-
+    final static String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by fa.acceptedDatetime asc ";
 
     private EntityManager em;
 
@@ -85,7 +82,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     public Integer getCountForFishingActivityList(Pagination pagination)  {
 
-        TypedQuery<Integer> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA_COUNT, Integer.class);
+        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA, FishingActivityEntity.class);
         return typedQuery.getResultList().size();
     }
 
@@ -116,10 +113,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     private Query getTypedQueryForFishingActivityFilter(StringBuilder sql,FishingActivityQuery query){
+
         Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
         Query typedQuery = em.createQuery(sql.toString());
 
+
         List<ListCriteria> criteriaList = query.getSearchCriteria();
+        if(criteriaList == null || criteriaList.isEmpty())
+            return typedQuery;
         // Assign values to created SQL Query
         for (ListCriteria criteria : criteriaList) {
             Filters key = criteria.getKey();
@@ -153,8 +154,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     private StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
 
         List<ListCriteria> criteriaList=query.getSearchCriteria();
-        if(criteriaList.isEmpty())
-            throw new ServiceException("Fishing Activity Report Search Criteria is empty.");
 
         Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
         StringBuilder sql = new StringBuilder();
