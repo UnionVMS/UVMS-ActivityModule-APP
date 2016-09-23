@@ -10,28 +10,37 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 24/06/2016.
  */
 public class FishingActivityQuery {
     private Pagination pagination;
-    private  List<ListCriteria> searchCriteria;
+    private Map<Filters,String> searchCriteriaMap;
+  //  private  List<ListCriteria> searchCriteria;
     private SortKey sortKey;
 
     public void setPagination(Pagination pagination) {
         this.pagination = pagination;
     }
 
-    public void setSearchCriteria(List<ListCriteria> searchCriteria) {
+    /*public void setSearchCriteria(List<ListCriteria> searchCriteria) {
         this.searchCriteria = searchCriteria;
     }
 
     public List<ListCriteria> getSearchCriteria() {
         return searchCriteria;
     }
+*/
 
+    public Map<Filters, String> getSearchCriteriaMap() {
+        return searchCriteriaMap;
+    }
+
+    public void setSearchCriteriaMap(Map<Filters, String> searchCriteriaMap) {
+        this.searchCriteriaMap = searchCriteriaMap;
+    }
 
     public Pagination getPagination() {
 
@@ -50,7 +59,6 @@ public class FishingActivityQuery {
     public String toString() {
         return "FishingActivityQuery{" +
                 "pagination=" + pagination +
-                ", searchCriteria=" + searchCriteria +
                 ", sortKey=" + sortKey +
                 '}';
     }

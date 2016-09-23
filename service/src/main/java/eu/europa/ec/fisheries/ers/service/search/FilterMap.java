@@ -70,7 +70,7 @@ public class FilterMap {
         filterMappings.put(Filters.PERIOD_END,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS," dp.endDate <= :"+OCCURENCE_END_DATE));
 
         filterMappings.put(Filters.VESSEL_NAME,new FilterDetails("fa.vesselTransportMeans vt","vt.name =:"+VESSEL_IDENTITY_NAME));
-        filterMappings.put(Filters.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierSchemeId =:"+VESSEL_IDENTIFIRE));
+        filterMappings.put(Filters.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierId =:"+VESSEL_IDENTIFIRE));
         filterMappings.put(Filters.PURPOSE,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS,"flux.purposeCode =:"+PURPOSE_CODE));
         filterMappings.put(Filters.REPORT_TYPE,new FilterDetails(" ","fa.typeCode =:"+REPORT_TYPE_CODE));
         filterMappings.put(Filters.ACTIVITY_TYPE,new FilterDetails(" ","a.typeCode =:"+ACTIVITY_TYPE_CODE));

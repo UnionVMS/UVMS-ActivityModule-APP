@@ -18,7 +18,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
 
@@ -53,31 +55,35 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         FishingActivityQuery query = new FishingActivityQuery();
         List<ListCriteria> list = new ArrayList<ListCriteria>();
 
-        list.add(new ListCriteria(Filters.FROM_ID, "OWNER1"));
-        list.add(new ListCriteria(Filters.FROM_NAME, "OWNER_NAME1"));
-        list.add(new ListCriteria(Filters.PERIOD_START, "2012-05-27 07:47:31"));
-        list.add(new ListCriteria(Filters.PERIOD_END, "2015-05-27 07:47:31"));
-        list.add(new ListCriteria(Filters.VESSEL_NAME, "vessel1"));
-        list.add(new ListCriteria(Filters.VESSEL_IDENTIFIRE, "CFR"));
-        list.add(new ListCriteria(Filters.PURPOSE, "9"));
-        list.add(new ListCriteria(Filters.REPORT_TYPE, "DECLARATION"));
-        list.add(new ListCriteria(Filters.GEAR, "GEAR_TYPE"));
-        //list.add(new ListCriteria(Filters.SPECIES, "beagle1" ));
-        list.add(new ListCriteria(Filters.SPECIES, "PLE"));
-        list.add(new ListCriteria(Filters.MASTER, "MARK"));
-        list.add(new ListCriteria(Filters.AREAS, "27.4.b"));
-        //   list.add(new ListCriteria(Filters.PORT, "GBR" ));
-        list.add(new ListCriteria(Filters.QUNTITY_MIN, "0"));
-        list.add(new ListCriteria(Filters.QUNTITY_MAX, "25"));
-        list.add(new ListCriteria(Filters.SOURCE, "FLUX"));
 
-        query.setSearchCriteria(list);
+        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+
+        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
+       searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
+        searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
+        searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
+       searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
+        searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
+        searchCriteriaMap.put(Filters.PURPOSE, "9");
+        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
+        //list.add(new ListCriteria(Filters.SPECIES, "beagle1" ));
+        searchCriteriaMap.put(Filters.SPECIES, "PLE");
+        searchCriteriaMap.put(Filters.MASTER, "MARK");
+        searchCriteriaMap.put(Filters.AREAS, "27.4.b");
+        searchCriteriaMap.put(Filters.PORT, "GBR");
+        // list.add(new ListCriteria(Filters.PORT, "GBR" ));
+        searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(Filters.WEIGHT_MEASURE, "TNE");
+        searchCriteriaMap.put(Filters.SOURCE, "FLUX");
 
       // query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
       //  query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
 
          query.setPagination( new Pagination(1,2));
-
+        query.setSearchCriteriaMap(searchCriteriaMap);
         // query.setPagination( new Pagination(1,2));
 
          query.setSortKey(new SortKey(Filters.SOURCE, SortOrder.ASC));

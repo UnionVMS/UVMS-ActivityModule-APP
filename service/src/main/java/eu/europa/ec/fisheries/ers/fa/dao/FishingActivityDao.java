@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
 import eu.europa.ec.fisheries.ers.service.search.*;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -25,6 +26,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by padhyad on 5/3/2016.
@@ -118,14 +120,18 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         Query typedQuery = em.createQuery(sql.toString());
 
 
-        List<ListCriteria> criteriaList = query.getSearchCriteria();
-        if(criteriaList == null || criteriaList.isEmpty())
-            return typedQuery;
-        // Assign values to created SQL Query
-        for (ListCriteria criteria : criteriaList) {
-            Filters key = criteria.getKey();
-            String value= criteria.getValue();
+        Map<Filters,String> searchCriteriaMap = query.getSearchCriteriaMap();
 
+        if(searchCriteriaMap == null || searchCriteriaMap.isEmpty())
+            return typedQuery;
+
+        // Assign values to created SQL Query
+        for(Filters key:searchCriteriaMap.keySet()){
+
+            if(mappings.get(key) ==null)
+                continue;
+
+            String value=searchCriteriaMap.get(key);
             switch (key) {
                 case PERIOD_START:
                     typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
@@ -134,10 +140,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                     typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
                     break;
                 case QUNTITY_MIN:
-                    typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
+                    typedQuery.setParameter(mappings.get(key), normalizeWeightValue(value,searchCriteriaMap.get(Filters.WEIGHT_MEASURE)));
                     break;
                 case QUNTITY_MAX:
-                    typedQuery.setParameter(mappings.get(key), Double.parseDouble(value));
+                    typedQuery.setParameter(mappings.get(key), normalizeWeightValue(value,searchCriteriaMap.get(Filters.WEIGHT_MEASURE)));
                     break;
                 case MASTER:
                     typedQuery.setParameter(mappings.get(key), value.toUpperCase());
@@ -151,20 +157,30 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
          return typedQuery;
     }
 
+
+    private Double normalizeWeightValue(String value, String weightMeasure){
+        Double valueConverted = Double.parseDouble(value);
+        if(WeightConversion.TON.equals(weightMeasure))
+            valueConverted= WeightConversion.convertToKiloGram(Double.parseDouble(value),WeightConversion.TON);
+
+        return valueConverted;
+    }
+
     private StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
 
-        List<ListCriteria> criteriaList=query.getSearchCriteria();
-
+        Map<Filters,String> searchCriteriaMap = query.getSearchCriteriaMap();
         Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT DISTINCT a ");
         sql.append(FISHING_ACTIVITY_JOIN);
 
         // Create join part of SQL query
-       for(ListCriteria criteria :criteriaList){
-           Filters key= criteria.getKey();
 
-           FilterDetails details=mappings.get(key);
+        Set<Filters> keySet =searchCriteriaMap.keySet();
+        for(Filters key:keySet){
+            FilterDetails details=mappings.get(key);
+           if(details == null)
+               continue;
            String joinString = details.getJoinString();
 
            // Add join statement only if its not already been added
@@ -204,12 +220,19 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             sql.append("where ");
 
             // Create Where part of SQL Query
-            int listSize = criteriaList.size();
-            for (int i = 0; i < listSize; i++) {
-                ListCriteria criteria = criteriaList.get(i);
-                String mapping = mappings.get(criteria.getKey()).getCondition();
-                if(Filters.QUNTITY_MAX.equals(criteria.getKey())){
-                    sql.append(" and ").append(mapping);
+            int listSize = searchCriteriaMap.size();
+            int i=0;
+
+          for(Filters key:keySet){
+
+              if(Filters.QUNTITY_MIN.equals(key) || mappings.get(key) == null )
+                  continue;
+
+              String mapping = mappings.get(key).getCondition();
+
+
+              if(Filters.QUNTITY_MAX.equals(key)){
+                    sql.append(" and ").append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
                     sql.append(" OR (aprod.weightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX+")");
                 }else if (i != 0) {
                     sql.append(" and ").append(mapping);
@@ -217,6 +240,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 else {
                     sql.append(mapping);
                 }
+              i++;
             }
 
              sql.append(" and fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"'");

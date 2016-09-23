@@ -16,9 +16,12 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
+import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.search.FilterMap;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
@@ -113,12 +116,12 @@ public class ActivityServiceBean implements ActivityService {
         boolean isSearchFiltersPresent = true;
         int totalPages=0;
 
-        if (query.getSearchCriteria() == null || query.getSearchCriteria().isEmpty())
+        if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty())
             isSearchFiltersPresent=false;
 
-        if(isSearchFiltersPresent)
-            activityList = fishingActivityDao.getFishingActivityListByQuery(query);
-        else
+        if(isSearchFiltersPresent) {
+           activityList = fishingActivityDao.getFishingActivityListByQuery(query);
+        } else
             activityList = fishingActivityDao.getFishingActivityList(query.getPagination());
 
 
@@ -140,7 +143,8 @@ public class ActivityServiceBean implements ActivityService {
     }
 
     private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
-        if (query.getSearchCriteria() == null || query.getSearchCriteria().isEmpty()){
+
+        if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty()){
             return fishingActivityDao.getCountForFishingActivityList(query.getPagination());
         }else{
             return fishingActivityDao.getCountForFishingActivityListByQuery(query);

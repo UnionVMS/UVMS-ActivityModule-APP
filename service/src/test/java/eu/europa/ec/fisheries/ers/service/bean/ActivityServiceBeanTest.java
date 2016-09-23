@@ -19,15 +19,22 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.ListCriteria;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.message.MessageException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +45,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
 
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -87,7 +95,7 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testGetFaReportCorrections() {
+    public void testGetFaReportCorrections() throws ServiceException {
 
         //Mock
         FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
@@ -195,7 +203,7 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException {
+    public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException, ModelMarshallException, ActivityMessageException, MessageException, JMSException {
 
         String response = JAXBMarshaller.marshallJaxBObjectToString(ActivityDataUtil.getListAssetResponse());
         TextMessage mockTextMessage = mock(TextMessage.class);
@@ -239,6 +247,38 @@ public class ActivityServiceBeanTest {
         assertEquals(3, summary.size());
         assertEquals(3, reportDTOList.size());
         assertEquals(3, messagesCount.getNoOfDeclarations());
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void getFishingActivityListByQuery() throws ServiceException {
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        List<ListCriteria> list = new ArrayList<ListCriteria>();
+
+        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+
+        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
+
+        Pagination pagination =new Pagination();
+        pagination.setListSize(4);
+        pagination.setPage(1);
+      //  query.setSearchCriteria(list);
+        query.setPagination(pagination);
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
+
+        //Trigger
+        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query);
+
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
+        //Verify
+        assertNotNull(filterFishingActivityReportResultDTO);
+        assertNotNull(filterFishingActivityReportResultDTO.getResultList());
+        assertNotNull(filterFishingActivityReportResultDTO.getPagination());
 
     }
 

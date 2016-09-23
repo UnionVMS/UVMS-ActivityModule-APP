@@ -75,6 +75,14 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonProperty("hasCorrection")
     private boolean hasCorrection;
 
+    @JsonProperty("fluxReportReferenceId")
+    private String fluxReportReferenceId;
+
+    @JsonProperty("fluxReportReferenceSchemeId")
+    private String fluxReportReferenceSchemeId;
+
+
+
     public FishingActivityReportDTO(){
 
     }
@@ -224,5 +232,21 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
 
     public void setHasCorrection(boolean hasCorrection) {
         this.hasCorrection = hasCorrection;
+    }
+
+    public String getFluxReportReferenceId() {
+        return fluxReportReferenceId;
+    }
+
+    public void setFluxReportReferenceId(String fluxReportReferenceId) {
+        this.fluxReportReferenceId = fluxReportReferenceId;
+    }
+
+    public String getFluxReportReferenceSchemeId() {
+        return fluxReportReferenceSchemeId;
+    }
+
+    public void setFluxReportReferenceSchemeId(String fluxReportReferenceSchemeId) {
+        this.fluxReportReferenceSchemeId = fluxReportReferenceSchemeId;
     }
 }
