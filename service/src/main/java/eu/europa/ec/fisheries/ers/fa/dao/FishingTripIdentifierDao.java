@@ -30,6 +30,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
 
     private static final String VESSEL_ID = "vesselId";
     private static final String VESSEL_SCHEME_ID = "vesselSchemeId";
+    private static final String TRIP_ID = "tripId";
 
     public FishingTripIdentifierDao(EntityManager em) {
         this.em = em;
@@ -51,6 +52,24 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
         } else {
             return null;
         }
+    }
+
+    public List<FishingTripIdentifierEntity> getPreviousTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
+        TypedQuery query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_PREVIOUS_TRIP, FishingTripIdentifierEntity.class);
+        query.setParameter(VESSEL_ID, vesselId);
+        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
+        query.setParameter(TRIP_ID, tripId);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
+
+    public List<FishingTripIdentifierEntity> getNextTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
+        TypedQuery query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_NEXT_TRIP, FishingTripIdentifierEntity.class);
+        query.setParameter(VESSEL_ID, vesselId);
+        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
+        query.setParameter(TRIP_ID, tripId);
+        query.setMaxResults(limit);
+        return query.getResultList();
     }
 
 

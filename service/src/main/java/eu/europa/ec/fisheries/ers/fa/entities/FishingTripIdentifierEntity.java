@@ -15,17 +15,53 @@ import java.io.Serializable;
 
 @NamedQueries({
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRIP,
-		query = "SELECT fti from FishingTripIdentifierEntity fti " +
-				"INNER JOIN fti.fishingTrip ft " +
-				"INNER JOIN ft.fishingActivity fa " +
-				"INNER JOIN fa.faReportDocument frd " +
-				"INNER JOIN frd.vesselTransportMeans vtm " +
-				"INNER JOIN vtm.vesselIdentifiers vi " +
-				"WHERE vi.vesselIdentifierId = :vesselId " +
-				"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
-				"ORDER BY frd.acceptedDatetime DESC"),
+				query = "SELECT fti from FishingTripIdentifierEntity fti " +
+						"INNER JOIN fti.fishingTrip ft " +
+						"INNER JOIN ft.fishingActivity fa " +
+						"INNER JOIN fa.faReportDocument frd " +
+						"INNER JOIN frd.vesselTransportMeans vtm " +
+						"INNER JOIN vtm.vesselIdentifiers vi " +
+						"WHERE vi.vesselIdentifierId = :vesselId " +
+						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+						"ORDER BY frd.acceptedDatetime DESC"),
 
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_TRIP,
+				query = "SELECT fti from FishingTripIdentifierEntity fti " +
+						"INNER JOIN fti.fishingTrip ft " +
+						"INNER JOIN ft.fishingActivity fa " +
+						"INNER JOIN fa.faReportDocument frd " +
+						"INNER JOIN frd.vesselTransportMeans vtm " +
+						"INNER JOIN vtm.vesselIdentifiers vi " +
+						"WHERE vi.vesselIdentifierId = :vesselId " +
+						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+						"AND frd.acceptedDatetime < (" +
+													"SELECT max(sfrd.acceptedDatetime) " +
+													"FROM FishingTripIdentifierEntity sfti " +
+													"INNER JOIN sfti.fishingTrip sft " +
+													"INNER JOIN sft.fishingActivity sfa " +
+													"INNER JOIN sfa.faReportDocument sfrd " +
+													"WHERE sfti.tripId = :tripId" +
+													")" +
+						"ORDER BY frd.acceptedDatetime ASC"),
 
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_NEXT_TRIP,
+				query = "SELECT fti from FishingTripIdentifierEntity fti " +
+						"INNER JOIN fti.fishingTrip ft " +
+						"INNER JOIN ft.fishingActivity fa " +
+						"INNER JOIN fa.faReportDocument frd " +
+						"INNER JOIN frd.vesselTransportMeans vtm " +
+						"INNER JOIN vtm.vesselIdentifiers vi " +
+						"WHERE vi.vesselIdentifierId = :vesselId " +
+						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+						"AND frd.acceptedDatetime > (" +
+													"SELECT max(sfrd.acceptedDatetime) " +
+													"FROM FishingTripIdentifierEntity sfti " +
+													"INNER JOIN sfti.fishingTrip sft " +
+													"INNER JOIN sft.fishingActivity sfa " +
+													"INNER JOIN sfa.faReportDocument sfrd " +
+													"WHERE sfti.tripId = :tripId" +
+													")" +
+						"ORDER BY frd.acceptedDatetime ASC"),
 
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_LESS_THAN_TRIPID,
 				query = "select distinct fi.tripId,dp.startDate from FishingTripIdentifierEntity fi  " +
@@ -55,6 +91,9 @@ import java.io.Serializable;
 public class FishingTripIdentifierEntity implements Serializable {
 
 	public static final String FIND_CURRENT_TRIP = "findCurrentTrip";
+	public static final String FIND_PREVIOUS_TRIP = "findPreviousTrip";
+	public static final String FIND_NEXT_TRIP = "findNextTrip";
+
 	public static final String FIND_LESS_THAN_TRIPID = "findLessThanTripId";
 	public static final String FIND_GREATER_THAN_TRTIPID = "findGreaterThanTripId";
 	public static final String FIND_CURRENT_TRTIPID = "findCurrentTripId";
