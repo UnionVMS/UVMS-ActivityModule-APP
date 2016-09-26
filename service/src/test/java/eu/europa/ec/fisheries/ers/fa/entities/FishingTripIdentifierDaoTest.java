@@ -44,28 +44,7 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
     public void testGetCurrentTrip() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
-        String tripId = dao.getCurrentTrip();
-        assertNotNull(tripId);
-        assertEquals("NOR-TRP-20160517234053706", tripId);
     }
 
-    @Test
-    @SneakyThrows
-    public void testGetFishingTripsBefore() throws Exception {
 
-        dbSetupTracker.skipNextLaunch();
-        List<Object[]> objectList = dao.getFishingTripsBefore("NOR-TRP-20160517234053706", 1);
-        assertNotNull(objectList);
-        assertEquals(1, objectList.size());
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetFishingTripsAfter() throws Exception {
-
-        dbSetupTracker.skipNextLaunch();
-        List<Object[]> objectList = dao.getFishingTripsAfter("NOR-TRP-20160517234053706", 1);
-        assertNotNull(objectList);
-        assertEquals(1, objectList.size());
-    }
 }

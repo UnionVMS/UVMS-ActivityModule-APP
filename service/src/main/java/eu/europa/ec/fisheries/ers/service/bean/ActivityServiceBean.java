@@ -177,52 +177,7 @@ public class ActivityServiceBean implements ActivityService {
         fishingTripSummaryViewDTO.setVesselDetails(getVesselDetailsForFishingTrip(fishingTripId));
         fishingTripSummaryViewDTO.setMessagesCount(messagesCount);
 
-        // Fishing TripID cronology
-        fishingTripSummaryViewDTO.setCronology(getCronologyForTripIds(fishingTripId, 2));
-
-        // Current Fishing Trip ID
-        fishingTripSummaryViewDTO.setCurrentTripId(getCurrentTripId());
         return fishingTripSummaryViewDTO;
-    }
-
-    // Current Fishing Trip ID in the system
-    @Override
-    public String getCurrentTripId() {
-        String currentTripId = null;
-        try {
-            currentTripId = fishingTripIdentifierDao.getCurrentTrip();
-        } catch (Exception e) {
-            log.error("Error while trying to get current trip Id:", e);
-        }
-        return currentTripId;
-    }
-
-    @Override
-    public List<CronologyDTO> getCronologyForTripIds(String tripID, int numberOfTripsBeforeAndAfter) {
-
-        List<CronologyDTO> cronologyList = new ArrayList<>();
-        try {
-            List<Object[]> tripIdListBefore = fishingTripIdentifierDao.getFishingTripsBefore(tripID, numberOfTripsBeforeAndAfter);
-
-            if (tripIdListBefore != null && !tripIdListBefore.isEmpty()) {
-                for (int i = tripIdListBefore.size() - 1; i >= 0; i--) {
-                    Object[] tripIdAndDate = tripIdListBefore.get(i);
-                    cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
-                }
-            }
-
-            List<Object[]> tripIdListAfter = fishingTripIdentifierDao.getFishingTripsAfter(tripID, numberOfTripsBeforeAndAfter);
-            if (tripIdListAfter != null) {
-                for (Object[] tripIdAndDate : tripIdListAfter) {
-                    cronologyList.add(new CronologyDTO("" + tripIdAndDate[0], tripIdAndDate[1].toString()));
-                }
-            }
-
-        } catch (Exception e) {
-            log.error("Error while trying to get Cronology for trip :" + tripID, e);
-        }
-
-        return cronologyList;
     }
 
     @Override

@@ -71,28 +71,4 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
         query.setMaxResults(limit);
         return query.getResultList();
     }
-
-
-    public String getCurrentTrip(){
-        Query query =  getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_CURRENT_TRTIPID);
-       return (String) query.getSingleResult();
-    }
-
-
-    public List<Object[]> getFishingTripsBefore(String tripID,int numberOfTripsBeforeAndAfter){
-        Query query =  getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_LESS_THAN_TRIPID);
-        query.setParameter("fishingTripId",tripID);
-        query.setMaxResults(numberOfTripsBeforeAndAfter);
-
-        return query.getResultList();
-    }
-
-    public List<Object[]> getFishingTripsAfter(String tripID,int numberOfTripsBeforeAndAfter){
-        Query query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_GREATER_THAN_TRTIPID);
-        query.setParameter("fishingTripId",tripID);
-        query.setMaxResults(numberOfTripsBeforeAndAfter+1); // Add one because you need to include the referenced tripId as well
-
-        return query.getResultList();
-    }
-
 }

@@ -119,41 +119,10 @@ public class ActivityServiceBeanTest {
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
     }
 
-    @Test
-    @SneakyThrows
-    public void testGetCurrentTripId() {
-
-        Mockito.doReturn(null).when(fishingTripIdentifierDao).getCurrentTrip();
-
-        //Trigger
-        String tripID=activityService.getCurrentTripId();
-
-        //Verify
-        Mockito.verify(fishingTripIdentifierDao, Mockito.times(1)).getCurrentTrip();
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetCronologyForTripIds() {
-
-        Mockito.doReturn(null).when(fishingTripIdentifierDao).getFishingTripsBefore(Mockito.any(String.class),Mockito.any(Integer.class));
-        Mockito.doReturn(null).when(fishingTripIdentifierDao).getFishingTripsAfter(Mockito.any(String.class),Mockito.any(Integer.class));
-
-        //Trigger
-        List<CronologyDTO> cronologyDTOList=activityService.getCronologyForTripIds("TRIPID_TEST",2);
-
-        //Verify
-        Mockito.verify(fishingTripIdentifierDao, Mockito.times(1)).getFishingTripsBefore(Mockito.any(String.class),Mockito.any(Integer.class));
-        Mockito.verify(fishingTripIdentifierDao, Mockito.times(1)).getFishingTripsAfter(Mockito.any(String.class),Mockito.any(Integer.class));
-
-    }
-
 
     @Test
     @SneakyThrows
     public void testGetFishingTripSummary() throws ServiceException {
-
-        when(activityService.getCurrentTripId()).thenReturn(MapperUtil.getCurrentTripID());
         when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706",null)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
@@ -163,7 +132,6 @@ public class ActivityServiceBeanTest {
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class),Mockito.any(Pagination.class));
         Mockito.verify(fishingTripDao, Mockito.times(1)).fetchVesselTransportDetailsForFishingTrip(Mockito.any(String.class));
         //Verify
-        assertEquals("currentTripID", fishingTripSummaryViewDTO.getCurrentTripId());
         assertNotNull( fishingTripSummaryViewDTO.getVesselDetails());
         assertEquals("vesselGroup1", fishingTripSummaryViewDTO.getVesselDetails().getName());
         assertEquals(3, fishingTripSummaryViewDTO.getSummary().size());

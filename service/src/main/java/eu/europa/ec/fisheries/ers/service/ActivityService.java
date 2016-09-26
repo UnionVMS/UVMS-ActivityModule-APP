@@ -39,13 +39,6 @@ public interface ActivityService {
 
 
     /**
-     * Get Current FishingTrip
-     *
-     * @return
-     */
-    String getCurrentTripId();
-
-    /**
      * <p>
      * This service returns the list of corrections (e.g. deletes, cancels, updates) received previously for a Fishing Activity report
      * Corrections are identified by the <code>referenceId</code> of the selected <code>FluxReportDocument.FluxReportIdentifier</code> recursively.
@@ -68,15 +61,6 @@ public interface ActivityService {
      * @throws ServiceException
      */
     FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException;
-
-    /**
-     * This service returns cronological order of Fishing Trip Ids.
-     *
-     * @param tripID                      TripID which will be used as a reference. Trips After and before this Id will be returned
-     * @param numberOfTripsBeforeAndAfter These many trips before and after mentioned tripId will be returned
-     * @return List<CronologyDTO>  List of TripIds and dates associated with the trip
-     */
-    List<CronologyDTO> getCronologyForTripIds(String tripID, int numberOfTripsBeforeAndAfter);
 
 
     /**
