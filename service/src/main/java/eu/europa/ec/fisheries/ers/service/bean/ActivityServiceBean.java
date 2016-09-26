@@ -16,12 +16,11 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
-import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
+
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
-import eu.europa.ec.fisheries.ers.service.search.FilterMap;
-import eu.europa.ec.fisheries.ers.service.search.Filters;
+
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
@@ -115,20 +114,21 @@ public class ActivityServiceBean implements ActivityService {
         List<FishingActivityEntity> activityList;
         boolean isSearchFiltersPresent = true;
         int totalPages=0;
-
+      
         if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty())
             isSearchFiltersPresent=false;
 
         if(isSearchFiltersPresent) {
            activityList = fishingActivityDao.getFishingActivityListByQuery(query);
         } else
-            activityList = fishingActivityDao.getFishingActivityList(query.getPagination());
+            activityList = fishingActivityDao.getFishingActivityList(query.getPagination()); // If search criteria is not present, return all the fishing Activity data
 
-
+        // Execute query to count all the resultset only if TotalPages value is 0. After first search frontend should send totalPages count in subsequent calls
         Pagination pagination= query.getPagination();
         if(pagination!=null && pagination.getTotalPages()==0 ){
             totalPages= getTotalPagesCountForFilterFishingActivityReports(query);
         }
+
 
         if (activityList == null || activityList.isEmpty()) {
             log.info("Could not find FishingActivity entities matching search criteria");
@@ -142,10 +142,11 @@ public class ActivityServiceBean implements ActivityService {
         return filterFishingActivityReportResultDTO;
     }
 
+    // Query to calculate total number of resultset
     private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
 
         if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty()){
-            return fishingActivityDao.getCountForFishingActivityList(query.getPagination());
+            return fishingActivityDao.getCountForFishingActivityList();
         }else{
             return fishingActivityDao.getCountForFishingActivityListByQuery(query);
         }
