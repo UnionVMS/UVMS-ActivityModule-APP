@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.service;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaReportDocumentDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
@@ -82,4 +81,11 @@ public interface ActivityService {
      */
     void getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, Map<String,FishingActivityTypeDTO> summary, MessageCountDTO messagesCount) throws ServiceException;
 
+    /**
+     * Service that given a trip-id collects all the message summs for it and returns a MessageCountDTO object;
+     *
+     * @param tripId
+     * @return MessageCountDTO
+     */
+    MessageCountDTO getMessageCountersForTripId(String tripId);
 }

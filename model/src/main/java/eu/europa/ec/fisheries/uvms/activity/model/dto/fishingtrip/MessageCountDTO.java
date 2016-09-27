@@ -37,79 +37,68 @@ public class MessageCountDTO {
     @JsonProperty("noOfFishingOperations")
     private int noOfFishingOperations;
 
-    @JsonProperty("noOfMissingOperations")
-    private int noOfMissingOperations;
+    @JsonProperty("noOfDeletions")
+    private int noOfDeletions;
 
-    @JsonProperty("noOfAnomalies")
-    private int noOfAnomalies;
+    @JsonProperty("noOfCancellations")
+    private int noOfCancellations;
+
 
     @JsonProperty("noOfReports")
     public int getNoOfReports() {
         return noOfReports;
     }
-
     @JsonProperty("noOfReports")
     public void setNoOfReports(int noOfReports) {
         this.noOfReports = noOfReports;
     }
-
     @JsonProperty("noOfDeclarations")
     public int getNoOfDeclarations() {
         return noOfDeclarations;
     }
-
     @JsonProperty("noOfDeclarations")
     public void setNoOfDeclarations(int noOfDeclarations) {
         this.noOfDeclarations = noOfDeclarations;
     }
-
     @JsonProperty("noOfNotifications")
     public int getNoOfNotifications() {
         return noOfNotifications;
     }
-
     @JsonProperty("noOfNotifications")
     public void setNoOfNotifications(int noOfNotifications) {
         this.noOfNotifications = noOfNotifications;
     }
-
     @JsonProperty("noOfCorrections")
     public int getNoOfCorrections() {
         return noOfCorrections;
     }
-
     @JsonProperty("noOfCorrections")
     public void setNoOfCorrections(int noOfCorrections) {
         this.noOfCorrections = noOfCorrections;
     }
-
     @JsonProperty("noOfFishingOperations")
     public int getNoOfFishingOperations() {
         return noOfFishingOperations;
     }
-
     @JsonProperty("noOfFishingOperations")
     public void setNoOfFishingOperations(int noOfFishingOperations) {
         this.noOfFishingOperations = noOfFishingOperations;
     }
-
-    @JsonProperty("noOfMissingOperations")
-    public int getNoOfMissingOperations() {
-        return noOfMissingOperations;
+    @JsonProperty("noOfDeletions")
+    public int getNoOfDeletions() {
+        return noOfDeletions;
+    }
+    @JsonProperty("noOfDeletions")
+    public void setNoOfDeletions(int noOfDeletions) {
+        this.noOfDeletions = noOfDeletions;
+    }
+    @JsonProperty("noOfCancellations")
+    public int getNoOfCancellations() {
+        return noOfCancellations;
+    }
+    @JsonProperty("noOfCancellations")
+    public void setNoOfCancellations(int noOfCancellations) {
+        this.noOfCancellations = noOfCancellations;
     }
 
-    @JsonProperty("noOfMissingOperations")
-    public void setNoOfMissingOperations(int noOfMissingOperations) {
-        this.noOfMissingOperations = noOfMissingOperations;
-    }
-
-    @JsonProperty("noOfAnomalies")
-    public int getNoOfAnomalies() {
-        return noOfAnomalies;
-    }
-
-    @JsonProperty("noOfAnomalies")
-    public void setNoOfAnomalies(int noOfAnomalies) {
-        this.noOfAnomalies = noOfAnomalies;
-    }
 }

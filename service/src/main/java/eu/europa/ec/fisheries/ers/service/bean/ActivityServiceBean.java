@@ -155,17 +155,27 @@ public class ActivityServiceBean implements ActivityService {
     // Get data for Fishing Trip summary view
     @Override
     public FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException {
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
-
         // Messages count box for Fishing Trip Summary view
         MessageCountDTO messagesCount = new MessageCountDTO();
-
         List<ReportDTO> reportDTOList = new ArrayList<>();
-
         // get short summary of Fishing Trip
         Map<String, FishingActivityTypeDTO> summary = new HashMap<>();
         // All Activity Reports and related data  for Fishing Trip
         getFishingActivityReportAndRelatedDataForFishingTrip(fishingTripId, reportDTOList, summary, messagesCount);
+        return  populateAndReturnFishingTripSummary(fishingTripId, messagesCount, reportDTOList, summary);
+    }
+
+    /**
+     * Populates and return a FishingTripSummaryViewDTO with the inputParameters values.
+     *
+     * @param  fishingTripId
+     * @param  messagesCount
+     * @param  reportDTOList
+     * @param  summary
+     * @return fishingTripSummaryViewDTO
+     */
+    private FishingTripSummaryViewDTO populateAndReturnFishingTripSummary(String fishingTripId, MessageCountDTO messagesCount, List<ReportDTO> reportDTOList, Map<String, FishingActivityTypeDTO> summary) {
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
         fishingTripSummaryViewDTO.setActivityReports(reportDTOList);
         // fishingTripSummaryViewDTO.setFishingTripSummaryDTO(fishingTripSummaryDTO);
         fishingTripSummaryViewDTO.setSummary(summary);
@@ -270,6 +280,7 @@ public class ActivityServiceBean implements ActivityService {
             }
             if(isFaultMessage(message)){
                 log.error("The Asset module responded with a fault message related to Vessel Details Enrichment: ",response);
+                log.debug("The original VesselDetailsTripDTO that the request for enrichment was made for : ",vesselDetailsTripDTO.toString());
                 return;
             }
             if(StringUtils.isNotEmpty(response)){
@@ -280,7 +291,6 @@ public class ActivityServiceBean implements ActivityService {
                     log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment",e);
                 }
             }
-
         }
     }
 
@@ -347,16 +357,10 @@ public class ActivityServiceBean implements ActivityService {
 
 
     @Override
-    public void getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, Map<String, FishingActivityTypeDTO> summary, MessageCountDTO messagesCount) throws ServiceException {
-
+    public void getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList,
+                                                                     Map<String, FishingActivityTypeDTO> summary,
+                                                                     MessageCountDTO messagesCounter) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList;
-        int reportsCnt = 0;
-        int declarations = 0;
-        int notifications = 0;
-        int corrections = 0;
-        int fishingOperations = 0;
-
-
         try {
             fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
         } catch (Exception e) {
@@ -364,54 +368,26 @@ public class ActivityServiceBean implements ActivityService {
             return;
         }
 
-        if (fishingActivityList == null || fishingActivityList.isEmpty())
+        if (CollectionUtils.isEmpty(fishingActivityList)){
             return;
-
-        if (reportDTOList == null)
-            reportDTOList = new ArrayList<>();
+        }
 
         for (FishingActivityEntity activityEntity : fishingActivityList) {
-
             ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
-
             if (ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
-                declarations++;
-            } else if (ActivityConstants.NOTIFICATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
-                notifications++;
-            }
-
-            if (reportDTO.isCorrection())
-                corrections++;
-
-            if (reportDTO.getUniqueFAReportId() != null)
-                reportsCnt++;
-
-            String activityType = reportDTO.getActivityType();
-            if (ActivityConstants.FISHING_OPERATION.equalsIgnoreCase(activityType))
-                fishingOperations++;
-
-            // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
-            if (ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
-                //createFishingSummaryDTO(reportDTO,fishingTripSummaryDTO);
+                // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
                 populateSummaryMap(reportDTO, summary);
             }
             reportDTOList.add(reportDTO);
-        }// end of for loop
-
-
-        messagesCount.setNoOfCorrections(corrections);
-        messagesCount.setNoOfDeclarations(declarations);
-        messagesCount.setNoOfFishingOperations(fishingOperations);
-        messagesCount.setNoOfNotifications(notifications);
-        messagesCount.setNoOfReports(reportsCnt);
+        }
     }
+
 
     private void populateSummaryMap(ReportDTO reportDTO, Map<String, FishingActivityTypeDTO> summary) {
         if (ActivityConstants.DEPARTURE.equalsIgnoreCase(reportDTO.getActivityType()) || ActivityConstants.ARRIVAL.equalsIgnoreCase(reportDTO.getActivityType()) || ActivityConstants.LANDING.equalsIgnoreCase(reportDTO.getActivityType())) {
             Date occurence = reportDTO.getOccurence();
             List<FluxLocationDetailsDTO> fluxLocations = reportDTO.getFluxLocations();
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(reportDTO.getActivityType());
-
             if ((fishingActivityTypeDTO == null || (reportDTO.isCorrection() && fishingActivityTypeDTO.getDate() != null && occurence != null && occurence.compareTo(fishingActivityTypeDTO.getDate()) > 0))) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
                 fishingActivityTypeDTO.setDate(occurence);
@@ -421,5 +397,57 @@ public class ActivityServiceBean implements ActivityService {
         }
     }
 
+    @Override
+    public MessageCountDTO getMessageCountersForTripId(String tripId){
+        return createMessageCounter(faReportDocumentDao.getFaReportDocumentsForTrip(tripId));
+    }
 
+    /**
+     * Populates the MessageCounter adding to the right counter 1 unit depending on the type of report.
+     *
+     * @param faReportDocumentList
+     */
+    public MessageCountDTO createMessageCounter(List<FaReportDocumentEntity> faReportDocumentList){
+
+        MessageCountDTO messagesCounter = new MessageCountDTO();
+        if(CollectionUtils.isEmpty(faReportDocumentList)){
+            return messagesCounter;
+        }
+
+        // Reports total
+        messagesCounter.setNoOfReports(faReportDocumentList.size());
+
+        for(FaReportDocumentEntity faReport : faReportDocumentList){
+            String faDocumentType = faReport.getTypeCode();
+            String purposeCode    = faReport.getFluxReportDocument().getPurpose();
+
+            // Declarations / Notifications
+            if (ActivityConstants.DECLARATION.equalsIgnoreCase(faDocumentType)) {
+                messagesCounter.setNoOfDeclarations(messagesCounter.getNoOfDeclarations()+1);
+            } else if (ActivityConstants.NOTIFICATION.equalsIgnoreCase(faDocumentType)) {
+                messagesCounter.setNoOfNotifications(messagesCounter.getNoOfNotifications()+1);
+            }
+
+            // Fishing operations
+            Set<FishingActivityEntity> faEntitiyList = faReport.getFishingActivities();
+            if(CollectionUtils.isNotEmpty(faEntitiyList)){
+                for(FishingActivityEntity faEntity : faEntitiyList){
+                    if (ActivityConstants.FISHING_OPERATION.equalsIgnoreCase(faEntity.getTypeCode())){
+                        messagesCounter.setNoOfFishingOperations(messagesCounter.getNoOfFishingOperations()+1);
+                    }
+                }
+            }
+
+            // PurposeCode : Deletions / Cancellations / Corrections
+            if (ActivityConstants.DELETE.equalsIgnoreCase(purposeCode)){
+                messagesCounter.setNoOfDeletions(messagesCounter.getNoOfDeletions()+1);
+            } else if (ActivityConstants.CANCELLATION.equalsIgnoreCase(purposeCode)){
+                messagesCounter.setNoOfCancellations(messagesCounter.getNoOfCancellations()+1);
+            } else if (ActivityConstants.CORRECTION.equalsIgnoreCase(purposeCode)) {
+                messagesCounter.setNoOfCorrections(messagesCounter.getNoOfCorrections() + 1);
+            }
+        }
+
+        return messagesCounter;
+    }
 }

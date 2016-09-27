@@ -22,13 +22,23 @@ import java.util.Set;
 						"INNER JOIN fluxreport.fluxReportIdentifiers identifier " +
 						"WHERE identifier.fluxReportIdentifierId = :reportId " +
 						"AND identifier.fluxReportIdentifierSchemeId = :schemeId"),
-})
 
+		@NamedQuery(name = FaReportDocumentEntity.FIND_BY_TRIP_ID,
+				query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+						"JOIN FETCH fareport.fishingActivities factivity " +
+						"JOIN FETCH factivity.fishingTrips fishingtrip " +
+						"JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
+				 		"JOIN FETCH fareport.fluxReportDocument fluxreport " +
+						"WHERE ftidentifier.tripId = :tripId")
+})
+/*"JOIN FETCH fluxreport.fluxReportIdentifiers fluxidentifier " +
+"AND fluxidentifier.fluxReportIdentifierId is unique"*/
 @Entity
 @Table(name = "activity_fa_report_document")
 public class FaReportDocumentEntity implements Serializable {
 
 	public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
+	public static final String FIND_BY_TRIP_ID          = "findByTripId";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

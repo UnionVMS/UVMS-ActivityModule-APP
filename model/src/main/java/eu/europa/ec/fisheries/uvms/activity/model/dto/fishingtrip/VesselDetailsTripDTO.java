@@ -180,4 +180,27 @@ public class VesselDetailsTripDTO {
     public void setGfcmEnriched(boolean gfcmEnriched) {
         this.gfcmEnriched = gfcmEnriched;
     }
+
+    @Override
+    public String toString() {
+        return "VesselDetailsTripDTO{" +
+                "name='" + name + '\'' +
+                ", nameEnriched=" + nameEnriched +
+                ", exMark='" + exMark + '\'' +
+                ", exMarkEnriched=" + exMarkEnriched +
+                ", flagState='" + flagState + '\'' +
+                ", flagStateEnriched=" + flagStateEnriched +
+                ", ircs='" + ircs + '\'' +
+                ", ircsEnriched=" + ircsEnriched +
+                ", cfr='" + cfr + '\'' +
+                ", cfrEnriched=" + cfrEnriched +
+                ", uvi='" + uvi + '\'' +
+                ", uviEnriched=" + uviEnriched +
+                ", iccat='" + iccat + '\'' +
+                ", iccatEnriched=" + iccatEnriched +
+                ", gfcm='" + gfcm + '\'' +
+                ", gfcmEnriched=" + gfcmEnriched +
+                ", contactPersons=" + contactPersons +
+                '}';
+    }
 }

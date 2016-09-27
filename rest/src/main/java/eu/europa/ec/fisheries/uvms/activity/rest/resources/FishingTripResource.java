@@ -65,7 +65,6 @@ public class FishingTripResource extends UnionVMSResource {
                                         @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
         LOG.info("Fishing Trip summary from fishing trip : "+fishingTripId);
-
         return createSuccessResponse(activityService.getFishingTripSummary(fishingTripId));
     }
 
@@ -79,8 +78,20 @@ public class FishingTripResource extends UnionVMSResource {
                                           @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
         LOG.info("Getting Vessels details for trip : "+fishingTripId);
-
         return createSuccessResponse(activityService.getVesselDetailsForFishingTrip(fishingTripId));
+    }
+
+    @GET
+    @Path("/messages/{fishingTripId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
+    public Response getFishingTripMessageCounte(@Context HttpServletRequest request,
+                                          @Context HttpServletResponse response,
+                                          @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+
+        LOG.info("Message counters for fishing trip : "+fishingTripId);
+        return createSuccessResponse(activityService.getMessageCountersForTripId(fishingTripId));
     }
 
     @GET
