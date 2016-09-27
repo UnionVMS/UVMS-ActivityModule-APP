@@ -91,31 +91,24 @@ public class FishingTripIdentifierEntity implements Serializable {
 	public FishingTripIdentifierEntity() {
 		super();
 	}
-
 	public int getId() {
 		return this.id;
 	}
-
 	public FishingTripEntity getFishingTrip() {
 		return this.fishingTrip;
 	}
-
 	public void setFishingTrip(FishingTripEntity fishingTrip) {
 		this.fishingTrip = fishingTrip;
 	}
-
 	public String getTripId() {
 		return this.tripId;
 	}
-
 	public void setTripId(String tripId) {
 		this.tripId = tripId;
 	}
-
 	public String getTripSchemeId() {
 		return this.tripSchemeId;
 	}
-
 	public void setTripSchemeId(String tripSchemeId) {
 		this.tripSchemeId = tripSchemeId;
 	}

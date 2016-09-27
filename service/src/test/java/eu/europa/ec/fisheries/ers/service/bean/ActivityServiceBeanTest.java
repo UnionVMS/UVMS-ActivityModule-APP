@@ -13,14 +13,12 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
@@ -78,8 +76,14 @@ public class ActivityServiceBeanTest {
     @Mock
     FishingTripIdentifierDao fishingTripIdentifierDao;
 
+    @Mock
+    VesselIdentifiersDao vesselIdentifiersDao;
+
     @InjectMocks
     ActivityServiceBean activityService;
+
+    @InjectMocks
+    FishingTripService fishingTripService;
 
     @Mock
     ActivityMessageProducerBean activityProducer;
@@ -127,7 +131,7 @@ public class ActivityServiceBeanTest {
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706",null)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
         //Trigger
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=activityService.getFishingTripSummary("NOR-TRP-20160517234053706");
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=fishingTripService.getFishingTripSummary("NOR-TRP-20160517234053706");
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class),Mockito.any(Pagination.class));
         Mockito.verify(fishingTripDao, Mockito.times(1)).fetchVesselTransportDetailsForFishingTrip(Mockito.any(String.class));
@@ -147,7 +151,7 @@ public class ActivityServiceBeanTest {
         when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
 
         //Trigger
-        VesselDetailsTripDTO vesselDetailsTripDTO= activityService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsTripDTO vesselDetailsTripDTO= fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
         Mockito.verify(fishingTripDao, Mockito.times(1)).fetchVesselTransportDetailsForFishingTrip(Mockito.any(String.class));
         //Verify
@@ -162,7 +166,7 @@ public class ActivityServiceBeanTest {
 
         when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntityWithContactParties());
 
-        VesselDetailsTripDTO vesselDetailsTripDTO = activityService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsTripDTO vesselDetailsTripDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
         assertNotNull(vesselDetailsTripDTO);
         assertEquals(2, vesselDetailsTripDTO.getContactPersons().size());
@@ -181,7 +185,7 @@ public class ActivityServiceBeanTest {
         when(activityConsumer.getMessage(null, TextMessage.class)).thenReturn(mockTextMessage);
         when(mockTextMessage.getText()).thenReturn(response);
 
-        VesselDetailsTripDTO vesselDetailsTripDTO = activityService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsTripDTO vesselDetailsTripDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
         assertNotNull(vesselDetailsTripDTO);
 
@@ -207,7 +211,7 @@ public class ActivityServiceBeanTest {
         Map<String, FishingActivityTypeDTO > summary = new HashMap<>();
         MessageCountDTO messagesCount = new MessageCountDTO();
         //Trigger
-        activityService.getFishingActivityReportAndRelatedDataForFishingTrip("NOR-TRP-20160517234053706",reportDTOList,summary,messagesCount);
+        fishingTripService.getFishingActivityReportAndRelatedDataForFishingTrip("NOR-TRP-20160517234053706",reportDTOList,summary,messagesCount);
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class),Mockito.any(Pagination.class));
         //Verify
