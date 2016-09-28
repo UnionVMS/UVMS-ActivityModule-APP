@@ -57,7 +57,7 @@ public class FluxReportDocumentEntity implements Serializable {
         super();
     }
 
-    public FluxReportDocumentEntity(String fluxReportDocumentId, String referenceId, Date creationDatetime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName, FaReportDocumentEntity faReportDocument) {
+    public FluxReportDocumentEntity(String referenceId, Date creationDatetime, String purposeCode, String purposeCodeListId, String purpose, FaReportDocumentEntity faReportDocument) {
         this.referenceId = referenceId;
         this.creationDatetime = creationDatetime;
         this.purposeCode = purposeCode;

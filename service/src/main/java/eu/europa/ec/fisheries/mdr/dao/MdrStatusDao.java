@@ -138,7 +138,7 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
                 validityXml.getEndDate().toGregorianCalendar().getTime());
         codeListFromDB.setValidity(validity);
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for(TextType version : xmlCodeListMetaData.getVersions()){
             buffer.append(version.getValue()).append(",");
         }
@@ -167,12 +167,10 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
 
     public void updateStatusAttemptForAcronym(String acronym, AcronymListState newStatus, Date lastAttempt) {
         MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(acronym);
-        mdrCodeListElement.setLastAttempt(lastAttempt);
-        mdrCodeListElement.setLastStatus(newStatus);
         try {
-            if(mdrCodeListElement != null){
-                saveOrUpdateEntity(mdrCodeListElement);
-            }
+            mdrCodeListElement.setLastAttempt(lastAttempt);
+            mdrCodeListElement.setLastStatus(newStatus);
+            saveOrUpdateEntity(mdrCodeListElement);
         } catch (NullPointerException | ServiceException e) {
             log.error("Error while trying to save/update new MDR Code List Status",e);
         }

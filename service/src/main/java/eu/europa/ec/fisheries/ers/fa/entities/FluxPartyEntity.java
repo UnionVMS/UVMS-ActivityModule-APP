@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "activity_flux_party")
-public class FluxPartyEntity {
+public class FluxPartyEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

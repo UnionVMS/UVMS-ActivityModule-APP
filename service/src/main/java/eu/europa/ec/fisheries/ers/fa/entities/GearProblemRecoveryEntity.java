@@ -14,13 +14,14 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by padhyad on 9/16/2016.
  */
 @Entity
 @Table(name = "activity_gear_problem_recovery")
-public class GearProblemRecoveryEntity {
+public class GearProblemRecoveryEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

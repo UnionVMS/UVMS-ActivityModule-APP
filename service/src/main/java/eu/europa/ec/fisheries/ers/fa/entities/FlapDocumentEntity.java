@@ -14,13 +14,14 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by padhyad on 9/16/2016.
  */
 @Entity
 @Table(name = "activity_flap_document")
-public class FlapDocumentEntity {
+public class FlapDocumentEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
