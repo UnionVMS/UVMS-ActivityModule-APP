@@ -48,6 +48,7 @@ public class FilterMap {
     private static EnumMap<Filters,FilterDetails> filterMappings = new EnumMap<>(Filters.class);
     private static EnumMap<Filters,String> filterSortMappings = new EnumMap<>(Filters.class);
     private static EnumMap<Filters,String> filterQueryParameterMappings = new EnumMap<>(Filters.class);
+    private static EnumMap<Filters,String> filterSortWhereMappings = new EnumMap<>(Filters.class);
 
 
     private FilterMap(){}
@@ -57,6 +58,7 @@ public class FilterMap {
         populateFilterMappings();
         populateFilterQueryParameterMappings();
         populateFilterSortMappings();
+        populateFilterSortWhereMappings();
     }
 
 
@@ -86,16 +88,23 @@ public class FilterMap {
 
     }
 
+    private static void populateFilterSortWhereMappings(){
+        filterSortWhereMappings.put(Filters.PERIOD_START,"dp1.startDate");
+        filterSortWhereMappings.put(Filters.PERIOD_END,"dp1.endDate");
+    }
+
     private static void populateFilterSortMappings(){
-      //  filterSortMappings.put(Filters.PERIOD_START,"dp.startDate");
-       // filterSortMappings.put(Filters.PERIOD_END,"dp.endDate");
+        filterSortMappings.put(Filters.PERIOD_START,"dp.startDate");
+        filterSortMappings.put(Filters.PERIOD_END,"dp.endDate");
         filterSortMappings.put(Filters.REPORT_TYPE,"fa.typeCode");
         filterSortMappings.put(Filters.SOURCE,"fa.source");
         filterSortMappings.put(Filters.ACTIVITY_TYPE,"a.typeCode");
+        filterSortMappings.put(Filters.OCCURRENCE,"a.occurence");
         filterSortMappings.put(Filters.PURPOSE,"flux.purposeCode");
         filterSortMappings.put(Filters.FROM_NAME,"fp.fluxPartyName");
 
     }
+
 
     private static void populateFilterQueryParameterMappings(){
 
@@ -124,8 +133,13 @@ public class FilterMap {
         return filterMappings;
     }
 
+
     public static Map<Filters,String> getFilterSortMappings() {
         return filterSortMappings;
+    }
+
+    public static Map<Filters,String> getFilterSortWhereMappings() {
+        return filterSortWhereMappings;
     }
 
     public static Map<Filters,String> getFilterQueryParameterMappings() {

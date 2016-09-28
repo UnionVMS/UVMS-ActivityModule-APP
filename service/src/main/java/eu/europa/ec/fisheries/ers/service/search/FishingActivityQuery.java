@@ -18,21 +18,11 @@ import java.util.Map;
 public class FishingActivityQuery {
     private Pagination pagination;
     private Map<Filters,String> searchCriteriaMap;
-  //  private  List<ListCriteria> searchCriteria;
     private SortKey sortKey;
 
     public void setPagination(Pagination pagination) {
         this.pagination = pagination;
     }
-
-    /*public void setSearchCriteria(List<ListCriteria> searchCriteria) {
-        this.searchCriteria = searchCriteria;
-    }
-
-    public List<ListCriteria> getSearchCriteria() {
-        return searchCriteria;
-    }
-*/
 
     public Map<Filters, String> getSearchCriteriaMap() {
         return searchCriteriaMap;
@@ -59,6 +49,7 @@ public class FishingActivityQuery {
     public String toString() {
         return "FishingActivityQuery{" +
                 "pagination=" + pagination +
+                ", searchCriteriaMap=" + searchCriteriaMap +
                 ", sortKey=" + sortKey +
                 '}';
     }

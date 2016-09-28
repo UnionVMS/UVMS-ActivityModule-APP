@@ -94,12 +94,12 @@ public class ActivityServiceBean implements ActivityService {
         return allFaReportDocuments;
     }
 
-    @Override
+ @Override
     public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         List<FishingActivityEntity> activityList;
         boolean isSearchFiltersPresent = true;
         int totalPages=0;
-      
+         log.debug("FishingActivityQuery received :"+query);
         if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty())
             isSearchFiltersPresent=false;
 
@@ -112,14 +112,15 @@ public class ActivityServiceBean implements ActivityService {
         Pagination pagination= query.getPagination();
         if(pagination!=null && pagination.getTotalPages()==0 ){
             totalPages= getTotalPagesCountForFilterFishingActivityReports(query);
+            log.debug("Total Records count is: "+totalPages);
         }
-
 
         if (activityList == null || activityList.isEmpty()) {
             log.info("Could not find FishingActivity entities matching search criteria");
             activityList= Collections.emptyList();
         }
 
+       log.debug("Fishing Activity Report resultset size :"+activityList.size());
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setPagination(new PaginationDTO(totalPages));
@@ -127,9 +128,11 @@ public class ActivityServiceBean implements ActivityService {
         return filterFishingActivityReportResultDTO;
     }
 
+
     // Query to calculate total number of resultset
     private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
-        if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty()){
+    log.info(" We need to get Total count of the resultset without considering pagination");
+     if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty()){
             return fishingActivityDao.getCountForFishingActivityList();
         }else{
             return fishingActivityDao.getCountForFishingActivityListByQuery(query);
