@@ -37,6 +37,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
 
     @Test
+    @Ignore
     @SneakyThrows
     public void testFindEntityById() throws Exception {
 
@@ -47,6 +48,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     }
 
     @Test
+    @Ignore
     @SneakyThrows
     public void testSearchEntityByQuery() throws Exception {
 
@@ -105,6 +107,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     }
 
     @Test
+    @Ignore
     @SneakyThrows
     public void testGetFishingActivityListForFishingTrip() throws Exception {
 

@@ -141,7 +141,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "fishing_duration_measure", "source_vessel_char_id", "dest_vessel_char_id", "flap_document_id", "flap_document_scheme_id", "fa_report_document_id")
                     .values(5, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, 11.20, null, null, null, null, 2)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, 11.20, null, null, null, null, 6)
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
@@ -430,6 +430,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_vessel_transport_means")
                     .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
                     .values(4, "ROLE_CODE", "LIST_ID", "vessel4", null, null, null)
+                    .build(),
+            insertInto("activity.activity_vessel_transport_means")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
+                    .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, null, null)
                     .build()
     );
 
@@ -453,6 +457,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_vessel_identifier")
                     .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(5, 2, "EXT_MARK123", "EXT_MARK")
+                    .build(),
+            insertInto("activity.activity_vessel_identifier")
+                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
+                    .values(6, 5, "EXT_MARK123", "EXT_MARK")
                     .build()
 
     );
@@ -590,15 +598,19 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build(),
             insertInto("activity.activity_fa_report_document")
                     .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 2, 2, "fmc", "fmc_list", "new", "FLUX")
+                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2, 2, "fmc", "fmc_list", "new", "FLUX")
                     .build(),
             insertInto("activity.activity_fa_report_document")
                     .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 3, 3, "fmc", "fmc_list", "new", "FLUX")
+                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, 3, "fmc", "fmc_list", "new", "FLUX")
                     .build(),
             insertInto("activity.activity_fa_report_document")
                     .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 4, 4, "fmc", "fmc_list", "new", "FLUX")
+                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, 4, "fmc", "fmc_list", "new", "FLUX")
+                    .build(),
+            insertInto("activity.activity_fa_report_document")
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
+                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 2, 5, "fmc", "fmc_list", "new", "FLUX")
                     .build()
 
     );
