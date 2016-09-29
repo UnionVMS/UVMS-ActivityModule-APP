@@ -250,11 +250,11 @@ public class FishingTripServiceBean implements FishingTripService {
                 vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
 
             // Fill the contactPersons List and check if is captain.
-            Set<ContactPartyEntity> contactParties         = vesselTransportMeansEntity.getContactParty();
+            Set<ContactPartyEntity> contactParties             = vesselTransportMeansEntity.getContactParty();
             Set<ContactPersonDetailsDTO> contactPersonsListDTO = vesselDetailsTripDTO.getContactPersons();
             if(CollectionUtils.isNotEmpty(contactParties)){
                 for (ContactPartyEntity contactParty : contactParties) {
-                    ContactPersonDetailsDTO contactPersDTO           = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactParty.getContactPerson());
+                    ContactPersonDetailsDTO contactPersDTO           = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsWithRolesDTO(contactParty.getContactPerson(), contactParty.getContactPartyRole());
                     Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
                     contactPersDTO.setAdresses(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses));
                     checkAndSetIsCaptain(contactPersDTO, contactParty);

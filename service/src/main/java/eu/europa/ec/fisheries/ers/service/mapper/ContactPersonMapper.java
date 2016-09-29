@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import org.mapstruct.Mapper;
@@ -19,6 +20,10 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.ContactPerson;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/8/2016.
@@ -53,4 +58,32 @@ public abstract class ContactPersonMapper extends BaseMapper {
     })
     public abstract ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 
+    protected List<String> getRoles(ContactPersonEntity contactPersonEntity){
+        List<String> roles = new ArrayList<>();
+        for(ContactPartyRoleEntity roleEntity : contactPersonEntity.getContactParty().getContactPartyRole()){
+            roles.add(roleEntity.getRoleCode());
+        }
+        return roles;
+    }
+
+    protected List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles){
+        List<String> roles = new ArrayList<>();
+        for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
+            roles.add(roleEntity.getRoleCode());
+        }
+        return roles;
+    }
+
+    @Mappings({
+            @Mapping(target = "title", expression = "java(contactPerson.getTitle())"),
+            @Mapping(target = "roles", expression = "java(getRoles(contactPartyRoles))"),
+            @Mapping(target = "givenName", expression = "java(contactPerson.getGivenName())"),
+            @Mapping(target = "middleName", expression = "java(contactPerson.getMiddleName())"),
+            @Mapping(target = "familyName", expression = "java(contactPerson.getFamilyName())"),
+            @Mapping(target = "familyNamePrefix", expression = "java(contactPerson.getFamilyNamePrefix())"),
+            @Mapping(target = "nameSuffix", expression = "java(contactPerson.getNameSuffix())"),
+            @Mapping(target = "gender", expression = "java(contactPerson.getGender())"),
+            @Mapping(target = "alias", expression = "java(contactPerson.getAlias())")
+    })
+    public abstract ContactPersonDetailsDTO mapToContactPersonDetailsWithRolesDTO(ContactPersonEntity contactPerson, Set<ContactPartyRoleEntity> contactPartyRoles);
 }

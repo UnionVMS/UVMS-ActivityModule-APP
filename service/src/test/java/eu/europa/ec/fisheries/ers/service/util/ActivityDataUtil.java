@@ -187,4 +187,14 @@ public class ActivityDataUtil {
         listResponse.getAsset().add(asset);
         return listResponse;
     }
+
+    public static Set<VesselIdentifierEntity> getVesselIdentifiers(VesselTransportMeansEntity vesselTransportMeansEntity1, String ident_, String scheme_) {
+        Set<VesselIdentifierEntity> identifiers = new HashSet<>();
+        VesselIdentifierEntity identifier = new VesselIdentifierEntity();
+        identifier.setVesselTransportMeans(vesselTransportMeansEntity1);
+        identifier.setVesselIdentifierId(ident_);
+        identifier.setVesselIdentifierSchemeId(scheme_);
+        identifiers.add(identifier);
+        return identifiers;
+    }
 }

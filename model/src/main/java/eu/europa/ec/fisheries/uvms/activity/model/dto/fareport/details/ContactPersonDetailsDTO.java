@@ -24,6 +24,9 @@ public class ContactPersonDetailsDTO {
     @JsonProperty("isCaptain")
     private boolean isCaptain;
 
+    @JsonProperty("roles")
+    private List<String> roles;
+
     @JsonProperty("title")
     private String title;
 
@@ -144,5 +147,13 @@ public class ContactPersonDetailsDTO {
     @JsonProperty("adresses")
     public void setAdresses(List<AddressDetailsDTO> adresses) {
         this.adresses = adresses;
+    }
+    @JsonProperty("roles")
+    public List<String> getRoles() {
+        return roles;
+    }
+    @JsonProperty("roles")
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import org.mockito.stubbing.Answer;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
 
@@ -34,6 +35,8 @@ import java.util.*;
  */
 public class MapperUtil {
 
+
+    private static Answer<?> vesselIdentifiersList;
 
     public static String  getCurrentTripID(){
         return "currentTripID";
@@ -106,6 +109,8 @@ public class MapperUtil {
         VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
         VesselTransportMeansEntity vesselTransportMeansEntity2= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
         VesselTransportMeansEntity vesselTransportMeansEntity3= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
+
+        vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1","SCHEME_1"));
 
         FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
                 vesselTransportMeansEntity1, "new");
@@ -642,4 +647,11 @@ public class MapperUtil {
         return measureType;
     }
 
+    public static List<VesselIdentifierEntity> getVesselIdentifiersList() {
+        List<VesselIdentifierEntity> vesselIdentifiersList = new ArrayList<>();
+        VesselTransportMeansEntity vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.getVesselIdentifiers();
+        vesselIdentifiersList.addAll(vesselIdentifiersSet);
+        return vesselIdentifiersList;
+    }
 }
