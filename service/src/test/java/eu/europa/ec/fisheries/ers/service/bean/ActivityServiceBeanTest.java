@@ -21,7 +21,6 @@ import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerB
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.ListCriteria;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
@@ -226,8 +225,6 @@ public class ActivityServiceBeanTest {
     public void getFishingActivityListByQuery() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        List<ListCriteria> list = new ArrayList<ListCriteria>();
-
         Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
         searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");

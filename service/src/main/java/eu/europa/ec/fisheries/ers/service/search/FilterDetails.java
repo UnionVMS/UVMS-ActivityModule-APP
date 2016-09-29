@@ -27,8 +27,7 @@ public class FilterDetails {
         this.condition = condition;
     }
 
-    public FilterDetails(){
-
+    public FilterDetails() {
     }
 
     public String getJoinString() {

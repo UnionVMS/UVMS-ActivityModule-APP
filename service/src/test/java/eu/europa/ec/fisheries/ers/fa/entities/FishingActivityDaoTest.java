@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,10 +52,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
-        List<ListCriteria> list = new ArrayList<ListCriteria>();
-
-
-        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+         Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
         searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
         searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");

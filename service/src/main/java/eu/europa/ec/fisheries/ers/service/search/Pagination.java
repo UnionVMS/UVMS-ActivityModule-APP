@@ -14,6 +14,23 @@ package eu.europa.ec.fisheries.ers.service.search;
  * Created by sanera on 24/06/2016.
  */
 public class Pagination {
+
+
+    private int page;
+    private int listSize;
+    private int totalPages;
+
+
+    public Pagination(int page, int listSize) {
+        this.page = page;
+        this.listSize = listSize;
+    }
+
+    public Pagination(){
+
+    }
+
+
     public void setPage(int page) {
         this.page = page;
     }
@@ -39,18 +56,9 @@ public class Pagination {
         return listSize;
     }
 
-    private int page;
-    private int listSize;
-    private int totalPages;
 
-    public Pagination(int page, int listSize) {
-        this.page = page;
-        this.listSize = listSize;
-    }
 
-    public Pagination(){
 
-    }
 
     @Override
     public String toString() {

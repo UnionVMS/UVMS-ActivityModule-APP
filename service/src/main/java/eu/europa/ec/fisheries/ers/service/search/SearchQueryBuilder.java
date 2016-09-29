@@ -31,6 +31,9 @@ public class SearchQueryBuilder {
     private static final String LEFT =" LEFT ";
     private static final String FISHING_ACTIVITY_JOIN="SELECT DISTINCT a from FishingActivityEntity a JOIN FETCH a.faReportDocument fa ";
 
+    private SearchQueryBuilder(){
+
+    }
 
     public static StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");

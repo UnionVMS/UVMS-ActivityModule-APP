@@ -107,17 +107,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
 
     @Mappings({
-         //   @Mapping(target = "fishingActivityId", source = "id"),
             @Mapping(target = "activityType", source = "typeCode"),
             @Mapping(target = "occurence", source = "occurence"),
             @Mapping(target = "reason", source = "reasonCode"),
             @Mapping(target = "faReportDocumentType", expression = "java(getFAReportTypeCode(entity))"),
             @Mapping(target = "faReportAcceptedDateTime", expression = "java(getAcceptedDateTime(entity))"),
-            //@Mapping(target = "uniqueReportId", expression = "java(getUniqueId(entity))"),
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"),
             @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))"),
             @Mapping(target = "fluxLocations", ignore = true),
-            //@Mapping(target = "fluxLocations", expression = "java(getFluxLocationDetailsDTOs(entity))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsDTOList(entity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearDTOList(entity))")
     })
@@ -131,16 +128,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return entity.getFaReportDocument().getSource();
     }
 
-/*    protected List<FluxLocationDetailsDTO> getFluxLocationDetailsDTOs(FishingActivityEntity entity) {
-        if(entity ==null || entity.getFluxLocations() == null || entity.getFluxLocations().isEmpty() ){
-            return Collections.emptyList();
-        }
-        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
-        for (FluxLocationEntity fluxLocationEntity : entity.getFluxLocations()) {
-            fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
-        }
-        return fluxLocationDetailsDTOs;
-    }*/
 
     protected List<FishingGearDTO> getFishingGearDTOList(FishingActivityEntity entity){
         if(entity ==null || entity.getFishingGears() == null || entity.getFishingGears().isEmpty() ){
@@ -251,7 +238,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
    protected List<FluxReportIdentifierDTO> getUniqueId(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() ==null){
-            return null;
+            return Collections.emptyList();
         }
        List<FluxReportIdentifierDTO> identifierDTOs = new ArrayList<>();
        Set<FluxReportIdentifierEntity> identifiers=   entity.getFaReportDocument().getFluxReportDocument().getFluxReportIdentifiers();
@@ -273,7 +260,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     protected List<String> getFromId(FishingActivityEntity entity){
         if(entity ==null ||entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument()==null
                 || entity.getFaReportDocument().getFluxReportDocument().getFluxParty() == null || entity.getFaReportDocument().getFluxReportDocument().getFluxParty().getFluxPartyIdentifiers() ==null){
-            return null;
+            return Collections.emptyList();
         }
 
         List<String> fromIdList=new ArrayList<>();
