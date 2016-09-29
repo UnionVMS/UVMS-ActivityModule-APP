@@ -14,13 +14,14 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by padhyad on 9/15/2016.
  */
 @Entity
 @Table(name = "activity_flux_party_identifier")
-public class FluxPartyIdentifierEntity {
+public class FluxPartyIdentifierEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

@@ -65,13 +65,11 @@ public class FishingTripServiceBean implements FishingTripService {
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
-    private FishingTripDao fishingTripDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
     private FishingTripIdentifierDao fishingTripIdentifierDao;
 
     private static final String PREVIOUS = "PREVIOUS";
     private static final String NEXT = "NEXT";
-    static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @PostConstruct
     public void init() {
@@ -79,7 +77,6 @@ public class FishingTripServiceBean implements FishingTripService {
         vesselIdentifiersDao = new VesselIdentifiersDao(em);
         fishingActivityDao = new FishingActivityDao(em);
         faReportDocumentDao = new FaReportDocumentDao(em);
-        fishingTripDao = new FishingTripDao(em);
     }
 
     /**
