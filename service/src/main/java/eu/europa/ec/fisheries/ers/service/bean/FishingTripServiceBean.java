@@ -226,7 +226,9 @@ public class FishingTripServiceBean implements FishingTripService {
         try {
 
             List<VesselIdentifierEntity> latestVesselIdentifiers = vesselIdentifiersDao.getLatestVesselIdByTrip(fishingTripId);
-            if(CollectionUtils.isEmpty(latestVesselIdentifiers) || latestVesselIdentifiers.get(0) == null || latestVesselIdentifiers.get(0).getVesselTransportMeans() == null){
+            if(CollectionUtils.isEmpty(latestVesselIdentifiers)
+                    || latestVesselIdentifiers.get(0) == null
+                    || latestVesselIdentifiers.get(0).getVesselTransportMeans() == null){
                 return vesselDetailsTripDTO;
             }
 
@@ -330,8 +332,7 @@ public class FishingTripServiceBean implements FishingTripService {
      */
     private boolean isFaultMessage(TextMessage response) {
         try {
-            AssetFault fault = JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
-            int code = fault.getCode();
+            JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
             return true;
         } catch (ModelMarshallException e) {
             return false;

@@ -141,7 +141,6 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
 			return new GenericOperationOutcome(OperationOutcome.NOK, "Error while trying to get acronymsList from cache");
 		}
 
-		boolean isRequestToBeSent;
 		for (String actualAcronym : acronymsList) {
 			log.info("Preparing Request Object for " + actualAcronym + " and sending message to Exchange queue.");
 			// Create request object and send message to exchange module

@@ -20,6 +20,9 @@ public class WeightConversion {
     public final static String TON ="TNE";
     public final static Double CONVERSION_FACTOR = 1000d;
 
+    // This class isn't supposed to have instances
+    private WeightConversion(){}
+
     public static Double convertToKiloGram(Double value, String format){
 
         if(value == null || value ==0)
