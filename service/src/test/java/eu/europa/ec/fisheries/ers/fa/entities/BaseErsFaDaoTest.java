@@ -610,7 +610,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build(),
             insertInto("activity.activity_fa_report_document")
                     .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 2, 5, "fmc", "fmc_list", "new", "FLUX")
+                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, 5, "fmc", "fmc_list", "new", "FLUX")
                     .build()
 
     );
