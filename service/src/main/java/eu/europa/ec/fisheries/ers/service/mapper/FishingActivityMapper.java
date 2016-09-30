@@ -258,8 +258,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     }
     protected List<String> getFromId(FishingActivityEntity entity){
-        if(entity ==null ||entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument()==null
-                || entity.getFaReportDocument().getFluxReportDocument().getFluxParty() == null || entity.getFaReportDocument().getFluxReportDocument().getFluxParty().getFluxPartyIdentifiers() ==null){
+        if(entity ==null ||entity.getFaReportDocument() == null
+                || entity.getFaReportDocument().getFluxReportDocument()==null
+                || entity.getFaReportDocument().getFluxReportDocument().getFluxParty() == null
+                || entity.getFaReportDocument().getFluxReportDocument().getFluxParty().getFluxPartyIdentifiers() ==null){
             return Collections.emptyList();
         }
 

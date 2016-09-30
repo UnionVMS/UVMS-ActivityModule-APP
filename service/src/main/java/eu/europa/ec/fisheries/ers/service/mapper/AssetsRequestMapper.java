@@ -27,6 +27,10 @@ import java.util.List;
  */
 public class AssetsRequestMapper {
 
+    // This class isn't supposed to have instances
+    private AssetsRequestMapper(){
+    }
+
     public static String mapToAssetsRequest(VesselDetailsTripDTO vesselDetailsTripDTO) throws ModelMarshallException {
         AssetListModuleRequest assetsModuleRequest = new AssetListModuleRequest();
         AssetListQuery assetsQuery                 = new AssetListQuery();
@@ -84,12 +88,14 @@ public class AssetsRequestMapper {
     public static void mapAssetsResponseToVesselDetailsTripDTO(ListAssetResponse listResp,
                                                                VesselDetailsTripDTO vesselDetailsTripDTO) {
 
-        if(listResp == null || listResp.getTotalNumberOfPages() == 0 || CollectionUtils.isEmpty(listResp.getAsset())){
+        if(listResp == null
+                || listResp.getTotalNumberOfPages() == 0
+                || CollectionUtils.isEmpty(listResp.getAsset())){
             return;
         }
         Asset asset = listResp.getAsset().get(0);
 
-        if(StringUtils.isEmpty(vesselDetailsTripDTO.getCfr())&& !StringUtils.isEmpty(asset.getCfr())){
+        if(StringUtils.isEmpty(vesselDetailsTripDTO.getCfr()) && !StringUtils.isEmpty(asset.getCfr())){
             vesselDetailsTripDTO.setCfr(asset.getCfr());
             vesselDetailsTripDTO.setCfrEnriched(true);
         }

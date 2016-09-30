@@ -45,19 +45,8 @@ public class MdrBulkOperationsDao {
         try {
 
             for (List<? extends MasterDataRegistry> entityRows : masterDataGenericList) {
-
                 log.info("Persisting entity entries for : " + masterDataGenericList.getClass().getSimpleName());
-
-                // DELETION PHASE (Deleting old entries)
-                session.createQuery(HQL_DELETE + entityRows.get(0).getClass().getSimpleName()).executeUpdate();
-
-                // INSERTION PHASE (Inserting new entries)
-                for (MasterDataRegistry actualEnityRow : entityRows) {
-                    log.info("Persisting entity : " + actualEnityRow.getClass().getSimpleName());
-                    actualEnityRow.createAudit();
-                    session.insert(actualEnityRow);
-                }
-
+                deleteAndPersistNewEntityByEntityName(entityRows, session, entityRows.get(0).getClass().getSimpleName());
             }
             log.debug("Committing transaction.");
             tx.commit();
@@ -88,15 +77,7 @@ public class MdrBulkOperationsDao {
 
             try {
                 log.info("Persisting entity entries for : " + entityName);
-
-                // DELETION PHASE (Deleting old entries)
-                session.createQuery(HQL_DELETE + entityName).executeUpdate();
-
-                // INSERTION PHASE (Inserting new entries)
-                for (MasterDataRegistry actualEnityRow : entityRows) {
-                    actualEnityRow.createAudit();
-                    session.insert(actualEnityRow);
-                }
+                deleteAndPersistNewEntityByEntityName(entityRows, session, entityName);
                 log.debug("Committing transaction.");
                 tx.commit();
 
@@ -109,6 +90,18 @@ public class MdrBulkOperationsDao {
             }
         }
 
+    }
+
+    private void deleteAndPersistNewEntityByEntityName(List<? extends MasterDataRegistry> entityRows, StatelessSession session, String entityName) {
+
+        // DELETION PHASE (Deleting old entries)
+        session.createQuery(HQL_DELETE + entityName).executeUpdate();
+
+        // INSERTION PHASE (Inserting new entries)
+        for (MasterDataRegistry actualEnityRow : entityRows) {
+            actualEnityRow.createAudit();
+            session.insert(actualEnityRow);
+        }
     }
 
     public MdrBulkOperationsDao(EntityManager em) {
