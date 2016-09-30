@@ -76,7 +76,7 @@ public abstract class ContactPersonMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "title", expression = "java(contactPerson.getTitle())"),
-            //@Mapping(target = "roles", expression = "java(getRoles(contactPartyRoles))"),
+            @Mapping(target = "roles", expression = "java(getRoles(contactPartyRoles))"),
             @Mapping(target = "givenName", expression = "java(contactPerson.getGivenName())"),
             @Mapping(target = "middleName", expression = "java(contactPerson.getMiddleName())"),
             @Mapping(target = "familyName", expression = "java(contactPerson.getFamilyName())"),
