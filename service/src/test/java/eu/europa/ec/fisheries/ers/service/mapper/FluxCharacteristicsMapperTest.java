@@ -42,11 +42,15 @@ public class FluxCharacteristicsMapperTest {
         assertEquals(fluxCharacteristic.getTypeCode().getValue(), fluxCharacteristicEntity.getTypeCode());
         assertEquals(fluxCharacteristic.getTypeCode().getListID(), fluxCharacteristicEntity.getTypeCodeListId());
         assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getValueMeasure().intValue());
+        assertEquals(fluxCharacteristic.getValueMeasure().getUnitCode(), fluxCharacteristicEntity.getValueMeasureUnitCode());
+        assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueMeasure().intValue());
         assertEquals(fluxCharacteristic.getValueDateTime().getDateTime().toGregorianCalendar().getTime(), fluxCharacteristicEntity.getValueDateTime());
         assertEquals(fluxCharacteristic.getValueIndicator().getIndicatorString().getValue(), fluxCharacteristicEntity.getValueIndicator());
         assertEquals(fluxCharacteristic.getValueCode().getValue(), fluxCharacteristicEntity.getValueCode());
         assertTrue(fluxCharacteristicEntity.getValueText().startsWith(fluxCharacteristic.getValues().get(0).getValue()));
         assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getValueQuantity().intValue());
+        assertEquals(fluxCharacteristic.getValueQuantity().getUnitCode(), fluxCharacteristicEntity.getValueQuantityCode());
+        assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertTrue(fluxCharacteristicEntity.getDescription().startsWith(fluxCharacteristic.getDescriptions().get(0).getValue()));
         assertNull(fluxCharacteristicEntity.getFishingActivity());
     }
@@ -61,11 +65,15 @@ public class FluxCharacteristicsMapperTest {
         assertEquals(fluxCharacteristic.getTypeCode().getValue(), fluxCharacteristicEntity.getTypeCode());
         assertEquals(fluxCharacteristic.getTypeCode().getListID(), fluxCharacteristicEntity.getTypeCodeListId());
         assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getValueMeasure().intValue());
+        assertEquals(fluxCharacteristic.getValueMeasure().getUnitCode(), fluxCharacteristicEntity.getValueMeasureUnitCode());
+        assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueMeasure().intValue());
         assertEquals(fluxCharacteristic.getValueDateTime().getDateTime().toGregorianCalendar().getTime(), fluxCharacteristicEntity.getValueDateTime());
         assertEquals(fluxCharacteristic.getValueIndicator().getIndicatorString().getValue(), fluxCharacteristicEntity.getValueIndicator());
         assertEquals(fluxCharacteristic.getValueCode().getValue(), fluxCharacteristicEntity.getValueCode());
         assertTrue(fluxCharacteristicEntity.getValueText().startsWith(fluxCharacteristic.getValues().get(0).getValue()));
         assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getValueQuantity().intValue());
+        assertEquals(fluxCharacteristic.getValueQuantity().getUnitCode(), fluxCharacteristicEntity.getValueQuantityCode());
+        assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertTrue(fluxCharacteristicEntity.getDescription().startsWith(fluxCharacteristic.getDescriptions().get(0).getValue()));
         assertNull(fluxCharacteristicEntity.getFaCatch());
     }
@@ -80,11 +88,15 @@ public class FluxCharacteristicsMapperTest {
         assertEquals(fluxCharacteristic.getTypeCode().getValue(), fluxCharacteristicEntity.getTypeCode());
         assertEquals(fluxCharacteristic.getTypeCode().getListID(), fluxCharacteristicEntity.getTypeCodeListId());
         assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getValueMeasure().intValue());
+        assertEquals(fluxCharacteristic.getValueMeasure().getUnitCode(), fluxCharacteristicEntity.getValueMeasureUnitCode());
+        assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueMeasure().intValue());
         assertEquals(fluxCharacteristic.getValueDateTime().getDateTime().toGregorianCalendar().getTime(), fluxCharacteristicEntity.getValueDateTime());
         assertEquals(fluxCharacteristic.getValueIndicator().getIndicatorString().getValue(), fluxCharacteristicEntity.getValueIndicator());
         assertEquals(fluxCharacteristic.getValueCode().getValue(), fluxCharacteristicEntity.getValueCode());
         assertTrue(fluxCharacteristicEntity.getValueText().startsWith(fluxCharacteristic.getValues().get(0).getValue()));
         assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getValueQuantity().intValue());
+        assertEquals(fluxCharacteristic.getValueQuantity().getUnitCode(), fluxCharacteristicEntity.getValueQuantityCode());
+        assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertTrue(fluxCharacteristicEntity.getDescription().startsWith(fluxCharacteristic.getDescriptions().get(0).getValue()));
         assertNull(fluxCharacteristicEntity.getFluxLocation());
     }

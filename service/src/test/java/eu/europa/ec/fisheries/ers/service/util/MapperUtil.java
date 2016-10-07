@@ -125,7 +125,7 @@ public class MapperUtil {
 
         SizeDistributionEntity sizeDistributionEntity= ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
         FaCatchEntity faCatchEntity =ActivityDataUtil.getFaCatchEntity(fishingActivityEntity1,"DEPARTURE","FA_CATCH_TYPE", "beagle2", "FAO_SPECIES",
-                11112L, 11112.0D, "FLUX_UNIT", "BFT","WEIGHT_MEANS",sizeDistributionEntity);
+                11112D, 11112.0D, "FLUX_UNIT", "BFT","WEIGHT_MEANS",sizeDistributionEntity);
 
         entity= ActivityDataUtil.getFishingTripEntity("JFO", "EU_TRIP_ID",faCatchEntity,fishingActivityEntity1);
 
@@ -256,12 +256,12 @@ public class MapperUtil {
     public static AAPProduct getAapProduct() {
         CodeType speciesCode = getCodeType("Species 1", "qbdcg-3fhr5-rd4kd5-er5tgd5k");
         QuantityType quantityType = getQuantityType(123);
-        MeasureType measureType = getMeasureType(123, "Measure 1", "qbdcg-3fhr5-rd4kd5-er5tgd5k");
+        MeasureType measureType = getMeasureType(123, "C62", "qbdcg-3fhr5-rd4kd5-er5tgd5k");
         CodeType weighingMeansCode = getCodeType("Weighing Means 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k");
         CodeType usageCode = getCodeType("Usage Code 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k");
         QuantityType packagingUnitQuantity = getQuantityType(1234);
         CodeType packagingTypeCode = getCodeType("packaging type 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k");
-        MeasureType packagingUnitAverageWeightMeasure = getMeasureType(123, "Weight  Measure 1", "qbdcg-3fhr5-rd4kd5-er5tgd5k");
+        MeasureType packagingUnitAverageWeightMeasure = getMeasureType(123, "C62", "qbdcg-3fhr5-rd4kd5-er5tgd5k");
         SalesPrice totalSalesPrice = getSalesPrice(getAmountType(123, "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k", "1"));
         SizeDistribution specifiedSizeDistribution = getSizeDistribution(getCodeType("catagory 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k"),
                 getCodeType("class code1", "qbd43cg-3fhr5t65-rd45674-er5tgd5k"));
@@ -324,7 +324,7 @@ public class MapperUtil {
     public static DelimitedPeriod getDelimitedPeriod() {
         DateTimeType startDate = getDateTimeType("2016-07-01 11:15:00");
         DateTimeType endDate = getDateTimeType("2016-07-01 11:15:00");
-        MeasureType measureType = getMeasureType(500, "Measure Type 1", "4rhfy5-fhtydr-tyfr85-ghtyd54");
+        MeasureType measureType = getMeasureType(500, "C62", "4rhfy5-fhtydr-tyfr85-ghtyd54");
         DelimitedPeriod delimitedPeriod = new DelimitedPeriod(startDate, endDate, measureType);
         return delimitedPeriod;
     }
@@ -386,7 +386,7 @@ public class MapperUtil {
     public static GearCharacteristic getGearCharacteristics() {
         CodeType typeCode = getCodeType("Code 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
         List<TextType> descriptions = Arrays.asList(getTextType("This is sample text"));
-        MeasureType valueMeasure = getMeasureType(123, "Unit code1", "57t3yf-ght43yrf-ght56yru-ght7565h");
+        MeasureType valueMeasure = getMeasureType(123, "C62", "57t3yf-ght43yrf-ght56yru-ght7565h");
         DateTimeType valueDateTime = getDateTimeType("2016-07-01 11:15:00");
         IndicatorType valueIndicator = getIndicatorType(true, "Test value", "Test format");
         CodeType valueCode = getCodeType("Code type 1", "4fhry5-thfyr85-67thf-5htr84");
@@ -399,7 +399,7 @@ public class MapperUtil {
     public static FLUXCharacteristic getFluxCharacteristics() {
         CodeType typeCode = getCodeType("Code 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
         List<TextType> descriptions = Arrays.asList(getTextType("This is test description"));
-        MeasureType valueMeasure = getMeasureType(333, "Measure type 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
+        MeasureType valueMeasure = getMeasureType(333, "C62", "57t3yf-ght43yrf-ght56yru-ght7565h");
         DateTimeType valueDateTime = getDateTimeType("2016-07-01 11:15:00");
         IndicatorType valueIndicator = getIndicatorType(true, "Test value", "Test format");
         CodeType valueCode = getCodeType("Code Value 1", "57tr4t3yf-ght43yrf-ght56yr5u-ght75365h");
@@ -482,7 +482,7 @@ public class MapperUtil {
     public static FACatch getFaCatch() {
         CodeType speciesCode = getCodeType("Species code 1", "47rfh-5hry4-thfur75-4hf743");
         QuantityType unitQuantity = getQuantityType(100);
-        MeasureType weightMeasure = getMeasureType(123, "Measure code 1", "586jhg-5htuf95-5jfit-5jtier8");
+        MeasureType weightMeasure = getMeasureType(123, "C62", "586jhg-5htuf95-5jfit-5jtier8");
         CodeType weighingMeansCode = getCodeType("Weighing means code 1", "5854tt5-gjtdir-5j85tui-589git");
         CodeType usageCode = getCodeType("Usage code 1", "58thft-58fjd8-gt85eje-hjgute8");
         CodeType typeCode = getCodeType("Type code 1", "57thre-fn48320-fn39fjr-tjfow84");
@@ -530,7 +530,7 @@ public class MapperUtil {
         CodeType fisheryTypeCode = getCodeType("Fishing Type code 1", "57thre-fn48320-fn39fjr-tjfow84");
         CodeType speciesTargetCode = getCodeType("Species code 1", "47rfh-5hry4-thfur75-4hf743");
         QuantityType operationsQuantity = getQuantityType(100);
-        MeasureType fishingDurationMeasure = getMeasureType(500, "duration 1", "4hr2yf0-t583thf-6jgttue8-6jtie844");
+        MeasureType fishingDurationMeasure = getMeasureType(500, "C62", "4hr2yf0-t583thf-6jgttue8-6jtie844");
         FLAPDocument specifiedFLAPDocument = getFlapDocument();
         VesselStorageCharacteristic sourceVesselStorageCharacteristic = getVesselStorageCharacteristic();
         VesselStorageCharacteristic destinationVesselStorageCharacteristic = getVesselStorageCharacteristic();
@@ -636,6 +636,8 @@ public class MapperUtil {
     private static QuantityType getQuantityType(int value) {
         QuantityType quantityType = new QuantityType();
         quantityType.setValue(new BigDecimal(value));
+        quantityType.setUnitCode("C62");
+        quantityType.setUnitCodeListID("thfy586-gjtur95-tjgut49-f58f93j");
         return quantityType;
     }
 

@@ -49,12 +49,12 @@
       <ram:VesselRelatedActivityCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:VesselRelatedActivityCode>
       <ram:FisheryTypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:FisheryTypeCode>
       <ram:SpeciesTargetCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:SpeciesTargetCode>
-      <ram:OperationsQuantity unitCode="token" unitCodeListAgencyID="token" unitCodeListAgencyName="" unitCodeListID="token">0.0</ram:OperationsQuantity>
-      <ram:FishingDurationMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:FishingDurationMeasure>
+      <ram:OperationsQuantity unitCode="C62" unitCodeListAgencyID="token" unitCodeListAgencyName="" unitCodeListID="token">123</ram:OperationsQuantity>
+      <ram:FishingDurationMeasure unitCode="TNE" unitCodeListVersionID="token">100</ram:FishingDurationMeasure>
       <ram:SpecifiedFACatch>
         <ram:SpeciesCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:SpeciesCode>
-        <ram:UnitQuantity unitCode="token" unitCodeListAgencyID="token" unitCodeListAgencyName="" unitCodeListID="token">0.0</ram:UnitQuantity>
-        <ram:WeightMeasure unitCode="token" unitCodeListVersionID="token">0.0</ram:WeightMeasure>
+        <ram:UnitQuantity unitCode="C62" unitCodeListAgencyID="token" unitCodeListAgencyName="" unitCodeListID="token">200</ram:UnitQuantity>
+        <ram:WeightMeasure unitCode="C62" unitCodeListVersionID="token">222</ram:WeightMeasure>
         <ram:WeighingMeansCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:WeighingMeansCode>
         <ram:UsageCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:UsageCode>
         <ram:TypeCode languageID="token" listAgencyID="token" listAgencyName="" listID="token" listName="" listSchemeURI="http://tempuri.org" listURI="http://tempuri.org" listVersionID="token" name="">token</ram:TypeCode>

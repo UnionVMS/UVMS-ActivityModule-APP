@@ -41,6 +41,28 @@ public class AapProductMapperTest {
         assertEquals(aapProduct.getPackagingTypeCode().getListID(), aapProductEntity.getPackagingTypeCodeListId());
         assertNull(aapProductEntity.getAapProcess());
         assertEquals(aapProduct.getPackagingUnitAverageWeightMeasure().getValue().doubleValue(), aapProductEntity.getPackagingUnitAvarageWeight());
+        assertEquals(aapProduct.getPackagingUnitAverageWeightMeasure().getUnitCode(), aapProductEntity.getPackagingWeightUnitCode());
+        assertEquals(aapProduct.getPackagingUnitAverageWeightMeasure().getValue().intValue(), aapProductEntity.getCalculatedPackagingWeight().intValue());
+
         assertEquals(aapProduct.getPackagingUnitQuantity().getValue().doubleValue(), aapProductEntity.getPackagingUnitCount());
+        assertEquals(aapProduct.getPackagingUnitQuantity().getUnitCode(), aapProductEntity.getPackagingUnitCountCode());
+        assertEquals(aapProduct.getPackagingUnitQuantity().getValue().intValue(), aapProductEntity.getCalculatedPackagingUnitCount().intValue());
+
+        assertEquals(aapProduct.getSpeciesCode().getValue(), aapProductEntity.getSpeciesCode());
+        assertEquals(aapProduct.getSpeciesCode().getListID(), aapProductEntity.getSpeciesCodeListId());
+
+        assertEquals(aapProduct.getUnitQuantity().getValue().intValue(), aapProductEntity.getUnitQuantity().intValue());
+        assertEquals(aapProduct.getUnitQuantity().getUnitCode(), aapProductEntity.getUnitQuantityCode());
+        assertEquals(aapProduct.getUnitQuantity().getValue().intValue(), aapProductEntity.getCalculatedUnitQuantity().intValue());
+
+        assertEquals(aapProduct.getWeightMeasure().getValue().intValue(), aapProductEntity.getWeightMeasure().intValue());
+        assertEquals(aapProduct.getWeightMeasure().getUnitCode(), aapProductEntity.getWeightMeasureUnitCode());
+        assertEquals(aapProduct.getWeightMeasure().getValue().intValue(), aapProductEntity.getCalculatedWeightMeasure().intValue());
+
+        assertEquals(aapProduct.getWeighingMeansCode().getValue(), aapProductEntity.getWeighingMeansCode());
+        assertEquals(aapProduct.getWeighingMeansCode().getListID(), aapProductEntity.getWeighingMeansCodeListId());
+
+        assertEquals(aapProduct.getUsageCode().getValue(), aapProductEntity.getUsageCode());
+        assertEquals(aapProduct.getUsageCode().getListID(), aapProductEntity.getUsageCodeListId());
     }
 }

@@ -44,7 +44,13 @@ public class FaCatchEntity implements Serializable {
 	private String speciesCodeListid;
 
 	@Column(name = "unit_quantity")
-	private Long unitQuantity;
+	private Double unitQuantity;
+
+	@Column(name = "unit_quantity_code")
+	private String unitQuantityCode;
+
+	@Column(name = "calculated_unit_quantity")
+	private Double calculatedUnitQuantity;
 
 	@Column(name = "weight_measure", precision = 17, scale = 17)
 	private Double weightMeasure;
@@ -52,8 +58,8 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "weight_measure_unit_code")
 	private String weightMeasureUnitCode;
 
-	@Column(name = "weight_measure_list_id")
-	private String weightMeasureListId;
+	@Column(name = "calculated_weight_measure")
+	private Double calculatedWeightMeasure;
 
 	@Column(name = "usage_code")
 	private String usageCode;
@@ -89,7 +95,7 @@ public class FaCatchEntity implements Serializable {
 		super();
 	}
 
-	public FaCatchEntity(FishingActivityEntity fishingActivity, SizeDistributionEntity sizeDistribution, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Long unitQuantity, Double weightMeasure, String weightMeasureUnitCode, String weightMeasureListId, String usageCode, String usageCodeListId, String weighingMeansCodeListId, String weighingMeansCode) {
+	public FaCatchEntity(FishingActivityEntity fishingActivity, SizeDistributionEntity sizeDistribution, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Double unitQuantity, Double weightMeasure, String weightMeasureUnitCode, Double calculatedWeightMeasure, String usageCode, String usageCodeListId, String weighingMeansCodeListId, String weighingMeansCode) {
 		this.fishingActivity = fishingActivity;
 		this.sizeDistribution = sizeDistribution;
 		this.typeCode = typeCode;
@@ -99,7 +105,7 @@ public class FaCatchEntity implements Serializable {
 		this.unitQuantity = unitQuantity;
 		this.weightMeasure = weightMeasure;
 		this.weightMeasureUnitCode = weightMeasureUnitCode;
-		this.weightMeasureListId = weightMeasureListId;
+		this.calculatedWeightMeasure = calculatedWeightMeasure;
 		this.usageCode = usageCode;
 		this.usageCodeListId = usageCodeListId;
 		this.weighingMeansCodeListId = weighingMeansCodeListId;
@@ -160,11 +166,11 @@ public class FaCatchEntity implements Serializable {
 		this.speciesCodeListid = speciesCodeListid;
 	}
 
-	public Long getUnitQuantity() {
+	public Double getUnitQuantity() {
 		return this.unitQuantity;
 	}
 
-	public void setUnitQuantity(Long unitQuantity) {
+	public void setUnitQuantity(Double unitQuantity) {
 		this.unitQuantity = unitQuantity;
 	}
 
@@ -184,12 +190,12 @@ public class FaCatchEntity implements Serializable {
 		this.weightMeasureUnitCode = weightMeasureUnitCode;
 	}
 
-	public String getWeightMeasureListId() {
-		return this.weightMeasureListId;
+	public Double getCalculatedWeightMeasure() {
+		return calculatedWeightMeasure;
 	}
 
-	public void setWeightMeasureListId(String weightMeasureListId) {
-		this.weightMeasureListId = weightMeasureListId;
+	public void setCalculatedWeightMeasure(Double calculatedWeightMeasure) {
+		this.calculatedWeightMeasure = calculatedWeightMeasure;
 	}
 
 	public String getUsageCode() {
@@ -277,6 +283,22 @@ public class FaCatchEntity implements Serializable {
 		this.fishingTrips = fishingTrips;
 	}
 
+	public String getUnitQuantityCode() {
+		return unitQuantityCode;
+	}
+
+	public void setUnitQuantityCode(String unitQuantityCode) {
+		this.unitQuantityCode = unitQuantityCode;
+	}
+
+	public Double getCalculatedUnitQuantity() {
+		return calculatedUnitQuantity;
+	}
+
+	public void setCalculatedUnitQuantity(Double calculatedUnitQuantity) {
+		this.calculatedUnitQuantity = calculatedUnitQuantity;
+	}
+
 	@Override
 	public String toString() {
 		return "FaCatchEntity{" +
@@ -288,7 +310,7 @@ public class FaCatchEntity implements Serializable {
 				", unitQuantity=" + unitQuantity +
 				", weightMeasure=" + weightMeasure +
 				", weightMeasureUnitCode='" + weightMeasureUnitCode + '\'' +
-				", weightMeasureListId='" + weightMeasureListId + '\'' +
+				", calculatedWeightMeasure='" + calculatedWeightMeasure + '\'' +
 				", usageCode='" + usageCode + '\'' +
 				", usageCodeListId='" + usageCodeListId + '\'' +
 				", weighingMeansCode='" + weighingMeansCode + '\'' +

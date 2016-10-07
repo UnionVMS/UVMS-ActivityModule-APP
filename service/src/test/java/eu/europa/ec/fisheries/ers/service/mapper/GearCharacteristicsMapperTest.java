@@ -42,11 +42,15 @@ public class GearCharacteristicsMapperTest {
         assertEquals(gearCharacteristic.getTypeCode().getListID(), gearCharacteristicEntity.getTypeCodeListId());
         assertTrue(gearCharacteristicEntity.getDescription().startsWith(gearCharacteristic.getDescriptions().get(0).getValue()));
         assertEquals(gearCharacteristic.getValueMeasure().getValue().intValue(), gearCharacteristicEntity.getValueMeasure().intValue());
+        assertEquals(gearCharacteristic.getValueMeasure().getUnitCode(), gearCharacteristicEntity.getValueMeasureUnitCode());
+        assertEquals(gearCharacteristic.getValueMeasure().getValue().intValue(), gearCharacteristicEntity.getCalculatedValueMeasure().intValue());
         assertEquals(gearCharacteristic.getValueDateTime().getDateTime().toGregorianCalendar().getTime(), gearCharacteristicEntity.getValueDateTime());
         assertEquals(gearCharacteristic.getValueIndicator().getIndicatorString().getValue(), gearCharacteristicEntity.getValueIndicator());
         assertEquals(gearCharacteristic.getValueCode().getValue(), gearCharacteristicEntity.getValueCode());
         assertTrue(gearCharacteristicEntity.getValueText().startsWith(gearCharacteristic.getValue().getValue()));
         assertEquals(gearCharacteristic.getValueQuantity().getValue().intValue(), gearCharacteristicEntity.getValueQuantity().intValue());
+        assertEquals(gearCharacteristic.getValueQuantity().getUnitCode(), gearCharacteristicEntity.getValueQuantityCode());
+        assertEquals(gearCharacteristic.getValueQuantity().getValue().intValue(), gearCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertNull(gearCharacteristicEntity.getFishingGear());
     }
 }

@@ -37,11 +37,15 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "description", expression = "java(getTextFromList(gearCharacteristic.getDescriptions()))"),
             @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
             @Mapping(target = "valueMeasure", expression = "java(getMeasure(gearCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "valueMeasureUnitCode", expression = "java(getMeasureUnitCode(gearCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(gearCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", expression = "java(convertToDate(gearCharacteristic.getValueDateTime()))"),
             @Mapping(target = "valueIndicator", expression = "java(getIndicatorType(gearCharacteristic.getValueIndicator()))"),
             @Mapping(target = "valueCode", expression = "java(getCodeType(gearCharacteristic.getValueCode()))"),
             @Mapping(target = "valueText", expression = "java(getTextType(gearCharacteristic.getValue()))"),
             @Mapping(target = "valueQuantity", expression = "java(getQuantity(gearCharacteristic.getValueQuantity()))"),
+            @Mapping(target = "valueQuantityCode", expression = "java(getQuantityUnitCode(gearCharacteristic.getValueQuantity()))"),
+            @Mapping(target = "calculatedValueQuantity", expression = "java(getCalculatedQuantity(gearCharacteristic.getValueQuantity()))"),
             @Mapping(target = "fishingGear", expression = "java(fishingGearEntity)")
     })
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);

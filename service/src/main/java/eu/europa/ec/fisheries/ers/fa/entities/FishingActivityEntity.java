@@ -84,10 +84,22 @@ public class FishingActivityEntity implements Serializable {
 	private String speciesTargetCodeListId;
 
 	@Column(name = "operation_quantity")
-	private Long operationQuantity;
+	private Double operationQuantity;
+
+	@Column(name = "operation_quantity_code")
+	private String operationQuantityCode;
+
+	@Column(name = "calculated_operation_quantity")
+	private Double calculatedOperationQuantity;
 
 	@Column(name = "fishing_duration_measure", precision = 17, scale = 17)
 	private Double fishingDurationMeasure;
+
+	@Column(name = "fishing_duration_measure_code")
+	private String fishingDurationMeasureCode;
+
+	@Column(name = "calculated_fishing_duration")
+	private Double calculatedFishingDuration;
 
 	@Column(name = "flap_document_id")
 	private String flapDocumentId;
@@ -132,7 +144,7 @@ public class FishingActivityEntity implements Serializable {
 	}
 
 
-	public FishingActivityEntity( FaReportDocumentEntity faReportDocument, VesselStorageCharacteristicsEntity sourceVesselCharId, VesselStorageCharacteristicsEntity destVesselCharId, String typeCode, String typeCodeListid, Date occurence, String reasonCode, String reasonCodeListId, String vesselActivityCode, String vesselActivityCodeListId, String fisheryTypeCode, String fisheryTypeCodeListId, String speciesTargetCode, String speciesTargetCodeListId, Long operationQuantity, Double fishingDurationMeasure, String flapDocumentId, String flapDocumentSchemeId, FishingActivityEntity relatedFishingActivity, Set<FaCatchEntity> faCatchs, Set<DelimitedPeriodEntity> delimitedPeriods, Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers, Set<FishingTripEntity> fishingTrips, Set<FishingGearEntity> fishingGears, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<GearProblemEntity> gearProblems, Set<FluxLocationEntity> fluxLocations, Set<FishingActivityEntity> allRelatedFishingActivities) {
+	public FishingActivityEntity( FaReportDocumentEntity faReportDocument, VesselStorageCharacteristicsEntity sourceVesselCharId, VesselStorageCharacteristicsEntity destVesselCharId, String typeCode, String typeCodeListid, Date occurence, String reasonCode, String reasonCodeListId, String vesselActivityCode, String vesselActivityCodeListId, String fisheryTypeCode, String fisheryTypeCodeListId, String speciesTargetCode, String speciesTargetCodeListId, Double operationQuantity, Double fishingDurationMeasure, String flapDocumentId, String flapDocumentSchemeId, FishingActivityEntity relatedFishingActivity, Set<FaCatchEntity> faCatchs, Set<DelimitedPeriodEntity> delimitedPeriods, Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers, Set<FishingTripEntity> fishingTrips, Set<FishingGearEntity> fishingGears, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<GearProblemEntity> gearProblems, Set<FluxLocationEntity> fluxLocations, Set<FishingActivityEntity> allRelatedFishingActivities) {
       	this.faReportDocument = faReportDocument;
 		this.sourceVesselCharId = sourceVesselCharId;
 		this.destVesselCharId = destVesselCharId;
@@ -282,11 +294,11 @@ public class FishingActivityEntity implements Serializable {
 		this.speciesTargetCodeListId = speciesTargetCodeListId;
 	}
 
-	public Long getOperationQuantity() {
+	public Double getOperationQuantity() {
 		return this.operationQuantity;
 	}
 
-	public void setOperationQuantity(Long operationQuantity) {
+	public void setOperationQuantity(Double operationQuantity) {
 		this.operationQuantity = operationQuantity;
 	}
 
@@ -398,6 +410,38 @@ public class FishingActivityEntity implements Serializable {
 
 	public void setAllRelatedFishingActivities(Set<FishingActivityEntity> allRelatedFishingActivities) {
 		this.allRelatedFishingActivities = allRelatedFishingActivities;
+	}
+
+	public String getFishingDurationMeasureCode() {
+		return fishingDurationMeasureCode;
+	}
+
+	public void setFishingDurationMeasureCode(String fishingDurationMeasureCode) {
+		this.fishingDurationMeasureCode = fishingDurationMeasureCode;
+	}
+
+	public Double getCalculatedFishingDuration() {
+		return calculatedFishingDuration;
+	}
+
+	public void setCalculatedFishingDuration(Double calculatedFishingDuration) {
+		this.calculatedFishingDuration = calculatedFishingDuration;
+	}
+
+	public String getOperationQuantityCode() {
+		return operationQuantityCode;
+	}
+
+	public void setOperationQuantityCode(String operationQuantityCode) {
+		this.operationQuantityCode = operationQuantityCode;
+	}
+
+	public Double getCalculatedOperationQuantity() {
+		return calculatedOperationQuantity;
+	}
+
+	public void setCalculatedOperationQuantity(Double calculatedOperationQuantity) {
+		this.calculatedOperationQuantity = calculatedOperationQuantity;
 	}
 
 	@Override

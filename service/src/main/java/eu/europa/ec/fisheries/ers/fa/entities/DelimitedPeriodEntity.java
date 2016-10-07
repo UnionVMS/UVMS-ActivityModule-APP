@@ -43,6 +43,12 @@ public class DelimitedPeriodEntity implements Serializable {
 	@Column(name = "duration", precision = 17, scale = 17)
 	private Double duration;
 
+	@Column(name = "duration_unit_code")
+	private String durationUnitCode;
+
+	@Column(name = "calculated_duration")
+	private Double calculatedDuration;
+
 	public DelimitedPeriodEntity() {
 		super();
 	}
@@ -102,6 +108,22 @@ public class DelimitedPeriodEntity implements Serializable {
 
 	public void setDuration(Double duration) {
 		this.duration = duration;
+	}
+
+	public String getDurationUnitCode() {
+		return durationUnitCode;
+	}
+
+	public void setDurationUnitCode(String durationUnitCode) {
+		this.durationUnitCode = durationUnitCode;
+	}
+
+	public Double getCalculatedDuration() {
+		return calculatedDuration;
+	}
+
+	public void setCalculatedDuration(Double calculatedDuration) {
+		this.calculatedDuration = calculatedDuration;
 	}
 
 	@Override

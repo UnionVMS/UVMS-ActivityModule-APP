@@ -79,9 +79,11 @@ public class FaCatchMapperTest {
         assertEquals(faCatch.getWeighingMeansCode().getValue(), faCatchEntity.getWeighingMeansCode());
         assertEquals(faCatch.getWeighingMeansCode().getListID(), faCatchEntity.getWeighingMeansCodeListId());
         assertEquals(faCatch.getWeightMeasure().getValue().intValue(), faCatchEntity.getWeightMeasure().intValue());
-        assertEquals(faCatch.getWeightMeasure().getUnitCodeListVersionID(), faCatchEntity.getWeightMeasureListId());
+        assertEquals(faCatch.getWeightMeasure().getValue().intValue(), faCatchEntity.getCalculatedWeightMeasure().intValue());
         assertEquals(faCatch.getWeightMeasure().getUnitCode(), faCatchEntity.getWeightMeasureUnitCode());
         assertEquals(faCatch.getUnitQuantity().getValue().intValue(), faCatchEntity.getUnitQuantity().intValue());
+        assertEquals(faCatch.getUnitQuantity().getUnitCode(), faCatchEntity.getUnitQuantityCode());
+        assertEquals(faCatch.getUnitQuantity().getValue().intValue(), faCatchEntity.getCalculatedUnitQuantity().intValue());
         assertEquals(faCatch.getUsageCode().getValue(), faCatchEntity.getUsageCode());
         assertEquals(faCatch.getUsageCode().getListID(), faCatchEntity.getUsageCodeListId());
     }

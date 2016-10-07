@@ -34,9 +34,21 @@ public class AapProductEntity implements Serializable {
 	
 	@Column(name = "packaging_unit_avarage_weight", precision = 17, scale = 17)
 	private Double packagingUnitAvarageWeight;
+
+	@Column(name = "packaging_weight_unit_code")
+	private String packagingWeightUnitCode;
+
+	@Column(name = "calculated_packaging_weight")
+	private Double calculatedPackagingWeight;
 	
 	@Column(name = "packaging_unit_count", precision = 17, scale = 17)
 	private Double packagingUnitCount;
+
+	@Column(name = "packaging_unit_count_code")
+	private String packagingUnitCountCode;
+
+	@Column(name = "calculated_packaging_unit_count")
+	private Double calculatedPackagingUnitCount;
 
 	@Column(name = "species_code")
 	private String speciesCode;
@@ -47,8 +59,20 @@ public class AapProductEntity implements Serializable {
 	@Column(name = "unit_quantity")
 	private Double unitQuantity;
 
+	@Column(name = "unit_quantity_code")
+	private String unitQuantityCode;
+
+	@Column(name = "calculated_unit_quantity")
+	private Double calculatedUnitQuantity;
+
 	@Column(name = "weight_measure")
 	private Double weightMeasure;
+
+	@Column(name = "weight_measure_unit_code")
+	private String weightMeasureUnitCode;
+
+	@Column(name = "calculated_weight_measure")
+	private Double calculatedWeightMeasure;
 
 	@Column(name = "weighing_means_code")
 	private String weighingMeansCode;
@@ -176,5 +200,69 @@ public class AapProductEntity implements Serializable {
 
 	public void setUsageCodeListId(String usageCodeListId) {
 		this.usageCodeListId = usageCodeListId;
+	}
+
+	public String getPackagingWeightUnitCode() {
+		return packagingWeightUnitCode;
+	}
+
+	public void setPackagingWeightUnitCode(String packagingWeightUnitCode) {
+		this.packagingWeightUnitCode = packagingWeightUnitCode;
+	}
+
+	public Double getCalculatedPackagingWeight() {
+		return calculatedPackagingWeight;
+	}
+
+	public void setCalculatedPackagingWeight(Double calculatedPackagingWeight) {
+		this.calculatedPackagingWeight = calculatedPackagingWeight;
+	}
+
+	public String getWeightMeasureUnitCode() {
+		return weightMeasureUnitCode;
+	}
+
+	public void setWeightMeasureUnitCode(String weightMeasureUnitCode) {
+		this.weightMeasureUnitCode = weightMeasureUnitCode;
+	}
+
+	public Double getCalculatedWeightMeasure() {
+		return calculatedWeightMeasure;
+	}
+
+	public void setCalculatedWeightMeasure(Double calculatedWeightMeasure) {
+		this.calculatedWeightMeasure = calculatedWeightMeasure;
+	}
+
+	public String getPackagingUnitCountCode() {
+		return packagingUnitCountCode;
+	}
+
+	public void setPackagingUnitCountCode(String packagingUnitCountCode) {
+		this.packagingUnitCountCode = packagingUnitCountCode;
+	}
+
+	public Double getCalculatedPackagingUnitCount() {
+		return calculatedPackagingUnitCount;
+	}
+
+	public void setCalculatedPackagingUnitCount(Double calculatedPackagingUnitCount) {
+		this.calculatedPackagingUnitCount = calculatedPackagingUnitCount;
+	}
+
+	public String getUnitQuantityCode() {
+		return unitQuantityCode;
+	}
+
+	public void setUnitQuantityCode(String unitQuantityCode) {
+		this.unitQuantityCode = unitQuantityCode;
+	}
+
+	public Double getCalculatedUnitQuantity() {
+		return calculatedUnitQuantity;
+	}
+
+	public void setCalculatedUnitQuantity(Double calculatedUnitQuantity) {
+		this.calculatedUnitQuantity = calculatedUnitQuantity;
 	}
 }

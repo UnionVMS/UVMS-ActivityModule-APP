@@ -37,6 +37,8 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
             @Mapping(target = "startDate", expression = "java(convertToDate(delimitedPeriod.getStartDateTime()))"),
             @Mapping(target = "endDate", expression = "java(convertToDate(delimitedPeriod.getEndDateTime()))"),
             @Mapping(target = "duration", expression = "java(getMeasure(delimitedPeriod.getDurationMeasure()))"),
+            @Mapping(target = "durationUnitCode", expression = "java(getMeasureUnitCode(delimitedPeriod.getDurationMeasure()))"),
+            @Mapping(target = "calculatedDuration", expression = "java(getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
             @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)")
     })
     public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod, FishingActivityEntity fishingActivityEntity, @MappingTarget DelimitedPeriodEntity delimitedPeriodEntity);
@@ -45,6 +47,8 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
             @Mapping(target = "startDate", expression = "java(convertToDate(delimitedPeriod.getStartDateTime()))"),
             @Mapping(target = "endDate", expression = "java(convertToDate(delimitedPeriod.getEndDateTime()))"),
             @Mapping(target = "duration", expression = "java(getMeasure(delimitedPeriod.getDurationMeasure()))"),
+            @Mapping(target = "durationUnitCode", expression = "java(getMeasureUnitCode(delimitedPeriod.getDurationMeasure()))"),
+            @Mapping(target = "calculatedDuration", expression = "java(getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
             @Mapping(target = "fishingTrip", expression = "java(fishingTripEntity)")
     })
     public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod, FishingTripEntity fishingTripEntity, @MappingTarget DelimitedPeriodEntity delimitedPeriodEntity);

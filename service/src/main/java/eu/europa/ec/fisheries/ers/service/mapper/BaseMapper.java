@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
@@ -35,10 +36,6 @@ public abstract class BaseMapper {
         return (idType == null) ? null : idType.getSchemeID();
     }
 
-/*    protected String getIdTypeFromList(List<IDType> ids) {
-        return (ids == null || ids.isEmpty()) ? null : ids.get(0).getValue();
-    }*/
-
     protected String getTextType(TextType textType) {
         return textType == null ? null : textType.getValue();
     }
@@ -61,14 +58,6 @@ public abstract class BaseMapper {
     protected String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
     }
-
-/*    protected String getCodeTypeFromList(List<CodeType> codeTypes) {
-        return (codeTypes == null || codeTypes.isEmpty()) ? null : codeTypes.get(0).getValue();
-    }
-
-    protected String getCodeTypeListIdFromList(List<CodeType> codeTypes) {
-        return (codeTypes == null || codeTypes.isEmpty()) ? null : codeTypes.get(0).getListID();
-    }*/
 
     protected Date convertToDate(DateTimeType dateTime) {
         Date value = null;
@@ -115,11 +104,25 @@ public abstract class BaseMapper {
         return quantityType.getValue().doubleValue();
     }
 
-    protected Long getQuantityInLong(QuantityType quantityType) {
+    protected String getQuantityUnitCode(QuantityType quantityType) {
         if (quantityType == null) {
             return null;
         }
-        return quantityType.getValue().longValue();
+        return quantityType.getUnitCode();
+    }
+
+    protected Double getCalculatedQuantity(QuantityType quantityType) {
+        if (quantityType == null) {
+            return null;
+        }
+        UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(quantityType.getUnitCode());
+        if (unitCodeEnum != null) {
+            BigDecimal quantity = quantityType.getValue();
+            BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+            return result.doubleValue();
+        } else {
+            return null;
+        }
     }
 
     protected Double getMeasure(MeasureType measureType) {
@@ -136,11 +139,18 @@ public abstract class BaseMapper {
         return measureType.getUnitCode();
     }
 
-    protected String getMeasureListId(MeasureType measureType) {
+    protected Double getCalculatedMeasure(MeasureType measureType) {
         if (measureType == null) {
             return null;
         }
-        return measureType.getUnitCodeListVersionID();
+        UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(measureType.getUnitCode());
+        if (unitCodeEnum != null) {
+            BigDecimal measuredValue = measureType.getValue();
+            BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+            return result.doubleValue();
+        } else {
+            return null;
+        }
     }
 
     protected Integer getNumericInteger(NumericType numericType) {

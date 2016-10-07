@@ -44,6 +44,12 @@ public class FluxCharacteristicEntity implements Serializable {
 	@Column(name = "value_measure", precision = 17, scale = 17)
 	private Double valueMeasure;
 
+	@Column(name = "value_measure_unit_code")
+	private String valueMeasureUnitCode;
+
+	@Column(name = "calculated_value_measure")
+	private Double calculatedValueMeasure;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "value_date_time", length = 29)
 	private Date valueDateTime;
@@ -62,6 +68,12 @@ public class FluxCharacteristicEntity implements Serializable {
 
 	@Column(name = "value_quantity", precision = 17, scale = 17)
 	private Double valueQuantity;
+
+	@Column(name = "value_quantity_code")
+	private String valueQuantityCode;
+
+	@Column(name = "calculated_value_quantity")
+	private Double calculatedValueQuantity;
 
 	@Column(columnDefinition = "text", name = "description")
 	private String description;
@@ -189,5 +201,37 @@ public class FluxCharacteristicEntity implements Serializable {
 
 	public void setDescriptionLanguageId(String descriptionLanguageId) {
 		this.descriptionLanguageId = descriptionLanguageId;
+	}
+
+	public String getValueMeasureUnitCode() {
+		return valueMeasureUnitCode;
+	}
+
+	public void setValueMeasureUnitCode(String valueMeasureUnitCode) {
+		this.valueMeasureUnitCode = valueMeasureUnitCode;
+	}
+
+	public Double getCalculatedValueMeasure() {
+		return calculatedValueMeasure;
+	}
+
+	public void setCalculatedValueMeasure(Double calculatedValueMeasure) {
+		this.calculatedValueMeasure = calculatedValueMeasure;
+	}
+
+	public String getValueQuantityCode() {
+		return valueQuantityCode;
+	}
+
+	public void setValueQuantityCode(String valueQuantityCode) {
+		this.valueQuantityCode = valueQuantityCode;
+	}
+
+	public Double getCalculatedValueQuantity() {
+		return calculatedValueQuantity;
+	}
+
+	public void setCalculatedValueQuantity(Double calculatedValueQuantity) {
+		this.calculatedValueQuantity = calculatedValueQuantity;
 	}
 }

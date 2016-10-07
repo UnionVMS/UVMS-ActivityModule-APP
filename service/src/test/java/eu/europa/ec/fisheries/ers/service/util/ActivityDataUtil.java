@@ -115,7 +115,7 @@ public class ActivityDataUtil {
         return sizeDistributionEntity;
     }
 
-    public static FaCatchEntity getFaCatchEntity(FishingActivityEntity fishingActivityEntity,String typeCode, String typeCodeListId, String  speciesCode, String speciesCodeListid,Long unitQuantity,Double weightMeasure,String weightMeasureUnitCode,
+    public static FaCatchEntity getFaCatchEntity(FishingActivityEntity fishingActivityEntity,String typeCode, String typeCodeListId, String  speciesCode, String speciesCodeListid,Double unitQuantity,Double weightMeasure,String weightMeasureUnitCode,
              String weighingMeansCode,String weighingMeansCodeListId,SizeDistributionEntity sizeDistributionEntity  ){
         FaCatchEntity faCatchEntity = new FaCatchEntity();
         faCatchEntity.setFishingActivity(fishingActivityEntity);
