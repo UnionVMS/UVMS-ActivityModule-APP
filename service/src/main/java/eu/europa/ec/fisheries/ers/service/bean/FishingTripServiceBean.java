@@ -420,11 +420,11 @@ public class FishingTripServiceBean implements FishingTripService {
             Date occurrence = reportDTO.getOccurence();
             List<String> fluxLocations = reportDTO.getLocations();
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(reportDTO.getActivityType());
-            if ((fishingActivityTypeDTO == null
+            if (fishingActivityTypeDTO == null
                     || (reportDTO.isCorrection()
                     && fishingActivityTypeDTO.getDate() != null
                     && occurrence != null
-                    && occurrence.compareTo(fishingActivityTypeDTO.getDate()) > 0))) {
+                    && occurrence.compareTo(fishingActivityTypeDTO.getDate()) > 0)) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
                 fishingActivityTypeDTO.setDate(occurrence);
                 fishingActivityTypeDTO.setLocations(fluxLocations);

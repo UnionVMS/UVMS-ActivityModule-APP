@@ -102,6 +102,8 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
         } catch (Exception e) {
             log.error("[ Error when sending data source message. ] {}", e);
             throw new ActivityMessageException(e.getMessage());
+        } finally {
+            disconnectQueue();
         }
     }
 
@@ -125,6 +127,8 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
         } catch (Exception e) {
             log.error("[ Error when sending data source message. ] {}", e);
             throw new ActivityMessageException(e.getMessage());
+        } finally {
+            disconnectQueue();
         }
     }
 	
@@ -180,5 +184,21 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
              }
         }
         return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+    }
+
+    /**
+     * Disconnects from the queue this Producer is connected to.
+     *
+     */
+    private void disconnectQueue() {
+        try {
+            if(connection != null){
+                connection.stop();
+                connection.close();
+            }
+            log.debug("Succesfully disconnected from FLUX BRIDGE Remote queue.");
+        } catch (JMSException e) {
+            log.error("[ Error when stopping or closing JMS queue ] {}", e);
+        }
     }
 }
