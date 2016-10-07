@@ -13,11 +13,11 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.MessageCountDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -46,7 +46,7 @@ public interface FishingTripService {
      * @return FishingTripSummaryViewDTO All of summary view data
      * @throws ServiceException
      */
-    FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException;
+    FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId) throws ServiceException;
 
 
     /**
@@ -57,16 +57,6 @@ public interface FishingTripService {
      */
     VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId);
 
-    /**
-     * This service will return various data for specified fishing Trip ID
-     *
-     * @param fishingTripId         ID for which data will be returned
-     * @param reportDTOList         Refernce variable to store Fishing Activity Reports for specified fishingTripId
-     * @param summary Refernce variable to store short FishingTripSummary for specified fishingTripId
-     * @param messagesCount         Refernce variable to store various message counts for specified fishingTripId
-     * @throws ServiceException
-     */
-    void getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList, Map<String,FishingActivityTypeDTO> summary, MessageCountDTO messagesCount) throws ServiceException;
 
     /**
      * Service that given a trip-id collects all the message summs for it and returns a MessageCountDTO object;

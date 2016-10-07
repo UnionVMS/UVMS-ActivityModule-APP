@@ -181,43 +181,6 @@ public class FishingTripServiceBean implements FishingTripService {
     }
 
 
-    // Get data for Fishing Trip summary view
-    @Override
-    public FishingTripSummaryViewDTO getFishingTripSummary(String fishingTripId) throws ServiceException {
-        // Messages count box for Fishing Trip Summary view
-        MessageCountDTO messagesCount = new MessageCountDTO();
-        List<ReportDTO> reportDTOList = new ArrayList<>();
-        // get short summary of Fishing Trip
-        Map<String, FishingActivityTypeDTO> summary = new HashMap<>();
-        // All Activity Reports and related data  for Fishing Trip
-        getFishingActivityReportAndRelatedDataForFishingTrip(fishingTripId, reportDTOList, summary, messagesCount);
-        return  populateAndReturnFishingTripSummary(fishingTripId, messagesCount, reportDTOList, summary);
-    }
-
-    /**
-     * Populates and return a FishingTripSummaryViewDTO with the inputParameters values.
-     *
-     * @param  fishingTripId
-     * @param  messagesCount
-     * @param  reportDTOList
-     * @param  summary
-     * @return fishingTripSummaryViewDTO
-     */
-    private FishingTripSummaryViewDTO populateAndReturnFishingTripSummary(String fishingTripId, MessageCountDTO messagesCount, List<ReportDTO> reportDTOList, Map<String, FishingActivityTypeDTO> summary) {
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
-        fishingTripSummaryViewDTO.setActivityReports(reportDTOList);
-        // fishingTripSummaryViewDTO.setFishingTripSummaryDTO(fishingTripSummaryDTO);
-        fishingTripSummaryViewDTO.setSummary(summary);
-
-        // Fishing trip Id for the Fishing Trip summary view
-        fishingTripSummaryViewDTO.setFishingTripId(fishingTripId);
-
-        // Vessel Details for specified Fishing Trip
-        fishingTripSummaryViewDTO.setVesselDetails(getVesselDetailsForFishingTrip(fishingTripId));
-        fishingTripSummaryViewDTO.setMessagesCount(messagesCount);
-
-        return fishingTripSummaryViewDTO;
-    }
 
     @Override
     public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId) {
@@ -391,13 +354,45 @@ public class FishingTripServiceBean implements FishingTripService {
     }
 
 
+    // Get data for Fishing Trip summary view
     @Override
-    public void getFishingActivityReportAndRelatedDataForFishingTrip(String fishingTripId, List<ReportDTO> reportDTOList,
-                                                                     Map<String, FishingActivityTypeDTO> summary,
-                                                                     MessageCountDTO messagesCounter) throws ServiceException {
+    public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId) throws ServiceException {
+
+        List<ReportDTO> reportDTOList = new ArrayList<>();
+        // get short summary of Fishing Trip
+        Map<String, FishingActivityTypeDTO> summary = new HashMap<>();
+        // All Activity Reports and related data  for Fishing Trip
+        populateFishingActivityReportListAndSummary(fishingTripId, reportDTOList, summary);
+        return  populateFishingTripSummary(fishingTripId, reportDTOList, summary);
+    }
+
+    /**
+     * Populates and return a FishingTripSummaryViewDTO with the inputParameters values.
+     *
+     * @param  fishingTripId
+     * @param  reportDTOList
+     * @param  summary
+     * @return fishingTripSummaryViewDTO
+     */
+    private FishingTripSummaryViewDTO populateFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList, Map<String, FishingActivityTypeDTO> summary) {
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO = new FishingTripSummaryViewDTO();
+        fishingTripSummaryViewDTO.setActivityReports(reportDTOList);
+        fishingTripSummaryViewDTO.setSummary(summary);
+
+        // Fishing trip Id for the Fishing Trip summary view
+        fishingTripSummaryViewDTO.setFishingTripId(fishingTripId);
+
+        return fishingTripSummaryViewDTO;
+    }
+
+
+
+    private void populateFishingActivityReportListAndSummary(String fishingTripId, List<ReportDTO> reportDTOList,
+                                                                     Map<String, FishingActivityTypeDTO> summary
+                                                                    ) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList;
         try {
-            fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
+            fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId);
         } catch (Exception e) {
             log.error("Error while trying to get Fishing Activity reports for fishing trip with Id:" + fishingTripId, e);
             return;
@@ -423,7 +418,7 @@ public class FishingTripServiceBean implements FishingTripService {
                 || ActivityConstants.ARRIVAL.equalsIgnoreCase(reportDTO.getActivityType())
                 || ActivityConstants.LANDING.equalsIgnoreCase(reportDTO.getActivityType())) {
             Date occurrence = reportDTO.getOccurence();
-            List<FluxLocationDetailsDTO> fluxLocations = reportDTO.getFluxLocations();
+            List<String> fluxLocations = reportDTO.getLocations();
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(reportDTO.getActivityType());
             if ((fishingActivityTypeDTO == null
                     || (reportDTO.isCorrection()

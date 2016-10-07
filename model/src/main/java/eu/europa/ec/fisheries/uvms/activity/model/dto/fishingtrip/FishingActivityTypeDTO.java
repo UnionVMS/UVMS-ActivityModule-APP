@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -31,7 +30,7 @@ public class FishingActivityTypeDTO {
     private Date date;
 
     @JsonProperty("locations")
-    private List<FluxLocationDetailsDTO> locations;
+    private List<String> locations;
 
 
     @JsonProperty("date")
@@ -45,12 +44,12 @@ public class FishingActivityTypeDTO {
     }
 
     @JsonProperty("locations")
-    public List<FluxLocationDetailsDTO> getLocations() {
+    public List<String> getLocations() {
         return locations;
     }
 
     @JsonProperty("locations")
-    public void setLocations(List<FluxLocationDetailsDTO> locations) {
+    public void setLocations(List<String> locations) {
         this.locations = locations;
     }
 }

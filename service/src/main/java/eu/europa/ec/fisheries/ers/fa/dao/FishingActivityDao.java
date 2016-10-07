@@ -54,17 +54,12 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
 
 
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId,Pagination pagination) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId) throws ServiceException {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
         Query query = getEntityManager().createNamedQuery(FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP);
 
         query.setParameter("fishingTripId", fishingTripId);
-        if(pagination!=null) {
-            query.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            query.setMaxResults(pagination.getListSize());
-        }
-
         return query.getResultList();
     }
 

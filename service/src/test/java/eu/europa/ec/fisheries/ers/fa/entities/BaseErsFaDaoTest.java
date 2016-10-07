@@ -295,7 +295,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     protected static final Operation INSERT_ERS_FLUX_PARTY_DATA = sequenceOf(
             insertInto("activity.activity_flux_party")
                     .columns("id", "flux_party_name", "name_language_id")
-                    .values(1, null, "EN")
+                    .values(1, "OWNER_NAME1", "EN")
                     .build(),
             insertInto("activity.activity_flux_party")
                     .columns("id", "flux_party_name", "name_language_id")

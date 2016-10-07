@@ -13,15 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifiersDao;
+import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,15 +31,13 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import javax.persistence.EntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by padhyad on 9/29/2016.
@@ -67,6 +64,9 @@ public class FishingTripServiceBeanTest {
 
     @Mock
     FishingTripIdentifierDao fishingTripIdentifierDao;
+
+    @Mock
+    FishingTripDao fishingTripDao;
 
     @InjectMocks
     FishingTripServiceBean fishingTripService;
@@ -221,4 +221,23 @@ public class FishingTripServiceBeanTest {
         }
         return nextTrips;
     }
+
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripSummary() throws ServiceException {
+        when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
+        when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingActivityEntityList());
+
+        //Trigger
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706");
+
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class));
+
+        //Verify
+        assertEquals(3, fishingTripSummaryViewDTO.getSummary().size());
+        assertEquals(3, fishingTripSummaryViewDTO.getActivityReports().size());
+
+    }
+
 }

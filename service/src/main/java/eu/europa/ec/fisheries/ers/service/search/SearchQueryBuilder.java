@@ -35,6 +35,7 @@ public class SearchQueryBuilder {
 
     }
 
+    // Create SQL dynamically based on Filter criteria
     public static StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
@@ -49,6 +50,7 @@ public class SearchQueryBuilder {
         return sql;
     }
 
+    // Create Table Joins based on Filters provided by user. Avoid joining unnecessary tables
     public static StringBuilder createJoinTablesPartForQuery(StringBuilder sql,FishingActivityQuery query){
         LOG.debug("Create Join Tables part of Query");
         Map<Filters, FilterDetails> mappings= FilterMap.getFilterMappings();
@@ -62,16 +64,26 @@ public class SearchQueryBuilder {
 
             // Add join statement only if its not already been added
             if(sql.indexOf(joinString)==-1){
-
                 //If table join is already present in Query, we want to reuse that join alias. so, treat it differently
-                if(Filters.MASTER.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)!=-1 ){
+               if(Filters.MASTER.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)!=-1 ){
                     sql.append(JOIN).append(FilterMap.MASTER_MAPPING).append(" ");
                 }// Add table alias if not already present
                 else if( Filters.VESSEL_IDENTIFIRE.equals(key) && sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS)==-1){
                     sql.append(JOIN).append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
                     sql.append(JOIN).append(joinString).append(" ");
-                } else if( Filters.SPECIES.equals(key) && sql.indexOf(FilterMap.FA_CATCH_TABLE_ALIAS)==-1){
-                    sql.append(JOIN).append(FilterMap.FA_CATCH_TABLE_ALIAS);
+                }  else if( (Filters.FROM_ID.equals(key) ) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS)==-1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS)==-1)){
+                    if(sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS)==-1)
+                        sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                    if(sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS)==-1)
+                        sql.append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
+                    sql.append(JOIN).append(joinString).append(" ");
+                }else if( (Filters.FROM_NAME.equals(key) ) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS)==-1){
+                    sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                    if(sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS)==-1)
+                            sql.append(JOIN).append(joinString).append(" ");
+                }
+                else if( Filters.SPECIES.equals(key) && sql.indexOf(FilterMap.FA_CATCH_TABLE_ALIAS)==-1){
+                //    sql.append(JOIN).append(FilterMap.FA_CATCH_TABLE_ALIAS);
                     sql.append(JOIN).append(joinString).append(" ");
                 } else{
                     sql.append(JOIN).append(joinString).append(" ");
@@ -87,8 +99,11 @@ public class SearchQueryBuilder {
                 sql.append(LEFT).append(JOIN).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
             } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
                 sql.append(LEFT).append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-            } else if(Filters.FROM_NAME.equals(field) && sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1){
-                sql.append(LEFT).append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
+            } else if(Filters.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) ==-1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)){
+                if(sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS)==-1)
+                    sql.append(LEFT).append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                if(sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS)==-1)
+                    sql.append(LEFT).append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
             }
         }
         LOG.debug("Generated SQL for JOIN Part :"+sql);
@@ -110,13 +125,14 @@ public class SearchQueryBuilder {
                 continue;
 
             String mapping = mappings.get(key).getCondition();
-            if(Filters.QUNTITY_MAX.equals(key)){
-                sql.append(" and ").append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
-                sql.append(" OR (aprod.weightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX+")");
-            }else if (i != 0) {
-                sql.append(" and ").append(mapping);
+            if(i != 0){
+                sql.append(" and ");
             }
-            else {
+
+            if(Filters.QUNTITY_MAX.equals(key)){
+                sql.append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
+                sql.append(" OR (aprod.weightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX+")");
+            }else {
                 sql.append(mapping);
             }
             i++;

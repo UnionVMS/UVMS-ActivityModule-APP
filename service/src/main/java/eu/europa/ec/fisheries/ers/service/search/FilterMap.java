@@ -41,7 +41,8 @@ public class FilterMap {
     public static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
     public static final String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
-    public static final String FLUX_PARTY_TABLE_ALIAS = " fa.fluxReportDocument flux JOIN FETCH flux.fluxParty fp  ";
+   // public static final String FLUX_PARTY_TABLE_ALIAS = " fa.fluxReportDocument flux JOIN FETCH flux.fluxParty fp  ";
+   public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
     public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE = "dataSource";
 
@@ -65,8 +66,8 @@ public class FilterMap {
     private static void populateFilterMappings(){
 
         filterMappings.put(Filters.SOURCE,new FilterDetails(" ","fa.source =:"+DATASOURCE));
-        filterMappings.put(Filters.FROM_ID,new FilterDetails(FLUX_PARTY_TABLE_ALIAS + " JOIN FETCH fp.fluxPartyIdentifiers fpi","fpi.fluxPartyIdentifierId =:"+FROM_ID+ " "));
-        filterMappings.put(Filters.FROM_NAME,new FilterDetails(FLUX_PARTY_TABLE_ALIAS," fp.fluxPartyName=:"+FROM_NAME+" "));
+        filterMappings.put(Filters.FROM_ID,new FilterDetails( " fp.fluxPartyIdentifiers fpi","fpi.fluxPartyIdentifierId =:"+FROM_ID+ " "));
+        filterMappings.put(Filters.FROM_NAME,new FilterDetails(FLUX_PARTY_TABLE_ALIAS,"  fp.fluxPartyName=:"+FROM_NAME+" "));
 
         filterMappings.put(Filters.PERIOD_START,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS,"( dp.startDate >= :"+OCCURENCE_START_DATE +"  OR a.occurence  >= :"+OCCURENCE_START_DATE +" )"));
         filterMappings.put(Filters.PERIOD_END,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS," dp.endDate <= :"+OCCURENCE_END_DATE));
@@ -79,8 +80,8 @@ public class FilterMap {
         filterMappings.put(Filters.AREAS,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:"+AREA_ID+" )"));
         filterMappings.put(Filters.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )"));
         filterMappings.put(Filters.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode =:"+FISHING_GEAR));
-        filterMappings.put(Filters.SPECIES,new FilterDetails("a.faCatchs faCatch JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod","faCatch.speciesCode =:"+SPECIES_CODE +" OR aprod.speciesCode =:"+SPECIES_CODE));
-        filterMappings.put(Filters.QUNTITY_MIN,new FilterDetails("a.faCatchs faCatch JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod"," (faCatch.weightMeasure  BETWEEN :"+QUNTITY_MIN ));
+        filterMappings.put(Filters.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod","faCatch.speciesCode =:"+SPECIES_CODE +" OR aprod.speciesCode =:"+SPECIES_CODE));
+        filterMappings.put(Filters.QUNTITY_MIN,new FilterDetails(FA_CATCH_TABLE_ALIAS+" JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod"," (faCatch.weightMeasure  BETWEEN :"+QUNTITY_MIN ));
         filterMappings.put(Filters.QUNTITY_MAX,new FilterDetails(" ","  :"+QUNTITY_MAX+") "));
         filterMappings.put(Filters.MASTER,new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","(UPPER(cPerson.title) =:"+CONTACT_PERSON_NAME+" or " +
                 "UPPER(cPerson.givenName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.middleName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.familyName) =:"+CONTACT_PERSON_NAME+" " +

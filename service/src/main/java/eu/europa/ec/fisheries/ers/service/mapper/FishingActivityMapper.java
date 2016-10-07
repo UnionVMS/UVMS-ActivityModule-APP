@@ -115,6 +115,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"),
             @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))"),
             @Mapping(target = "fluxLocations", ignore = true),
+            @Mapping(target = "locations", expression = "java(getFishingActivityLocationTypes(entity,null))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsDTOList(entity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearDTOList(entity))")
     })
@@ -411,7 +412,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocations =entity.getFluxLocations();
 
          for (FluxLocationEntity location: fluxLocations){
-           if(locationType.equalsIgnoreCase(location.getTypeCode())) {
+           if(locationType ==null || locationType.equalsIgnoreCase(location.getTypeCode())) {
                areas.add(location.getFluxLocationIdentifier());
            }
         }

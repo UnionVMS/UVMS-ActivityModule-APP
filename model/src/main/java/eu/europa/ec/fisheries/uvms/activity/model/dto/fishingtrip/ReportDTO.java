@@ -17,6 +17,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityDTO;
 
+import java.util.List;
+
 /**
  * Created by sanera on 04/08/2016.
  */
@@ -28,6 +30,9 @@ public class ReportDTO extends FishingActivityDTO{
 
     @JsonProperty("faReportDocumentType")
     private String faReportDocumentType;
+
+    @JsonProperty("locations")
+    private List<String> locations;
 
     @JsonProperty("correction")
     private boolean correction;
@@ -61,5 +66,13 @@ public class ReportDTO extends FishingActivityDTO{
     @JsonProperty("correction")
     public void setCorrection(boolean correction) {
         this.correction = correction;
+    }
+
+    public List<String> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<String> locations) {
+        this.locations = locations;
     }
 }
