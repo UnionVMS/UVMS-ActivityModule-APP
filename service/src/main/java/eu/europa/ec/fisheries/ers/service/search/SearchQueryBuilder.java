@@ -62,50 +62,51 @@ public class SearchQueryBuilder {
                 continue;
             String joinString = details.getJoinString();
 
-            // Add join statement only if its not already been added
-            if (sql.indexOf(joinString) == -1) {
 
-                switch (key) {
-                    case MASTER:
-                        if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)
-                            joinString = FilterMap.MASTER_MAPPING;
+            if (sql.indexOf(joinString) != -1)
+                continue;
 
-                        sql.append(JOIN).append(joinString).append(" ");
-                        break;
-                    case VESSEL_IDENTIFIRE:
-                        if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) == -1)
-                            sql.append(JOIN).append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
-                        sql.append(JOIN).append(joinString).append(" ");
-                        break;
-                    case FROM_ID:
-                        if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
-                            sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                        if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
-                            sql.append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
-                        sql.append(JOIN).append(joinString).append(" ");
+            switch (key) {
+                case MASTER:
+                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)
+                        joinString = FilterMap.MASTER_MAPPING;
 
-                        break;
-                    case FROM_NAME:
-                        if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
-                            sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                        if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
-                            sql.append(JOIN).append(joinString).append(" ");
-                        break;
+                    sql.append(JOIN).append(joinString).append(" ");
+                    break;
+                case VESSEL_IDENTIFIRE:
+                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) == -1)
+                        sql.append(JOIN).append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                    sql.append(JOIN).append(joinString).append(" ");
+                    break;
+                case FROM_ID:
+                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
+                        sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
+                        sql.append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
+                    sql.append(JOIN).append(joinString).append(" ");
 
-                    default:
+                    break;
+                case FROM_NAME:
+                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
+                        sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
                         sql.append(JOIN).append(joinString).append(" ");
-                        break;
-                }
+                    break;
+
+                default:
+                    sql.append(JOIN).append(joinString).append(" ");
+                    break;
             }
+
         }
 
-        getJoinPartForSortingOptions(sql,query);
+        getJoinPartForSortingOptions(sql, query);
 
         LOG.debug("Generated SQL for JOIN Part :" + sql);
         return sql;
     }
 
-    private static StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query){
+    private static StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query) {
         SortKey sort = query.getSortKey();
         // IF sorting has been requested and
         if (sort != null) {
