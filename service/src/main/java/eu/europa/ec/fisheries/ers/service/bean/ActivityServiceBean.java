@@ -110,7 +110,7 @@ public class ActivityServiceBean implements ActivityService {
 
         // Execute query to count all the resultset only if TotalPages value is 0. After first search frontend should send totalPages count in subsequent calls
         Pagination pagination= query.getPagination();
-        if(pagination!=null && pagination.getTotalPages()==0 ){
+        if((pagination!=null && pagination.getTotalPages()==0)  || pagination==null){
             totalPages= getTotalPagesCountForFilterFishingActivityReports(query);
             log.debug("Total Records count is: "+totalPages);
         }
