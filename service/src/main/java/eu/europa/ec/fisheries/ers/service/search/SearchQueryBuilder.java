@@ -145,7 +145,7 @@ public class SearchQueryBuilder {
 
             if (Filters.QUNTITY_MAX.equals(key)) {
                 sql.append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
-                sql.append(" OR (aprod.weightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
+                sql.append(" OR (aprod.calculated_weight_measure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
             } else {
                 sql.append(mapping);
             }
