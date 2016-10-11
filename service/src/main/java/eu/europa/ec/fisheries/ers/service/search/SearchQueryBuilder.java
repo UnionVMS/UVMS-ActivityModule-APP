@@ -39,12 +39,12 @@ public class SearchQueryBuilder {
     public static StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
-        sql.append(FISHING_ACTIVITY_JOIN);
+        sql.append(FISHING_ACTIVITY_JOIN); // Common Join for all filters
 
         // Create join part of SQL query
-        SearchQueryBuilder.createJoinTablesPartForQuery(sql, query);
-        SearchQueryBuilder.createWherePartForQuery(sql, query);
-        SearchQueryBuilder.createSortPartForQuery(sql, query);
+        SearchQueryBuilder.createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
+        SearchQueryBuilder.createWherePartForQuery(sql, query);  // Add Where part associated with Filters
+        SearchQueryBuilder.createSortPartForQuery(sql, query); // Add Order by clause for only requested Sort field
         LOG.info("sql :" + sql);
 
         return sql;
@@ -63,33 +63,33 @@ public class SearchQueryBuilder {
             String joinString = details.getJoinString();
 
 
-            if (sql.indexOf(joinString) != -1)
+            if (sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
                 continue;
 
             switch (key) {
                 case MASTER:
-                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)
+                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
                         joinString = FilterMap.MASTER_MAPPING;
 
-                    sql.append(JOIN).append(joinString).append(" ");
+                     sql.append(JOIN).append(joinString).append(" ");
                     break;
                 case VESSEL_IDENTIFIRE:
-                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) == -1)
+                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) == -1) // Add missing join for required table
                         sql.append(JOIN).append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
                     sql.append(JOIN).append(joinString).append(" ");
                     break;
                 case FROM_ID:
-                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
+                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) // Add missing join for required table
                         sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
+                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) // Add missing join for required table
                         sql.append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
                     sql.append(JOIN).append(joinString).append(" ");
 
                     break;
                 case FROM_NAME:
-                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
+                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) // Add missing join for required table
                         sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
+                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) // Add missing join for required table
                         sql.append(JOIN).append(joinString).append(" ");
                     break;
 
@@ -106,11 +106,15 @@ public class SearchQueryBuilder {
         return sql;
     }
 
+
+    // This method makes sure that Table join is present for the Filter for which sorting has been requested.
     private static StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query) {
         SortKey sort = query.getSortKey();
         // IF sorting has been requested and
         if (sort != null) {
             Filters field = sort.getField();
+
+            // Make sure that the field which we want to sort, table Join is present for it.
             if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
                 sql.append(LEFT).append(JOIN).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
             } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
@@ -125,6 +129,7 @@ public class SearchQueryBuilder {
         return sql;
     }
 
+    // Build Where part of the query based on Filter criterias
     public static StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
         Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
@@ -136,7 +141,7 @@ public class SearchQueryBuilder {
         int i = 0;
         for (Filters key : keySet) {
 
-            if (Filters.QUNTITY_MIN.equals(key) || mappings.get(key) == null)
+            if (Filters.QUNTITY_MIN.equals(key) || mappings.get(key) == null) // skip this as MIN and MAX both are required to form where part. Treat it differently
                 continue;
 
             String mapping = mappings.get(key).getCondition();
@@ -153,12 +158,13 @@ public class SearchQueryBuilder {
             i++;
         }
 
-        sql.append(" and fa.status = '" + FaReportStatusEnum.NEW.getStatus() + "'");
+        sql.append(" and fa.status = '" + FaReportStatusEnum.NEW.getStatus() + "'"); // get data from only new reports
 
         LOG.debug("Generated Query After Where :" + sql);
         return sql;
     }
 
+    // Create sorting part for the Query
     public static StringBuilder createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Sorting part of Query");
         SortKey sort = query.getSortKey();
@@ -176,6 +182,7 @@ public class SearchQueryBuilder {
         return sql;
     }
 
+    // Special treatment for date sorting . In the resultset, One record can have multiple dates. But We need to consider only one date from the list. and then sort that selected date across resultset
     public static StringBuilder getSqlForStartAndEndDateSorting(StringBuilder sql, Filters filter, FishingActivityQuery query) {
         Map<Filters, String> searchCriteriaMap = query.getSearchCriteriaMap();
         sql.append(" and(  ");

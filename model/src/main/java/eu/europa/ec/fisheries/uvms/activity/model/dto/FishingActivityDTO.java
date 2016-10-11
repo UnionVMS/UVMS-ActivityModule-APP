@@ -27,11 +27,16 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FishingActivityDTO {
 
-    @JsonProperty("uniqueReportId")
+    @JsonProperty("uniqueReportIdList")
     private List<FluxReportIdentifierDTO> uniqueFAReportId;
+
+    @JsonProperty("faReportID")
+    private int faReportID;
 
     @JsonProperty("activityType")
     private String activityType;
+
+
 
     @JsonProperty("occurence")
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
@@ -122,13 +127,23 @@ public class FishingActivityDTO {
         this.delimitedPeriod = delimitedPeriod;
     }
 
-    @JsonProperty("uniqueReportId")
+    @JsonProperty("uniqueReportIdList")
     public List<FluxReportIdentifierDTO> getUniqueFAReportId() {
         return uniqueFAReportId;
     }
 
-    @JsonProperty("uniqueReportId")
+    @JsonProperty("uniqueReportIdList")
     public void setUniqueFAReportId(List<FluxReportIdentifierDTO> uniqueFAReportId) {
         this.uniqueFAReportId = uniqueFAReportId;
+    }
+
+    @JsonProperty("faReportID")
+    public int getFaReportID() {
+        return faReportID;
+    }
+
+    @JsonProperty("faReportID")
+    public void setFaReportID(int faReportID) {
+        this.faReportID = faReportID;
     }
 }

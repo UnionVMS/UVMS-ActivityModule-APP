@@ -84,6 +84,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "uniqueFAReportId", expression = "java(getUniqueId(entity))"),
+            @Mapping(target = "faReportID", expression = "java(getFAReportId(entity))"),
             @Mapping(target = "fromId", expression = "java(getFromId(entity))"),
             @Mapping(target = "fromName", expression = "java(getFrom(entity))"),
             @Mapping(source = "occurence", target = "occurence"),
@@ -252,6 +253,15 @@ public abstract class FishingActivityMapper extends BaseMapper {
        }
           return  identifierDTOs;
     }
+
+    protected Integer getFAReportId(FishingActivityEntity entity){
+        if(entity ==null || entity.getFaReportDocument() == null ){
+            return null;
+        }
+        return entity.getFaReportDocument().getId();
+
+    }
+
 
     protected String getFrom(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() ==null

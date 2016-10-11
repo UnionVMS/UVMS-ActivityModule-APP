@@ -103,6 +103,7 @@ public class ActivityServiceBean implements ActivityService {
         if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty())
             isSearchFiltersPresent=false;
 
+        // Check if any filters are present. If not, We need to return all fishing activity data
         if(isSearchFiltersPresent) {
            activityList = fishingActivityDao.getFishingActivityListByQuery(query);
         } else
@@ -121,6 +122,7 @@ public class ActivityServiceBean implements ActivityService {
         }
 
        log.debug("Fishing Activity Report resultset size :"+activityList.size());
+        // Prepare DTO to return to Frontend
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setPagination(new PaginationDTO(totalPages));

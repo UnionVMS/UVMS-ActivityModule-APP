@@ -123,6 +123,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 case MASTER:
                     typedQuery.setParameter(mappings.get(key), value.toUpperCase());
                     break;
+                case FA_REPORT_ID:
+                    typedQuery.setParameter(mappings.get(key), Integer.parseInt(value));
+                    break;
                 default:
                     typedQuery.setParameter(mappings.get(key), value);
                     break;
@@ -133,10 +136,17 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
 
+    /*
+     Get all the Fishing Activities which match Filter criterias mentioned in the Input. Also, provide the sorted data based on what user has requested.
+     Provide paginated data if user has asked for it
+     */
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         LOG.info("Get Fishing Activity Report list by Query.");
+
+        // Create Query dynamically based on Dilter and Sort criteria
         StringBuilder sqlToGetActivityList =SearchQueryBuilder.createSQL(query);
 
+        // Apply real values to Query built
         Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query);
 
         Pagination pagination= query.getPagination();

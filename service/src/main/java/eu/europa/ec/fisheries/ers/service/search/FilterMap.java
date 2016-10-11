@@ -18,6 +18,8 @@ import java.util.Map;
 
 /**
  * Created by sanera on 12/07/2016.
+ * Filter Fishing Activity Reports functionality require Query to be generated Dynamically based on Filters provided.
+ * This class provides mapping information to Query Builder.
  */
 public class FilterMap {
 
@@ -41,15 +43,15 @@ public class FilterMap {
     public static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
     public static final String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
-   // public static final String FLUX_PARTY_TABLE_ALIAS = " fa.fluxReportDocument flux JOIN FETCH flux.fluxParty fp  ";
-   public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
+    public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
     public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE = "dataSource";
+    public static final String FAREPORT_ID = "faReportId";
 
-    private static EnumMap<Filters,FilterDetails> filterMappings = new EnumMap<>(Filters.class);
-    private static EnumMap<Filters,String> filterSortMappings = new EnumMap<>(Filters.class);
-    private static EnumMap<Filters,String> filterQueryParameterMappings = new EnumMap<>(Filters.class);
-    private static EnumMap<Filters,String> filterSortWhereMappings = new EnumMap<>(Filters.class);
+    private static EnumMap<Filters,FilterDetails> filterMappings = new EnumMap<>(Filters.class);// This contains Table Join and Where condition mapping for each Filter
+    private static EnumMap<Filters,String> filterSortMappings = new EnumMap<>(Filters.class); // For Sort criteria, which expression should be used
+    private static EnumMap<Filters,String> filterQueryParameterMappings = new EnumMap<>(Filters.class);  // Query parameter mapping
+    private static EnumMap<Filters,String> filterSortWhereMappings = new EnumMap<>(Filters.class); // Special case for star and end date sorting
 
 
     private FilterMap(){}
@@ -63,6 +65,9 @@ public class FilterMap {
     }
 
 
+    /**
+         Below method stores mapping for each Filter criteria. Mapping will provide information on table joins required for the criteria and Where conditions which needs to be applied for the criteria
+     */
     private static void populateFilterMappings(){
 
         filterMappings.put(Filters.SOURCE,new FilterDetails(" ","fa.source =:"+DATASOURCE));
@@ -86,14 +91,21 @@ public class FilterMap {
         filterMappings.put(Filters.MASTER,new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","(UPPER(cPerson.title) =:"+CONTACT_PERSON_NAME+" or " +
                 "UPPER(cPerson.givenName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.middleName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.familyName) =:"+CONTACT_PERSON_NAME+" " +
                 "or UPPER(cPerson.familyNamePrefix) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.nameSuffix) =:"+CONTACT_PERSON_NAME+ " or UPPER(cPerson.alias) =:"+CONTACT_PERSON_NAME+")"));
+        filterMappings.put(Filters.FA_REPORT_ID,new FilterDetails(" ","fa.id =:"+FAREPORT_ID));
 
     }
 
+    /**
+            For Sort by start date and End date, it needs special treatment. We need to use subQuery to make sure We pick up only first Start or End date from the list of dates.
+            Below method helps that special case
+     */
     private static void populateFilterSortWhereMappings(){
         filterSortWhereMappings.put(Filters.PERIOD_START,"dp1.startDate");
         filterSortWhereMappings.put(Filters.PERIOD_END,"dp1.endDate");
     }
 
+
+    // below method provides mapping which shoulbe used in order by clause. This will achieve sorting for the criteria
     private static void populateFilterSortMappings(){
         filterSortMappings.put(Filters.PERIOD_START,"dp.startDate");
         filterSortMappings.put(Filters.PERIOD_END,"dp.endDate");
@@ -107,6 +119,9 @@ public class FilterMap {
     }
 
 
+    /**
+     To put values in Query, Query Builder needs to know name used in query to be mapped to value.  Put that mapping here
+     */
     private static void populateFilterQueryParameterMappings(){
 
         filterQueryParameterMappings.put(Filters.SOURCE,DATASOURCE);
@@ -126,6 +141,7 @@ public class FilterMap {
         filterQueryParameterMappings.put(Filters.QUNTITY_MIN,QUNTITY_MIN);
         filterQueryParameterMappings.put(Filters.QUNTITY_MAX,QUNTITY_MAX);
         filterQueryParameterMappings.put(Filters.MASTER,CONTACT_PERSON_NAME);
+        filterQueryParameterMappings.put(Filters.FA_REPORT_ID,FAREPORT_ID);
 
     }
 
