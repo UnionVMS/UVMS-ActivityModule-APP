@@ -12,13 +12,13 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FaCatchDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+import src.main.java.eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
 
 import java.util.*;
@@ -155,5 +155,39 @@ public abstract class FaCatchMapper extends BaseMapper {
             aapProcessEntities.add(aapProcessEntity);
         }
         return aapProcessEntities;
+    }
+
+
+    /**
+     * Depending on the catch type (typeCode->FaCatchEntity) returns a DTO containing the sums of ONBOARD and
+     * LANDED fishQuantity and species.
+     *
+     * @param faCatches
+     * @return
+     */
+    public static Map<String, CatchSummaryListDTO> mapCatchesToSummaryDTO(List<Object[]> faCatches) {
+        Map<String, CatchSummaryListDTO> catchSummary = new HashMap<String, CatchSummaryListDTO>();
+        CatchSummaryListDTO landedSummary = new CatchSummaryListDTO();
+        CatchSummaryListDTO onBoardSummary = new CatchSummaryListDTO();
+        catchSummary.put("landed", landedSummary);
+        catchSummary.put("onboard", onBoardSummary);
+        if(CollectionUtils.isEmpty(faCatches)){
+            return catchSummary;
+        }
+
+        for(Object[] faCatch : faCatches){
+            String typeCode    = ((String) faCatch[0]).toUpperCase();
+            String speciesCode = ((String) faCatch[1]);
+            Double weight      = ((Double) faCatch[2]);
+            if("UNLOADED".equals(typeCode)){
+                landedSummary.addSpecieAndQuantity(speciesCode, weight);
+            } else if("ONBOARD".equals(typeCode)
+                    || "KEPT_IN_NET".equals(typeCode)
+                    || "TAKEN_ONBOARD".equals(typeCode)){
+                onBoardSummary.addSpecieAndQuantity(speciesCode, weight);
+            }
+        }
+
+        return catchSummary;
     }
 }

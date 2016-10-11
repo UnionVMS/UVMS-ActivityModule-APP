@@ -15,6 +15,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 /**
  * Created by padhyad on 5/3/2016.
@@ -22,6 +24,7 @@ import javax.persistence.EntityManager;
 public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
     private EntityManager em;
+    private static final String TRIP_ID = "tripId";
 
     public FaCatchDao(EntityManager em) {
         this.em = em;
@@ -30,5 +33,12 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
     @Override
     public EntityManager getEntityManager() {
         return em;
+    }
+
+    public List<Object[]> findFaCatchesByFishingTrip(String fTripID){
+        TypedQuery<Object[]> query = getEntityManager().createNamedQuery(FaCatchEntity.CATCHES_FOR_FISHING_TRIP, Object[].class);
+        query.setParameter(TRIP_ID, fTripID);
+        List<Object[]> entities = query.getResultList();
+        return entities;
     }
 }

@@ -19,12 +19,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.ContactPersonMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.StructuredAddressMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
@@ -34,6 +30,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import src.main.java.eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -67,6 +64,7 @@ public class FishingTripServiceBean implements FishingTripService {
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
     private FishingTripIdentifierDao fishingTripIdentifierDao;
+    private FaCatchDao faCatchDao;
 
     private static final String PREVIOUS = "PREVIOUS";
     private static final String NEXT = "NEXT";
@@ -74,9 +72,10 @@ public class FishingTripServiceBean implements FishingTripService {
     @PostConstruct
     public void init() {
         fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
-        vesselIdentifiersDao = new VesselIdentifiersDao(em);
-        fishingActivityDao = new FishingActivityDao(em);
-        faReportDocumentDao = new FaReportDocumentDao(em);
+        vesselIdentifiersDao     = new VesselIdentifiersDao(em);
+        fishingActivityDao       = new FishingActivityDao(em);
+        faReportDocumentDao      = new FaReportDocumentDao(em);
+        faCatchDao               = new FaCatchDao(em);
     }
 
     /**
@@ -492,4 +491,16 @@ public class FishingTripServiceBean implements FishingTripService {
 
         return messagesCounter;
     }
+
+    /**
+     * Retrieves all the catches for the given fishing trip;
+     *
+     * @param fishingTripId
+     * @return
+     */
+    public Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId){
+        return FaCatchMapper.INSTANCE.mapCatchesToSummaryDTO(faCatchDao.findFaCatchesByFishingTrip(fishingTripId));
+    }
+
+
 }

@@ -13,10 +13,23 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
-
+@NamedQueries({
+		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
+				query = "SELECT faCatch.typeCode, faCatch.speciesCode, sum(faCatch.weightMeasure) " +
+						"FROM FaCatchEntity faCatch " +
+						"JOIN faCatch.fishingActivity fishAct " +
+						"JOIN fishAct.faReportDocument fa " +
+						"JOIN fishAct.fishingTrips fishTrip " +
+						"JOIN fishTrip.fishingTripIdentifiers fishIdent " +
+						"WHERE fishIdent.tripId =:tripId " +
+						"GROUP BY faCatch.speciesCode, faCatch.typeCode " +
+						"ORDER BY faCatch.typeCode, faCatch.speciesCode")
+})
 @Entity
 @Table(name = "activity_fa_catch")
 public class FaCatchEntity implements Serializable {
+
+	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
@@ -52,11 +65,11 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "calculated_unit_quantity")
 	private Double calculatedUnitQuantity;
 
-	@Column(name = "weight_measure", precision = 17, scale = 17)
-	private Double weightMeasure;
-
 	@Column(name = "weight_measure_unit_code")
 	private String weightMeasureUnitCode;
+
+	@Column(name = "weight_measure", precision = 17, scale = 17)
+	private Double weightMeasure;
 
 	@Column(name = "calculated_weight_measure")
 	private Double calculatedWeightMeasure;
@@ -115,7 +128,6 @@ public class FaCatchEntity implements Serializable {
 	public int getId() {
 		return this.id;
 	}
-
 	public FishingActivityEntity getFishingActivity() {
 		return this.fishingActivity;
 	}
@@ -124,177 +136,135 @@ public class FaCatchEntity implements Serializable {
 			FishingActivityEntity fishingActivity) {
 		this.fishingActivity = fishingActivity;
 	}
-
 	public SizeDistributionEntity getSizeDistribution() {
 		return this.sizeDistribution;
 	}
-
 	public void setSizeDistribution(
 			SizeDistributionEntity sizeDistribution) {
 		this.sizeDistribution = sizeDistribution;
 	}
-
 	public String getTypeCode() {
 		return this.typeCode;
 	}
-
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
 	}
-
 	public String getTypeCodeListId() {
 		return this.typeCodeListId;
 	}
-
 	public void setTypeCodeListId(String typeCodeListId) {
 		this.typeCodeListId = typeCodeListId;
 	}
-
 	public String getSpeciesCode() {
 		return this.speciesCode;
 	}
-
 	public void setSpeciesCode(String speciesCode) {
 		this.speciesCode = speciesCode;
 	}
-
 	public String getSpeciesCodeListid() {
 		return this.speciesCodeListid;
 	}
-
 	public void setSpeciesCodeListid(String speciesCodeListid) {
 		this.speciesCodeListid = speciesCodeListid;
 	}
-
 	public Double getUnitQuantity() {
 		return this.unitQuantity;
 	}
-
 	public void setUnitQuantity(Double unitQuantity) {
 		this.unitQuantity = unitQuantity;
 	}
-
 	public Double getWeightMeasure() {
 		return this.weightMeasure;
 	}
-
 	public void setWeightMeasure(Double weightMeasure) {
 		this.weightMeasure = weightMeasure;
 	}
-
 	public String getWeightMeasureUnitCode() {
 		return this.weightMeasureUnitCode;
 	}
-
 	public void setWeightMeasureUnitCode(String weightMeasureUnitCode) {
 		this.weightMeasureUnitCode = weightMeasureUnitCode;
 	}
-
 	public Double getCalculatedWeightMeasure() {
 		return calculatedWeightMeasure;
 	}
-
 	public void setCalculatedWeightMeasure(Double calculatedWeightMeasure) {
 		this.calculatedWeightMeasure = calculatedWeightMeasure;
 	}
-
 	public String getUsageCode() {
 		return this.usageCode;
 	}
-
 	public void setUsageCode(String usageCode) {
 		this.usageCode = usageCode;
 	}
-
 	public String getUsageCodeListId() {
 		return this.usageCodeListId;
 	}
-
 	public void setUsageCodeListId(String usageCodeListId) {
 		this.usageCodeListId = usageCodeListId;
 	}
-
 	public String getWeighingMeansCode() {
 		return this.weighingMeansCode;
 	}
-
 	public void setWeighingMeansCode(String weighingMeansCode) {
 		this.weighingMeansCode = weighingMeansCode;
 	}
-
 	public String getWeighingMeansCodeListId() {
 		return this.weighingMeansCodeListId;
 	}
-
 	public void setWeighingMeansCodeListId(String weighingMeansCodeListId) {
 		this.weighingMeansCodeListId = weighingMeansCodeListId;
 	}
-
 	public Set<AapProcessEntity> getAapProcesses() {
 		return this.aapProcesses;
 	}
-
 	public void setAapProcesses(
 			Set<AapProcessEntity> aapProcesses) {
 		this.aapProcesses = aapProcesses;
 	}
-
 	public Set<FishingGearEntity> getFishingGears() {
 		return this.fishingGears;
 	}
-
 	public void setFishingGears(
 			Set<FishingGearEntity> fishingGears) {
 		this.fishingGears = fishingGears;
 	}
-
 	public Set<FluxLocationEntity> getFluxLocations() {
 		return this.fluxLocations;
 	}
-
 	public void setFluxLocations(
 			Set<FluxLocationEntity> fluxLocations) {
 		this.fluxLocations = fluxLocations;
 	}
-
 	public Set<FluxCharacteristicEntity> getFluxCharacteristics() {
 		return this.fluxCharacteristics;
 	}
-
 	public void setFluxCharacteristics(
 			Set<FluxCharacteristicEntity> fluxCharacteristics) {
 		this.fluxCharacteristics = fluxCharacteristics;
 	}
-
 	public Set<AapStockEntity> getAapStocks() {
 		return this.aapStocks;
 	}
-
 	public void setAapStocks(Set<AapStockEntity> aapStocks) {
 		this.aapStocks = aapStocks;
 	}
-
 	public Set<FishingTripEntity> getFishingTrips() {
 		return this.fishingTrips;
 	}
-
 	public void setFishingTrips(
 			Set<FishingTripEntity> fishingTrips) {
 		this.fishingTrips = fishingTrips;
 	}
-
 	public String getUnitQuantityCode() {
 		return unitQuantityCode;
 	}
-
 	public void setUnitQuantityCode(String unitQuantityCode) {
 		this.unitQuantityCode = unitQuantityCode;
 	}
-
 	public Double getCalculatedUnitQuantity() {
 		return calculatedUnitQuantity;
 	}
-
 	public void setCalculatedUnitQuantity(Double calculatedUnitQuantity) {
 		this.calculatedUnitQuantity = calculatedUnitQuantity;
 	}

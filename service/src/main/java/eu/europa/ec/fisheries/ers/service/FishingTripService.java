@@ -18,6 +18,9 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSum
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import src.main.java.eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
+
+import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -65,4 +68,12 @@ public interface FishingTripService {
      * @return MessageCountDTO
      */
     MessageCountDTO getMessageCountersForTripId(String tripId);
+
+    /**
+     * Retrieves all the catches for the given fishing trip;
+     *
+     * @param fishingTripId
+     * @return
+     */
+    Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId);
 }

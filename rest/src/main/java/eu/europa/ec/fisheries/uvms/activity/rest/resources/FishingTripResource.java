@@ -95,6 +95,19 @@ public class FishingTripResource extends UnionVMSResource {
     }
 
     @GET
+    @Path("/catches/{fishingTripId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
+    public Response getFishingTripCatchReports(@Context HttpServletRequest request,
+                                                 @Context HttpServletResponse response,
+                                                 @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+
+        LOG.info("Catches for fishing trip : "+fishingTripId);
+        return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
+    }
+
+    @GET
     @Path("/cronology/{tripId}/{count}")
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
