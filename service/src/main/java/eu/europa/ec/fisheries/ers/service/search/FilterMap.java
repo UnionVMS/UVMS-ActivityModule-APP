@@ -81,7 +81,7 @@ public class FilterMap {
         filterMappings.put(Filters.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )"));
         filterMappings.put(Filters.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode =:"+FISHING_GEAR));
         filterMappings.put(Filters.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod","faCatch.speciesCode =:"+SPECIES_CODE +" OR aprod.speciesCode =:"+SPECIES_CODE));
-        filterMappings.put(Filters.QUNTITY_MIN,new FilterDetails(FA_CATCH_TABLE_ALIAS+" JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod"," (faCatch.calculated_weight_measure  BETWEEN :"+QUNTITY_MIN ));
+        filterMappings.put(Filters.QUNTITY_MIN,new FilterDetails(FA_CATCH_TABLE_ALIAS+" JOIN FETCH faCatch.aapProcesses aprocess JOIN FETCH aprocess.aapProducts aprod"," (faCatch.calculatedWeightMeasure  BETWEEN :"+QUNTITY_MIN ));
         filterMappings.put(Filters.QUNTITY_MAX,new FilterDetails(" ","  :"+QUNTITY_MAX+") "));
         filterMappings.put(Filters.MASTER,new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","(UPPER(cPerson.title) =:"+CONTACT_PERSON_NAME+" or " +
                 "UPPER(cPerson.givenName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.middleName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.familyName) =:"+CONTACT_PERSON_NAME+" " +

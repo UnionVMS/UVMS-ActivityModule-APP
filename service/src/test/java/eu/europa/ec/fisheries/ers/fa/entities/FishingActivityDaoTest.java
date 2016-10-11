@@ -56,9 +56,9 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
         searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
-    //   searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
-      //  searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
-      /*  searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
+       searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
+       searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
+        searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
         searchCriteriaMap.put(Filters.PURPOSE, "9");
         searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
@@ -68,10 +68,10 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(Filters.SPECIES, "PLE");
         searchCriteriaMap.put(Filters.MASTER, "MARK");
         searchCriteriaMap.put(Filters.AREAS, "27.4.b");
-        searchCriteriaMap.put(Filters.PORT, "GBR");*/
+        searchCriteriaMap.put(Filters.PORT, "GBR");
 
-    //    searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
-      //  searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
+       searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
    //     searchCriteriaMap.put(Filters.WEIGHT_MEASURE, "TNE");
         searchCriteriaMap.put(Filters.SOURCE, "FLUX");
 
@@ -104,9 +104,9 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
         searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
-    //    searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
-      //  searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
-     /*   searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
+        searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
+        searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
+        searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
         searchCriteriaMap.put(Filters.PURPOSE, "9");
         searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
@@ -116,10 +116,10 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(Filters.SPECIES, "PLE");
         searchCriteriaMap.put(Filters.MASTER, "MARK");
         searchCriteriaMap.put(Filters.AREAS, "27.4.b");
-        searchCriteriaMap.put(Filters.PORT, "GBR");*/
+        searchCriteriaMap.put(Filters.PORT, "GBR");
 
-      //  searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
-        //searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
       //  searchCriteriaMap.put(Filters.WEIGHT_MEASURE, "TNE");
         searchCriteriaMap.put(Filters.SOURCE, "FLUX");
 
