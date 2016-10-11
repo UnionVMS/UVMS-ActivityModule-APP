@@ -34,11 +34,11 @@ public class FaReportCorrectionDTO implements Serializable, Comparable {
     private String correctionType;
 
     @JsonProperty("creationDate")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
     private Date creationDate;
 
     @JsonProperty("acceptedDate")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
     private Date acceptedDate;
 
     @JsonProperty("faReportIdentifiers")

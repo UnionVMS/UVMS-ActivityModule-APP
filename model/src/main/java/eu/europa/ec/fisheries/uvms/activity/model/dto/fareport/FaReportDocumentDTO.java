@@ -33,11 +33,11 @@ public class FaReportDocumentDTO implements Serializable {
     private String fmcMarker;
 
     @JsonProperty("acceptedDateTime")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
     private Date acceptedDateTime;
 
     @JsonProperty("creationDateTime")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
     private Date creationDateTime;
 
     @JsonProperty("fluxReportDocumentId")
