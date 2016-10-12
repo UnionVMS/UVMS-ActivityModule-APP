@@ -139,14 +139,6 @@
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
         </dependency>
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-			<artifactId>activity-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-			<artifactId>activity-model</artifactId>
-		</dependency>
 	</dependencies>
 
 	<profiles>
