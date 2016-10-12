@@ -26,7 +26,9 @@ import java.util.HashSet;
  */
 public class ActivityDataUtil {
 
-    public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID,  Date creationDateTime, String purposeCode, String purposeCodeListId,String purpose,String ownerFluxPartyId,String ownerFluxPartyName ){
+    private static List<Object[]> faCatches;
+
+    public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID, Date creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName ){
         FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
 
         FluxReportIdentifierEntity entity = new FluxReportIdentifierEntity();
@@ -196,5 +198,9 @@ public class ActivityDataUtil {
         identifier.setVesselIdentifierSchemeId(scheme_);
         identifiers.add(identifier);
         return identifiers;
+    }
+
+    public static List<Object[]> getFaCatches() {
+        return faCatches;
     }
 }

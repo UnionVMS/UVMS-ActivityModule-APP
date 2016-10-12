@@ -10,15 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.destination.DataSourceDestination;
-import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+import java.util.List;
+
 import static junit.framework.TestCase.assertNotNull;
 
 public class FaCatchDaoTest extends BaseErsFaDaoTest {
@@ -36,9 +34,16 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
     @Test
     @SneakyThrows
     public void testFindEntityById() throws Exception {
-
         dbSetupTracker.skipNextLaunch();
         FaCatchEntity entity = dao.findEntityById(FaCatchEntity.class, 1);
+        assertNotNull(entity);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testFindCatchesByTripId() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        List<Object[]> entity = dao.findFaCatchesByFishingTrip("NOR-TRP-20160517234053706");
         assertNotNull(entity);
     }
 

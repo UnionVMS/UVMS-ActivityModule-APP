@@ -656,4 +656,32 @@ public class MapperUtil {
         vesselIdentifiersList.addAll(vesselIdentifiersSet);
         return vesselIdentifiersList;
     }
+
+    public static List<Object[]> getFaCaches() {
+        List<Object[]> faCatches = new ArrayList<>();
+
+        Object[] faCatch_1 = new Object[3];
+        Object[] faCatch_2 = new Object[3];
+        Object[] faCatch_3 = new Object[3];
+        Object[] faCatch_4 = new Object[3];
+
+        faCatch_1[0] = "UNLOADED";
+        faCatch_2[0] = "UNLOADED";
+        faCatch_3[0] = "ONBOARD";
+        faCatch_4[0] = "KEPT_IN_NET";
+
+        faCatch_1[1] = "BEAGLE";
+        faCatch_2[1] = "SEAFOOD";
+        faCatch_3[1] = "BEAGLE";
+        faCatch_4[0] = "BEAGLE";
+
+        faCatch_1[2] = 50.1;
+        faCatch_2[2] = 100.1;
+        faCatch_3[2] = 100.1;
+        faCatch_4[0] = 150.1;
+
+        faCatches.addAll(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
+
+        return faCatches;
+    }
 }

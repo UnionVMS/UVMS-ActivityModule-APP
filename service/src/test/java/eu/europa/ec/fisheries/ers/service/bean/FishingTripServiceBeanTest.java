@@ -29,12 +29,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import src.main.java.eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -67,6 +70,9 @@ public class FishingTripServiceBeanTest {
 
     @Mock
     FishingTripDao fishingTripDao;
+
+    @Mock
+    FaCatchDao faCatchDao;
 
     @InjectMocks
     FishingTripServiceBean fishingTripService;
@@ -239,5 +245,25 @@ public class FishingTripServiceBeanTest {
         assertEquals(3, fishingTripSummaryViewDTO.getActivityReports().size());
 
     }
+
+
+    @Test
+    @SneakyThrows
+    public void testRetreiveCachesByTripId() throws ServiceException {
+
+        when(faCatchDao.findFaCatchesByFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFaCaches());
+        //Trigger
+        Map<String, CatchSummaryListDTO> faCatchesMap =fishingTripService.retrieveFaCatchesForFishingTrip("NOR-TRP-20160517234053706");
+        //Verify
+        Mockito.verify(faCatchDao, Mockito.times(1)).findFaCatchesByFishingTrip(Mockito.any(String.class));
+
+        assertNotNull(faCatchesMap.get("landed"));
+        assertNotNull(faCatchesMap.get("onboard"));
+        assertEquals(2, faCatchesMap.get("landed").getSpeciesList().size());
+        assertEquals(2, faCatchesMap.get("onboard").getSpeciesList().size());
+        assertEquals((Double) 150.2, faCatchesMap.get("landed").getTotal());
+        assertEquals((Double) 200.2, faCatchesMap.get("onboard").getTotal());
+    }
+
 
 }
