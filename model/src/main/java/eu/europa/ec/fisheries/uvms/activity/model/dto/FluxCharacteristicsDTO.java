@@ -13,9 +13,10 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 import java.util.Date;
 
@@ -26,7 +27,7 @@ import java.util.Date;
 public class FluxCharacteristicsDTO {
 
     @JsonProperty("valueDateTime")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date valueDateTime;
 
     @JsonProperty("valueDateTime")

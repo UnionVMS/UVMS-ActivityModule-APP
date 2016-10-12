@@ -14,11 +14,13 @@
         <mockito.version>1.10.19</mockito.version>
         <jaxb2.version>0.9.4</jaxb2.version>
         <mapstruct.version>1.0.0.Final</mapstruct.version>
+		<jackson.version>2.6.0</jackson.version>
         <sl4j.version>1.7.12</sl4j.version>
         <logback.version>1.1.2</logback.version>
         <logback.core.version>1.1.2</logback.core.version>
 		<maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
+		<uvms.commons.version>2.0.12</uvms.commons.version>
     </properties>
 
     <dependencies>
@@ -59,7 +61,19 @@
             <artifactId>jackson-annotations</artifactId>
             <version>2.7.1</version>
         </dependency>
+		
+		<dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>uvms-commons</artifactId>
+			 <version>${uvms.commons.version}</version>
+        </dependency>
+			
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

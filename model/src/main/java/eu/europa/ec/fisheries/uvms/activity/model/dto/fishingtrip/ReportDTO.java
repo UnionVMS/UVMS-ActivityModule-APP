@@ -15,8 +15,11 @@ package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityDTO;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +29,8 @@ import java.util.List;
 public class ReportDTO extends FishingActivityDTO{
 
     @JsonProperty("faReportAcceptedDateTime")
-    private String faReportAcceptedDateTime;
+    @JsonSerialize(using = CustomDateSerializer.class)
+    private Date faReportAcceptedDateTime;
 
     @JsonProperty("faReportDocumentType")
     private String faReportDocumentType;
@@ -49,12 +53,12 @@ public class ReportDTO extends FishingActivityDTO{
     }
 
     @JsonProperty("faReportAcceptedDateTime")
-   public String getFaReportAcceptedDateTime() {
+   public Date getFaReportAcceptedDateTime() {
         return faReportAcceptedDateTime;
     }
 
     @JsonProperty("faReportAcceptedDateTime")
-    public void setFaReportAcceptedDateTime(String faReportAcceptedDateTime) {
+    public void setFaReportAcceptedDateTime(Date faReportAcceptedDateTime) {
         this.faReportAcceptedDateTime = faReportAcceptedDateTime;
     }
 

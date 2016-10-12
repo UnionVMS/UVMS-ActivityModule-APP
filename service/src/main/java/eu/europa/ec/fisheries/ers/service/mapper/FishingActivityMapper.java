@@ -15,7 +15,6 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -235,11 +234,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
 
-    protected String getAcceptedDateTime(FishingActivityEntity entity){
+    protected Date getAcceptedDateTime(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null ){
             return null;
         }
-        return DateUtils.parseUTCDateToString(entity.getFaReportDocument().getAcceptedDatetime());
+        return entity.getFaReportDocument().getAcceptedDatetime();
     }
 
    protected List<FluxReportIdentifierDTO> getUniqueId(FishingActivityEntity entity){

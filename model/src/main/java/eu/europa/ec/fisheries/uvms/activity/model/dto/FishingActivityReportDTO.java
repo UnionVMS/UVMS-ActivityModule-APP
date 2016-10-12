@@ -13,9 +13,10 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -65,11 +66,11 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private List<Double> quantity;
 
     @JsonProperty("startDate")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date startDate;
 
     @JsonProperty("endDate")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date endDate;
 
     @JsonProperty("hasCorrection")

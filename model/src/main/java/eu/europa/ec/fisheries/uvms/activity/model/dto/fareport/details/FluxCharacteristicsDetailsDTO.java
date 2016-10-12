@@ -13,9 +13,10 @@
 
 package eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 import java.util.Date;
 
@@ -32,7 +33,7 @@ public class FluxCharacteristicsDetailsDTO {
     private Double measure;
 
     @JsonProperty("dateTime")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date dateTime;
 
     @JsonProperty("indicator")
