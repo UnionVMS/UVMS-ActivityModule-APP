@@ -10,9 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "activity_flux_characteristic")
@@ -31,9 +31,14 @@ public class FluxCharacteristicEntity implements Serializable {
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "flux_location_id")
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "specified_flux_location_id")
 	private FluxLocationEntity fluxLocation;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "specified_flap_document_id")
+	private FlapDocumentEntity flapDocument;
+
 
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
@@ -233,5 +238,13 @@ public class FluxCharacteristicEntity implements Serializable {
 
 	public void setCalculatedValueQuantity(Double calculatedValueQuantity) {
 		this.calculatedValueQuantity = calculatedValueQuantity;
+	}
+
+	public FlapDocumentEntity getFlapDocument() {
+		return flapDocument;
+	}
+
+	public void setFlapDocument(FlapDocumentEntity flapDocument) {
+		this.flapDocument = flapDocument;
 	}
 }

@@ -85,8 +85,8 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "system_id")
 	private String systemId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
-	private Set<FluxCharacteristicEntity> fluxCharacteristics;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxLocation")
+	private FluxCharacteristicEntity fluxCharacteristic;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses;
@@ -116,7 +116,7 @@ public class FluxLocationEntity implements Serializable {
 		this.jurisdictionCountryCode = jurisdictionCountryCode;
 		this.altitude = altitude;
 		this.systemId = systemId;
-		this.fluxCharacteristics = fluxCharacteristics;
+
 		this.structuredAddresses = structuredAddresses;
 	}
 
@@ -270,14 +270,6 @@ public class FluxLocationEntity implements Serializable {
 		this.systemId = systemId;
 	}
 
-	public Set<FluxCharacteristicEntity> getFluxCharacteristics() {
-		return this.fluxCharacteristics;
-	}
-
-	public void setFluxCharacteristics(
-			Set<FluxCharacteristicEntity> fluxCharacteristics) {
-		this.fluxCharacteristics = fluxCharacteristics;
-	}
 
 	public Set<StructuredAddressEntity> getStructuredAddresses() {
 		return this.structuredAddresses;

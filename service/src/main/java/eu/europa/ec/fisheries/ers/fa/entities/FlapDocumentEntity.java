@@ -29,8 +29,15 @@ public class FlapDocumentEntity implements Serializable {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishing_activity_id")
+    private FishingActivityEntity fishingActivity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vessel_transport_means_id")
     private VesselTransportMeansEntity vesselTransportMeans;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "flapDocument")
+    private FluxCharacteristicEntity fluxCharacteristic;
 
     @Column(name = "flap_document_id")
     private String flapDocumentId;
@@ -64,5 +71,21 @@ public class FlapDocumentEntity implements Serializable {
 
     public void setFlapDocumentSchemeId(String flapDocumentSchemeId) {
         this.flapDocumentSchemeId = flapDocumentSchemeId;
+    }
+
+    public FishingActivityEntity getFishingActivity() {
+        return fishingActivity;
+    }
+
+    public void setFishingActivity(FishingActivityEntity fishingActivity) {
+        this.fishingActivity = fishingActivity;
+    }
+
+    public FluxCharacteristicEntity getFluxCharacteristic() {
+        return fluxCharacteristic;
+    }
+
+    public void setFluxCharacteristic(FluxCharacteristicEntity fluxCharacteristic) {
+        this.fluxCharacteristic = fluxCharacteristic;
     }
 }

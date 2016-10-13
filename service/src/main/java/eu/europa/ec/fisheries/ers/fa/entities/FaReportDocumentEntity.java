@@ -44,17 +44,17 @@ public class FaReportDocumentEntity implements Serializable {
 	private int id;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "vessel_transport_means_id", nullable = false)
+	@JoinColumn(name = "vessel_transport_means_id")
 	private VesselTransportMeansEntity vesselTransportMeans;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "flux_report_document_id", nullable = false)
 	private FluxReportDocumentEntity fluxReportDocument;
 
-	@Column(name = "type_code", nullable = false)
+	@Column(name = "type_code")
 	private String typeCode;
 
-	@Column(name = "type_code_list_id", nullable = false)
+	@Column(name = "type_code_list_id")
 	private String typeCodeListId;
 
 	@Temporal(TemporalType.TIMESTAMP)
