@@ -19,8 +19,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.mockito.stubbing.Answer;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.*;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -292,9 +292,16 @@ public class MapperUtil {
         TextType staircaseNumber = getTextType("3456");
         TextType floorIdentification = getTextType("8888");
         TextType roomIdentification = getTextType("555");
-        StructuredAddress structuredAddress = new StructuredAddress(id, postcodeCode, buildingName, streetName,
+        TextType postalArea = getTextType("123");
+      //  StructuredAddress structuredAddress = new StructuredAddress();
+        StructuredAddress structuredAddress = new StructuredAddress(id, postcodeCode, buildingName,
+                streetName, cityName, countryID, citySubDivisionName, countryName, countrySubDivisionName, blockName, plotIdentification,
+                postOfficeBox, buildingNumber, staircaseNumber, floorIdentification, roomIdentification,postalArea) ;
+
+
+        /*    StructuredAddress structuredAddress = new StructuredAddress(id, postcodeCode, buildingName, streetName,
                 cityName, countryID, citySubDivisionName, countryName, countrySubDivisionName, blockName, plotIdentification,
-                postOfficeBox, buildingNumber, staircaseNumber, floorIdentification, roomIdentification);
+                postOfficeBox, buildingNumber, staircaseNumber, floorIdentification, roomIdentification);*/
         return structuredAddress;
     }
 
@@ -316,8 +323,9 @@ public class MapperUtil {
         TextType nameSuffix = getTextType("Test Suffix");
         CodeType genderCode = getCodeType("Gender", "4ryf65-fhtfyd-thfey45-tu5r7ght");
         TextType alias = getTextType("Test Alias");
-        ContactPerson contactPerson = new ContactPerson(title, givenName, middleName, familyNamePrefix,
-                familyName, nameSuffix, genderCode, alias, null, null, null, null);
+       // ContactPerson contactPerson = new ContactPerson();
+           ContactPerson contactPerson = new ContactPerson(title, givenName, middleName, familyNamePrefix,
+                familyName, nameSuffix, genderCode, alias, null, null, null, null,null,null,null);
         return contactPerson;
     }
 
@@ -392,7 +400,9 @@ public class MapperUtil {
         CodeType valueCode = getCodeType("Code type 1", "4fhry5-thfyr85-67thf-5htr84");
         TextType value = getTextType("This is sample Text");
         QuantityType valueQuantity = getQuantityType(123);
-        GearCharacteristic gearCharacteristic = new GearCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, value, valueQuantity);
+
+        List<FLUXLocation> specifiedFluxLocations=Arrays.asList(getFluxLocation());
+       GearCharacteristic gearCharacteristic = new GearCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, value, valueQuantity,specifiedFluxLocations);
         return gearCharacteristic;
     }
 
@@ -405,7 +415,9 @@ public class MapperUtil {
         CodeType valueCode = getCodeType("Code Value 1", "57tr4t3yf-ght43yrf-ght56yr5u-ght75365h");
         List<TextType> values = Arrays.asList(getTextType("This is sample value"));
         QuantityType valueQuantity =getQuantityType(123);
-        FLUXCharacteristic fluxCharacteristic = new FLUXCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, values, valueQuantity);
+        List<FLUXLocation> specifiedFLUXLocations=null;
+         List<FLAPDocument> relatedFLAPDocuments=Arrays.asList(getFlapDocument());
+        FLUXCharacteristic fluxCharacteristic = new FLUXCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, values, valueQuantity,specifiedFLUXLocations,relatedFLAPDocuments);
         return fluxCharacteristic;
     }
 
@@ -447,7 +459,7 @@ public class MapperUtil {
         List<TextType> names = Arrays.asList(getTextType("This is sample name"));
         IDType sovereignRightsCountryID = getIdType("sovereign rights id 1", "fhty58-gh5486t-5t5jf8-t58rjewe");
         IDType jurisdictionCountryID = getIdType("jurisdiction country id 1", "fht1y58-gh5876t-5t3jf8-t58rjewe");
-        List<FLUXCharacteristic> applicableFLUXCharacteristics = Arrays.asList(getFluxCharacteristics());
+        List<FLUXCharacteristic> applicableFLUXCharacteristics = null;
         List<StructuredAddress> postalStructuredAddresses = Arrays.asList(getStructuredAddress());
         StructuredAddress physicalStructuredAddress = getStructuredAddress();
 
@@ -531,7 +543,7 @@ public class MapperUtil {
         CodeType speciesTargetCode = getCodeType("Species code 1", "47rfh-5hry4-thfur75-4hf743");
         QuantityType operationsQuantity = getQuantityType(100);
         MeasureType fishingDurationMeasure = getMeasureType(500, "C62", "4hr2yf0-t583thf-6jgttue8-6jtie844");
-        FLAPDocument specifiedFLAPDocument = getFlapDocument();
+        List<FLAPDocument> specifiedFLAPDocument = Arrays.asList(getFlapDocument());
         VesselStorageCharacteristic sourceVesselStorageCharacteristic = getVesselStorageCharacteristic();
         VesselStorageCharacteristic destinationVesselStorageCharacteristic = getVesselStorageCharacteristic();
         List<FACatch> specifiedFACatches = Arrays.asList(getFaCatch());
@@ -541,11 +553,16 @@ public class MapperUtil {
         List<FishingGear> specifiedFishingGears = Arrays.asList(getFishingGear());
         List<DelimitedPeriod> specifiedDelimitedPeriods = Arrays.asList(getDelimitedPeriod());
         FishingTrip specifiedFishingTrip = getFishingTrip();
-        VesselTransportMeans relatedVesselTransportMeans = getVesselTransportMeans();
-        FishingActivity fishingActivity = new FishingActivity(ids, typeCode, occurrenceDateTime, reasonCode, vesselRelatedActivityCode, fisheryTypeCode,
-                speciesTargetCode, operationsQuantity, fishingDurationMeasure, specifiedFACatches, relatedFLUXLocations, specifiedGearProblems,
-                specifiedFLUXCharacteristics, specifiedFishingGears, sourceVesselStorageCharacteristic, destinationVesselStorageCharacteristic,
-                null, specifiedFLAPDocument, specifiedDelimitedPeriods, specifiedFishingTrip, relatedVesselTransportMeans);
+        List<VesselTransportMeans> relatedVesselTransportMeans = Arrays.asList(getVesselTransportMeans());
+        //FishingActivity fishingActivity = new FishingActivity();
+
+        FishingActivity fishingActivity = new FishingActivity (ids, typeCode, occurrenceDateTime, reasonCode, vesselRelatedActivityCode, fisheryTypeCode, speciesTargetCode, operationsQuantity, fishingDurationMeasure,
+                specifiedFACatches, relatedFLUXLocations, specifiedGearProblems, specifiedFLUXCharacteristics,
+                specifiedFishingGears, sourceVesselStorageCharacteristic, destinationVesselStorageCharacteristic,
+        null, specifiedFLAPDocument, specifiedDelimitedPeriods, specifiedFishingTrip,
+                relatedVesselTransportMeans) ;
+
+
         return fishingActivity;
     }
 

@@ -4,14 +4,14 @@
 <!-- ====================================================================== -->
 <!--
 Schema agency:  UN/CEFACT
-Schema version: 9.5
-Schema date:    05November2015
+Schema version: 9.6
+Schema date:    21 September 2016
 
 Code list name:     ISO 3 Alpha Currency Code
 Code list agency:   ISO
 Code list version:  2012-08-31
 
-Copyright (C) UN/CEFACT (2015). All Rights Reserved.
+Copyright (C) UN/CEFACT (2016). All Rights Reserved.
 
 This document and translations of it may be copied and furnished to others, 
 and derivative works that comment on or otherwise explain it or assist 
@@ -34,7 +34,7 @@ BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL
 NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR 
 FITNESS FOR A PARTICULAR PURPOSE.
 -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:clm5ISO42173A="urn:un:unece:uncefact:codelist:standard:ISO:ISO3AlphaCurrencyCode:2012-08-31" xmlns:ccts="urn:un:unece:uncefact:documentation:standard:CoreComponentsTechnicalSpecification:2" targetNamespace="urn:un:unece:uncefact:codelist:standard:ISO:ISO3AlphaCurrencyCode:2012-08-31" elementFormDefault="qualified" attributeFormDefault="unqualified" version="9.5">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:clm5ISO42173A="urn:un:unece:uncefact:codelist:standard:ISO:ISO3AlphaCurrencyCode:2012-08-31" xmlns:ccts="urn:un:unece:uncefact:documentation:standard:CoreComponentsTechnicalSpecification:2" targetNamespace="urn:un:unece:uncefact:codelist:standard:ISO:ISO3AlphaCurrencyCode:2012-08-31" elementFormDefault="qualified" attributeFormDefault="unqualified" version="9.6">
 <!-- ======================================================================= -->
 <!-- ===== Element Declarations                                        ===== -->
 <!-- ======================================================================= -->
@@ -181,6 +181,13 @@ FITNESS FOR A PARTICULAR PURPOSE.
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
+      <xsd:enumeration value="BOV">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>Mvdol</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
       <xsd:enumeration value="BRL">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
@@ -209,7 +216,7 @@ FITNESS FOR A PARTICULAR PURPOSE.
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="BYR">
+      <xsd:enumeration value="BYN">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>Belarussian Ruble</ccts:Name>
@@ -255,6 +262,13 @@ FITNESS FOR A PARTICULAR PURPOSE.
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>WIR Franc</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CLF">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>Unidad de Fomento</ccts:Name>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
@@ -346,13 +360,6 @@ FITNESS FOR A PARTICULAR PURPOSE.
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>Algerian Dinar</ccts:Name>
-          </xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="EEK">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">
-            <ccts:Name>Kroon</ccts:Name>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
@@ -650,13 +657,6 @@ FITNESS FOR A PARTICULAR PURPOSE.
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="LVL">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">
-            <ccts:Name>Latvian Lats</ccts:Name>
-          </xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
       <xsd:enumeration value="LYD">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
@@ -737,7 +737,7 @@ FITNESS FOR A PARTICULAR PURPOSE.
       <xsd:enumeration value="MWK">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
-            <ccts:Name>Kwacha</ccts:Name>
+            <ccts:Name>Malawi Kwacha</ccts:Name>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
@@ -748,6 +748,13 @@ FITNESS FOR A PARTICULAR PURPOSE.
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
+      <xsd:enumeration value="MXV">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>Mexican Unidad de Inversion (UDI)</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
       <xsd:enumeration value="MYR">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
@@ -755,7 +762,7 @@ FITNESS FOR A PARTICULAR PURPOSE.
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="MZM">
+      <xsd:enumeration value="MZN">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>Mozambique Metical</ccts:Name>
@@ -821,7 +828,7 @@ FITNESS FOR A PARTICULAR PURPOSE.
       <xsd:enumeration value="PEN">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
-            <ccts:Name>Nuevo Sol</ccts:Name>
+            <ccts:Name>Sol</ccts:Name>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
@@ -864,14 +871,6 @@ FITNESS FOR A PARTICULAR PURPOSE.
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>Qatari Rial</ccts:Name>
-          </xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="ROL">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">
-            <ccts:Name>old Romanian Leu</ccts:Name>
-            <ccts:Description>This currency code is valid until 30 June 2005, but the currency itself will remain legal until 31 December 2006 when it will be withdrawn.</ccts:Description>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
@@ -1093,6 +1092,13 @@ FITNESS FOR A PARTICULAR PURPOSE.
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
+      <xsd:enumeration value="USN">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>US Dollar (Next day)</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
       <xsd:enumeration value="UYI">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
@@ -1117,7 +1123,7 @@ FITNESS FOR A PARTICULAR PURPOSE.
       <xsd:enumeration value="VEF">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
-            <ccts:Name>Bolivar</ccts:Name>
+            <ccts:Name>Bolívar</ccts:Name>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
@@ -1160,6 +1166,34 @@ FITNESS FOR A PARTICULAR PURPOSE.
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>Gold</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="XBA">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>Bond Markets Units European Composite Unit (EURCO)</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="XBB">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>European Monetary Unit (E.M.U.-6)</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="XBC">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>European Unit of Account 9 (E.U.A.-9)</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="XBD">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>European Unit of Account 17 (E.U.A.-17)</ccts:Name>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
@@ -1212,10 +1246,24 @@ FITNESS FOR A PARTICULAR PURPOSE.
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
+      <xsd:enumeration value="XTS">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>Codes specifically reserved for testing purposes</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
       <xsd:enumeration value="XUA">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>ADB Unit of Account</ccts:Name>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="XXX">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">
+            <ccts:Name>The codes assigned for transactions where no currency is involved</ccts:Name>
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>

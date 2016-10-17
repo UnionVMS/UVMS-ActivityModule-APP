@@ -21,7 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessage
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;

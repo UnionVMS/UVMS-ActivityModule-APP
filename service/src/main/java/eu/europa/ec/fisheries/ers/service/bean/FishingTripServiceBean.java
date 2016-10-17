@@ -30,7 +30,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import src.main.java.eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;

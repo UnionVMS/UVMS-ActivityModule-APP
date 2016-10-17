@@ -36,13 +36,13 @@ public class StructuredAddressEntity implements Serializable {
 	@Column(name = "building_name", length = 1000)
 	private String buildingName;
 
-	@Column(name = "city_name", nullable = false)
+	@Column(name = "city_name")
 	private String cityName;
 
 	@Column(name = "city_subdivision_name")
 	private String citySubdivisionName;
 
-	@Column(name = "country", nullable = false)
+	@Column(name = "country")
 	private String country;
 
 	@Column(name = "country_name")
@@ -60,7 +60,7 @@ public class StructuredAddressEntity implements Serializable {
 	@Column(name = "post_office_box")
 	private String postOfficeBox;
 
-	@Column(name = "postcode", nullable = false)
+	@Column(name = "postcode")
 	private String postcode;
 
 	@Column(name = "streetname", length = 1000)

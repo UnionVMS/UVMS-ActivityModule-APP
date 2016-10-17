@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;

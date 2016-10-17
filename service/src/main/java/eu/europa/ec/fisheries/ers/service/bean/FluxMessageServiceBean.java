@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;

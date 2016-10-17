@@ -30,7 +30,7 @@
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
         <activity.model>0.5.6-SNAPSHOT</activity.model>
-        <activity.model.fa>0.5.4</activity.model.fa>
+        <activity.model.fa>0.5.5-SNAPSHOT</activity.model.fa>
         <activity.model.mdr>0.5.4</activity.model.mdr>
 
         <!-- Other modules dependencies -->

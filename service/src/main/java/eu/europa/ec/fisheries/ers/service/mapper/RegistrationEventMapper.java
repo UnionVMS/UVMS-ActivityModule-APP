@@ -18,12 +18,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.RegistrationEvent;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.RegistrationLocation;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.TextType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Date;
 import java.util.List;
 
 /**

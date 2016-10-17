@@ -13,8 +13,10 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._18.VesselCountry;
-import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
+
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
+import      un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
+//import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;

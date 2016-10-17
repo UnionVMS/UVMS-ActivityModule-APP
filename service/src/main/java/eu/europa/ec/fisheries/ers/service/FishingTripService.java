@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSum
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import src.main.java.eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
 import java.util.Map;
 

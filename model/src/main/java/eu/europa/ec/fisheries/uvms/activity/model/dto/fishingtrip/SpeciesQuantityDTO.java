@@ -1,4 +1,4 @@
-package src.main.java.eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
+package eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**

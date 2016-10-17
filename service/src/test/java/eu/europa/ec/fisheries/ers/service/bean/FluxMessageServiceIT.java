@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import un.unece.uncefact.data.standard.fluxfareportmessage._1.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.EJB;
 import javax.xml.bind.JAXBContext;
