@@ -133,12 +133,21 @@ public class ActivityServiceBean implements ActivityService {
 
     // Query to calculate total number of resultset
     private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
-    log.info(" We need to get Total count of the resultset without considering pagination");
-     if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty()){
-            return fishingActivityDao.getCountForFishingActivityList();
+    log.info(" Get total pages count");
+        int countOfRecords ;
+        int totalNoOfPages =1;
+        if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty()){
+         countOfRecords=  fishingActivityDao.getCountForFishingActivityList();
         }else{
-            return fishingActivityDao.getCountForFishingActivityListByQuery(query);
+         countOfRecords=  fishingActivityDao.getCountForFishingActivityListByQuery(query);
         }
+        log.info(" countOfRecords:"+countOfRecords);
+        Pagination pagination= query.getPagination();
+        int listSize=pagination.getListSize();
+        if(pagination !=null){
+            totalNoOfPages = (countOfRecords+listSize-1)/listSize;
+       }
+        return totalNoOfPages;
     }
 
 }

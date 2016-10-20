@@ -48,7 +48,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return em;
     }
 
-    public List<FishingActivityEntity> getFishingActivityList(){
+    public List<FishingActivityEntity> getFishingActivityList() throws ServiceException {
         return getFishingActivityList(null);
     }
 
@@ -63,12 +63,18 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return query.getResultList();
     }
 
-    public List<FishingActivityEntity> getFishingActivityList(Pagination pagination)  {
+    public List<FishingActivityEntity> getFishingActivityList(Pagination pagination) throws ServiceException {
         LOG.info("There are no Filters present to filter Fishing Activity Data. so, fetch all the Fishing Activity Records");
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA, FishingActivityEntity.class);
+
         if(pagination!=null) {
-            typedQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            typedQuery.setMaxResults(pagination.getListSize());
+            int listSize =pagination.getListSize();
+            int pageNumber = pagination.getPage();
+            if(listSize ==0 || pageNumber ==0)
+                  throw new ServiceException("Error is pagination list size or page number.Please enter valid values. List Size provided: "+listSize + " Page number:"+pageNumber);
+
+            typedQuery.setFirstResult(listSize * (pageNumber - 1));
+            typedQuery.setMaxResults(listSize);
         }
 
         return typedQuery.getResultList();
