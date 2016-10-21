@@ -79,7 +79,6 @@ public class MessageConsumerBean implements MessageListener {
                 case GET_FLUX_MDR_ENTITY : 
                 	 getFLUXFMDRSyncMessageEvent.fire(new EventMessage(textMessage));
                      break;
-
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());
                    // errorEvent.fire(new EventMessage(textMessage, "[ Request method " + request.getMethod().name() + "  is not implemented ]"));

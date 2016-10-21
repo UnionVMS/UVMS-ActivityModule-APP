@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessage
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
@@ -55,13 +56,20 @@ public class ActivityEventServiceBean implements EventService {
 
             FLUXFAReportMessage fluxFAReportMessage =extractFLUXFAReportMessage(baseRequest.getRequest());
 
-            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments(), FaReportSourceEnum.FLUX);
+            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments(), extractPluginType(baseRequest.getPluginType()));
 
         } catch (ModelMarshallException e) {
             LOG.error("Exception while trying to unmarshall SetFLUXFAReportMessageRequest in Activity",e);
         } catch (ServiceException e) {
             LOG.error("Exception while trying to saveFishingActivityReportDocuments in Activity",e);
         }
+    }
+
+    private FaReportSourceEnum extractPluginType(PluginType pluginType) {
+        if(pluginType == null){
+            return FaReportSourceEnum.FLUX;
+        }
+        return pluginType == PluginType.FLUX ? FaReportSourceEnum.FLUX : FaReportSourceEnum.MANUAL;
     }
 
     public FLUXFAReportMessage extractFLUXFAReportMessage(String request) throws ModelMarshallException{

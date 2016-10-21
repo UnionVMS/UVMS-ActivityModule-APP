@@ -1,13 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <xs:schema xmlns="http://europa.eu/ec/fisheries/uvms/activity/model/schemas"
-	id="FISH2015_SPATIAL2015" targetNamespace="http://europa.eu/ec/fisheries/uvms/activity/model/schemas"
-	version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+		   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		   id="FISH2015_SPATIAL2015"
+		   targetNamespace="http://europa.eu/ec/fisheries/uvms/activity/model/schemas"
+		   version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
 	<xs:include schemaLocation="Activity_CommonTypes.xsd"/>
 
 	<xs:complexType name="ActivityModuleRequest" abstract="true">
 		<xs:sequence>
-			<xs:element name="method" type="ActivityModuleMethod"
-				minOccurs="1" />
+			<xs:element name="method" type="ActivityModuleMethod" minOccurs="1" />
+			<xs:element name="pluginType" type="PluginType" default="FLUX" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -53,5 +56,17 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
+
+
+	<xsd:simpleType name="PluginType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="EMAIL"/>
+			<xsd:enumeration value="SATELLITE_RECEIVER"/>
+			<xsd:enumeration value="FLUX"/>
+			<xsd:enumeration value="OTHER"/>
+			<xsd:enumeration value="NAF"/>
+			<xsd:enumeration value="MANUAL"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 
 </xs:schema>
