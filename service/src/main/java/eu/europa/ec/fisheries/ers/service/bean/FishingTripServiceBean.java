@@ -14,19 +14,29 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.google.common.collect.ImmutableMap;
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
+import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
+import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.ContactPersonMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.StructuredAddressMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -59,6 +69,9 @@ public class FishingTripServiceBean implements FishingTripService {
 
     @EJB
     private AssetsMessageConsumerBean activityConsumer;
+
+    @EJB
+    private SpatialModuleService spatialModule;
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
@@ -355,14 +368,24 @@ public class FishingTripServiceBean implements FishingTripService {
 
     // Get data for Fishing Trip summary view
     @Override
-    public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId) throws ServiceException {
+    public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException {
 
         List<ReportDTO> reportDTOList = new ArrayList<>();
         // get short summary of Fishing Trip
         Map<String, FishingActivityTypeDTO> summary = new HashMap<>();
         // All Activity Reports and related data  for Fishing Trip
-        populateFishingActivityReportListAndSummary(fishingTripId, reportDTOList, summary);
+        Geometry multipolygon = getRestrictedAreaGeom(datasets);
+        populateFishingActivityReportListAndSummary(fishingTripId, reportDTOList, summary, multipolygon);
         return  populateFishingTripSummary(fishingTripId, reportDTOList, summary);
+    }
+
+    private Geometry getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
+        if (datasets == null || datasets.isEmpty()) {
+            return null;
+        }
+        List<AreaIdentifierType> areaIdentifierTypes =  UsmUtils.convertDataSetToAreaId(datasets);
+        String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
+        return GeometryUtils.wktToGeom(areaWkt);
     }
 
     /**
@@ -387,8 +410,8 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     private void populateFishingActivityReportListAndSummary(String fishingTripId, List<ReportDTO> reportDTOList,
-                                                                     Map<String, FishingActivityTypeDTO> summary
-                                                                    ) throws ServiceException {
+                                                             Map<String, FishingActivityTypeDTO> summary,
+                                                             Geometry multipolygon) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList;
         try {
             fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId);
@@ -402,8 +425,16 @@ public class FishingTripServiceBean implements FishingTripService {
         }
 
         for (FishingActivityEntity activityEntity : fishingActivityList) {
-            ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
-            if (ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
+            ReportDTO reportDTO = null;
+            if (multipolygon != null) {
+                if (activityEntity.getGeom().intersects(multipolygon)) {
+                    reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
+                }
+            } else {
+                reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
+            }
+
+            if (reportDTO != null && ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
                 // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
                 populateSummaryMap(reportDTO, summary);
             }

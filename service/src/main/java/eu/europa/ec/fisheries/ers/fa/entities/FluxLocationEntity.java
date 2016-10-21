@@ -10,6 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import com.vividsolutions.jts.geom.Geometry;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -22,6 +25,10 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	@Type(type = "org.hibernate.spatial.GeometryType")
+	@Column(name = "geom")
+	private Geometry geom;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
@@ -294,6 +301,14 @@ public class FluxLocationEntity implements Serializable {
 
 	public void setNameLanguageId(String nameLanguageId) {
 		this.nameLanguageId = nameLanguageId;
+	}
+
+	public Geometry getGeom() {
+		return geom;
+	}
+
+	public void setGeom(Geometry geom) {
+		this.geom = geom;
 	}
 
 	@Override

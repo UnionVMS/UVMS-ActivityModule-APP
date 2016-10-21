@@ -19,6 +19,9 @@ import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptio
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
@@ -55,6 +58,9 @@ public class FishingActivityResource extends UnionVMSResource {
 
     @EJB
     private ActivityService activityService;
+
+    @EJB
+    private USMService usmService;
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
@@ -105,15 +111,19 @@ public class FishingActivityResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response listActivityReportsByQuery(@Context HttpServletRequest request,
-                                               @Context HttpServletResponse response, FishingActivityQuery fishingActivityQuery) throws ServiceException {
+                                               @Context HttpServletResponse response,
+                                               @HeaderParam("scopeName") String scopeName,
+                                               @HeaderParam("roleName") String roleName,
+                                               FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
-            log.info("Query Received to search Fishing Activity Reports. "+fishingActivityQuery);
-
-        if(fishingActivityQuery==null)
-                return  createErrorResponse("Query to find list is null.");
-
-         Response  responseMethod = createSuccessResponse(activityService.getFishingActivityListByQuery(fishingActivityQuery));
-             log.info("successful");
+        log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        if (fishingActivityQuery == null) {
+            return createErrorResponse("Query to find list is null.");
+        }
+        String username = request.getRemoteUser();
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
+        Response responseMethod = createSuccessResponse(activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets));
+        log.info("successful");
         return responseMethod;
     }
 

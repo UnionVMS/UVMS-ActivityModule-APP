@@ -236,7 +236,7 @@ public class FishingTripServiceBeanTest {
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingActivityEntityList());
 
         //Trigger
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706");
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706", null);
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class));
 

@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.utils;
 /**
  * Created by padhyad on 6/29/2016.
  */
-public enum FluxLocationTypeEnum {
+public enum FluxLocationCatchTypeEnum {
 
     FA_CATCH_SPECIFIED("fa_catch_specified"),
     FA_CATCH_DESTINATION("fa_catch_destination"),
@@ -21,7 +21,7 @@ public enum FluxLocationTypeEnum {
 
     private String type;
 
-    FluxLocationTypeEnum(String type) {
+    FluxLocationCatchTypeEnum(String type) {
         this.type = type;
     }
 

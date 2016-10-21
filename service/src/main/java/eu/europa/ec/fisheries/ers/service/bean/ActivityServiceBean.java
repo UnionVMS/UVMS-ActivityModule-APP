@@ -10,20 +10,27 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
+import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.PaginationDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
@@ -61,6 +68,9 @@ public class ActivityServiceBean implements ActivityService {
     @EJB
     private AssetsMessageConsumerBean activityConsumer;
 
+    @EJB
+    private SpatialModuleService spatialModule;
+
     @PostConstruct
     public void init() {
         fishingActivityDao = new FishingActivityDao(em);
@@ -94,20 +104,22 @@ public class ActivityServiceBean implements ActivityService {
         return allFaReportDocuments;
     }
 
- @Override
-    public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+    @Override
+    public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
         List<FishingActivityEntity> activityList;
         boolean isSearchFiltersPresent = true;
-        int totalPages=0;
-         log.debug("FishingActivityQuery received :"+query);
+        int totalPages = 0;
+        log.debug("FishingActivityQuery received :" + query);
         if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty())
-            isSearchFiltersPresent=false;
+            isSearchFiltersPresent = false;
 
         // Check if any filters are present. If not, We need to return all fishing activity data
         if(isSearchFiltersPresent) {
            activityList = fishingActivityDao.getFishingActivityListByQuery(query);
         } else
             activityList = fishingActivityDao.getFishingActivityList(query.getPagination()); // If search criteria is not present, return all the fishing Activity data
+
+        Geometry multipolygon = getRestrictedAreaGeom(datasets);
 
         // Execute query to count all the resultset only if TotalPages value is 0. After first search frontend should send totalPages count in subsequent calls
         Pagination pagination= query.getPagination();
@@ -118,20 +130,20 @@ public class ActivityServiceBean implements ActivityService {
 
         if (activityList == null || activityList.isEmpty()) {
             log.info("Could not find FishingActivity entities matching search criteria");
-            activityList= Collections.emptyList();
+            activityList = Collections.emptyList();
         }
 
-       log.debug("Fishing Activity Report resultset size :"+activityList.size());
-        // Prepare DTO to return to Frontend
+       // Prepare DTO to return to Frontend
+        log.debug("Fishing Activity Report resultset size :" + activityList.size());
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
-        filterFishingActivityReportResultDTO.setResultList(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTOList(activityList));
+        filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList, multipolygon));
         filterFishingActivityReportResultDTO.setPagination(new PaginationDTO(totalPages));
 
         return filterFishingActivityReportResultDTO;
     }
 
 
-    // Query to calculate total number of resultset
+    // Query to calculate total number of result set
     private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
     log.info(" Get total pages count");
         int countOfRecords ;
@@ -150,4 +162,26 @@ public class ActivityServiceBean implements ActivityService {
         return totalNoOfPages;
     }
 
+    private Geometry getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
+        if (datasets == null || datasets.isEmpty()) {
+            return null;
+        }
+        List<AreaIdentifierType> areaIdentifierTypes =  UsmUtils.convertDataSetToAreaId(datasets);
+        String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
+        return GeometryUtils.wktToGeom(areaWkt);
+    }
+
+    private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList, Geometry multipolygon) {
+        List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
+        for(FishingActivityEntity entity : activityList) {
+            if (multipolygon != null) {
+                if (entity.getGeom().intersects(multipolygon)) {
+                    activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
+                }
+            } else {
+                activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
+            }
+        }
+        return activityReportDTOList;
+    }
 }

@@ -10,21 +10,30 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.google.common.collect.ImmutableMap;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.utils.*;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
 /**
@@ -40,6 +49,20 @@ public class FluxMessageServiceBean implements FluxMessageService {
 
     private FaReportDocumentDao faReportDocumentDao;
 
+    @EJB
+    private MovementModuleService movementModule;
+
+    @EJB
+    private AssetModuleService assetModule;
+
+    private static final String PREVIOUS = "PREVIOUS";
+
+    private static final String NEXT = "NEXT";
+
+    private static final String START_DATE = "START_DATE";
+
+    private static final String END_DATE = "END_DATE";
+
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(em);
@@ -54,6 +77,7 @@ public class FluxMessageServiceBean implements FluxMessageService {
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
             FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), faReportSourceEnum);
+            updateGeometry(entity);
             faReportDocumentEntities.add(entity);
             log.debug("fishing activity records to be saved : " + entity.getFluxReportDocument().getId());
         }
@@ -82,4 +106,137 @@ public class FluxMessageServiceBean implements FluxMessageService {
         }
         faReportDocumentDao.updateAllFaData(faReportDocumentEntities); // Update all the Entities together
     }
+
+    /**
+     * Create Geometry for FaReportDocument and FluxLocation. In Flux location we save each reported location as a point geometry.
+     * In Fa Report document, all the points are converted to Multipoint and saved as a single geometry.
+     * In Fishing activity we save all the points those are reported in the corresponding flux location.
+     *
+     * @param faReportDocumentEntity
+     */
+    private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
+
+        List<MovementType> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
+        List<Geometry> multiPointForFaReport = new ArrayList<>();
+        for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
+            List<Geometry> multiPointForFa = new ArrayList<>();
+            Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+            Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
+            for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
+                Geometry point = null;
+                String fluxLocationStr = fluxLocation.getTypeCode();
+                if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) { // Interpolate Geometry from movements
+                    point = interpolatedPoint;
+                    fluxLocation.setGeom(point);
+                }  else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
+                    point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                    fluxLocation.setGeom(point);
+                }
+                if (point != null) { // Add to the list of Geometry. This will be converted to Multipoint and saved in FaReportDocument
+                    multiPointForFa.add(point);
+                    multiPointForFaReport.add(point);
+                }
+            }
+            fishingActivity.setGeom(GeometryUtils.createMultipoint(multiPointForFa)); // Add the Multipoint to Fishing Activity
+        }
+        faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport)); // Add the Multipoint to FA Report
+    }
+
+    private List<MovementType> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
+        Set<VesselIdentifierEntity> vesselIdentifiers = faReportDocumentEntity.getVesselTransportMeans().getVesselIdentifiers();
+        Map<String, Date> dateMap = findStartAndEndDate(faReportDocumentEntity);
+        return getAllMovementsForDateRange(vesselIdentifiers, dateMap.get(START_DATE), dateMap.get(END_DATE));
+    }
+
+    private Map<String, Date> findStartAndEndDate(FaReportDocumentEntity faReportDocumentEntity) {
+        TreeSet<Date> dates = new TreeSet<>();
+        for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
+            if (fishingActivity.getOccurence() != null) {
+                dates.add(fishingActivity.getOccurence());
+            } else if (fishingActivity.getDelimitedPeriods() != null) {
+                dates.add(getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods()));
+            }
+        }
+        return ImmutableMap.<String, Date>builder().put(START_DATE, dates.first()).put(END_DATE, dates.last()).build();
+    }
+
+    private Date getFirstDateFromDelimitedPeriods(Collection<DelimitedPeriodEntity> delimitedPeriods) {
+        TreeSet<Date> set = new TreeSet<>();
+        for (DelimitedPeriodEntity delimitedPeriodEntity : delimitedPeriods) {
+            set.add(delimitedPeriodEntity.getStartDate());
+        }
+        return set.first();
+    }
+
+    private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date startDate, Date endDate) throws ServiceException {
+        List<String> assetGuids = assetModule.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
+        return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
+    }
+
+    private Geometry interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws ServiceException {
+        if (movements == null || movements.isEmpty()) {
+            return null;
+        }
+        Collections.sort(movements, new MovementTypeComparator());
+        Map<String, MovementType> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
+        MovementType nextMovement = movementTypeMap.get(NEXT);
+        MovementType previousMovement = movementTypeMap.get(PREVIOUS);
+        Geometry faReportGeom;
+        if (previousMovement == null && nextMovement == null) { // If nothing found return null
+            faReportGeom = null;
+        } else if (nextMovement == null) { // if no next movement then the last previous movement is the position
+            faReportGeom = GeometryUtils.wktToGeom(previousMovement.getWkt());
+        } else if (previousMovement == null) { // if no previous movement then the first next movement is the position
+            faReportGeom = GeometryUtils.wktToGeom(nextMovement.getWkt());
+        } else { // ideal scenario, find the intersecting position
+            faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
+        }
+        return faReportGeom;
+    }
+
+    private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date acceptedDate) throws ServiceException { // starting point = A, end point = B, calculated point = C
+        Geometry point;
+        Long durationAB = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
+        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
+        Long durationBC = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - acceptedDate.getTime();
+        if (durationAC == 0) {
+            log.info("The point is same as the start point");
+            point = GeometryUtils.wktToGeom(previousMovement.getWkt());
+        } else if (durationBC == 0) {
+            log.info("The point is the same as end point");
+            point = GeometryUtils.wktToGeom(nextMovement.getWkt());
+        } else {
+            log.info("The point is between start and end point");
+            LengthIndexedLine lengthIndexedLine = GeometryUtils.createLengthIndexedLine(previousMovement.getWkt(), nextMovement.getWkt());
+            Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB; // Calculate the index to find the intersecting point
+            point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
+        }
+        return point;
+    }
+
+    private Map<String, MovementType> getPreviousAndNextMovement(List<MovementType> movements, Date inputDate) throws ServiceException {
+        XMLGregorianCalendar date = convertDateToXmlGregorianCalendar(inputDate);
+        Map<String, MovementType> movementMap = new HashMap<>();
+        for (MovementType movement : movements) {
+            if (movement.getPositionTime().compare(date) <= 0) { // Find the previous movement
+                movementMap.put(PREVIOUS, movement);
+            } else if (movement.getPositionTime().compare(date) > 0) { // Find the next movement
+                movementMap.put(NEXT, movement);
+                break;
+            }
+        }
+        return movementMap;
+    }
+
+    private XMLGregorianCalendar convertDateToXmlGregorianCalendar(Date inputDate) throws ServiceException {
+        try {
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(inputDate);
+            XMLGregorianCalendar date = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+            return date;
+        }  catch (DatatypeConfigurationException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
 }

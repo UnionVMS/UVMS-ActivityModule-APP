@@ -10,6 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import com.vividsolutions.jts.geom.Geometry;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -42,6 +45,10 @@ public class FaReportDocumentEntity implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	@Type(type = "org.hibernate.spatial.GeometryType")
+	@Column(name = "geom")
+	private Geometry geom;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "vessel_transport_means_id")
@@ -167,6 +174,14 @@ public class FaReportDocumentEntity implements Serializable {
 	public void setFishingActivities(
 			Set<FishingActivityEntity> fishingActivities) {
 		this.fishingActivities = fishingActivities;
+	}
+
+	public Geometry getGeom() {
+		return geom;
+	}
+
+	public void setGeom(Geometry geom) {
+		this.geom = geom;
 	}
 
 	@Override

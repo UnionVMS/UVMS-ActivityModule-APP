@@ -77,7 +77,6 @@ public class FishingActivityServiceBeanTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 
-
     @Test
     @SneakyThrows
     public void testGetVesselDetailsForFishingTrip() throws ServiceException {
@@ -146,7 +145,7 @@ public class FishingActivityServiceBeanTest {
         Map<String, FishingActivityTypeDTO > summary = new HashMap<>();
         MessageCountDTO messagesCount = new MessageCountDTO();
         //Trigger
-        fishingTripService.getFishingActivityReportAndRelatedDataForFishingTrip("NOR-TRP-20160517234053706",reportDTOList,summary,messagesCount);
+        fishingTripService.getFishingActivityReportAndRelatedDataForFishingTrip("NOR-TRP-20160517234053706",reportDTOList,summary,messagesCount, null);
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class),Mockito.any(Pagination.class));
         //Verify

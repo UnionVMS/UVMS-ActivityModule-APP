@@ -15,6 +15,16 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+			<artifactId>spatial-model</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+			<artifactId>movement-model</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
 			<artifactId>usm4uvms</artifactId>
 		</dependency>

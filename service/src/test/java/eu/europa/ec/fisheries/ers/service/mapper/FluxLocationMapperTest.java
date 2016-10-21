@@ -13,11 +13,11 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
@@ -33,7 +33,7 @@ public class FluxLocationMapperTest {
     public void testFluxLocationMapperWithFishingActivity() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
         FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
-        FluxLocationTypeEnum fluxLocationTypeEnum = FluxLocationTypeEnum.FA_RELATED;
+        FluxLocationCatchTypeEnum fluxLocationTypeEnum = FluxLocationCatchTypeEnum.FA_RELATED;
         FishingActivityEntity fishingActivityEntity = null;
         FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, fishingActivityEntity, fluxLocationEntity);
 
@@ -55,7 +55,7 @@ public class FluxLocationMapperTest {
     public void testFluxLocationMapperWithFACatch() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
         FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
-        FluxLocationTypeEnum fluxLocationTypeEnum = FluxLocationTypeEnum.FA_CATCH_SPECIFIED;
+        FluxLocationCatchTypeEnum fluxLocationTypeEnum = FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED;
         FaCatchEntity faCatchEntity = null;
         FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, faCatchEntity, fluxLocationEntity);
 
@@ -73,7 +73,7 @@ public class FluxLocationMapperTest {
     //    assertFluxLocationEntityFields(fluxLocation, fluxCharacteristicEntity.getFluxLocation(), fluxLocationTypeEnum);
     }
 
-    private void assertFluxLocationEntityFields(FLUXLocation fluxLocation, FluxLocationEntity fluxLocationEntity, FluxLocationTypeEnum fluxLocationTypeEnum) {
+    private void assertFluxLocationEntityFields(FLUXLocation fluxLocation, FluxLocationEntity fluxLocationEntity, FluxLocationCatchTypeEnum fluxLocationTypeEnum) {
         assertEquals(fluxLocation.getTypeCode().getListID(), fluxLocationEntity.getTypeCodeListId());
         assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode());
         assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());

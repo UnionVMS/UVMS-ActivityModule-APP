@@ -18,8 +18,10 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSum
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +51,7 @@ public interface FishingTripService {
      * @return FishingTripSummaryViewDTO All of summary view data
      * @throws ServiceException
      */
-    FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId) throws ServiceException;
+    FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException;
 
 
     /**

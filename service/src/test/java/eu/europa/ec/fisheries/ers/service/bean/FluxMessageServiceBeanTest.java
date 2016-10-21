@@ -17,8 +17,11 @@ import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,10 +33,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,6 +47,12 @@ public class FluxMessageServiceBeanTest {
 
     @Mock
     FaReportDocumentDao faReportDocumentDao;
+
+    @Mock
+    MovementModuleServiceBean movementModule;
+
+    @Mock
+    private AssetModuleService assetModule;
 
     @InjectMocks
     FluxMessageServiceBean fluxMessageService;
@@ -79,6 +85,8 @@ public class FluxMessageServiceBeanTest {
         //Mock the APIs
         Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
         Mockito.doNothing().when(faReportDocumentDao).updateAllFaData(Mockito.any(List.class));
+        Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
+        Mockito.doReturn(null).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Date.class), Mockito.any(Date.class));
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
@@ -98,5 +106,12 @@ public class FluxMessageServiceBeanTest {
     private FaReportDocumentEntity getMockedFishingActivityReportEntity() {
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
         return FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.MANUAL);
+    }
+
+    private List<String> getMockedAssets() {
+        List<String> assets = new ArrayList<>();
+        assets.add("ASSET1");
+        assets.add("ASSET2");
+        return assets;
     }
 }

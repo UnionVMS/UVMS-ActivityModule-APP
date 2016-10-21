@@ -20,6 +20,9 @@ import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptio
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +37,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 /**
  * Created by sanera on 04/08/2016.
@@ -55,17 +59,25 @@ public class FishingTripResource extends UnionVMSResource {
     @EJB
     private FishingTripService fishingTripService;
 
+    @EJB
+    private USMService usmService;
+
     @GET
     @Path("/reports/{fishingTripId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getFishingTripSummaryAndReports(@Context HttpServletRequest request,
-                                        @Context HttpServletResponse response,
-                                        @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+    public Response getFishingTripSummary(@Context HttpServletRequest request,
+                                          @Context HttpServletResponse response,
+                                          @HeaderParam("scopeName") String scopeName,
+                                          @HeaderParam("roleName") String roleName,
+                                          @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
+        LOG.info("Fishing Trip summary from fishing trip : " + fishingTripId);
+        String username = request.getRemoteUser();
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         LOG.info("Fishing Trip summary from fishing trip : "+fishingTripId);
-        return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId));
+        return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId, datasets));
     }
 
     @GET
@@ -74,10 +86,10 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getVesselDetails(@Context HttpServletRequest request,
-                                          @Context HttpServletResponse response,
-                                          @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+                                     @Context HttpServletResponse response,
+                                     @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("Getting Vessels details for trip : "+fishingTripId);
+        LOG.info("Getting Vessels details for trip : " + fishingTripId);
         return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));
     }
 
@@ -87,10 +99,10 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getFishingTripMessageCounter(@Context HttpServletRequest request,
-                                          @Context HttpServletResponse response,
-                                          @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+                                                 @Context HttpServletResponse response,
+                                                 @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("Message counters for fishing trip : "+fishingTripId);
+        LOG.info("Message counters for fishing trip : " + fishingTripId);
         return createSuccessResponse(fishingTripService.getMessageCountersForTripId(fishingTripId));
     }
 
@@ -113,9 +125,9 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getCronologyOfFishingTrip(@Context HttpServletRequest request,
-                                     @Context HttpServletResponse response,
-                                     @PathParam("tripId") String tripId,
-                                     @PathParam("count") Integer count) throws ServiceException {
+                                              @Context HttpServletResponse response,
+                                              @PathParam("tripId") String tripId,
+                                              @PathParam("count") Integer count) throws ServiceException {
         return createSuccessResponse(fishingTripService.getCronologyOfFishingTrip(tripId, count));
     }
 

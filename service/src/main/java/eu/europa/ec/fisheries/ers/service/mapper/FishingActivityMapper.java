@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
@@ -70,17 +70,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
-    public List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList){
-
-        List<FishingActivityReportDTO> activityReportDTOList= new ArrayList<>();
-
-        for(FishingActivityEntity entity:activityList){
-            activityReportDTOList.add(mapToFishingActivityReportDTO(entity));
-        }
-
-        return activityReportDTOList;
-    }
-
     @Mappings({
             @Mapping(target = "uniqueFAReportId", expression = "java(getUniqueId(entity))"),
             @Mapping(target = "faReportID", expression = "java(getFAReportId(entity))"),
@@ -119,7 +108,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"),
             @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))"),
             @Mapping(target = "fluxLocations", ignore = true),
-            @Mapping(target = "locations", expression = "java(getFishingActivityLocationTypes(entity,null))"),
+            //@Mapping(target = "locations", expression = "java(getFishingActivityLocationTypes(entity,null))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsDTOList(entity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearDTOList(entity))")
     })
@@ -466,7 +455,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, FluxLocationTypeEnum.FA_RELATED, fishingActivityEntity, new FluxLocationEntity());
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, FluxLocationCatchTypeEnum.FA_RELATED, fishingActivityEntity, new FluxLocationEntity());
             fluxLocationEntities.add(fluxLocationEntity);
         }
         return fluxLocationEntities;

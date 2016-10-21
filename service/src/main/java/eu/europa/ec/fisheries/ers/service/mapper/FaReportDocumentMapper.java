@@ -81,6 +81,9 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         for (FishingActivity fishingActivity : fishingActivities) {
             FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
             fishingActivityEntities.add(fishingActivityEntity);
+            if (fishingActivityEntity.getAllRelatedFishingActivities() != null && !fishingActivityEntity.getAllRelatedFishingActivities().isEmpty()) {
+                fishingActivityEntities.addAll(fishingActivityEntity.getAllRelatedFishingActivities());
+            }
         }
         return fishingActivityEntities;
     }
