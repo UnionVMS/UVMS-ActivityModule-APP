@@ -49,6 +49,9 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     @EJB
     private ActivityConsumerBean activityConsumer;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
         try {

@@ -25,5 +25,12 @@ import java.util.List;
  */
 public interface SpatialModuleService {
 
+    /**
+     * API to call Spatial Module by JMS and get the filtered ares
+     *
+     * @param areaIdentifiers Area Ids from Dataset
+     * @return Filtered WKT
+     * @throws ServiceException
+     */
     String getFilteredAreaGeom(Collection<AreaIdentifierType> areaIdentifiers) throws ServiceException;
 }

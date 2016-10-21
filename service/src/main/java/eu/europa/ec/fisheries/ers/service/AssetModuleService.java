@@ -24,5 +24,12 @@ import java.util.List;
  */
 public interface AssetModuleService {
 
+    /**
+     * Service to Get Asset GUIDs by Vessel Identifiers
+     *
+     * @param vesselIdentifiers vessel identifiers from Activity
+     * @return asset GUIDs
+     * @throws ServiceException
+     */
     List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException;
 }

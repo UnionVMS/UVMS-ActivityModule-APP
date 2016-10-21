@@ -48,6 +48,9 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
     @EJB
     private ActivityConsumerBean activityConsumer;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getFilteredAreaGeom(Collection<AreaIdentifierType> areaIdentifiers) throws ServiceException {
         try {

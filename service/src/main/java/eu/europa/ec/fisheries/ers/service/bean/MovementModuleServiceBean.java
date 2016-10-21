@@ -53,6 +53,9 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
     @EJB
     private ActivityConsumerBean activityConsumer;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException {

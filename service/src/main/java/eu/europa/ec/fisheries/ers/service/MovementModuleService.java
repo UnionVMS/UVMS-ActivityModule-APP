@@ -25,5 +25,14 @@ import java.util.List;
  */
 public interface MovementModuleService {
 
-    public List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException;
+    /**
+     * Get Movements by Assets Ids, start date of movements and last date of movements
+     *
+     * @param vesselIds vessel guids
+     * @param startDate start date
+     * @param endDate end date
+     * @return list of Movements
+     * @throws ServiceException
+     */
+    List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException;
 }
