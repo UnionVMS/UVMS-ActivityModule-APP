@@ -33,6 +33,11 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.persistence.EntityManager;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -86,7 +91,7 @@ public class FluxMessageServiceBeanTest {
         Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
         Mockito.doNothing().when(faReportDocumentDao).updateAllFaData(Mockito.any(List.class));
         Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
-        Mockito.doReturn(null).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Date.class), Mockito.any(Date.class));
+        Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Date.class), Mockito.any(Date.class));
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
@@ -113,5 +118,27 @@ public class FluxMessageServiceBeanTest {
         assets.add("ASSET1");
         assets.add("ASSET2");
         return assets;
+    }
+
+    private List<MovementType> getMockedMovements() throws ParseException, DatatypeConfigurationException {
+        MovementType movementType1 = new MovementType();
+        movementType1.setCalculatedCourse(1.0);
+        movementType1.setCalculatedSpeed(1.0);
+        movementType1.setWkt("MULTIPOINT(11.09245 58.8386666666667,675 859)");
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 09:15:00"));
+        XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar( cal);
+        movementType1.setPositionTime(calendar);
+
+        MovementType movementType2 = new MovementType();
+        movementType2.setCalculatedCourse(1.0);
+        movementType2.setCalculatedSpeed(1.0);
+        movementType2.setWkt("MULTIPOINT(11.09245 58.8386666666667,675 859)");
+        GregorianCalendar cal1 = new GregorianCalendar();
+        cal1.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 12:15:00"));
+        XMLGregorianCalendar calendar1 = DatatypeFactory.newInstance().newXMLGregorianCalendar( cal1);
+        movementType2.setPositionTime(calendar1);
+
+        return Arrays.asList(movementType1, movementType2);
     }
 }
