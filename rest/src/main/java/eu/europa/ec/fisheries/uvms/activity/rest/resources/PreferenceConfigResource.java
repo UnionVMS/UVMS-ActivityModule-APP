@@ -121,9 +121,10 @@ public class PreferenceConfigResource extends UnionVMSResource {
                                     ActivityConfigDTO activityConfigDTO) throws ServiceException {
         String applicationName = request.getServletContext().getInitParameter("usmApplication");
         String username = request.getRemoteUser();
+        String adminConfig = usmService.getOptionDefaultValue(DEFAULT_CONFIG, applicationName);
         String userConfig = usmService.getUserPreference(USER_CONFIG, username, applicationName, roleName, scopeName);
         String updatedConfig = preferenceConfigService.resetUserConfig(activityConfigDTO, userConfig);
         usmService.putUserPreference(USER_CONFIG, updatedConfig, applicationName, scopeName, roleName, username);
-        return createSuccessResponse();
+        return createSuccessResponse(preferenceConfigService.getUserConfig(updatedConfig, adminConfig));
     }
 }

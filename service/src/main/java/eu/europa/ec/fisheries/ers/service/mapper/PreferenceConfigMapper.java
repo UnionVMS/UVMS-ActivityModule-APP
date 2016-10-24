@@ -55,7 +55,7 @@ public class PreferenceConfigMapper {
             return target;
         }
 
-        target.setSummaryReport((source.getSummaryReport() == null || source.getSummaryReport().isEmpty()) ? target.getSummaryReport() : source.getSummaryReport());
+        target.setSummaryReport((source.getSummaryReport() == null) ? target.getSummaryReport() : source.getSummaryReport());
         return target;
     }
 }

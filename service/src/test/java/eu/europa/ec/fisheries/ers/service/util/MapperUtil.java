@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FishingActivityConfigDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.config.SummaryReportDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.mockito.stubbing.Answer;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
@@ -46,7 +47,10 @@ public class MapperUtil {
     public static ActivityConfigDTO getSourceActivityConfigDTO() {
         ActivityConfigDTO activityConfigDTO = new ActivityConfigDTO();
         FishingActivityConfigDTO fishingActivityConfig = new FishingActivityConfigDTO();
-        fishingActivityConfig.setSummaryReport(Arrays.asList("Report1", "Report2", "Report3"));
+        SummaryReportDTO summaryReport = new SummaryReportDTO();
+        summaryReport.setValues(Arrays.asList("Report1", "Report2", "Report3"));
+        summaryReport.setOrder(Arrays.asList("Report1", "Report2", "Report3"));
+        fishingActivityConfig.setSummaryReport(summaryReport);
         activityConfigDTO.setFishingActivityConfig(fishingActivityConfig);
         return activityConfigDTO;
     }
@@ -54,7 +58,10 @@ public class MapperUtil {
     public static ActivityConfigDTO getTargetActivityConfigDTO() {
         ActivityConfigDTO activityConfigDTO = new ActivityConfigDTO();
         FishingActivityConfigDTO fishingActivityConfig = new FishingActivityConfigDTO();
-        fishingActivityConfig.setSummaryReport(Arrays.asList("Report1", "Report2", "Report3", "Report3", "Report4"));
+        SummaryReportDTO summaryReport = new SummaryReportDTO();
+        summaryReport.setValues(Arrays.asList("Report1", "Report2", "Report3", "Report3", "Report4"));
+        summaryReport.setOrder(Arrays.asList("Report1", "Report2", "Report3", "Report3", "Report4"));
+        fishingActivityConfig.setSummaryReport(summaryReport);
         activityConfigDTO.setFishingActivityConfig(fishingActivityConfig);
         return activityConfigDTO;
     }

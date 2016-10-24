@@ -31,7 +31,8 @@ public class PreferenceConfigMapperTest {
     @Test
     public void testMergeUserPreference() {
         ActivityConfigDTO merged = PreferenceConfigMapper.INSTANCE.mergeUserPreference(getTargetActivityConfigDTO(), getSourceActivityConfigDTO());
-        assertEquals(getSourceActivityConfigDTO().getFishingActivityConfig().getSummaryReport(), merged.getFishingActivityConfig().getSummaryReport());
+        assertEquals(getSourceActivityConfigDTO().getFishingActivityConfig().getSummaryReport().getOrder(), merged.getFishingActivityConfig().getSummaryReport().getOrder());
+        assertEquals(getSourceActivityConfigDTO().getFishingActivityConfig().getSummaryReport().getValues(), merged.getFishingActivityConfig().getSummaryReport().getValues());
     }
 
     @Test

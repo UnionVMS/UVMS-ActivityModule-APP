@@ -40,43 +40,57 @@ public class PreferenceConfigServiceBeanTest {
 
     private String adminConfig = "{\n" +
             "                    \"fishingActivityConfig\": {\n" +
-            "                        \"summaryReport\": [\n" +
-            "                            \"dataSource\",\n" +
-            "                            \"from\",\n" +
-            "                            \"startDate\",\n" +
-            "                            \"endDate\",\n" +
-            "                            \"cfr\",\n" +
-            "                            \"ircs\",\n" +
-            "                            \"extMark\",\n" +
-            "                            \"uvi\",\n" +
-            "                            \"iccat\",\n" +
-            "                            \"gfcm\",\n" +
-            "                            \"purposeCode\",\n" +
-            "                            \"reportType\",\n" +
-            "                            \"activityType\",\n" +
-            "                            \"area\",\n" +
-            "                            \"location\",\n" +
-            "                            \"gearType\",\n" +
-            "                            \"species\"\n" +
-            "                        ]\n" +
+            "                        \"summaryReport\": {\n" +
+            "                        }\n" +
             "                    }\n" +
             "                }";
 
     private String userConfig = "{\n" +
             "                    \"fishingActivityConfig\": {\n" +
-            "                        \"summaryReport\": [\n" +
-            "                            \"dataSource\",\n" +
-            "                            \"from\",\n" +
-            "                            \"startDate\",\n" +
-            "                            \"endDate\",\n" +
-            "                            \"purposeCode\",\n" +
-            "                            \"reportType\",\n" +
-            "                            \"activityType\",\n" +
-            "                            \"area\",\n" +
-            "                            \"location\",\n" +
-            "                            \"gearType\",\n" +
-            "                            \"species\"\n" +
-            "                        ]\n" +
+            "                        \"summaryReport\": {\n" +
+            "                            \"values\": [\n" +
+            "                                \"FAReportType\",\n" +
+            "                                \"activityType\",\n" +
+            "                                \"occurrence\",\n" +
+            "                                \"purposeCode\",\n" +
+            "                                \"dataSource\",\n" +
+            "                                \"fromName\",\n" +
+            "                                \"startDate\",\n" +
+            "                                \"endDate\",\n" +
+            "                                \"cfr\",\n" +
+            "                                \"ircs\",\n" +
+            "                                \"extMark\",\n" +
+            "                                \"uvi\",\n" +
+            "                                \"iccat\",\n" +
+            "                                \"gfcm\",\n" +
+            "                                \"areas\",\n" +
+            "                                \"port\",\n" +
+            "                                \"fishingGear\",\n" +
+            "                                \"speciesCode\",\n" +
+            "                                \"quantity\"\n" +
+            "                            ],\n" +
+            "                            \"order\": [\n" +
+            "                                \"FAReportType\",\n" +
+            "                                \"activityType\",\n" +
+            "                                \"occurrence\",\n" +
+            "                                \"purposeCode\",\n" +
+            "                                \"dataSource\",\n" +
+            "                                \"fromName\",\n" +
+            "                                \"startDate\",\n" +
+            "                                \"endDate\",\n" +
+            "                                \"cfr\",\n" +
+            "                                \"ircs\",\n" +
+            "                                \"extMark\",\n" +
+            "                                \"uvi\",\n" +
+            "                                \"iccat\",\n" +
+            "                                \"gfcm\",\n" +
+            "                                \"areas\",\n" +
+            "                                \"port\",\n" +
+            "                                \"fishingGear\",\n" +
+            "                                \"speciesCode\",\n" +
+            "                                \"quantity\"\n" +
+            "                            ]\n" +
+            "                        }\n" +
             "                    }\n" +
             "                }";
 
@@ -85,7 +99,8 @@ public class PreferenceConfigServiceBeanTest {
         ActivityConfigDTO source = getConfiguration(adminConfig);
         ActivityConfigDTO adminConfigDto = preferenceConfigService.getAdminConfig(adminConfig);
 
-        assertEquals(source.getFishingActivityConfig().getSummaryReport(), adminConfigDto.getFishingActivityConfig().getSummaryReport());
+        assertEquals(source.getFishingActivityConfig().getSummaryReport().getValues(), adminConfigDto.getFishingActivityConfig().getSummaryReport().getValues());
+        assertEquals(source.getFishingActivityConfig().getSummaryReport().getOrder(), adminConfigDto.getFishingActivityConfig().getSummaryReport().getOrder());
     }
 
     @Test
@@ -94,8 +109,8 @@ public class PreferenceConfigServiceBeanTest {
         ActivityConfigDTO admin = getConfiguration(adminConfig);
         ActivityConfigDTO user = getConfiguration(userConfig);
 
-        assertEquals(user.getFishingActivityConfig().getSummaryReport(), userConfigDto.getFishingActivityConfig().getSummaryReport());
-
+        assertEquals(user.getFishingActivityConfig().getSummaryReport().getValues(), userConfigDto.getFishingActivityConfig().getSummaryReport().getValues());
+        assertEquals(user.getFishingActivityConfig().getSummaryReport().getOrder(), userConfigDto.getFishingActivityConfig().getSummaryReport().getOrder());
     }
 
     @Test
@@ -116,12 +131,12 @@ public class PreferenceConfigServiceBeanTest {
     @Test
     public void testResetUserConfig() throws Exception {
         String resetConfig = "{\n" +
-                "    \"fishingActivityConfig\": {\n" +
-                "        \"summaryReport\": [\n" +
-                "            \n" +
-                "        ]\n" +
-                "    }\n" +
-                "}";
+                "                    \"fishingActivityConfig\": {\n" +
+                "                        \"summaryReport\": {\n" +
+                "                           \n" +
+                "                        }\n" +
+                "                    }\n" +
+                "                }";
         ActivityConfigDTO activityConfigDTO = getConfiguration(resetConfig);
         String userJson = preferenceConfigService.resetUserConfig(activityConfigDTO, userConfig);
         ActivityConfigDTO updated = getConfiguration(userJson);

@@ -19,21 +19,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
- * Created by padhyad on 9/14/2016.
+ * Created by padhyad on 10/24/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class FishingActivityConfigDTO {
+public class SummaryReportDTO {
 
-    @JsonProperty("summaryReport")
-    private SummaryReportDTO summaryReport;
+    @JsonProperty("values")
+    private List<String> values;
 
-    @JsonProperty("summaryReport")
-    public SummaryReportDTO getSummaryReport() {
-        return summaryReport;
+    @JsonProperty("order")
+    private List<String> order;
+
+    @JsonProperty("values")
+    public List<String> getValues() {
+        return values;
     }
 
-    @JsonProperty("summaryReport")
-    public void setSummaryReport(SummaryReportDTO summaryReport) {
-        this.summaryReport = summaryReport;
+    @JsonProperty("values")
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
+
+    @JsonProperty("order")
+    public List<String> getOrder() {
+        return order;
+    }
+
+    @JsonProperty("order")
+    public void setOrder(List<String> order) {
+        this.order = order;
     }
 }
