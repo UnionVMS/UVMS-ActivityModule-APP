@@ -17,8 +17,8 @@ package eu.europa.ec.fisheries.ers.fa.utils;
  * Created by sanera on 22/09/2016.
  */
 public class WeightConversion {
-    public final static String TON ="TNE";
-    public final static Double CONVERSION_FACTOR = 1000d;
+    public static final String TON ="TNE";
+    public static final Double CONVERSION_FACTOR = 1000d;
 
     // This class isn't supposed to have instances
     private WeightConversion(){}
@@ -26,7 +26,7 @@ public class WeightConversion {
     public static Double convertToKiloGram(Double value, String format){
 
         if(value == null || value ==0)
-            return new Double(0);
+            return 0.0;
 
         if(TON.equalsIgnoreCase(format)){
             return  value * CONVERSION_FACTOR;

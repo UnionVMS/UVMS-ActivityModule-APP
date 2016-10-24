@@ -63,9 +63,7 @@ public class SearchQueryBuilder {
             if (details != null) {
                 joinString = details.getJoinString();
             }
-            if (joinString == null
-                    || details == null
-                    || sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
+            if (joinString == null || sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
                 continue;
 
             completeQueryDependingOnKey(sql, key, joinString);
