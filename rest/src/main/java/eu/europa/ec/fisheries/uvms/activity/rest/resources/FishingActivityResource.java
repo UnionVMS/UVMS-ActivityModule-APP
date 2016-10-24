@@ -74,6 +74,7 @@ public class FishingActivityResource extends UnionVMSResource {
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
         } catch (JAXBException e) {
+            log.error("Error occured during Unmorshalling of the FLUXFAReportMessage", e);
            throw new ServiceException(e.getMessage());
         }
 
