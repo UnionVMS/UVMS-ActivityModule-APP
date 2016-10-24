@@ -38,7 +38,7 @@ public abstract class ExtendedMasterDataRegistry extends MasterDataRegistry {
 	@Column(name="description")
 	private String description;
 	
-	protected static final String CODE           = "code";
+	protected static final String CODE_STR = "code";
 	protected static final String DESCRIPTION_STR = "description";
 	protected static final String EN_DESCRIPTION_STR = "EN_description";
 	
@@ -82,7 +82,7 @@ public abstract class ExtendedMasterDataRegistry extends MasterDataRegistry {
 		List<FieldType> fieldsToRemove = new ArrayList<>();
 		for(FieldType field : fields){
 			fieldName  = field.getFieldName().getValue();
-			if(StringUtils.equalsIgnoreCase(CODE, fieldName)){
+			if(StringUtils.equalsIgnoreCase(CODE_STR, fieldName)){
 				setCode(field.getFieldValue().getValue());
 				fieldsToRemove.add(field);
 			} else if(StringUtils.equalsIgnoreCase(DESCRIPTION_STR, fieldName) || StringUtils.equalsIgnoreCase(EN_DESCRIPTION_STR, fieldName)){

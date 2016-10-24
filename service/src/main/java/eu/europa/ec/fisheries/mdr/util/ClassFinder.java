@@ -26,7 +26,7 @@ public final class ClassFinder {
 	public static List<Class<? extends MasterDataRegistry>> extractEntityInstancesFromPackage(){		
 		Reflections reflections = new Reflections(MDR_DOMAIN_PACKAGE_WOUT_DOT);
 		Set<Class<? extends MasterDataRegistry>> subTypes = reflections.getSubTypesOf(MasterDataRegistry.class);		
-		return new ArrayList<Class<? extends MasterDataRegistry>>(subTypes);
+		return new ArrayList<>(subTypes);
 	}
 	
 	

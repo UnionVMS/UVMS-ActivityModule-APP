@@ -36,13 +36,12 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testCreateSQL() throws Exception {
-
+    public void testCreateSQL() {
 
         FishingActivityQuery query = new FishingActivityQuery();
         Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
-     searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
         searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
         searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
         searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
@@ -52,22 +51,18 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
         searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
-
         searchCriteriaMap.put(Filters.SPECIES, "PLE");
         searchCriteriaMap.put(Filters.MASTER, "MARK");
         searchCriteriaMap.put(Filters.AREAS, "27.4.b");
         searchCriteriaMap.put(Filters.PORT, "GBR");
-
         searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
-         searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
         searchCriteriaMap.put(Filters.WEIGHT_MEASURE, "TNE");
         searchCriteriaMap.put(Filters.SOURCE, "FLUX");
 
         query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
-
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setPagination( new Pagination(1,2));
-
         query.setSortKey(new SortKey(Filters.FROM_NAME, SortOrder.ASC));
 
         StringBuilder sql= SearchQueryBuilder.createSQL(query);

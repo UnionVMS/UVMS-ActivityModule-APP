@@ -18,29 +18,25 @@ public class SortKey {
     private Filters field;
     private SortOrder order;
 
+    public SortKey(){
+        super();
+    }
 
     public Filters getField() {
         return field;
     }
-
     public void setField(Filters field) {
         this.field = field;
     }
-
     public SortOrder getOrder() {
         return order;
     }
-
     public void setOrder(SortOrder order) {
         this.order = order;
     }
-
     public SortKey(Filters field, SortOrder order) {
         this.field = field;
         this.order = order;
-    }
-    public SortKey(){
-
     }
 
     @Override

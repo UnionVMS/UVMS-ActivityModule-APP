@@ -21,7 +21,9 @@ public class GenericOperationOutcome {
     private int counter                   = 0;
     private Object includedObject         = null;
 
-    public GenericOperationOutcome(){}
+    public GenericOperationOutcome(){
+        super();
+    }
 
     public GenericOperationOutcome(OperationOutcome status){
         this.status = status;

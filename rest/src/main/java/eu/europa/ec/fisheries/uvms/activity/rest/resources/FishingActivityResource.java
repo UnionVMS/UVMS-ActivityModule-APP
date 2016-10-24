@@ -65,11 +65,17 @@ public class FishingActivityResource extends UnionVMSResource {
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/save")
-    public Response saveFaReportDocument() throws JAXBException, ServiceException {
+    public Response saveFaReportDocument() throws ServiceException {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
-        JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
+        JAXBContext jaxbContext = null;
+        FLUXFAReportMessage fluxfaReportMessage;
+        try {
+            jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
+        } catch (JAXBException e) {
+           throw new ServiceException(e.getMessage());
+        }
 
         for (FAReportDocument faReportDocument : fluxfaReportMessage.getFAReportDocuments()) {
             CodeType purposeCode = new CodeType();
@@ -111,7 +117,6 @@ public class FishingActivityResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response listActivityReportsByQuery(@Context HttpServletRequest request,
-                                               @Context HttpServletResponse response,
                                                @HeaderParam("scopeName") String scopeName,
                                                @HeaderParam("roleName") String roleName,
                                                FishingActivityQuery fishingActivityQuery) throws ServiceException {

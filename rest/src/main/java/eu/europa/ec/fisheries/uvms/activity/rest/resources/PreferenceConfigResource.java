@@ -53,7 +53,6 @@ public class PreferenceConfigResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.MANAGE_ADMIN_CONFIGURATIONS})
     public Response getAdminConfig(@Context HttpServletRequest request,
-                                   @Context HttpServletResponse response,
                                    @HeaderParam(AuthConstants.HTTP_HEADER_SCOPE_NAME) String scopeName,
                                    @HeaderParam(AuthConstants.HTTP_HEADER_ROLE_NAME) String roleName) throws ServiceException {
 
@@ -68,7 +67,6 @@ public class PreferenceConfigResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.MANAGE_ADMIN_CONFIGURATIONS})
     public Response saveAdminConfig(@Context HttpServletRequest request,
-                                    @Context HttpServletResponse response,
                                     @HeaderParam(AuthConstants.HTTP_HEADER_SCOPE_NAME) String scopeName,
                                     @HeaderParam(AuthConstants.HTTP_HEADER_ROLE_NAME) String roleName,
                                     ActivityConfigDTO activityConfigDTO) throws ServiceException {
@@ -83,7 +81,6 @@ public class PreferenceConfigResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     public Response getUserConfig(@Context HttpServletRequest request,
-                                  @Context HttpServletResponse response,
                                   @HeaderParam(AuthConstants.HTTP_HEADER_SCOPE_NAME) String scopeName,
                                   @HeaderParam(AuthConstants.HTTP_HEADER_ROLE_NAME) String roleName) throws ServiceException {
         String applicationName = request.getServletContext().getInitParameter("usmApplication");
@@ -115,7 +112,6 @@ public class PreferenceConfigResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     public Response resetUserConfig(@Context HttpServletRequest request,
-                                    @Context HttpServletResponse response,
                                     @HeaderParam(AuthConstants.HTTP_HEADER_SCOPE_NAME) String scopeName,
                                     @HeaderParam(AuthConstants.HTTP_HEADER_ROLE_NAME) String roleName,
                                     ActivityConfigDTO activityConfigDTO) throws ServiceException {
