@@ -28,6 +28,7 @@ public class FilterDetails {
     }
 
     public FilterDetails() {
+        super();
     }
 
     public String getJoinString() {
@@ -45,7 +46,5 @@ public class FilterDetails {
     public void setCondition(String condition) {
         this.condition = condition;
     }
-
-
 
 }

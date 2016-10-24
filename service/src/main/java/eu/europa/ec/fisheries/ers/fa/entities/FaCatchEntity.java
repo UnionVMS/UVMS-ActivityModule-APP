@@ -108,23 +108,6 @@ public class FaCatchEntity implements Serializable {
 		super();
 	}
 
-	public FaCatchEntity(FishingActivityEntity fishingActivity, SizeDistributionEntity sizeDistribution, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Double unitQuantity, Double weightMeasure, String weightMeasureUnitCode, Double calculatedWeightMeasure, String usageCode, String usageCodeListId, String weighingMeansCodeListId, String weighingMeansCode) {
-		this.fishingActivity = fishingActivity;
-		this.sizeDistribution = sizeDistribution;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.speciesCode = speciesCode;
-		this.speciesCodeListid = speciesCodeListid;
-		this.unitQuantity = unitQuantity;
-		this.weightMeasure = weightMeasure;
-		this.weightMeasureUnitCode = weightMeasureUnitCode;
-		this.calculatedWeightMeasure = calculatedWeightMeasure;
-		this.usageCode = usageCode;
-		this.usageCodeListId = usageCodeListId;
-		this.weighingMeansCodeListId = weighingMeansCodeListId;
-		this.weighingMeansCode = weighingMeansCode;
-	}
-
 	public int getId() {
 		return this.id;
 	}

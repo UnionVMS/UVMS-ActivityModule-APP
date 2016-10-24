@@ -59,18 +59,17 @@ public class SearchQueryBuilder {
         Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
         for (Filters key : keySet) {
             FilterDetails details = mappings.get(key);
-            if (details == null)
-                continue;
-
-            String joinString = details.getJoinString();
-
+            String joinString = null;
+            if (details != null) {
+                joinString = details.getJoinString();
+            }
             if (sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
                 continue;
 
             switch (key) {
                 case MASTER:
                     if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
-                            joinString = FilterMap.MASTER_MAPPING;
+                        joinString = FilterMap.MASTER_MAPPING;
                     appendJoinString(sql, joinString);
                     break;
                 case VESSEL_IDENTIFIRE:
@@ -127,18 +126,35 @@ public class SearchQueryBuilder {
         Filters field = sort.getField();
 
         // Make sure that the field which we want to sort, table Join is present for it.
-        if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
-            appendLeftJoin(sql, FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
-        } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
-            appendLeftJoin(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-        } else if (Filters.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)) {
-            if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
+        switch (getFiledCase(sql, field)) {
+            case 1 :
+                appendLeftJoin(sql, FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
+                break;
+            case 2 :
                 appendLeftJoin(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-            if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
-                appendLeftJoin(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
+                break;
+            case 3 :
+                if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
+                    appendLeftJoin(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
+                    appendLeftJoin(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
+                break;
+            default:
+                break;
         }
 
         return sql;
+    }
+
+    private static int getFiledCase(StringBuilder sql, Filters field) {
+        if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
+            return 1;
+        } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
+            return 2;
+        } else if (Filters.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)) {
+            return 3;
+        }
+        return 0;
     }
 
     private static void appendLeftJoin(StringBuilder sql, String delimitedPeriodTableAlias) {

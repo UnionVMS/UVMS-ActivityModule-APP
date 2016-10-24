@@ -15,11 +15,9 @@ package eu.europa.ec.fisheries.ers.service.search;
  */
 public class Pagination {
 
-
     private int page;
     private int listSize;
     private int totalPages;
-
 
     public Pagination(int page, int listSize) {
         this.page = page;
@@ -27,38 +25,27 @@ public class Pagination {
     }
 
     public Pagination(){
-
+        super();
     }
-
 
     public void setPage(int page) {
         this.page = page;
     }
-
     public void setListSize(int listSize) {
         this.listSize = listSize;
     }
-
     public int getPage() {
-
         return page;
     }
-
     public int getTotalPages() {
         return totalPages;
     }
-
     public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
     }
-
     public int getListSize() {
         return listSize;
     }
-
-
-
-
 
     @Override
     public String toString() {
