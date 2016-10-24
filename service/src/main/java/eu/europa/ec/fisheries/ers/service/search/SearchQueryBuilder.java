@@ -33,7 +33,7 @@ public class SearchQueryBuilder {
     private static final String FISHING_ACTIVITY_JOIN = "SELECT DISTINCT a from FishingActivityEntity a JOIN FETCH a.faReportDocument fa ";
 
     private SearchQueryBuilder() {
-
+        super();
     }
 
     // Create SQL dynamically based on Filter criteria
@@ -68,37 +68,40 @@ public class SearchQueryBuilder {
                     || sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
                 continue;
 
-            switch (key) {
-                case MASTER:
-                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
-                        joinString = FilterMap.MASTER_MAPPING;
-                    appendJoinString(sql, joinString);
-                    break;
-                case VESSEL_IDENTIFIRE:
-                    tryAppendIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
-                    appendJoinString(sql, joinString);
-                    break;
-                case FROM_ID:
-                    tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                    tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS); // Add missing join for required table
-                    appendJoinString(sql, joinString);
-                    break;
-                case FROM_NAME:
-                    tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) // Add missing join for required table
-                        appendJoinString(sql, joinString);
-                    break;
-                default:
-                    appendJoinString(sql, joinString);
-                    break;
-            }
-
+            completeQueryDependingOnKey(sql, key, joinString);
         }
 
         getJoinPartForSortingOptions(sql, query);
 
         LOG.debug("Generated SQL for JOIN Part :" + sql);
         return sql;
+    }
+
+    private static void completeQueryDependingOnKey(StringBuilder sql, Filters key, String joinString) {
+        switch (key) {
+            case MASTER:
+                if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
+                    joinString = FilterMap.MASTER_MAPPING;
+                appendJoinString(sql, joinString);
+                break;
+            case VESSEL_IDENTIFIRE:
+                tryAppendIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinString(sql, joinString);
+                break;
+            case FROM_ID:
+                tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS); // Add missing join for required table
+                appendJoinString(sql, joinString);
+                break;
+            case FROM_NAME:
+                tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) // Add missing join for required table
+                    appendJoinString(sql, joinString);
+                break;
+            default:
+                appendJoinString(sql, joinString);
+                break;
+        }
     }
 
     private static void appendJoinString(StringBuilder sql, String joinString) {

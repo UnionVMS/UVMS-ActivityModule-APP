@@ -67,7 +67,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Path("/save")
     public Response saveFaReportDocument() throws ServiceException {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
-        JAXBContext jaxbContext = null;
+        JAXBContext jaxbContext;
         FLUXFAReportMessage fluxfaReportMessage;
         try {
             jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
