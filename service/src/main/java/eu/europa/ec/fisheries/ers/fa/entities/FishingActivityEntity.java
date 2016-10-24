@@ -153,38 +153,6 @@ public class FishingActivityEntity implements Serializable {
 		super();
 	}
 
-
-	public FishingActivityEntity( FaReportDocumentEntity faReportDocument, VesselStorageCharacteristicsEntity sourceVesselCharId, VesselStorageCharacteristicsEntity destVesselCharId, String typeCode, String typeCodeListid, Date occurence, String reasonCode, String reasonCodeListId, String vesselActivityCode, String vesselActivityCodeListId, String fisheryTypeCode, String fisheryTypeCodeListId, String speciesTargetCode, String speciesTargetCodeListId, Double operationQuantity, Double fishingDurationMeasure, String flapDocumentId, String flapDocumentSchemeId, FishingActivityEntity relatedFishingActivity, Set<FaCatchEntity> faCatchs, Set<DelimitedPeriodEntity> delimitedPeriods, Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers, Set<FishingTripEntity> fishingTrips, Set<FishingGearEntity> fishingGears, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<GearProblemEntity> gearProblems, Set<FluxLocationEntity> fluxLocations, Set<FishingActivityEntity> allRelatedFishingActivities) {
-      	this.faReportDocument = faReportDocument;
-		this.sourceVesselCharId = sourceVesselCharId;
-		this.destVesselCharId = destVesselCharId;
-		this.typeCode = typeCode;
-		this.typeCodeListid = typeCodeListid;
-		this.occurence = occurence;
-		this.reasonCode = reasonCode;
-		this.reasonCodeListId = reasonCodeListId;
-		this.vesselActivityCode = vesselActivityCode;
-		this.vesselActivityCodeListId = vesselActivityCodeListId;
-		this.fisheryTypeCode = fisheryTypeCode;
-		this.fisheryTypeCodeListId = fisheryTypeCodeListId;
-		this.speciesTargetCode = speciesTargetCode;
-		this.speciesTargetCodeListId = speciesTargetCodeListId;
-		this.operationQuantity = operationQuantity;
-		this.fishingDurationMeasure = fishingDurationMeasure;
-	//	this.flapDocumentId = flapDocumentId;
-	//	this.flapDocumentSchemeId = flapDocumentSchemeId;
-		this.relatedFishingActivity = relatedFishingActivity;
-		this.faCatchs = faCatchs;
-		this.delimitedPeriods = delimitedPeriods;
-		this.fishingActivityIdentifiers = fishingActivityIdentifiers;
-		this.fishingTrips = fishingTrips;
-		this.fishingGears = fishingGears;
-		this.fluxCharacteristics = fluxCharacteristics;
-		this.gearProblems = gearProblems;
-		this.fluxLocations = fluxLocations;
-		this.allRelatedFishingActivities = allRelatedFishingActivities;
-	}
-
 	public int getId() {
 		return this.id;
 	}

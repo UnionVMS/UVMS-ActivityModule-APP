@@ -529,6 +529,7 @@ public class FishingTripServiceBean implements FishingTripService {
      * @param fishingTripId
      * @return
      */
+    @Override
     public Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId){
         return FaCatchMapper.INSTANCE.mapCatchesToSummaryDTO(faCatchDao.findFaCatchesByFishingTrip(fishingTripId));
     }

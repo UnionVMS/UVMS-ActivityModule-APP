@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.ers.fa.utils.JaxbUtil;
 import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
 
@@ -34,7 +33,7 @@ public abstract class ModuleService {
             UserFault userFault = JaxbUtil.unmarshallTextMessage(message, UserFault.class);
             log.error("UserFault error JMS message received with text: " + userFault.getFault());
             isErrorResponse = true;
-        } catch (JAXBException | JMSException e) {
+        } catch (JAXBException e) {
             //do nothing  since it's not a UserFault
             log.error("Unexpected exception was thrown.", e);
         }

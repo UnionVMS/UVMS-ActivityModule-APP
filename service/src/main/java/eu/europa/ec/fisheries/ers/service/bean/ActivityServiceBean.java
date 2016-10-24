@@ -155,8 +155,8 @@ public class ActivityServiceBean implements ActivityService {
         }
         log.info(" countOfRecords:"+countOfRecords);
         Pagination pagination= query.getPagination();
-        int listSize=pagination.getListSize();
-        if(pagination !=null){
+        if(pagination != null){
+            int listSize   = pagination.getListSize();
             totalNoOfPages = (countOfRecords+listSize-1)/listSize;
        }
         return totalNoOfPages;

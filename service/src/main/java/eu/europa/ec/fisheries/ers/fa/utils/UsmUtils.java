@@ -28,6 +28,10 @@ import java.util.List;
  */
 public class UsmUtils {
 
+    private UsmUtils() {// Static utility class, not supposed to have instances.
+        super();
+    }
+
     public static List<AreaIdentifierType> convertDataSetToAreaId(List<Dataset> datasets) throws ServiceException {
         List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
         for (Dataset dataset : datasets) {

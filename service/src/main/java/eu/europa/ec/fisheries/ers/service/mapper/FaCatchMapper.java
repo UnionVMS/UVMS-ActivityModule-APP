@@ -165,8 +165,8 @@ public abstract class FaCatchMapper extends BaseMapper {
      * @param faCatches
      * @return
      */
-    public static Map<String, CatchSummaryListDTO> mapCatchesToSummaryDTO(List<Object[]> faCatches) {
-        Map<String, CatchSummaryListDTO> catchSummary = new HashMap<String, CatchSummaryListDTO>();
+    public Map<String, CatchSummaryListDTO> mapCatchesToSummaryDTO(List<Object[]> faCatches) {
+        Map<String, CatchSummaryListDTO> catchSummary = new HashMap<>();
         CatchSummaryListDTO landedSummary = new CatchSummaryListDTO();
         CatchSummaryListDTO onBoardSummary = new CatchSummaryListDTO();
         catchSummary.put("landed", landedSummary);
@@ -177,8 +177,8 @@ public abstract class FaCatchMapper extends BaseMapper {
 
         for(Object[] faCatch : faCatches){
             String typeCode    = ((String) faCatch[0]).toUpperCase();
-            String speciesCode = ((String) faCatch[1]);
-            Double weight      = ((Double) faCatch[2]);
+            String speciesCode = (String) faCatch[1];
+            Double weight      = (Double) faCatch[2];
             if("UNLOADED".equals(typeCode)){
                 landedSummary.addSpecieAndQuantity(speciesCode, weight);
             } else if("ONBOARD".equals(typeCode)

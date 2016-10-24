@@ -19,26 +19,15 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.measure.Latitude;
-import org.geotools.measure.Longitude;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
-import org.geotools.resources.i18n.ErrorKeys;
-import org.geotools.resources.i18n.Errors;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static java.lang.Math.toRadians;
-import static org.geotools.referencing.crs.DefaultGeographicCRS.WGS84;
 
 /**
  * Created by padhyad on 10/11/2016.
@@ -47,6 +36,10 @@ import static org.geotools.referencing.crs.DefaultGeographicCRS.WGS84;
 public class GeometryUtils {
 
     private static final int DEFAULT_SRID = 4326;
+
+    private GeometryUtils() { // Static utility class, not supposed to have instances.
+        super();
+    }
 
     public static boolean validatePointIntersectsArea(Geometry point, Geometry multipolygon) {
         return point.intersects(multipolygon);
@@ -59,8 +52,7 @@ public class GeometryUtils {
 
     public static LengthIndexedLine createLengthIndexedLine(String wkt1, String wkt2) throws ServiceException {
         Geometry lineString = createLineString(wkt1, wkt2);
-        LengthIndexedLine lengthIndexedLine = new LengthIndexedLine(lineString);
-        return lengthIndexedLine;
+        return new LengthIndexedLine(lineString);
     }
 
     public static Geometry createPoint(Double longitude, Double latitude) {
@@ -144,7 +136,6 @@ public class GeometryUtils {
     public static LineSegment createLineSegment(String wkt1, String wkt2) throws ServiceException {
         Geometry point1 = wktToGeom(wkt1);
         Geometry point2 = wktToGeom(wkt2);
-        LineSegment lineSegment = new LineSegment(point1.getCoordinate(), point2.getCoordinate());
-        return lineSegment;
+        return new LineSegment(point1.getCoordinate(), point2.getCoordinate());
     }
 }

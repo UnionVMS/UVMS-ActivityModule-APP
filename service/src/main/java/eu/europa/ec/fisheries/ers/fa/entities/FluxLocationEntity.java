@@ -102,31 +102,6 @@ public class FluxLocationEntity implements Serializable {
 		super();
 	}
 
-	public FluxLocationEntity(FaCatchEntity faCatch, FishingActivityEntity fishingActivity, String typeCode, String typeCodeListId, String countryId, String rfmoCode, Double longitude, Double latitude, String fluxLocationType, String countryIdSchemeId, String fluxLocationIdentifierSchemeId, String fluxLocationIdentifier, String geopoliticalRegionCode, String geopoliticalRegionCodeListId, String name, String sovereignRightsCountryCode, String jurisdictionCountryCode, Double altitude, String systemId, Set<FluxCharacteristicEntity> fluxCharacteristics, Set<StructuredAddressEntity> structuredAddresses) {
-
-		this.faCatch = faCatch;
-		this.fishingActivity = fishingActivity;
-		this.typeCode = typeCode;
-		this.typeCodeListId = typeCodeListId;
-		this.countryId = countryId;
-		this.rfmoCode = rfmoCode;
-		this.longitude = longitude;
-		this.latitude = latitude;
-		this.fluxLocationType = fluxLocationType;
-		this.countryIdSchemeId = countryIdSchemeId;
-		this.fluxLocationIdentifierSchemeId = fluxLocationIdentifierSchemeId;
-		this.fluxLocationIdentifier = fluxLocationIdentifier;
-		this.geopoliticalRegionCode = geopoliticalRegionCode;
-		this.geopoliticalRegionCodeListId = geopoliticalRegionCodeListId;
-		this.name = name;
-		this.sovereignRightsCountryCode = sovereignRightsCountryCode;
-		this.jurisdictionCountryCode = jurisdictionCountryCode;
-		this.altitude = altitude;
-		this.systemId = systemId;
-
-		this.structuredAddresses = structuredAddresses;
-	}
-
 	public int getId() {
 		return this.id;
 	}

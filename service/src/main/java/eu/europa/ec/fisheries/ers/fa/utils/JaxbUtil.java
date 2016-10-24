@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.fa.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
@@ -29,9 +26,9 @@ import java.io.StringWriter;
  * Created by padhyad on 10/12/2016.
  */
 public class JaxbUtil {
-    private static final Logger LOG = LoggerFactory.getLogger(JaxbUtil.class);
 
-    public JaxbUtil() {
+    private JaxbUtil() {// Static utility class, not supposed to have instances.
+        super();
     }
 
     public static <T> String marshallJaxBObjectToString(T data) throws JAXBException {
@@ -43,10 +40,15 @@ public class JaxbUtil {
         return sw.toString();
     }
 
-    public static <T> T unmarshallTextMessage(TextMessage textMessage, Class clazz) throws JAXBException, JMSException {
+    public static <T> T unmarshallTextMessage(TextMessage textMessage, Class clazz) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(new Class[]{clazz});
         Unmarshaller unmarshaller = jc.createUnmarshaller();
-        StringReader sr = new StringReader(textMessage.getText());
+        StringReader sr = null;
+        try {
+            sr = new StringReader(textMessage.getText());
+        } catch (JMSException e) {
+           throw new JAXBException(e);
+        }
         return (T) unmarshaller.unmarshal(sr);
     }
 }

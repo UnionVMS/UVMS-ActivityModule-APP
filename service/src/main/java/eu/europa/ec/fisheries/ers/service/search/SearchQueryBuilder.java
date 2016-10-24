@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.ers.service.search;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +61,8 @@ public class SearchQueryBuilder {
             FilterDetails details = mappings.get(key);
             if (details == null)
                 continue;
-            String joinString = details.getJoinString();
 
+            String joinString = details.getJoinString();
 
             if (sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
                 continue;
@@ -69,32 +70,25 @@ public class SearchQueryBuilder {
             switch (key) {
                 case MASTER:
                     if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
-                        joinString = FilterMap.MASTER_MAPPING;
-
-                     sql.append(JOIN).append(joinString).append(" ");
+                            joinString = FilterMap.MASTER_MAPPING;
+                    appendJoinString(sql, joinString);
                     break;
                 case VESSEL_IDENTIFIRE:
-                    if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) == -1) // Add missing join for required table
-                        sql.append(JOIN).append(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
-                    sql.append(JOIN).append(joinString).append(" ");
+                    tryAppendIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                    appendJoinString(sql, joinString);
                     break;
                 case FROM_ID:
-                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) // Add missing join for required table
-                        sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                    if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) // Add missing join for required table
-                        sql.append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
-                    sql.append(JOIN).append(joinString).append(" ");
-
+                    tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                    tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS); // Add missing join for required table
+                    appendJoinString(sql, joinString);
                     break;
                 case FROM_NAME:
-                    if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) // Add missing join for required table
-                        sql.append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                    tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
                     if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) // Add missing join for required table
-                        sql.append(JOIN).append(joinString).append(" ");
+                        appendJoinString(sql, joinString);
                     break;
-
                 default:
-                    sql.append(JOIN).append(joinString).append(" ");
+                    appendJoinString(sql, joinString);
                     break;
             }
 
@@ -106,27 +100,49 @@ public class SearchQueryBuilder {
         return sql;
     }
 
+    private static void appendJoinString(StringBuilder sql, String joinString) {
+        sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
+    }
+
+    /**
+     * Add missing join for required table if doesn't already exist in the query;
+     *
+     * @param sql
+     * @param valueToFindAndApply
+     */
+    private static void tryAppendIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
+        if (sql.indexOf(valueToFindAndApply) == -1) // Add missing join for required table
+            sql.append(JOIN).append(valueToFindAndApply);
+    }
+
 
     // This method makes sure that Table join is present for the Filter for which sorting has been requested.
     private static StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query) {
         SortKey sort = query.getSortKey();
         // IF sorting has been requested and
-        if (sort != null) {
-            Filters field = sort.getField();
-
-            // Make sure that the field which we want to sort, table Join is present for it.
-            if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
-                sql.append(LEFT).append(JOIN).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
-            } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
-                sql.append(LEFT).append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-            } else if (Filters.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)) {
-                if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
-                    sql.append(LEFT).append(JOIN).append(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
-                    sql.append(LEFT).append(JOIN).append(FilterMap.FLUX_PARTY_TABLE_ALIAS);
-            }
+        if (sort == null) {
+            return sql;
         }
+
+        Filters field = sort.getField();
+
+        // Make sure that the field which we want to sort, table Join is present for it.
+        if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
+            appendLeftJoin(sql, FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
+        } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
+            appendLeftJoin(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+        } else if (Filters.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)) {
+            if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1)
+                appendLeftJoin(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+            if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)
+                appendLeftJoin(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
+        }
+
         return sql;
+    }
+
+    private static void appendLeftJoin(StringBuilder sql, String delimitedPeriodTableAlias) {
+        sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
     }
 
     // Build Where part of the query based on Filter criterias
