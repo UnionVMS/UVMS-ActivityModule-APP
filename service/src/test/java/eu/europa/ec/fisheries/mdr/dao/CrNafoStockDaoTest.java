@@ -24,7 +24,7 @@ import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.domain.CrNafoStock;
 import lombok.SneakyThrows;
 
-public class CrNafoStockDaoTest extends BaseActivityDaoTest {
+public class CrNafoStockDaoTest extends BaseMdrDaoTest {
 
     private CrNafoStockDao dao = new CrNafoStockDao(em);
 

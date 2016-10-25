@@ -23,7 +23,7 @@ import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ActionTypeDaoTest extends BaseActivityDaoTest {
+public class ActionTypeDaoTest extends BaseMdrDaoTest {
 	
     private ActionTypeDao dao;
 

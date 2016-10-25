@@ -28,7 +28,7 @@ import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static org.junit.Assert.assertEquals;
 
 
-public class MdrBulkOperationsDaoTest extends BaseActivityDaoTest {
+public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 
 	private MdrBulkOperationsDao bulkDao = new MdrBulkOperationsDao(em);
 
