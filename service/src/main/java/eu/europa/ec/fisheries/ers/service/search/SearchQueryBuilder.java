@@ -179,15 +179,18 @@ public class SearchQueryBuilder {
             int i = 0;
             for (Filters key : keySet) {
 
-                if (Filters.QUNTITY_MIN.equals(key) || mappings.get(key) == null) // skip this as MIN and MAX both are required to form where part. Treat it differently
-                    continue;
+                if ( (Filters.QUNTITY_MIN.equals(key) && keySet.contains(Filters.QUNTITY_MAX)) || mappings.get(key) == null) // skip this as MIN and MAX both are required to form where part. Treat it differently
+                  continue;
 
                 String mapping = mappings.get(key).getCondition();
                 if (i != 0) {
                     sql.append(" and ");
                 }
 
-                if (Filters.QUNTITY_MAX.equals(key)) {
+                if(Filters.QUNTITY_MIN.equals(key) ){
+                     sql.append("(faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" )") ;
+
+                }else if (Filters.QUNTITY_MAX.equals(key)) {
                     sql.append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
                     sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
                 } else {
