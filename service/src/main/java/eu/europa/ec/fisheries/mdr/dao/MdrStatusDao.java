@@ -36,7 +36,8 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
     private EntityManager em;
 
     private static final String SELECT_FROM_MDRSTATUS_WHERE_ACRONYM = "FROM MdrCodeListStatus WHERE objectAcronym=";
-    private static final String SELECT_UPDATABLE_FROM_MDRSTATUS = "FROM MdrCodeListStatus WHERE schedulable='Y'";
+    private static final String SELECT_UPDATABLE_FROM_MDRSTATUS     = "FROM MdrCodeListStatus WHERE schedulable='Y'";
+    private static final String ERROR_WHILE_SAVING_STATUS           = "Error while trying to save/update new MDR Code List Status";
 
     public MdrStatusDao(EntityManager em) {
         this.em = em;
@@ -47,9 +48,6 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
         return em;
     }
 
-    public List<MdrCodeListStatus> findAllStatuses() throws ServiceException {
-        return findAllEntity(MdrCodeListStatus.class);
-    }
 
     public MdrCodeListStatus findStatusByAcronym(String acronym) {
         MdrCodeListStatus entity = null;
@@ -112,7 +110,7 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
         try {
             saveOrUpdateEntity(mdrCodeListElement);
         } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
+            log.error(ERROR_WHILE_SAVING_STATUS,e);
         }
     }
 
@@ -124,7 +122,7 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
         try {
             saveOrUpdateEntity(mdrCodeListElement);
         } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
+            log.error(ERROR_WHILE_SAVING_STATUS,e);
         }
     }
 
@@ -134,7 +132,7 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
         codeListFromDB.setObjectName(xmlCodeListMetaData.getObjName().getValue());
 
         FLUXPeriodType validityXml = xmlCodeListMetaData.getValidityPeriod();
-        DateRange validity =new DateRange(validityXml.getStartDate().toGregorianCalendar().getTime(),
+        DateRange validity = new DateRange(validityXml.getStartDate().toGregorianCalendar().getTime(),
                 validityXml.getEndDate().toGregorianCalendar().getTime());
         codeListFromDB.setValidity(validity);
 
@@ -151,7 +149,7 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
         try {
             saveOrUpdateEntity(mdrCodeListElement);
         } catch (ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
+            log.error(ERROR_WHILE_SAVING_STATUS,e);
         }
     }
 
@@ -161,7 +159,7 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
             mdrCodeListElement.setSchedulable(schedulable);
             saveOrUpdateEntity(mdrCodeListElement);
         } catch (ServiceException | NullPointerException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
+            log.error(ERROR_WHILE_SAVING_STATUS,e);
         }
     }
 
@@ -172,19 +170,18 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
             mdrCodeListElement.setLastStatus(newStatus);
             saveOrUpdateEntity(mdrCodeListElement);
         } catch (NullPointerException | ServiceException e) {
-            log.error("Error while trying to save/update new MDR Code List Status",e);
+            log.error(ERROR_WHILE_SAVING_STATUS,e);
         }
     }
 
     public List<MdrCodeListStatus> getAllUpdatableAcronymsStatuses() {
-        List<MdrCodeListStatus> statussesList =  findAllUpdatableStatuses();
-        return statussesList;
+        return  findAllUpdatableStatuses();
     }
 
     public List<MdrCodeListStatus> getAllAcronymsStatuses() {
         List<MdrCodeListStatus> statussesList = null;
         try {
-            statussesList =  findAllStatuses();
+            statussesList =  findAllEntity(MdrCodeListStatus.class);
         } catch (ServiceException e) {
             log.error("Error while getting MDR Code List Statusses",e);
         }
