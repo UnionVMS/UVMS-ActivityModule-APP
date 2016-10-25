@@ -30,7 +30,7 @@ public class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
     private static final String JOIN = " JOIN FETCH ";
     private static final String LEFT = " LEFT ";
-    private static final String FISHING_ACTIVITY_JOIN = "SELECT DISTINCT a from FishingActivityEntity a JOIN FETCH a.faReportDocument fa ";
+    private static final String FISHING_ACTIVITY_JOIN = "SELECT DISTINCT a from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa ";
 
     private SearchQueryBuilder() {
         super();
@@ -56,19 +56,20 @@ public class SearchQueryBuilder {
         LOG.debug("Create Join Tables part of Query");
         Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
         // Create join part of SQL query
-        Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
-        for (Filters key : keySet) {
-            FilterDetails details = mappings.get(key);
-            String joinString = null;
-            if (details != null) {
-                joinString = details.getJoinString();
+        if(query.getSearchCriteriaMap() !=null) {
+            Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
+            for (Filters key : keySet) {
+                FilterDetails details = mappings.get(key);
+                String joinString = null;
+                if (details != null) {
+                    joinString = details.getJoinString();
+                }
+                if (joinString == null || sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
+                    continue;
+
+                completeQueryDependingOnKey(sql, key, joinString);
             }
-            if (joinString == null || sql.indexOf(joinString) != -1) // If the Table join for the Filter is already present in SQL, do not join the table again
-                continue;
-
-            completeQueryDependingOnKey(sql, key, joinString);
         }
-
         getJoinPartForSortingOptions(sql, query);
 
         LOG.debug("Generated SQL for JOIN Part :" + sql);
@@ -168,32 +169,35 @@ public class SearchQueryBuilder {
     public static StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
         Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
-        // Create join part of SQL query
-        Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
-
         sql.append("where ");
-        // Create Where part of SQL Query
-        int i = 0;
-        for (Filters key : keySet) {
+        // Create join part of SQL query
+        if(query.getSearchCriteriaMap() !=null) {
+            Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
 
-            if (Filters.QUNTITY_MIN.equals(key) || mappings.get(key) == null) // skip this as MIN and MAX both are required to form where part. Treat it differently
-                continue;
 
-            String mapping = mappings.get(key).getCondition();
-            if (i != 0) {
-                sql.append(" and ");
+            // Create Where part of SQL Query
+            int i = 0;
+            for (Filters key : keySet) {
+
+                if (Filters.QUNTITY_MIN.equals(key) || mappings.get(key) == null) // skip this as MIN and MAX both are required to form where part. Treat it differently
+                    continue;
+
+                String mapping = mappings.get(key).getCondition();
+                if (i != 0) {
+                    sql.append(" and ");
+                }
+
+                if (Filters.QUNTITY_MAX.equals(key)) {
+                    sql.append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
+                    sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
+                } else {
+                    sql.append(mapping);
+                }
+                i++;
             }
-
-            if (Filters.QUNTITY_MAX.equals(key)) {
-                sql.append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
-                sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
-            } else {
-                sql.append(mapping);
-            }
-            i++;
+            sql.append(" and ");
         }
-
-        sql.append(" and fa.status = '" + FaReportStatusEnum.NEW.getStatus() + "'"); // get data from only new reports
+        sql.append("  fa.status = '" + FaReportStatusEnum.NEW.getStatus() + "'"); // get data from only new reports
 
         LOG.debug("Generated Query After Where :" + sql);
         return sql;

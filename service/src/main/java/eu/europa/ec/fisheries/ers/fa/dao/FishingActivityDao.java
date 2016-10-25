@@ -34,7 +34,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
     private  static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static  final String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a JOIN FETCH a.faReportDocument fa where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by fa.acceptedDatetime asc ";
+    private static  final String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by fa.acceptedDatetime asc ";
 
     private EntityManager em;
 
@@ -104,6 +104,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         Query typedQuery = em.createQuery(sql.toString());
         Map<Filters,String> searchCriteriaMap = query.getSearchCriteriaMap();
 
+        if(searchCriteriaMap ==null)
+            return typedQuery;
         // Assign values to created SQL Query
         for (Map.Entry<Filters,String> entry : searchCriteriaMap.entrySet()){
 

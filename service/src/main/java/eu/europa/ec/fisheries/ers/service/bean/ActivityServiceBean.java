@@ -107,17 +107,14 @@ public class ActivityServiceBean implements ActivityService {
     @Override
     public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
         List<FishingActivityEntity> activityList;
-        boolean isSearchFiltersPresent = true;
+
         int totalPages = 0;
         log.debug("FishingActivityQuery received :" + query);
-        if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty())
-            isSearchFiltersPresent = false;
 
         // Check if any filters are present. If not, We need to return all fishing activity data
-        if(isSearchFiltersPresent) {
-           activityList = fishingActivityDao.getFishingActivityListByQuery(query);
-        } else
-            activityList = fishingActivityDao.getFishingActivityList(query.getPagination()); // If search criteria is not present, return all the fishing Activity data
+
+        activityList = fishingActivityDao.getFishingActivityListByQuery(query);
+        log.debug("activityList COUNT is: "+activityList.size());
 
         Geometry multipolygon = getRestrictedAreaGeom(datasets);
 
@@ -148,11 +145,9 @@ public class ActivityServiceBean implements ActivityService {
     log.info(" Get total pages count");
         int countOfRecords ;
         int totalNoOfPages =1;
-        if (query.getSearchCriteriaMap() == null || query.getSearchCriteriaMap().isEmpty()){
-         countOfRecords=  fishingActivityDao.getCountForFishingActivityList();
-        }else{
+
          countOfRecords=  fishingActivityDao.getCountForFishingActivityListByQuery(query);
-        }
+
         log.info(" countOfRecords:"+countOfRecords);
         Pagination pagination= query.getPagination();
         if(pagination != null){
