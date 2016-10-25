@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.uvms.BaseDAOTest;
 
 import static com.ninja_squad.dbsetup.Operations.*;
 
-public abstract class BaseActivityDaoTest extends BaseDAOTest {
+public abstract class BaseMdrDaoTest extends BaseDAOTest {
 
 
     protected static final Operation DELETE_ALL_MDR_CR_NAFO_STOCK = sequenceOf(
@@ -42,8 +42,11 @@ public abstract class BaseActivityDaoTest extends BaseDAOTest {
 
     protected static final Operation INSERT_MDR_CODELIST_STATUS = sequenceOf(
             insertInto("activity.mdr_codelist_status")
-                    .columns("id").values(1L)
-                    .build()
+                    .columns("id", "object_acronym", "schedulable").values(1L, "ACTION_TYPE", "Y").build(),
+            insertInto("activity.mdr_codelist_status")
+                    .columns("id", "object_acronym", "schedulable").values(2L, "CONVERSION_FACTOR", "Y").build(),
+            insertInto("activity.mdr_codelist_status")
+                    .columns("id", "object_acronym", "schedulable").values(3L, "GEAR_TYPE", "N").build()
     );
 
    
