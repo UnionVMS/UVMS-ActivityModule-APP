@@ -32,6 +32,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -125,7 +126,7 @@ public class ActivityServiceBean implements ActivityService {
             log.debug("Total Records count is: "+totalPages);
         }
 
-        if (activityList == null || activityList.isEmpty()) {
+        if (CollectionUtils.isEmpty(activityList)) {
             log.info("Could not find FishingActivity entities matching search criteria");
             activityList = Collections.emptyList();
         }
