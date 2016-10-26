@@ -4,7 +4,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>0.5.7-SNAPSHOT</version>
+    <version>0.5.7</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
 
@@ -339,7 +339,7 @@
     <scm>
 
         <!--connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</connection-->
-        <developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Activity/
+        <developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/Activity/activity-0.5.7-SNAPSHOT
         </developerConnection>
         <!--url>https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</url-->
 
