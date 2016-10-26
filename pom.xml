@@ -35,7 +35,7 @@
 
         <!-- Other modules dependencies -->
         <reporting.model>0.5.0</reporting.model>
-        <exchange.model>2.0.8-SNAPSHOT</exchange.model>
+        <exchange.model>2.0.8</exchange.model>
         <rules.model>2.0.7</rules.model>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
