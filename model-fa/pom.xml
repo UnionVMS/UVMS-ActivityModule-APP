@@ -5,7 +5,7 @@
     <artifactId>activity-model-fa</artifactId>
     <name>activity-model-fa</name>
     <packaging>ejb</packaging>
-    <version>0.5.5</version>
+    <version>0.5.6-SNAPSHOT</version>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
     <properties>
@@ -106,7 +106,7 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/Activity/activity-model-fa-0.5.5</connection>
+        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Activity/APP/model-fa</connection>
     </scm>
 
     <profiles>
