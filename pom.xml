@@ -29,8 +29,8 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.6-SNAPSHOT</activity.model>
-        <activity.model.fa>0.5.5-SNAPSHOT</activity.model.fa>
+        <activity.model>0.5.6</activity.model>
+        <activity.model.fa>0.5.5</activity.model.fa>
         <activity.model.mdr>0.5.4</activity.model.mdr>
 
         <!-- Other modules dependencies -->
@@ -62,7 +62,7 @@
         <uvms.commons.version>2.0.12</uvms.commons.version>
         <uvms.test.version>0.0.3</uvms.test.version>
         <hibernate.validator.version>5.2.1.Final</hibernate.validator.version>
-        <usm4uvms.version>2.0.16-SNAPSHOT</usm4uvms.version>
+        <usm4uvms.version>2.0.16</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
@@ -70,7 +70,7 @@
         <database.dialect>oracle</database.dialect>
         <geotools.version>14-M1</geotools.version>
         <movement.model.version>2.0.0</movement.model.version>
-        <spatial.model.version>0.5.5-SNAPSHOT</spatial.model.version>
+        <spatial.model.version>0.5.4</spatial.model.version>
     </properties>
 
     <dependencyManagement>
