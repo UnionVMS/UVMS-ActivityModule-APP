@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FishingActivityConf
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.SummaryReportDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.mockito.stubbing.Answer;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 
@@ -254,7 +255,7 @@ public class MapperUtil {
     }
 
     public static AAPProcess getAapProcess() {
-        List<CodeType> codeList = Arrays.asList(getCodeType("AAPPROCESS", "qbdcg-3fhr5-rd4kd5-erigks5k"));
+        List<CodeType> codeList = Arrays.asList(getCodeType("FISH_FRESHNESS", "FLUX_ PROCESS_TYPE"));
         NumericType numericType = getNumericType(123);
         AAPProcess aapProcess = new AAPProcess(codeList, numericType, null, Arrays.asList(getAapProduct()));
         return aapProcess;
@@ -267,7 +268,7 @@ public class MapperUtil {
         CodeType weighingMeansCode = getCodeType("Weighing Means 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k");
         CodeType usageCode = getCodeType("Usage Code 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k");
         QuantityType packagingUnitQuantity = getQuantityType(1234);
-        CodeType packagingTypeCode = getCodeType("packaging type 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k");
+        CodeType packagingTypeCode = getCodeType("packaging type 1", "FISH_PACKAGING");
         MeasureType packagingUnitAverageWeightMeasure = getMeasureType(123, "C62", "qbdcg-3fhr5-rd4kd5-er5tgd5k");
         SalesPrice totalSalesPrice = getSalesPrice(getAmountType(123, "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k", "1"));
         SizeDistribution specifiedSizeDistribution = getSizeDistribution(getCodeType("catagory 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k"),
@@ -314,7 +315,7 @@ public class MapperUtil {
 
     public static ContactParty getContactParty() {
         ContactParty contactParty = new ContactParty();
-        CodeType roleCode = getCodeType("Role Code 1", "4ryf65-ghtd74r-5yr64e-tuf64e");
+        CodeType roleCode = getCodeType("MASTER", "FLUX_CONTACT_ ROLE");
         contactParty.setRoleCodes(Arrays.asList(roleCode));
         contactParty.setSpecifiedContactPersons(Arrays.asList(getContactPerson()));
         contactParty.setSpecifiedStructuredAddresses(Arrays.asList(getStructuredAddress()));
@@ -337,7 +338,7 @@ public class MapperUtil {
     }
 
     public static DelimitedPeriod getDelimitedPeriod() {
-        DateTimeType startDate = getDateTimeType("2016-07-01 11:15:00");
+        DateTimeType startDate = getDateTimeType("2011-07-01 11:15:00");
         DateTimeType endDate = getDateTimeType("2016-07-01 11:15:00");
         MeasureType measureType = getMeasureType(500, "C62", "4rhfy5-fhtydr-tyfr85-ghtyd54");
         DelimitedPeriod delimitedPeriod = new DelimitedPeriod(startDate, endDate, measureType);
@@ -345,7 +346,7 @@ public class MapperUtil {
     }
 
     public static RegistrationLocation getRegistrationLocation() {
-        IDType countryID = getIdType("ID 1", "3tyfhr-57rgt75-thfyr75-684utfg");
+        IDType countryID = getIdType("XEU", "TERRITORY");
         List<TextType> descriptions = Arrays.asList(getTextType("This is Test Text"));
         CodeType geopoliticalRegionCode = getCodeType("Region Code 1", "57tug6-tfu576-5tud75-t57e5td-56tdwe");
         List<IDType> ids = Arrays.asList(getIdType("ID 2", "fhtyr8-45jrf-5784fhrt-thf75"));
@@ -365,10 +366,10 @@ public class MapperUtil {
 
     public static VesselTransportMeans getVesselTransportMeans() {
         VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
-        CodeType roleCode = getCodeType("Role Code 1", "ryft4-ghty67-57thf-57tg5");
+        CodeType roleCode = getCodeType("CATCHING_VESSEL", "FA_VESSEL_ROLE");
         List<TextType> names = Arrays.asList(getTextType("Test Name"));
         List<FLAPDocument> grantedFLAPDocuments = Arrays.asList(getFlapDocument());
-        List<IDType> ids = Arrays.asList(getIdType("ID 1", "fhtg56-5thd75-thf93-thfrye"));
+        List<IDType> ids = Arrays.asList(getIdType("ID 1", "CFR"));
         List<ContactParty> specifiedContactParties = Arrays.asList(getContactParty());
         List<RegistrationEvent> specifiedRegistrationEvents = Arrays.asList(getRegistrationEvent());
         VesselCountry vesselCounty = new VesselCountry(getIdType("Country Id 1", "tu587r-5jt85-tjfur7-tjgut7"));
@@ -384,7 +385,7 @@ public class MapperUtil {
 
     public static VesselStorageCharacteristic getVesselStorageCharacteristic() {
         VesselStorageCharacteristic vesselStorageCharacteristic = new VesselStorageCharacteristic();
-        List<CodeType> typeCodes = Arrays.asList(getCodeType("Code 1", "57tyf-ghtyrf-ghtyru-ght756h"));
+        List<CodeType> typeCodes = Arrays.asList(getCodeType("CONTAINER", "VESSEL_STORAGE_TYPE"));
         IDType id = getIdType("ID 1", "687yu5-tught6-thfyr-5yt74e");
         vesselStorageCharacteristic.setID(id);
         vesselStorageCharacteristic.setTypeCodes(typeCodes);
@@ -392,8 +393,8 @@ public class MapperUtil {
     }
 
     public static SizeDistribution getSizeDistribution() {
-        CodeType categoryCode = getCodeType("Catagory code 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
-        List<CodeType> classCodes = Arrays.asList(getCodeType("Class Type 1", "57tyf-ghtyrf-ghtyru-ght756h"));
+        CodeType categoryCode = getCodeType("S6", "FA_BFT_SIZE_CATEGORY");
+        List<CodeType> classCodes = Arrays.asList(getCodeType("LSC", "FISH_SIZE_CLASS"));
         SizeDistribution sizeDistribution = new SizeDistribution(categoryCode, classCodes);
         return sizeDistribution;
     }
@@ -457,11 +458,11 @@ public class MapperUtil {
 
     public static FLUXLocation getFluxLocation() {
         FLUXLocation fluxLocation = new FLUXLocation();
-        CodeType typeCode = getCodeType("Code Type 1", "fhty58-gh586t-5tjf8-t58rjewe");
-        IDType countryID = getIdType("ID 1", "fhtg56-5thd75-thf6t93-thfrye");
+        CodeType typeCode = getCodeType("AREA", "FLUX_LOCATION_TYPE");
+        IDType countryID = getIdType("XEU", "TERRITORY");
         CodeType regionalFisheriesManagementOrganizationCode = getCodeType("RFMO1", "fhty58-gh586t-5tjf8-t58rjewe");
         FLUXGeographicalCoordinate specifiedPhysicalFLUXGeographicalCoordinate = getFluxGeographicalCoordinate();
-        IDType id = getIdType("ID 2", "fhty58-gh586t-5tjf8-t58rjewe");
+        IDType id = getIdType("25.5b", "FAO_AREA");
         CodeType geopoliticalRegionCode = getCodeType("Code type 2", "fhty258-g3h586t-5t4jf8-t58rjew5e");
         List<TextType> names = Arrays.asList(getTextType("This is sample name"));
         IDType sovereignRightsCountryID = getIdType("sovereign rights id 1", "fhty58-gh5486t-5t5jf8-t58rjewe");
@@ -499,12 +500,12 @@ public class MapperUtil {
     }
 
     public static FACatch getFaCatch() {
-        CodeType speciesCode = getCodeType("Species code 1", "47rfh-5hry4-thfur75-4hf743");
+        CodeType speciesCode = getCodeType("ONBOARD", "FAO_SPECIES");
         QuantityType unitQuantity = getQuantityType(100);
         MeasureType weightMeasure = getMeasureType(123, "C62", "586jhg-5htuf95-5jfit-5jtier8");
         CodeType weighingMeansCode = getCodeType("Weighing means code 1", "5854tt5-gjtdir-5j85tui-589git");
         CodeType usageCode = getCodeType("Usage code 1", "58thft-58fjd8-gt85eje-hjgute8");
-        CodeType typeCode = getCodeType("Type code 1", "57thre-fn48320-fn39fjr-tjfow84");
+        CodeType typeCode = getCodeType("Type code 1", "FA_CATCH_TYPE");
         final List<FishingTrip> relatedFishingTrips = Arrays.asList(getFishingTrip());
         SizeDistribution specifiedSizeDistribution = getSizeDistribution();
         List<AAPStock> relatedAAPStocks = Arrays.asList(getAapStock());
@@ -512,6 +513,8 @@ public class MapperUtil {
         List<SalesBatch> relatedSalesBatches = null;
         List<FLUXLocation> specifiedFLUXLocations = Arrays.asList(getFluxLocation());
         List<FishingGear> usedFishingGears = Arrays.asList(getFishingGear());
+
+
         List<FLUXCharacteristic> applicableFLUXCharacteristics = Arrays.asList(getFluxCharacteristics());
         List<FLUXLocation> destinationFLUXLocations = Arrays.asList(getFluxLocation());
         FACatch faCatch = new FACatch(speciesCode, unitQuantity, weightMeasure, weighingMeansCode, usageCode,
@@ -527,8 +530,31 @@ public class MapperUtil {
         return fishingActivity;
     }
 
+    public static FLUXFAReportMessage getFLUXFAReportMessage() {
+
+        FLUXFAReportMessage fluxfaReportMessage = new FLUXFAReportMessage(getFLUXReportDocument(), Arrays.asList(getFaReportDocument()));
+        return fluxfaReportMessage;
+    }
+
+    public static FLUXReportDocument getFLUXReportDocument(){
+        new FLUXReportDocument();
+        List<IDType> ids = Arrays.asList(getIdType("FLUX_REPORT_ID_1", "FLUX_SCHEME_ID1"));
+        IDType referenceId=getIdType("REF_ID 1", "47rfh-5hry4-thfur75-4hf743");
+        DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
+        CodeType purposeCode = getCodeType("9", "FLUX_GP_PURPOSE");
+        CodeType typeCode = getCodeType("type Code1", "fhr574fh-thrud754-kgitjf754-gjtufe89");
+        List<IDType> ownerFluxPartyId = Arrays.asList(getIdType("Owner flux party id 1", "47rfh-5hry4-thfur75-4hf743"));
+        List<TextType> names =Arrays.asList(getTextType("fluxPartyOwnerName 1"));
+        FLUXParty fluxParty = new FLUXParty(ownerFluxPartyId,names);
+        FLUXReportDocument fluxReportDocument = new FLUXReportDocument(ids, referenceId, creationDateTime, purposeCode, getTextType("Purpose"), typeCode, fluxParty);
+
+        return fluxReportDocument;
+    }
+
+
+
     public static FAReportDocument getFaReportDocument() {
-        CodeType typeCode = getCodeType("Code Type 1", "fhr574fh-thrud754-kgitjf754-gjtufe89");
+        CodeType typeCode = getCodeType("DECLARATION", "fhr574fh-thrud754-kgitjf754-gjtufe89");
         CodeType fmcMarkerCode = getCodeType("Fmz marker 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
         List<IDType> relatedReportIDs = Arrays.asList(getIdType("ID 1", "47rfh-5hry4-thfur75-4hf743"));
         DateTimeType acceptanceDateTime = getDateTimeType("2016-07-01 11:15:00");
@@ -542,7 +568,7 @@ public class MapperUtil {
 
     private static FishingActivity getStandardFishingActivity() {
         List<IDType> ids = Arrays.asList(getIdType("Id 1", "fhr574fh-thrud754-kgitjf754-gjtufe89"));
-        CodeType typeCode = getCodeType("Code Type 1", "4hryf0-t58thf-6jtue8-6jtie84");
+        CodeType typeCode = getCodeType("FISHING_OPERATION", "FLUX_FA_TYPE");
         DateTimeType occurrenceDateTime = getDateTimeType("2016-07-01 11:15:00");
         CodeType reasonCode = getCodeType("Reason code 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
         CodeType vesselRelatedActivityCode = getCodeType("Vessel activity 1", "58thft-58fjd8-gt85eje-hjgute8");
