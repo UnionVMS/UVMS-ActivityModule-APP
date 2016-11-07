@@ -337,12 +337,9 @@
     </distributionManagement>
 
     <scm>
-
-        <!--connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</connection-->
-        <developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Activity/
-        </developerConnection>
-        <!--url>https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/spatial-1.0.0.final</url-->
-
+        <connection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</connection>
+        <developerConnection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</developerConnection>
+        <url>https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
     </scm>
 
 
@@ -455,10 +452,6 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <providerImplementations>
-                        <svn>javasvn</svn>
-                    </providerImplementations>
-                    <tagBase>https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/Activity</tagBase>
                     <tagNameFormat>${project.artifactId}-${project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
