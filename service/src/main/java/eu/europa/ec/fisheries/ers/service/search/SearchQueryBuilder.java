@@ -56,7 +56,7 @@ public class SearchQueryBuilder {
         LOG.debug("Create Join Tables part of Query");
         Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
         // Create join part of SQL query
-        if(query.getSearchCriteriaMap() !=null) {
+        if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty()) {
             Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
             for (Filters key : keySet) {
                 FilterDetails details = mappings.get(key);
@@ -129,6 +129,9 @@ public class SearchQueryBuilder {
 
         Filters field = sort.getField();
 
+        if(field == null)
+            return sql;
+
         // Make sure that the field which we want to sort, table Join is present for it.
         switch (getFiledCase(sql, field)) {
             case 1 :
@@ -171,7 +174,7 @@ public class SearchQueryBuilder {
         Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
         sql.append("where ");
         // Create join part of SQL query
-        if(query.getSearchCriteriaMap() !=null) {
+        if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty()) {
             Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
 
 
@@ -211,7 +214,7 @@ public class SearchQueryBuilder {
         LOG.debug("Create Sorting part of Query");
         SortKey sort = query.getSortKey();
 
-        if (sort != null) {
+        if (sort != null && sort.getField() !=null) {
             Filters field = sort.getField();
             if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
