@@ -13,13 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyTripDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.MessageCountDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -78,4 +74,6 @@ public interface FishingTripService {
      * @return
      */
     Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId);
+
+    public TripMapGeoJsonDTO getTripMapDetailsForTripId(String tripId);
 }

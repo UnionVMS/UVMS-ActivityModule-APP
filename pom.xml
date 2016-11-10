@@ -29,7 +29,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.6</activity.model>
+        <activity.model>0.5.7-SNAPSHOT</activity.model>
         <activity.model.fa>0.5.5</activity.model.fa>
         <activity.model.mdr>0.5.4</activity.model.mdr>
 
@@ -59,7 +59,7 @@
         <hibernate.version>4.3.5.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14-M1</geotools.version>
-        <uvms.commons.version>2.0.12</uvms.commons.version>
+        <uvms.commons.version>2.0.13-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.3</uvms.test.version>
         <hibernate.validator.version>5.2.1.Final</hibernate.validator.version>
         <usm4uvms.version>2.0.16</usm4uvms.version>
@@ -295,6 +295,20 @@
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
                 <artifactId>activity-model-fa</artifactId>
                 <version>${activity.model.fa}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wololo</groupId>
+                <artifactId>jts2geojson</artifactId>
+                <version>0.7.0</version>
+            </dependency>
+
+            <!-- don't delete needed for org.wololo -->
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts</artifactId>
+                <version>1.13</version>
+                <scope>provided</scope>
             </dependency>
 
 

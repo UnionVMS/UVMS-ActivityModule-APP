@@ -13,8 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
@@ -23,16 +28,13 @@ import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
-import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.ContactPersonMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.StructuredAddressMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
@@ -40,7 +42,15 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
+import org.geotools.feature.AttributeTypeBuilder;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geojson.geom.GeometryJSON;
+import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -50,6 +60,7 @@ import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -533,6 +544,127 @@ public class FishingTripServiceBean implements FishingTripService {
     public Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId){
         return FaCatchMapper.INSTANCE.mapCatchesToSummaryDTO(faCatchDao.findFaCatchesByFishingTrip(fishingTripId));
     }
+
+
+   @Override
+    public TripMapGeoJsonDTO getTripMapDetailsForTripId(String tripId){
+       TripMapGeoJsonDTO tripMapGeoJsonDTO = new  TripMapGeoJsonDTO();
+       List<FaReportDocumentEntity> faReportDocumentEntityList=  faReportDocumentDao.getLatestFaReportDocumentsForTrip(tripId);
+       List<Geometry> geoList= new ArrayList<>();
+       for(FaReportDocumentEntity entity :faReportDocumentEntityList){
+           if(entity.getGeom() !=null)
+               geoList.add(entity.getGeom());
+           log.info("Geometry:"+entity.getGeom().toText());
+       }
+       tripMapGeoJsonDTO.setGeometry(geoList);
+       ObjectNode rootNode= toJson(geoList);
+        log.info("rootNode:"+rootNode);
+
+         return tripMapGeoJsonDTO;
+
+    }
+
+    public ObjectNode toJson(List<Geometry> geoList)  {
+
+        ObjectNode rootNode;
+
+        DefaultFeatureCollection trips = new DefaultFeatureCollection(null, build());
+        for(Geometry geo :geoList){
+            SimpleFeature feature= toFeature(geo);
+         //  testJsonConversion(feature,geo);
+            Object obj=feature.getAttribute("geometry");
+            log.info("obj:"+obj.toString());
+            trips.add(feature);
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        rootNode = mapper.createObjectNode();
+        try {
+            log.info("rootNode****************************");
+            rootNode.set("trips", new FeatureToGeoJsonJacksonMapper().convert(trips));
+            log.info("rootNode:"+rootNode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rootNode;
+    }
+    private static final SimpleFeatureType TRIP_FEATURE = build();
+    private static SimpleFeatureType build() {
+        SimpleFeatureTypeBuilder sb = new SimpleFeatureTypeBuilder();
+
+        sb.setName("TRIP");
+        final AttributeTypeBuilder attributeTypeBuilder = new AttributeTypeBuilder();
+       sb.add(attributeTypeBuilder.binding(MultiPoint.class).buildDescriptor("geometry"));
+        sb.add("geometry", MultiPoint.class);
+     //     sb.add("geometry", Point.class);
+      //  sb.add("geometry", MultiPolygon.class);
+        sb.setCRS(DefaultGeographicCRS.WGS84);
+        sb.add("name", String.class);
+
+       // sb.setDefaultGeometry("geometry");
+        return sb.buildFeatureType();
+    }
+
+    public SimpleFeature toFeature(Geometry geometry) {
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(TRIP_FEATURE);
+
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
+      //  Coordinate[] coordinates=geometry.getCoordinates();
+       // Geometry point = GeometryUtils.createPoint(coordinates[0]);
+        //Point point=geometryFactory.createPoint(coordinates[0]);
+         featureBuilder.set("geometry", geometry);
+    //    featureBuilder.set("geometry", point);
+        featureBuilder.set("name", "test name");
+        //   featureBuilder.add(geometry);
+        SimpleFeature feature = featureBuilder.buildFeature(null);
+
+      //  feature.setDefaultGeometry(geometry);
+        log.info("SimpleFeature:"+feature.toString());
+
+        return feature;
+    }
+
+
+    private void testJsonConversion(SimpleFeature feature,Geometry geo){
+        ObjectMapper mapper = new ObjectMapper();
+        Geometry geometry= (Geometry) feature.getAttribute("geometry");
+        try {
+         //   JsonNode node= mapper.readTree(new GeometryJSON().toString(geometry));
+            JsonNode node= mapper.readTree(new GeometryJSON().toString(geo));
+            log.info("JsonNode:"+node);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+    private int getId(){
+        int randomInt=0;
+        Random randomGenerator = new Random();
+        for (int idx = 1; idx <= 10; ++idx){
+            randomInt = randomGenerator.nextInt(100);
+
+        }
+        return  randomInt;
+    }
+
+    public static Geometry toGeometry(final String wkt) throws ParseException {
+
+        Geometry geometry = null;
+
+        if (wkt != null) {
+
+            WKTReader wktReader = new WKTReader();
+            geometry = wktReader.read(wkt);
+
+        }
+
+        return geometry;
+    }
+
 
 
 }
