@@ -13,15 +13,11 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.destination.DataSourceDestination;
-import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 
 /**
@@ -46,4 +42,7 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         assertNotNull(fishingTripEntity.getFaCatch());
         assertNotNull(fishingTripEntity.getFishingActivity());
     }
+
+
+
 }

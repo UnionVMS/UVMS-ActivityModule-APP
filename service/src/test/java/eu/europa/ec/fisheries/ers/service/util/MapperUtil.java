@@ -13,6 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
@@ -37,7 +40,7 @@ import java.util.*;
  */
 public class MapperUtil {
 
-
+    private static WKTReader wktReader = new WKTReader();
     private static Answer<?> vesselIdentifiersList;
 
     public static String  getCurrentTripID(){
@@ -204,11 +207,20 @@ public class MapperUtil {
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setStatus(FaReportStatusEnum.UPDATED.getStatus());
-        faReportDocumentEntity.setTypeCode("Type Code 1");
-        faReportDocumentEntity.setTypeCodeListId("57thfy-58tjd84-58thjf-58tjrj9");
+        faReportDocumentEntity.setTypeCode("FISHING_OPERATION");
+        faReportDocumentEntity.setTypeCodeListId("FLUX_FA_REPORT_TYPE");
         faReportDocumentEntity.setAcceptedDatetime(new Date());
         faReportDocumentEntity.setFmcMarker("FMC Marker");
         faReportDocumentEntity.setFmcMarkerListId("FMC Marker list Id");
+        Geometry geometry =null;
+
+        try {
+            geometry= wktReader.read("MULTIPOINT ((-10 40), (-40 30), (-20 20), (-30 10))");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        faReportDocumentEntity.setGeom(geometry);
 
         FaReportIdentifierEntity faReportIdentifierEntity = new FaReportIdentifierEntity();
         faReportIdentifierEntity.setFaReportIdentifierId("Identifier Id 1");
