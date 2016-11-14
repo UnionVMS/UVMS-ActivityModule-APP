@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.search.*;
@@ -54,12 +55,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
 
 
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
         Query query = getEntityManager().createNamedQuery(FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP);
 
         query.setParameter("fishingTripId", fishingTripId);
+        query.setParameter("area", multipolgon);
         return query.getResultList();
     }
 

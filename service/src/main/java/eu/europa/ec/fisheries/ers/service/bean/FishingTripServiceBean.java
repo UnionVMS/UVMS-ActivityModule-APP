@@ -414,7 +414,7 @@ public class FishingTripServiceBean implements FishingTripService {
                                                              Geometry multipolygon) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList;
         try {
-            fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId);
+            fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
         } catch (Exception e) {
             log.error("Error while trying to get Fishing Activity reports for fishing trip with Id:" + fishingTripId, e);
             return;

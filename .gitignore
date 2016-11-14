@@ -1,3 +1,6 @@
 *.iml
 target
 target/*
+scripts
+scripts/*
+logging.properties
