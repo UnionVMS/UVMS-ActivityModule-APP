@@ -1,18 +1,17 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
+
 import com.vividsolutions.jts.geom.MultiPoint;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.geotools.feature.AttributeTypeBuilder;
+
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
+
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -26,6 +25,7 @@ import java.util.List;
 public class FishingTripToGeoJsonMapper {
     private static final SimpleFeatureType TRIP_FEATURE = build();
     private static final String GEOMETRY = "geometry";
+    private static final String TRIP = "TRIP";
 
     //Convert Geometry list into GEO JSON format
     public static ObjectNode toJson(List<Geometry> geoList)  {
@@ -41,7 +41,8 @@ public class FishingTripToGeoJsonMapper {
       try {
           rootNode = new FeatureToGeoJsonJacksonMapper().convert(trips);
         } catch (IOException e) {
-            e.printStackTrace();
+          log.error("Error while trying to convert fishing trips to Geo JSON",e);
+
         }
 
         return rootNode;
@@ -50,7 +51,7 @@ public class FishingTripToGeoJsonMapper {
     // build simple Feature type
     private static SimpleFeatureType build() {
         SimpleFeatureTypeBuilder sb = new SimpleFeatureTypeBuilder();
-        sb.setName("TRIP");
+        sb.setName(TRIP);
         sb.add(GEOMETRY, MultiPoint.class);
         return sb.buildFeatureType();
     }
