@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class FishingActivityDaoTest extends BaseErsFaDaoTest {
@@ -220,8 +221,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     public void testGetFishingActivityListForFishingTrip() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706");
+        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null);
         assertNotNull(finishingActivityList);
-        assertNotEquals(0,finishingActivityList.size());
+        assertEquals(0, finishingActivityList.size());
     }
 }

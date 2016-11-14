@@ -39,7 +39,7 @@
             <ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>
             <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
             <OccurrenceDateTime>
-                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                <ns2:DateTime>2016-06-08T13:53:00.000Z</ns2:DateTime>
             </OccurrenceDateTime>
             <ReasonCode listID="h49rh-fhrus33-fj84hjs82-4h84hw82">Reason code 1</ReasonCode>
             <VesselRelatedActivityCode listID="58thft-58fjd8-gt85eje-hjgute8">Vessel activity 1</VesselRelatedActivityCode>
