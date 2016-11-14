@@ -120,6 +120,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
         List<FaReportDocumentEntity> entities=dao.getLatestFaReportDocumentsForTrip("NOR-TRP-20160517234053706");
         assertNotNull(entities);
+        assertEquals(2, entities.size());
     }
 
 
