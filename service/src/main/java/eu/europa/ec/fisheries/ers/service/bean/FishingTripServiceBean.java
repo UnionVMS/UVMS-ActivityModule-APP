@@ -412,28 +412,13 @@ public class FishingTripServiceBean implements FishingTripService {
     private void populateFishingActivityReportListAndSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                              Map<String, FishingActivityTypeDTO> summary,
                                                              Geometry multipolygon) throws ServiceException {
-        List<FishingActivityEntity> fishingActivityList;
-        try {
-            fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
-        } catch (Exception e) {
-            log.error("Error while trying to get Fishing Activity reports for fishing trip with Id:" + fishingTripId, e);
-            return;
-        }
-
+        List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
         if (CollectionUtils.isEmpty(fishingActivityList)){
             return;
         }
 
         for (FishingActivityEntity activityEntity : fishingActivityList) {
-            ReportDTO reportDTO = null;
-            if (multipolygon != null) {
-                if (activityEntity.getGeom().intersects(multipolygon)) {
-                    reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
-                }
-            } else {
-                reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
-            }
-
+            ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
             if (reportDTO != null && ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
                 // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
                 populateSummaryMap(reportDTO, summary);
