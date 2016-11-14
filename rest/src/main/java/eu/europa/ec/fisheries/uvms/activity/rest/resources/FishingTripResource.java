@@ -140,7 +140,7 @@ public class FishingTripResource extends UnionVMSResource {
                                               @Context HttpServletResponse response,
                                               @PathParam("tripId") String tripId
                                               ) throws ServiceException {
-        return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId).toJson());
+        return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId));
     }
 
 }

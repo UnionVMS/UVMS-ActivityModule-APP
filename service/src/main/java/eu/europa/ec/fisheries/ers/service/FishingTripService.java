@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -75,5 +76,10 @@ public interface FishingTripService {
      */
     Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId);
 
-    public TripMapGeoJsonDTO getTripMapDetailsForTripId(String tripId);
+    /**
+     * Retrieve GEO data for Fishing Trip MAp
+     * @param tripId
+     * @return
+     */
+    public ObjectNode getTripMapDetailsForTripId(String tripId);
 }
