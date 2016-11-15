@@ -123,7 +123,7 @@ public class ActivityServiceBean implements ActivityService {
         Pagination pagination= query.getPagination();
         if((pagination!=null && pagination.getTotalPages()==0)  || pagination==null){
             totalPages= getTotalPagesCountForFilterFishingActivityReports(query);
-            log.debug("Total Records count is: "+totalPages);
+            log.debug("Total number of pages : "+totalPages);
         }
 
         if (CollectionUtils.isEmpty(activityList)) {
@@ -149,12 +149,17 @@ public class ActivityServiceBean implements ActivityService {
 
          countOfRecords=  fishingActivityDao.getCountForFishingActivityListByQuery(query);
 
+
         log.info(" countOfRecords:"+countOfRecords);
         Pagination pagination= query.getPagination();
         if(pagination != null){
             int listSize   = pagination.getListSize();
             totalNoOfPages = (countOfRecords+listSize-1)/listSize;
        }
+
+        if(countOfRecords ==0)
+            totalNoOfPages =0;
+
         return totalNoOfPages;
     }
 
@@ -170,6 +175,7 @@ public class ActivityServiceBean implements ActivityService {
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList, Geometry multipolygon) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
         for(FishingActivityEntity entity : activityList) {
+
             if (multipolygon != null) {
                 if (entity.getGeom().intersects(multipolygon)) {
                     activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));

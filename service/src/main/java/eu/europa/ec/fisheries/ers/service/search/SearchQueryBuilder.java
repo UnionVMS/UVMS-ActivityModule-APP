@@ -28,8 +28,10 @@ import java.util.Set;
  */
 public class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
-    private static final String JOIN = " JOIN FETCH ";
+    private static final String JOIN_FETCH = " JOIN FETCH ";
     private static final String LEFT = " LEFT ";
+    private static final String JOIN =  " JOIN ";
+
     private static final String FISHING_ACTIVITY_JOIN = "SELECT DISTINCT a from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa ";
 
     private SearchQueryBuilder() {
@@ -81,11 +83,12 @@ public class SearchQueryBuilder {
             case MASTER:
                 if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
                     joinString = FilterMap.MASTER_MAPPING;
+
                 appendJoinString(sql, joinString);
                 break;
             case VESSEL_IDENTIFIRE:
                 tryAppendIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
-                appendJoinString(sql, joinString);
+                appendOnlyJoinString(sql, joinString);
                 break;
             case FROM_ID:
                 tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
@@ -103,8 +106,12 @@ public class SearchQueryBuilder {
         }
     }
 
-    private static void appendJoinString(StringBuilder sql, String joinString) {
+    private static void appendOnlyJoinString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
+    }
+
+    private static void appendJoinString(StringBuilder sql, String joinString) {
+        sql.append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }
 
     /**
@@ -115,7 +122,7 @@ public class SearchQueryBuilder {
      */
     private static void tryAppendIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) // Add missing join for required table
-            sql.append(JOIN).append(valueToFindAndApply);
+            sql.append(JOIN_FETCH).append(valueToFindAndApply);
     }
 
 
@@ -165,14 +172,14 @@ public class SearchQueryBuilder {
     }
 
     private static void appendLeftJoin(StringBuilder sql, String delimitedPeriodTableAlias) {
-        sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
+        sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
     }
 
     // Build Where part of the query based on Filter criterias
     public static StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
         Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
-        sql.append("where ");
+        sql.append(" where ");
         // Create join part of SQL query
         if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty()) {
             Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
