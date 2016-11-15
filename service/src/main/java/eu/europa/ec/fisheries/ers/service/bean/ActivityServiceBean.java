@@ -114,16 +114,17 @@ public class ActivityServiceBean implements ActivityService {
 
         // Check if any filters are present. If not, We need to return all fishing activity data
 
-        activityList = fishingActivityDao.getFishingActivityListByQuery(query);
-        log.debug("activityList COUNT is: "+activityList.size());
-
         Geometry multipolygon = getRestrictedAreaGeom(datasets);
+        activityList = fishingActivityDao.getFishingActivityListByQuery(query, multipolygon);
+        log.debug("activityList COUNT is: "+activityList.size());
 
         // Execute query to count all the resultset only if TotalPages value is 0. After first search frontend should send totalPages count in subsequent calls
         Pagination pagination= query.getPagination();
         if((pagination!=null && pagination.getTotalPages()==0)  || pagination==null){
-            totalPages= getTotalPagesCountForFilterFishingActivityReports(query);
-            log.debug("Total number of pages : "+totalPages);
+
+            totalPages= getTotalPagesCountForFilterFishingActivityReports(query, multipolygon);
+            log.debug("Total number of pages: "+totalPages);
+
         }
 
         if (CollectionUtils.isEmpty(activityList)) {
@@ -142,12 +143,12 @@ public class ActivityServiceBean implements ActivityService {
 
 
     // Query to calculate total number of result set
-    private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
+    private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
     log.info(" Get total pages count");
         int countOfRecords ;
         int totalNoOfPages =1;
 
-         countOfRecords=  fishingActivityDao.getCountForFishingActivityListByQuery(query);
+         countOfRecords=  fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);
 
 
         log.info(" countOfRecords:"+countOfRecords);
@@ -175,14 +176,7 @@ public class ActivityServiceBean implements ActivityService {
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList, Geometry multipolygon) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
         for(FishingActivityEntity entity : activityList) {
-
-            if (multipolygon != null) {
-                if (entity.getGeom().intersects(multipolygon)) {
-                    activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
-                }
-            } else {
-                activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
-            }
+            activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
         }
         return activityReportDTOList;
     }

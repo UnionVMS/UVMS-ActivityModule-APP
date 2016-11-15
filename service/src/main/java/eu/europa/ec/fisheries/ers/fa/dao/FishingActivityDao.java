@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.search.*;
@@ -56,12 +57,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
 
 
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
         Query query = getEntityManager().createNamedQuery(FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP);
 
         query.setParameter("fishingTripId", fishingTripId);
+        query.setParameter("area", multipolgon);
         return query.getResultList();
     }
 
@@ -89,25 +91,29 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
 
-    public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+    public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
         LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
         StringBuilder sqlToGetActivityListCount =SearchQueryBuilder.createSQL(query);
 
-        Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount,query);
+        Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, multipolygon);
 
         return countQuery.getResultList().size();
     }
 
 
     // Set typed values for Dynamically generated Query
-    public  Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query){
+    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon){
         LOG.debug("Set Typed Parameters to Query");
         Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
         Query typedQuery = em.createQuery(sql.toString());
         Map<Filters,String> searchCriteriaMap = query.getSearchCriteriaMap();
 
-        if(searchCriteriaMap ==null)
+        LOG.info("Area intersection is the minimum default condition to find the fishing activities");
+        typedQuery.setParameter("area", multipolygon); // parameter name area is specified in create SQL
+
+        if(searchCriteriaMap ==null) {
             return typedQuery;
+        }
         // Assign values to created SQL Query
         for (Map.Entry<Filters,String> entry : searchCriteriaMap.entrySet()){
 
@@ -150,14 +156,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      Get all the Fishing Activities which match Filter criterias mentioned in the Input. Also, provide the sorted data based on what user has requested.
      Provide paginated data if user has asked for it
      */
-    public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
         LOG.info("Get Fishing Activity Report list by Query.");
 
-        // Create Query dynamically based on Dilter and Sort criteria
+        // Create Query dynamically based on filter and Sort criteria
         StringBuilder sqlToGetActivityList =SearchQueryBuilder.createSQL(query);
 
         // Apply real values to Query built
-        Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query);
+        Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query, multipolygon);
 
         Pagination pagination= query.getPagination();
         if(pagination!=null) {
