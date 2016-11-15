@@ -86,7 +86,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     //    query.setSortKey(new SortKey(Filters.PERIOD_START, SortOrder.ASC));
       query.setSortKey(new SortKey(Filters.OCCURRENCE, SortOrder.ASC));
         // query.setPagination( new Pagination(1,2));
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
+        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
 
         System.out.println("done:" + finishingActivityList.size());
 
@@ -130,7 +130,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         query.setSortKey(new SortKey(Filters.OCCURRENCE, SortOrder.ASC));
 
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
+        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
 
         System.out.println("done:" + finishingActivityList.size());
 
@@ -175,7 +175,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         query.setSortKey(new SortKey(Filters.OCCURRENCE, SortOrder.ASC));
 
-        int size  = dao.getCountForFishingActivityListByQuery(query);
+        int size  = dao.getCountForFishingActivityListByQuery(query, null);
 
         System.out.println("done:" + size);
         assertNotEquals(0,size);
