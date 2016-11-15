@@ -66,4 +66,11 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
         List<FaReportDocumentEntity> entities = query.getResultList();
         return entities;
     }
+
+    public List<FaReportDocumentEntity> getLatestFaReportDocumentsForTrip(String tripId){
+        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
+        query.setParameter(TRIP_ID, tripId);
+        List<FaReportDocumentEntity> entities = query.getResultList();
+        return entities;
+    }
 }

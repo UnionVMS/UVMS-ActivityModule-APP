@@ -13,12 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -30,10 +34,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -266,5 +270,20 @@ public class FishingTripServiceBeanTest {
         assertEquals((Double) 200.2, faCatchesMap.get("onboard").getTotal());
     }
 
+
+    @Test
+    @SneakyThrows
+    public void testGetTripMapDetailsForTripId() throws ServiceException, JsonProcessingException {
+        String expected="{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}" ;
+        when(faReportDocumentDao.getLatestFaReportDocumentsForTrip("NOR-TRP-20160517234053706")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
+        //Trigger
+        ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
+        Mockito.verify(faReportDocumentDao, Mockito.times(1)).getLatestFaReportDocumentsForTrip(Mockito.any(String.class));
+        System.out.println("node:"+node);
+        ObjectMapper objectMapper = new ObjectMapper();
+        //Verify
+        assertEquals(expected,objectMapper.writeValueAsString(node));
+
+    }
 
 }
