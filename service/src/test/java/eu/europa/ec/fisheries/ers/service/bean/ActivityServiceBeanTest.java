@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
@@ -131,12 +132,12 @@ public class ActivityServiceBeanTest {
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
 
-        when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
+        when(fishingActivityDao.getFishingActivityListByQuery(query, null)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
         //Trigger
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, null);
 
-        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class), Mockito.any(Geometry.class));
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
         assertNotNull(filterFishingActivityReportResultDTO.getResultList());
