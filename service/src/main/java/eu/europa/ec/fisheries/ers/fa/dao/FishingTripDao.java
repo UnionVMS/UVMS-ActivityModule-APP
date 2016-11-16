@@ -14,16 +14,23 @@
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 23/08/2016.
  */
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
-
+    private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private EntityManager em;
 
     public FishingTripDao(EntityManager em) {
@@ -52,6 +59,25 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
         FishingTripEntity resultList = typedQuery.getSingleResult();
         return resultList;
+    }
+
+
+    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<Filters,String> searchCriteriaMap) throws ServiceException {
+
+        FishingTripSearch search = new FishingTripSearch();
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        StringBuilder sqlToGetActivityList =search.createSQL(query);
+        System.out.println("SQL:"+sqlToGetActivityList);
+        Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
+        Query listQuery =null;
+        if(query.getSearchCriteriaMap() !=null) {
+             listQuery = search.fillInValuesForTypedQuery( query,typedQuery);
+        }
+        List<FishingTripEntity> entityList= listQuery.getResultList();
+
+        return entityList;
     }
 
 }

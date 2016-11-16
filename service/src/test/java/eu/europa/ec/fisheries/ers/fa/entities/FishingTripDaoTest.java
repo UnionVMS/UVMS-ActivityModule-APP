@@ -14,9 +14,14 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.service.search.*;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
 
@@ -43,6 +48,36 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         assertNotNull(fishingTripEntity.getFishingActivity());
     }
 
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripsForMatchingFilterCriteria() throws Exception {
 
+        dbSetupTracker.skipNextLaunch();
+
+        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+
+
+  //      searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27T07:47:31");
+   //     searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27T07:47:31");
+
+     //   searchCriteriaMap.put(Filters.PURPOSE, "9");
+        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
+    //    searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
+    //    searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
+
+//        searchCriteriaMap.put(Filters.SPECIES, "PLE");
+ //       searchCriteriaMap.put(Filters.MASTER, "MARK");
+   //     searchCriteriaMap.put(Filters.AREAS, "27.4.b");
+     //   searchCriteriaMap.put(Filters.PORT, "GBR");
+
+       // searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+      //  searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
+        List<FishingTripEntity> list= dao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap);
+
+        System.out.println("done:" + list.size());
+
+        assertNotNull(list);
+
+    }
 
 }

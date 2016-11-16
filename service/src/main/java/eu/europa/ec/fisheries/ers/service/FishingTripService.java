@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -82,4 +83,6 @@ public interface FishingTripService {
      * @return
      */
     public ObjectNode getTripMapDetailsForTripId(String tripId);
+
+    public void getFishingTripIdsForFilter(Map<Filters,String> searchCriteriaMap) throws ServiceException;
 }

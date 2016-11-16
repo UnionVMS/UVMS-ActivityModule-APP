@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.service.search.*;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testCreateSQL() {
+    public void testCreateSQL() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
         Map<Filters,String> searchCriteriaMap = new HashMap<>();
@@ -64,8 +65,8 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setPagination( new Pagination(1,2));
         query.setSortKey(new SortKey(Filters.FROM_NAME, SortOrder.ASC));
-
-        StringBuilder sql= SearchQueryBuilder.createSQL(query);
+        SearchQueryBuilder search= new FishingActivitySearch();
+        StringBuilder sql= search.createSQL(query);
         System.out.println("done:" + sql);
         assertNotNull(sql);
 

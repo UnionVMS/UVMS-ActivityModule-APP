@@ -29,6 +29,7 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
@@ -88,6 +89,7 @@ public class FishingTripServiceBean implements FishingTripService {
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
     private FishingTripIdentifierDao fishingTripIdentifierDao;
+    private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
 
     private static final String PREVIOUS = "PREVIOUS";
@@ -100,6 +102,7 @@ public class FishingTripServiceBean implements FishingTripService {
         fishingActivityDao       = new FishingActivityDao(em);
         faReportDocumentDao      = new FaReportDocumentDao(em);
         faCatchDao               = new FaCatchDao(em);
+        fishingTripDao           = new FishingTripDao(em);
     }
 
     /**
@@ -551,5 +554,14 @@ public class FishingTripServiceBean implements FishingTripService {
        return FishingTripToGeoJsonMapper.toJson(geoList);
 
     }
+
+
+    @Override
+    public void getFishingTripIdsForFilter(Map<Filters,String> searchCriteriaMap) throws ServiceException {
+        List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap);
+
+    }
+
+
 
 }
