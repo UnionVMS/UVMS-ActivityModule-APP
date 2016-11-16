@@ -26,7 +26,9 @@ import java.util.Set;
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrips ft " +
 						"JOIN FETCH ft.fishingTripIdentifiers fi " +
-						"where fi.tripId =:fishingTripId order by a.typeCode,fa.acceptedDatetime")
+						"where (intersects(fa.geom, :area) = true " +
+						"and fi.tripId =:fishingTripId) " +
+						"order by a.typeCode,fa.acceptedDatetime")
 })
 
 @Entity

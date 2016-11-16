@@ -32,7 +32,15 @@ import java.util.Set;
                         "JOIN FETCH factivity.fishingTrips fishingtrip " +
                         "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
                         "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId")
+                        "WHERE ftidentifier.tripId  = :tripId"),
+
+		@NamedQuery(name = FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID,
+				query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
+						"JOIN FETCH fareport.fishingActivities factivity " +
+						"JOIN FETCH factivity.fishingTrips fishingtrip " +
+						"JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
+						"JOIN FETCH fareport.fluxReportDocument fluxreport " +
+						"WHERE ftidentifier.tripId  = :tripId and fareport.status = 'new'")
 })
 @Entity
 @Table(name = "activity_fa_report_document")
@@ -40,6 +48,7 @@ public class FaReportDocumentEntity implements Serializable {
 
 	public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
 	public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
+	public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

@@ -87,7 +87,9 @@ public class GeometryUtils {
     public static Geometry wktToGeom(String wkt) throws ServiceException {
         try {
             WKTReader reader = new WKTReader();
-            return reader.read(wkt);
+            Geometry geometry = reader.read(wkt);
+            geometry.setSRID(DEFAULT_SRID);
+            return geometry;
         } catch (ParseException e) {
             log.error("Parse Exception", e);
             throw new ServiceException(e.getMessage(), e);

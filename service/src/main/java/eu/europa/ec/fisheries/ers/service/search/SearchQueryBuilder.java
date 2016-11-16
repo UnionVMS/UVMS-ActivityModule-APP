@@ -172,7 +172,7 @@ public class SearchQueryBuilder {
     public static StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
         Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
-        sql.append("where ");
+        sql.append("where intersects(fa.geom, :area) = true and "); // fa is alias for FaReportDocument, fa must be defined in main query
         // Create join part of SQL query
         if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty()) {
             Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
@@ -182,9 +182,9 @@ public class SearchQueryBuilder {
             int i = 0;
             for (Filters key : keySet) {
 
-                if ( (Filters.QUNTITY_MIN.equals(key) && keySet.contains(Filters.QUNTITY_MAX)) || mappings.get(key) == null) // skip this as MIN and MAX both are required to form where part. Treat it differently
-                  continue;
-
+                if ( (Filters.QUNTITY_MIN.equals(key) && keySet.contains(Filters.QUNTITY_MAX)) || mappings.get(key) == null) { // skip this as MIN and MAX both are required to form where part. Treat it differently
+                    continue;
+                }
                 String mapping = mappings.get(key).getCondition();
                 if (i != 0) {
                     sql.append(" and ");

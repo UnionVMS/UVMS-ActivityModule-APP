@@ -13,8 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
@@ -23,16 +28,13 @@ import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
-import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.ContactPersonMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.StructuredAddressMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
@@ -40,7 +42,15 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
+import org.geotools.feature.AttributeTypeBuilder;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geojson.geom.GeometryJSON;
+import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -50,6 +60,7 @@ import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -412,28 +423,13 @@ public class FishingTripServiceBean implements FishingTripService {
     private void populateFishingActivityReportListAndSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                              Map<String, FishingActivityTypeDTO> summary,
                                                              Geometry multipolygon) throws ServiceException {
-        List<FishingActivityEntity> fishingActivityList;
-        try {
-            fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId);
-        } catch (Exception e) {
-            log.error("Error while trying to get Fishing Activity reports for fishing trip with Id:" + fishingTripId, e);
-            return;
-        }
-
+        List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
         if (CollectionUtils.isEmpty(fishingActivityList)){
             return;
         }
 
         for (FishingActivityEntity activityEntity : fishingActivityList) {
-            ReportDTO reportDTO = null;
-            if (multipolygon != null) {
-                if (activityEntity.getGeom().intersects(multipolygon)) {
-                    reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
-                }
-            } else {
-                reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
-            }
-
+            ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
             if (reportDTO != null && ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
                 // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
                 populateSummaryMap(reportDTO, summary);
@@ -534,5 +530,26 @@ public class FishingTripServiceBean implements FishingTripService {
         return FaCatchMapper.INSTANCE.mapCatchesToSummaryDTO(faCatchDao.findFaCatchesByFishingTrip(fishingTripId));
     }
 
+
+    /**
+     *  Retrieve GEO data for fishing trip Map for tripID
+     * @param tripId
+     * @return
+     */
+   @Override
+    public ObjectNode getTripMapDetailsForTripId(String tripId){
+
+       log.info("Get GEO data for Fishing Trip for tripId:"+tripId);
+       List<FaReportDocumentEntity> faReportDocumentEntityList=  faReportDocumentDao.getLatestFaReportDocumentsForTrip(tripId);
+       List<Geometry> geoList= new ArrayList<>();
+       for(FaReportDocumentEntity entity :faReportDocumentEntityList){
+           if(entity.getGeom() !=null)
+               geoList.add(entity.getGeom());
+
+       }
+
+       return FishingTripToGeoJsonMapper.toJson(geoList);
+
+    }
 
 }
