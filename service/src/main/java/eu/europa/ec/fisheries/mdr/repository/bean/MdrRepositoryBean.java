@@ -18,12 +18,20 @@ import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
+import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
+import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
 
@@ -122,5 +130,85 @@ public class MdrRepositoryBean implements MdrRepository {
     public MdrCodeListStatus findStatusByAcronym(String acronym){
     	return statusDao.getStatusForAcronym(acronym);
     }
+
+	@Override
+	/**
+	 * This method is searching for code list items for a given code list by its acronym. The search is using Hibernate Search API, which is based on Lucene indexing, for high performance.
+	 * @param acronym of the code list which the method is filtering. [Mandatory parameter]
+	 * @param offset is the number of the first returned element
+	 * @param pageSize is the total number of items to be returned
+	 * @param sortBy is a field name which will be used for searching
+	 * @param isReversed is a boolean flag that defines whether the sorting is reversed
+	 * @param filter is a free text string that is used for code lists search
+	 * @param searchOnAttributes if filter is specified, this field is mandatory. It's an array of all fields that will be used for filtering
+	 * @return a list of code list items (instances of MasterDataRegistry class)
+	 * @throws ServiceException
+	 */
+	public List<? extends MasterDataRegistry> findCodeListItemsByAcronymAndFilter(String acronym, Integer offset, Integer pageSize, String sortBy, Boolean isReversed, String filter, String searchAttributes) throws ServiceException {
+
+		log.debug("[START] findCodeListItemsByAcronymAndFilter(acronym=[{}], offset=[{}], pageSize=[{}], sortBy=[{}], isReversed=[{}], filter=[{}], searchOnAttributes=[{}])");
+		List<? extends MasterDataRegistry> foundCodeListItems;
+
+		try {
+			if (StringUtils.isBlank(acronym)) {
+				throw new IllegalArgumentException("No acronym parameter is provided.");
+			}
+
+			if (StringUtils.isBlank(filter) || StringUtils.isBlank(searchAttributes)) {
+				throw new IllegalArgumentException("No search attributes are provided.");
+			}
+
+			if (StringUtils.isNotBlank(sortBy) && (isReversed == null)) {
+				throw new IllegalArgumentException("isReversed is a mandatory parameter when specified sortBy parameter.");
+			}
+
+			MasterDataRegistry codeListObj = MasterDataRegistryEntityCacheFactory.getInstance().getNewInstanceForEntity(acronym);
+			FullTextEntityManager fullTextEntityManager =
+					org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+
+			// create native Lucene query using the query DSL
+			// alternatively you can write the Lucene query using the Lucene query parser
+			// or the Lucene programmatic API. The Hibernate Search DSL is recommended though
+			QueryBuilder qb = fullTextEntityManager.getSearchFactory()
+					.buildQueryBuilder().forEntity(codeListObj.getClass()).get();
+			org.apache.lucene.search.Query query = qb
+					.keyword()
+					.wildcard()
+					.onField(searchAttributes)
+					.matching(filter)
+					.createQuery();
+
+			log.debug("Using lucene query: {}", query.toString() );
+
+			// wrap Lucene query in a javax.persistence.Query
+			FullTextQuery persistenceQuery = fullTextEntityManager.createFullTextQuery(query, codeListObj.getClass());
+
+			if (offset != null) {
+				persistenceQuery.setFirstResult(offset);
+			}
+
+			if (pageSize != null) {
+				persistenceQuery.setMaxResults(pageSize);
+			}
+
+			if (StringUtils.isNotBlank(sortBy)) {
+				persistenceQuery.setSort(new Sort(new SortField(sortBy, SortField.STRING, isReversed)));
+			}
+
+			log.debug("Using hibernate query: {}", persistenceQuery.getParameters());
+			// em.getTransaction().begin();
+			// execute search
+			foundCodeListItems = persistenceQuery.getResultList();
+
+			// em.getTransaction().commit();
+			// em.close();
+		} catch ( IllegalArgumentException | ActivityCacheInitException e) {
+			throw new ServiceException("Unable to execute search query due to internal server error.", e);
+		}
+
+		log.debug("[END] findCodeListItemsByAcronymAndFilter(...)");
+		return foundCodeListItems;
+
+	}
 
 }

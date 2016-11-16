@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.domain.CharBooleanConverter;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.search.annotations.*;
 import xeu.ec.fisheries.flux_bl.flux_aggregatebusinessinformationentity._1._1.FLUXPeriodType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
@@ -32,10 +33,13 @@ import java.util.List;
 @MappedSuperclass
 @EqualsAndHashCode(callSuper = true)
 @ToString
+@Indexed
 abstract public class MasterDataRegistry extends BaseEntity {
 
     @Convert(converter = CharBooleanConverter.class)
     @Column(nullable = true, length = 1)
+    @Field(name="refreshable", analyze= Analyze.NO)
+  //  @SortableField
     private Boolean refreshable;
 
     @Embedded
@@ -81,5 +85,35 @@ abstract public class MasterDataRegistry extends BaseEntity {
     }
 
     public void populate(List<FieldType> fields) throws FieldNotMappedException {};
+
+    /*/**
+     * This scannes the current class for all Lucene indexed class members.
+     * @return an array of the names of all indexed class members.
+     *
+    public String[] getAllSearchableFields() {
+        Class thisClass = this.getClass();
+        java.lang.reflect.Field[] allFields = thisClass.getFields();
+        Collection<String> indexedFields = null;
+
+        if (ArrayUtils.isNotEmpty(allFields)){
+            indexedFields = new ArrayList<>();
+
+            for(java.lang.reflect.Field classMember: allFields ) {
+                Annotation[] annotations = classMember.getAnnotations();
+                for(Annotation annotation:annotations) {
+                    if (annotation instanceof Fields) {
+                        Field[] subAnnotations = ((Fields) annotation).value();
+                        for(Field field: allFields) {
+                            if (field )//is indexed
+                        }
+                    } else // if it is Field and indexed
+                }
+            }
+        }
+
+        return indexedFields;
+    }
+    */
+
 
 }
