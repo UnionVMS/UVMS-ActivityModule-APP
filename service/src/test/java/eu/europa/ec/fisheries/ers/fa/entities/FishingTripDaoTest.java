@@ -62,7 +62,7 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
 
      //   searchCriteriaMap.put(Filters.PURPOSE, "9");
         searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
-    //    searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
     //    searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
 
 //        searchCriteriaMap.put(Filters.SPECIES, "PLE");

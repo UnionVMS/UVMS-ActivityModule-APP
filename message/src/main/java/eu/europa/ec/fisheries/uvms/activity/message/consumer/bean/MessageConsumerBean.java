@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
@@ -48,6 +49,11 @@ public class MessageConsumerBean implements MessageListener {
     @GetFLUXFMDRSyncMessageEvent
     Event<EventMessage> getFLUXFMDRSyncMessageEvent;
 
+    @Inject
+    @GetFishingTripListEvent
+    Event<EventMessage> getFishingTripListEvent;
+
+
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(Message message) {
@@ -78,6 +84,9 @@ public class MessageConsumerBean implements MessageListener {
                     break;
                 case GET_FLUX_MDR_ENTITY : 
                 	 getFLUXFMDRSyncMessageEvent.fire(new EventMessage(textMessage));
+                     break;
+              case GET_FISHING_TRIPS :
+                    getFishingTripListEvent.fire(new EventMessage(textMessage));
                      break;
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());

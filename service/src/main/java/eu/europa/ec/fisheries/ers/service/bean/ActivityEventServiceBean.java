@@ -12,11 +12,16 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.EventService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -33,6 +38,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @LocalBean
@@ -42,6 +50,9 @@ public class ActivityEventServiceBean implements EventService {
 
     private @EJB
     FluxMessageService fluxMessageService;
+
+    private @EJB
+    FishingTripService fishingTripService;
 
     @Override
     public void GetFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
@@ -63,6 +74,28 @@ public class ActivityEventServiceBean implements EventService {
         } catch (ServiceException e) {
             LOG.error("Exception while trying to saveFishingActivityReportDocuments in Activity",e);
         }
+    }
+
+    @Override
+    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) {
+        try {
+            GetFishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetFishingTripRequest.class);
+
+        //    fishingTripService.getFishingTripIdsForFilter();
+
+        } catch (ModelMarshallException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Map<Filters,String>  extractFiltersAsMap(GetFishingTripRequest baseRequest){
+        Map<Filters,String> searchMap = new HashMap<>();
+        List<FilterType> filterTypes= baseRequest.getFilters();
+        for(FilterType filterType : filterTypes){
+           // filterType.getKey();
+        }
+
+        return searchMap;
     }
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
