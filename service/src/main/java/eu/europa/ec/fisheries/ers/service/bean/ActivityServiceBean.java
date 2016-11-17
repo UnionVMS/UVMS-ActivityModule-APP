@@ -121,8 +121,10 @@ public class ActivityServiceBean implements ActivityService {
         // Execute query to count all the resultset only if TotalPages value is 0. After first search frontend should send totalPages count in subsequent calls
         Pagination pagination= query.getPagination();
         if((pagination!=null && pagination.getTotalPages()==0)  || pagination==null){
+
             totalPages= getTotalPagesCountForFilterFishingActivityReports(query, multipolygon);
-            log.debug("Total Records count is: "+totalPages);
+            log.debug("Total number of pages: "+totalPages);
+
         }
 
         if (CollectionUtils.isEmpty(activityList)) {
@@ -148,12 +150,17 @@ public class ActivityServiceBean implements ActivityService {
 
          countOfRecords=  fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);
 
+
         log.info(" countOfRecords:"+countOfRecords);
         Pagination pagination= query.getPagination();
         if(pagination != null){
             int listSize   = pagination.getListSize();
             totalNoOfPages = (countOfRecords+listSize-1)/listSize;
        }
+
+        if(countOfRecords ==0)
+            totalNoOfPages =0;
+
         return totalNoOfPages;
     }
 

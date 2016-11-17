@@ -33,7 +33,9 @@ import java.util.Map;
 
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
-    private  static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
+  //  private  static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
 
     private static  final String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by fa.acceptedDatetime asc ";
 
