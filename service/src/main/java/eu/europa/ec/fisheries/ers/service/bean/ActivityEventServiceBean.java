@@ -14,16 +14,12 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FilterType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,8 +84,8 @@ public class ActivityEventServiceBean implements EventService {
         }
     }
 
-    private Map<Filters,String>  extractFiltersAsMap(GetFishingTripRequest baseRequest){
-        Map<Filters,String> searchMap = new HashMap<>();
+    private Map<SearchFilter,String>  extractFiltersAsMap(GetFishingTripRequest baseRequest){
+        Map<SearchFilter,String> searchMap = new HashMap<>();
         List<FilterType> filterTypes= baseRequest.getFilters();
         for(FilterType filterType : filterTypes){
            // filterType.getKey();

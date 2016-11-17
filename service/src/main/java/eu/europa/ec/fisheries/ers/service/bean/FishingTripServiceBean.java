@@ -29,11 +29,12 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
-import eu.europa.ec.fisheries.ers.service.search.Filters;
+
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -557,7 +558,7 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     @Override
-    public void getFishingTripIdsForFilter(Map<Filters,String> searchCriteriaMap) throws ServiceException {
+    public void getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
         List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap);
 
     }
