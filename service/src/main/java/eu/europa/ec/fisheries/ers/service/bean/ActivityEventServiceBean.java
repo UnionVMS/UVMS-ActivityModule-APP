@@ -73,11 +73,11 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     @Override
-    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) {
+    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException {
         try {
             GetFishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetFishingTripRequest.class);
 
-        //    fishingTripService.getFishingTripIdsForFilter();
+            fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest));
 
         } catch (ModelMarshallException e) {
             e.printStackTrace();
@@ -88,7 +88,7 @@ public class ActivityEventServiceBean implements EventService {
         Map<SearchFilter,String> searchMap = new HashMap<>();
         List<FilterType> filterTypes= baseRequest.getFilters();
         for(FilterType filterType : filterTypes){
-           // filterType.getKey();
+            searchMap.put(filterType.getKey(),filterType.getValue());
         }
 
         return searchMap;

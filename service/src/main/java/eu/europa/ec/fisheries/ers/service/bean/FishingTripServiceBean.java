@@ -13,13 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
@@ -29,14 +25,13 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
-
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
@@ -44,15 +39,6 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.geotools.feature.AttributeTypeBuilder;
-import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geojson.geom.GeometryJSON;
-import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -62,7 +48,6 @@ import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -558,9 +543,17 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     @Override
-    public void getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
+    public GetFishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
         List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap);
-
+        GetFishingTripResponse response = new GetFishingTripResponse();
+        List<String> fishingTripIdList= new ArrayList<>();
+        for(FishingTripEntity entity:fishingTripList){
+            Set<FishingTripIdentifierEntity> ids=entity.getFishingTripIdentifiers();
+            if(ids !=null && !ids.isEmpty())
+                fishingTripIdList.add(ids.iterator().next().getTripId());
+        }
+        response.setFishingTripIds(fishingTripIdList);
+        return response;
     }
 
 

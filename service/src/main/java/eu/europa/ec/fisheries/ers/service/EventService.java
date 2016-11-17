@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import javax.ejb.Local;
 import javax.enterprise.event.Observes;
@@ -24,5 +25,5 @@ import javax.enterprise.event.Observes;
 public interface EventService {
     public void GetFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message);
 
-    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message);
+    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException;
 }
