@@ -5,8 +5,6 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.dao.BaseMdrDaoTest;
 import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
-import eu.europa.ec.fisheries.mdr.dao.MdrStatusDao;
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
@@ -16,7 +14,6 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.ArrayList;
@@ -84,7 +81,7 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
     }
 
     @Test
-    public void testLuceneIndexing() throws ServiceException {
+    public void testLuceneSearch() throws ServiceException {
         List<SpeciesISO3Codes> species = new ArrayList<>(3);
 
         SpeciesISO3Codes species1 = new SpeciesISO3Codes();
@@ -105,8 +102,6 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
 
         bulkDao.singleEntityBulkDeleteAndInsert(species);
 
-        FullTextSession fullTextSession = Search.getFullTextSession((Session) em.getDelegate());
-
         List<SpeciesISO3Codes> filterredEntities = (List<SpeciesISO3Codes>) mdrRepoBean.findCodeListItemsByAcronymAndFilter(species1.getAcronym(), 0, 5, "sort_code", true, "*", "sort_code");
 
         assertEquals(3, filterredEntities.size());
@@ -114,6 +109,32 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
         assertEquals("WHL", filterredEntities.get(0).getCode());
         assertEquals("COD", filterredEntities.get(1).getCode());
         assertEquals("CAT", filterredEntities.get(2).getCode());
+    }
 
+    @Test
+    public void testLuceneSearchCount() throws ServiceException {
+        List<SpeciesISO3Codes> species = new ArrayList<>(3);
+
+        SpeciesISO3Codes species1 = new SpeciesISO3Codes();
+        species1.setCode("COD");
+        species1.setEnglishName("COD fish");
+
+        SpeciesISO3Codes species2 = new SpeciesISO3Codes();
+        species2.setCode("CAT");
+        species2.setEnglishName("CAT fish");
+
+        SpeciesISO3Codes species3 = new SpeciesISO3Codes();
+        species3.setCode("WHL");
+        species3.setEnglishName("Whale");
+
+        species.add(species1);
+        species.add(species2);
+        species.add(species3);
+
+        bulkDao.singleEntityBulkDeleteAndInsert(species);
+
+        int totalCount=  mdrRepoBean.countCodeListItemsByAcronymAndFilter(species1.getAcronym(), "C*", "sort_code");
+
+        assertEquals(2, totalCount);
     }
 }

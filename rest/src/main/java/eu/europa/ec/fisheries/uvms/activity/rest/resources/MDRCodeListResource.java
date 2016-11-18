@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
+import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
@@ -23,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -43,7 +46,8 @@ public class MDRCodeListResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.MDR_SEARCH_CODE_LIST_ITEMS})
-    public Response findCodeListByAcronymFilterredByFilter(@PathParam("acronym") String acronym,
+    public Response findCodeListByAcronymFilterredByFilter(@Context HttpServletRequest request,
+                                                            @PathParam("acronym") String acronym,
                                                             @PathParam("offset") Integer offset,
                                                             @PathParam("pageSize") Integer pageSize,
                                                             @QueryParam("sortBy") String sortBy,
@@ -52,7 +56,9 @@ public class MDRCodeListResource extends UnionVMSResource {
                                                             @QueryParam("searchAttribute") String searchAttribute) {
         log.debug("findCodeListByAcronymFilterredByFilter(acronym={}, offset={}, pageSize={}, sortBy={}, isReversed={}, filter={}, searchAttribute={})", acronym,offset,pageSize,sortBy,isReversed,filter,searchAttribute);
         try {
-            return createSuccessResponse(mdrService.findCodeListItemsByAcronymAndFilter(acronym, offset, pageSize, sortBy, isReversed, filter, searchAttribute));
+            List<? extends MasterDataRegistry> mdrList = mdrService.findCodeListItemsByAcronymAndFilter(acronym, offset, pageSize, sortBy, isReversed, filter, searchAttribute);
+            int totalCodeItemsCount = mdrService.countCodeListItemsByAcronymAndFilter(acronym, filter, searchAttribute);
+            return createSuccessPaginatedResponse(mdrList, totalCodeItemsCount);
         } catch (ServiceException e) {
             log.error("Internal Server Error.", e);
             return createErrorResponse("internal_server_error");

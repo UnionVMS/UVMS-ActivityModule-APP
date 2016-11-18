@@ -28,7 +28,7 @@
                   value="filesystem"/>
 
         <property name="hibernate.search.default.indexBase"
-                  value="/var/lucene/indexes"/>
+                  value="${lucene.index.directory}"/>
     </properties>
 
 </persistence-unit>
