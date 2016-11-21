@@ -17,6 +17,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -30,37 +32,9 @@ public class MdrBulkOperationsDao {
     private EntityManager em;
     private static final String HQL_DELETE = "DELETE FROM ";
 
-    /**
-     * Deletes all entries of all the given Entities and then inserts all the new ones.
-     * The input is the list of all the entities and all their instances (List of tables) ready to be persisted (each entity contains one or more records).
-     *
-     * @param masterDataGenericList
-     * @throws ServiceException
-     */
-    public void multiEntityBulkDeleteAndInsert(List<List<? extends MasterDataRegistry>> masterDataGenericList) throws ServiceException {
-
-        StatelessSession session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openStatelessSession();
-        Transaction tx = session.beginTransaction();
-
-        try {
-
-            for (List<? extends MasterDataRegistry> entityRows : masterDataGenericList) {
-                log.info("Persisting entity entries for : " + masterDataGenericList.getClass().getSimpleName());
-                deleteAndPersistNewEntityByEntityName(entityRows, session, entityRows.get(0).getClass().getSimpleName());
-            }
-            log.debug("Committing transaction.");
-            tx.commit();
-
-        } catch (Exception e) {
-            tx.rollback();
-            throw new ServiceException("Rollbacking transaction for reason : ", e);
-        } finally {
-            log.debug("Closing session");
-            session.close();
-        }
-    }
 
     /**
+     * Purges the Lucene index before deletion and insertion of the new entries.
      * Deletes all entries of all the given Entities and then inserts all the new ones.
      * The input is the list of all the entities and all their instances (List of tables) ready to be persisted (each entity contains one or more records).
      *
@@ -71,16 +45,24 @@ public class MdrBulkOperationsDao {
 
         if (!CollectionUtils.isEmpty(entityRows)) {
 
+            Class mdrClass = entityRows.get(0).getClass();
+            FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
+
             StatelessSession session = (getEntityManager().unwrap(Session.class)).getSessionFactory().openStatelessSession();
             Transaction tx = session.beginTransaction();
-            String entityName = entityRows.get(0).getClass().getSimpleName();
 
             try {
+                String entityName = mdrClass.getSimpleName();
+
                 log.info("Persisting entity entries for : " + entityName);
                 deleteAndPersistNewEntityByEntityName(entityRows, session, entityName);
                 log.debug("Committing transaction.");
                 tx.commit();
 
+                log.info("Rebuilding Lucene index...");
+                fullTextEntityManager.createIndexer().purgeAllOnStart(true).startAndWait();
+
+                log.info("Insertion for {} completed.", mdrClass.toString());
             } catch (Exception e) {
                 tx.rollback();
                 throw new ServiceException("Rollbacking transaction for reason : ", e);

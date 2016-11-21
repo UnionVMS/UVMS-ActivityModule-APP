@@ -80,13 +80,19 @@ public class MasterDataRegistryEntityCacheFactory {
 	 * @throws NullPointerException in case no valid entityAcronym is provided.
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
-	 * @throws SecurityException
+	 * @throws ActivityCacheInitException
+	 * @throws IllegalArgumentException when the specified acronym cannot be found in the initialized entities cache
      */
 	public MasterDataRegistry getNewInstanceForEntity(String entityAcronym) throws ActivityCacheInitException {
 		try {
 			if(MapUtils.isEmpty(acronymsCache)){
 				initializeCache();
 			}
+
+			if (acronymsCache.get(entityAcronym) == null) {
+				throw new IllegalArgumentException("Code list '" + entityAcronym + "' is not recognized.");
+			}
+
 			return acronymsCache.get(entityAcronym).getClass().newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new ActivityCacheInitException(e);

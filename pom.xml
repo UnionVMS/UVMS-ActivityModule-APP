@@ -29,7 +29,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.6</activity.model>
+        <activity.model>0.5.7-SNAPSHOT</activity.model>
         <activity.model.fa>0.5.5</activity.model.fa>
         <activity.model.mdr>0.5.4</activity.model.mdr>
 
@@ -61,7 +61,10 @@
         <geotools.version>14-M1</geotools.version>
         <uvms.commons.version>2.0.13-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.3</uvms.test.version>
-        <hibernate.validator.version>5.2.1.Final</hibernate.validator.version>
+        <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
+        <hibernate-search-orm.version>4.5.1.Final</hibernate-search-orm.version>
+        <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
+        <infinispan-directory-provider.version>8.2.4.Final</infinispan-directory-provider.version>
         <usm4uvms.version>2.0.16</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
@@ -71,6 +74,8 @@
         <geotools.version>14-M1</geotools.version>
         <movement.model.version>2.0.0</movement.model.version>
         <spatial.model.version>0.5.4</spatial.model.version>
+
+        <lucene.index.directory>/app/indexes/activity</lucene.index.directory>
     </properties>
 
     <dependencyManagement>
@@ -311,6 +316,24 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!--HIBERNATE SEARCH-->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-orm</artifactId>
+                <version>${hibernate-search-orm.version}</version>
+            </dependency>
+            <!-- If using JPA, add: -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate-entitymanager.version}</version>
+            </dependency>
+            <!-- Infinispan integration: -->
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-directory-provider</artifactId>
+                <version>${infinispan-directory-provider.version}</version>
+            </dependency>
 
         </dependencies>
 
