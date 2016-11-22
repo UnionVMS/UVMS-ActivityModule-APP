@@ -73,7 +73,6 @@ public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 			SpeciesISO3Codes species = new SpeciesISO3Codes();
 			species.setCode("areaCode"+i);
 			species.setEnglishName("someDescription"+i);
-			species.setRefreshable(true);
 			species.setCode("44"+i);
 			species.setScientificName("StrangeName"+i);
 			list.add(species);
@@ -88,7 +87,6 @@ public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 			ActionType actionType = new ActionType();
 			actionType.setCode("areaCode"+i);
 			actionType.setDescription("someDescription"+i);
-			actionType.setRefreshable(true);
 			actionTypeRows.add(actionType);	
 		}	
 		return actionTypeRows;

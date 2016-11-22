@@ -50,6 +50,37 @@ public class ConversionFactor extends ExtendedMasterDataRegistry {
 	@Column(name = "source")
 	private String source;
 
+	@Override
+	public String getAcronym() {
+		return "CONVERSION_FACTOR";
+	}
+
+	@Override
+	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
+		super.populate(fields);
+		for(MDRElementDataNodeType field : fields){
+			String fieldName  = field.getName().getValue();
+			String fieldValue  = field.getName().getValue();
+			if(StringUtils.equalsIgnoreCase("species", fieldName)){
+				this.setSpecies(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("country", fieldName)){
+				this.setCountry(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("state", fieldName)){
+				this.setState(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("presentation", fieldName)){
+				this.setPresentation(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("factor", fieldName)){
+				this.setFactor(Double.valueOf(fieldValue));
+			} else if(StringUtils.equalsIgnoreCase("collective", fieldName)){
+				this.setCollective(Boolean.valueOf(fieldValue));
+			} else if(StringUtils.equalsIgnoreCase("source", fieldName)){
+				this.setSource(fieldValue);
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldValue);
+			}
+		}
+	}
+
 	public String getSpecies() {
 		return species;
 	}
@@ -92,35 +123,5 @@ public class ConversionFactor extends ExtendedMasterDataRegistry {
 	public void setSource(String source) {
 		this.source = source;
 	}
-	
-	@Override
-	public String getAcronym() {
-		return "CONVERSION_FACTOR";
-	}
 
-	@Override
-	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
-		super.populate(fields);
-		for(MDRElementDataNodeType field : fields){
-			String fieldName  = field.getName().getValue();
-			String fieldValue  = field.getName().getValue();
-			if(StringUtils.equalsIgnoreCase("species", fieldName)){
-				this.setSpecies(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("country", fieldName)){
-				this.setCountry(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("state", fieldName)){
-				this.setState(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("presentation", fieldName)){
-				this.setPresentation(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("factor", fieldName)){
-				this.setFactor(Double.valueOf(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("collective", fieldName)){
-				this.setCollective(Boolean.valueOf(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("source", fieldName)){
-				this.setSource(fieldValue);
-			} else {
-				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldValue);
-			}
-		}
-	}
 }

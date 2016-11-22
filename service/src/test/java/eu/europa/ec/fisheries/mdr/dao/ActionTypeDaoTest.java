@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ActionTypeDaoTest extends BaseMdrDaoTest {
@@ -47,8 +46,6 @@ public class ActionTypeDaoTest extends BaseMdrDaoTest {
             e.printStackTrace();
         }
         assertNotNull(entity);
-        assertEquals("2014-12-12 00:00:00.0", entity.getAudit().getCreatedOn().toString());
-        assertEquals(true, entity.getRefreshable().booleanValue());
     }
     
     /*  @Test

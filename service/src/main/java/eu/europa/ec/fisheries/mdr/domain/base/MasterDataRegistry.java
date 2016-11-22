@@ -11,10 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.domain.base;
 
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.domain.Audit;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import eu.europa.ec.fisheries.uvms.domain.CharBooleanConverter;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -23,8 +20,6 @@ import un.unece.uncefact.data.standard.response.DelimitedPeriodType;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import java.util.List;
@@ -35,16 +30,8 @@ import java.util.List;
 @ToString
 abstract public class MasterDataRegistry extends BaseEntity {
 
-    @Convert(converter = CharBooleanConverter.class)
-    @Column(length = 1)
-    private Boolean refreshable;
-
-    @Embedded
-    private Audit audit;
-
     @Embedded
     private DateRange validity;
-
 
     public void populateFromJAXBFields(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
         final DelimitedPeriodType validityPeriod = mdrDataType.getEffectiveDelimitedPeriod();
@@ -61,25 +48,11 @@ abstract public class MasterDataRegistry extends BaseEntity {
 
     public abstract String getAcronym();
 
-    public Boolean getRefreshable() {
-        return refreshable;
-    }
-    public void setRefreshable(Boolean refreshable) {
-        this.refreshable = refreshable;
-    }
-    public Audit getAudit() {
-        return audit;
-    }
-    public void createAudit() {
-        audit = new Audit(DateUtils.nowUTC().toDate());
-    }
     public DateRange getValidity() {
         return validity;
     }
     public void setValidity(DateRange validity) {
         this.validity = validity;
     }
-
-
 
 }

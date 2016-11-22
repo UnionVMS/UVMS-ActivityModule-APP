@@ -10,19 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-
 import eu.europa.ec.fisheries.mdr.domain.CrNafoStock;
 import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.Test;
+
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 public class CrNafoStockDaoTest extends BaseMdrDaoTest {
 
@@ -45,8 +43,6 @@ public class CrNafoStockDaoTest extends BaseMdrDaoTest {
         CrNafoStock entity = dao.findEntityById(CrNafoStock.class, 1L);
 
         assertNotNull(entity);
-        assertEquals("2014-12-12 00:00:00.0", entity.getAudit().getCreatedOn().toString());
-        assertEquals(true, entity.getRefreshable().booleanValue());
         assertEquals("NAFO 3N, 3O = FAO 21.3.N + 21.3.O", entity.getAreaDescription());
         assertEquals("N3NO", entity.getAreaCode());
         assertEquals("ANG", entity.getSpeciesCode());

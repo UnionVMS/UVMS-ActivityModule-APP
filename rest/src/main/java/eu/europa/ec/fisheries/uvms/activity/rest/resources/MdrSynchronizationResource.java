@@ -100,9 +100,9 @@ public class MdrSynchronizationResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Consumes(MediaType.APPLICATION_JSON)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS})
-    public Response sendRequestForMDRCodeListsStructure(@Context HttpServletRequest request, String acronym) {
+    public Response sendRequestForMDRCodeListsStructure(@Context HttpServletRequest request,  Collection<String> acronymsToSynch) {
         log.info("Sending MDR Lists Structure request");
-        syncBean.sendRequestForMdrCodelistsStructures(acronym);
+        syncBean.sendRequestForMdrCodelistsStructures(acronymsToSynch);
         log.info("Finished Sending MDR Lists Structure request");
         return createSuccessResponse();
     }
