@@ -10,9 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain2;
 
-import eu.europa.ec.fisheries.mdr.domain.base.ExtendedMasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -21,7 +23,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_fa_fishery")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class FaFishery extends ExtendedMasterDataRegistry {
+public class FaFishery extends MasterDataRegistry {
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -29,4 +31,8 @@ public class FaFishery extends ExtendedMasterDataRegistry {
 		return "FA_FISHERY";
 	}
 
+	@Override
+	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
+		populateCommonFields(mdrDataType);
+	}
 }

@@ -15,13 +15,16 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
+import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -97,9 +100,11 @@ public class SpeciesISO3Codes extends MasterDataRegistry {
 		return "FAO_SPECIES";
 	}
 
+
 	@Override
-	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
-		for(MDRElementDataNodeType field : fields){
+	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
+		populateCommonFields(mdrDataType);
+		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
 			String fieldName  = field.getName().getValue();
 			String fieldValue = field.getName().getValue();
 			if (StringUtils.equalsIgnoreCase("code", fieldName)) {

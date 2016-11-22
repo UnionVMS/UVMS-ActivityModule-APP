@@ -16,13 +16,13 @@ import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @Entity
 @Table(name = "mdr_ices_statistical_rectangles_codes")
@@ -57,9 +57,11 @@ public class IcesStatisticalRectanglesCodes extends MasterDataRegistry {
 	}
 
 	// TODO ; check the response from flux for the RectangleCoordinates!! and change populate accordingly
+
 	@Override
-	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
-		for(MDRElementDataNodeType field : fields){
+	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
+		populateCommonFields(mdrDataType);
+		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
 			String fieldName  = field.getName().getValue();
 			String fieldValue = field.getName().getValue();
 			if (StringUtils.equalsIgnoreCase("icesName", fieldName)) {

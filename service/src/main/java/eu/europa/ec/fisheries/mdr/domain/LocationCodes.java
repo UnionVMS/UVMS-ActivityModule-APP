@@ -10,24 +10,24 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import eu.europa.ec.fisheries.mdr.domain.base.ExtendedMasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mdr_location_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class LocationCodes extends ExtendedMasterDataRegistry {
+public class LocationCodes extends MasterDataRegistry {
 
 	@Column(name = "iso3_country_code")
 	private String iso3CountryCode;
@@ -89,10 +89,11 @@ public class LocationCodes extends ExtendedMasterDataRegistry {
 		return "LOCATION";
 	}
 
+
 	@Override
-	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
-		super.populate(fields);
-		for(MDRElementDataNodeType field : fields){
+	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
+		populateCommonFields(mdrDataType);
+		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
 			String fieldName  = field.getName().getValue();
 			String fieldValue = field.getName().getValue();
 			if(StringUtils.equalsIgnoreCase("iso3CountryCode", fieldName)){

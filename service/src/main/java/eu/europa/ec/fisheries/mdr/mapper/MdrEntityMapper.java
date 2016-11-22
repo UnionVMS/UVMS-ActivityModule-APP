@@ -55,7 +55,7 @@ public class MdrEntityMapper {
 			MasterDataRegistry entity = null;
 			try {
 				entity = mdrEntityFactory.getNewInstanceForEntity(acronym);
-				entity.populateFromJAXBFields(actualJaxbElement);
+				entity.populate(actualJaxbElement);
 			} catch (NullPointerException | SecurityException e) {
 				log.error("Exception while attempting to map JAXBObject to MDR Entity. (MdrEntityMapper class)", e);
 			} catch (FieldNotMappedException e) {

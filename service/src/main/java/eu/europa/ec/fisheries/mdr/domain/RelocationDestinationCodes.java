@@ -10,9 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
-import eu.europa.ec.fisheries.mdr.domain.base.ExtendedMasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -22,11 +24,16 @@ import javax.persistence.Table;
 @Table(name = "mdr_relocation_destination_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class RelocationDestinationCodes extends ExtendedMasterDataRegistry {
+public class RelocationDestinationCodes extends MasterDataRegistry {
 
 	@Override
 	public String getAcronym() {
 		return "RELOCATION_DESTINATION";
 	}
 
+
+	@Override
+	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
+		populateCommonFields(mdrDataType);
+	}
 }
