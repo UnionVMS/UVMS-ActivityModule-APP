@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
+import eu.europa.ec.fisheries.mdr.domain.AcronymVersion;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
@@ -19,13 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import un.unece.uncefact.data.standard.unqualifieddatatype._13.TextType;
-import xeu.ec.fisheries.flux_bl.flux_aggregatebusinessinformationentity._1._1.FLUXPeriodType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
+import un.unece.uncefact.data.standard.response.DataSetVersionType;
+import un.unece.uncefact.data.standard.response.MDRDataSetType;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by kovian on 29/07/2016.
@@ -114,8 +117,8 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
         }
     }
 
-    public void updateStatusSuccessForAcronym(MDRCodeListType codeListType, AcronymListState newStatus, Date lastSuccess) {
-        MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(codeListType.getObjAcronym().getValue());
+    public void updateStatusSuccessForAcronym(MDRDataSetType codeListType, AcronymListState newStatus, Date lastSuccess) {
+        MdrCodeListStatus mdrCodeListElement = findStatusByAcronym(codeListType.getName().getValue());
         fillMetaDataForMDRStatus(codeListType, mdrCodeListElement);
         mdrCodeListElement.setLastSuccess(lastSuccess);
         mdrCodeListElement.setLastStatus(newStatus);
@@ -126,21 +129,25 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
         }
     }
 
-    private void fillMetaDataForMDRStatus(MDRCodeListType xmlCodeListMetaData, MdrCodeListStatus codeListFromDB) {
-        codeListFromDB.setObjectSource(xmlCodeListMetaData.getSource().getValue());
-        codeListFromDB.setObjectDescription(xmlCodeListMetaData.getObjDescription().getValue());
-        codeListFromDB.setObjectName(xmlCodeListMetaData.getObjName().getValue());
+    private void fillMetaDataForMDRStatus(MDRDataSetType xmlCodeListMetaData, MdrCodeListStatus codeListFromDB) {
 
-        FLUXPeriodType validityXml = xmlCodeListMetaData.getValidityPeriod();
-        DateRange validity = new DateRange(validityXml.getStartDate().toGregorianCalendar().getTime(),
-                validityXml.getEndDate().toGregorianCalendar().getTime());
-        codeListFromDB.setValidity(validity);
+        codeListFromDB.setObjectSource(xmlCodeListMetaData.getOrigin().getValue());
+        codeListFromDB.setObjectDescription(xmlCodeListMetaData.getDescription().getValue());
+        codeListFromDB.setObjectName(xmlCodeListMetaData.getName().getValue());
 
-        StringBuilder buffer = new StringBuilder();
-        for(TextType version : xmlCodeListMetaData.getVersions()){
-            buffer.append(version.getValue()).append(",");
+        // Filling supported versions and VGalidity Ranges for each version
+        List<DataSetVersionType> specifiedDataSetVersions = xmlCodeListMetaData.getSpecifiedDataSetVersions();
+        if(CollectionUtils.isNotEmpty(specifiedDataSetVersions)){
+            Set<AcronymVersion> acrVersions = new HashSet<>();
+            for(DataSetVersionType actVersion : xmlCodeListMetaData.getSpecifiedDataSetVersions()){
+                acrVersions.add(new AcronymVersion(
+                        actVersion.getName().getValue(),
+                        new DateRange(actVersion.getValidityStartDateTime().getDateTime().toGregorianCalendar().getTime(),
+                                actVersion.getValidityEndDateTime().getDateTime().toGregorianCalendar().getTime())
+                ));
+            }
+            codeListFromDB.setVersions(acrVersions);
         }
-        codeListFromDB.setVersions(buffer.toString());
     }
 
     public void updateStatusFailedForAcronym(String acronym) {
@@ -186,6 +193,13 @@ public class MdrStatusDao extends AbstractDAO<MdrCodeListStatus> {
             log.error("Error while getting MDR Code List Statusses",e);
         }
         return statussesList;
+    }
+
+    public List<MdrCodeListStatus> findStatusAndVersionsForAcronym(String objAcronym){
+        TypedQuery<MdrCodeListStatus> query = getEntityManager().createNamedQuery(MdrCodeListStatus.STATUS_AND_VERSIONS, MdrCodeListStatus.class);
+        query.setParameter("objectAcronym", objAcronym);
+        List<MdrCodeListStatus> statusses = query.getResultList();
+        return statusses;
     }
 
     public MdrCodeListStatus getStatusForAcronym(String acronym) {

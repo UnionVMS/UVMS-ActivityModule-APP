@@ -10,16 +10,15 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.repository;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.Local;
-
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
+import un.unece.uncefact.data.standard.response.FLUXMDRReturnMessage;
+
+import javax.ejb.Local;
+import java.util.List;
+import java.util.Map;
 
 @Local
 public interface MdrRepository {
@@ -29,9 +28,9 @@ public interface MdrRepository {
 	<T extends MasterDataRegistry> List<T> findEntityByHqlQuery(Class<T> type, String hqlQuery, Map<Integer, String> parameters,
 			int maxResultLimit) throws ServiceException;
 
-	void updateMdrEntity(ResponseType response);
+    void updateMdrEntity(FLUXMDRReturnMessage response);
 
-	List<ActivityConfiguration> getAllConfigurations() throws ServiceException;
+    List<ActivityConfiguration> getAllConfigurations() throws ServiceException;
 
 	ActivityConfiguration getConfigurationByName(String vonfigName);
 
@@ -42,7 +41,7 @@ public interface MdrRepository {
 	void changeMdrSchedulerConfiguration(String newCronExpression) throws ServiceException;
 
 	ActivityConfiguration getMdrSchedulerConfiguration();
-
+	
 	List<? extends MasterDataRegistry> findCodeListItemsByAcronymAndFilter(String acronym, Integer offset, Integer pageSize, String sortBy, Boolean isReversed, String filter, String searchAttributes) throws ServiceException;
 
 	int countCodeListItemsByAcronymAndFilter(String acronym, String filter, String searchAttribute) throws ServiceException;

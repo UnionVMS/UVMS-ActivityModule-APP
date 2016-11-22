@@ -12,8 +12,6 @@ package eu.europa.ec.fisheries.mdr.service;
 
 import eu.europa.ec.fisheries.mdr.util.GenericOperationOutcome;
 
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
-
 import javax.ejb.Local;
 import java.util.List;
 
@@ -24,11 +22,12 @@ public interface MdrSynchronizationService {
 
 	List<String> getAvailableMdrAcronyms();
 
-	void sendMockedMessageToERSMDRQueue();
-
 	GenericOperationOutcome extractAcronymsAndUpdateMdr();
 
 	GenericOperationOutcome updateMdrEntities(List<String> acronymsList);
 
+    void sendRequestForMdrCodelistsStructures(String acronym);
+
+	void sendRequestForMdrCodelistsIndex();
 
 }

@@ -16,19 +16,22 @@ import eu.europa.ec.fisheries.schema.rules.module.v1.SetFLUXMDRSyncMessageRulesR
 import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
 import org.joda.time.DateTime;
-import un.unece.uncefact.data.standard.unqualifieddatatype._13.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_query._1.BasicAttribute;
-import xeu.ec.fisheries.flux_bl.flux_mdr_query._1.MDRQueryType;
+import un.unece.uncefact.data.standard.query.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MdrRequestMapper {
+
+	public static final String DOUBLE_DASH = "--";
+	public static final String EN = "EN";
+	public static final String UUID = "UUID";
+	public static final String FLUX_MDR_QUERY_TYPE = "FLUX_MDR_QUERY_TYPE";
+	public static final String GRC = "GRC";
+	public static final String INDEX = "INDEX";
 
 	/**
 	 * This class isn't supposed to have instances.
@@ -37,8 +40,9 @@ public class MdrRequestMapper {
 	private MdrRequestMapper(){}
 
 	/**
-	 * Creates an MDRQueryType for qurying the FLUX with the acronym and serviceType parameters.
-	 * For the moment all the querying is done wityh serviceType set to OBJ_DATA_ALL which means 
+	 * Creates an FLUXMDRQueryMessage for qurying the FLUX TL with the acronym and serviceType parameters.
+	 * (and other needed ones)
+	 * For the moment all the querying is done with serviceType set to OBJ_DATA_ALL which means
 	 * that all the available Entity Rows will be extracted.
 	 * 
 	 * @param acronym
@@ -46,32 +50,57 @@ public class MdrRequestMapper {
 	 * @return
 	 * @throws ExchangeModelMarshallException 
 	 */
-	public static String mapMdrQueryTypeToString(String acronym, String serviceType) throws  ActivityMappingException {
-		
-		IDType idType = new IDType();
-		idType.setValue(acronym);		
-		
-		CodeType codeType = new CodeType();
-		codeType.setValue(serviceType);		
-		
-		MDRQueryType mdrQueryType = new MDRQueryType();
-		mdrQueryType.setObjAcronym(idType);
-		mdrQueryType.setServiceType(codeType);
+	public static String mapMdrQueryTypeToString(String acronym, String serviceType) throws ActivityMappingException {
 
-		IDType messageID = new IDType();
-		messageID.setValue(createBusinessUUID());
-
-		BasicAttribute reqOb = new BasicAttribute();
-		reqOb.setMDRQuery(mdrQueryType);
-		reqOb.setMessageID(messageID);
-
-		XMLGregorianCalendar date = null;
-		String fluxStrReq = null;
 		SetFLUXMDRSyncMessageRulesRequest fluxRequestObject = new SetFLUXMDRSyncMessageRulesRequest();
+		FLUXMDRQueryMessage mdrQueryMsg                     = new FLUXMDRQueryMessage();
+		MDRQueryType mdrQuery                               = new MDRQueryType();
+
+		// Contractual language code
+		CodeType languageCode = new CodeType();
+		languageCode.setValue(EN);
+		mdrQuery.setContractualLanguageCode(languageCode);
+
+		// Unique message ID
+		IDType messageID = new IDType();
+		messageID.setSchemeID(UUID);
+		messageID.setValue(createBusinessUUID(acronym, serviceType));
+		mdrQuery.setID(messageID);
+
+		// Service type (TypeCode);
+		CodeType requestServName = new CodeType();
+		requestServName.setValue(serviceType);
+		requestServName.setListID(FLUX_MDR_QUERY_TYPE);
+		mdrQuery.setTypeCode(requestServName);
+
+		// Acronym value (SubjectMDRQueryIdentity);
+		MDRQueryIdentityType subjectQueryType = new MDRQueryIdentityType();
+		IDType idType = new IDType();
+		idType.setValue(acronym);
+		idType.setSchemeID(INDEX);
+		subjectQueryType.setID(idType);
+		/*try {
+			subjectQueryType.setValidityDelimitedPeriod(createValidityDelimitedPeriod());
+		} catch (DatatypeConfigurationException e) {
+			throw new ActivityMappingException(e);
+		}*/
+		mdrQuery.setSubjectMDRQueryIdentity(subjectQueryType);
+
+		// Submiter Flux party
+		FLUXPartyType fluxParty = new FLUXPartyType();
+		List<IDType> countryIds = new ArrayList<>();
+		IDType contryId = new IDType();
+		contryId.setValue(GRC);
+		countryIds.add(contryId);
+		fluxParty.setIDS(countryIds);
+		mdrQuery.setSubmitterFLUXParty(fluxParty);
+
+		String fluxStrReq;
 		try {
-			date = createXMLDate();
-			reqOb.setCreation(date);
-			fluxRequestObject.setRequest(JAXBMarshaller.marshallJaxBObjectToString(reqOb));
+			// Submitted DateTime
+			mdrQuery.setSubmittedDateTime(createSubmitedDate());
+			mdrQueryMsg.setMDRQuery(mdrQuery);
+			fluxRequestObject.setRequest(JAXBMarshaller.marshallJaxBObjectToString(mdrQueryMsg));
 			fluxRequestObject.setMethod(RulesModuleMethod.SET_FLUX_MDR_SYNC_REQUEST);
 			fluxStrReq =  JAXBMarshaller.marshallJaxBObjectToString(fluxRequestObject);
 		} catch (ExchangeModelMarshallException | DatatypeConfigurationException e) {
@@ -80,26 +109,40 @@ public class MdrRequestMapper {
 		return fluxStrReq;
 	}
 
-	/**
-	 * Creates a new XMLGregorianCalendar instance.
-	 *
-	 * @return
-	 * @throws DatatypeConfigurationException
-     */
-	private static XMLGregorianCalendar createXMLDate() throws DatatypeConfigurationException {
-		return DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime().toGregorianCalendar());
+	private static DelimitedPeriodType createValidityDelimitedPeriod() throws DatatypeConfigurationException {
+		XMLGregorianCalendar startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime("2001-01-01").toGregorianCalendar());
+		XMLGregorianCalendar endDate   = DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime().toGregorianCalendar());
+		return new DelimitedPeriodType(new DateTimeType(startDate, null), new DateTimeType(endDate, null), null);
 	}
+
+
+	/**
+	 * Creates a new DateTimeType instance to be used as a createSubmitedDate.
+	 *
+	 * @return new DateTimeType(date, dateTimeString);
+	 * @throws DatatypeConfigurationException
+	 */
+	private static DateTimeType createSubmitedDate() throws DatatypeConfigurationException {
+		XMLGregorianCalendar date   = DatatypeFactory.newInstance().newXMLGregorianCalendar(new DateTime().toGregorianCalendar());
+		/*DateTimeType.DateTimeString dateTimeString = new DateTimeType.DateTimeString();
+		dateTimeString.setValue(date.toString());
+		dateTimeString.setFormat(dateTimeString.getFormat());*/
+		return new DateTimeType(date, null);
+	}
+
 
 	/**
 	 *  BUSINESS_UUID has a prefix, a date-time combination and a serial - thus it is semi unique
 	 * @return String
+	 * @param acronym
 	 */
-	private static String createBusinessUUID(){
-		// Prepare unique Business Process ID
-		Random randomGenerator = new Random();
-		Date curDate = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("ddHHmmss");
-		return "MSID-" + format.format(curDate) + String.format("%02d", randomGenerator.nextInt(100));
+	private static String createBusinessUUID(String acronym, String serviceType){
+		final String uuid = java.util.UUID.randomUUID().toString();
+		StringBuilder sb = new StringBuilder(acronym).append(DOUBLE_DASH).append(serviceType).append(DOUBLE_DASH).append(uuid);
+		return sb.toString();
 	}
-	
+
+	public static String mapMdrQueryTypeToStringForINDEXServiceType(String serviceType) throws ActivityMappingException {
+		return mapMdrQueryTypeToString(INDEX, serviceType);
+	}
 }

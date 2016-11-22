@@ -10,11 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.domain.base.ExtendedMasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -98,27 +99,27 @@ public class ConversionFactor extends ExtendedMasterDataRegistry {
 	}
 
 	@Override
-	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
 		super.populate(fields);
-		String fieldName;
-		for(FieldType field : fields){
-			fieldName  = field.getFieldName().getValue();
+		for(MDRElementDataNodeType field : fields){
+			String fieldName  = field.getName().getValue();
+			String fieldValue  = field.getName().getValue();
 			if(StringUtils.equalsIgnoreCase("species", fieldName)){
-				this.setSpecies(field.getFieldValue().getValue());
+				this.setSpecies(fieldValue);
 			} else if(StringUtils.equalsIgnoreCase("country", fieldName)){
-				this.setCountry(field.getFieldValue().getValue());
+				this.setCountry(fieldValue);
 			} else if(StringUtils.equalsIgnoreCase("state", fieldName)){
-				this.setState(field.getFieldValue().getValue());
+				this.setState(fieldValue);
 			} else if(StringUtils.equalsIgnoreCase("presentation", fieldName)){
-				this.setPresentation(field.getFieldValue().getValue());
+				this.setPresentation(fieldValue);
 			} else if(StringUtils.equalsIgnoreCase("factor", fieldName)){
-				this.setFactor(Double.valueOf(field.getFieldValue().getValue()));
+				this.setFactor(Double.valueOf(fieldValue));
 			} else if(StringUtils.equalsIgnoreCase("collective", fieldName)){
-				this.setCollective(Boolean.valueOf(field.getFieldValue().getValue()));
+				this.setCollective(Boolean.valueOf(fieldValue));
 			} else if(StringUtils.equalsIgnoreCase("source", fieldName)){
-				this.setSource(field.getFieldValue().getValue());
+				this.setSource(fieldValue);
 			} else {
-				throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldValue);
 			}
 		}
 	}

@@ -15,8 +15,8 @@ import eu.europa.ec.fisheries.mdr.dao.MasterDataRegistryDao;
 import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
 import eu.europa.ec.fisheries.mdr.dao.MdrStatusDao;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
@@ -32,8 +32,10 @@ import org.apache.lucene.search.SortField;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
+import un.unece.uncefact.data.standard.response.FLUXMDRReturnMessage;
+import un.unece.uncefact.data.standard.response.FLUXResponseDocumentType;
+import un.unece.uncefact.data.standard.response.IDType;
+import un.unece.uncefact.data.standard.response.MDRDataSetType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -78,23 +80,38 @@ public class MdrRepositoryBean implements MdrRepository {
 	}
 	
 	@Override
-	public void updateMdrEntity(ResponseType response){
-		List<MasterDataRegistry> mdrEntityRows = MdrEntityMapper.mapJAXBObjectToMasterDataType(response);
-		MDRCodeListType codeListType = response.getMDRCodeList();
-		if(CollectionUtils.isNotEmpty(mdrEntityRows)){
-			try {
-				bulkOperationsDao.singleEntityBulkDeleteAndInsert(mdrEntityRows);
-				statusDao.updateStatusSuccessForAcronym(codeListType, AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
-			} catch (ServiceException e) {
-				statusDao.updateStatusFailedForAcronym(mdrEntityRows.get(0).getAcronym());
-				log.error("Transaction rolled back! Couldn't persist mdr Entity : ",e);
+	public void updateMdrEntity(FLUXMDRReturnMessage response){
+		// Response is OK
+		final FLUXResponseDocumentType fluxResponseDocument = response.getFLUXResponseDocument();
+		if(fluxResponseDocument.getResponseCode().toString().toUpperCase() != "NOK") {
+			List<MasterDataRegistry> mdrEntityRows = MdrEntityMapper.mapJAXBObjectToMasterDataType(response);
+			final MDRDataSetType mdrDataSet = response.getMDRDataSet();
+			if (CollectionUtils.isNotEmpty(mdrEntityRows)) {
+				try {
+					bulkOperationsDao.singleEntityBulkDeleteAndInsert(mdrEntityRows);
+					statusDao.updateStatusSuccessForAcronym(mdrDataSet, AcronymListState.SUCCESS, DateUtils.nowUTC().toDate());
+				} catch (ServiceException e) {
+					statusDao.updateStatusFailedForAcronym(mdrEntityRows.get(0).getAcronym());
+					log.error("Transaction rolled back! Couldn't persist mdr Entity : ", e);
+				}
+			} else {
+				log.error("Got Message from Flux related to MDR but, the list is empty! So, nothing is going to be persisted!");
 			}
+		// Response is NOT OK
 		} else {
-			log.error("Got Message from Flux related to MDR but, the list is empty! So, nothing is going to be persisted!");
+			final IDType referencedID = fluxResponseDocument.getReferencedID();
+			if(referencedID != null && StringUtils.isNotEmpty(referencedID.getValue())){//, but has referenceID
+				statusDao.updateStatusFailedForAcronym(extractAcronymFromReferenceId(referencedID.getValue()));
+			} else {//, and doesn't have referenceID
+                log.error("[[ERROR]] The MDR response received in activity was NOK and has no referenceId!!");
+            }
 		}
-
 	}
-	
+
+	private String extractAcronymFromReferenceId(String responseReferenceID) {
+		return responseReferenceID.split("--")[0];
+	}
+
 	/*
 	 * MDR Configurations.
 	 */

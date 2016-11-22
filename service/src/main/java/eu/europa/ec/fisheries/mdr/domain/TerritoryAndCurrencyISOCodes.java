@@ -10,11 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,6 +43,32 @@ public class TerritoryAndCurrencyISOCodes extends MasterDataRegistry {
 	
 	@Column(name = "currency_definition")
 	private String currencyDefinition;
+
+	@Override
+	public String getAcronym() {
+		return "TERRITORY_CURR";
+	}
+
+	@Override
+	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
+		for(MDRElementDataNodeType field : fields){
+			String fieldName  = field.getName().getValue();
+			String fieldValue = field.getName().getValue();
+			if(StringUtils.equalsIgnoreCase("iso3Code", fieldName)){
+				this.setIso3Code(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("iso4Code", fieldName)){
+				this.setIso4Code(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("territoryName", fieldName)){
+				this.setTerritoryName(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("currencyCode", fieldName)){
+				this.setCurrencyCode(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("currencyDefinition", fieldName)){
+				this.setCurrencyDefinition(fieldValue);
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
+			}
+		}
+	}
 
 	public String getIso3Code() {
 		return iso3Code;
@@ -72,32 +99,6 @@ public class TerritoryAndCurrencyISOCodes extends MasterDataRegistry {
 	}
 	public void setCurrencyDefinition(String currencyDefinition) {
 		this.currencyDefinition = currencyDefinition;
-	}
-	
-	@Override
-	public String getAcronym() {
-		return "TERRITORY_CURR";
-	}
-
-	@Override
-	public void populate(List<FieldType> fields) throws FieldNotMappedException {
-		String fieldName;
-		for(FieldType field : fields){
-			fieldName  = field.getFieldName().getValue();
-			if(StringUtils.equalsIgnoreCase("iso3Code", fieldName)){
-				this.setIso3Code(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("iso4Code", fieldName)){
-				this.setIso4Code(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("territoryName", fieldName)){
-				this.setTerritoryName(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("currencyCode", fieldName)){
-				this.setCurrencyCode(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("currencyDefinition", fieldName)){
-				this.setCurrencyDefinition(field.getFieldValue().getValue());
-			} else {
-				throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
-			}
-		}
 	}
 	
 }

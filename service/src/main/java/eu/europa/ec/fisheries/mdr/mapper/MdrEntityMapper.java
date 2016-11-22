@@ -9,14 +9,13 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 package eu.europa.ec.fisheries.mdr.mapper;
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.ActivityCacheInitException;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.extern.slf4j.Slf4j;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
+import un.unece.uncefact.data.standard.response.FLUXMDRReturnMessage;
+import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +37,8 @@ public class MdrEntityMapper {
 	 * @param response
 	 * @return
 	 */
-	public static List<MasterDataRegistry> mapJAXBObjectToMasterDataType(ResponseType response){
-		return mapJaxbToMDRType(response.getMDRCodeList().getCodeElements(), response.getMDRCodeList().getObjAcronym().getValue());
+	public static List<MasterDataRegistry> mapJAXBObjectToMasterDataType(FLUXMDRReturnMessage response){
+		return mapJaxbToMDRType(response.getMDRDataSet().getContainedMDRDataNodes(), response.getMDRDataSet().getName().getValue());
 	}
 
 	/**
@@ -50,10 +49,9 @@ public class MdrEntityMapper {
 	 *
 	 * @return entityList
 	 */
-	private static List<MasterDataRegistry> mapJaxbToMDRType(List<CodeElementType> codeElements,
-			String acronym) {
+	private static List<MasterDataRegistry> mapJaxbToMDRType(List<MDRDataNodeType> codeElements, String acronym) {
 		List<MasterDataRegistry> entityList = new ArrayList<>();
-		for(CodeElementType actualJaxbElement : codeElements){
+		for(MDRDataNodeType actualJaxbElement : codeElements){
 			MasterDataRegistry entity = null;
 			try {
 				entity = mdrEntityFactory.getNewInstanceForEntity(acronym);

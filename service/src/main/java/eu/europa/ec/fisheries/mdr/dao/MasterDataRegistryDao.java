@@ -10,9 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import javax.persistence.EntityManager;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import javax.persistence.EntityManager;
 
 public class MasterDataRegistryDao<T extends MasterDataRegistry> extends AbstractMdrDao<T>  {
     private EntityManager em;

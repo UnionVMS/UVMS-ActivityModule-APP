@@ -10,12 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -56,12 +57,12 @@ public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 
 	// TODO ; check the response from flux for the RectangleCoordinates!! and change populate accordingly
 	@Override
-	public void populate(List<FieldType> fields) throws FieldNotMappedException {
-		String fieldName;
-		for (FieldType field : fields) {
-			fieldName = field.getFieldName().getValue();
+	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
+		for(MDRElementDataNodeType field : fields){
+			String fieldName  = field.getName().getValue();
+			String fieldValue = field.getName().getValue();
 			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
-				this.setCode(field.getFieldValue().getValue());
+				this.setCode(fieldValue);
 			} else {
 				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}

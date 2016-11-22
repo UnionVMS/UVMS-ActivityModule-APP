@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;

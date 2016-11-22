@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.mdr.dao;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
+import eu.europa.ec.fisheries.mdr.domain.AcronymVersion;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
 import lombok.SneakyThrows;
@@ -21,6 +22,7 @@ import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertEquals;
@@ -33,7 +35,7 @@ public class MdrStatusDaoTest extends BaseMdrDaoTest {
     @Before
     @SneakyThrows
     public void prepare(){
-        Operation operation = sequenceOf(INSERT_MDR_CODELIST_STATUS);
+        Operation operation = sequenceOf(INSERT_MDR_CODELIST_STATUS, INSERT_ACRONYMS_VERSIONS);
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);
     }
@@ -53,6 +55,17 @@ public class MdrStatusDaoTest extends BaseMdrDaoTest {
         dbSetupTracker.skipNextLaunch();
         MdrCodeListStatus status = dao.findStatusByAcronym("ACTION_TYPE");
         assertNotNull(status);
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testFindStatusAndRelatedVersionsByAcronym(){
+        dbSetupTracker.skipNextLaunch();
+        List<MdrCodeListStatus> actiontypeStatus = dao.findStatusAndVersionsForAcronym("ACTION_TYPE");
+        Set<AcronymVersion> actiontypeVersions = actiontypeStatus.get(0).getVersions();
+        assertEquals(2, actiontypeVersions.size());
+        assertNotNull(actiontypeStatus.get(0));
     }
 
     @Test

@@ -20,6 +20,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 
 /**
@@ -29,11 +30,20 @@ import java.util.Date;
  * If the update of an entity was succesful then the fields : last_update,last_attempt
  * should have the same value.
  */
+@NamedQueries({
+        @NamedQuery(name = MdrCodeListStatus.STATUS_AND_VERSIONS,
+                query = "SELECT status " +
+                        "FROM MdrCodeListStatus status " +
+                        "JOIN FETCH status.versions versions " +
+                        "WHERE status.objectAcronym =:objectAcronym ")
+})
 @Entity
 @Table(name = "mdr_codelist_status")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "versions")
 @ToString(callSuper = true)
 public class MdrCodeListStatus extends BaseEntity {
+
+    public static final String STATUS_AND_VERSIONS = "statusAndVersions";
 
     @Column(name = "object_acronym")
     private String objectAcronym;
@@ -66,10 +76,10 @@ public class MdrCodeListStatus extends BaseEntity {
     @Convert(converter = CharBooleanConverter.class)
     private Boolean schedulable;
 
-    @Column(name = "versions")
-    private String versions;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "mdrCodeListStatus", cascade = CascadeType.ALL)
+    private Set<AcronymVersion> versions;
 
-    private MdrCodeListStatus(){super();}
+    public MdrCodeListStatus(){super();}
 
     public MdrCodeListStatus(String objectAcronym, String objectName, Date lastUpdate, Date lastAttempt, AcronymListState state, Boolean schedulable) {
         this.objectAcronym = objectAcronym;
@@ -139,16 +149,16 @@ public class MdrCodeListStatus extends BaseEntity {
     public void setObjectSource(String objectSource) {
         this.objectSource = objectSource;
     }
-    public String getVersions() {
-        return versions;
-    }
-    public void setVersions(String versions) {
-        this.versions = versions;
-    }
     public DateRange getValidity() {
         return validity;
     }
     public void setValidity(DateRange validity) {
         this.validity = validity;
+    }
+    public Set<AcronymVersion> getVersions() {
+        return versions;
+    }
+    public void setVersions(Set<AcronymVersion> versions) {
+        this.versions = versions;
     }
 }

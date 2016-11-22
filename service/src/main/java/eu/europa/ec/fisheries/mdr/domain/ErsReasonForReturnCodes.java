@@ -10,13 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.domain.base.ExtendedMasterDataRegistry;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @Entity
 @Table(name = "mdr_ers_reason_for_return_codes")

@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,7 +31,6 @@ public class MdrBulkOperationsDao {
 
     private EntityManager em;
     private static final String HQL_DELETE = "DELETE FROM ";
-
 
     /**
      * Purges the Lucene index before deletion and insertion of the new entries.

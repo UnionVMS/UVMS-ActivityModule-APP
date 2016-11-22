@@ -10,11 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,6 +46,34 @@ public class FaoAreaCodes extends MasterDataRegistry {
 
 	@Column(name = "description")
 	private String description;
+
+	@Override
+	public String getAcronym() {
+		return "FAO_LIKE_AREA";
+	}
+
+	@Override
+	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
+		for(MDRElementDataNodeType field : fields){
+			String fieldName  = field.getName().getValue();
+			String fieldValue  = field.getName().getValue();
+			if(StringUtils.equalsIgnoreCase("area", fieldName)){
+				this.setArea(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("subarea", fieldName)){
+				this.setSubarea(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("division", fieldName)){
+				this.setDivision(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("subdivision", fieldName)){
+				this.setSubdivision(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("unit", fieldName)){
+				this.setUnit(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("description", fieldName)){
+				this.setDescription(fieldValue);
+			}  else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
+			}
+		}
+	}
 
 	public String getArea() {
 		return area;
@@ -83,32 +112,5 @@ public class FaoAreaCodes extends MasterDataRegistry {
 		this.description = description;
 	}
 
-	@Override
-	public String getAcronym() {
-		return "FAO_LIKE_AREA";
-	}
-
-	@Override
-	public void populate(List<FieldType> fields) throws FieldNotMappedException {
-		String fieldName;
-		for(FieldType field : fields){
-			fieldName  = field.getFieldName().getValue();
-			if(StringUtils.equalsIgnoreCase("area", fieldName)){
-				this.setArea(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("subarea", fieldName)){
-				this.setSubarea(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("division", fieldName)){
-				this.setDivision(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("subdivision", fieldName)){
-				this.setSubdivision(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("unit", fieldName)){
-				this.setUnit(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("description", fieldName)){
-				this.setDescription(field.getFieldValue().getValue());
-			}  else {
-				throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
-			}
-		}
-	}
 
 }

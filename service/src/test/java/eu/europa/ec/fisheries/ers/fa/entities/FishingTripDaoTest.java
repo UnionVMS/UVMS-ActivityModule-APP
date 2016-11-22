@@ -42,7 +42,4 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         assertNotNull(fishingTripEntity.getFaCatch());
         assertNotNull(fishingTripEntity.getFishingActivity());
     }
-
-
-
 }

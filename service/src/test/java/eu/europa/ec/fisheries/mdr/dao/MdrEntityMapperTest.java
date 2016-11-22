@@ -10,30 +10,29 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
+import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
+import eu.europa.ec.fisheries.mdr.util.ClassFinder;
+import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.response.FLUXMDRReturnMessage;
+import un.unece.uncefact.data.standard.response.MDRDataNodeType;
+import un.unece.uncefact.data.standard.response.MDRDataSetType;
+import un.unece.uncefact.data.standard.response.TextType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
-import eu.europa.ec.fisheries.mdr.mapper.MdrEntityMapper;
-import eu.europa.ec.fisheries.mdr.mapper.MdrRequestMapper;
-import eu.europa.ec.fisheries.mdr.util.ClassFinder;
-import lombok.SneakyThrows;
-import un.unece.uncefact.data.standard.unqualifieddatatype._13.IDType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.CodeElementType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.MDRCodeListType;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.ResponseType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 public class MdrEntityMapperTest {
 
-	ResponseType responseType;
+	FLUXMDRReturnMessage responseType;
 	String entityName;
 	
 	@Before
@@ -66,26 +65,31 @@ public class MdrEntityMapperTest {
 		System.out.println("DONE"+classList);
 	}
 
-	private ResponseType mockJaxbCodeElementType() {
+	private FLUXMDRReturnMessage mockJaxbCodeElementType() {
+
+		FLUXMDRReturnMessage response       = new FLUXMDRReturnMessage();
+		MDRDataSetType mdrListType = new MDRDataSetType();
+
+		MDRDataNodeType codeElemType_1 = new MDRDataNodeType();
+
+		MDRDataNodeType codeElemType_2 = new MDRDataNodeType();
 		
-		ResponseType response       = new ResponseType();		
-		MDRCodeListType mdrListType = new MDRCodeListType();
-		
-		CodeElementType codeElemType_1 = new CodeElementType();
-		codeElemType_1.setValidityPeriod(null);
-		
-		CodeElementType codeElemType_2 = new CodeElementType();
-		codeElemType_2.setValidityPeriod(null);
-		
-		IDType acronym = new IDType();
+		TextType acronym = new TextType();
 		acronym.setValue(entityName);
 		
-		mdrListType.setCodeElements(Arrays.asList(codeElemType_1, codeElemType_2));
-		mdrListType.setObjAcronym(acronym);
+		mdrListType.setContainedMDRDataNodes(Arrays.asList(codeElemType_1, codeElemType_2));
+		mdrListType.setName(acronym);
 		
-		response.setMDRCodeList(mdrListType);
+		response.setMDRDataSet(mdrListType);
 		
 		return response;
+	}
+
+	@Test
+	@SneakyThrows
+	public void testCreateRequestForMDRAcronym(){
+		String theReqStr = MdrRequestMapper.mapMdrQueryTypeToString("ACTION_TYPE", "OBJ_DESC");
+		System.out.println("YES");
 	}
 	
 }

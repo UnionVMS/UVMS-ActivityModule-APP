@@ -31,7 +31,7 @@
         <activity.name>Activity</activity.name>
         <activity.model>0.5.7-SNAPSHOT</activity.model>
         <activity.model.fa>0.5.5</activity.model.fa>
-        <activity.model.mdr>0.5.4</activity.model.mdr>
+        <activity.model.mdr>0.5.5-SNAPSHOT</activity.model.mdr>
 
         <!-- Other modules dependencies -->
         <reporting.model>0.5.0</reporting.model>

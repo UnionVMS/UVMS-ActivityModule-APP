@@ -95,6 +95,8 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.VesselTypeCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.WithdrawnCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingIndicatorCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.AcronymVersion</class>
+
 
 		<!-- ERS Activity entities -->
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity</class>

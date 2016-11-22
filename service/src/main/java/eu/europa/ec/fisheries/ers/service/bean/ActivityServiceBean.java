@@ -176,8 +176,8 @@ public class ActivityServiceBean implements ActivityService {
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList, Geometry multipolygon) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
         for(FishingActivityEntity entity : activityList) {
-            activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
-        }
+                activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
+            }
         return activityReportDTOList;
     }
 }

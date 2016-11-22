@@ -10,15 +10,15 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.service.bean;
 
-import eu.europa.ec.fisheries.mdr.service.ActivityMdrEventService;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
+import eu.europa.ec.fisheries.mdr.service.ActivityMdrEventService;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXMDRSyncMessageActivityResponse;
 import lombok.extern.slf4j.Slf4j;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.BasicAttribute;
+import un.unece.uncefact.data.standard.response.FLUXMDRReturnMessage;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -45,8 +45,8 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 		log.info("-->> Recieved message from FLUX related to MDR Entity Synchronization.");
 		// Extract message from EventMessage Object
 		try {
-			BasicAttribute responseObject = extractFluxResponseFromEvenetMessage(message);
-			mdrRepository.updateMdrEntity(responseObject.getResponse());
+			FLUXMDRReturnMessage responseObject = extractFluxResponseFromEventMessage(message);
+			mdrRepository.updateMdrEntity(responseObject);
 		} catch (ModelMarshallException e) {
 			log.error("ModelMarshallException while trying to extract response from FLUX message! After unmarshalling BasicAttribute resulted NULL! Nothing to persist!", e);
 		}
@@ -58,13 +58,13 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 	 * @param message
 	 * @return ResponseType
 	 */
-	private BasicAttribute extractFluxResponseFromEvenetMessage(EventMessage message) throws ModelMarshallException {
-		TextMessage textMessage = null;
-		BasicAttribute respType   = null;
+	private FLUXMDRReturnMessage extractFluxResponseFromEventMessage(EventMessage message) throws ModelMarshallException {
+		TextMessage textMessage;
+		FLUXMDRReturnMessage respType;
 		try {
 			textMessage = message.getJmsMessage();
 			SetFLUXMDRSyncMessageActivityResponse activityResp = JAXBMarshaller.unmarshallTextMessage(textMessage, SetFLUXMDRSyncMessageActivityResponse.class);
-			respType    = JAXBMarshaller.unmarshallTextMessage(activityResp.getRequest(), BasicAttribute.class);
+			respType    = JAXBMarshaller.unmarshallTextMessage(activityResp.getRequest(), FLUXMDRReturnMessage.class);
 		} catch (ModelMarshallException e) {
 			log.error("Error while attempting to Unmarshall Flux Response Object (XML MDR Entity) : \n",e);
 			throw e;

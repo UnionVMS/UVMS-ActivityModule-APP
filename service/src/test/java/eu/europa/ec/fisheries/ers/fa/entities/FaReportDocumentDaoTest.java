@@ -34,8 +34,6 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Before
     public void prepare() {
-
-
         super.prepare();
     }
 

@@ -19,7 +19,7 @@ public abstract class BaseMdrDaoTest extends BaseDAOTest {
 
 
     protected static final Operation DELETE_ALL_MDR_CR_NAFO_STOCK = sequenceOf(
-            deleteAllFrom("activity.mdr_cr_nafo_stock")
+            deleteAllFrom("activity.mdr_cr_nafo_stock")            
     );
 
     protected static final Operation DELETE_ALL_MDR_SPEICES = sequenceOf(
@@ -51,6 +51,15 @@ public abstract class BaseMdrDaoTest extends BaseDAOTest {
                     .columns("id", "object_acronym", "schedulable").values(2L, "CONVERSION_FACTOR", "Y").build(),
             insertInto("activity.mdr_codelist_status")
                     .columns("id", "object_acronym", "schedulable").values(3L, "GEAR_TYPE", "N").build()
+    );
+
+    protected static final Operation INSERT_ACRONYMS_VERSIONS = sequenceOf(
+            insertInto("activity.mdr_acronymversion")
+                    .columns("id", "status_ref_id", "version_name", "start_date", "end_date").values(1L, 1L, "VERS_1", "2015-10-10 16:02:59.047", "2016-12-10 16:02:59.047").build(),
+            insertInto("activity.mdr_acronymversion")
+                    .columns("id", "status_ref_id",  "version_name", "start_date", "end_date").values(2L, 1L, "VERS_2", "2015-10-10 16:02:59.047", "2016-12-10 16:02:59.047").build(),
+            insertInto("activity.mdr_acronymversion")
+                    .columns("id", "status_ref_id",  "version_name", "start_date", "end_date").values(3L, 3L, "VERS_2", "2015-10-10 16:02:59.047", "2016-12-10 16:02:59.047").build()
     );
 
    

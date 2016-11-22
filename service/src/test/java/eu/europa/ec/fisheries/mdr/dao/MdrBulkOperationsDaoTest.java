@@ -14,27 +14,17 @@ import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.domain.ActionType;
-import eu.europa.ec.fisheries.mdr.domain.CrNafoStock;
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes;
-import eu.europa.ec.fisheries.mdr.domain2.FaCatchType;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import lombok.SneakyThrows;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
@@ -57,6 +47,10 @@ public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 
 		dbSetupTracker.skipNextLaunch();
 
+		// List of Entity rows (List of instances of an entity) == List of
+		// Lists;
+		List<List<? extends MasterDataRegistry>> entitiesList = new ArrayList<List<? extends MasterDataRegistry>>();
+		
 		// ActionType list
 		List<SpeciesISO3Codes> actionEntityRows = mockSpecies();
 
@@ -86,6 +80,18 @@ public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 		}
 		return list;
 	}
-
+	
+	private List<ActionType> mockActionType() {
+		List<ActionType> actionTypeRows = new ArrayList<ActionType>();
+		// Creating new CrNafoStocs entity to persist and adding it to this entity list (rows);
+		for(int i = 0; i < 11; i++){			
+			ActionType actionType = new ActionType();
+			actionType.setCode("areaCode"+i);
+			actionType.setDescription("someDescription"+i);
+			actionType.setRefreshable(true);
+			actionTypeRows.add(actionType);	
+		}	
+		return actionTypeRows;
+	}
 
 }

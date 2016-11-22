@@ -10,11 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.domain.base.ExtendedMasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,13 +45,13 @@ public class VesselTypeCodes extends ExtendedMasterDataRegistry {
 	}
 
 	@Override
-	public void populate(List<FieldType> fields) throws FieldNotMappedException {
+	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
 		super.populate(fields);
-		String fieldName;
-		for (FieldType field : fields) {
-			fieldName = field.getFieldName().getValue();
+		for(MDRElementDataNodeType field : fields){
+			String fieldName  = field.getName().getValue();
+			String fieldValue = field.getName().getValue();
 			if (StringUtils.equalsIgnoreCase("vesselType", fieldName)) {
-				this.setVesselType(field.getFieldValue().getValue());
+				this.setVesselType(fieldValue);
 			} else {
 				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}

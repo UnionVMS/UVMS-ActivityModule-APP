@@ -11,12 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.domain2;
 
 
-import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -63,6 +63,43 @@ public class FarmCodes extends MasterDataRegistry {
 
 	@Column(name = "capacity")
 	private int capacity;
+
+
+	@Override
+	public String getAcronym() {
+		return "FARM";
+	}
+
+	@Override
+	public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
+		for(MDRElementDataNodeType field : fields){
+			String fieldName  = field.getName().getValue();
+			String fieldValue = field.getName().getValue();
+			if(StringUtils.equalsIgnoreCase("ICCAT", fieldName)){
+				this.setICCAT(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("serialNumber", fieldName)){
+				this.setSerialNumber(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("country", fieldName)){
+				this.setCountry(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("registryNumber", fieldName)){
+				this.setRegistryNumber(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("nameOfFFB", fieldName)){
+				this.setNameOfFFB(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("ownerAddress", fieldName)){
+				this.setOwnerAddress(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("operatorName", fieldName)){
+				this.setOperatorName(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("operator", fieldName)){
+				this.setOperator(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("adressLocation", fieldName)){
+				this.setAdressLocation(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("capacity", fieldName)){
+				this.setCapacity(Integer.valueOf(fieldValue));
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(),fieldName);
+			}
+		}
+	}
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -132,42 +169,6 @@ public class FarmCodes extends MasterDataRegistry {
 	}
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
-	}
-
-	@Override
-	public String getAcronym() {
-		return "FARM";
-	}
-
-	@Override
-	public void populate(List<FieldType> fields) throws FieldNotMappedException {
-		String fieldName;
-		for(FieldType field : fields){
-			fieldName  = field.getFieldName().getValue();
-			if(StringUtils.equalsIgnoreCase("ICCAT", fieldName)){
-				this.setICCAT(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("serialNumber", fieldName)){
-				this.setSerialNumber(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("country", fieldName)){
-				this.setCountry(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("registryNumber", fieldName)){
-				this.setRegistryNumber(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("nameOfFFB", fieldName)){
-				this.setNameOfFFB(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("ownerAddress", fieldName)){
-				this.setOwnerAddress(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("operatorName", fieldName)){
-				this.setOperatorName(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("operator", fieldName)){
-				this.setOperator(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("adressLocation", fieldName)){
-				this.setAdressLocation(field.getFieldValue().getValue());
-			} else if(StringUtils.equalsIgnoreCase("capacity", fieldName)){
-				this.setCapacity(Integer.valueOf(field.getFieldValue().getValue()));
-			} else {
-				throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
-			}
-		}
 	}
 
 }

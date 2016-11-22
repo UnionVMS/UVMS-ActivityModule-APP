@@ -95,17 +95,29 @@ public class MdrSynchronizationResource extends UnionVMSResource {
     }
 
 
-    //TODO to be removed after having the ERS-MDR communication sorted
-    @GET
-    @Path("/flux")
+    @POST
+    @Path("/structure")
     @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_JSON)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS})
-    public Response receiveFluxMessage(@Context HttpServletRequest request) {
-        log.info("Starting MDR Synchronization");
-        syncBean.sendMockedMessageToERSMDRQueue();
-        log.info("Finished MDR Synchronization");
+    public Response sendRequestForMDRCodeListsStructure(@Context HttpServletRequest request, String acronym) {
+        log.info("Sending MDR Lists Structure request");
+        syncBean.sendRequestForMdrCodelistsStructures(acronym);
+        log.info("Finished Sending MDR Lists Structure request");
         return createSuccessResponse();
     }
+
+    @GET
+    @Path("/index")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.UPDATE_MDR_CODE_LISTS})
+    public Response sendRequestForMDRCodeListsIndex(@Context HttpServletRequest request) {
+        log.info("Sending MDR Lists Structure request");
+        syncBean.sendRequestForMdrCodelistsIndex();
+        log.info("Finished Sending MDR Lists Structure request");
+        return createSuccessResponse();
+    }
+
 
     /**
      * Returns an array with all the available MDR code lists and their details (last successful update, last update attempt datetime, status, etc.).
@@ -195,6 +207,6 @@ public class MdrSynchronizationResource extends UnionVMSResource {
         log.info("Changing schedulable for acronym : ", acronym);
         mdrStatusBean.updateSchedulableForAcronym(acronym, schedulable);
         return createSuccessResponse();
-
     }
+
 }

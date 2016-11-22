@@ -10,10 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.domain;
 
+import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -70,20 +71,21 @@ public class CrNafoStock extends MasterDataRegistry {
 	}
 
     @Override
-    public void populate(List<FieldType> fields) throws FieldNotMappedException {
-        String fieldName;
-        for(FieldType field : fields){
-            fieldName  = field.getFieldName().getValue();
+    public void populate(List<MDRElementDataNodeType> fields) throws FieldNotMappedException {
+        super.populate(fields);
+        for(MDRElementDataNodeType field : fields){
+            String fieldName  = field.getName().getValue();
+            String fieldValue  = field.getName().getValue();
             if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("speciesCode", fieldName)){
-                this.setSpeciesCode(field.getFieldValue().getValue());
+                this.setSpeciesCode(fieldValue);
             } else if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("speciesName", fieldName)){
-                this.setSpeciesName(field.getFieldValue().getValue());
+                this.setSpeciesName(fieldValue);
             } else if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("areaCode", fieldName)){
-                this.setAreaCode(field.getFieldValue().getValue());
+                this.setAreaCode(fieldValue);
             } else if(org.apache.commons.lang.StringUtils.equalsIgnoreCase("areaDescription", fieldName)){
-                this.setAreaDescription(field.getFieldValue().getValue());
+                this.setAreaDescription(fieldValue);
             }  else {
-                throw new FieldNotMappedException(this.getClass().getSimpleName(), field.getFieldName().getValue());
+                throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
             }
         }
     }
