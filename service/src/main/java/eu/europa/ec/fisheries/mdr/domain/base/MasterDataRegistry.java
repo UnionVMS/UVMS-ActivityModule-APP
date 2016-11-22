@@ -48,7 +48,6 @@ abstract public class MasterDataRegistry extends BaseEntity {
     protected static final String CODE_STR               = "CODE";
     protected static final String DESCRIPTION_STR        = "DESCRIPTION";
     protected static final String EN_DESCRIPTION_STR     = "ENDESCRIPTION";
-    protected static final String ENTITY_DESCRIPTION_STR = "ENTITYDESCRIPTION";
     protected static final String VERSION                = "VERSION";
 
     public void populateCommonFields(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
@@ -72,8 +71,7 @@ abstract public class MasterDataRegistry extends BaseEntity {
                 setCode(fieldValue);
                 fieldsToRemove.add(field);
             } else if(StringUtils.equalsIgnoreCase(DESCRIPTION_STR, fieldName)
-                    || StringUtils.equalsIgnoreCase(EN_DESCRIPTION_STR, fieldName)
-                    || StringUtils.equalsIgnoreCase(ENTITY_DESCRIPTION_STR, fieldName)){
+                    || StringUtils.equalsIgnoreCase(EN_DESCRIPTION_STR, fieldName)){
                 setDescription(fieldValue);
                 fieldsToRemove.add(field);
             } else if(StringUtils.equalsIgnoreCase(VERSION, fieldName)){
