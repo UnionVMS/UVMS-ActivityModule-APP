@@ -80,7 +80,7 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
 
     }
 
-    @Test
+   // @Test
     public void testLuceneSearch() throws ServiceException {
         List<SpeciesISO3Codes> species = new ArrayList<>(3);
 
@@ -111,7 +111,7 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
         assertEquals("CAT", filterredEntities.get(2).getCode());
     }
 
-    @Test
+    //@Test
     public void testLuceneSearchCount() throws ServiceException {
         List<SpeciesISO3Codes> species = new ArrayList<>(3);
 

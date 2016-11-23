@@ -14,7 +14,7 @@ import eu.europa.ec.fisheries.mdr.service.ActivityMdrEventService;
 import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXMDRSyncMessageActivityResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 		try {
 			BasicAttribute responseObject = extractFluxResponseFromEvenetMessage(message);
 			mdrRepository.updateMdrEntity(responseObject.getResponse());
-		} catch (ModelMarshallException e) {
+		} catch (ActivityModelMarshallException e) {
 			log.error("ModelMarshallException while trying to extract response from FLUX message! After unmarshalling BasicAttribute resulted NULL! Nothing to persist!", e);
 		}
 	}
@@ -58,14 +58,14 @@ public class ActivityMdrEventServiceBean implements ActivityMdrEventService {
 	 * @param message
 	 * @return ResponseType
 	 */
-	private BasicAttribute extractFluxResponseFromEvenetMessage(EventMessage message) throws ModelMarshallException {
+	private BasicAttribute extractFluxResponseFromEvenetMessage(EventMessage message) throws ActivityModelMarshallException {
 		TextMessage textMessage = null;
 		BasicAttribute respType   = null;
 		try {
 			textMessage = message.getJmsMessage();
 			SetFLUXMDRSyncMessageActivityResponse activityResp = JAXBMarshaller.unmarshallTextMessage(textMessage, SetFLUXMDRSyncMessageActivityResponse.class);
 			respType    = JAXBMarshaller.unmarshallTextMessage(activityResp.getRequest(), BasicAttribute.class);
-		} catch (ModelMarshallException e) {
+		} catch (ActivityModelMarshallException e) {
 			log.error("Error while attempting to Unmarshall Flux Response Object (XML MDR Entity) : \n",e);
 			throw e;
 		}

@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessage
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import org.slf4j.Logger;
@@ -62,7 +62,12 @@ public class MessageConsumerBean implements MessageListener {
         try {
             textMessage = (TextMessage) message;
             LOG.info("Message received in activity");
-            ActivityModuleRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
+            ActivityModuleRequest request = null;
+            try {
+                request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
+            } catch (ActivityModelMarshallException e) {
+                e.printStackTrace();
+            }
             LOG.info("Message unmarshalled successfully in activity");
             if(request==null){
                 LOG.error("[ Request is null ]");
@@ -93,7 +98,7 @@ public class MessageConsumerBean implements MessageListener {
                    // errorEvent.fire(new EventMessage(textMessage, "[ Request method " + request.getMethod().name() + "  is not implemented ]"));
             }
 
-        } catch (ModelMapperException | NullPointerException | ClassCastException e) {
+        } catch ( NullPointerException | ClassCastException e) {
             LOG.error("[ Error when receiving message in activity: ] {}", e);
            // errorEvent.fire(new EventMessage(textMessage, "Error when receiving message in movement: " + e.getMessage()));
         }

@@ -14,9 +14,9 @@
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
@@ -62,7 +62,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
 
-    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
+    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<Filters,String> searchCriteriaMap) throws ServiceException {
 
         FishingTripSearch search = new FishingTripSearch();
 

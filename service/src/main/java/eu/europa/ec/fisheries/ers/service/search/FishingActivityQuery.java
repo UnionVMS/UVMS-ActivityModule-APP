@@ -10,8 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-
 import java.util.Map;
 
 /**
@@ -19,18 +17,18 @@ import java.util.Map;
  */
 public class FishingActivityQuery {
     private Pagination pagination;
-    private Map<SearchFilter,String> searchCriteriaMap;
+    private Map<Filters,String> searchCriteriaMap;
     private SortKey sortKey;
 
     public void setPagination(Pagination pagination) {
         this.pagination = pagination;
     }
 
-    public Map<SearchFilter, String> getSearchCriteriaMap() {
+    public Map<Filters, String> getSearchCriteriaMap() {
         return searchCriteriaMap;
     }
 
-    public void setSearchCriteriaMap(Map<SearchFilter, String> searchCriteriaMap) {
+    public void setSearchCriteriaMap(Map<Filters, String> searchCriteriaMap) {
         this.searchCriteriaMap = searchCriteriaMap;
     }
 

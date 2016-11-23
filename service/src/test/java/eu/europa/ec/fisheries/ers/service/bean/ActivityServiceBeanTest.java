@@ -17,6 +17,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
@@ -24,7 +25,6 @@ import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
@@ -120,10 +120,10 @@ public class ActivityServiceBeanTest {
         FishingActivityQuery query = new FishingActivityQuery();
         List<ListCriteria> list = new ArrayList<ListCriteria>();
 
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
 
         Pagination pagination =new Pagination();
         pagination.setListSize(4);

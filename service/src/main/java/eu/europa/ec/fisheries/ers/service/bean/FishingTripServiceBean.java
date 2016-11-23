@@ -25,12 +25,12 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
@@ -292,7 +292,7 @@ public class FishingTripServiceBean implements FishingTripService {
                 try {
                     ListAssetResponse listResp = JAXBMarshaller.unmarshallTextMessage(response, ListAssetResponse.class);
                     AssetsRequestMapper.mapAssetsResponseToVesselDetailsTripDTO(listResp, vesselDetailsTripDTO);
-                } catch (ModelMarshallException e) {
+                } catch (ActivityModelMarshallException e) {
                     log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment",e);
                 }
             }
@@ -309,7 +309,7 @@ public class FishingTripServiceBean implements FishingTripService {
         try {
             JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
             return true;
-        } catch (ModelMarshallException e) {
+        } catch (ActivityModelMarshallException e) {
             return false;
         }
     }
@@ -543,9 +543,9 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     @Override
-    public GetFishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
+    public FishingTripResponse getFishingTripIdsForFilter(Map<Filters,String> searchCriteriaMap) throws ServiceException {
         List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap);
-        GetFishingTripResponse response = new GetFishingTripResponse();
+        FishingTripResponse response = new FishingTripResponse();
         List<String> fishingTripIdList= new ArrayList<>();
         for(FishingTripEntity entity:fishingTripList){
             Set<FishingTripIdentifierEntity> ids=entity.getFishingTripIdentifiers();

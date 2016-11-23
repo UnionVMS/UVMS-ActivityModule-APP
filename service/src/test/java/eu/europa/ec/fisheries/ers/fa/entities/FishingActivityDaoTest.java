@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.service.search.*;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,27 +53,27 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
-         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+         Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
-      searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
-       searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
-       searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
-        searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
-        searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
+      searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
+       searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27T07:47:31");
+       searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27T07:47:31");
+        searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
+        searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
       //  searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
-       searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
-        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+       searchCriteriaMap.put(Filters.PURPOSE, "9");
+        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
 
-        searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
-        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
-        searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
-        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+        searchCriteriaMap.put(Filters.SPECIES, "PLE");
+        searchCriteriaMap.put(Filters.MASTER, "MARK");
+        searchCriteriaMap.put(Filters.AREAS, "27.4.b");
+        searchCriteriaMap.put(Filters.PORT, "GBR");
 
-       searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+       searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
    //     searchCriteriaMap.put(Filters.WEIGHT_MEASURE, "TNE");
    //     searchCriteriaMap.put(Filters.SOURCE, "FLUX");
 
@@ -86,7 +85,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         // query.setSortKey(new SortKey(Filters.SOURCE, SortOrder.ASC));
      //    query.setSortKey(new SortKey(Filters.FROM_NAME, SortOrder.ASC));
     //    query.setSortKey(new SortKey(Filters.PERIOD_START, SortOrder.ASC));
-      query.setSortKey(new SortKey(SearchFilter.OCCURRENCE, SortOrder.ASC));
+      query.setSortKey(new SortKey(Filters.OCCURRENCE, SortOrder.ASC));
         // query.setPagination( new Pagination(1,2));
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
 
@@ -103,34 +102,34 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
-        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
-        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
-        searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
-        searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-        searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
-        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
+        searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27T07:47:31");
+        searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27T07:47:31");
+        searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
+        searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
+        searchCriteriaMap.put(Filters.PURPOSE, "9");
+        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
 
-        searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
-        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
-        searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
-        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+        searchCriteriaMap.put(Filters.SPECIES, "PLE");
+        searchCriteriaMap.put(Filters.MASTER, "MARK");
+        searchCriteriaMap.put(Filters.AREAS, "27.4.b");
+        searchCriteriaMap.put(Filters.PORT, "GBR");
 
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
 
-        searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, "1");
+        searchCriteriaMap.put(Filters.FA_REPORT_ID, "1");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setPagination( new Pagination(1,2));
 
 
-        query.setSortKey(new SortKey(SearchFilter.OCCURRENCE, SortOrder.ASC));
+        query.setSortKey(new SortKey(Filters.OCCURRENCE, SortOrder.ASC));
 
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
 
@@ -147,37 +146,37 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
 
 
-        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
-        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
-        searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
-        searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-        searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
-        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+        searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27T07:47:31");
+        searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27T07:47:31");
+        searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
+        searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
+        searchCriteriaMap.put(Filters.PURPOSE, "9");
+        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
 
-        searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
-        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
-        searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
-        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+        searchCriteriaMap.put(Filters.SPECIES, "PLE");
+        searchCriteriaMap.put(Filters.MASTER, "MARK");
+        searchCriteriaMap.put(Filters.AREAS, "27.4.b");
+        searchCriteriaMap.put(Filters.PORT, "GBR");
 
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
 
-        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+        searchCriteriaMap.put(Filters.SOURCE, "FLUX");
 
-        query.setSortKey(new SortKey(SearchFilter.PURPOSE, SortOrder.ASC));
+        query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
 
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setPagination( new Pagination(1,2));
 
-        query.setSortKey(new SortKey(SearchFilter.OCCURRENCE, SortOrder.ASC));
+        query.setSortKey(new SortKey(Filters.OCCURRENCE, SortOrder.ASC));
 
         int size  = dao.getCountForFishingActivityListByQuery(query, null);
 

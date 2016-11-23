@@ -10,24 +10,22 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-
 /**
  * Created by sanera on 01/07/2016.
  */
 public class SortKey {
 
-    private SearchFilter field;
+    private Filters field;
     private SortOrder order;
 
     public SortKey(){
         super();
     }
 
-    public SearchFilter getField() {
+    public Filters getField() {
         return field;
     }
-    public void setField(SearchFilter field) {
+    public void setField(Filters field) {
         this.field = field;
     }
     public SortOrder getOrder() {
@@ -36,7 +34,7 @@ public class SortKey {
     public void setOrder(SortOrder order) {
         this.order = order;
     }
-    public SortKey(SearchFilter field, SortOrder order) {
+    public SortKey(Filters field, SortOrder order) {
         this.field = field;
         this.order = order;
     }

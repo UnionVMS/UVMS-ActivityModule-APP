@@ -17,9 +17,11 @@ import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +36,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 @LocalBean
@@ -65,7 +64,7 @@ public class ActivityEventServiceBean implements EventService {
 
             fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments(), extractPluginType(baseRequest.getPluginType()));
 
-        } catch (ModelMarshallException e) {
+        } catch (ActivityModelMarshallException e) {
             LOG.error("Exception while trying to unmarshall SetFLUXFAReportMessageRequest in Activity",e);
         } catch (ServiceException e) {
             LOG.error("Exception while trying to saveFishingActivityReportDocuments in Activity",e);
@@ -75,16 +74,16 @@ public class ActivityEventServiceBean implements EventService {
     @Override
     public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException {
         try {
-            GetFishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetFishingTripRequest.class);
+            FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
 
-            fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest));
+     ///       fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest));
 
-        } catch (ModelMarshallException e) {
+        } catch (ActivityModelMarshallException e) {
             e.printStackTrace();
         }
     }
 
-    private Map<SearchFilter,String>  extractFiltersAsMap(GetFishingTripRequest baseRequest){
+   /* private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest){
         Map<SearchFilter,String> searchMap = new HashMap<>();
         List<FilterType> filterTypes= baseRequest.getFilters();
         for(FilterType filterType : filterTypes){
@@ -92,7 +91,7 @@ public class ActivityEventServiceBean implements EventService {
         }
 
         return searchMap;
-    }
+    }*/
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
         if(pluginType == null){
@@ -101,7 +100,7 @@ public class ActivityEventServiceBean implements EventService {
         return pluginType == PluginType.FLUX ? FaReportSourceEnum.FLUX : FaReportSourceEnum.MANUAL;
     }
 
-    public FLUXFAReportMessage extractFLUXFAReportMessage(String request) throws ModelMarshallException{
+    public FLUXFAReportMessage extractFLUXFAReportMessage(String request) throws ActivityModelMarshallException{
         JAXBContext jc = null;
         FLUXFAReportMessage fluxFAReportMessage = null;
         try {
@@ -111,7 +110,7 @@ public class ActivityEventServiceBean implements EventService {
             StreamSource source = new StreamSource(sr);
              fluxFAReportMessage = (FLUXFAReportMessage) unmarshaller.unmarshal(source);
         } catch (JAXBException | NullPointerException e) {
-            throw new ModelMarshallException("[Exception while trying to unmarshall FLUXFAReportMessage in Activity ]", e);
+            throw new ActivityModelMarshallException("[Exception while trying to unmarshall FLUXFAReportMessage in Activity ]", e);
         }
        return fluxFAReportMessage;
     }
