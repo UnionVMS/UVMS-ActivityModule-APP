@@ -30,7 +30,7 @@ public class MdrRequestMapper {
 	public static final String EN = "EN";
 	public static final String UUID = "UUID";
 	public static final String FLUX_MDR_QUERY_TYPE = "FLUX_MDR_QUERY_TYPE";
-	public static final String GRC = "GRC";
+	public static final String HUN = "HUN";
 	public static final String INDEX = "INDEX";
 
 	/**
@@ -90,7 +90,7 @@ public class MdrRequestMapper {
 		FLUXPartyType fluxParty = new FLUXPartyType();
 		List<IDType> countryIds = new ArrayList<>();
 		IDType contryId = new IDType();
-		contryId.setValue(GRC);
+		contryId.setValue(HUN);
 		countryIds.add(contryId);
 		fluxParty.setIDS(countryIds);
 		mdrQuery.setSubmitterFLUXParty(fluxParty);
