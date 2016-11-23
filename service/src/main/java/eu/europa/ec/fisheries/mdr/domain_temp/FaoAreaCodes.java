@@ -8,7 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.mdr.domain2;
+package eu.europa.ec.fisheries.mdr.domain_temp;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
@@ -29,27 +29,18 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 public class FaoAreaCodes extends MasterDataRegistry {
 
-	@Column(name = "area")
-	private String area;
+	@Column(name = "level")
+	private String level;
 
-	@Column(name = "subarea")
-	private String subarea;
+	@Column(name = "en_level_name")
+	private String enLevelName;
 
-	@Column(name = "division")
-	private String division;
-
-	@Column(name = "subdivision")
-	private String subdivision;
-
-	@Column(name = "unit")
-	private String unit;
-
-	@Column(name = "description")
-	private String description;
+	@Column(name = "terminal_ind")
+	private String terminalInd;
 
 	@Override
 	public String getAcronym() {
-		return "FAO_LIKE_AREA";
+		return "FAO_AREA";
 	}
 
 
@@ -59,60 +50,34 @@ public class FaoAreaCodes extends MasterDataRegistry {
 		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
 			String fieldName  = field.getName().getValue();
 			String fieldValue  = field.getName().getValue();
-			if(StringUtils.equalsIgnoreCase("area", fieldName)){
-				this.setArea(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("subarea", fieldName)){
-				this.setSubarea(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("division", fieldName)){
-				this.setDivision(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("subdivision", fieldName)){
-				this.setSubdivision(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("unit", fieldName)){
-				this.setUnit(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("description", fieldName)){
-				this.setDescription(fieldValue);
-			}  else {
+			if(StringUtils.equalsIgnoreCase("LEVEL", fieldName)){
+				this.setLevel(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("ENLEVELNAME", fieldName)){
+				this.setEnLevelName(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("TERMINALIND", fieldName)){
+				this.setTerminalInd(fieldValue);
+			} else {
 				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
 			}
 		}
 	}
 
-	public String getArea() {
-		return area;
+	public String getLevel() {
+		return level;
 	}
-	public void setArea(String area) {
-		this.area = area;
+	public void setLevel(String level) {
+		this.level = level;
 	}
-	public String getSubarea() {
-		return subarea;
+	public String getEnLevelName() {
+		return enLevelName;
 	}
-	public void setSubarea(String subarea) {
-		this.subarea = subarea;
+	public void setEnLevelName(String enLevelName) {
+		this.enLevelName = enLevelName;
 	}
-	public String getDivision() {
-		return division;
+	public String getTerminalInd() {
+		return terminalInd;
 	}
-	public void setDivision(String division) {
-		this.division = division;
+	public void setTerminalInd(String terminalInd) {
+		this.terminalInd = terminalInd;
 	}
-	public String getSubdivision() {
-		return subdivision;
-	}
-	public void setSubdivision(String subdivision) {
-		this.subdivision = subdivision;
-	}
-	public String getUnit() {
-		return unit;
-	}
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-
 }
