@@ -8,13 +8,14 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.mdr.domain_temp;
+package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -30,6 +31,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_fao_area_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class FaoAreaCodes extends MasterDataRegistry {
 
 	@Column(name = "level")

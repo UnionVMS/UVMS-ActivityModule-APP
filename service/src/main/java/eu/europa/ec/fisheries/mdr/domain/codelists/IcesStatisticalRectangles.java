@@ -63,11 +63,20 @@ public class IcesStatisticalRectangles extends MasterDataRegistry {
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);
+		rectangle = new RectangleCoordinates();
 		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
 			String fieldName  = field.getName().getValue();
 			String fieldValue = field.getName().getValue();
 			if (StringUtils.equalsIgnoreCase("icesName", fieldName)) {
 				this.setIcesName(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("WEST", fieldName)){
+				rectangle.setWest(Double.parseDouble(fieldValue));
+			} else if(StringUtils.equalsIgnoreCase("EAST", fieldName)){
+				rectangle.setEast(Double.parseDouble(fieldValue));
+			} else if(StringUtils.equalsIgnoreCase("NORTH", fieldName)){
+				rectangle.setNorth(Double.parseDouble(fieldValue));
+			} else if(StringUtils.equalsIgnoreCase("SOUTH", fieldName)){
+				rectangle.setSouth(Double.parseDouble(fieldValue));
 			} else {
 				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}

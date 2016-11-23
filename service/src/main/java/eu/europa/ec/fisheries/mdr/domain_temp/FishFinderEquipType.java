@@ -29,6 +29,7 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 @Indexed
 public class FishFinderEquipType extends MasterDataRegistry {
+
     @Override
     public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
         super.populateCommonFields(mdrDataType);

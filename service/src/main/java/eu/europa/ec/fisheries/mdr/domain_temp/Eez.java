@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_eez")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class Eez extends MasterDataRegistry {
 
     @Column(name = "code_2")

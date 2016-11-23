@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_flux_gp_party")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class FluxGpParty extends MasterDataRegistry {
 
     @Column(name = "code_2")
@@ -38,11 +40,9 @@ public class FluxGpParty extends MasterDataRegistry {
     public String getCode2() {
         return code2;
     }
-
     public void setCode2(String code2) {
         this.code2 = code2;
     }
-
     public String getEnName() {
         return enName;
     }

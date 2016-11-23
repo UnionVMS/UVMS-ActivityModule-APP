@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -30,6 +31,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_vessel_type")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class VesselType extends MasterDataRegistry {
 	
 	@Column(name = "parent_vessel_fk_x_key")

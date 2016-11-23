@@ -8,12 +8,13 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.mdr.domain_temp;
+package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_fish_packaging")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class FishPackaging extends MasterDataRegistry {
 
 	private static final long serialVersionUID = 1L; 
@@ -34,7 +36,6 @@ public class FishPackaging extends MasterDataRegistry {
 	public String getAcronym() {
 		return "FISH_PACKAGING";
 	}
-
 
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {

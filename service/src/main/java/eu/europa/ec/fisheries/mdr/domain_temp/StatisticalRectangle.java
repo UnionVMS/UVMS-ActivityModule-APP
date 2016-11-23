@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -21,6 +22,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_statistical_rectangles")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class StatisticalRectangle extends MasterDataRegistry {
 
     @Embedded
@@ -45,7 +47,6 @@ public class StatisticalRectangle extends MasterDataRegistry {
                 throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
             }
         }
-
     }
 
     @Override

@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 
 import javax.persistence.Entity;
@@ -27,6 +28,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_product_destination")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class ProductDestination extends MasterDataRegistry {
 
 	@Override

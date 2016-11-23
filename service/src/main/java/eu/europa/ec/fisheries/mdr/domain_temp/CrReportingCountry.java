@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -29,6 +30,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_cr_reporting_country")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class CrReportingCountry extends MasterDataRegistry {
     private static final long serialVersionUID = 1L;
 

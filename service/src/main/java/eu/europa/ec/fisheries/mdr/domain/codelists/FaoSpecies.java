@@ -1,10 +1,11 @@
-package eu.europa.ec.fisheries.mdr.domain_temp;
+package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -22,6 +23,7 @@ import javax.persistence.Table;
 @Table(name = "mdr_fao_species")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class FaoSpecies extends MasterDataRegistry {
 
     @Column(name = "is_group")

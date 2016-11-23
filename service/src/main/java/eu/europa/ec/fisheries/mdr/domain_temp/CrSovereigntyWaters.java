@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -28,7 +29,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "mdr_cr_sovereignty_waters")
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)	
+@ToString(callSuper = true)
+@Indexed
 public class CrSovereigntyWaters extends MasterDataRegistry {
 	private static final long serialVersionUID = 1L;
 

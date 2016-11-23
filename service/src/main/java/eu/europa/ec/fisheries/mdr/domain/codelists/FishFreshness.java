@@ -20,26 +20,22 @@ import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
+/**
+ * Created by kovian on 11/23/2016.
+ */
 @Entity
-@Table(name = "mdr_gear_type")
+@Table(name = "mdr_fish_freshness")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Indexed
-public class GearTypeCodes extends MasterDataRegistry {
+public class FishFreshness extends MasterDataRegistry {
 
-	//TODO
-	private String category;
-	private String subCategory;
-	private String iccatCode;
-	private String ISSCFGCODE;
-	private String TARGET;
-
+	private static final long serialVersionUID = 1L; 
+	
 	@Override
 	public String getAcronym() {
-		return "GEAR_TYPE";
+		return "FISH_FRESHNESS";
 	}
-
 
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
