@@ -8,7 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.mdr.domain2;
+package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -24,24 +25,26 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
 @Entity
-@Table(name = "mdr_gfcm_statistical_rectangles_codes")
+@Table(name = "mdr_ices_statistical_rectangles")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
-	
-	@Column(name = "code")
-	private String code; 
+@Indexed
+public class IcesStatisticalRectangles extends MasterDataRegistry {
+
+	private static final long serialVersionUID = 1L;
+
+	@Column(name = "ices_name")
+	private String icesName;
 	
 	@Embedded
 	private RectangleCoordinates rectangle;
 
-	public String getCode() {
-		return code;
+	public String getIcesName() {
+		return icesName;
 	}
-	public void setCode(String code) {
-		this.code = code;
+	public void setIcesName(String icesName) {
+		this.icesName = icesName;
 	}
 	public RectangleCoordinates getRectangle() {
 		return rectangle;
@@ -51,8 +54,8 @@ public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 	}
 	
 	@Override
-	public String getAcronym() {
-		return "GFCM_STAT_RECTANGLE";
+	public String getAcronym() { 
+		return "ICES_STAT_RECTANGLE";
 	}
 
 	// TODO ; check the response from flux for the RectangleCoordinates!! and change populate accordingly
@@ -63,8 +66,8 @@ public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
 			String fieldName  = field.getName().getValue();
 			String fieldValue = field.getName().getValue();
-			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
-				this.setCode(fieldValue);
+			if (StringUtils.equalsIgnoreCase("icesName", fieldName)) {
+				this.setIcesName(fieldValue);
 			} else {
 				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
 			}

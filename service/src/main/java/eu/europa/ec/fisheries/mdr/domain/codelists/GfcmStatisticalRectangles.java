@@ -8,32 +8,69 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.mdr.domain_temp;
+package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "mdr_vessel_activity")
+@Table(name = "mdr_gfcm_statistical_rectangles")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class VesselActivity extends MasterDataRegistry {
+@Indexed
+public class GfcmStatisticalRectangles extends MasterDataRegistry {
+	
+	@Column(name = "code")
+	private String code; 
+	
+	@Embedded
+	private RectangleCoordinates rectangle;
+
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public RectangleCoordinates getRectangle() {
+		return rectangle;
+	}
+	public void setRectangle(RectangleCoordinates rectangle) {
+		this.rectangle = rectangle;
+	}
 	
 	@Override
-	public String getAcronym() { 
-		return "VESSEL_ACTIVITY";
+	public String getAcronym() {
+		return "GFCM_STAT_RECTANGLE";
 	}
 
+	// TODO ; check the response from flux for the RectangleCoordinates!! and change populate accordingly
 
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);
+		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
+			String fieldName  = field.getName().getValue();
+			String fieldValue = field.getName().getValue();
+			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
+				this.setCode(fieldValue);
+			} else {
+				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
+			}
+		}
 	}
+
 }
