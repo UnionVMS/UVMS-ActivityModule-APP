@@ -50,7 +50,7 @@ abstract public class MasterDataRegistry extends BaseEntity {
     protected static final String EN_DESCRIPTION_STR     = "ENDESCRIPTION";
     protected static final String VERSION                = "VERSION";
 
-    public void populateCommonFields(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
+    protected void populateCommonFields(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 
         // Start date end date
         final DelimitedPeriodType validityPeriod = mdrDataType.getEffectiveDelimitedPeriod();

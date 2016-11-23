@@ -5,7 +5,7 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.dao.BaseMdrDaoTest;
 import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
-import eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes;
+import eu.europa.ec.fisheries.mdr.domain2.SpeciesISO3Codes;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.hibernate.Session;

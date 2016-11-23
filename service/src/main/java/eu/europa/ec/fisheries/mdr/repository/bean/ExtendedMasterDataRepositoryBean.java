@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.repository.bean;
 
 import eu.europa.ec.fisheries.mdr.dao.MasterDataRegistryDao;
-import eu.europa.ec.fisheries.mdr.domain.ActionType;
+import eu.europa.ec.fisheries.mdr.domain2.ActionType;
 
 public class ExtendedMasterDataRepositoryBean {
 	

@@ -10,14 +10,14 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus</class>
 		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ConversionFactor</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrFishingCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingCountriesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingPlaces</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNafoStock</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.ActionType</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.ConversionFactor</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrFishingCategoryCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrLandingCountriesCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrLandingPlaces</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrNafoStock</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrNeafcGround</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNeafcStocks</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrNeafcStocks</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportIndicator</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportingCountry</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportingPeriod</class>
@@ -30,36 +30,36 @@
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReasonForReturn</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReturnStatus</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsSender</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FaoAreaCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.FaoAreaCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishFreshness</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPackaging</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPresentation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPreservationState</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishSizeCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GearTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GfcmStatisticalRectanglesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.IcesStatisticalRectanglesCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.FishSizeCategoryCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.GearTypeCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.GfcmStatisticalRectanglesCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.IcesStatisticalRectanglesCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.Location</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MeansOfWeightMeasuringCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ProducersOrganizationUseCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.MeansOfWeightMeasuringCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.ProducersOrganizationUseCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ProductDestination</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.RegionalFisheriesManagementOrganizationsCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.RegionalFisheriesManagementOrganizationsCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.RelocationDestination</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SenderTypeCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.SenderTypeCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrSovereigntyWaters</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.TerritoryAndCurrencyISOCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.SpeciesISO3Codes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.TerritoryAndCurrencyISOCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.VesselActivity</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.VesselType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.WithdrawalCode</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ConversionFactor</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrFishingCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingCountriesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingPlaces</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNafoStock</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.ActionType</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.ConversionFactor</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrFishingCategoryCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrLandingCountriesCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrLandingPlaces</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrNafoStock</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrNeafcGround</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNeafcStocks</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrNeafcStocks</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportIndicator</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportingCountry</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportingPeriod</class>
@@ -72,29 +72,29 @@
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReasonForReturn</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReturnStatus</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsSender</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FaoAreaCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.FaoAreaCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishFreshness</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPackaging</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPresentation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPreservationState</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishSizeCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GearTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GfcmStatisticalRectanglesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.IcesStatisticalRectanglesCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.FishSizeCategoryCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.GearTypeCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.GfcmStatisticalRectanglesCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.IcesStatisticalRectanglesCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.Location</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MeansOfWeightMeasuringCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ProducersOrganizationUseCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.MeansOfWeightMeasuringCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.ProducersOrganizationUseCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ProductDestination</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.RegionalFisheriesManagementOrganizationsCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.RegionalFisheriesManagementOrganizationsCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.RelocationDestination</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SenderTypeCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.SenderTypeCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrSovereigntyWaters</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.TerritoryAndCurrencyISOCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.SpeciesISO3Codes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.TerritoryAndCurrencyISOCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.VesselActivity</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.VesselType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.WithdrawalCode</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingIndicatorCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain2.CrLandingIndicatorCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.AcronymVersion</class>
 
 
