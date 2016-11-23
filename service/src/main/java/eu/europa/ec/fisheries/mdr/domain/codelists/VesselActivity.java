@@ -8,55 +8,37 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.mdr.domain2;
+package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
-import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
-import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Created by kovian on 11/22/2016.
+ */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "mdr_gfcm_statistical_rectangles_codes")
+@Table(name = "mdr_vessel_activity")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
-	
-	@Embedded
-	private RectangleCoordinates rectangle;
-
-	public RectangleCoordinates getRectangle() {
-		return rectangle;
-	}
-	public void setRectangle(RectangleCoordinates rectangle) {
-		this.rectangle = rectangle;
-	}
+@Indexed
+public class VesselActivity extends MasterDataRegistry {
 	
 	@Override
-	public String getAcronym() {
-		return "GFCM_STAT_RECTANGLE";
+	public String getAcronym() { 
+		return "VESSEL_ACTIVITY";
 	}
+
 
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);
-		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
-			String fieldName  = field.getName().getValue();
-			String fieldValue = field.getName().getValue();
-			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
-				this.setCode(fieldValue);
-			} else {
-				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
-			}
-		}
 	}
-
 }
