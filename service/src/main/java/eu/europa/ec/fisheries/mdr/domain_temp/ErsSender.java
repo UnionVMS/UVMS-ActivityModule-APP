@@ -22,6 +22,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Created by kovian on 11/23/2016.
+ */
 @Entity
 @Table(name = "mdr_ers_senders")
 @EqualsAndHashCode(callSuper = true)

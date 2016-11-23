@@ -19,6 +19,9 @@ import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Created by kovian on 11/22/2016.
+ */
 @Entity
 @Table(name = "mdr_weight_means")
 @EqualsAndHashCode(callSuper = true)

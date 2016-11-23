@@ -16,6 +16,9 @@ import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.DateTimeType;
 import un.unece.uncefact.data.standard.response.DelimitedPeriodType;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
@@ -39,7 +42,9 @@ abstract public class MasterDataRegistry extends BaseEntity {
     @Column(name = "version")
     private String version;
 
-    @Column(name="code")
+    @Column(name = "code")
+    @Field(name="sort_code", analyze= Analyze.NO, store = Store.YES)
+    //@SortableField(forField = "sort_code")
     private String code;
 
     @Column(name="description")

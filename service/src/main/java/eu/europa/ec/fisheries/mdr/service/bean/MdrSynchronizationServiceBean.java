@@ -21,25 +21,14 @@ import eu.europa.ec.fisheries.mdr.repository.MdrStatusRepository;
 import eu.europa.ec.fisheries.mdr.service.MdrSynchronizationService;
 import eu.europa.ec.fisheries.mdr.util.GenericOperationOutcome;
 import eu.europa.ec.fisheries.mdr.util.OperationOutcome;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import un.unece.uncefact.data.standard.response.FLUXMDRReturnMessage;
-import un.unece.uncefact.data.standard.response.MDRDataNodeType;
-import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -151,7 +140,7 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
             log.info("Preparing Request Object for " + actualAcronym + " and sending message to Exchange queue.");
             // Create request object and send message to exchange module
             if (existingAcronymsList.contains(actualAcronym)) {// Acronym exists
-                String strReqObj = null;
+                String strReqObj;
                 try {
                     strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actualAcronym, OBJ_DATA_ALL);
                     producer.sendRulesModuleMessage(strReqObj);
@@ -179,33 +168,20 @@ public class MdrSynchronizationServiceBean implements MdrSynchronizationService 
     @Override
     public void sendRequestForMdrCodelistsStructures(Collection<String> acronymsList) {
         try {
+            List<String> missingAcronyms = java.util.Arrays.asList("FA_BAIT_TYPE", "FA_BFT_SIZE_CATEGORY", "FA_BR", "FA_CATCH_TYPE", "FA_CHARACTERISTIC", "FA_FISHERY", "FA_GEAR_CHARACTERISTIC",
+                    "FA_GEAR_PROBLEM", "FA_GEAR_RECOVERY", "FA_GEAR_ROLE", "FA_QUERY_TYPE", "FA_QUERY_PARAMETER", "FA_REASON_ARRIVAL", "FA_REASON_DEPARTURE", "FA_REASON_ENTRY", "FA_REASON_DISCARD", "FA_VESSEL_ROLE",
+                    "FARM", "FISH_PRESERVATION", "FISHING_TRIP_TYPE", "FLAP_ID_TYPE", "FLUX_FA_FMC", "FLUX_FA_REPORT_TYPE", "FLUX_FA_TYPE", "FLUX_LOCATION_CHARACTERISTIC", "FLUX_LOCATION_TYPE", "GFCM_GSA",
+                    "GFCM_STAT_RECTANGLE", "ICES_STAT_RECTANGLE", "VESSEL_STORAGE_TYPE", "WEIGHT_MEANS");
 
-            File file = new File("/app/codeListsIndex.xml");
-            byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-            String fileAsString = new String(encoded, StandardCharsets.UTF_8);
-            FLUXMDRReturnMessage returnMessage = JAXBMarshaller.unmarshallTextMessage(fileAsString, FLUXMDRReturnMessage.class);
-            final List<MDRDataNodeType> containedMDRDataNodes = returnMessage.getMDRDataSet().getContainedMDRDataNodes();
-
-            String acronym = StringUtils.EMPTY;
-            for(MDRDataNodeType xmlAcronym : containedMDRDataNodes){
-                for(MDRElementDataNodeType dataNode : xmlAcronym.getSubordinateMDRElementDataNodes()){
-                    String acrvalue = dataNode.getName().getValue();
-                    if("ACRONYM".equalsIgnoreCase(acrvalue)){
-                        acronym = dataNode.getValue().getValue();
-                        log.info(",{}", acronym);
-                    }
-                }
-                String strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(acronym, OBJ_DESC);
+            for(String actAcron : missingAcronyms){
+                String strReqObj = MdrRequestMapper.mapMdrQueryTypeToString(actAcron, OBJ_DESC);
                 producer.sendRulesModuleMessage(strReqObj);
             }
+
         } catch (ActivityMappingException e) {
             log.error("Error while trying to map MDRQueryType for acronym {}", acronymsList, e);
         } catch (ActivityMessageException e) {
             log.error("Error while trying to send message from Activity to Rules module.", e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ModelMarshallException e) {
-            e.printStackTrace();
         }
     }
 

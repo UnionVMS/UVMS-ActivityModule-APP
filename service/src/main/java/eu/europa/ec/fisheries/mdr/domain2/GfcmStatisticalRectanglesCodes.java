@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -31,18 +30,9 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 	
-	@Column(name = "code")
-	private String code; 
-	
 	@Embedded
 	private RectangleCoordinates rectangle;
 
-	public String getCode() {
-		return code;
-	}
-	public void setCode(String code) {
-		this.code = code;
-	}
 	public RectangleCoordinates getRectangle() {
 		return rectangle;
 	}
@@ -54,8 +44,6 @@ public class GfcmStatisticalRectanglesCodes extends MasterDataRegistry {
 	public String getAcronym() {
 		return "GFCM_STAT_RECTANGLE";
 	}
-
-	// TODO ; check the response from flux for the RectangleCoordinates!! and change populate accordingly
 
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {

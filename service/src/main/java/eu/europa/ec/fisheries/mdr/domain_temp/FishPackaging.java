@@ -19,8 +19,11 @@ import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Created by kovian on 11/23/2016.
+ */
 @Entity
-@Table(name = "mdr_fish_presentation")
+@Table(name = "mdr_fish_packaging")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FishPackaging extends MasterDataRegistry {

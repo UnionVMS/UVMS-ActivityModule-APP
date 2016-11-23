@@ -2,15 +2,26 @@ package eu.europa.ec.fisheries.mdr.domain_temp;
 
 import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+/**
+ * Created by kovian on 11/23/2016.
+ */
 /**
  * Created by kovian on 22/11/2016.
  */
+@Entity
+@Table(name = "mdr_fao_species")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class FaoSpecies extends MasterDataRegistry {
 
     @Column(name = "is_group")
@@ -67,7 +78,7 @@ public class FaoSpecies extends MasterDataRegistry {
 
     @Override
     public String getAcronym() {
-        return "VESSEL_PROGRAM";
+        return "FAO_SPECIES";
     }
 
     public String getIsGroup() {

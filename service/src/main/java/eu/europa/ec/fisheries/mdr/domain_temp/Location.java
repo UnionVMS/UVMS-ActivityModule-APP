@@ -22,6 +22,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Created by kovian on 11/22/2016.
+ */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mdr_location_codes")

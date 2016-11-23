@@ -15,10 +15,7 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -34,11 +31,6 @@ import javax.persistence.Table;
 @Indexed
 public class SpeciesISO3Codes extends MasterDataRegistry {
 
-	@Column(name = "code")
-	@Field(name="sort_code", analyze= Analyze.NO, store = Store.YES)
-	//@SortableField(forField = "sort_code")
-	private String code;
-	
 	@Column(name = "scientific_name")
 	/*@Fields({
 			@Field,
@@ -129,12 +121,6 @@ public class SpeciesISO3Codes extends MasterDataRegistry {
 		}
 	}
 
-	public String getCode() {
-		return code;
-	}
-	public void setCode(String code) {
-		this.code = code;
-	}
 	public String getScientificName() {
 		return scientificName;
 	}
