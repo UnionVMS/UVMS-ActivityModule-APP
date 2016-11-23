@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.*;
 import xeu.ec.fisheries.flux_bl.flux_mdr_codelist._1.FieldType;
 
 import javax.persistence.Column;
@@ -26,30 +27,68 @@ import java.util.List;
 @Table(name = "mdr_species_iso3_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Indexed
 public class SpeciesISO3Codes extends MasterDataRegistry {
 
 	@Column(name = "code")
+	@Field(name="sort_code", analyze= Analyze.NO, store = Store.YES)
+	//@SortableField(forField = "sort_code")
 	private String code;
 	
 	@Column(name = "scientific_name")
+	/*@Fields({
+			@Field,
+			@Field(name="sort_scientificName", analyze= Analyze.NO)
+	})
+	@SortableField(forField = "sort_scientificName")*/
 	private String scientificName;
 	
 	@Column(name = "english_name")
+	/*@Fields({
+			@Field,
+			@Field(name="sort_englishName", analyze= Analyze.NO)
+	})
+	@SortableField(forField = "sort_englishName")*/
 	private String englishName;
 	
 	@Column(name = "french_name")
+/*	@Fields({
+			@Field,
+			@Field(name="sort_frenchName", analyze= Analyze.NO)
+	})
+	@SortableField(forField = "sort_frenchName")*/
 	private String frenchName;
 	
 	@Column(name = "spanish_name")
+	/*@Fields({
+			@Field,
+			@Field(name="sort_spanishName", analyze= Analyze.NO)
+	})
+	@SortableField(forField = "sort_spanishName")*/
 	private String spanishName;
 	
 	@Column(name = "author")
+/*	@Fields({
+			@Field,
+			@Field(name="sort_author", analyze= Analyze.NO)
+	})
+	@SortableField(forField = "sort_author")*/
 	private String author;
 	
 	@Column(name = "family")
+	/*@Fields({
+			@Field,
+			@Field(name="sort_family", analyze= Analyze.NO)
+	})
+	@SortableField(forField = "sort_family")*/
 	private String family;
 	
 	@Column(name = "iso_order")
+	/*@Fields({
+			@Field,
+			@Field(name="sort_isoOrder", analyze= Analyze.NO)
+	})
+	@SortableField(forField = "sort_isoOrder")*/
 	private String isoOrder;
 
 	public String getCode() {

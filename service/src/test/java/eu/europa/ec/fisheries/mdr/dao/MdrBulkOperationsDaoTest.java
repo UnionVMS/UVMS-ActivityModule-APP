@@ -16,7 +16,14 @@ import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.domain.ActionType;
 import eu.europa.ec.fisheries.mdr.domain.CrNafoStock;
 import eu.europa.ec.fisheries.mdr.domain.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes;
+import eu.europa.ec.fisheries.mdr.domain2.FaCatchType;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,11 +33,15 @@ import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 
 	private MdrBulkOperationsDao bulkDao = new MdrBulkOperationsDao(em);
+
+	private MdrStatusDao statusDao = new MdrStatusDao(em);
 
 	@Before
 	@SneakyThrows
@@ -46,58 +57,35 @@ public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 
 		dbSetupTracker.skipNextLaunch();
 
-		// List of Entity rows (List of instances of an entity) == List of
-		// Lists;
-		List<List<? extends MasterDataRegistry>> entitiesList = new ArrayList<List<? extends MasterDataRegistry>>();
-		
-		// CrNafoStocks list
-		List<CrNafoStock> crNafoStockEntityRows = mockNafoStocks();
-		
 		// ActionType list
-		List<ActionType> actionEntityRows = mockActionType();
-		
-		// Adding the Entities rows to the entitiesList
-		entitiesList.addAll(Arrays.asList(crNafoStockEntityRows,actionEntityRows));
+		List<SpeciesISO3Codes> actionEntityRows = mockSpecies();
 
 		// BulkInsertion of 2 different entities
 		em.getTransaction().begin();
-		bulkDao.multiEntityBulkDeleteAndInsert(entitiesList);
+		bulkDao.singleEntityBulkDeleteAndInsert(actionEntityRows);
 
 		em.flush();
 		em.getTransaction().commit();
 
-		assertEquals(11, bulkDao.getEntityManager().createQuery("FROM " + CrNafoStock.class.getSimpleName(), CrNafoStock.class).getResultList().size());
-		assertEquals(11, bulkDao.getEntityManager().createQuery("FROM " + ActionType.class.getSimpleName(), ActionType.class).getResultList().size());
+		assertEquals(11, bulkDao.getEntityManager().createQuery("FROM " + SpeciesISO3Codes.class.getSimpleName(), SpeciesISO3Codes.class).getResultList().size());
 
 		
 	}
 
-	private List<CrNafoStock> mockNafoStocks() {
-		List<CrNafoStock> crNafoStockEntityRows = new ArrayList<CrNafoStock>();
+	private List<SpeciesISO3Codes> mockSpecies() {
+		List<SpeciesISO3Codes> list = new ArrayList<>();
 		// Creating new CrNafoStocs entity to persist and adding it to this entity list (rows);
 		for(int i = 0; i < 11; i++){
-			CrNafoStock crNafoStockToPersist = new CrNafoStock();
-			crNafoStockToPersist.setAreaCode("areaCode"+i);
-			crNafoStockToPersist.setAreaDescription("someDescription"+i);
-			crNafoStockToPersist.setRefreshable(true);
-			crNafoStockToPersist.setSpeciesCode("44"+i);
-			crNafoStockToPersist.setSpeciesName("StrangeName"+i);
-			crNafoStockEntityRows.add(crNafoStockToPersist);
+			SpeciesISO3Codes species = new SpeciesISO3Codes();
+			species.setCode("areaCode"+i);
+			species.setEnglishName("someDescription"+i);
+			species.setRefreshable(true);
+			species.setCode("44"+i);
+			species.setScientificName("StrangeName"+i);
+			list.add(species);
 		}
-		return crNafoStockEntityRows;
+		return list;
 	}
-	
-	private List<ActionType> mockActionType() {
-		List<ActionType> actionTypeRows = new ArrayList<ActionType>();
-		// Creating new CrNafoStocs entity to persist and adding it to this entity list (rows);
-		for(int i = 0; i < 11; i++){			
-			ActionType actionType = new ActionType();
-			actionType.setCode("areaCode"+i);
-			actionType.setDescription("someDescription"+i);
-			actionType.setRefreshable(true);
-			actionTypeRows.add(actionType);	
-		}	
-		return actionTypeRows;
-	}
+
 
 }

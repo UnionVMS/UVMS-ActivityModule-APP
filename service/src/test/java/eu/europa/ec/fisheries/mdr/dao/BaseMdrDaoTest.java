@@ -19,7 +19,11 @@ public abstract class BaseMdrDaoTest extends BaseDAOTest {
 
 
     protected static final Operation DELETE_ALL_MDR_CR_NAFO_STOCK = sequenceOf(
-            deleteAllFrom("activity.mdr_cr_nafo_stock")            
+            deleteAllFrom("activity.mdr_cr_nafo_stock")
+    );
+
+    protected static final Operation DELETE_ALL_MDR_SPEICES = sequenceOf(
+            deleteAllFrom("activity.mdr_species_iso3_codes")
     );
 
     protected static final Operation INSERT_MDR_CR_NAFO_STOCK_REFERENCE_DATA = sequenceOf(

@@ -167,6 +167,35 @@
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
         </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-orm</artifactId>
+			<version>5.5.4.Final</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!--HIBERNATE SEARCH-->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-orm</artifactId>
+		</dependency>
+
+		<!-- If using JPA, add: -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+		<!-- Infinispan integration: -->
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-directory-provider</artifactId>
+		</dependency>
 	</dependencies>
 
 	<profiles>

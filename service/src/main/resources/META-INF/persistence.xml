@@ -21,6 +21,14 @@
         <property name="show_sql" value="true" />
         <property name="format_sql" value="false" />
         <property name="use_sql_comments" value="true" />
+
+
+        <!--HIBERNATE SEARCH PROPS-->
+        <property name="hibernate.search.default.directory_provider"
+                  value="filesystem"/>
+
+        <property name="hibernate.search.default.indexBase"
+                  value="${lucene.index.directory}"/>
     </properties>
 
 </persistence-unit>
