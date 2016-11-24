@@ -23,17 +23,17 @@
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportingPeriod</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrUnit</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.EffortTargetSpecies</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.EffortZone</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.EffortZone</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsEvent</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsGearType</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.ErsGearType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsMessageType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReasonForReturn</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReturnStatus</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsSender</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FaoAreaCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishFreshness</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPackaging</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPresentation</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FaoAreaCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishFreshness</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishPackaging</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishPresentation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPreservationState</class>
 		<class>eu.europa.ec.fisheries.mdr.domain2.FishSizeCategoryCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearType</class>
@@ -65,17 +65,17 @@
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrReportingPeriod</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.CrUnit</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.EffortTargetSpecies</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.EffortZone</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.EffortZone</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsEvent</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsGearType</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.ErsGearType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsMessageType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReasonForReturn</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsReturnStatus</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.ErsSender</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FaoAreaCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishFreshness</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPackaging</class>
-		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPresentation</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FaoAreaCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishFreshness</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishPackaging</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishPresentation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPreservationState</class>
 		<class>eu.europa.ec.fisheries.mdr.domain2.FishSizeCategoryCodes</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearType</class>

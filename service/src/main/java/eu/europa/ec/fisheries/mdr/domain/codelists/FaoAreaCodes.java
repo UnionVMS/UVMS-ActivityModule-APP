@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
-import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
@@ -20,54 +19,70 @@ import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Created by kovian on 11/23/2016.
+ */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "mdr_gfcm_statistical_rectangles")
+@Table(name = "mdr_fao_area_codes")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Indexed
-public class GfcmStatisticalRectangles extends MasterDataRegistry {
-	
-	@Embedded
-	private RectangleCoordinates rectangle;
+public class FaoAreaCodes extends MasterDataRegistry {
 
-	public RectangleCoordinates getRectangle() {
-		return rectangle;
-	}
-	public void setRectangle(RectangleCoordinates rectangle) {
-		this.rectangle = rectangle;
-	}
-	
+	@Column(name = "level")
+	private String level;
+
+	@Column(name = "en_level_name")
+	private String enLevelName;
+
+	@Column(name = "terminal_ind")
+	private String terminalInd;
+
 	@Override
 	public String getAcronym() {
-		return "GFCM_STAT_RECTANGLE";
+		return "FAO_AREA";
 	}
+
 
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);
-		rectangle = new RectangleCoordinates();
 		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
 			String fieldName  = field.getName().getValue();
-			String fieldValue = field.getName().getValue();
-			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("WEST", fieldName)){
-				rectangle.setWest(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("EAST", fieldName)){
-				rectangle.setEast(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("NORTH", fieldName)){
-				rectangle.setNorth(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("SOUTH", fieldName)){
-				rectangle.setSouth(Double.parseDouble(fieldValue));
+			String fieldValue  = field.getName().getValue();
+			if(StringUtils.equalsIgnoreCase("LEVEL", fieldName)){
+				this.setLevel(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("ENLEVELNAME", fieldName)){
+				this.setEnLevelName(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("TERMINALIND", fieldName)){
+				this.setTerminalInd(fieldValue);
 			} else {
 				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
 			}
 		}
 	}
 
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	public String getEnLevelName() {
+		return enLevelName;
+	}
+	public void setEnLevelName(String enLevelName) {
+		this.enLevelName = enLevelName;
+	}
+	public String getTerminalInd() {
+		return terminalInd;
+	}
+	public void setTerminalInd(String terminalInd) {
+		this.terminalInd = terminalInd;
+	}
 }
