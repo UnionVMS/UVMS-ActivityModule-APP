@@ -26,7 +26,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Indexed
-public class GearTypeCodes extends MasterDataRegistry {
+public class GearType extends MasterDataRegistry {
 
 	//TODO
 	private String category;

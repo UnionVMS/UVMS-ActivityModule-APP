@@ -36,7 +36,7 @@
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPresentation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPreservationState</class>
 		<class>eu.europa.ec.fisheries.mdr.domain2.FishSizeCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearTypeCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GfcmStatisticalRectangles</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.IcesStatisticalRectangles</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.Location</class>
@@ -78,7 +78,7 @@
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPresentation</class>
 		<class>eu.europa.ec.fisheries.mdr.domain_temp.FishPreservationState</class>
 		<class>eu.europa.ec.fisheries.mdr.domain2.FishSizeCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearTypeCodes</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GfcmStatisticalRectangles</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.IcesStatisticalRectangles</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.Location</class>
