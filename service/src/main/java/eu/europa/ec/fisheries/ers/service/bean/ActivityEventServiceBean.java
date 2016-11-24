@@ -11,6 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
+import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
@@ -20,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -36,6 +39,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
+import java.util.Arrays;
 
 
 @LocalBean
@@ -48,6 +52,9 @@ public class ActivityEventServiceBean implements EventService {
 
     private @EJB
     FishingTripService fishingTripService;
+
+    private @EJB
+    ActivityMessageProducer producer;
 
     @Override
     public void GetFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
@@ -73,25 +80,26 @@ public class ActivityEventServiceBean implements EventService {
 
     @Override
     public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException {
+        LOG.info("Got JMS inside Activity to get FishingTripIds");
         try {
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
-
+            LOG.info("FishingTriId Request Unmarshalled");
+            FishingTripResponse baseResponse = new FishingTripResponse();
+            baseResponse.setFishingTripIds(Arrays.asList("tripId1", "tripId2", "tripId3"));
+            String response =JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
+            LOG.info("FishingTriId response marshalled");
+            producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
+            LOG.info("Response sent back.");
      ///       fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest));
 
         } catch (ActivityModelMarshallException e) {
             e.printStackTrace();
+        } catch (ActivityMessageException e) {
+            e.printStackTrace();
         }
     }
 
-   /* private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest){
-        Map<SearchFilter,String> searchMap = new HashMap<>();
-        List<FilterType> filterTypes= baseRequest.getFilters();
-        for(FilterType filterType : filterTypes){
-            searchMap.put(filterType.getKey(),filterType.getValue());
-        }
 
-        return searchMap;
-    }*/
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
         if(pluginType == null){
