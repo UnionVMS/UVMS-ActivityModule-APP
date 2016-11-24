@@ -503,9 +503,13 @@
             <url>http://download.osgeo.org/webdav/geotools</url>
         </repository>
         <repository>
+            <id>Hibernate Spatial Repo</id>
+            <url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>
+        </repository>
+        <!--<repository>
             <id>Hibernate Spatial repo</id>
             <url>http://www.hibernatespatial.org/repository</url>
-        </repository>
+        </repository>-->
         <!-- add JBOSS repository for easy access to Hibernate libraries -->
         <repository>
             <id>JBOSS</id>
