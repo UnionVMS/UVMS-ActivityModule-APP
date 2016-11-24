@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.repository;
 
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
-import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import un.unece.uncefact.data.standard.response.FLUXMDRReturnMessage;

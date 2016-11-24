@@ -15,7 +15,7 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.domain2.ActionType;
 import eu.europa.ec.fisheries.mdr.domain2.SpeciesISO3Codes;
-import eu.europa.ec.fisheries.mdr.domain.base.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
