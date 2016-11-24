@@ -14,7 +14,7 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.ers.service.search.Filters;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,15 +54,15 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
 
   //      searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27T07:47:31");
    //     searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27T07:47:31");
 
      //   searchCriteriaMap.put(Filters.PURPOSE, "9");
-        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
     //    searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
 
 //        searchCriteriaMap.put(Filters.SPECIES, "PLE");

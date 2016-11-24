@@ -31,6 +31,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
@@ -543,7 +544,7 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     @Override
-    public FishingTripResponse getFishingTripIdsForFilter(Map<Filters,String> searchCriteriaMap) throws ServiceException {
+    public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
         List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap);
         FishingTripResponse response = new FishingTripResponse();
         List<String> fishingTripIdList= new ArrayList<>();

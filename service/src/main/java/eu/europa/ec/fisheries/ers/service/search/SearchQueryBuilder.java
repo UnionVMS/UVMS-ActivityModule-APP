@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.search;
 
 import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.apache.commons.lang3.StringUtils;
@@ -42,11 +43,11 @@ public abstract class SearchQueryBuilder {
     // Create Table Joins based on Filters provided by user. Avoid joining unnecessary tables
     public  StringBuilder createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
-        Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
+        Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
         // Create join part of SQL query
         if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty()) {
-            Set<Filters> keySet = query.getSearchCriteriaMap().keySet();
-            for (Filters key : keySet) {
+            Set<SearchFilter> keySet = query.getSearchCriteriaMap().keySet();
+            for (SearchFilter key : keySet) {
                 FilterDetails details = mappings.get(key);
                 String joinString = null;
                 if (details != null) {
@@ -64,7 +65,7 @@ public abstract class SearchQueryBuilder {
         return sql;
     }
 
-    private  void completeQueryDependingOnKey(StringBuilder sql, Filters key, String joinString) {
+    private  void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
         switch (key) {
             case MASTER:
                 if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
@@ -120,7 +121,7 @@ public abstract class SearchQueryBuilder {
             return sql;
         }
 
-        Filters field = sort.getField();
+        SearchFilter field = sort.getField();
 
         if(field == null)
             return sql;
@@ -146,12 +147,12 @@ public abstract class SearchQueryBuilder {
         return sql;
     }
 
-    private  int getFiledCase(StringBuilder sql, Filters field) {
-        if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
+    private  int getFiledCase(StringBuilder sql, SearchFilter field) {
+        if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
             return 1;
-        } else if (Filters.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
+        } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
             return 2;
-        } else if (Filters.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)) {
+        } else if (SearchFilter.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)) {
             return 3;
         }
         return 0;
@@ -161,18 +162,18 @@ public abstract class SearchQueryBuilder {
         sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
     }
 
-    public StringBuilder createWherePartForQueryForFilters(StringBuilder sql,Map<Filters, String> searchMap){
-        Map<Filters, FilterDetails> mappings = FilterMap.getFilterMappings();
+    public StringBuilder createWherePartForQueryForFilters(StringBuilder sql,Map<SearchFilter, String> searchMap){
+        Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
         // Create join part of SQL query
         if(searchMap !=null && !searchMap.isEmpty()) {
-            Set<Filters> keySet = searchMap.keySet();
+            Set<SearchFilter> keySet = searchMap.keySet();
 
 
             // Create Where part of SQL Query
             int i = 0;
-            for (Filters key : keySet) {
+            for (SearchFilter key : keySet) {
 
-                if ( (Filters.QUNTITY_MIN.equals(key) && keySet.contains(Filters.QUNTITY_MAX)) || mappings.get(key) == null) { // skip this as MIN and MAX both are required to form where part. Treat it differently
+                if ( (SearchFilter.QUNTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUNTITY_MAX)) || mappings.get(key) == null) { // skip this as MIN and MAX both are required to form where part. Treat it differently
                     continue;
                 }
                 String mapping = mappings.get(key).getCondition();
@@ -180,11 +181,11 @@ public abstract class SearchQueryBuilder {
                     sql.append(" and ");
                 }
 
-                if(Filters.QUNTITY_MIN.equals(key) ){
+                if(SearchFilter.QUNTITY_MIN.equals(key) ){
                     sql.append("(faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" )") ;
 
-                }else if (Filters.QUNTITY_MAX.equals(key)) {
-                    sql.append(mappings.get(Filters.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
+                }else if (SearchFilter.QUNTITY_MAX.equals(key)) {
+                    sql.append(mappings.get(SearchFilter.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
                     sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
                 } else {
                     sql.append(mapping);
@@ -207,8 +208,8 @@ public abstract class SearchQueryBuilder {
         SortKey sort = query.getSortKey();
 
         if (sort != null && sort.getField() !=null) {
-            Filters field = sort.getField();
-            if (Filters.PERIOD_START.equals(field) || Filters.PERIOD_END.equals(field)) {
+            SearchFilter field = sort.getField();
+            if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
             }
             sql.append(" order by " + FilterMap.getFilterSortMappings().get(field) + " " + sort.getOrder());
@@ -220,8 +221,8 @@ public abstract class SearchQueryBuilder {
     }
 
     // Special treatment for date sorting . In the resultset, One record can have multiple dates. But We need to consider only one date from the list. and then sort that selected date across resultset
-    public  StringBuilder getSqlForStartAndEndDateSorting(StringBuilder sql, Filters filter, FishingActivityQuery query) {
-        Map<Filters, String> searchCriteriaMap = query.getSearchCriteriaMap();
+    public  StringBuilder getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
+        Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
         sql.append(" and(  ");
         sql.append(FilterMap.getFilterSortMappings().get(filter));
         sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
@@ -229,7 +230,7 @@ public abstract class SearchQueryBuilder {
         if (searchCriteriaMap.containsKey(filter)) {
             sql.append(" where ");
             sql.append(" ( dp1.startDate >= :startDate  OR a.occurence  >= :startDate ) ");
-            if (searchCriteriaMap.containsKey(Filters.PERIOD_END)) {
+            if (searchCriteriaMap.containsKey(SearchFilter.PERIOD_END)) {
                 sql.append(" and  dp1.endDate <= :endDate ");
             }
         }
@@ -247,12 +248,12 @@ public abstract class SearchQueryBuilder {
     }
 
     public Query fillInValuesForTypedQuery(FishingActivityQuery query,Query typedQuery){
-        Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
-        Map<Filters,String> searchCriteriaMap = query.getSearchCriteriaMap();
+        Map<SearchFilter,String> mappings =  FilterMap.getFilterQueryParameterMappings();
+        Map<SearchFilter,String> searchCriteriaMap = query.getSearchCriteriaMap();
         // Assign values to created SQL Query
-        for (Map.Entry<Filters,String> entry : searchCriteriaMap.entrySet()){
+        for (Map.Entry<SearchFilter,String> entry : searchCriteriaMap.entrySet()){
 
-            Filters key =  entry.getKey();
+            SearchFilter key =  entry.getKey();
             String value=  entry.getValue();
             //For WeightMeasure there is no mapping present, In that case
             if(mappings.get(key) ==null)
@@ -266,10 +267,10 @@ public abstract class SearchQueryBuilder {
                     typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
                     break;
                 case QUNTITY_MIN:
-                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(Filters.WEIGHT_MEASURE)));
+                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                     break;
                 case QUNTITY_MAX:
-                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(Filters.WEIGHT_MEASURE)));
+                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                     break;
                 case MASTER:
                     typedQuery.setParameter(mappings.get(key), value.toUpperCase());

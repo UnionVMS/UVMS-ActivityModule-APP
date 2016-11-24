@@ -21,10 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEven
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +36,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @LocalBean
@@ -84,13 +83,14 @@ public class ActivityEventServiceBean implements EventService {
         try {
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
             LOG.info("FishingTriId Request Unmarshalled");
-            FishingTripResponse baseResponse = new FishingTripResponse();
-            baseResponse.setFishingTripIds(Arrays.asList("tripId1", "tripId2", "tripId3"));
+            FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest));
+
+          //  baseResponse.setFishingTripIds(Arrays.asList("tripId1", "tripId2", "tripId3"));
             String response =JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
             LOG.info("FishingTriId response marshalled");
             producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
             LOG.info("Response sent back.");
-     ///       fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest));
+
 
         } catch (ActivityModelMarshallException e) {
             e.printStackTrace();
@@ -99,6 +99,15 @@ public class ActivityEventServiceBean implements EventService {
         }
     }
 
+    private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest){
+        Map<SearchFilter,String> searchMap = new HashMap<>();
+        List<FAFilterType> filterTypes= baseRequest.getFilters();
+        for(FAFilterType filterType : filterTypes){
+            searchMap.put(filterType.getKey(),filterType.getValue());
+        }
+
+        return searchMap;
+    }
 
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
