@@ -13,8 +13,6 @@ package eu.europa.ec.fisheries.mdr.dao;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-import eu.europa.ec.fisheries.mdr.domain2.ActionType;
-import eu.europa.ec.fisheries.mdr.domain2.SpeciesISO3Codes;
 import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
 import lombok.SneakyThrows;
 import org.junit.Before;
@@ -40,7 +38,7 @@ public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 		DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
 		dbSetupTracker.launchIfNecessary(dbSetup);
 	}
-
+/*
 	@Test
 	@SneakyThrows
 	public void testBulkDeletionAndInsertion() {
@@ -91,5 +89,5 @@ public class MdrBulkOperationsDaoTest extends BaseMdrDaoTest {
 		}	
 		return actionTypeRows;
 	}
-
+*/
 }

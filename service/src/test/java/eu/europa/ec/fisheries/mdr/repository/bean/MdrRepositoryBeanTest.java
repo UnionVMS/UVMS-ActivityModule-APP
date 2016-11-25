@@ -5,24 +5,11 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.dao.BaseMdrDaoTest;
 import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
-import eu.europa.ec.fisheries.mdr.domain2.SpeciesISO3Codes;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Created by georgige on 11/15/2016.
@@ -44,7 +31,7 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
         Whitebox.setInternalState(mdrRepoBean, "em", em);
         mdrRepoBean.init();
     }
-
+/*
 
     @Test
     public void testLuceneIndexingNoSearchFilters() throws ServiceException {
@@ -137,4 +124,6 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
 
         assertEquals(2, totalCount);
     }
+
+    */
 }
