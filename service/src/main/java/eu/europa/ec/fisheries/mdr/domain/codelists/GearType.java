@@ -30,7 +30,7 @@ import javax.persistence.Table;
  * Created by kovian on 11/23/2016.
  */
 @Entity
-@Table(name = "mdr_ers_gear_type")
+@Table(name = "mdr_gear_type")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Indexed
@@ -63,7 +63,7 @@ public class ErsGearType extends MasterDataRegistry {
 
 	@Override
 	public String getAcronym() {
-		return "ERS_GEAR_TYPE";
+		return "GEAR_TYPE";
 	}
 
 
