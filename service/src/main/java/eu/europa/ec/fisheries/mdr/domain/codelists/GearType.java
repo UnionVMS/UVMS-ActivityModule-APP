@@ -34,7 +34,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Indexed
-public class ErsGearType extends MasterDataRegistry {
+public class GearType extends MasterDataRegistry {
 	private static final long serialVersionUID = 1L; 
 	
 	@Column(name = "group_name")
@@ -57,10 +57,6 @@ public class ErsGearType extends MasterDataRegistry {
 	@Field(name="target", analyze= Analyze.NO, store = Store.YES)
 	private String target;
 
-	@Column(name = "gear_activ_fk_x_key")
-	@Field(name="gear_activ_fk_x_key", analyze= Analyze.NO, store = Store.YES)
-	private String gearActivityFkXKey;
-
 	@Override
 	public String getAcronym() {
 		return "GEAR_TYPE";
@@ -79,13 +75,11 @@ public class ErsGearType extends MasterDataRegistry {
 				this.setSubCategory(fieldValue);
 			} else if(StringUtils.equalsIgnoreCase("ICCATCODE", fieldName)){
 				this.setIccatCode(fieldValue);
-			}else if(StringUtils.equalsIgnoreCase("ISSCFGCODE", fieldName)){
+			} else if(StringUtils.equalsIgnoreCase("ISSCFGCODE", fieldName)){
 				this.setIssCfgCode(fieldValue);
-			}else if(StringUtils.equalsIgnoreCase("TARGET", fieldName)){
+			} else if(StringUtils.equalsIgnoreCase("TARGET", fieldName)){
 				this.setTarget(fieldValue);
-			}else if(StringUtils.equalsIgnoreCase("GEARACTIVITYFK_X_KEY", fieldName)){
-				this.setGearActivityFkXKey(fieldValue);
-			}else {
+			} else {
 				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
 			}
 		}
@@ -121,11 +115,5 @@ public class ErsGearType extends MasterDataRegistry {
 	}
 	public void setTarget(String target) {
 		this.target = target;
-	}
-	public String getGearActivityFkXKey() {
-		return gearActivityFkXKey;
-	}
-	public void setGearActivityFkXKey(String gearActivityFkXKey) {
-		this.gearActivityFkXKey = gearActivityFkXKey;
 	}
 }

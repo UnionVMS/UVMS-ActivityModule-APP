@@ -16,7 +16,7 @@
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishPackaging</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FaoSpecies</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxFaReportType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.ErsGearType</class>
+		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearType</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishSizeClass</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.VesselActivity</class>
 		<class>eu.europa.ec.fisheries.mdr.domain.codelists.Rfmo</class>

@@ -24,33 +24,27 @@ import java.util.List;
  */
 public class MdrCacheFactoryTest {
 
-
+    String filesPath              = "C:\\GIT Repository\\activity-trunk\\db-liquibase\\LIQUIBASE\\postgres\\schema\\tables";
+    String includeDeclarationInit = "<include file=\"\\postgres\\schema\\tables\\";
 
     @Test
     @SneakyThrows
-    public void testCacheInitAndPrintClasses(){
+    public void testCacheInitAndPrintClassesForPersistenceXML(){
         MasterDataRegistryEntityCacheFactory.initialize();
         List<String> acronyms = MasterDataRegistryEntityCacheFactory.getAcronymsList();
-
-        System.out.println("\n\n\n\nWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         System.out.println("\nWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         System.out.println("\nWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-
         for(String acronym : acronyms){
             MasterDataRegistry mdrEntity = MasterDataRegistryEntityCacheFactory.getInstance().getNewInstanceForEntity(acronym);
             System.out.println("<class>"+mdrEntity.getClass().getCanonicalName().toString()+"</class>");
         }
-
-        System.out.println("\n\nWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         System.out.println("\nWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW\n\n\n\n");
     }
 
     @Test
     @SneakyThrows
-    public void testElistFileEntriesInConsole(){
-        String filesPath              = "C:\\GIT Repository\\activity-trunk\\db-liquibase\\LIQUIBASE\\postgres\\schema\\tables";
-        String includeDeclarationInit = "<include file=\"\\postgres\\schema\\tables\\";
+    public void testEnlistFileEntriesInConsole(){
         String includeDeclarationEnd  = "\"/>";
         String limitToFilesThatContainThisString = "mdr_";
         List<String> fileNamesList = getFilesListFromPath(filesPath, limitToFilesThatContainThisString);

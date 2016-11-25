@@ -25,30 +25,20 @@ import java.util.List;
  */
 public class LiquibaseUtil {
 
-
-    public static int getSequence() {
-        return sequence;
-    }
-
-    public static void setSequence(int sequence1) {
-        sequence = sequence1;
-    }
-
+    static String splitter     = "<changeSet ";
+    static String changeLogFilePath = "C:\\GIT Repository\\activity-trunk\\db-liquibase\\LIQUIBASE\\postgres\\changelog\\generatedChangelog.xml";
+    static String locationForGeneratedXmls = "C:\\newLiquibaseScripts\\";
+    static String filePrefix   = "";
+    static String fileSuffix   = ".xml";
     private static int sequence = 0;
 
     public static void createXMLLiquibaseEntries() throws IOException {
 
-        String splitter = "<changeSet ";
-        String fileLocation = "C:\\GIT Repository\\activity-trunk\\db-liquibase\\LIQUIBASE\\postgres\\changelog\\generatedChangelog.xml";
-        String locationForGeneratedXmls = "C:\\newLiquibaseScripts\\";
-        String filePrefix = "";
-        String fileSuffix = ".xml";
-
-        String filecontentStr = readFile(fileLocation, Charsets.UTF_8);
+        String filecontentStr = readFile(changeLogFilePath, Charsets.UTF_8);
 
         List<String> filesContents = Arrays.asList(filecontentStr.split(splitter));
         filesContents = fixFileContents(filesContents, splitter);
-        System.out.println("\n\n I Found : " + filesContents.size() + " Change Sets in location : " + fileLocation);
+        System.out.println("\n\n I Found : " + filesContents.size() + " Change Sets in location : " + changeLogFilePath);
 
         for (String content : filesContents) {
             String fileName = getFileName(filePrefix, fileSuffix, content, locationForGeneratedXmls);
@@ -132,5 +122,12 @@ public class LiquibaseUtil {
         }
     }
 
+
+    public static int getSequence() {
+        return sequence;
+    }
+    public static void setSequence(int sequence1) {
+        sequence = sequence1;
+    }
 
 }
