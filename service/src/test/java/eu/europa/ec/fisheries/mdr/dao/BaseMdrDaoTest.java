@@ -22,25 +22,25 @@ public abstract class BaseMdrDaoTest extends BaseDAOTest {
             deleteAllFrom("activity.mdr_cr_nafo_stock")            
     );
 
-    protected static final Operation DELETE_ALL_MDR_SPEICES = sequenceOf(
-            deleteAllFrom("activity.mdr_species_iso3_codes")
+    protected static final Operation DELETE_ALL_MDR_SPECIES = sequenceOf(
+            deleteAllFrom("activity.mdr_fao_species")
     );
 
     protected static final Operation INSERT_MDR_CR_NAFO_STOCK_REFERENCE_DATA = sequenceOf(
             insertInto("activity.mdr_cr_nafo_stock")
-                    .columns("id", "created_on", "refreshable", "species_code", "species_name", "area_code", "area_description")
-                    .values(1L, java.sql.Date.valueOf("2014-12-12"), "Y", "ANG", "Lophius americanus", "N3NO", "NAFO 3N, 3O = FAO 21.3.N + 21.3.O")
+                    .columns("id", "created_on", "species_code", "species_name", "area_code", "area_description")
+                    .values(1L, java.sql.Date.valueOf("2014-12-12"), "ANG", "Lophius americanus", "N3NO", "NAFO 3N, 3O = FAO 21.3.N + 21.3.O")
                     .build()
     );
     
-    protected static final Operation DELETE_ALL_ACTION_TYPE = sequenceOf(
-            deleteAllFrom("activity.mdr_action_type")            
+    protected static final Operation DELETE_ALL_FAO_SPECIES = sequenceOf(
+            deleteAllFrom("activity.mdr_fao_species")            
     );
 
-    protected static final Operation INSERT_MDR_ACTION_TYPE = sequenceOf(
-            insertInto("activity.mdr_action_type")
-                    .columns("id", "created_on", "refreshable", "code", "description")
-                    .values(1L, java.sql.Date.valueOf("2014-12-12"), "Y", "C", "Creation")
+    protected static final Operation INSERT_MDR_FAO_SPECIES = sequenceOf(
+            insertInto("activity.mdr_fao_species")
+                    .columns("id", "start_date", "code", "description")
+                    .values(1L, java.sql.Date.valueOf("2014-12-12"),  "C", "Creation")
                     .build()
     );
 
@@ -66,7 +66,6 @@ public abstract class BaseMdrDaoTest extends BaseDAOTest {
     protected String getSchema() {
         return "activity";
     }
-
     protected String getPersistenceUnitName() {
         return "testPU";
     }

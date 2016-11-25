@@ -5,7 +5,7 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.mdr.dao.BaseMdrDaoTest;
 import eu.europa.ec.fisheries.mdr.dao.MdrBulkOperationsDao;
-import eu.europa.ec.fisheries.mdr.domain2.SpeciesISO3Codes;
+import eu.europa.ec.fisheries.mdr.domain.codelists.FaoSpecies;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.hibernate.Session;
@@ -36,7 +36,7 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
     @Before
     @SneakyThrows
     public void prepare() {
-        Operation operation = sequenceOf(DELETE_ALL_MDR_SPEICES);
+        Operation operation = sequenceOf(DELETE_ALL_MDR_SPECIES);
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);
 
@@ -47,16 +47,17 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
 
 
     @Test
+    @SneakyThrows
     public void testLuceneIndexingNoSearchFilters() throws ServiceException {
-        List<SpeciesISO3Codes> species = new ArrayList<>(2);
+        List<FaoSpecies> species = new ArrayList<>(2);
 
-        SpeciesISO3Codes species1 = new SpeciesISO3Codes();
+        FaoSpecies species1 = new FaoSpecies();
         species1.setCode("COD");
-        species1.setEnglishName("COD fish");
+        species1.setEnName("COD fish");
 
-        SpeciesISO3Codes species2 = new SpeciesISO3Codes();
+        FaoSpecies species2 = new FaoSpecies();
         species2.setCode("COD");
-        species2.setEnglishName("COD fish");
+        species2.setEnName("COD fish");
 
         species.add(species1);
         species.add(species2);
@@ -65,13 +66,13 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
 
         FullTextSession fullTextSession = Search.getFullTextSession((Session) em.getDelegate());
         Transaction tx = fullTextSession.beginTransaction();
-        SpeciesISO3Codes speciesISO3Codes = (SpeciesISO3Codes) fullTextSession.load( SpeciesISO3Codes.class, 1L );
+        FaoSpecies FaoSpecies = (FaoSpecies) fullTextSession.load( FaoSpecies.class, 1L );
 
-        fullTextSession.index(speciesISO3Codes);
+        fullTextSession.index(FaoSpecies);
         tx.commit(); //index only updated at commit time
 
         try {
-            List<SpeciesISO3Codes> filterredEntities = (List<SpeciesISO3Codes>) mdrRepoBean.findCodeListItemsByAcronymAndFilter(species1.getAcronym(), 0, 5, "code", false, null, null);
+            List<FaoSpecies> filterredEntities = (List<FaoSpecies>) mdrRepoBean.findCodeListItemsByAcronymAndFilter(species1.getAcronym(), 0, 5, "code", false, null, null);
             fail("ServiceException was expected but not thrown.");
         } catch (ServiceException exc) {
             assertTrue(exc.getCause() instanceof  IllegalArgumentException);
@@ -81,20 +82,21 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
     }
 
     @Test
+    @SneakyThrows
     public void testLuceneSearch() throws ServiceException {
-        List<SpeciesISO3Codes> species = new ArrayList<>(3);
+        List<FaoSpecies> species = new ArrayList<>(3);
 
-        SpeciesISO3Codes species1 = new SpeciesISO3Codes();
+        FaoSpecies species1 = new FaoSpecies();
         species1.setCode("COD");
-        species1.setEnglishName("COD fish");
+        species1.setEnName("COD fish");
 
-        SpeciesISO3Codes species2 = new SpeciesISO3Codes();
+        FaoSpecies species2 = new FaoSpecies();
         species2.setCode("CAT");
-        species2.setEnglishName("CAT fish");
+        species2.setEnName("CAT fish");
 
-        SpeciesISO3Codes species3 = new SpeciesISO3Codes();
+        FaoSpecies species3 = new FaoSpecies();
         species3.setCode("WHL");
-        species3.setEnglishName("Whale");
+        species3.setEnName("Whale");
 
         species.add(species1);
         species.add(species2);
@@ -102,30 +104,31 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
 
         bulkDao.singleEntityBulkDeleteAndInsert(species);
 
-        List<SpeciesISO3Codes> filterredEntities = (List<SpeciesISO3Codes>) mdrRepoBean.findCodeListItemsByAcronymAndFilter(species1.getAcronym(), 0, 5, "sort_code", true, "*", "sort_code");
+        List<FaoSpecies> filterredEntities = (List<FaoSpecies>) mdrRepoBean.findCodeListItemsByAcronymAndFilter(species1.getAcronym(),
+                0, 5, "code", true, "*", "code");
 
         assertEquals(3, filterredEntities.size());
-
         assertEquals("WHL", filterredEntities.get(0).getCode());
         assertEquals("COD", filterredEntities.get(1).getCode());
         assertEquals("CAT", filterredEntities.get(2).getCode());
     }
 
     @Test
+    @SneakyThrows
     public void testLuceneSearchCount() throws ServiceException {
-        List<SpeciesISO3Codes> species = new ArrayList<>(3);
+        List<FaoSpecies> species = new ArrayList<>(3);
 
-        SpeciesISO3Codes species1 = new SpeciesISO3Codes();
+        FaoSpecies species1 = new FaoSpecies();
         species1.setCode("COD");
-        species1.setEnglishName("COD fish");
+        species1.setEnName("COD fish");
 
-        SpeciesISO3Codes species2 = new SpeciesISO3Codes();
+        FaoSpecies species2 = new FaoSpecies();
         species2.setCode("CAT");
-        species2.setEnglishName("CAT fish");
+        species2.setEnName("CAT fish");
 
-        SpeciesISO3Codes species3 = new SpeciesISO3Codes();
+        FaoSpecies species3 = new FaoSpecies();
         species3.setCode("WHL");
-        species3.setEnglishName("Whale");
+        species3.setEnName("Whale");
 
         species.add(species1);
         species.add(species2);
@@ -133,7 +136,7 @@ public class MdrRepositoryBeanTest extends BaseMdrDaoTest {
 
         bulkDao.singleEntityBulkDeleteAndInsert(species);
 
-        int totalCount=  mdrRepoBean.countCodeListItemsByAcronymAndFilter(species1.getAcronym(), "C*", "sort_code");
+        int totalCount=  mdrRepoBean.countCodeListItemsByAcronymAndFilter(species1.getAcronym(), "C*", "code");
 
         assertEquals(2, totalCount);
     }

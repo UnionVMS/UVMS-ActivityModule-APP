@@ -15,7 +15,10 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -35,60 +38,79 @@ import javax.persistence.Table;
 public class Location extends MasterDataRegistry {
 
 	@Column(name = "code_2")
+	@Field(name="code_2", analyze= Analyze.NO, store = Store.YES)
 	private String code2;
 
 	@Column(name = "en_name")
+	@Field(name="en_name", analyze= Analyze.NO, store = Store.YES)
 	private String enName;
 
 	@Column(name = "latitude")
+	@Field(name="latitude", analyze= Analyze.NO, store = Store.YES)
 	private Double latitude;
 
 	@Column(name = "longitude")
+	@Field(name="longitude", analyze= Analyze.NO, store = Store.YES)
 	private Double longitude;
 	
 	@Column(name = "fishing_port_ind")
+	@Field(name="fishing_port_ind", analyze= Analyze.NO, store = Store.YES)
 	private Boolean fishingPortInd;
 	
 	@Column(name = "landing_place_ind")
+	@Field(name="landing_place_ind", analyze= Analyze.NO, store = Store.YES)
 	private Boolean landingPlaceInd;
 	
 	@Column(name = "commercial_port_ind")
+	@Field(name="commercial_port_ind", analyze= Analyze.NO, store = Store.YES)
 	private Boolean commercialPortInd;
 	
 	@Column(name = "unlo_code")
+	@Field(name="unlo_code", analyze= Analyze.NO, store = Store.YES)
 	private String unloCode ;
 
 	@Column(name = "coordinates")
+	@Field(name="coordinates", analyze= Analyze.NO, store = Store.YES)
 	private String coordinates ;
 	
 	@Column(name = "un_function_code")
+	@Field(name="un_function_code", analyze= Analyze.NO, store = Store.YES)
 	private String unFunctionCode ;
 	
 	@Column(name = "unknown_function")
+	@Field(name="unknown_function", analyze= Analyze.NO, store = Store.YES)
 	private Boolean unknownFunction;
 
 	@Column(name = "port")
+	@Field(name="port", analyze= Analyze.NO, store = Store.YES)
 	private Boolean port;
 
 	@Column(name = "rail")
+	@Field(name="rail", analyze= Analyze.NO, store = Store.YES)
 	private Boolean rail;
 
 	@Column(name = "road")
+	@Field(name="road", analyze= Analyze.NO, store = Store.YES)
 	private Boolean road;
 
 	@Column(name = "airport")
+	@Field(name="airport", analyze= Analyze.NO, store = Store.YES)
 	private Boolean airport;
 	
 	@Column(name = "postal_exchange_office")
+	@Field(name="postal_exchange_office", analyze= Analyze.NO, store = Store.YES)
 	private Boolean postalExchangeOffice;
 	
 	@Column(name = "multimodal_functions_ind")
+	@Field(name="multimodal_functions_ind", analyze= Analyze.NO, store = Store.YES)
 	private Boolean multimodalFunctionsInd;
 	
 	@Column(name = "fixed_transport_functions_ind")
+	@Field(name="fixed_transport_functions_ind", analyze= Analyze.NO, store = Store.YES)
 	private Boolean fixedTransportFunctionsInd;
 	
 	@Column(name = "border_crossing_function")
+	@Field(name="border_crossing_function", analyze= Analyze.NO, store = Store.YES)
 	private Boolean borderCrossingFunction;
 
 

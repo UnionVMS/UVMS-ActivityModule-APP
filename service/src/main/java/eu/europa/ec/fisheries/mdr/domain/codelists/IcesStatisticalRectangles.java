@@ -11,12 +11,15 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.codelists.base.RectangleCoordinates;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
-import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -35,10 +38,31 @@ public class IcesStatisticalRectangles extends MasterDataRegistry {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "ices_name")
+	@Field(name="ices_name", analyze= Analyze.NO, store = Store.YES)
 	private String icesName;
 	
 	@Embedded
 	private RectangleCoordinates rectangle;
+
+	@Override
+	public String getAcronym() { 
+		return "ICES_STAT_RECTANGLE";
+	}
+
+	@Override
+	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
+		populateCommonFields(mdrDataType);
+		rectangle = new RectangleCoordinates(mdrDataType);
+		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
+			String fieldName  = field.getName().getValue();
+			String fieldValue = field.getName().getValue();
+			if (StringUtils.equalsIgnoreCase("icesName", fieldName)) {
+				this.setIcesName(fieldValue);
+			} else {
+				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
+			}
+		}
+	}
 
 	public String getIcesName() {
 		return icesName;
@@ -52,35 +76,6 @@ public class IcesStatisticalRectangles extends MasterDataRegistry {
 	public void setRectangle(RectangleCoordinates rectangle) {
 		this.rectangle = rectangle;
 	}
-	
-	@Override
-	public String getAcronym() { 
-		return "ICES_STAT_RECTANGLE";
-	}
 
-	// TODO ; check the response from flux for the RectangleCoordinates!! and change populate accordingly
-
-	@Override
-	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
-		populateCommonFields(mdrDataType);
-		rectangle = new RectangleCoordinates();
-		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
-			String fieldName  = field.getName().getValue();
-			String fieldValue = field.getName().getValue();
-			if (StringUtils.equalsIgnoreCase("icesName", fieldName)) {
-				this.setIcesName(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("WEST", fieldName)){
-				rectangle.setWest(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("EAST", fieldName)){
-				rectangle.setEast(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("NORTH", fieldName)){
-				rectangle.setNorth(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("SOUTH", fieldName)){
-				rectangle.setSouth(Double.parseDouble(fieldValue));
-			} else {
-				throw new FieldNotMappedException(getClass().getSimpleName(), fieldName);
-			}
-		}
-	}
 
 }

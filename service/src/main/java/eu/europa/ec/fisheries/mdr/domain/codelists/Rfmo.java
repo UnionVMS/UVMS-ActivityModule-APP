@@ -14,9 +14,15 @@ import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -28,7 +34,9 @@ import javax.persistence.Table;
 public class Rfmo extends MasterDataRegistry {
 	private static final long serialVersionUID = 1L;
 
-	private String CODE2;
+	@Column(name = "code_2")
+	@Field(name="code_2", analyze= Analyze.NO, store = Store.YES)
+	private String code2;
 
 	@Override
 	public String getAcronym() {
@@ -38,5 +46,21 @@ public class Rfmo extends MasterDataRegistry {
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);
+		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
+			String fieldName  = field.getName().getValue();
+			String fieldValue  = field.getName().getValue();
+			if(StringUtils.equalsIgnoreCase("CODE2", fieldName)){
+				this.setCode2(fieldValue);
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
+			}
+		}
+	}
+
+	public String getCode2() {
+		return code2;
+	}
+	public void setCode2(String code2) {
+		this.code2 = code2;
 	}
 }

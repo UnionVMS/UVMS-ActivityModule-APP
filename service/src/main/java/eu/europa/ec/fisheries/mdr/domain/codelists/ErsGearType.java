@@ -15,7 +15,10 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -35,21 +38,27 @@ public class ErsGearType extends MasterDataRegistry {
 	private static final long serialVersionUID = 1L; 
 	
 	@Column(name = "group_name")
+	@Field(name="group_name", analyze= Analyze.NO, store = Store.YES)
 	private String category;
 	
 	@Column(name = "sub_group_name")
+	@Field(name="sub_group_name", analyze= Analyze.NO, store = Store.YES)
 	private String subCategory;
 
 	@Column(name = "iss_cfg_code")
+	@Field(name="iss_cfg_code", analyze= Analyze.NO, store = Store.YES)
 	private String issCfgCode;
 
 	@Column(name = "iccat_code")
+	@Field(name="iccat_code", analyze= Analyze.NO, store = Store.YES)
 	private String iccatCode;
 
 	@Column(name = "target")
+	@Field(name="target", analyze= Analyze.NO, store = Store.YES)
 	private String target;
 
 	@Column(name = "gear_activ_fk_x_key")
+	@Field(name="gear_activ_fk_x_key", analyze= Analyze.NO, store = Store.YES)
 	private String gearActivityFkXKey;
 
 	@Override

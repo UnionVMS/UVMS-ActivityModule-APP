@@ -36,7 +36,6 @@ public class VesselActivity extends MasterDataRegistry {
 		return "VESSEL_ACTIVITY";
 	}
 
-
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);

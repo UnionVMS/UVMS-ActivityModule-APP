@@ -15,7 +15,10 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -35,12 +38,15 @@ import javax.persistence.Table;
 public class FaoAreaCodes extends MasterDataRegistry {
 
 	@Column(name = "level")
+	@Field(name="level", analyze= Analyze.NO, store = Store.YES)
 	private String level;
 
 	@Column(name = "en_level_name")
+	@Field(name="en_level_name", analyze= Analyze.NO, store = Store.YES)
 	private String enLevelName;
 
 	@Column(name = "terminal_ind")
+	@Field(name="terminal_ind", analyze= Analyze.NO, store = Store.YES)
 	private String terminalInd;
 
 	@Override
