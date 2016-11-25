@@ -232,8 +232,7 @@ public class FluxMessageServiceBean implements FluxMessageService {
         try {
             GregorianCalendar c = new GregorianCalendar();
             c.setTime(inputDate);
-            XMLGregorianCalendar date = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            return date;
+            return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
         }  catch (DatatypeConfigurationException e) {
             throw new ServiceException(e.getMessage(), e);
         }

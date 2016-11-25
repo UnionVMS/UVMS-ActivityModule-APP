@@ -5,6 +5,7 @@ package eu.europa.ec.fisheries.mdr.exception;
  */
 public class ActivityStatusTableException extends Exception  {
     public ActivityStatusTableException() {
+        super();
     }
 
     public ActivityStatusTableException(String message) {

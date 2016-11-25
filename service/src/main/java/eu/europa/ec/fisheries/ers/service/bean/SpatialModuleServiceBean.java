@@ -32,7 +32,7 @@ import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+
 
 /**
  * Created by padhyad on 10/11/2016.

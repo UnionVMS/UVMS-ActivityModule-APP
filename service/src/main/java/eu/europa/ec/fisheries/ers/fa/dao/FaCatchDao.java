@@ -38,7 +38,6 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
     public List<Object[]> findFaCatchesByFishingTrip(String fTripID){
         TypedQuery<Object[]> query = getEntityManager().createNamedQuery(FaCatchEntity.CATCHES_FOR_FISHING_TRIP, Object[].class);
         query.setParameter(TRIP_ID, fTripID);
-        List<Object[]> entities = query.getResultList();
-        return entities;
+        return query.getResultList();
     }
 }

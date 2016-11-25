@@ -135,7 +135,7 @@ public class ActivityServiceBean implements ActivityService {
        // Prepare DTO to return to Frontend
         log.debug("Fishing Activity Report resultset size :" + activityList.size());
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
-        filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList, multipolygon));
+        filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setPagination(new PaginationDTO(totalPages));
 
         return filterFishingActivityReportResultDTO;
@@ -173,7 +173,7 @@ public class ActivityServiceBean implements ActivityService {
         return GeometryUtils.wktToGeom(areaWkt);
     }
 
-    private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList, Geometry multipolygon) {
+    private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
         for(FishingActivityEntity entity : activityList) {
             activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
