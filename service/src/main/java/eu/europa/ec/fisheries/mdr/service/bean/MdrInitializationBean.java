@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.mdr.service.bean;
 
+import eu.europa.ec.fisheries.ers.fa.utils.ActivityConfigurationProperties;
 import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
 import eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus;
 import eu.europa.ec.fisheries.mdr.domain.constants.AcronymListState;
@@ -99,6 +100,14 @@ public class MdrInitializationBean {
             }
         } catch(Exception ex){
             log.debug("\n\n\t\t Creating scheduler threw the following error : \n", ex);
+        }
+
+        try {
+            List<ActivityConfiguration> allConfigurations=  mdrRepository.getAllConfigurations();
+            ActivityConfigurationProperties.updateConfigurationsFromDb(allConfigurations);
+            log.debug("Activity configurations updated in the singleton");
+        } catch (ServiceException e) {
+            log.error("Error occurred in updating all Activity configurations from db to singleton.",e);
         }
 
         log.info("[END] Finished Starting up ActivityModule Initialization.");
