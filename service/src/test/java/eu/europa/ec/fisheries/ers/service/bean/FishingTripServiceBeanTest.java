@@ -25,6 +25,8 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
@@ -36,12 +38,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -283,6 +283,22 @@ public class FishingTripServiceBeanTest {
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify
         assertEquals(expected,objectMapper.writeValueAsString(node));
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripIdsForFilter() throws ServiceException, JsonProcessingException {
+
+        Map<SearchFilter,String> searchMap=new HashMap<>();
+        searchMap.put(SearchFilter.ACTIVITY_TYPE,"FISHING_OPERATION");
+        when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchMap)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
+        //Trigger
+        FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(searchMap);
+        Mockito.verify(fishingTripDao, Mockito.times(1)).getFishingTripsForMatchingFilterCriteria(Mockito.any(Map.class));
+        System.out.println("response:"+response);
+        assertNotNull(response);
+        assertNotEquals(0,response.getFishingTripIds().size());
 
     }
 
