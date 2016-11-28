@@ -5,7 +5,10 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -27,27 +30,35 @@ import javax.persistence.Table;
 public class FaoSpecies extends MasterDataRegistry {
 
     @Column(name = "is_group")
+    @Field(name="is_group", analyze= Analyze.NO, store = Store.YES)
     private String isGroup;
 
     @Column(name = "scientific_name")
+    @Field(name="scientific_name", analyze= Analyze.NO, store = Store.YES)
     private String scientificName;
 
     @Column(name = "en_name")
+    @Field(name="en_name", analyze= Analyze.NO, store = Store.YES)
     private String enName;
 
     @Column(name = "fr_name")
+    @Field(name="fr_name", analyze= Analyze.NO, store = Store.YES)
     private String frName;
 
     @Column(name = "es_name")
+    @Field(name="es_name", analyze= Analyze.NO, store = Store.YES)
     private String esName;
 
     @Column(name = "family")
+    @Field(name="family", analyze= Analyze.NO, store = Store.YES)
     private String family;
 
     @Column(name = "bio_order")
+    @Field(name="bio_order", analyze= Analyze.NO, store = Store.YES)
     private String bioOrder;
 
     @Column(name = "taxo_code")
+    @Field(name="taxo_code", analyze= Analyze.NO, store = Store.YES)
     private String taxoCode;
 
     @Override

@@ -11,14 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.mdr.domain.codelists;
 
 import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
+import eu.europa.ec.fisheries.mdr.domain.codelists.base.RectangleCoordinates;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
-import eu.europa.ec.fisheries.uvms.domain.RectangleCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.search.annotations.Indexed;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
-import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -35,13 +33,6 @@ public class GfcmStatisticalRectangles extends MasterDataRegistry {
 	@Embedded
 	private RectangleCoordinates rectangle;
 
-	public RectangleCoordinates getRectangle() {
-		return rectangle;
-	}
-	public void setRectangle(RectangleCoordinates rectangle) {
-		this.rectangle = rectangle;
-	}
-	
 	@Override
 	public String getAcronym() {
 		return "GFCM_STAT_RECTANGLE";
@@ -50,24 +41,14 @@ public class GfcmStatisticalRectangles extends MasterDataRegistry {
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);
-		rectangle = new RectangleCoordinates();
-		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
-			String fieldName  = field.getName().getValue();
-			String fieldValue = field.getName().getValue();
-			if (StringUtils.equalsIgnoreCase("code", fieldName)) {
-				this.setCode(fieldValue);
-			} else if(StringUtils.equalsIgnoreCase("WEST", fieldName)){
-				rectangle.setWest(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("EAST", fieldName)){
-				rectangle.setEast(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("NORTH", fieldName)){
-				rectangle.setNorth(Double.parseDouble(fieldValue));
-			} else if(StringUtils.equalsIgnoreCase("SOUTH", fieldName)){
-				rectangle.setSouth(Double.parseDouble(fieldValue));
-			} else {
-				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
-			}
-		}
+		rectangle = new RectangleCoordinates(mdrDataType);
+	}
+
+	public RectangleCoordinates getRectangle() {
+		return rectangle;
+	}
+	public void setRectangle(RectangleCoordinates rectangle) {
+		this.rectangle = rectangle;
 	}
 
 }

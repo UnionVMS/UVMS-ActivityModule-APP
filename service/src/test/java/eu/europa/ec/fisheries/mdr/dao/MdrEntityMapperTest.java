@@ -37,7 +37,7 @@ public class MdrEntityMapperTest {
 	
 	@Before
 	public void prepare(){
-		entityName = "ACTION_TYPE";
+		entityName = "EFFORT_ZONE";
 		responseType   = mockJaxbCodeElementType();
 		
 	}

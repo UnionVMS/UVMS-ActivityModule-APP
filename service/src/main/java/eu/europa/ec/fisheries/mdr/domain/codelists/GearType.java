@@ -14,26 +14,48 @@ import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
+import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
+/**
+ * Created by kovian on 11/23/2016.
+ */
 @Entity
 @Table(name = "mdr_gear_type")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Indexed
 public class GearType extends MasterDataRegistry {
-
-	//TODO
+	private static final long serialVersionUID = 1L; 
+	
+	@Column(name = "group_name")
+	@Field(name="group_name", analyze= Analyze.NO, store = Store.YES)
 	private String category;
+	
+	@Column(name = "sub_group_name")
+	@Field(name="sub_group_name", analyze= Analyze.NO, store = Store.YES)
 	private String subCategory;
+
+	@Column(name = "iss_cfg_code")
+	@Field(name="iss_cfg_code", analyze= Analyze.NO, store = Store.YES)
+	private String issCfgCode;
+
+	@Column(name = "iccat_code")
+	@Field(name="iccat_code", analyze= Analyze.NO, store = Store.YES)
 	private String iccatCode;
-	private String ISSCFGCODE;
-	private String TARGET;
+
+	@Column(name = "target")
+	@Field(name="target", analyze= Analyze.NO, store = Store.YES)
+	private String target;
 
 	@Override
 	public String getAcronym() {
@@ -44,5 +66,54 @@ public class GearType extends MasterDataRegistry {
 	@Override
 	public void populate(MDRDataNodeType mdrDataType) throws FieldNotMappedException {
 		populateCommonFields(mdrDataType);
+		for(MDRElementDataNodeType field : mdrDataType.getSubordinateMDRElementDataNodes()){
+			String fieldName  = field.getName().getValue();
+			String fieldValue  = field.getName().getValue();
+			if(StringUtils.equalsIgnoreCase("CATEGORY", fieldName)){
+				this.setCategory(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("SUBCATEGORY", fieldName)){
+				this.setSubCategory(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("ICCATCODE", fieldName)){
+				this.setIccatCode(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("ISSCFGCODE", fieldName)){
+				this.setIssCfgCode(fieldValue);
+			} else if(StringUtils.equalsIgnoreCase("TARGET", fieldName)){
+				this.setTarget(fieldValue);
+			} else {
+				throw new FieldNotMappedException(this.getClass().getSimpleName(), fieldName);
+			}
+		}
+	}
+
+
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public String getSubCategory() {
+		return subCategory;
+	}
+	public void setSubCategory(String subCategory) {
+		this.subCategory = subCategory;
+	}
+	public String getIssCfgCode() {
+		return issCfgCode;
+	}
+	public void setIssCfgCode(String issCfgCode) {
+		this.issCfgCode = issCfgCode;
+	}
+	public String getIccatCode() {
+		return iccatCode;
+	}
+	public void setIccatCode(String iccatCode) {
+		this.iccatCode = iccatCode;
+	}
+	public String getTarget() {
+		return target;
+	}
+	public void setTarget(String target) {
+		this.target = target;
 	}
 }

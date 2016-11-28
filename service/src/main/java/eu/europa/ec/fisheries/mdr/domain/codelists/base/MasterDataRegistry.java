@@ -18,6 +18,7 @@ import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.DateTimeType;
 import un.unece.uncefact.data.standard.response.DelimitedPeriodType;
@@ -34,20 +35,22 @@ import java.util.List;
 @MappedSuperclass
 @EqualsAndHashCode(callSuper = true)
 @ToString
+@Indexed
 abstract public class MasterDataRegistry extends BaseEntity {
 
     @Embedded
     private DateRange validity;
 
     @Column(name = "version")
+    @Field(name="version", analyze= Analyze.NO, store = Store.YES)
     private String version;
 
     @Column(name = "code")
-    @Field(name="sort_code", analyze= Analyze.NO, store = Store.YES)
-    //@SortableField(forField = "sort_code")
+    @Field(name="code", analyze= Analyze.NO, store = Store.YES)
     private String code;
 
     @Column(name="description")
+    @Field(name="description", analyze= Analyze.NO, store = Store.YES)
     private String description;
 
     protected static final String CODE_STR               = "CODE";

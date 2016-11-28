@@ -5,7 +5,10 @@ import eu.europa.ec.fisheries.mdr.exception.FieldNotMappedException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 import un.unece.uncefact.data.standard.response.MDRDataNodeType;
 import un.unece.uncefact.data.standard.response.MDRElementDataNodeType;
 
@@ -24,9 +27,11 @@ import javax.persistence.Table;
 public class Territory extends MasterDataRegistry {
 
     @Column(name = "code_2")
+    @Field(name="code_2", analyze= Analyze.NO, store = Store.YES)
     private String code2;
 
     @Column(name = "en_name")
+    @Field(name="en_name", analyze= Analyze.NO, store = Store.YES)
     private String enName;
 
     @Override
