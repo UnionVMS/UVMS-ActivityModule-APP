@@ -4,7 +4,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>0.5.8</version>
+    <version>0.5.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
 
@@ -377,7 +377,7 @@
         <connection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</connection>
         <developerConnection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</developerConnection>
         <url>https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
-      <tag>activity-0.5.8-SNAPSHOT</tag>
+      <tag>HEAD</tag>
   </scm>
 
 
