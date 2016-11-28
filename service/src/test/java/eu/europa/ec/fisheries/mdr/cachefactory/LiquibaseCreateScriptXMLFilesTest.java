@@ -12,12 +12,15 @@ package eu.europa.ec.fisheries.mdr.cachefactory;
 
 import eu.europa.ec.fisheries.mdr.util.LiquibaseUtil;
 import lombok.SneakyThrows;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Created by kovian on 24/11/2016.
  */
+@Ignore
 public class LiquibaseCreateScriptXMLFilesTest {
+
 
     @Test
     @SneakyThrows

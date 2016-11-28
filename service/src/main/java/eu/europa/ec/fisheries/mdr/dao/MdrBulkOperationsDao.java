@@ -59,7 +59,8 @@ public class MdrBulkOperationsDao {
                 tx.commit();
 
                 log.info("Rebuilding Lucene index...");
-                fullTextEntityManager.createIndexer().purgeAllOnStart(true).startAndWait();
+                fullTextEntityManager.purgeAll(mdrClass);
+                fullTextEntityManager.createIndexer(mdrClass).startAndWait();
 
                 log.info("Insertion for {} completed.", mdrClass.toString());
             } catch (Exception e) {

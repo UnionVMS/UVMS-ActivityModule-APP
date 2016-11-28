@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.mdr.cachefactory;
 import eu.europa.ec.fisheries.mdr.domain.codelists.base.MasterDataRegistry;
 import eu.europa.ec.fisheries.mdr.mapper.MasterDataRegistryEntityCacheFactory;
 import lombok.SneakyThrows;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.util.List;
 /**
  * Created by kovian on 24/11/2016.
  */
+@Ignore
 public class MdrCacheFactoryTest {
 
     String filesPath              = "C:\\GIT Repository\\activity-trunk\\db-liquibase\\LIQUIBASE\\postgres\\schema\\tables";
