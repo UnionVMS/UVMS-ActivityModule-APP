@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;

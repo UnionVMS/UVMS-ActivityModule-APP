@@ -45,6 +45,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.jgroups.conf.ProtocolConfiguration.log;
+
 
 /**
  * Created by sanera on 29/06/2016.
@@ -116,7 +118,6 @@ public class ActivityServiceBean implements ActivityService {
 
         Geometry multipolygon = getRestrictedAreaGeom(datasets);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query, multipolygon);
-        log.debug("activityList COUNT is: "+activityList.size());
 
         // Execute query to count all the resultset only if TotalPages value is 0. After first search frontend should send totalPages count in subsequent calls
         Pagination pagination= query.getPagination();
@@ -133,9 +134,9 @@ public class ActivityServiceBean implements ActivityService {
         }
 
        // Prepare DTO to return to Frontend
-        log.debug("Fishing Activity Report resultset size :" + activityList.size());
+        log.debug("Fishing Activity Report resultset size :" +( (activityList==null)?"list is null": ""+activityList.size()));
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
-        filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList, multipolygon));
+        filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setPagination(new PaginationDTO(totalPages));
 
         return filterFishingActivityReportResultDTO;
@@ -173,7 +174,7 @@ public class ActivityServiceBean implements ActivityService {
         return GeometryUtils.wktToGeom(areaWkt);
     }
 
-    private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList, Geometry multipolygon) {
+    private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
         for(FishingActivityEntity entity : activityList) {
             activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));

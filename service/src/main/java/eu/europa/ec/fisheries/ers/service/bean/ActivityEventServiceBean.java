@@ -44,10 +44,10 @@ import java.util.Map;
 @LocalBean
 @Stateless
 public class ActivityEventServiceBean implements EventService {
-    final static Logger LOG = LoggerFactory.getLogger(ActivityEventServiceBean.class);
+    private  static final Logger LOG = LoggerFactory.getLogger(ActivityEventServiceBean.class);
 
-    private @EJB
-    FluxMessageService fluxMessageService;
+     @EJB
+     private FluxMessageService fluxMessageService;
 
     private @EJB
     FishingTripService fishingTripService;
@@ -56,7 +56,7 @@ public class ActivityEventServiceBean implements EventService {
     ActivityMessageProducer producer;
 
     @Override
-    public void GetFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
+    public void getFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
         LOG.info("inside Activity module GetFLUXFAReportMessage");
         try {
             SetFLUXFAReportMessageRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), SetFLUXFAReportMessageRequest.class);

@@ -279,7 +279,7 @@ public class FishingTripServiceBeanTest {
         //Trigger
         ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).getLatestFaReportDocumentsForTrip(Mockito.any(String.class));
-        System.out.println("node:"+node);
+
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify
         assertEquals(expected,objectMapper.writeValueAsString(node));

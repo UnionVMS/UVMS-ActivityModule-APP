@@ -16,7 +16,9 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
@@ -26,6 +28,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectio
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
@@ -81,6 +85,9 @@ public class ActivityServiceBeanTest {
     AssetsMessageConsumerBean activityConsumer;
 
     @Mock
+    private SpatialModuleService spatialModule;
+
+    @Mock
     JAXBMarshaller marshaller;
 
     @Rule
@@ -120,10 +127,13 @@ public class ActivityServiceBeanTest {
         FishingActivityQuery query = new FishingActivityQuery();
         List<ListCriteria> list = new ArrayList<ListCriteria>();
 
+
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
         searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
         searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
+
 
         Pagination pagination =new Pagination();
         pagination.setListSize(4);
@@ -131,6 +141,8 @@ public class ActivityServiceBeanTest {
       //  query.setSearchCriteria(list);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
+
+        when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
 
         when(fishingActivityDao.getFishingActivityListByQuery(query, null)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
@@ -144,5 +156,42 @@ public class ActivityServiceBeanTest {
         assertNotNull(filterFishingActivityReportResultDTO.getPagination());
 
     }
+
+
+    @Test
+    @SneakyThrows
+    public void getFishingActivityListByQuery_emptyResultSet() throws ServiceException {
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        List<ListCriteria> list = new ArrayList<ListCriteria>();
+
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
+        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+
+        Pagination pagination =new Pagination();
+        pagination.setListSize(4);
+        pagination.setPage(1);
+        //  query.setSearchCriteria(list);
+        query.setPagination(pagination);
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
+
+        when(fishingActivityDao.getFishingActivityListByQuery(query, null)).thenReturn(new ArrayList<FishingActivityEntity>());
+
+        //Trigger
+        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, new ArrayList<Dataset>());
+
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class), Mockito.any(Geometry.class));
+        //Verify
+         assertNotNull(filterFishingActivityReportResultDTO);
+      //  assertNotNull(filterFishingActivityReportResultDTO.getResultList());
+       // assertNotNull(filterFishingActivityReportResultDTO.getPagination());
+
+    }
+
+
 
 }

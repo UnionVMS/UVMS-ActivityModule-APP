@@ -27,6 +27,9 @@ public class FishingTripToGeoJsonMapper {
     private static final String GEOMETRY = "geometry";
     private static final String TRIP = "TRIP";
 
+    private FishingTripToGeoJsonMapper(){
+
+    }
     //Convert Geometry list into GEO JSON format
     public static ObjectNode toJson(List<Geometry> geoList)  {
 

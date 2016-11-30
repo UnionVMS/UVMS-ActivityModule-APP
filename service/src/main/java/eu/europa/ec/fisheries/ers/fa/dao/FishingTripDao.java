@@ -57,8 +57,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         typedQuery.setParameter("fishingTripId",fishingTripId);
         typedQuery.setMaxResults(1);
 
-        FishingTripEntity resultList = typedQuery.getSingleResult();
-        return resultList;
+        return typedQuery.getSingleResult();
     }
 
 
