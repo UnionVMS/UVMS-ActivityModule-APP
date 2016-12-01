@@ -292,10 +292,16 @@ public class FishingTripServiceBeanTest {
 
         Map<SearchFilter,String> searchMap=new HashMap<>();
         searchMap.put(SearchFilter.REPORT_TYPE,"NOTIFICATION");
-        when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchMap)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues=new ArrayList<>();
+        activityTypeValues.add("FISHING_OPERATION");
+        activityTypeValues.add("DEPARTURE");
+        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+        when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchMap,searchCriteriaMapMultiVal)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
         //Trigger
-        FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(searchMap);
-        Mockito.verify(fishingTripDao, Mockito.times(1)).getFishingTripsForMatchingFilterCriteria(Mockito.any(Map.class));
+        FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(searchMap,searchCriteriaMapMultiVal);
+        Mockito.verify(fishingTripDao, Mockito.times(1)).getFishingTripsForMatchingFilterCriteria(Mockito.any(Map.class),Mockito.any(Map.class));
         System.out.println("response:"+response);
         assertNotNull(response);
         assertNotEquals(0,response.getFishingTripIds().size());
