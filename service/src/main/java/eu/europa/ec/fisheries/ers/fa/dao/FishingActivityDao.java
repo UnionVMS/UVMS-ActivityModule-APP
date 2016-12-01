@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivitySearch;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,10 +127,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         // Apply real values to Query built
         Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query, multipolygon,search);
 
-        Pagination pagination= query.getPagination();
+        PaginationDto pagination= query.getPagination();
         if(pagination!=null) {
-            listQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            listQuery.setMaxResults(pagination.getListSize());
+            listQuery.setFirstResult(pagination.getPageSize() * (pagination.getOffset() - 1));
+            listQuery.setMaxResults(pagination.getPageSize());
         }
 
         return listQuery.getResultList();

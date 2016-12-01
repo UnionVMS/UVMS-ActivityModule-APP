@@ -17,35 +17,39 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
  */
 public class SortKey {
 
-    private SearchFilter field;
-    private SortOrder order;
+    private SearchFilter sortBy;
+    private boolean isReversed;
 
     public SortKey(){
         super();
     }
 
-    public SearchFilter getField() {
-        return field;
+    public SearchFilter getSortBy() {
+        return sortBy;
     }
-    public void setField(SearchFilter field) {
-        this.field = field;
+
+    public void setSortBy(SearchFilter sortBy) {
+        this.sortBy = sortBy;
     }
-    public SortOrder getOrder() {
-        return order;
+
+    public SortKey(SearchFilter field, boolean order) {
+        this.sortBy = field;
+        this.isReversed = order;
     }
-    public void setOrder(SortOrder order) {
-        this.order = order;
+
+    public boolean isReversed() {
+        return isReversed;
     }
-    public SortKey(SearchFilter field, SortOrder order) {
-        this.field = field;
-        this.order = order;
+
+    public void setReversed(boolean reversed) {
+        isReversed = reversed;
     }
 
     @Override
     public String toString() {
         return "SortKey{" +
-                "field=" + field +
-                ", order=" + order +
+                "field=" + sortBy +
+
                 '}';
     }
 }

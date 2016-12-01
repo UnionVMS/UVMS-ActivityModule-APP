@@ -23,10 +23,8 @@ import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.PaginationDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -44,8 +42,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.jgroups.conf.ProtocolConfiguration.log;
 
 
 /**
@@ -111,7 +107,7 @@ public class ActivityServiceBean implements ActivityService {
     public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
         List<FishingActivityEntity> activityList;
 
-        int totalPages = 0;
+
         log.debug("FishingActivityQuery received :" + query);
 
         // Check if any filters are present. If not, We need to return all fishing activity data
@@ -119,14 +115,8 @@ public class ActivityServiceBean implements ActivityService {
         Geometry multipolygon = getRestrictedAreaGeom(datasets);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query, multipolygon);
 
-        // Execute query to count all the resultset only if TotalPages value is 0. After first search frontend should send totalPages count in subsequent calls
-        Pagination pagination= query.getPagination();
-        if((pagination!=null && pagination.getTotalPages()==0)  || pagination==null){
-
-            totalPages= getTotalPagesCountForFilterFishingActivityReports(query, multipolygon);
-            log.debug("Total number of pages: "+totalPages);
-
-        }
+        int totalCountOfRecords= getRecordsCountForFilterFishingActivityReports(query, multipolygon);
+        log.debug("Total count of records: "+totalCountOfRecords);
 
         if (CollectionUtils.isEmpty(activityList)) {
             log.info("Could not find FishingActivity entities matching search criteria");
@@ -137,32 +127,17 @@ public class ActivityServiceBean implements ActivityService {
         log.debug("Fishing Activity Report resultset size :" +( (activityList==null)?"list is null": ""+activityList.size()));
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
-        filterFishingActivityReportResultDTO.setPagination(new PaginationDTO(totalPages));
+        filterFishingActivityReportResultDTO.setTotalCountOfRecords(totalCountOfRecords);
 
         return filterFishingActivityReportResultDTO;
     }
 
 
     // Query to calculate total number of result set
-    private Integer getTotalPagesCountForFilterFishingActivityReports(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
+    private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
     log.info(" Get total pages count");
-        int countOfRecords ;
-        int totalNoOfPages =1;
 
-         countOfRecords=  fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);
-
-
-        log.info(" countOfRecords:"+countOfRecords);
-        Pagination pagination= query.getPagination();
-        if(pagination != null){
-            int listSize   = pagination.getListSize();
-            totalNoOfPages = (countOfRecords+listSize-1)/listSize;
-       }
-
-        if(countOfRecords ==0)
-            totalNoOfPages =0;
-
-        return totalNoOfPages;
+        return fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);;
     }
 
     private Geometry getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {

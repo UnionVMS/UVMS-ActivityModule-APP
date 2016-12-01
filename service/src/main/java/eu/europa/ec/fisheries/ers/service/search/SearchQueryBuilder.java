@@ -123,13 +123,13 @@ public abstract class SearchQueryBuilder {
 
     // This method makes sure that Table join is present for the Filter for which sorting has been requested.
     private  StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query) {
-        SortKey sort = query.getSortKey();
+        SortKey sort = query.getSorting();
         // IF sorting has been requested and
         if (sort == null) {
             return sql;
         }
 
-        SearchFilter field = sort.getField();
+        SearchFilter field = sort.getSortBy();
 
         if(field == null)
             return sql;
@@ -217,16 +217,24 @@ public abstract class SearchQueryBuilder {
 
 
     // Create sorting part for the Query
-    public StringBuilder createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) {
+    public StringBuilder createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) throws ServiceException {
         LOG.debug("Create Sorting part of Query");
-        SortKey sort = query.getSortKey();
+        SortKey sort = query.getSorting();
 
-        if (sort != null && sort.getField() !=null) {
-            SearchFilter field = sort.getField();
+        if (sort != null && sort.getSortBy() !=null) {
+            SearchFilter field = sort.getSortBy();
             if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
             }
-            sql.append(" order by " + FilterMap.getFilterSortMappings().get(field) + " " + sort.getOrder());
+            String orderby =" ASC ";
+            if(sort.isReversed())
+                orderby = " DESC ";
+
+            String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
+            if(sortFieldMapping ==null)
+                throw new ServiceException("Information about which database field to be used for sorting is unavailable");
+
+            sql.append(" order by ").append( sortFieldMapping).append(orderby);
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }

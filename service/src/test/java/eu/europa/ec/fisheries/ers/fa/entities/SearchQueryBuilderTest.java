@@ -13,11 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import eu.europa.ec.fisheries.ers.service.search.*;
-
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivitySearch;
+import eu.europa.ec.fisheries.ers.service.search.SearchQueryBuilder;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +68,10 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
 
    //     query.setSortKey(new SortKey(SearchFilter.PURPOSE, SortOrder.ASC));
         query.setSearchCriteriaMap(searchCriteriaMap);
-        query.setPagination( new Pagination(1,2));
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+        query.setPagination( pagination);
      //   query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
         SearchQueryBuilder search= new FishingActivitySearch();
         StringBuilder sql= search.createSQL(query);
@@ -101,10 +106,22 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
-        query.setSortKey(new SortKey(SearchFilter.PERIOD_START, SortOrder.ASC));
+        SortKey sortingDto = new SortKey();
+        sortingDto.setSortBy(SearchFilter.PERIOD_START);
+        sortingDto.setReversed(false);
+        query.setSorting(sortingDto);
+
         query.setSearchCriteriaMap(searchCriteriaMap);
-        query.setPagination( new Pagination(1,2));
-        query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+        query.setPagination( pagination);
+
+        SortKey sortingDto2 = new SortKey();
+        sortingDto2.setSortBy(SearchFilter.FROM_NAME);
+        sortingDto2.setReversed(false);
+        query.setSorting(sortingDto);
+        query.setSorting(sortingDto2);
         SearchQueryBuilder search= new FishingActivitySearch();
         StringBuilder sql= search.createSQL(query);
 

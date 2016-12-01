@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
@@ -128,7 +129,8 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        Response responseMethod = createSuccessResponse(activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets));
+        FilterFishingActivityReportResultDTO resultDTO=activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
+        Response responseMethod = createSuccessPaginatedResponse(resultDTO.getResultList(),resultDTO.getTotalCountOfRecords());
         log.info("successful");
         return responseMethod;
     }

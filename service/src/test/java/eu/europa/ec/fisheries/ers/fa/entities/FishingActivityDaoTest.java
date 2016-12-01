@@ -14,8 +14,8 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
-import eu.europa.ec.fisheries.ers.service.search.SortOrder;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,12 +92,21 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
        //query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));*/
 
        query.setSearchCriteriaMap(searchCriteriaMap);
-       query.setPagination( new Pagination(1,7));
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+       query.setPagination(pagination);
 
         // query.setSortKey(new SortKey(SearchFilter.SOURCE, SortOrder.ASC));
      //    query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
     //    query.setSortKey(new SortKey(SearchFilter.PERIOD_START, SortOrder.ASC));
-      query.setSortKey(new SortKey(SearchFilter.OCCURRENCE, SortOrder.ASC));
+
+        SortKey sortingDto = new SortKey();
+        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
+        sortingDto.setReversed(false);
+        query.setSorting(sortingDto);
+
+
         // query.setPagination( new Pagination(1,2));
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
 
@@ -138,10 +147,18 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, "1");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        query.setPagination( new Pagination(1,2));
+
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+        query.setPagination( pagination);
+
+        SortKey sortingDto = new SortKey();
+        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
+        sortingDto.setReversed(false);
+        query.setSorting(sortingDto);
 
 
-        query.setSortKey(new SortKey(SearchFilter.OCCURRENCE, SortOrder.ASC));
 
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
 
@@ -190,12 +207,24 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
-        query.setSortKey(new SortKey(SearchFilter.PURPOSE, SortOrder.ASC));
+        SortKey sortingDto = new SortKey();
+        sortingDto.setSortBy(SearchFilter.PURPOSE);
+        sortingDto.setReversed(false);
+        query.setSorting(sortingDto);
+
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        query.setPagination( new Pagination(1,2));
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+        query.setPagination( pagination);
 
-        query.setSortKey(new SortKey(SearchFilter.OCCURRENCE, SortOrder.ASC));
+
+        SortKey sortingDto2 = new SortKey();
+        sortingDto2.setSortBy(SearchFilter.OCCURRENCE);
+        sortingDto2.setReversed(false);
+        query.setSorting(sortingDto2);
+
 
         int size  = dao.getCountForFishingActivityListByQuery(query, null);
 
