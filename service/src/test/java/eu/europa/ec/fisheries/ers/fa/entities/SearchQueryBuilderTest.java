@@ -45,7 +45,7 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+      /*  searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
         searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27 07:47:31");
@@ -53,21 +53,21 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
         searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");*/
         searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
-        searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
+    /*    searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
         searchCriteriaMap.put(SearchFilter.PORT, "GBR");
         searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
         searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
-        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");*/
 
-        query.setSortKey(new SortKey(SearchFilter.PURPOSE, SortOrder.ASC));
+   //     query.setSortKey(new SortKey(SearchFilter.PURPOSE, SortOrder.ASC));
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setPagination( new Pagination(1,2));
-        query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
+     //   query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
         SearchQueryBuilder search= new FishingActivitySearch();
         StringBuilder sql= search.createSQL(query);
         System.out.println("done:" + sql);
@@ -91,7 +91,7 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+       // searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
         searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");

@@ -85,5 +85,5 @@ public interface FishingTripService {
      */
     public ObjectNode getTripMapDetailsForTripId(String tripId);
 
-    public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException;
+    public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException;
 }

@@ -287,11 +287,11 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
-                    .values(2, 1, 1, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .values(2, 1, 2, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
-                    .values(3, 1, 1, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .values(3, 1, 3, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")

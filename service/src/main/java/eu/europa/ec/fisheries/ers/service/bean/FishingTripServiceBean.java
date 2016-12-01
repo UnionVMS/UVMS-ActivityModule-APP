@@ -545,8 +545,8 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     @Override
-    public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
-        List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap);
+    public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException {
+        List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap,searchMapWithMultipleVals);
 
         String treshold_trips= ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
         if(treshold_trips !=null) {

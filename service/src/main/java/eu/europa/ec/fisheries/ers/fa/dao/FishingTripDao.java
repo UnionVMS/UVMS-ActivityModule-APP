@@ -61,12 +61,13 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
 
-    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<SearchFilter,String> searchCriteriaMap) throws ServiceException {
+    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException {
 
         FishingTripSearch search = new FishingTripSearch();
 
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleVals);
         StringBuilder sqlToGetActivityList =search.createSQL(query);
         System.out.println("SQL:"+sqlToGetActivityList);
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());

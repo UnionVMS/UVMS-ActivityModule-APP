@@ -83,7 +83,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierId =:"+VESSEL_IDENTIFIRE));
         filterMappings.put(SearchFilter.PURPOSE,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS,"flux.purposeCode =:"+PURPOSE_CODE));
         filterMappings.put(SearchFilter.REPORT_TYPE,new FilterDetails(" ","fa.typeCode =:"+REPORT_TYPE_CODE));
-        filterMappings.put(SearchFilter.ACTIVITY_TYPE,new FilterDetails(" ","a.typeCode =:"+ACTIVITY_TYPE_CODE));
+        filterMappings.put(SearchFilter.ACTIVITY_TYPE,new FilterDetails(" ","a.typeCode IN (:"+ACTIVITY_TYPE_CODE+")"));
         filterMappings.put(SearchFilter.AREAS,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:"+AREA_ID+" )"));
         filterMappings.put(SearchFilter.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )"));
         filterMappings.put(SearchFilter.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode =:"+FISHING_GEAR));

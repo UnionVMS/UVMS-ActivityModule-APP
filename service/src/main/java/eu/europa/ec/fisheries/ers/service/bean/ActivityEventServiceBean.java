@@ -83,7 +83,7 @@ public class ActivityEventServiceBean implements EventService {
         try {
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
             LOG.info("FishingTriId Request Unmarshalled");
-            FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest));
+            FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest),extractFiltersAsMapWithMultipleValues(baseRequest));
 
           //  baseResponse.setFishingTripIds(Arrays.asList("tripId1", "tripId2", "tripId3"));
             String response =JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
@@ -101,14 +101,23 @@ public class ActivityEventServiceBean implements EventService {
 
     private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest){
         Map<SearchFilter,String> searchMap = new HashMap<>();
-        List<FAFilterType> filterTypes= baseRequest.getFilters();
-        for(FAFilterType filterType : filterTypes){
+        List<SingleValueTypeFilter> filterTypes= baseRequest.getSingleValueFilters();
+        for(SingleValueTypeFilter filterType : filterTypes){
             searchMap.put(filterType.getKey(),filterType.getValue());
         }
 
         return searchMap;
     }
 
+    private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest){
+        Map<SearchFilter,List<String>> searchMap = new HashMap<>();
+        List<ListValueTypeFilter> filterTypes= baseRequest.getListValueFilters();
+        for(ListValueTypeFilter filterType : filterTypes){
+            searchMap.put(filterType.getKey(),filterType.getValues());
+        }
+
+        return searchMap;
+    }
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
         if(pluginType == null){

@@ -35,7 +35,7 @@ public class FishingTripSearch extends SearchQueryBuilder{
 
         sql.append(" where ");
 
-        createWherePartForQueryForFilters(sql,query.getSearchCriteriaMap());
+        createWherePartForQueryForFilters(sql,query);
 
        LOG.debug("Generated Query After Where :" + sql);
         return sql;

@@ -291,7 +291,7 @@ public class FishingTripServiceBeanTest {
     public void testGetFishingTripIdsForFilter() throws ServiceException, JsonProcessingException {
 
         Map<SearchFilter,String> searchMap=new HashMap<>();
-        searchMap.put(SearchFilter.ACTIVITY_TYPE,"FISHING_OPERATION");
+        searchMap.put(SearchFilter.REPORT_TYPE,"NOTIFICATION");
         when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchMap)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
         //Trigger
         FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(searchMap);

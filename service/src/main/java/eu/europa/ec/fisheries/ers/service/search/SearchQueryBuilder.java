@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +36,7 @@ public abstract class SearchQueryBuilder {
     private static final String LEFT = " LEFT ";
     private static final String JOIN =  " JOIN ";
     private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private static Map<SearchFilter,String> mappings =  FilterMap.getFilterQueryParameterMappings();
 
 
 
@@ -44,9 +47,14 @@ public abstract class SearchQueryBuilder {
     public  StringBuilder createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
         Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
-        // Create join part of SQL query
-        if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty()) {
-            Set<SearchFilter> keySet = query.getSearchCriteriaMap().keySet();
+        Set<SearchFilter> keySet = new HashSet<>();
+        if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty())
+            keySet.addAll(query.getSearchCriteriaMap().keySet());
+        if(query.getSearchCriteriaMapMultipleValues() !=null && !query.getSearchCriteriaMapMultipleValues().isEmpty())
+            keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
+            // Create join part of SQL query
+      //  if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty()) {
+        //    Set<SearchFilter> keySet = query.getSearchCriteriaMap().keySet();
             for (SearchFilter key : keySet) {
                 FilterDetails details = mappings.get(key);
                 String joinString = null;
@@ -58,7 +66,7 @@ public abstract class SearchQueryBuilder {
 
                 completeQueryDependingOnKey(sql, key, joinString);
             }
-        }
+      //  }
         getJoinPartForSortingOptions(sql, query);
 
         LOG.debug("Generated SQL for JOIN Part :" + sql);
@@ -162,11 +170,17 @@ public abstract class SearchQueryBuilder {
         sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
     }
 
-    public StringBuilder createWherePartForQueryForFilters(StringBuilder sql,Map<SearchFilter, String> searchMap){
+    public StringBuilder createWherePartForQueryForFilters(StringBuilder sql,FishingActivityQuery query){
         Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
+        Set<SearchFilter> keySet = new HashSet<>();
+        if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty())
+            keySet.addAll(query.getSearchCriteriaMap().keySet());
+        if(query.getSearchCriteriaMapMultipleValues() !=null && !query.getSearchCriteriaMapMultipleValues().isEmpty())
+            keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
+
         // Create join part of SQL query
-        if(searchMap !=null && !searchMap.isEmpty()) {
-            Set<SearchFilter> keySet = searchMap.keySet();
+     //   if(searchMap !=null && !searchMap.isEmpty()) {
+       //     Set<SearchFilter> keySet = searchMap.keySet();
 
 
             // Create Where part of SQL Query
@@ -193,7 +207,7 @@ public abstract class SearchQueryBuilder {
                 i++;
             }
            // sql.append(" and ");
-        }
+     //   }
 
         return sql;
     }
@@ -248,8 +262,23 @@ public abstract class SearchQueryBuilder {
     }
 
     public Query fillInValuesForTypedQuery(FishingActivityQuery query,Query typedQuery){
-        Map<SearchFilter,String> mappings =  FilterMap.getFilterQueryParameterMappings();
+
         Map<SearchFilter,String> searchCriteriaMap = query.getSearchCriteriaMap();
+        Map<SearchFilter,List<String>> searchForMultipleValues= query.getSearchCriteriaMapMultipleValues();
+
+        if(searchCriteriaMap!=null && !searchCriteriaMap.isEmpty())
+             typedQuery=  applySingleValuesToQuery(searchCriteriaMap,typedQuery);
+
+        if(searchForMultipleValues!=null && !searchForMultipleValues.isEmpty())
+              typedQuery=  applyListValuesToQuery(searchForMultipleValues,typedQuery);
+
+        return typedQuery;
+
+    }
+
+
+    private Query applySingleValuesToQuery(Map<SearchFilter,String> searchCriteriaMap,Query typedQuery){
+
         // Assign values to created SQL Query
         for (Map.Entry<SearchFilter,String> entry : searchCriteriaMap.entrySet()){
 
@@ -285,7 +314,24 @@ public abstract class SearchQueryBuilder {
 
         }
         return typedQuery;
+    }
 
+
+
+    private Query applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap,Query typedQuery){
+
+        // Assign values to created SQL Query
+        for (Map.Entry<SearchFilter,List<String>> entry : searchCriteriaMap.entrySet()){
+
+            SearchFilter key =  entry.getKey();
+            List<String> value=  entry.getValue();
+            //For WeightMeasure there is no mapping present, In that case
+            if(mappings.get(key) ==null)
+                continue;
+            typedQuery.setParameter(mappings.get(key), value);
+
+        }
+        return typedQuery;
     }
 
 

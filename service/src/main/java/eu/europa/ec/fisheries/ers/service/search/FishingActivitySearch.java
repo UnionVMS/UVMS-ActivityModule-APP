@@ -36,11 +36,12 @@ public class FishingActivitySearch extends SearchQueryBuilder {
     public  StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
 
+   //     sql.append(" where ");
+        sql.append(" where intersects(fa.geom, :area) = true and "); // fa is alias for FaReportDocument, fa must be defined in main query
+        createWherePartForQueryForFilters(sql,query);
 
-         sql.append(" where intersects(fa.geom, :area) = true and "); // fa is alias for FaReportDocument, fa must be defined in main query
-        createWherePartForQueryForFilters(sql,query.getSearchCriteriaMap());
-
-        if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty())
+        if((query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty())
+                || (query.getSearchCriteriaMapMultipleValues() !=null && !query.getSearchCriteriaMapMultipleValues().isEmpty()))
                     sql.append(" and ");
 
 
@@ -57,9 +58,9 @@ public class FishingActivitySearch extends SearchQueryBuilder {
         LOG.info("Area intersection is the minimum default condition to find the fishing activities");
         typedQuery.setParameter("area", multipolygon); // parameter name area is specified in create SQL
 
-        if(query.getSearchCriteriaMap() ==null) {
-            return typedQuery;
-        }
+ //       if(query.getSearchCriteriaMap() ==null) {
+   //         return typedQuery;
+     //   }
         return fillInValuesForTypedQuery(query,typedQuery);
 
 

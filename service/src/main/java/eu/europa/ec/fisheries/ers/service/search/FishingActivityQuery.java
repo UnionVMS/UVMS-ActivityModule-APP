@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.search;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +21,7 @@ import java.util.Map;
 public class FishingActivityQuery {
     private Pagination pagination;
     private Map<SearchFilter,String> searchCriteriaMap;
+    private Map<SearchFilter,List<String>> searchCriteriaMapMultipleValues;
     private SortKey sortKey;
 
     public void setPagination(Pagination pagination) {
@@ -45,6 +47,14 @@ public class FishingActivityQuery {
 
     public void setSortKey(SortKey sortKey) {
         this.sortKey = sortKey;
+    }
+
+    public Map<SearchFilter, List<String>> getSearchCriteriaMapMultipleValues() {
+        return searchCriteriaMapMultipleValues;
+    }
+
+    public void setSearchCriteriaMapMultipleValues(Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues) {
+        this.searchCriteriaMapMultipleValues = searchCriteriaMapMultipleValues;
     }
 
     @Override
