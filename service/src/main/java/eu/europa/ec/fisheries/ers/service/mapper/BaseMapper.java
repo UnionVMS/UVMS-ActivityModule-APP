@@ -18,6 +18,10 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import      un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 //import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -76,6 +80,20 @@ public abstract class BaseMapper {
             log.error(e.getMessage(), e);
         }
         return value;
+    }
+
+    protected XMLGregorianCalendar convertToXMLGregorianCalendar(Date dateTime, boolean includeTimeZone) {
+        XMLGregorianCalendar calander = null;
+        try {
+            GregorianCalendar cal = new  GregorianCalendar();
+            cal.setTimeInMillis(dateTime.getTime());
+            calander = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+            if(!includeTimeZone)
+                calander.setTimezone(DatatypeConstants.FIELD_UNDEFINED); //If we do not want timeZone to be included, set this
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
+        }
+      return calander;
     }
 
     protected String getValueIndicator(IndicatorType indicatorType) {

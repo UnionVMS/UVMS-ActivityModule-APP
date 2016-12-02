@@ -15,6 +15,8 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -99,6 +101,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
     })
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
 
+
+    @Mappings({
+            @Mapping(target = "activityType", source = "typeCode"),
+            @Mapping(target = "geometry", expression = "java(getWktFromGeometry(entity))"),
+            @Mapping(target = "occurrence", expression = "java(convertToXMLGregorianCalendar(entity.getOccurence(),false))")
+    })
+    public abstract FishingActivitySummary mapToFishingActivitySummary(FishingActivityEntity entity);
+
     @Mappings({
             @Mapping(target = "activityType", source = "typeCode"),
             @Mapping(target = "occurence", source = "occurence"),
@@ -113,6 +123,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingGears", expression = "java(getFishingGearDTOList(entity))")
     })
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
+
+    protected String getWktFromGeometry(FishingActivityEntity entity){
+        if(entity ==null || entity.getGeom() == null ){
+            return null;
+        }
+       return  GeometryMapper.INSTANCE.geometryToWkt(entity.getGeom() ).getValue();
+
+    }
 
     protected String getDataSource(FishingActivityEntity entity){
         if(entity ==null || entity.getFaReportDocument() == null ){

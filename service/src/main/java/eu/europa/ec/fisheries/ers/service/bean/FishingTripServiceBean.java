@@ -27,6 +27,7 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -546,8 +547,9 @@ public class FishingTripServiceBean implements FishingTripService {
 
     @Override
     public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException {
+        log.debug("getFishingTripResponse For Filter");
         List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap,searchMapWithMultipleVals);
-
+        log.debug("Fishing trips received from db" );
         String treshold_trips= ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
         if(treshold_trips !=null) {
             int threshold = Integer.parseInt(treshold_trips);
@@ -555,15 +557,9 @@ public class FishingTripServiceBean implements FishingTripService {
             if (fishingTripList.size() > threshold)
                 throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
         }
-        FishingTripResponse response = new FishingTripResponse();
-        List<String> fishingTripIdList= new ArrayList<>();
-        for(FishingTripEntity entity:fishingTripList){
-            Set<FishingTripIdentifierEntity> ids=entity.getFishingTripIdentifiers();
-            if(ids !=null && !ids.isEmpty())
-                fishingTripIdList.add(ids.iterator().next().getTripId());
-        }
-        response.setFishingTripIds(fishingTripIdList);
-        return response;
+
+       // build Fishing trip response from FishingTripEntityList and return
+       return  new FishingTripSearch().buildFishingTripSearchRespose(fishingTripList);
     }
 
 

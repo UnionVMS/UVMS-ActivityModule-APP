@@ -135,9 +135,8 @@ public class ActivityServiceBean implements ActivityService {
 
     // Query to calculate total number of result set
     private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
-    log.info(" Get total pages count");
-
-        return fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);;
+        log.info(" Get total pages count");
+        return fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);
     }
 
     private Geometry getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
