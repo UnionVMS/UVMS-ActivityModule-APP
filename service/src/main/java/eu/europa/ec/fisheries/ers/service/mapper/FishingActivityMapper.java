@@ -105,7 +105,17 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "activityType", source = "typeCode"),
             @Mapping(target = "geometry", expression = "java(getWktFromGeometry(entity))"),
-            @Mapping(target = "occurrence", expression = "java(convertToXMLGregorianCalendar(entity.getOccurence(),false))")
+            @Mapping(target = "acceptedDateTime", expression = "java(convertToXMLGregorianCalendar(getAcceptedDateTime(entity),false))"),
+            @Mapping(target = "dataSource", expression = "java(getDataSource(entity))"),
+            @Mapping(target = "reportType", expression = "java(getFAReportTypeCode(entity))"),
+            @Mapping(target = "purposeCode", expression = "java(getPurposeCode(entity))"),
+            @Mapping(target = "vesselName", expression = "java(getVesselTransportMeansName(entity))"),
+            @Mapping(target = "gears", expression = "java(getFishingGearTypeCodeList(entity))"),
+            @Mapping(target = "species", expression = "java(getSpeciesCode(entity))"),
+            @Mapping(target = "areas", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_AREA))"),
+            @Mapping(target = "ports", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_PORT))"),
+            @Mapping(target = "vesselIdentifiers", expression = "java(getVesselIdentifiers(entity))")
+
     })
     public abstract FishingActivitySummary mapToFishingActivitySummary(FishingActivityEntity entity);
 
@@ -151,6 +161,18 @@ public abstract class FishingActivityMapper extends BaseMapper {
             fishingGearDTOList.add(FishingGearMapper.INSTANCE.mapToFishingGearDTO(fishingGear));
         }
            return fishingGearDTOList;
+    }
+
+    protected List<String> getFishingGearTypeCodeList(FishingActivityEntity entity){
+        if(entity ==null || entity.getFishingGears() == null || entity.getFishingGears().isEmpty() ){
+            return Collections.emptyList();
+        }
+
+        List<String> fishingGearTypecodeList=new ArrayList<>();
+        for(FishingGearEntity fishingGear:entity.getFishingGears()){
+            fishingGearTypecodeList.add(fishingGear.getTypeCode());
+        }
+        return fishingGearTypecodeList;
     }
 
     protected List<FluxCharacteristicsDTO> getFluxCharacteristicsDTOList(FishingActivityEntity entity){
@@ -334,6 +356,22 @@ public abstract class FishingActivityMapper extends BaseMapper {
             vesselTransportIdList.put(identity.getVesselIdentifierSchemeId(),identity.getVesselIdentifierId());
         }
         return vesselTransportIdList;
+    }
+
+    protected List<String> getVesselIdentifiers(FishingActivityEntity entity){
+        if(entity ==null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() ==null
+                || entity.getFaReportDocument().getVesselTransportMeans().getVesselIdentifiers() ==null){
+            return Collections.emptyList();
+        }
+        List<String> identifiers = new ArrayList<>();
+
+        Set<VesselIdentifierEntity> identifierList =entity.getFaReportDocument().getVesselTransportMeans().getVesselIdentifiers();
+
+        for (VesselIdentifierEntity identity: identifierList){
+            identifiers.add(identity.getVesselIdentifierId());
+        }
+
+        return identifiers;
     }
 
     protected List<String> getSpeciesCode(FishingActivityEntity entity){

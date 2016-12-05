@@ -86,7 +86,7 @@ public class ActivityEventServiceBean implements EventService {
             FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest),extractFiltersAsMapWithMultipleValues(baseRequest));
             List<FishingActivitySummary> summaryList= baseResponse.getFishingActivityLists();
             for (FishingActivitySummary summary:summaryList){
-                LOG.debug("activity type:"+summary.getActivityType()+" Geom:"+summary.getGeometry() + " date:"+summary.getOccurrence().toString());
+              //  LOG.debug("activity type:"+summary.getActivityType()+" Geom:"+summary.getGeometry() + " date:"+summary.getOccurrence().toString());
             }
             List<FishingTripIdWithGeometry> tripIdList= baseResponse.getFishingTripIdLists();
             for(FishingTripIdWithGeometry tripIdWithGeom: tripIdList){
