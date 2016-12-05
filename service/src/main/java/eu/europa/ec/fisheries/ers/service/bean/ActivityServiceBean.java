@@ -22,10 +22,12 @@ import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -39,9 +41,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -113,6 +113,7 @@ public class ActivityServiceBean implements ActivityService {
         // Check if any filters are present. If not, We need to return all fishing activity data
 
         Geometry multipolygon = getRestrictedAreaGeom(datasets);
+        query=separateSingleVsMultipleFilters(query);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query, multipolygon);
 
         int totalCountOfRecords= getRecordsCountForFilterFishingActivityReports(query, multipolygon);
@@ -132,7 +133,33 @@ public class ActivityServiceBean implements ActivityService {
         return filterFishingActivityReportResultDTO;
     }
 
+  // Improve this part later on
+    private FishingActivityQuery separateSingleVsMultipleFilters(FishingActivityQuery query) throws ServiceException {
+        Map<SearchFilter, String> searchMap= query.getSearchCriteriaMap();
+        Map<SearchFilter,List<String>> searchMapWithMultipleValues= new HashMap<>();
+        Map<SearchFilter,String> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
 
+        if(query.getSearchCriteriaMapMultipleValues()!=null && query.getSearchCriteriaMapMultipleValues().size() > 0)
+            throw new ServiceException("Filter Fishing activity has received Filters with multiple values. This is not supported currently");
+
+        Set<SearchFilter> keys=searchMap.keySet();
+        Iterator<Map.Entry<SearchFilter, String>> it= searchMap.entrySet().iterator();
+        while(it.hasNext()) {
+            Map.Entry<SearchFilter, String> e= it.next();
+            SearchFilter key = e.getKey();
+            String value = e.getValue();
+            if(filtersWhichSupportMultipleValues.get(key) !=null) {
+                List<String> values = new ArrayList<>();
+                values.add(value);
+                searchMapWithMultipleValues.put(key, values);
+                it.remove();
+            }
+        }
+
+        query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleValues);
+        query.setSearchCriteriaMap(searchMap);
+        return query;
+    }
     // Query to calculate total number of result set
     private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
         log.info(" Get total pages count");

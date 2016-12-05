@@ -22,10 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by sanera on 28/09/2016.
@@ -186,11 +183,14 @@ public abstract class SearchQueryBuilder {
             // Create Where part of SQL Query
             int i = 0;
             for (SearchFilter key : keySet) {
+               // String filterMapping=
 
-                if ( (SearchFilter.QUNTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUNTITY_MAX)) || mappings.get(key) == null) { // skip this as MIN and MAX both are required to form where part. Treat it differently
+                if ( (SearchFilter.QUNTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUNTITY_MAX)) ||
+                        (mappings.get(key) == null &&  FilterMap.getFiltersWhichSupportMultipleValues().get(key) ==null &&  FilterMap.getFiltersWhichSupportSingleValue().get(key) == null)) { // skip this as MIN and MAX both are required to form where part. Treat it differently
                     continue;
                 }
                 String mapping = mappings.get(key).getCondition();
+              //  String mapping= getWhereFilterMappingforSearchFilter(key);
                 if (i != 0) {
                     sql.append(" and ");
                 }
@@ -210,6 +210,22 @@ public abstract class SearchQueryBuilder {
      //   }
 
         return sql;
+    }
+
+
+    private String getWhereFilterMappingforSearchFilter(SearchFilter filter){
+        Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
+        Map<SearchFilter,String> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
+        Map<SearchFilter,String> filtersWhichSupportSingleValues =FilterMap.getFiltersWhichSupportSingleValue();
+
+        if(mappings.get(filter)!=null)
+            return  mappings.get(filter).getCondition();
+        else if(filtersWhichSupportMultipleValues.get(filter)!=null)
+            return filtersWhichSupportMultipleValues.get(filter);
+        else if(filtersWhichSupportSingleValues.get(filter)!=null)
+            return filtersWhichSupportSingleValues.get(filter);
+
+        return " ";
     }
 
     // Build Where part of the query based on Filter criterias
