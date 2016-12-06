@@ -66,7 +66,7 @@ public class FishingTripSearch extends SearchQueryBuilder{
 
          List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>(); // List of unique fishing trip ids with geometry
          List<FishingActivitySummary> fishingActivityLists= new ArrayList<>(); // List of FishingActivities with details required by response
-         List<FishingTripId> fishingTripIdsWithoutGeom = new ArrayList<>();  // List of unique fishing Trip ids without geometry information
+         Set<FishingTripId> fishingTripIdsWithoutGeom = new HashSet<>();  // List of unique fishing Trip ids without geometry information
 
         Map<FishingTripId,List<Geometry>> uniqueTripIdWithGeometry = new HashMap<>(); // Stores unique Fishing tripIds and Geometries associated with its FA Report
 
@@ -99,7 +99,7 @@ public class FishingTripSearch extends SearchQueryBuilder{
     }
 
     // Add list of fishing trip ids without geometry to master list
-    private void addFishingTripIdsWithoutGeomToResponseList(List<FishingTripIdWithGeometry> fishingTripIdLists,List<FishingTripId> fishingTripIdsWithoutGeom){
+    private void addFishingTripIdsWithoutGeomToResponseList(List<FishingTripIdWithGeometry> fishingTripIdLists,Set<FishingTripId> fishingTripIdsWithoutGeom){
        for(FishingTripId fishingTripId: fishingTripIdsWithoutGeom){
            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId,null));
 
@@ -113,11 +113,12 @@ public class FishingTripSearch extends SearchQueryBuilder{
 
         Set<FishingTripId>  tripIdSet= uniqueTripIdWithGeometry.keySet();
         for(FishingTripId fishingTripId: tripIdSet){
+
             Geometry geometry =GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
             if(geometry ==null)
-                throw new ServiceException("Exception while trying to create Multipoint geometry with list of geometries.");
-
-            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId,GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue()));
+                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId,null));
+            else
+                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId,GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue()));
         }
 
     }
@@ -130,7 +131,7 @@ public class FishingTripSearch extends SearchQueryBuilder{
 
        This method identifies unique FishingTripIdentifiers and collect Geometries for those trips.
      */
-    private void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList,Map<FishingTripId,List<Geometry>> uniqueTripIdWithGeometry,List<FishingActivitySummary> fishingActivityLists,List<FishingTripId> fishingTripIdsWithoutGeom){
+    private void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList,Map<FishingTripId,List<Geometry>> uniqueTripIdWithGeometry,List<FishingActivitySummary> fishingActivityLists,Set<FishingTripId> fishingTripIdsWithoutGeom){
         Set<Integer> uniqueFishingActivityIdList=new HashSet<>();
         for(FishingTripEntity entity:fishingTripList){
 
@@ -144,12 +145,17 @@ public class FishingTripSearch extends SearchQueryBuilder{
 
                 FishingTripId tripIdObj=new FishingTripId(id.getTripId(),id.getTripSchemeId());
                 try {
-                    Geometry geometry = id.getFishingTrip().getFishingActivity().getFaReportDocument().getGeom();
+
                     List<Geometry> geomList = uniqueTripIdWithGeometry.get(tripIdObj);
                     if (geomList == null || geomList.isEmpty()) {
                         geomList = new ArrayList<>();
                     }
-                    geomList.add(geometry);
+                    Geometry geometry = id.getFishingTrip().getFishingActivity().getFaReportDocument().getGeom();
+                    if(geometry!=null) {
+                        geomList.add(geometry);
+
+                    }
+
                     uniqueTripIdWithGeometry.put(tripIdObj, geomList);
                 }catch(Exception e){
                     LOG.error("Error occurred while trying to find Geometry for FishingTrip. Put tripID into separateList");
