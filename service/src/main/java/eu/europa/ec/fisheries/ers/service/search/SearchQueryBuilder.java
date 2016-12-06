@@ -186,7 +186,7 @@ public abstract class SearchQueryBuilder {
                // String filterMapping=
 
                 if ( (SearchFilter.QUNTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUNTITY_MAX)) ||
-                        (mappings.get(key) == null &&  FilterMap.getFiltersWhichSupportMultipleValues().get(key) ==null &&  FilterMap.getFiltersWhichSupportSingleValue().get(key) == null)) { // skip this as MIN and MAX both are required to form where part. Treat it differently
+                        (mappings.get(key) == null )) { // skip this as MIN and MAX both are required to form where part. Treat it differently
                     continue;
                 }
                 String mapping = mappings.get(key).getCondition();
@@ -213,7 +213,7 @@ public abstract class SearchQueryBuilder {
     }
 
 
-    private String getWhereFilterMappingforSearchFilter(SearchFilter filter){
+   /* private String getWhereFilterMappingforSearchFilter(SearchFilter filter){
         Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
         Map<SearchFilter,String> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,String> filtersWhichSupportSingleValues =FilterMap.getFiltersWhichSupportSingleValue();
@@ -226,7 +226,7 @@ public abstract class SearchQueryBuilder {
             return filtersWhichSupportSingleValues.get(filter);
 
         return " ";
-    }
+    }*/
 
     // Build Where part of the query based on Filter criterias
     public abstract StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) ;

@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -29,6 +30,7 @@ import java.util.Map;
 /**
  * Created by sanera on 23/08/2016.
  */
+@Slf4j
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private EntityManager em;
@@ -60,24 +62,30 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return typedQuery.getSingleResult();
     }
 
+    /**
+     *  Get all the Fishing Trip entities for matching Filters
+     *
+     * @param searchCriteriaMap Filters with single value
+     * @param searchMapWithMultipleVals Filters with multiple values
+     * @return  List of all FishingTripEntities (Duplicate FishingTrips could be possible in this list)
+     * @throws ServiceException
+     */
 
     public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException {
 
         FishingTripSearch search = new FishingTripSearch();
 
+        // Prepare FishingActivityQuery as expected by create SQL API
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleVals);
-        StringBuilder sqlToGetActivityList =search.createSQL(query);
-        System.out.println("SQL:"+sqlToGetActivityList);
-        Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
-        Query listQuery =null;
-        if(query.getSearchCriteriaMap() !=null) {
-             listQuery = search.fillInValuesForTypedQuery( query,typedQuery);
-        }
-        List<FishingTripEntity> entityList= listQuery.getResultList();
+        StringBuilder sqlToGetActivityList =search.createSQL(query); // Create SQL Dynamically based on Filters provided
+        log.debug("SQL:"+sqlToGetActivityList);
 
-        return entityList;
+        Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
+        Query  listQuery = search.fillInValuesForTypedQuery( query,typedQuery);  // Add values to the Query built
+
+        return listQuery.getResultList();
     }
 
 }

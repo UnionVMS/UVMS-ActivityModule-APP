@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.ers.service.search;
 
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.ActivityConfigurationProperties;
 import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
@@ -68,9 +70,11 @@ public class FishingTripSearch extends SearchQueryBuilder{
 
         Map<FishingTripId,List<Geometry>> uniqueTripIdWithGeometry = new HashMap<>(); // Stores unique Fishing tripIds and Geometries associated with its FA Report
 
-        processFishingTripsToCollectUniqueTrips(fishingTripList,uniqueTripIdWithGeometry,fishingActivityLists,fishingTripIdsWithoutGeom);
-        mapFishingTripIdsToGeomWkt(uniqueTripIdWithGeometry,fishingTripIdLists);
-        addFishingTripIdsWithoutGeomToResponseList(fishingTripIdLists,fishingTripIdsWithoutGeom);
+
+        processFishingTripsToCollectUniqueTrips(fishingTripList,uniqueTripIdWithGeometry,fishingActivityLists,fishingTripIdsWithoutGeom); // process data to find out unique FishingTrip with their Geometries
+        checkThresholdForFishingTripList(uniqueTripIdWithGeometry); // Check if the size of unique Fishing trips is withing threshold specified
+        mapFishingTripIdsToGeomWkt(uniqueTripIdWithGeometry,fishingTripIdLists); // Convert list of Geometries to WKT
+        addFishingTripIdsWithoutGeomToResponseList(fishingTripIdLists,fishingTripIdsWithoutGeom); // There could be some fishing trips without geometries, consider those trips as well
 
         // populate response object
         FishingTripResponse response = new FishingTripResponse();
@@ -79,6 +83,20 @@ public class FishingTripSearch extends SearchQueryBuilder{
         return response;
     }
 
+    // Check if the size of unique Fishing trips is withing threshold specified
+    private void checkThresholdForFishingTripList(Map<FishingTripId,List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
+
+        String treshold_trips= ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
+        if(treshold_trips !=null) {
+            int threshold = Integer.parseInt(treshold_trips);
+            LOG.info("fishing trip threshold value:"+threshold);
+            if (uniqueTripIdWithGeometry.size() > threshold)
+                throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
+
+            LOG.info("fishing trip list size is within threshold value:"+uniqueTripIdWithGeometry.size());
+        }
+
+    }
 
     // Add list of fishing trip ids without geometry to master list
     private void addFishingTripIdsWithoutGeomToResponseList(List<FishingTripIdWithGeometry> fishingTripIdLists,List<FishingTripId> fishingTripIdsWithoutGeom){
@@ -95,8 +113,6 @@ public class FishingTripSearch extends SearchQueryBuilder{
 
         Set<FishingTripId>  tripIdSet= uniqueTripIdWithGeometry.keySet();
         for(FishingTripId fishingTripId: tripIdSet){
-            FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometry();
-
             Geometry geometry =GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
             if(geometry ==null)
                 throw new ServiceException("Exception while trying to create Multipoint geometry with list of geometries.");
@@ -115,8 +131,10 @@ public class FishingTripSearch extends SearchQueryBuilder{
        This method identifies unique FishingTripIdentifiers and collect Geometries for those trips.
      */
     private void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList,Map<FishingTripId,List<Geometry>> uniqueTripIdWithGeometry,List<FishingActivitySummary> fishingActivityLists,List<FishingTripId> fishingTripIdsWithoutGeom){
-
+        Set<Integer> uniqueFishingActivityIdList=new HashSet<>();
         for(FishingTripEntity entity:fishingTripList){
+
+            LOG.info("FishingTripEntity:"+entity +" FishingActivityEntity:"+entity.getFishingActivity());
             Set<FishingTripIdentifierEntity> fishingTripIdList= entity.getFishingTripIdentifiers();
             if(fishingTripIdList ==null)
                 continue;
@@ -138,8 +156,10 @@ public class FishingTripSearch extends SearchQueryBuilder{
                     fishingTripIdsWithoutGeom.add(tripIdObj);
                 }
             }
-            // Collect Fishing Activity data
-            fishingActivityLists.add(FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity()));
+
+            FishingActivityEntity fishingActivityEntity= entity.getFishingActivity();
+            if(fishingActivityEntity !=null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId()) == true )
+                    fishingActivityLists.add(FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity()));// Collect Fishing Activity data
 
         }
     }

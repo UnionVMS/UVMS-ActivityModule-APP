@@ -547,16 +547,9 @@ public class FishingTripServiceBean implements FishingTripService {
 
     @Override
     public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException {
-        log.debug("getFishingTripResponse For Filter");
+        log.info("getFishingTripResponse For Filter");
         List<FishingTripEntity> fishingTripList= fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap,searchMapWithMultipleVals);
-        log.debug("Fishing trips received from db" );
-        String treshold_trips= ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
-        if(treshold_trips !=null) {
-            int threshold = Integer.parseInt(treshold_trips);
-            log.debug("fishing trip threshold value:"+threshold);
-            if (fishingTripList.size() > threshold)
-                throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
-        }
+        log.debug("Fishing trips received from db:"+ fishingTripList.size());
 
        // build Fishing trip response from FishingTripEntityList and return
        return  new FishingTripSearch().buildFishingTripSearchRespose(fishingTripList);

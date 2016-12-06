@@ -85,5 +85,13 @@ public interface FishingTripService {
      */
     public ObjectNode getTripMapDetailsForTripId(String tripId);
 
+    /**
+     *  This method will Return filtered FishingTrips which match with provided filter criterias
+     * @param searchCriteriaMap Filter criterias with single value
+     * @param searchMapWithMultipleVals Filter Criterias with multiple values
+     * @return  List of unique Fishing tripIds with their Geometries
+     *          List of Fishing Activities which happened duriong those fishing trips
+     * @throws ServiceException
+     */
     public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException;
 }

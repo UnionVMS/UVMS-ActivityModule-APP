@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -31,11 +32,13 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
+import javax.jms.JMSException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,14 +82,15 @@ public class ActivityEventServiceBean implements EventService {
 
     @Override
     public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException {
-        LOG.info("Got JMS inside Activity to get FishingTripIds");
+        LOG.info("Got JMS inside Activity to get FishingTripIds:");
         try {
+            LOG.debug("JMS Incoming text message:"+message.getJmsMessage().getText());
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
             LOG.info("FishingTriId Request Unmarshalled");
             FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest),extractFiltersAsMapWithMultipleValues(baseRequest));
             List<FishingActivitySummary> summaryList= baseResponse.getFishingActivityLists();
             for (FishingActivitySummary summary:summaryList){
-              //  LOG.debug("activity type:"+summary.getActivityType()+" Geom:"+summary.getGeometry() + " date:"+summary.getOccurrence().toString());
+                LOG.debug("activity type:"+summary.getActivityType()+" Geom:"+summary.getGeometry() + " date:"+summary.getAcceptedDateTime().toString());
             }
             List<FishingTripIdWithGeometry> tripIdList= baseResponse.getFishingTripIdLists();
             for(FishingTripIdWithGeometry tripIdWithGeom: tripIdList){
@@ -103,24 +107,43 @@ public class ActivityEventServiceBean implements EventService {
             e.printStackTrace();
         } catch (ActivityMessageException e) {
             e.printStackTrace();
+        } catch (JMSException e) {
+            e.printStackTrace();
         }
     }
 
     private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest){
+        EnumMap<SearchFilter, String> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,String> searchMap = new HashMap<>();
         List<SingleValueTypeFilter> filterTypes= baseRequest.getSingleValueFilters();
         for(SingleValueTypeFilter filterType : filterTypes){
+            SearchFilter filter = filterType.getKey();
+            try {
+            if(!filtersWithMultipleValues.containsKey(filter))
+                throw new ServiceException("Filter provided with Single Value Expects values as List. Filter name is:"+filter);
             searchMap.put(filterType.getKey(),filterType.getValue());
+            } catch (ServiceException e) {
+                LOG.error("Error while trying to extract FiltersAsMapWithSingleValue.");
+            }
         }
 
         return searchMap;
     }
 
     private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest){
+        EnumMap<SearchFilter, String> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,List<String>> searchMap = new HashMap<>();
         List<ListValueTypeFilter> filterTypes= baseRequest.getListValueFilters();
         for(ListValueTypeFilter filterType : filterTypes){
-            searchMap.put(filterType.getKey(),filterType.getValues());
+            SearchFilter filter = filterType.getKey();
+            try {
+            if(!filtersWithMultipleValues.containsKey(filter))
+                    throw new ServiceException("Filter provided with multiple Values do not support Multiple Values. Filter name is:"+filter);
+
+             searchMap.put(filterType.getKey(),filterType.getValues());
+            } catch (ServiceException e) {
+                LOG.error("Error while trying to extract FiltersAsMapWithMultipleValues.");
+            }
         }
 
         return searchMap;
