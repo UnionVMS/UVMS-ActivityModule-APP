@@ -67,7 +67,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
-   /*   searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+      searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
         searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
@@ -89,7 +89,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
    //     searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
    //     searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
-       //query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));*/
+       //query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
 
        query.setSearchCriteriaMap(searchCriteriaMap);
         PaginationDto pagination =new PaginationDto();

@@ -53,16 +53,14 @@ public class FilterMap {
     private static EnumMap<SearchFilter,String> filterSortMappings = new EnumMap<>(SearchFilter.class); // For Sort criteria, which expression should be used
     private static EnumMap<SearchFilter,String> filterQueryParameterMappings = new EnumMap<>(SearchFilter.class);  // Query parameter mapping
     private static EnumMap<SearchFilter,String> filterSortWhereMappings = new EnumMap<>(SearchFilter.class); // Special case for star and end date sorting
-    private static EnumMap<SearchFilter,String> filtersWhichSupportMultipleValues = new EnumMap<>(SearchFilter.class);
-   // private static EnumMap<SearchFilter,String> filtersWhichSupportSingleValue = new EnumMap<>(SearchFilter.class);
+    private static Set<SearchFilter> filtersWhichSupportMultipleValues = new HashSet<>(); // List of filters which support multiple values
 
 
     private FilterMap(){}
 
 
     static{
-       // populateFiltersWhichSupportMultipleValues();
-       // populateFiltersWhichSupportSingleValue();
+        populateFiltersWhichSupportMultipleValues();
         populateFilterMappings();
         populateFilterQueryParameterMappings();
         populateFilterSortMappings();
@@ -81,34 +79,25 @@ public class FilterMap {
 
         filterMappings.put(SearchFilter.PERIOD_START,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS,"( dp.startDate >= :"+OCCURENCE_START_DATE +"  OR a.occurence  >= :"+OCCURENCE_START_DATE +" )"));
         filterMappings.put(SearchFilter.PERIOD_END,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS," dp.endDate <= :"+OCCURENCE_END_DATE));
-
-       // filterMappings.put(SearchFilter.VESSEL_NAME,new FilterDetails("fa.vesselTransportMeans vt",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.VESSEL_NAME)?filtersWhichSupportMultipleValues.get(SearchFilter.VESSEL_NAME):filtersWhichSupportSingleValue.get(SearchFilter.VESSEL_NAME))));
-        filterMappings.put(SearchFilter.VESSEL_NAME,new FilterDetails("fa.vesselTransportMeans vt","vt.name IN (:"+VESSEL_IDENTITY_NAME+")"));
-    //    filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.VESSEL_IDENTIFIRE)?filtersWhichSupportMultipleValues.get(SearchFilter.VESSEL_IDENTIFIRE):filtersWhichSupportSingleValue.get(SearchFilter.VESSEL_IDENTIFIRE))));
-        filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierId IN (:"+VESSEL_IDENTIFIRE+")"));
+       filterMappings.put(SearchFilter.VESSEL_NAME,new FilterDetails("fa.vesselTransportMeans vt","vt.name IN (:"+VESSEL_IDENTITY_NAME+")"));
+          filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierId IN (:"+VESSEL_IDENTIFIRE+")"));
 
 
         filterMappings.put(SearchFilter.PURPOSE,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS,"flux.purposeCode =:"+PURPOSE_CODE));
-       // filterMappings.put(SearchFilter.REPORT_TYPE,new FilterDetails(" ",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.REPORT_TYPE)?filtersWhichSupportMultipleValues.get(SearchFilter.REPORT_TYPE):filtersWhichSupportSingleValue.get(SearchFilter.REPORT_TYPE))));
-        filterMappings.put(SearchFilter.REPORT_TYPE,new FilterDetails(" ","fa.typeCode IN (:"+REPORT_TYPE_CODE+")"));
+         filterMappings.put(SearchFilter.REPORT_TYPE,new FilterDetails(" ","fa.typeCode IN (:"+REPORT_TYPE_CODE+")"));
 
-       // filterMappings.put(SearchFilter.ACTIVITY_TYPE,new FilterDetails(" ",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.ACTIVITY_TYPE)?filtersWhichSupportMultipleValues.get(SearchFilter.ACTIVITY_TYPE):filtersWhichSupportSingleValue.get(SearchFilter.ACTIVITY_TYPE))));
         filterMappings.put(SearchFilter.ACTIVITY_TYPE,new FilterDetails(" ","a.typeCode IN (:"+ACTIVITY_TYPE_CODE+")"));
 
         filterMappings.put(SearchFilter.AREAS,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:"+AREA_ID+" )"));
 
-      //  filterMappings.put(SearchFilter.PORT,new FilterDetails("a.fluxLocations fluxLoc",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.PORT)?filtersWhichSupportMultipleValues.get(SearchFilter.PORT):filtersWhichSupportSingleValue.get(SearchFilter.PORT))));
-        filterMappings.put(SearchFilter.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier IN (:"+PORT_ID+" ))"));
+         filterMappings.put(SearchFilter.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier IN (:"+PORT_ID+" ))"));
 
-       // filterMappings.put(SearchFilter.GEAR,new FilterDetails("a.fishingGears fg",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.GEAR)?filtersWhichSupportMultipleValues.get(SearchFilter.GEAR):filtersWhichSupportSingleValue.get(SearchFilter.GEAR))));
-        filterMappings.put(SearchFilter.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode IN (:"+FISHING_GEAR+")"));
+         filterMappings.put(SearchFilter.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode IN (:"+FISHING_GEAR+")"));
 
-      //  filterMappings.put(SearchFilter.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.SPECIES)?filtersWhichSupportMultipleValues.get(SearchFilter.SPECIES):filtersWhichSupportSingleValue.get(SearchFilter.SPECIES))));
-        filterMappings.put(SearchFilter.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ","faCatch.speciesCode IN (:"+SPECIES_CODE +") "+" OR aprod.speciesCode IN (:"+SPECIES_CODE+")"));
+          filterMappings.put(SearchFilter.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ","faCatch.speciesCode IN (:"+SPECIES_CODE +") "+" OR aprod.speciesCode IN (:"+SPECIES_CODE+")"));
 
         filterMappings.put(SearchFilter.QUNTITY_MIN,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod "," (faCatch.calculatedWeightMeasure  BETWEEN :"+QUNTITY_MIN ));
         filterMappings.put(SearchFilter.QUNTITY_MAX,new FilterDetails(" ","  :"+QUNTITY_MAX+") "));
-     //   filterMappings.put(SearchFilter.MASTER,new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson",(filtersWhichSupportMultipleValues.containsKey(SearchFilter.MASTER)?filtersWhichSupportMultipleValues.get(SearchFilter.MASTER):filtersWhichSupportSingleValue.get(SearchFilter.MASTER))));
         filterMappings.put(SearchFilter.MASTER,new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","(UPPER(cPerson.title) IN (:"+CONTACT_PERSON_NAME+") "+" or " +
                 "UPPER(cPerson.givenName) IN (:"+CONTACT_PERSON_NAME+") "+" or UPPER(cPerson.middleName) IN (:"+CONTACT_PERSON_NAME+") "+" or UPPER(cPerson.familyName) IN (:"+CONTACT_PERSON_NAME+") "+" " +
                 "or UPPER(cPerson.familyNamePrefix) IN (:"+CONTACT_PERSON_NAME+") "+" or UPPER(cPerson.nameSuffix) IN (:"+CONTACT_PERSON_NAME+") "+ " or UPPER(cPerson.alias) IN (:"+CONTACT_PERSON_NAME+") "+")"));
@@ -169,32 +158,17 @@ public class FilterMap {
     }
 
     private static void populateFiltersWhichSupportMultipleValues(){
-        filtersWhichSupportMultipleValues.put(SearchFilter.VESSEL_NAME,"vt.name IN (:"+VESSEL_IDENTITY_NAME+")");
-        filtersWhichSupportMultipleValues.put(SearchFilter.VESSEL_IDENTIFIRE,"vi.vesselIdentifierId IN (:"+VESSEL_IDENTIFIRE+")");
-        filtersWhichSupportMultipleValues.put(SearchFilter.REPORT_TYPE,"fa.typeCode IN (:"+REPORT_TYPE_CODE+")");
-        filtersWhichSupportMultipleValues.put(SearchFilter.ACTIVITY_TYPE,"a.typeCode IN (:"+ACTIVITY_TYPE_CODE+")");
-        filtersWhichSupportMultipleValues.put(SearchFilter.PORT,"( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier IN (:"+PORT_ID+" ))");
-        filtersWhichSupportMultipleValues.put(SearchFilter.GEAR,"fg.typeCode IN (:"+FISHING_GEAR+")");
-        filtersWhichSupportMultipleValues.put(SearchFilter.SPECIES,"faCatch.speciesCode IN (:"+SPECIES_CODE +") "+" OR aprod.speciesCode IN (:"+SPECIES_CODE+")");
-        filtersWhichSupportMultipleValues.put(SearchFilter.MASTER,"(UPPER(cPerson.title) IN (:"+CONTACT_PERSON_NAME+") "+" or " +
-                "UPPER(cPerson.givenName) IN (:"+CONTACT_PERSON_NAME+") "+" or UPPER(cPerson.middleName) IN (:"+CONTACT_PERSON_NAME+") "+" or UPPER(cPerson.familyName) IN (:"+CONTACT_PERSON_NAME+") "+" " +
-                "or UPPER(cPerson.familyNamePrefix) IN (:"+CONTACT_PERSON_NAME+") "+" or UPPER(cPerson.nameSuffix) IN (:"+CONTACT_PERSON_NAME+") "+ " or UPPER(cPerson.alias) IN (:"+CONTACT_PERSON_NAME+") "+")");
+        filtersWhichSupportMultipleValues.add(SearchFilter.VESSEL_NAME);
+        filtersWhichSupportMultipleValues.add(SearchFilter.VESSEL_IDENTIFIRE);
+        filtersWhichSupportMultipleValues.add(SearchFilter.REPORT_TYPE);
+        filtersWhichSupportMultipleValues.add(SearchFilter.ACTIVITY_TYPE);
+        filtersWhichSupportMultipleValues.add(SearchFilter.PORT);
+        filtersWhichSupportMultipleValues.add(SearchFilter.GEAR);
+        filtersWhichSupportMultipleValues.add(SearchFilter.SPECIES);
+        filtersWhichSupportMultipleValues.add(SearchFilter.MASTER);
     }
 
-  /*  private static void populateFiltersWhichSupportSingleValue(){
 
-        filtersWhichSupportSingleValue.put(SearchFilter.VESSEL_NAME,"vt.name IN =:"+VESSEL_IDENTITY_NAME);
-        filtersWhichSupportSingleValue.put(SearchFilter.VESSEL_IDENTIFIRE,"vi.vesselIdentifierId =:"+VESSEL_IDENTIFIRE);
-        filtersWhichSupportSingleValue.put(SearchFilter.REPORT_TYPE,"fa.typeCode =:"+REPORT_TYPE_CODE);
-        filtersWhichSupportSingleValue.put(SearchFilter.ACTIVITY_TYPE,"a.typeCode =:"+ACTIVITY_TYPE_CODE);
-        filtersWhichSupportSingleValue.put(SearchFilter.PORT,"( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )");
-        filtersWhichSupportSingleValue.put(SearchFilter.GEAR,"fg.typeCode =:"+FISHING_GEAR);
-        filtersWhichSupportSingleValue.put(SearchFilter.SPECIES,"faCatch.speciesCode =:"+SPECIES_CODE +" OR aprod.speciesCode =:"+SPECIES_CODE);
-        filtersWhichSupportSingleValue.put(SearchFilter.MASTER,"(UPPER(cPerson.title) =:"+CONTACT_PERSON_NAME+" or " +
-                "UPPER(cPerson.givenName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.middleName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.familyName) =:"+CONTACT_PERSON_NAME+" " +
-                "or UPPER(cPerson.familyNamePrefix) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.nameSuffix) =:"+CONTACT_PERSON_NAME+ " or UPPER(cPerson.alias) =:"+CONTACT_PERSON_NAME+")");
-
-    }*/
 
     public static Map<SearchFilter, FilterDetails> getFilterMappings() {
         return filterMappings;
@@ -213,11 +187,9 @@ public class FilterMap {
         return filterQueryParameterMappings;
     }
 
-    public static EnumMap<SearchFilter, String> getFiltersWhichSupportMultipleValues() {
+    public static Set<SearchFilter> getFiltersWhichSupportMultipleValues() {
         return filtersWhichSupportMultipleValues;
     }
 
-  /*  public static EnumMap<SearchFilter, String> getFiltersWhichSupportSingleValue() {
-        return filtersWhichSupportSingleValue;
-    }*/
+
 }

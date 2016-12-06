@@ -38,10 +38,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @LocalBean
@@ -113,17 +110,17 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest){
-        EnumMap<SearchFilter, String> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
+        Set<SearchFilter> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,String> searchMap = new HashMap<>();
         List<SingleValueTypeFilter> filterTypes= baseRequest.getSingleValueFilters();
         for(SingleValueTypeFilter filterType : filterTypes){
             SearchFilter filter = filterType.getKey();
             try {
-            if(!filtersWithMultipleValues.containsKey(filter))
+            if(!filtersWithMultipleValues.contains(filter))
                 throw new ServiceException("Filter provided with Single Value Expects values as List. Filter name is:"+filter);
             searchMap.put(filterType.getKey(),filterType.getValue());
             } catch (ServiceException e) {
-                LOG.error("Error while trying to extract FiltersAsMapWithSingleValue.");
+                LOG.error("Error while trying to extract FiltersAsMapWithSingleValue.",e);
             }
         }
 
@@ -131,18 +128,18 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest){
-        EnumMap<SearchFilter, String> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
+        Set<SearchFilter> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,List<String>> searchMap = new HashMap<>();
         List<ListValueTypeFilter> filterTypes= baseRequest.getListValueFilters();
         for(ListValueTypeFilter filterType : filterTypes){
             SearchFilter filter = filterType.getKey();
             try {
-            if(!filtersWithMultipleValues.containsKey(filter))
+            if(!filtersWithMultipleValues.contains(filter))
                     throw new ServiceException("Filter provided with multiple Values do not support Multiple Values. Filter name is:"+filter);
 
              searchMap.put(filterType.getKey(),filterType.getValues());
             } catch (ServiceException e) {
-                LOG.error("Error while trying to extract FiltersAsMapWithMultipleValues.");
+                LOG.error("Error while trying to extract FiltersAsMapWithMultipleValues.",e);
             }
         }
 
