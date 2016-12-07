@@ -77,6 +77,9 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         List<String> activityTypeValues=new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
+        activityTypeValues.add("ARRIVAL");
+
+
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
         List<FishingTripEntity> list= dao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap,searchCriteriaMapMultiVal);
 

@@ -48,6 +48,7 @@ public class FilterMap {
     public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE = "dataSource";
     public static final String FAREPORT_ID = "faReportId";
+    public static final String AREA_GEOM = "areaGeom";
 
     private static EnumMap<SearchFilter,FilterDetails> filterMappings = new EnumMap<>(SearchFilter.class);// This contains Table Join and Where condition mapping for each Filter
     private static EnumMap<SearchFilter,String> filterSortMappings = new EnumMap<>(SearchFilter.class); // For Sort criteria, which expression should be used
@@ -94,7 +95,7 @@ public class FilterMap {
 
          filterMappings.put(SearchFilter.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode IN (:"+FISHING_GEAR+")"));
 
-          filterMappings.put(SearchFilter.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ","faCatch.speciesCode IN (:"+SPECIES_CODE +") "+" OR aprod.speciesCode IN (:"+SPECIES_CODE+")"));
+          filterMappings.put(SearchFilter.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ","( faCatch.speciesCode IN (:"+SPECIES_CODE +") "+" OR aprod.speciesCode IN (:"+SPECIES_CODE+"))"));
 
         filterMappings.put(SearchFilter.QUNTITY_MIN,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod "," (faCatch.calculatedWeightMeasure  BETWEEN :"+QUNTITY_MIN ));
         filterMappings.put(SearchFilter.QUNTITY_MAX,new FilterDetails(" ","  :"+QUNTITY_MAX+") "));
@@ -104,6 +105,7 @@ public class FilterMap {
 
 
         filterMappings.put(SearchFilter.FA_REPORT_ID,new FilterDetails(" ","fa.id =:"+FAREPORT_ID));
+        filterMappings.put(SearchFilter.AREA_GEOM,new FilterDetails(" ","intersects(fa.geom, :"+AREA_GEOM+") = true "));
 
     }
 
@@ -154,6 +156,7 @@ public class FilterMap {
         filterQueryParameterMappings.put(SearchFilter.QUNTITY_MAX,QUNTITY_MAX);
         filterQueryParameterMappings.put(SearchFilter.MASTER,CONTACT_PERSON_NAME);
         filterQueryParameterMappings.put(SearchFilter.FA_REPORT_ID,FAREPORT_ID);
+        filterQueryParameterMappings.put(SearchFilter.AREA_GEOM,AREA_GEOM);
 
     }
 

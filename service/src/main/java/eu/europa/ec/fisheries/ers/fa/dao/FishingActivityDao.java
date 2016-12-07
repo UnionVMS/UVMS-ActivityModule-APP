@@ -104,7 +104,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
 
     // Set typed values for Dynamically generated Query
-    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon,FishingActivitySearch search){
+    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon,FishingActivitySearch search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
 
         Query typedQuery = em.createQuery(sql.toString());

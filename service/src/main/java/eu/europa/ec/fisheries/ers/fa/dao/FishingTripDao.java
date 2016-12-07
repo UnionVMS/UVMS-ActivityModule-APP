@@ -84,8 +84,14 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
         Query  listQuery = search.fillInValuesForTypedQuery( query,typedQuery);  // Add values to the Query built
-
-        return listQuery.getResultList();
+        List<FishingTripEntity> tripEntityList=null;
+        try{
+            tripEntityList=listQuery.getResultList();
+        }catch(Exception e){
+            log.error("Exception while trying to get FishingTrips for matching criteria",e);
+            throw new ServiceException("Exception while trying to get FishingTrips from database for matching criteria.");
+        }
+        return tripEntityList;
     }
 
 }

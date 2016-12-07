@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
@@ -196,11 +197,13 @@ public abstract class SearchQueryBuilder {
                 }
 
                 if(SearchFilter.QUNTITY_MIN.equals(key) ){
-                    sql.append("(faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" )") ;
+                    sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" ))") ;
 
                 }else if (SearchFilter.QUNTITY_MAX.equals(key)) {
+                    sql.append(" ( ");
                     sql.append(mappings.get(SearchFilter.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
                     sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
+                    sql.append(" ) ");
                 } else {
                     sql.append(mapping);
                 }
@@ -277,6 +280,9 @@ public abstract class SearchQueryBuilder {
         return sql;
     }
 
+    // Assumption for the weight is, calculated_weight_measure is in Kg.
+    // IF we get WEIGHT MEASURE as TON, we need to convert the input value to Kilograms.
+    //
     public static Double normalizeWeightValue(String value, String weightMeasure) {
         Double valueConverted = Double.parseDouble(value);
         if (WeightConversion.TON.equals(weightMeasure))
@@ -285,7 +291,7 @@ public abstract class SearchQueryBuilder {
         return valueConverted;
     }
 
-    public Query fillInValuesForTypedQuery(FishingActivityQuery query,Query typedQuery){
+    public Query fillInValuesForTypedQuery(FishingActivityQuery query,Query typedQuery) throws ServiceException {
 
         Map<SearchFilter,String> searchCriteriaMap = query.getSearchCriteriaMap();
         Map<SearchFilter,List<String>> searchForMultipleValues= query.getSearchCriteriaMapMultipleValues();
@@ -301,16 +307,21 @@ public abstract class SearchQueryBuilder {
     }
 
 
-    private Query applySingleValuesToQuery(Map<SearchFilter,String> searchCriteriaMap,Query typedQuery){
+    private Query applySingleValuesToQuery(Map<SearchFilter,String> searchCriteriaMap,Query typedQuery) throws ServiceException {
 
         // Assign values to created SQL Query
         for (Map.Entry<SearchFilter,String> entry : searchCriteriaMap.entrySet()){
 
             SearchFilter key =  entry.getKey();
             String value=  entry.getValue();
+
+
             //For WeightMeasure there is no mapping present, In that case
             if(mappings.get(key) ==null)
                 continue;
+
+            if(value ==null || value.isEmpty())
+                throw new ServiceException("Value for filter "+key +" is null or empty");
 
             switch (key) {
                 case PERIOD_START:
@@ -331,6 +342,14 @@ public abstract class SearchQueryBuilder {
                 case FA_REPORT_ID:
                     typedQuery.setParameter(mappings.get(key), Integer.parseInt(value));
                     break;
+                case AREA_GEOM:
+                    try {
+                        typedQuery.setParameter(mappings.get(key), GeometryUtils.wktToGeom(value));
+                    } catch (ServiceException e) {
+                        LOG.error("Error while trying to convert AREA_GEOM wkt To Geometry."+value);
+                        throw new ServiceException("Error while trying to convert AREA_GEOM wkt To Geometry.",e);
+                    }
+                    break;
                 default:
                     typedQuery.setParameter(mappings.get(key), value);
                     break;
@@ -342,17 +361,29 @@ public abstract class SearchQueryBuilder {
 
 
 
-    private Query applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap,Query typedQuery){
+    private Query applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap,Query typedQuery) throws ServiceException {
 
         // Assign values to created SQL Query
         for (Map.Entry<SearchFilter,List<String>> entry : searchCriteriaMap.entrySet()){
 
             SearchFilter key =  entry.getKey();
-            List<String> value=  entry.getValue();
+            List<String> valueList=  entry.getValue();
             //For WeightMeasure there is no mapping present, In that case
             if(mappings.get(key) ==null)
                 continue;
-            typedQuery.setParameter(mappings.get(key), value);
+
+            if(valueList ==null || valueList.isEmpty())
+                throw new ServiceException("valueList for filter "+key +" is null or empty");
+
+
+            if(SearchFilter.MASTER.equals(key)){
+                List<String> uppperCaseValList=new ArrayList<>();
+                  for(String val:valueList){
+                      uppperCaseValList.add(val.toUpperCase());
+                  }
+                typedQuery.setParameter(mappings.get(key), uppperCaseValList);
+            }else
+                 typedQuery.setParameter(mappings.get(key), valueList);
 
         }
         return typedQuery;
