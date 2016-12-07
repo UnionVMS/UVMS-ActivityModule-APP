@@ -42,7 +42,7 @@ public class FilterMap {
     public static final String CONTACT_PERSON_NAME = "agent";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
     public static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
-    public static final String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
+    public static String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
     public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
     public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
@@ -71,7 +71,7 @@ public class FilterMap {
     /**
          Below method stores mapping for each Filter criteria. Mapping will provide information on table joins required for the criteria and Where conditions which needs to be applied for the criteria
      */
-    private static void populateFilterMappings(){
+    public static void populateFilterMappings(){
 
         filterMappings.put(SearchFilter.SOURCE,new FilterDetails(" ","fa.source =:"+DATASOURCE));
         filterMappings.put(SearchFilter.FROM_ID,new FilterDetails( " fp.fluxPartyIdentifiers fpi","fpi.fluxPartyIdentifierId =:"+FROM_ID+ " "));
