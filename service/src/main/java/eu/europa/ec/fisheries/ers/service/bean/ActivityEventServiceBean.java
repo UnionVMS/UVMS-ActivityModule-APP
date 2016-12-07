@@ -116,8 +116,9 @@ public class ActivityEventServiceBean implements EventService {
         for(SingleValueTypeFilter filterType : filterTypes){
             SearchFilter filter = filterType.getKey();
             try {
-            if(!filtersWithMultipleValues.contains(filter))
-                throw new ServiceException("Filter provided with Single Value Expects values as List. Filter name is:"+filter);
+            if(filtersWithMultipleValues.contains(filter))
+                throw new ServiceException("Filter provided with Single Value. Application Expects values as List for the Filter :"+filter);
+
             searchMap.put(filterType.getKey(),filterType.getValue());
             } catch (ServiceException e) {
                 LOG.error("Error while trying to extract FiltersAsMapWithSingleValue.",e);
