@@ -85,15 +85,7 @@ public class ActivityEventServiceBean implements EventService {
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
             LOG.info("FishingTriId Request Unmarshalled");
             FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest),extractFiltersAsMapWithMultipleValues(baseRequest));
-            List<FishingActivitySummary> summaryList= baseResponse.getFishingActivityLists();
-            for (FishingActivitySummary summary:summaryList){
-                LOG.debug("activity type:"+summary.getActivityType()+" Geom:"+summary.getGeometry() + " date:"+summary.getAcceptedDateTime().toString());
-            }
-            List<FishingTripIdWithGeometry> tripIdList= baseResponse.getFishingTripIdLists();
-            for(FishingTripIdWithGeometry tripIdWithGeom: tripIdList){
-                LOG.debug("tripID: "+tripIdWithGeom.getTripId() +" schemeId:"+tripIdWithGeom.getSchemeId()+ " geom:"+tripIdWithGeom.getGeometry());
-            }
-          //  baseResponse.setFishingTripIds(Arrays.asList("tripId1", "tripId2", "tripId3"));
+
             String response =JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
             LOG.info("FishingTriId response marshalled");
             producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
