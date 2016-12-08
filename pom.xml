@@ -31,7 +31,6 @@
         <activity.name>Activity</activity.name>
         <activity.model>0.5.7-SNAPSHOT</activity.model>
         <activity.model.fa>0.5.5</activity.model.fa>
-        <activity.model.mdr>0.5.5-SNAPSHOT</activity.model.mdr>
 
         <!-- Other modules dependencies -->
         <reporting.model>0.5.0</reporting.model>
@@ -74,6 +73,7 @@
         <geotools.version>14-M1</geotools.version>
         <movement.model.version>2.0.0</movement.model.version>
         <spatial.model.version>0.5.4</spatial.model.version>
+        <mave.plugin.api.version>2.0</mave.plugin.api.version>
 
         <lucene.index.directory>/app/indexes/activity</lucene.index.directory>
     </properties>
@@ -120,13 +120,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
                 <artifactId>activity-model</artifactId>
                 <version>${activity.model}</version>
-            </dependency>
-
-          
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-                <artifactId>activity-model-mdr</artifactId>
-                <version>${activity.model.mdr}</version>
             </dependency>
 
             <dependency>
@@ -224,14 +217,6 @@
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
                 <version>${javaee.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!-- Hibernate JPA provider provided by WildFly -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -334,6 +319,14 @@
                 <artifactId>infinispan-directory-provider</artifactId>
                 <version>${infinispan-directory-provider.version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-plugin-api -->
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${mave.plugin.api.version}</version>
+            </dependency>
+
 
         </dependencies>
 

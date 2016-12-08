@@ -10,13 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.message.producer.bean;
 
-import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.AbstractMessageProducer;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
-import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
+import eu.europa.ec.fisheries.uvms.mdr.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.mdr.message.constants.ModuleQueue;
+import eu.europa.ec.fisheries.uvms.mdr.message.exception.ActivityMessageException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -61,7 +60,7 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
     @Override
 	public String sendRulesModuleMessage(String text) throws ActivityMessageException {
 		log.info("Sending Request to Exchange module.");		
-		String messageID = StringUtils.EMPTY;
+		String messageID;
 		try {
 			messageID = sendModuleMessage(text, ModuleQueue.RULES);
 		} catch (ActivityMessageException e) {
@@ -91,9 +90,6 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
             		break;
                 case EXCHANGE:
                     getProducer(session, exchangeQueue).send(message);
-                    break;
-                case ERSMDRPLUGINQUEUE:
-                    getProducer(session, ersMdrQueue).send(message);
                     break;
                 default:
                     throw new ActivityMessageException("Queue not defined or implemented");

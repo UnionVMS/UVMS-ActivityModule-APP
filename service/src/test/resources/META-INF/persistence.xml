@@ -6,44 +6,7 @@
 	<persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-		<!-- MDR Activity entities -->
-		<!-- MDR Activity entities -->
 		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.AcronymVersion</class>
-
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishPackaging</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FaoSpecies</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxFaReportType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GearType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishSizeClass</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.VesselActivity</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.Rfmo</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxGpParty</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxGpResponse</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GfcmStatisticalRectangles</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FaoAreaCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxContactRole</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.EffortZone</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxGpValidationLevel</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.WeightMeans</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxProcessType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxUnit</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxFaFmc</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.Territory</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxLocationType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxGpValidationType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishPresentation</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxGpPurpose</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxFaType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.IcesStatisticalRectangles</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.GfcmGsa</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FluxLocationCharacteristic</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.Location</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.codelists.FishFreshness</class>
-
-
 		<!-- ERS Activity entities -->
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity</class>

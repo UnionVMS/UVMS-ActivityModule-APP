@@ -13,8 +13,8 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.mdr.message.event.GetFLUXFAReportMessageEvent;
+import eu.europa.ec.fisheries.uvms.mdr.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
@@ -73,8 +73,8 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     public FLUXFAReportMessage extractFLUXFAReportMessage(String request) throws ModelMarshallException{
-        JAXBContext jc = null;
-        FLUXFAReportMessage fluxFAReportMessage = null;
+        JAXBContext jc;
+        FLUXFAReportMessage fluxFAReportMessage;
         try {
             jc = JAXBContext.newInstance(FLUXFAReportMessage.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
