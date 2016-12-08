@@ -11,7 +11,7 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.mdr.rest.resources.util;
+package eu.europa.ec.fisheries.uvms.activity.rest.resources.util;
 
 /**
  * Created by padhyad on 8/17/2016.

@@ -38,9 +38,6 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
 	@Resource(mappedName = MessageConstants.EXCHANGE_MODULE_QUEUE)
 	private Queue exchangeQueue;
 	
-	@Resource(mappedName = MessageConstants.ERS_MDR_QUEUE)
-	private Queue ersMdrQueue;
-	
 	@Resource(mappedName = MessageConstants.RULES_EVENT_QUEUE)
 	private Queue rulesQueue;
 
