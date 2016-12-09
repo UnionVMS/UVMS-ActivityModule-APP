@@ -19,15 +19,15 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
-import eu.europa.ec.fisheries.ers.service.search.Filters;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.SneakyThrows;
@@ -127,15 +127,17 @@ public class ActivityServiceBeanTest {
         FishingActivityQuery query = new FishingActivityQuery();
         List<ListCriteria> list = new ArrayList<ListCriteria>();
 
-        Map<Filters,String> searchCriteriaMap = new HashMap<>();
-        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
-        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
 
-        Pagination pagination =new Pagination();
-        pagination.setListSize(4);
-        pagination.setPage(1);
-      //  query.setSearchCriteria(list);
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+
+        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
+
+
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(4);
+        pagination.setOffset(1);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
 
@@ -150,8 +152,6 @@ public class ActivityServiceBeanTest {
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
         assertNotNull(filterFishingActivityReportResultDTO.getResultList());
-        assertNotNull(filterFishingActivityReportResultDTO.getPagination());
-
     }
 
 
@@ -160,17 +160,15 @@ public class ActivityServiceBeanTest {
     public void getFishingActivityListByQuery_emptyResultSet() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        List<ListCriteria> list = new ArrayList<ListCriteria>();
 
-        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
         List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
-        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
+        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
 
-        Pagination pagination =new Pagination();
-        pagination.setListSize(4);
-        pagination.setPage(1);
-        //  query.setSearchCriteria(list);
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(4);
+        pagination.setOffset(1);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
 
@@ -184,11 +182,5 @@ public class ActivityServiceBeanTest {
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class), Mockito.any(Geometry.class));
         //Verify
          assertNotNull(filterFishingActivityReportResultDTO);
-      //  assertNotNull(filterFishingActivityReportResultDTO.getResultList());
-       // assertNotNull(filterFishingActivityReportResultDTO.getPagination());
-
     }
-
-
-
 }

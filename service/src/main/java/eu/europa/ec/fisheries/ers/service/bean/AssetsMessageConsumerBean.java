@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.uvms.mdr.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.message.AbstractConsumer;
 
 import javax.annotation.Resource;

@@ -29,7 +29,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.7</activity.model>
+        <activity.model>0.5.8-SNAPSHOT</activity.model>
         <activity.model.fa>0.5.5</activity.model.fa>
 
         <!-- Other modules dependencies -->
@@ -58,7 +58,7 @@
         <hibernate.version>4.3.5.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14-M1</geotools.version>
-        <uvms.commons.version>2.0.13</uvms.commons.version>
+        <uvms.commons.version>2.0.14-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.3</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-search-orm.version>4.5.1.Final</hibernate-search-orm.version>

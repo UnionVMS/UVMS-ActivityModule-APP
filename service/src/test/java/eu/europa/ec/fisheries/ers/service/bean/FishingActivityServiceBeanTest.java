@@ -3,13 +3,13 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.uvms.mdr.message.exception.ActivityMessageException;
+import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
@@ -108,7 +108,7 @@ public class FishingActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException, ModelMarshallException, ActivityMessageException, MessageException, JMSException {
+    public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException, ActivityModelMarshallException, ActivityMessageException, MessageException, JMSException {
 
         String response = JAXBMarshaller.marshallJaxBObjectToString(ActivityDataUtil.getListAssetResponse());
         TextMessage mockTextMessage = mock(TextMessage.class);

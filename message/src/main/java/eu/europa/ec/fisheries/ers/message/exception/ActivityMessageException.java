@@ -8,8 +8,13 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.mdr.message.constants;
+package eu.europa.ec.fisheries.ers.message.exception;
 
-public enum ModuleQueue {
-    EXCHANGE, RULES, ASSET;
+public class ActivityMessageException extends Exception {
+    public ActivityMessageException(String message) {
+        super(message);
+    }
+    public ActivityMessageException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

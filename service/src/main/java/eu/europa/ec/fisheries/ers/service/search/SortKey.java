@@ -10,40 +10,46 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+
 /**
  * Created by sanera on 01/07/2016.
  */
 public class SortKey {
 
-    private Filters field;
-    private SortOrder order;
+    private SearchFilter sortBy;
+    private boolean isReversed;
 
     public SortKey(){
         super();
     }
 
-    public Filters getField() {
-        return field;
+    public SearchFilter getSortBy() {
+        return sortBy;
     }
-    public void setField(Filters field) {
-        this.field = field;
+
+    public void setSortBy(SearchFilter sortBy) {
+        this.sortBy = sortBy;
     }
-    public SortOrder getOrder() {
-        return order;
+
+    public SortKey(SearchFilter field, boolean order) {
+        this.sortBy = field;
+        this.isReversed = order;
     }
-    public void setOrder(SortOrder order) {
-        this.order = order;
+
+    public boolean isReversed() {
+        return isReversed;
     }
-    public SortKey(Filters field, SortOrder order) {
-        this.field = field;
-        this.order = order;
+
+    public void setReversed(boolean reversed) {
+        isReversed = reversed;
     }
 
     @Override
     public String toString() {
         return "SortKey{" +
-                "field=" + field +
-                ", order=" + order +
+                "field=" + sortBy +
+
                 '}';
     }
 }

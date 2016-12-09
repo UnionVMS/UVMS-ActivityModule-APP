@@ -11,13 +11,13 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.mdr.message.consumer;
+package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractConsumer;
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
 import javax.annotation.Resource;
-import javax.ejb.Local;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 
@@ -25,14 +25,15 @@ import javax.jms.Destination;
  * Created by padhyad on 10/12/2016.
  */
 @Stateless
-@Local
-public class ActivityConsumerBean extends AbstractConsumer {
+@LocalBean
+public class AssetProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = "java:/jms/queue/UVMSActivity")
+    @Resource(mappedName = MessageConstants.QUEUE_ASSET_EVENT)
     private Destination destination;
 
     @Override
     public Destination getDestination() {
         return destination;
     }
+
 }

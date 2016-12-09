@@ -84,6 +84,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_fishing_trip")
                     .columns("id", "type_code", "type_code_list_id", "fa_catch_id", "fishing_activity_id")
                     .values(5, "JFO", "EU_TRIP_ID", 5, 5)
+                    .build(),
+            insertInto("activity.activity_fishing_trip")
+                    .columns("id", "type_code", "type_code_list_id", "fa_catch_id", "fishing_activity_id")
+                    .values(6, "JFO", "EU_TRIP_ID", 6, 6)
                     .build()
     );
 
@@ -107,6 +111,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_fishing_trip_Identifier")
                     .columns("id", "fishing_trip_id", "trip_id", "trip_scheme_id")
                     .values(5, 5, "NOR-TRP-20160517234053707", "EU_TRIP_ID")
+                    .build(),
+            insertInto("activity.activity_fishing_trip_Identifier")
+                    .columns("id", "fishing_trip_id", "trip_id", "trip_scheme_id")
+                    .values(6, 6, "NOR-TRP-20160517234053708", "EU_TRIP_ID")
                     .build()
     );
 
@@ -222,6 +230,11 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
                             "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
                     .values(5, 5, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
+                    .build(),
+            insertInto("activity.activity_fa_catch")
+                    .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
+                    .values(6, 5, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
                     .build()
     );
 
@@ -287,11 +300,11 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
-                    .values(2, 1, 1, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .values(2, 1, 2, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
-                    .values(3, 1, 1, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .values(3, 1, 3, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
@@ -621,7 +634,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
 
     protected static final Operation INSERT_ERS_FA_REPORT_DOCUMENT_DATA = sequenceOf(
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
+                    .columns("id",  "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
                     .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1, 1, "fmc", "fmc_list", "new", "FLUX")
                     .build(),
             insertInto("activity.activity_fa_report_document")
@@ -629,7 +642,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2, 2, "fmc", "fmc_list", "new", "FLUX")
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
+                    .columns("id",  "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
                     .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, 3, "fmc", "fmc_list", "new", "FLUX")
                     .build(),
             insertInto("activity.activity_fa_report_document")
