@@ -12,11 +12,14 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import org.slf4j.Logger;
@@ -53,6 +56,10 @@ public class MessageConsumerBean implements MessageListener {
     @GetFishingTripListEvent
     Event<EventMessage> getFishingTripListEvent;
 
+    @Inject
+    @ActivityMessageErrorEvent
+    private Event<EventMessage> errorEvent;
+
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -61,15 +68,10 @@ public class MessageConsumerBean implements MessageListener {
         TextMessage textMessage = null;
         try {
             textMessage = (TextMessage) message;
-            LOG.info("Message received in activity");
             ActivityModuleRequest request = null;
-            try {
-                request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
-            } catch (ActivityModelMarshallException e) {
-                e.printStackTrace();
-            }
-            LOG.info("Message unmarshalled successfully in activity");
-            if(request==null){
+            request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
+            LOG.debug("Message unmarshalled successfully in activity");
+            if (request==null) {
                 LOG.error("[ Request is null ]");
                 return;
             }
@@ -95,12 +97,12 @@ public class MessageConsumerBean implements MessageListener {
                      break;
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());
-                   // errorEvent.fire(new EventMessage(textMessage, "[ Request method " + request.getMethod().name() + "  is not implemented ]"));
+                    errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + request.getMethod().name() + "  is not implemented ]")));
             }
 
-        } catch ( NullPointerException | ClassCastException e) {
+        } catch ( ActivityModelMarshallException | ClassCastException e) {
             LOG.error("[ Error when receiving message in activity: ] {}", e);
-           // errorEvent.fire(new EventMessage(textMessage, "Error when receiving message in movement: " + e.getMessage()));
+            errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
         }
     }
 
