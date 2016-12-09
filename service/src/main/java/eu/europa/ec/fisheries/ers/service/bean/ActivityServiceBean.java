@@ -105,27 +105,25 @@ public class ActivityServiceBean implements ActivityService {
 
     @Override
     public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
+
         List<FishingActivityEntity> activityList;
-
-
-        log.debug("FishingActivityQuery received :" + query);
+        log.debug("FishingActivityQuery received : {}", query);
 
         // Check if any filters are present. If not, We need to return all fishing activity data
-
         Geometry multipolygon = getRestrictedAreaGeom(datasets);
-        query=separateSingleVsMultipleFilters(query);
+        query = separateSingleVsMultipleFilters(query);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query, multipolygon);
 
-        int totalCountOfRecords= getRecordsCountForFilterFishingActivityReports(query, multipolygon);
-        log.debug("Total count of records: "+totalCountOfRecords);
+        int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query, multipolygon);
+        log.debug("Total count of records: {} ", totalCountOfRecords);
 
         if (CollectionUtils.isEmpty(activityList)) {
-            log.info("Could not find FishingActivity entities matching search criteria");
+            log.debug("Could not find FishingActivity entities matching search criteria");
             activityList = Collections.emptyList();
         }
 
-       // Prepare DTO to return to Frontend
-        log.debug("Fishing Activity Report resultset size :" +( (activityList==null)?"list is null": ""+activityList.size()));
+        // Prepare DTO to return to Frontend
+        log.debug("Fishing Activity Report resultset size :" + ((activityList == null) ? "list is null" : "" + activityList.size()));
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setTotalCountOfRecords(totalCountOfRecords);
@@ -133,22 +131,21 @@ public class ActivityServiceBean implements ActivityService {
         return filterFishingActivityReportResultDTO;
     }
 
-  // Improve this part later on
+    // Improve this part later on
     private FishingActivityQuery separateSingleVsMultipleFilters(FishingActivityQuery query) throws ServiceException {
-        Map<SearchFilter, String> searchMap= query.getSearchCriteriaMap();
-        Map<SearchFilter,List<String>> searchMapWithMultipleValues= new HashMap<>();
+        Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
+        Map<SearchFilter, List<String>> searchMapWithMultipleValues = new HashMap<>();
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
 
-        if(query.getSearchCriteriaMapMultipleValues()!=null && query.getSearchCriteriaMapMultipleValues().size() > 0)
+        if (query.getSearchCriteriaMapMultipleValues() != null && query.getSearchCriteriaMapMultipleValues().size() > 0)
             throw new ServiceException("Filter Fishing activity has received Filters with multiple values. This is not supported currently");
 
-        Set<SearchFilter> keys=searchMap.keySet();
-        Iterator<Map.Entry<SearchFilter, String>> it= searchMap.entrySet().iterator();
-        while(it.hasNext()) {
-            Map.Entry<SearchFilter, String> e= it.next();
+        Iterator<Map.Entry<SearchFilter, String>> it = searchMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<SearchFilter, String> e = it.next();
             SearchFilter key = e.getKey();
             String value = e.getValue();
-            if(filtersWhichSupportMultipleValues.contains(key)) {
+            if (filtersWhichSupportMultipleValues.contains(key)) {
                 List<String> values = new ArrayList<>();
                 values.add(value);
                 searchMapWithMultipleValues.put(key, values);
@@ -160,7 +157,10 @@ public class ActivityServiceBean implements ActivityService {
         query.setSearchCriteriaMap(searchMap);
         return query;
     }
-    // Query to calculate total number of result set
+
+    /*
+     * Query to calculate total number of result set
+     */
     private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
         log.info(" Get total pages count");
         return fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);
@@ -170,14 +170,14 @@ public class ActivityServiceBean implements ActivityService {
         if (datasets == null || datasets.isEmpty()) {
             return null;
         }
-        List<AreaIdentifierType> areaIdentifierTypes =  UsmUtils.convertDataSetToAreaId(datasets);
+        List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
         String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
         return GeometryUtils.wktToGeom(areaWkt);
     }
 
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
-        for(FishingActivityEntity entity : activityList) {
+        for (FishingActivityEntity entity : activityList) {
             activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
         }
         return activityReportDTOList;

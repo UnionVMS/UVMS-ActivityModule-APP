@@ -81,61 +81,47 @@ public class ActivityEventServiceBean implements EventService {
     public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException {
         LOG.info("Got JMS inside Activity to get FishingTripIds:");
         try {
-            LOG.debug("JMS Incoming text message:"+message.getJmsMessage().getText());
+            LOG.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
-            LOG.info("FishingTriId Request Unmarshalled");
+            LOG.debug("FishingTriId Request Unmarshalled");
             FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest),extractFiltersAsMapWithMultipleValues(baseRequest));
 
             String response =JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
-            LOG.info("FishingTriId response marshalled");
+            LOG.debug("FishingTriId response marshalled");
             producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
-            LOG.info("Response sent back.");
-
-
-        } catch (ActivityModelMarshallException e) {
-            e.printStackTrace();
-        } catch (ActivityMessageException e) {
-            e.printStackTrace();
-        } catch (JMSException e) {
-            e.printStackTrace();
+            LOG.debug("Response sent back.");
+        } catch (ActivityModelMarshallException | ActivityMessageException | JMSException e) {
+            LOG.error("Error while communication ", e.getMessage());
+            throw new ServiceException(e.getMessage(), e);
         }
     }
 
-    private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest){
+    private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,String> searchMap = new HashMap<>();
         List<SingleValueTypeFilter> filterTypes= baseRequest.getSingleValueFilters();
-        for(SingleValueTypeFilter filterType : filterTypes){
+        for(SingleValueTypeFilter filterType : filterTypes) {
             SearchFilter filter = filterType.getKey();
-            try {
-            if(filtersWithMultipleValues.contains(filter))
-                throw new ServiceException("Filter provided with Single Value. Application Expects values as List for the Filter :"+filter);
-
-            searchMap.put(filterType.getKey(),filterType.getValue());
-            } catch (ServiceException e) {
-                LOG.error("Error while trying to extract FiltersAsMapWithSingleValue.",e);
+            if (filtersWithMultipleValues.contains(filter)) {
+                throw new ServiceException("Filter provided with Single Value. Application Expects values as List for the Filter :" + filter);
             }
+            searchMap.put(filterType.getKey(),filterType.getValue());
         }
 
         return searchMap;
     }
 
-    private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest){
+    private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,List<String>> searchMap = new HashMap<>();
         List<ListValueTypeFilter> filterTypes= baseRequest.getListValueFilters();
         for(ListValueTypeFilter filterType : filterTypes){
             SearchFilter filter = filterType.getKey();
-            try {
-            if(!filtersWithMultipleValues.contains(filter))
-                    throw new ServiceException("Filter provided with multiple Values do not support Multiple Values. Filter name is:"+filter);
-
-             searchMap.put(filterType.getKey(),filterType.getValues());
-            } catch (ServiceException e) {
-                LOG.error("Error while trying to extract FiltersAsMapWithMultipleValues.",e);
+            if(!filtersWithMultipleValues.contains(filter)) {
+                throw new ServiceException("Filter provided with multiple Values do not support Multiple Values. Filter name is:" + filter);
             }
+            searchMap.put(filterType.getKey(),filterType.getValues());
         }
-
         return searchMap;
     }
 

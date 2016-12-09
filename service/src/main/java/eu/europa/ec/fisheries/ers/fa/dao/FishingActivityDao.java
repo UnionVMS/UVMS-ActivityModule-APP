@@ -33,10 +33,8 @@ import java.util.List;
  */
 
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
+
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
-  //  private  static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-
 
     private static  final String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by fa.acceptedDatetime asc ";
 
@@ -55,7 +53,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public List<FishingActivityEntity> getFishingActivityList() throws ServiceException {
         return getFishingActivityList(null);
     }
-
 
 
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
@@ -103,14 +100,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
 
-    // Set typed values for Dynamically generated Query
+    /**
+     * Set typed values for Dynamically generated Query
+     */
     private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon,FishingActivitySearch search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
 
         Query typedQuery = em.createQuery(sql.toString());
-        return search.getTypedQueryForFishingActivityFilter(sql,query,multipolygon,typedQuery);
-
-       // return typedQuery;
+        return search.getTypedQueryForFishingActivityFilter(sql, query, multipolygon, typedQuery);
     }
 
 
@@ -121,6 +118,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
         LOG.info("Get Fishing Activity Report list by Query.");
         FishingActivitySearch search = new FishingActivitySearch();
+
         // Create Query dynamically based on filter and Sort criteria
         StringBuilder sqlToGetActivityList =search.createSQL(query);
 
@@ -135,14 +133,4 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
         return listQuery.getResultList();
     }
-
-
-
-
-
-
-
-
-
-
 }

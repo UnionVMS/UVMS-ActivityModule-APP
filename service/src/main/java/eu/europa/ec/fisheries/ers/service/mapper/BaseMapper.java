@@ -88,10 +88,11 @@ public abstract class BaseMapper {
             GregorianCalendar cal = new  GregorianCalendar();
             cal.setTimeInMillis(dateTime.getTime());
             calander = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-            if(!includeTimeZone)
+            if(!includeTimeZone) {
                 calander.setTimezone(DatatypeConstants.FIELD_UNDEFINED); //If we do not want timeZone to be included, set this
+            }
         } catch (DatatypeConfigurationException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
       return calander;
     }

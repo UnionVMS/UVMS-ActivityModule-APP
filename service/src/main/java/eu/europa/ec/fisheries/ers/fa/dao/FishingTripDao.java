@@ -32,7 +32,6 @@ import java.util.Map;
  */
 @Slf4j
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
-    private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private EntityManager em;
 
     public FishingTripDao(EntityManager em) {
@@ -45,33 +44,32 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
 
-    public FishingTripEntity fetchVesselTransportDetailsForFishingTrip(String fishingTripId)  {
+    public FishingTripEntity fetchVesselTransportDetailsForFishingTrip(String fishingTripId) {
         String sql = "SELECT DISTINCT ft from FishingTripEntity ft JOIN FETCH ft.fishingActivity a" +
                 "  JOIN FETCH a.faReportDocument fa" +
                 "  JOIN FETCH fa.vesselTransportMeans vt" +
-                "  JOIN FETCH vt.contactParty cparty "+
+                "  JOIN FETCH vt.contactParty cparty " +
                 "  JOIN FETCH cparty.structuredAddresses sa " +
                 "  JOIN FETCH cparty.contactPerson cPerson " +
                 "  JOIN FETCH ft.fishingTripIdentifiers fi " +
-                "  where fi.tripId =:fishingTripId and a is not null" ;
+                "  where fi.tripId =:fishingTripId and a is not null";
 
         TypedQuery<FishingTripEntity> typedQuery = em.createQuery(sql, FishingTripEntity.class);
-        typedQuery.setParameter("fishingTripId",fishingTripId);
+        typedQuery.setParameter("fishingTripId", fishingTripId);
         typedQuery.setMaxResults(1);
 
         return typedQuery.getSingleResult();
     }
 
     /**
-     *  Get all the Fishing Trip entities for matching Filters
+     * Get all the Fishing Trip entities for matching Filters
      *
-     * @param searchCriteriaMap Filters with single value
+     * @param searchCriteriaMap         Filters with single value
      * @param searchMapWithMultipleVals Filters with multiple values
-     * @return  List of all FishingTripEntities (Duplicate FishingTrips could be possible in this list)
+     * @return List of all FishingTripEntities (Duplicate FishingTrips could be possible in this list)
      * @throws ServiceException
      */
-
-    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<SearchFilter,String> searchCriteriaMap,Map<SearchFilter,List<String>> searchMapWithMultipleVals) throws ServiceException {
+    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(Map<SearchFilter, String> searchCriteriaMap, Map<SearchFilter, List<String>> searchMapWithMultipleVals) throws ServiceException {
 
         FishingTripSearch search = new FishingTripSearch();
 
@@ -79,19 +77,11 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleVals);
-        StringBuilder sqlToGetActivityList =search.createSQL(query); // Create SQL Dynamically based on Filters provided
-        log.debug("SQL:"+sqlToGetActivityList);
+        StringBuilder sqlToGetActivityList = search.createSQL(query); // Create SQL Dynamically based on Filters provided
+        log.debug("SQL:" + sqlToGetActivityList);
 
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
-        Query  listQuery = search.fillInValuesForTypedQuery( query,typedQuery);  // Add values to the Query built
-        List<FishingTripEntity> tripEntityList=null;
-        try{
-            tripEntityList=listQuery.getResultList();
-        }catch(Exception e){
-            log.error("Exception while trying to get FishingTrips for matching criteria",e);
-            throw new ServiceException("Exception while trying to get FishingTrips from database for matching criteria.");
-        }
-        return tripEntityList;
+        Query listQuery = search.fillInValuesForTypedQuery(query, typedQuery);  // Add values to the Query built
+        return listQuery.getResultList();
     }
-
 }

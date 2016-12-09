@@ -138,7 +138,6 @@ public class ActivityServiceBeanTest {
         PaginationDto pagination =new PaginationDto();
         pagination.setPageSize(4);
         pagination.setOffset(1);
-      //  query.setSearchCriteria(list);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
 
@@ -153,8 +152,6 @@ public class ActivityServiceBeanTest {
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
         assertNotNull(filterFishingActivityReportResultDTO.getResultList());
-      //  assertNotNull(filterFishingActivityReportResultDTO.getPagination());
-
     }
 
 
@@ -163,7 +160,6 @@ public class ActivityServiceBeanTest {
     public void getFishingActivityListByQuery_emptyResultSet() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        List<ListCriteria> list = new ArrayList<ListCriteria>();
 
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
         List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
@@ -173,7 +169,6 @@ public class ActivityServiceBeanTest {
         PaginationDto pagination =new PaginationDto();
         pagination.setPageSize(4);
         pagination.setOffset(1);
-        //  query.setSearchCriteria(list);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
 
@@ -187,11 +182,5 @@ public class ActivityServiceBeanTest {
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class), Mockito.any(Geometry.class));
         //Verify
          assertNotNull(filterFishingActivityReportResultDTO);
-      //  assertNotNull(filterFishingActivityReportResultDTO.getResultList());
-       // assertNotNull(filterFishingActivityReportResultDTO.getPagination());
-
     }
-
-
-
 }
