@@ -27,23 +27,23 @@ import javax.jms.*;
 @Slf4j
 @Stateless
 public class ActivityMessageProducerBean extends AbstractMessageProducer implements ActivityMessageProducer {
-	
+
     @Resource(lookup = MessageConstants.CONNECTION_FACTORY)
     private ConnectionFactory connectionFactory;
 
     private Connection connection;
 
-	@Resource(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE)
+    @Resource(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE)
     private Queue responseQueue;
 
-	@Resource(mappedName = MessageConstants.EXCHANGE_MODULE_QUEUE)
-	private Queue exchangeQueue;
-	
-	@Resource(mappedName = MessageConstants.ERS_MDR_QUEUE)
-	private Queue ersMdrQueue;
-	
-	@Resource(mappedName = MessageConstants.RULES_EVENT_QUEUE)
-	private Queue rulesQueue;
+    @Resource(mappedName = MessageConstants.EXCHANGE_MODULE_QUEUE)
+    private Queue exchangeQueue;
+
+    @Resource(mappedName = MessageConstants.ERS_MDR_QUEUE)
+    private Queue ersMdrQueue;
+
+    @Resource(mappedName = MessageConstants.RULES_EVENT_QUEUE)
+    private Queue rulesQueue;
 
     @Resource(mappedName = MessageConstants.ASSET_MODULE_QUEUE)
     private Queue assetsQueue;
@@ -51,26 +51,26 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
     @Resource(mappedName = MessageConstants.ACTIVITY_MESSAGE_QUEUE)
     private Queue activitySyncQueue;
 
-	
-	/**
-	 * Sends a message to Exchange Queue.
-	 * 
-	 * @param  text (to be sent to the queue)
-	 * @return messageID
-	 */
+
+    /**
+     * Sends a message to Exchange Queue.
+     *
+     * @param  text (to be sent to the queue)
+     * @return messageID
+     */
     @Override
-	public String sendRulesModuleMessage(String text) throws ActivityMessageException {
-		log.info("Sending Request to Exchange module.");		
-		String messageID = StringUtils.EMPTY;
-		try {
-			messageID = sendModuleMessage(text, ModuleQueue.RULES);
-		} catch (ActivityMessageException e) {
-			log.error("Error sending message to Exchange Module.",e);
+    public String sendRulesModuleMessage(String text) throws ActivityMessageException {
+        log.info("Sending Request to Exchange module.");
+        String messageID = StringUtils.EMPTY;
+        try {
+            messageID = sendModuleMessage(text, ModuleQueue.RULES);
+        } catch (ActivityMessageException e) {
+            log.error("Error sending message to Exchange Module.",e);
             throw e;
-		}
-		return messageID;
-	}
-	
+        }
+        return messageID;
+    }
+
     /**
      * Sends a message to a given Queue.
      *
@@ -86,9 +86,9 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
             TextMessage message = session.createTextMessage();
             message.setText(text);
             switch (queue) {
-            	case RULES:
-            		getProducer(session, rulesQueue).send(message);
-            		break;
+                case RULES:
+                    getProducer(session, rulesQueue).send(message);
+                    break;
                 case EXCHANGE:
                     getProducer(session, exchangeQueue).send(message);
                     break;
@@ -131,10 +131,10 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
             disconnectQueue();
         }
     }
-	
+
     /**
      * Sends a message to the recipient of the message (once a response is recieved)
-     * 
+     *
      * @param requestMessage
      * @param returnMessage
      * @return void
@@ -149,10 +149,10 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
             throw new ActivityMessageException("[ Error when sending message. ]", e);
         }
     }
-	
+
     /**
      * Creates a MessageProducer for the given destination;
-     * 
+     *
      * @param session
      * @param destination
      * @return MessageProducer
@@ -164,24 +164,24 @@ public class ActivityMessageProducerBean extends AbstractMessageProducer impleme
         producer.setTimeToLive(60000L);
         return producer;
     }
-    
+
     /**
      * Creates a new JMS Session and returns it;
-     * 
+     *
      * @return Session
      * @throws JMSException
      */
     private Session getNewSession() throws JMSException {
         if (connection == null) {
-        	 log.debug("Open connection to JMS broker");
-             try {
-                 connection = connectionFactory.createConnection();
-                 connection.start();
-                 return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-             } catch (JMSException | NullPointerException ex) {
-                 log.error("Error when opening connection to JMS broker", ex);
-                 throw new JMSException(ex.getMessage());
-             }
+            log.debug("Open connection to JMS broker");
+            try {
+                connection = connectionFactory.createConnection();
+                connection.start();
+                return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+            } catch (JMSException | NullPointerException ex) {
+                log.error("Error when opening connection to JMS broker", ex);
+                throw new JMSException(ex.getMessage());
+            }
         }
         return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
     }

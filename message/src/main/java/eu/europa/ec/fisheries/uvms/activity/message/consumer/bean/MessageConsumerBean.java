@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFMDRSyncMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -36,9 +35,9 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 @MessageDriven(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE, activationConfig = {
-    @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
-    @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-    @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.COMPONENT_MESSAGE_IN_QUEUE_NAME)
+        @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.COMPONENT_MESSAGE_IN_QUEUE_NAME)
 })
 public class MessageConsumerBean implements MessageListener {
 
@@ -47,10 +46,6 @@ public class MessageConsumerBean implements MessageListener {
     @Inject
     @GetFLUXFAReportMessageEvent
     Event<EventMessage> getFLUXFAReportMessageEvent;
-        
-    @Inject
-    @GetFLUXFMDRSyncMessageEvent
-    Event<EventMessage> getFLUXFMDRSyncMessageEvent;
 
     @Inject
     @GetFishingTripListEvent
@@ -89,12 +84,9 @@ public class MessageConsumerBean implements MessageListener {
                 case GET_FLUX_FA_REPORT:
                     getFLUXFAReportMessageEvent.fire(new EventMessage(textMessage));
                     break;
-                case GET_FLUX_MDR_ENTITY : 
-                	 getFLUXFMDRSyncMessageEvent.fire(new EventMessage(textMessage));
-                     break;
-              case GET_FISHING_TRIPS :
+                case GET_FISHING_TRIPS :
                     getFishingTripListEvent.fire(new EventMessage(textMessage));
-                     break;
+                    break;
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + request.getMethod().name() + "  is not implemented ]")));

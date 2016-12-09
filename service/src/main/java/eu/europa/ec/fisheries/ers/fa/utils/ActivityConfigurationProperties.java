@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.fa.utils;
 
-import eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration;
+import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 
 import java.util.HashMap;
 import java.util.List;
