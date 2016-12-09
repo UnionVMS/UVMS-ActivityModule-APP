@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 

@@ -499,12 +499,12 @@ public class MapperUtil {
     }
 
     public static FLUXReportDocument getFluxReportDocument() {
-        List<IDType> ids = Arrays.asList(getIdType("ID 1", "fhty58-gh586t-5tjf8-t58rjewe"));
+        List<IDType> ids = Arrays.asList(getIdType("flux_report_doc_1", "fhty58-gh586t-5tjf8-t58rjewe"));
         IDType referencedID = getIdType("Ref ID 1", "fhty58-gh586t-5tjf8-t58rjewe");
         DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
-        CodeType purposeCode = getCodeType("Purpose Code 1", "fhr596t-ght7u48-fjrudu5-tjfue8554");
-        final TextType purpose = getTextType("This is Test Text");
-        CodeType typeCode = getCodeType("Code Type 1", "fhty58-gh586t-5tjf8-t58rjewe");
+        CodeType purposeCode = getCodeType("5", "FLUX_GP_PURPOSE");
+        final TextType purpose = getTextType("Purpose Text");
+        CodeType typeCode = getCodeType("FluxReportTypeCode", "fhty58-gh586t-5tjf8-t58rjewe");
         FLUXParty ownerFLUXParty = new FLUXParty(Arrays.asList(getIdType("Owner flux party id 1", "58fjrut-tjfuri-586jte-5jfur")),
                 Arrays.asList(getTextType("This is sample text for owner flux party")));
         FLUXReportDocument fluxReportDocument = new FLUXReportDocument(ids, referencedID, creationDateTime, purposeCode, purpose, typeCode, ownerFLUXParty);
@@ -555,7 +555,7 @@ public class MapperUtil {
         DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
         CodeType purposeCode = getCodeType("9", "FLUX_GP_PURPOSE");
         CodeType typeCode = getCodeType("type Code1", "fhr574fh-thrud754-kgitjf754-gjtufe89");
-        List<IDType> ownerFluxPartyId = Arrays.asList(getIdType("Owner flux party id 1", "47rfh-5hry4-thfur75-4hf743"));
+        List<IDType> ownerFluxPartyId = Arrays.asList(getIdType("Owner_flux_party_id_1", "flux_Party_scheme_id"));
         List<TextType> names =Arrays.asList(getTextType("fluxPartyOwnerName 1"));
         FLUXParty fluxParty = new FLUXParty(ownerFluxPartyId,names);
         FLUXReportDocument fluxReportDocument = new FLUXReportDocument(ids, referenceId, creationDateTime, purposeCode, getTextType("Purpose"), typeCode, fluxParty);
@@ -566,7 +566,7 @@ public class MapperUtil {
 
 
     public static FAReportDocument getFaReportDocument() {
-        CodeType typeCode = getCodeType("DECLARATION", "fhr574fh-thrud754-kgitjf754-gjtufe89");
+        CodeType typeCode = getCodeType("DECLARATION", "FLUX_FA_REPORT_TYPE");
         CodeType fmcMarkerCode = getCodeType("Fmz marker 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
         List<IDType> relatedReportIDs = Arrays.asList(getIdType("ID 1", "47rfh-5hry4-thfur75-4hf743"));
         DateTimeType acceptanceDateTime = getDateTimeType("2016-07-01 11:15:00");
@@ -579,13 +579,13 @@ public class MapperUtil {
     }
 
     private static FishingActivity getStandardFishingActivity() {
-        List<IDType> ids = Arrays.asList(getIdType("Id 1", "fhr574fh-thrud754-kgitjf754-gjtufe89"));
+        List<IDType> ids = Arrays.asList(getIdType("Id_1", "fhr574fh-thrud754-kgitjf754-gjtufe89"));
         CodeType typeCode = getCodeType("FISHING_OPERATION", "FLUX_FA_TYPE");
         DateTimeType occurrenceDateTime = getDateTimeType("2016-07-01 11:15:00");
-        CodeType reasonCode = getCodeType("Reason code 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
+        CodeType reasonCode = getCodeType("Reason_code_1", "FA_REASON_DEPARTURE");
         CodeType vesselRelatedActivityCode = getCodeType("Vessel activity 1", "58thft-58fjd8-gt85eje-hjgute8");
-        CodeType fisheryTypeCode = getCodeType("Fishing Type code 1", "57thre-fn48320-fn39fjr-tjfow84");
-        CodeType speciesTargetCode = getCodeType("Species code 1", "47rfh-5hry4-thfur75-4hf743");
+        CodeType fisheryTypeCode = getCodeType("Fishing_Type_code 1", "FA_FISHERY");
+        CodeType speciesTargetCode = getCodeType("Species code 1", "FAO_SPECIES");
         QuantityType operationsQuantity = getQuantityType(100);
         MeasureType fishingDurationMeasure = getMeasureType(500, "C62", "4hr2yf0-t583thf-6jgttue8-6jtie844");
         List<FLAPDocument> specifiedFLAPDocument = Arrays.asList(getFlapDocument());
