@@ -10,39 +10,53 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
+
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by sanera on 24/06/2016.
  */
 public class FishingActivityQuery {
-    private Pagination pagination;
-    private Map<Filters,String> searchCriteriaMap;
-    private SortKey sortKey;
+    private PaginationDto pagination;
+    private Map<SearchFilter,String> searchCriteriaMap;
+    private Map<SearchFilter,List<String>> searchCriteriaMapMultipleValues;
+    private SortKey sorting;
 
-    public void setPagination(Pagination pagination) {
+
+    public void setPagination(PaginationDto pagination) {
         this.pagination = pagination;
     }
 
-    public Map<Filters, String> getSearchCriteriaMap() {
+    public Map<SearchFilter, String> getSearchCriteriaMap() {
         return searchCriteriaMap;
     }
 
-    public void setSearchCriteriaMap(Map<Filters, String> searchCriteriaMap) {
+    public void setSearchCriteriaMap(Map<SearchFilter, String> searchCriteriaMap) {
         this.searchCriteriaMap = searchCriteriaMap;
     }
 
-    public Pagination getPagination() {
+    public PaginationDto getPagination() {
 
         return pagination;
     }
 
-    public SortKey getSortKey() {
-        return sortKey;
+    public SortKey getSorting() {
+        return sorting;
     }
 
-    public void setSortKey(SortKey sortKey) {
-        this.sortKey = sortKey;
+    public void setSorting(SortKey sorting) {
+        this.sorting = sorting;
+    }
+
+    public Map<SearchFilter, List<String>> getSearchCriteriaMapMultipleValues() {
+        return searchCriteriaMapMultipleValues;
+    }
+
+    public void setSearchCriteriaMapMultipleValues(Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues) {
+        this.searchCriteriaMapMultipleValues = searchCriteriaMapMultipleValues;
     }
 
     @Override
@@ -50,7 +64,7 @@ public class FishingActivityQuery {
         return "FishingActivityQuery{" +
                 "pagination=" + pagination +
                 ", searchCriteriaMap=" + searchCriteriaMap +
-                ", sortKey=" + sortKey +
+
                 '}';
     }
 }

@@ -8,7 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.mdr.message.constants;
+package eu.europa.ec.fisheries.uvms.activity.message.constants;
 
 public class MessageConstants {
 
@@ -27,8 +27,8 @@ public class MessageConstants {
     public static final String EXCHANGE_MODULE_QUEUE = "java:/jms/queue/UVMSExchangeEvent";
 
     public static final String ASSET_MODULE_QUEUE = "java:/jms/queue/UVMSAssetEvent";
-    
-	public static final String MODULE_NAME = "activity";
-	public static final String ERS_MDR_QUEUE = "java:/jms/queue/ERSMDRPlugin";
-	public static final String RULES_EVENT_QUEUE = "java:/jms/queue/UVMSRulesEvent";
+
+    public static final String MODULE_NAME = "activity";
+    public static final String ERS_MDR_QUEUE = "java:/jms/queue/ERSMDRPlugin";
+    public static final String RULES_EVENT_QUEUE = "java:/jms/queue/UVMSRulesEvent";
 }

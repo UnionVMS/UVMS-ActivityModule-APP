@@ -16,8 +16,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.*;
-
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
@@ -27,12 +26,14 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
@@ -40,7 +41,6 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -50,7 +50,6 @@ import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
 import java.util.*;
 
 /**
@@ -78,6 +77,7 @@ public class FishingTripServiceBean implements FishingTripService {
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
     private FishingTripIdentifierDao fishingTripIdentifierDao;
+    private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
 
     private static final String PREVIOUS = "PREVIOUS";
@@ -86,14 +86,15 @@ public class FishingTripServiceBean implements FishingTripService {
     @PostConstruct
     public void init() {
         fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
-        vesselIdentifiersDao     = new VesselIdentifiersDao(em);
-        fishingActivityDao       = new FishingActivityDao(em);
-        faReportDocumentDao      = new FaReportDocumentDao(em);
-        faCatchDao               = new FaCatchDao(em);
+        vesselIdentifiersDao = new VesselIdentifiersDao(em);
+        fishingActivityDao = new FishingActivityDao(em);
+        faReportDocumentDao = new FaReportDocumentDao(em);
+        faCatchDao = new FaCatchDao(em);
+        fishingTripDao = new FishingTripDao(em);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) {
@@ -128,11 +129,11 @@ public class FishingTripServiceBean implements FishingTripService {
             log.info("Count the number of previous and next result based on count received");
             count = count - 1;
             if (count % 2 == 0) {
-                previous = count/2;
-                next = count/2;
+                previous = count / 2;
+                next = count / 2;
             } else if (count % 2 == 1) {
-                previous = count/2 + 1;
-                next = count/2;
+                previous = count / 2 + 1;
+                next = count / 2;
             }
             if (previous > previousTripCount) {
                 previous = previousTripCount;
@@ -146,7 +147,7 @@ public class FishingTripServiceBean implements FishingTripService {
                 }
             }
         }
-        return ImmutableMap.<String, Integer> builder().put(PREVIOUS, previous).put(NEXT, next).build();
+        return ImmutableMap.<String, Integer>builder().put(PREVIOUS, previous).put(NEXT, next).build();
     }
 
     private String getCurrentTrip(List<VesselIdentifierEntity> vesselIdentifiers) {
@@ -194,57 +195,52 @@ public class FishingTripServiceBean implements FishingTripService {
     }
 
 
-
     @Override
     public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId) {
 
         VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
-        try {
 
-            List<VesselIdentifierEntity> latestVesselIdentifiers = vesselIdentifiersDao.getLatestVesselIdByTrip(fishingTripId);
-            if(CollectionUtils.isEmpty(latestVesselIdentifiers)
-                    || latestVesselIdentifiers.get(0) == null
-                    || latestVesselIdentifiers.get(0).getVesselTransportMeans() == null){
-                return vesselDetailsTripDTO;
-            }
-
-            VesselTransportMeansEntity vesselTransportMeansEntity  = latestVesselIdentifiers.get(0).getVesselTransportMeans();
-
-            // Fill the name and vesselIdentifier Details.
-            vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
-            Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
-            if (vesselIdentifiers != null) {
-                for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
-                    setVesselIdentifierDetails(vesselIdentifier, vesselDetailsTripDTO);
-                }
-            }
-
-            // Fill the flagState.
-            RegistrationEventEntity registrationEventEntity = vesselTransportMeansEntity.getRegistrationEvent();
-            if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null)
-                vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
-
-            // Fill the contactPersons List and check if is captain.
-            Set<ContactPartyEntity> contactParties             = vesselTransportMeansEntity.getContactParty();
-            Set<ContactPersonDetailsDTO> contactPersonsListDTO = vesselDetailsTripDTO.getContactPersons();
-            if(CollectionUtils.isNotEmpty(contactParties)){
-                for (ContactPartyEntity contactParty : contactParties) {
-                    ContactPersonDetailsDTO contactPersDTO           = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsWithRolesDTO(contactParty.getContactPerson(), contactParty.getContactPartyRole());
-                    Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
-                    contactPersDTO.setAdresses(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses));
-                    checkAndSetIsCaptain(contactPersDTO, contactParty);
-                    contactPersonsListDTO.add(contactPersDTO);
-                }
-                vesselDetailsTripDTO.setContactPersons(contactPersonsListDTO);
-            }
-
-            // If some data are missing from the current DTOs then will make a call to
-            // ASSETS module with the data we already have to enrich it.
-            enrichWithAssetsModuleDataIfNeeded(vesselDetailsTripDTO);
-
-        } catch (Exception e) {
-            log.error("Error while trying to get Vessel Details.", e);
+        List<VesselIdentifierEntity> latestVesselIdentifiers = vesselIdentifiersDao.getLatestVesselIdByTrip(fishingTripId);
+        if (CollectionUtils.isEmpty(latestVesselIdentifiers)
+                || latestVesselIdentifiers.get(0) == null
+                || latestVesselIdentifiers.get(0).getVesselTransportMeans() == null) {
+            return vesselDetailsTripDTO;
         }
+
+        VesselTransportMeansEntity vesselTransportMeansEntity = latestVesselIdentifiers.get(0).getVesselTransportMeans();
+
+        // Fill the name and vesselIdentifier Details.
+        vesselDetailsTripDTO.setName(vesselTransportMeansEntity.getName());
+        Set<VesselIdentifierEntity> vesselIdentifiers = vesselTransportMeansEntity.getVesselIdentifiers();
+        if (vesselIdentifiers != null) {
+            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+                setVesselIdentifierDetails(vesselIdentifier, vesselDetailsTripDTO);
+            }
+        }
+
+        // Fill the flagState.
+        RegistrationEventEntity registrationEventEntity = vesselTransportMeansEntity.getRegistrationEvent();
+        if (registrationEventEntity != null && registrationEventEntity.getRegistrationLocation() != null) {
+            vesselDetailsTripDTO.setFlagState(registrationEventEntity.getRegistrationLocation().getLocationCountryId());
+        }
+
+        // Fill the contactPersons List and check if is captain.
+        Set<ContactPartyEntity> contactParties = vesselTransportMeansEntity.getContactParty();
+        Set<ContactPersonDetailsDTO> contactPersonsListDTO = vesselDetailsTripDTO.getContactPersons();
+        if (CollectionUtils.isNotEmpty(contactParties)) {
+            for (ContactPartyEntity contactParty : contactParties) {
+                ContactPersonDetailsDTO contactPersDTO = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsWithRolesDTO(contactParty.getContactPerson(), contactParty.getContactPartyRole());
+                Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
+                contactPersDTO.setAdresses(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses));
+                checkAndSetIsCaptain(contactPersDTO, contactParty);
+                contactPersonsListDTO.add(contactPersDTO);
+            }
+            vesselDetailsTripDTO.setContactPersons(contactPersonsListDTO);
+        }
+
+        // If some data are missing from the current DTOs then will make a call to
+        // ASSETS module with the data we already have to enrich it.
+        enrichWithAssetsModuleDataIfNeeded(vesselDetailsTripDTO);
 
         return vesselDetailsTripDTO;
     }
@@ -257,8 +253,8 @@ public class FishingTripServiceBean implements FishingTripService {
      */
     private void checkAndSetIsCaptain(ContactPersonDetailsDTO contactPersDTO, ContactPartyEntity contactParty) {
         Set<ContactPartyRoleEntity> contactPartyRoles = contactParty.getContactPartyRole();
-        if(CollectionUtils.isNotEmpty(contactPartyRoles)){
-            for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
+        if (CollectionUtils.isNotEmpty(contactPartyRoles)) {
+            for (ContactPartyRoleEntity roleEntity : contactPartyRoles) {
                 contactPersDTO.setCaptain(StringUtils.equalsIgnoreCase(roleEntity.getRoleCode(), "MASTER"));
             }
         }
@@ -271,7 +267,7 @@ public class FishingTripServiceBean implements FishingTripService {
      */
 
     private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsTripDTO vesselDetailsTripDTO) {
-        if(someVesselDetailsAreMissing(vesselDetailsTripDTO)){
+        if (someVesselDetailsAreMissing(vesselDetailsTripDTO)) {
             String response = null;
             TextMessage message = null;
             try {
@@ -279,22 +275,22 @@ public class FishingTripServiceBean implements FishingTripService {
                 String assetsRequest = AssetsRequestMapper.mapToAssetsRequest(vesselDetailsTripDTO);
                 // Send message to Assets module and get response;
                 String messageID = activityProducer.sendAssetsModuleSynchronousMessage(assetsRequest);
-                message          = activityConsumer.getMessage(messageID, TextMessage.class);
-                response         = message.getText();
-            } catch (Exception e){
+                message = activityConsumer.getMessage(messageID, TextMessage.class);
+                response = message.getText();
+            } catch (Exception e) {
                 log.error("Error while trying to send message to Assets module.", e);
             }
-            if(isFaultMessage(message)){
-                log.error("The Asset module responded with a fault message related to Vessel Details Enrichment: ",response);
-                log.debug("The original VesselDetailsTripDTO that the request for enrichment was made for : ",vesselDetailsTripDTO.toString());
+            if (isFaultMessage(message)) {
+                log.error("The Asset module responded with a fault message related to Vessel Details Enrichment: ", response);
+                log.debug("The original VesselDetailsTripDTO that the request for enrichment was made for : ", vesselDetailsTripDTO.toString());
                 return;
             }
-            if(StringUtils.isNotEmpty(response)){
+            if (StringUtils.isNotEmpty(response)) {
                 try {
                     ListAssetResponse listResp = JAXBMarshaller.unmarshallTextMessage(response, ListAssetResponse.class);
                     AssetsRequestMapper.mapAssetsResponseToVesselDetailsTripDTO(listResp, vesselDetailsTripDTO);
-                } catch (ModelMarshallException e) {
-                    log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment",e);
+                } catch (ActivityModelMarshallException e) {
+                    log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment", e);
                 }
             }
         }
@@ -310,7 +306,7 @@ public class FishingTripServiceBean implements FishingTripService {
         try {
             JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
             return true;
-        } catch (ModelMarshallException e) {
+        } catch (ActivityModelMarshallException e) {
             return false;
         }
     }
@@ -333,8 +329,6 @@ public class FishingTripServiceBean implements FishingTripService {
     }
 
     /**
-     *
-     *
      * @param vesselIdentifier
      * @param vesselDetailsTripDTO
      */
@@ -370,21 +364,18 @@ public class FishingTripServiceBean implements FishingTripService {
     // Get data for Fishing Trip summary view
     @Override
     public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException {
-
         List<ReportDTO> reportDTOList = new ArrayList<>();
-        // get short summary of Fishing Trip
-        Map<String, FishingActivityTypeDTO> summary = new HashMap<>();
-        // All Activity Reports and related data  for Fishing Trip
-        Geometry multipolygon = getRestrictedAreaGeom(datasets);
+        Map<String, FishingActivityTypeDTO> summary = new HashMap<>(); // get short summary of Fishing Trip
+        Geometry multipolygon = getRestrictedAreaGeom(datasets); // All Activity Reports and related data  for Fishing Trip
         populateFishingActivityReportListAndSummary(fishingTripId, reportDTOList, summary, multipolygon);
-        return  populateFishingTripSummary(fishingTripId, reportDTOList, summary);
+        return populateFishingTripSummary(fishingTripId, reportDTOList, summary);
     }
 
     private Geometry getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
         if (datasets == null || datasets.isEmpty()) {
             return null;
         }
-        List<AreaIdentifierType> areaIdentifierTypes =  UsmUtils.convertDataSetToAreaId(datasets);
+        List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
         String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
         return GeometryUtils.wktToGeom(areaWkt);
     }
@@ -392,9 +383,9 @@ public class FishingTripServiceBean implements FishingTripService {
     /**
      * Populates and return a FishingTripSummaryViewDTO with the inputParameters values.
      *
-     * @param  fishingTripId
-     * @param  reportDTOList
-     * @param  summary
+     * @param fishingTripId
+     * @param reportDTOList
+     * @param summary
      * @return fishingTripSummaryViewDTO
      */
     private FishingTripSummaryViewDTO populateFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList, Map<String, FishingActivityTypeDTO> summary) {
@@ -409,12 +400,11 @@ public class FishingTripServiceBean implements FishingTripService {
     }
 
 
-
     private void populateFishingActivityReportListAndSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                              Map<String, FishingActivityTypeDTO> summary,
                                                              Geometry multipolygon) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
-        if (CollectionUtils.isEmpty(fishingActivityList)){
+        if (CollectionUtils.isEmpty(fishingActivityList)) {
             return;
         }
 
@@ -456,7 +446,7 @@ public class FishingTripServiceBean implements FishingTripService {
      * @return
      */
     @Override
-    public MessageCountDTO getMessageCountersForTripId(String tripId){
+    public MessageCountDTO getMessageCountersForTripId(String tripId) {
         return createMessageCounter(faReportDocumentDao.getFaReportDocumentsForTrip(tripId));
     }
 
@@ -465,47 +455,46 @@ public class FishingTripServiceBean implements FishingTripService {
      *
      * @param faReportDocumentList
      */
-    public MessageCountDTO createMessageCounter(List<FaReportDocumentEntity> faReportDocumentList){
+    public MessageCountDTO createMessageCounter(List<FaReportDocumentEntity> faReportDocumentList) {
 
         MessageCountDTO messagesCounter = new MessageCountDTO();
-        if(CollectionUtils.isEmpty(faReportDocumentList)){
+        if (CollectionUtils.isEmpty(faReportDocumentList)) {
             return messagesCounter;
         }
 
         // Reports total
         messagesCounter.setNoOfReports(faReportDocumentList.size());
 
-        for(FaReportDocumentEntity faReport : faReportDocumentList){
+        for (FaReportDocumentEntity faReport : faReportDocumentList) {
             String faDocumentType = faReport.getTypeCode();
-            String purposeCode    = faReport.getFluxReportDocument().getPurpose();
+            String purposeCode = faReport.getFluxReportDocument().getPurpose();
 
             // Declarations / Notifications
             if (ActivityConstants.DECLARATION.equalsIgnoreCase(faDocumentType)) {
-                messagesCounter.setNoOfDeclarations(messagesCounter.getNoOfDeclarations()+1);
+                messagesCounter.setNoOfDeclarations(messagesCounter.getNoOfDeclarations() + 1);
             } else if (ActivityConstants.NOTIFICATION.equalsIgnoreCase(faDocumentType)) {
-                messagesCounter.setNoOfNotifications(messagesCounter.getNoOfNotifications()+1);
+                messagesCounter.setNoOfNotifications(messagesCounter.getNoOfNotifications() + 1);
             }
 
             // Fishing operations
             Set<FishingActivityEntity> faEntitiyList = faReport.getFishingActivities();
-            if(CollectionUtils.isNotEmpty(faEntitiyList)){
-                for(FishingActivityEntity faEntity : faEntitiyList){
-                    if (ActivityConstants.FISHING_OPERATION.equalsIgnoreCase(faEntity.getTypeCode())){
-                        messagesCounter.setNoOfFishingOperations(messagesCounter.getNoOfFishingOperations()+1);
+            if (CollectionUtils.isNotEmpty(faEntitiyList)) {
+                for (FishingActivityEntity faEntity : faEntitiyList) {
+                    if (ActivityConstants.FISHING_OPERATION.equalsIgnoreCase(faEntity.getTypeCode())) {
+                        messagesCounter.setNoOfFishingOperations(messagesCounter.getNoOfFishingOperations() + 1);
                     }
                 }
             }
 
             // PurposeCode : Deletions / Cancellations / Corrections
-            if (ActivityConstants.DELETE.equalsIgnoreCase(purposeCode)){
-                messagesCounter.setNoOfDeletions(messagesCounter.getNoOfDeletions()+1);
-            } else if (ActivityConstants.CANCELLATION.equalsIgnoreCase(purposeCode)){
-                messagesCounter.setNoOfCancellations(messagesCounter.getNoOfCancellations()+1);
+            if (ActivityConstants.DELETE.equalsIgnoreCase(purposeCode)) {
+                messagesCounter.setNoOfDeletions(messagesCounter.getNoOfDeletions() + 1);
+            } else if (ActivityConstants.CANCELLATION.equalsIgnoreCase(purposeCode)) {
+                messagesCounter.setNoOfCancellations(messagesCounter.getNoOfCancellations() + 1);
             } else if (ActivityConstants.CORRECTION.equalsIgnoreCase(purposeCode)) {
                 messagesCounter.setNoOfCorrections(messagesCounter.getNoOfCorrections() + 1);
             }
         }
-
         return messagesCounter;
     }
 
@@ -516,30 +505,41 @@ public class FishingTripServiceBean implements FishingTripService {
      * @return
      */
     @Override
-    public Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId){
+    public Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId) {
         return FaCatchMapper.INSTANCE.mapCatchesToSummaryDTO(faCatchDao.findFaCatchesByFishingTrip(fishingTripId));
     }
 
-
     /**
-     *  Retrieve GEO data for fishing trip Map for tripID
+     * Retrieve GEO data for fishing trip Map for tripID
+     *
      * @param tripId
      * @return
      */
-   @Override
-    public ObjectNode getTripMapDetailsForTripId(String tripId){
+    @Override
+    public ObjectNode getTripMapDetailsForTripId(String tripId) {
 
-       log.info("Get GEO data for Fishing Trip for tripId:"+tripId);
-       List<FaReportDocumentEntity> faReportDocumentEntityList=  faReportDocumentDao.getLatestFaReportDocumentsForTrip(tripId);
-       List<Geometry> geoList= new ArrayList<>();
-       for(FaReportDocumentEntity entity :faReportDocumentEntityList){
-           if(entity.getGeom() !=null)
-               geoList.add(entity.getGeom());
+        log.info("Get GEO data for Fishing Trip for tripId:" + tripId);
+        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.getLatestFaReportDocumentsForTrip(tripId);
+        List<Geometry> geoList = new ArrayList<>();
+        for (FaReportDocumentEntity entity : faReportDocumentEntityList) {
+            if (entity.getGeom() != null)
+                geoList.add(entity.getGeom());
 
-       }
+        }
+        return FishingTripToGeoJsonMapper.toJson(geoList);
+    }
 
-       return FishingTripToGeoJsonMapper.toJson(geoList);
+    @Override
+    public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter, String> searchCriteriaMap, Map<SearchFilter, List<String>> searchMapWithMultipleVals) throws ServiceException {
+        log.info("getFishingTripResponse For Filter");
+        if ((searchCriteriaMap == null || searchCriteriaMap.isEmpty()) && (searchMapWithMultipleVals == null || searchMapWithMultipleVals.isEmpty())) {
+            return new FishingTripResponse();
+        }
+        List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap, searchMapWithMultipleVals);
+        log.debug("Fishing trips received from db:" + fishingTripList.size());
 
+        // build Fishing trip response from FishingTripEntityList and return
+        return new FishingTripSearch().buildFishingTripSearchRespose(fishingTripList);
     }
 
 }

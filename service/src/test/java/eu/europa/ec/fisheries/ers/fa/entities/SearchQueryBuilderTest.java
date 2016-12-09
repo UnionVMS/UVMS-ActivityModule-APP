@@ -13,8 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import eu.europa.ec.fisheries.ers.service.search.*;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivitySearch;
+import eu.europa.ec.fisheries.ers.service.search.SearchQueryBuilder;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,33 +45,36 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
     public void testCreateSQL() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
-        searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
-        searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
-        searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
-        searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
-        searchCriteriaMap.put(Filters.PURPOSE, "9");
-        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
-        searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
-        searchCriteriaMap.put(Filters.SPECIES, "PLE");
-        searchCriteriaMap.put(Filters.MASTER, "MARK");
-        searchCriteriaMap.put(Filters.AREAS, "27.4.b");
-        searchCriteriaMap.put(Filters.PORT, "GBR");
-        searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
-        searchCriteriaMap.put(Filters.WEIGHT_MEASURE, "TNE");
-        searchCriteriaMap.put(Filters.SOURCE, "FLUX");
+      /*  searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27 07:47:31");
+        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27 07:47:31");
+        searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
+        searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
+        searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");*/
+        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+    /*    searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
+        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
+        searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
+        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");*/
 
-        query.setSortKey(new SortKey(Filters.PURPOSE, SortOrder.ASC));
+   //     query.setSortKey(new SortKey(SearchFilter.PURPOSE, SortOrder.ASC));
         query.setSearchCriteriaMap(searchCriteriaMap);
-        query.setPagination( new Pagination(1,2));
-        query.setSortKey(new SortKey(Filters.FROM_NAME, SortOrder.ASC));
-
-        StringBuilder sql= SearchQueryBuilder.createSQL(query);
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+        query.setPagination( pagination);
+     //   query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
+        SearchQueryBuilder search= new FishingActivitySearch();
+        StringBuilder sql= search.createSQL(query);
         System.out.println("done:" + sql);
         assertNotNull(sql);
 
@@ -77,33 +85,46 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
     public void testCreateSQL_DateSorting() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<Filters,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
-        searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27 07:47:31");
-        searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27 07:47:31");
-        searchCriteriaMap.put(Filters.VESSEL_NAME, "vessel1");
-        searchCriteriaMap.put(Filters.VESSEL_IDENTIFIRE, "CFR123");
-        searchCriteriaMap.put(Filters.PURPOSE, "9");
-        searchCriteriaMap.put(Filters.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(Filters.GEAR, "GEAR_TYPE");
-        searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
-        searchCriteriaMap.put(Filters.SPECIES, "PLE");
-        searchCriteriaMap.put(Filters.MASTER, "MARK");
-        searchCriteriaMap.put(Filters.AREAS, "27.4.b");
-        searchCriteriaMap.put(Filters.PORT, "GBR");
-        searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
-        searchCriteriaMap.put(Filters.WEIGHT_MEASURE, "TNE");
-        searchCriteriaMap.put(Filters.SOURCE, "FLUX");
+        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27 07:47:31");
+        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27 07:47:31");
+        searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
+        searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
+        searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
+       // searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+        searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
+        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
+        searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
+        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
-        query.setSortKey(new SortKey(Filters.PERIOD_START, SortOrder.ASC));
+        SortKey sortingDto = new SortKey();
+        sortingDto.setSortBy(SearchFilter.PERIOD_START);
+        sortingDto.setReversed(false);
+        query.setSorting(sortingDto);
+
         query.setSearchCriteriaMap(searchCriteriaMap);
-        query.setPagination( new Pagination(1,2));
-        query.setSortKey(new SortKey(Filters.FROM_NAME, SortOrder.ASC));
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+        query.setPagination( pagination);
 
-        StringBuilder sql= SearchQueryBuilder.createSQL(query);
+        SortKey sortingDto2 = new SortKey();
+        sortingDto2.setSortBy(SearchFilter.FROM_NAME);
+        sortingDto2.setReversed(false);
+        query.setSorting(sortingDto);
+        query.setSorting(sortingDto2);
+        SearchQueryBuilder search= new FishingActivitySearch();
+        StringBuilder sql= search.createSQL(query);
+
         System.out.println("done:" + sql);
         assertNotNull(sql);
 

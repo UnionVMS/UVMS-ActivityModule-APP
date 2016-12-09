@@ -11,7 +11,7 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.mdr.message.producer;
+package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
@@ -26,13 +26,13 @@ import javax.jms.Destination;
  */
 @Stateless
 @LocalBean
-public class AssetProducerBean extends AbstractProducer {
+public class MovementProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_ASSET_EVENT)
+    @Resource(mappedName = MessageConstants.QUEUE_MODULE_MOVEMENT)
     private Destination destination;
 
     @Override
-    public Destination getDestination() {
+    protected Destination getDestination() {
         return destination;
     }
 

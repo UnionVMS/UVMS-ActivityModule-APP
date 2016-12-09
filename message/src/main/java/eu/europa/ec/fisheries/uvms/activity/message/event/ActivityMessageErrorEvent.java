@@ -11,28 +11,19 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.mdr.message.producer;
+package eu.europa.ec.fisheries.uvms.activity.message.event;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
-
-import javax.annotation.Resource;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.Destination;
+import javax.inject.Qualifier;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by padhyad on 10/12/2016.
+ * Created by padhyad on 12/9/2016.
  */
-@Stateless
-@Local
-public class SpatialProducerBean extends AbstractProducer {
-
-    @Resource(mappedName = MessageConstants.QUEUE_MODULE_SPATIAL)
-    private Destination destination;
-
-    @Override
-    protected Destination getDestination() {
-        return destination;
-    }
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface ActivityMessageErrorEvent {
 }

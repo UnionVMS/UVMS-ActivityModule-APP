@@ -14,9 +14,15 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
 
@@ -42,4 +48,45 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         assertNotNull(fishingTripEntity.getFaCatch());
         assertNotNull(fishingTripEntity.getFishingActivity());
     }
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripsForMatchingFilterCriteria() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+
+
+  //      searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27T07:47:31");
+   //     searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27T07:47:31");
+
+     //   searchCriteriaMap.put(Filters.PURPOSE, "9");
+  //      searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+     //   searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
+    //    searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
+
+//        searchCriteriaMap.put(Filters.SPECIES, "PLE");
+ //       searchCriteriaMap.put(Filters.MASTER, "MARK");
+   //     searchCriteriaMap.put(Filters.AREAS, "27.4.b");
+     //   searchCriteriaMap.put(Filters.PORT, "GBR");
+
+       // searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
+      //  searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues=new ArrayList<>();
+        activityTypeValues.add("FISHING_OPERATION");
+        activityTypeValues.add("DEPARTURE");
+        activityTypeValues.add("ARRIVAL");
+
+
+        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+        List<FishingTripEntity> list= dao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap,searchCriteriaMapMultiVal);
+
+        System.out.println("done:" + list.size());
+
+        assertNotNull(list);
+
+    }
+
 }

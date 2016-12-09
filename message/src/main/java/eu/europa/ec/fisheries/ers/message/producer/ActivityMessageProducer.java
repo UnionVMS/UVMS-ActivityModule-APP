@@ -10,8 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.message.producer;
 
-import eu.europa.ec.fisheries.uvms.mdr.message.exception.ActivityMessageException;
-import eu.europa.ec.fisheries.uvms.mdr.message.constants.ModuleQueue;
+import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
+import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
 
 import javax.ejb.Local;
 import javax.ejb.TransactionAttribute;

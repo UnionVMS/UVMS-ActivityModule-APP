@@ -102,4 +102,12 @@ public class FishingTripEntity implements Serializable {
 		this.fishingTripIdentifiers = fishingTripIdentifiers;
 	}
 
+	@Override
+	public String toString() {
+		return "FishingTripEntity{" +
+				"id=" + id +
+				", typeCode='" + typeCode + '\'' +
+				", typeCodeListId='" + typeCodeListId + '\'' +
+				'}';
+	}
 }

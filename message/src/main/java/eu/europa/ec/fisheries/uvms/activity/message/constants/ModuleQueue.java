@@ -8,40 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.mdr.message.event.carrier;
+package eu.europa.ec.fisheries.uvms.activity.message.constants;
 
-import javax.jms.TextMessage;
-
-/**
- **/
-public class EventMessage {
-
-    private TextMessage jmsMessage;
-    private String errorMessage;
-
-    public EventMessage(TextMessage jmsMessage) {
-        this.jmsMessage = jmsMessage;
-    }
-
-    public EventMessage(TextMessage jmsMessage, String errorMessage) {
-        this.jmsMessage = jmsMessage;
-        this.errorMessage = errorMessage;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public TextMessage getJmsMessage() {
-        return jmsMessage;
-    }
-
-    public void setJmsMessage(TextMessage jmsMessage) {
-        this.jmsMessage = jmsMessage;
-    }
-
+public enum ModuleQueue {
+    EXCHANGE, ERSMDRPLUGINQUEUE, RULES, ASSET;
 }

@@ -15,8 +15,8 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
-import eu.europa.ec.fisheries.uvms.mdr.message.consumer.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.mdr.message.producer.SpatialProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
