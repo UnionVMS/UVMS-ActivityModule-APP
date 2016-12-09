@@ -83,7 +83,6 @@ public class SearchQueryBuilder {
             case MASTER:
                 if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1)  // If vesssel table is already joined, use join string accordingly
                     joinString = FilterMap.MASTER_MAPPING;
-
                 appendJoinString(sql, joinString);
                 break;
             case VESSEL_IDENTIFIRE:
@@ -192,7 +191,7 @@ public class SearchQueryBuilder {
             for (Filters key : keySet) {
 
                 if ( (Filters.QUNTITY_MIN.equals(key) && keySet.contains(Filters.QUNTITY_MAX)) || mappings.get(key) == null) { // skip this as MIN and MAX both are required to form where part. Treat it differently
-                    continue;
+                  continue;
                 }
                 String mapping = mappings.get(key).getCondition();
                 if (i != 0) {

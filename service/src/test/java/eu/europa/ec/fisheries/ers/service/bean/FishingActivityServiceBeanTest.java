@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
+import eu.europa.ec.fisheries.uvms.mdr.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;

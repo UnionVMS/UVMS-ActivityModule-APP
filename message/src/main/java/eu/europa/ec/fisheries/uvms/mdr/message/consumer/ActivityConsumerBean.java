@@ -11,22 +11,28 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.rest.resources.util;
+package eu.europa.ec.fisheries.uvms.mdr.message.consumer;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.message.AbstractConsumer;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.*;
+import javax.annotation.Resource;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.jms.Destination;
 
 /**
- * Created by padhyad on 8/17/2016.
+ * Created by padhyad on 10/12/2016.
  */
-@Inherited
-@InterceptorBinding
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface IUserRoleInterceptor {
+@Stateless
+@Local
+public class ActivityConsumerBean extends AbstractConsumer {
 
-    @Nonbinding ActivityFeaturesEnum[] requiredUserRole() default ActivityFeaturesEnum.ACTIVITY_ALLOWED;
+    @Resource(mappedName = "java:/jms/queue/UVMSActivity")
+    private Destination destination;
+
+    @Override
+    public Destination getDestination() {
+        return destination;
+    }
 }

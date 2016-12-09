@@ -64,8 +64,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     })
     public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
 
-
-
     public abstract List<FaReportCorrectionDTO> mapToFaReportCorrectionDtoList(List<FaReportDocumentEntity> faReportDocumentEntities);
 
     @Mappings({
@@ -77,8 +75,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     protected String setStatusAsNew() {
         return FaReportStatusEnum.NEW.getStatus();
     }
-
-
 
     protected Set<FishingActivityEntity> getFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
         if (fishingActivities == null || fishingActivities.isEmpty()) {

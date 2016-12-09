@@ -20,8 +20,8 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 
-import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.mdr.message.exception.ActivityMessageException;
+import eu.europa.ec.fisheries.uvms.mdr.message.constants.MessageConstants;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

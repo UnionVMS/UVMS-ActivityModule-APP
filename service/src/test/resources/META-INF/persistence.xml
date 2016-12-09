@@ -6,96 +6,7 @@
 	<persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-		<!-- MDR Activity entities -->
-		<class>eu.europa.ec.fisheries.mdr.domain.ActivityConfiguration</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MdrCodeListStatus</class>
 		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ConversionFactor</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrFishingCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingCountriesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingPlaces</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNafoStock</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNeafcFishingGrounds</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNeafcStocks</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrReportIndicatorList</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrReportingCountriesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrReportingPeriodCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrUnitsCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.EffortTargetSpeciesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.EffortZonesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsEventsCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsGearTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsMessageTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsReasonForReturnCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsReturnStatusCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsSendersRecipientsList</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FaoAreaCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishFreshnessCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishPackagingCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishPresentationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishPreservationStateCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishSizeCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GearTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GfcmStatisticalRectanglesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.IcesStatisticalRectanglesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.LocationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MeansOfWeightMeasuringCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ProducersOrganizationUseCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ProductDestinationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.RegionalFisheriesManagementOrganizationsCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.RelocationDestinationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SenderTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SovereigntyWatersCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.TerritoryAndCurrencyISOCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.VesselActivityCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.VesselTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.WithdrawnCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ActionType</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ConversionFactor</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrFishingCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingCountriesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingPlaces</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNafoStock</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNeafcFishingGrounds</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrNeafcStocks</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrReportIndicatorList</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrReportingCountriesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrReportingPeriodCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrUnitsCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.EffortTargetSpeciesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.EffortZonesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsEventsCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsGearTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsMessageTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsReasonForReturnCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsReturnStatusCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ErsSendersRecipientsList</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FaoAreaCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishFreshnessCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishPackagingCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishPresentationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishPreservationStateCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.FishSizeCategoryCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GearTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.GfcmStatisticalRectanglesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.IcesStatisticalRectanglesCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.LocationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.MeansOfWeightMeasuringCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ProducersOrganizationUseCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.ProductDestinationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.RegionalFisheriesManagementOrganizationsCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.RelocationDestinationCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SenderTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SovereigntyWatersCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.SpeciesISO3Codes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.TerritoryAndCurrencyISOCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.VesselActivityCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.VesselTypeCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.WithdrawnCodes</class>
-		<class>eu.europa.ec.fisheries.mdr.domain.CrLandingIndicatorCodes</class>
-
 		<!-- ERS Activity entities -->
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity</class>
@@ -148,8 +59,17 @@
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
 			<property name="javax.persistence.schema-generation.create-database-schemas" value="true" />
-			<property name="hibernate.search.default.directory_provider" value="filesystem"/>
-			<property name="hibernate.search.default.indexBase" value="target"/>
+
+			<property name="show_sql" value="true" />
+			<property name="format_sql" value="true" />
+			<property name="use_sql_comments" value="true" />
+
+			<!--HIBERNATE SEARCH PROPS-->
+			<property name="hibernate.search.default.directory_provider"
+					  value="filesystem"/>
+
+			<property name="hibernate.search.default.indexBase"
+					  value="target"/>
 		</properties>
 	</persistence-unit>
 </persistence>
