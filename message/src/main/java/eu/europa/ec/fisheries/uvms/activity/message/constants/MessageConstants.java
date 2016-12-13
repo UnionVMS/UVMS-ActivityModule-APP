@@ -29,6 +29,5 @@ public class MessageConstants {
     public static final String ASSET_MODULE_QUEUE = "java:/jms/queue/UVMSAssetEvent";
 
     public static final String MODULE_NAME = "activity";
-    public static final String ERS_MDR_QUEUE = "java:/jms/queue/ERSMDRPlugin";
     public static final String RULES_EVENT_QUEUE = "java:/jms/queue/UVMSRulesEvent";
 }
