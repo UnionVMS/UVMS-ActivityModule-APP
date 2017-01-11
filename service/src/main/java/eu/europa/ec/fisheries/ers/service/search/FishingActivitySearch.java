@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.ers.service.search;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +57,7 @@ public class FishingActivitySearch extends SearchQueryBuilder {
 
         final Map<SearchFilter, String> searchCriteriaMap                     = query.getSearchCriteriaMap();
         final Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
-        if(((searchCriteriaMap !=null && !searchCriteriaMap.isEmpty())
-                || (searchCriteriaMapMultipleValues !=null && !searchCriteriaMapMultipleValues.isEmpty()) )
+        if((MapUtils.isNotEmpty(searchCriteriaMap) || (MapUtils.isNotEmpty(searchCriteriaMapMultipleValues)) )
            && !(searchCriteriaMap.size() == 1 && searchCriteriaMap.containsKey(SearchFilter.SHOW_DELETED_REPORTS))){
                 sql.append(" and ");
         }
