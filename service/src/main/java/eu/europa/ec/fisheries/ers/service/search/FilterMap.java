@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 
 import java.util.*;
@@ -56,6 +57,18 @@ public class FilterMap {
     private static EnumMap<SearchFilter,String> filterSortWhereMappings = new EnumMap<>(SearchFilter.class); // Special case for star and end date sorting
     private static Set<SearchFilter> filtersWhichSupportMultipleValues = new HashSet<>(); // List of filters which support multiple values
 
+    public static final List<String> FA_DEFAULT_STATUS_LIST = new ArrayList<String>(){{
+        add(FaReportStatusEnum.NEW.getStatus());
+        add(FaReportStatusEnum.CANCELED.getStatus());
+        add(FaReportStatusEnum.UPDATED.getStatus());
+    }};
+
+    public static final List<String> FA_DEFAULT_STATUS_LIST_WITH_DELETED = new ArrayList<String>(){{
+        add(FaReportStatusEnum.NEW.getStatus());
+        add(FaReportStatusEnum.CANCELED.getStatus());
+        add(FaReportStatusEnum.UPDATED.getStatus());
+        add(FaReportStatusEnum.DELETED.getStatus());
+    }};
 
     private FilterMap(){}
 

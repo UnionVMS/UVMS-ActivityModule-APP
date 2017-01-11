@@ -14,12 +14,14 @@
 package eu.europa.ec.fisheries.ers.service.search;
 
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 16/11/2016.
@@ -52,10 +54,15 @@ public class FishingActivitySearch extends SearchQueryBuilder {
         sql.append(" where intersects(fa.geom, :area) = true and "); // fa is alias for FaReportDocument, fa must be defined in main query
         createWherePartForQueryForFilters(sql,query);
 
-        if((query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty())
-                || (query.getSearchCriteriaMapMultipleValues() !=null && !query.getSearchCriteriaMapMultipleValues().isEmpty()))
-                    sql.append(" and ");
-        sql.append("  fa.status = '" + FaReportStatusEnum.NEW.getStatus() + "'"); // get data from only new reports
+        final Map<SearchFilter, String> searchCriteriaMap                     = query.getSearchCriteriaMap();
+        final Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
+        if(((searchCriteriaMap !=null && !searchCriteriaMap.isEmpty())
+                || (searchCriteriaMapMultipleValues !=null && !searchCriteriaMapMultipleValues.isEmpty()) )
+           && !(searchCriteriaMap.size() == 1 && searchCriteriaMap.containsKey(SearchFilter.SHOW_DELETED_REPORTS))){
+                sql.append(" and ");
+        }
+
+        sql.append("  fa.status in (:statuses)"); // get data from only new reports
         LOG.debug("Generated Query After Where :" + sql);
         return sql;
     }
@@ -63,6 +70,24 @@ public class FishingActivitySearch extends SearchQueryBuilder {
     public Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon, Query typedQuery) throws ServiceException {
         LOG.debug("Area intersection is the minimum default condition to find the fishing activities");
         typedQuery.setParameter("area", multipolygon); // parameter name area is specified in create SQL
+        typedQuery.setParameter("statuses", getStatusesToBeConsidered(query));
         return fillInValuesForTypedQuery(query,typedQuery);
+    }
+
+    /**
+     * Returns the list of the the FishingReportDocuments statuses that should be considered when building the query.
+     * At least NEW,UPDATED,CANCELLED must be considered.
+     *
+     * @param query
+     * @return FA statusesToBeConsidered
+     */
+    private List<String> getStatusesToBeConsidered(FishingActivityQuery query) {
+        final Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
+        if(searchCriteriaMap != null
+                && searchCriteriaMap.get(SearchFilter.SHOW_DELETED_REPORTS) != null
+                && searchCriteriaMap.get(SearchFilter.SHOW_DELETED_REPORTS).equals(Boolean.TRUE.toString())){
+            return FilterMap.FA_DEFAULT_STATUS_LIST_WITH_DELETED;
+        }
+        return FilterMap.FA_DEFAULT_STATUS_LIST;
     }
 }
