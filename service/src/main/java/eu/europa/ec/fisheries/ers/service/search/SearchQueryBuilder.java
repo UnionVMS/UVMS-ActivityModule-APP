@@ -276,6 +276,9 @@ public abstract class SearchQueryBuilder {
      */
     public  StringBuilder getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
         Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
+        if(searchCriteriaMap == null){
+            return sql;
+        }
         sql.append(" and(  ");
         sql.append(FilterMap.getFilterSortMappings().get(filter));
         sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");

@@ -52,8 +52,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     }
 
-    @Test
-    @SneakyThrows
+   // @Test
+   // @SneakyThrows
     public void testGetFishingActivityListByQuery() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -117,8 +117,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     }
 
 
-    @Test
-    @SneakyThrows
+   // @Test
+   // @SneakyThrows
     public void testGetFishingActivityListByQuery_GetByFaReportID() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -169,8 +169,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     }
 
 
-    @Test
-    @SneakyThrows
+   // @Test
+    //@SneakyThrows
     public void testGetCountForFishingActivityListByQuery() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -235,8 +235,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
 
 
-    @Test
-    @SneakyThrows
+   // @Test
+   // @SneakyThrows
     public void testGetFishingActivityList() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
