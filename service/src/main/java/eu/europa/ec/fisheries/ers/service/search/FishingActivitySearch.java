@@ -88,16 +88,15 @@ public class FishingActivitySearch extends SearchQueryBuilder {
         final Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
         if (searchCriteriaMap != null) {
 
-            // Particular status has been selected to filter
+            // Particular status has been selected as status filter
             if (searchCriteriaMap.get(SearchFilter.PURPOSE) != null) {
                 return new ArrayList<String>() {{
                     add(searchCriteriaMap.get(SearchFilter.PURPOSE));
                 }};
             }
 
-            // Nothing has been selected as a filter and SHOW_DELETED_REPORTS is true
-            if (searchCriteriaMap.get(SearchFilter.SHOW_DELETED_REPORTS) != null
-                    && searchCriteriaMap.get(SearchFilter.SHOW_DELETED_REPORTS).equals(Boolean.TRUE.toString())) {
+            // Nothing has been selected as status filter and SHOW_DELETED_REPORTS is true
+            if (Boolean.TRUE.toString().equals(searchCriteriaMap.get(SearchFilter.SHOW_DELETED_REPORTS))){
                 return FilterMap.FA_DEFAULT_STATUS_LIST_WITH_DELETED;
             }
         }
