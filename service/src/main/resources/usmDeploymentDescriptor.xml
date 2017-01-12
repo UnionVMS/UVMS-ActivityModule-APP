@@ -67,6 +67,12 @@
             <group>${activity.name}</group>
         </feature>
 
+        <feature>
+            <name>SHOW_DELETED_FA_REPORTS</name>
+            <description>Allows the user to make requests that show the deletes reports</description>
+            <group>${activity.name}</group>
+        </feature>
+
         <option>
             <name>DEFAULT_CONFIG</name>
             <description>Default map configuation settings</description>

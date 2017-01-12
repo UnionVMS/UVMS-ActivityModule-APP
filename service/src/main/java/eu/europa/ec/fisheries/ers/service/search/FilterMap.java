@@ -15,7 +15,10 @@ package eu.europa.ec.fisheries.ers.service.search;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by sanera on 12/07/2016.
@@ -56,7 +59,6 @@ public class FilterMap {
     private static EnumMap<SearchFilter,String> filterSortWhereMappings = new EnumMap<>(SearchFilter.class); // Special case for star and end date sorting
     private static Set<SearchFilter> filtersWhichSupportMultipleValues = new HashSet<>(); // List of filters which support multiple values
 
-
     private FilterMap(){}
 
 
@@ -84,7 +86,7 @@ public class FilterMap {
           filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierId IN (:"+VESSEL_IDENTIFIRE+")"));
 
 
-        filterMappings.put(SearchFilter.PURPOSE,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS,"flux.purposeCode =:"+PURPOSE_CODE));
+        filterMappings.put(SearchFilter.PURPOSE,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS,"flux.purposeCode IN (:"+PURPOSE_CODE+")"));
          filterMappings.put(SearchFilter.REPORT_TYPE,new FilterDetails(" ","fa.typeCode IN (:"+REPORT_TYPE_CODE+")"));
 
         filterMappings.put(SearchFilter.ACTIVITY_TYPE,new FilterDetails(" ","a.typeCode IN (:"+ACTIVITY_TYPE_CODE+")"));
@@ -169,6 +171,7 @@ public class FilterMap {
         filtersWhichSupportMultipleValues.add(SearchFilter.GEAR);
         filtersWhichSupportMultipleValues.add(SearchFilter.SPECIES);
         filtersWhichSupportMultipleValues.add(SearchFilter.MASTER);
+        filtersWhichSupportMultipleValues.add(SearchFilter.PURPOSE);
     }
 
 

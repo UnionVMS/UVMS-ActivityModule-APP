@@ -133,16 +133,15 @@ public class ActivityServiceBean implements ActivityService {
 
     // Improve this part later on
     private FishingActivityQuery separateSingleVsMultipleFilters(FishingActivityQuery query) throws ServiceException {
-        Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
+        Map<SearchFilter, List<String>> searchMapWithMultipleValues = query.getSearchCriteriaMapMultipleValues();
+        if(searchMapWithMultipleValues ==null)
+            throw new ServiceException("No purpose code provided for the Fishing activity filters! At least one needed!");
 
+        Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
         if(searchMap == null)
             return query;
 
-        Map<SearchFilter, List<String>> searchMapWithMultipleValues = new HashMap<>();
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
-
-        if (query.getSearchCriteriaMapMultipleValues() != null && query.getSearchCriteriaMapMultipleValues().size() > 0)
-            throw new ServiceException("Filter Fishing activity has received Filters with multiple values. This is not supported currently");
 
         Iterator<Map.Entry<SearchFilter, String>> it = searchMap.entrySet().iterator();
         while (it.hasNext()) {

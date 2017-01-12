@@ -134,12 +134,17 @@ public class ActivityServiceBeanTest {
         searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
         List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
 
+        Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
+        List<String> purposeCodeList= new ArrayList<>();
+        purposeCodeList.add("9");
+        searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
 
         PaginationDto pagination =new PaginationDto();
         pagination.setPageSize(4);
         pagination.setOffset(1);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
         when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
 
@@ -166,11 +171,17 @@ public class ActivityServiceBeanTest {
         searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
         searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
 
+        Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
+        List<String> purposeCodeList= new ArrayList<>();
+        purposeCodeList.add("9");
+        searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
+
         PaginationDto pagination =new PaginationDto();
         pagination.setPageSize(4);
         pagination.setOffset(1);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
         when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
 
