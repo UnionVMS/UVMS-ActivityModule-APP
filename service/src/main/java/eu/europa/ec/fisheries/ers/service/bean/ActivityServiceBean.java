@@ -133,10 +133,13 @@ public class ActivityServiceBean implements ActivityService {
 
     // Improve this part later on
     private FishingActivityQuery separateSingleVsMultipleFilters(FishingActivityQuery query) throws ServiceException {
-        Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
         Map<SearchFilter, List<String>> searchMapWithMultipleValues = query.getSearchCriteriaMapMultipleValues();
         if(searchMapWithMultipleValues ==null)
             throw new ServiceException("No purpose code provided for the Fishing activity filters! At least one needed!");
+
+        Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
+        if(searchMap == null)
+            return query;
 
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
 
