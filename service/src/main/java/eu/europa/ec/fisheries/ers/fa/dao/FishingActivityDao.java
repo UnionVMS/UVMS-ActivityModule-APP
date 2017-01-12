@@ -62,6 +62,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
         query.setParameter("fishingTripId", fishingTripId);
         query.setParameter("area", multipolgon);
+
         return query.getResultList();
     }
 
@@ -120,10 +121,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         FishingActivitySearch search = new FishingActivitySearch();
 
         // Create Query dynamically based on filter and Sort criteria
-        StringBuilder sqlToGetActivityList =search.createSQL(query);
+        StringBuilder sqlToGetActivityList = search.createSQL(query);
 
         // Apply real values to Query built
-        Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query, multipolygon,search);
+        Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query, multipolygon,search);
 
         PaginationDto pagination= query.getPagination();
         if(pagination!=null) {

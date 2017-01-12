@@ -14,7 +14,6 @@
 package eu.europa.ec.fisheries.ers.service.search;
 
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,14 +47,8 @@ public class FishingActivitySearch extends SearchQueryBuilder {
      */
     public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
-
         sql.append(" where intersects(fa.geom, :area) = true and "); // fa is alias for FaReportDocument, fa must be defined in main query
-        createWherePartForQueryForFilters(sql,query);
-
-        if((query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty())
-                || (query.getSearchCriteriaMapMultipleValues() !=null && !query.getSearchCriteriaMapMultipleValues().isEmpty()))
-                    sql.append(" and ");
-        sql.append("  fa.status = '" + FaReportStatusEnum.NEW.getStatus() + "'"); // get data from only new reports
+        createWherePartForQueryForFilters(sql, query);
         LOG.debug("Generated Query After Where :" + sql);
         return sql;
     }
@@ -63,6 +56,7 @@ public class FishingActivitySearch extends SearchQueryBuilder {
     public Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon, Query typedQuery) throws ServiceException {
         LOG.debug("Area intersection is the minimum default condition to find the fishing activities");
         typedQuery.setParameter("area", multipolygon); // parameter name area is specified in create SQL
-        return fillInValuesForTypedQuery(query,typedQuery);
+        return fillInValuesForTypedQuery(query, typedQuery);
     }
+
 }
