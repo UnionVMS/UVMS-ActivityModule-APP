@@ -74,7 +74,7 @@
         <movement.model.version>2.0.0</movement.model.version>
         <spatial.model.version>0.5.4</spatial.model.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
-
+        <dom4j.version>1.6.1</dom4j.version>
         <lucene.index.directory>/app/indexes/activity</lucene.index.directory>
     </properties>
 
@@ -349,6 +349,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>${dom4j.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
