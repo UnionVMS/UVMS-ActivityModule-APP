@@ -14,16 +14,11 @@
 package eu.europa.ec.fisheries.ers.service.search;
 
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sanera on 16/11/2016.
@@ -52,18 +47,8 @@ public class FishingActivitySearch extends SearchQueryBuilder {
      */
     public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
-
         sql.append(" where intersects(fa.geom, :area) = true and "); // fa is alias for FaReportDocument, fa must be defined in main query
         createWherePartForQueryForFilters(sql, query);
-
-        final Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
-        final Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
-        if ((MapUtils.isNotEmpty(searchCriteriaMap) || (MapUtils.isNotEmpty(searchCriteriaMapMultipleValues)))
-                && !(searchCriteriaMap.size() == 1 && searchCriteriaMap.containsKey(SearchFilter.SHOW_DELETED_REPORTS))) {
-            sql.append(" and ");
-        }
-
-        sql.append("  fa.status in (:statuses)"); // get data from only new reports
         LOG.debug("Generated Query After Where :" + sql);
         return sql;
     }
@@ -71,37 +56,7 @@ public class FishingActivitySearch extends SearchQueryBuilder {
     public Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon, Query typedQuery) throws ServiceException {
         LOG.debug("Area intersection is the minimum default condition to find the fishing activities");
         typedQuery.setParameter("area", multipolygon); // parameter name area is specified in create SQL
-        typedQuery.setParameter("statuses", getStatusesToBeConsidered(query));
         return fillInValuesForTypedQuery(query, typedQuery);
     }
 
-    /**
-     * Returns the list of the the FishingReportDocuments statuses that should be considered when building the query.
-     * If some status has been selected then we restrict the query to that status.
-     * Otherwise if All statuses have to be considered we just have to check if the user has selected to show
-     * the deleted reports.
-     *
-     * @param query
-     * @return FA statusesToBeConsidered
-     */
-    private List<String> getStatusesToBeConsidered(FishingActivityQuery query) {
-        final Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
-        if (searchCriteriaMap != null) {
-
-            // Particular status has been selected as status filter
-            if (searchCriteriaMap.get(SearchFilter.PURPOSE) != null) {
-                return new ArrayList<String>() {{
-                    add(searchCriteriaMap.get(SearchFilter.PURPOSE));
-                }};
-            }
-
-            // Nothing has been selected as status filter and SHOW_DELETED_REPORTS is true
-            if (Boolean.TRUE.toString().equals(searchCriteriaMap.get(SearchFilter.SHOW_DELETED_REPORTS))){
-                return FilterMap.FA_DEFAULT_STATUS_LIST_WITH_DELETED;
-            }
-        }
-
-        // Nothing has been selected as a filter and SHOW_DELETED_REPORTS is null or false
-        return FilterMap.FA_DEFAULT_STATUS_LIST;
-}
 }
