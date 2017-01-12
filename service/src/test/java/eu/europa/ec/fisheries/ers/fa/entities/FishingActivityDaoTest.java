@@ -52,8 +52,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     }
 
-   // @Test
-   // @SneakyThrows
+    @Test
+    @SneakyThrows
     public void testGetFishingActivityListByQuery() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -74,7 +74,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
       //  searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
-       searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
+      // searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
      //   searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
@@ -117,8 +117,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     }
 
 
-   // @Test
-   // @SneakyThrows
+    @Test
+    @SneakyThrows
     public void testGetFishingActivityListByQuery_GetByFaReportID() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -131,7 +131,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-        searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
+    //    searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
     //    searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
@@ -169,8 +169,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     }
 
 
-   // @Test
-    //@SneakyThrows
+    @Test
+    @SneakyThrows
     public void testGetCountForFishingActivityListByQuery() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -192,7 +192,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-        searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
+      //  searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
        // searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "FISHING_OPERATION");
@@ -235,8 +235,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
 
 
-   // @Test
-   // @SneakyThrows
+    @Test
+    @SneakyThrows
     public void testGetFishingActivityList() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
