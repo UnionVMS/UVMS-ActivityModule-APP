@@ -97,12 +97,6 @@ public abstract class SearchQueryBuilder {
                 tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS); // Add missing join for required table
                 appendJoinString(sql, joinString);
                 break;
-            case FROM_NAME:
-                tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) {// Add missing join for required table
-                    appendJoinString(sql, joinString);
-                }
-                break;
             default:
                 appendJoinString(sql, joinString);
                 break;
@@ -178,8 +172,6 @@ public abstract class SearchQueryBuilder {
             return 1;
         } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
             return 2;
-        } else if (SearchFilter.FROM_NAME.equals(field) && (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1 || sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1)) {
-            return 3;
         }
         return 0;
     }

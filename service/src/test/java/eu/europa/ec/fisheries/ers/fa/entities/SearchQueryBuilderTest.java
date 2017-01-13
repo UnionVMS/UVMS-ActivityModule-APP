@@ -48,7 +48,6 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
       /*  searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
@@ -72,7 +71,6 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         pagination.setPageSize(2);
         pagination.setOffset(1);
         query.setPagination( pagination);
-     //   query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
         SearchQueryBuilder search= new FishingActivitySearch();
         StringBuilder sql= search.createSQL(query);
         System.out.println("done:" + sql);
@@ -88,7 +86,6 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
         searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
@@ -118,7 +115,6 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         query.setPagination( pagination);
 
         SortKey sortingDto2 = new SortKey();
-        sortingDto2.setSortBy(SearchFilter.FROM_NAME);
         sortingDto2.setReversed(false);
         query.setSorting(sortingDto);
         query.setSorting(sortingDto2);

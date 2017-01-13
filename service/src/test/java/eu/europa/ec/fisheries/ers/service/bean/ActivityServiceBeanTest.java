@@ -130,7 +130,6 @@ public class ActivityServiceBeanTest {
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
         searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
         List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
 
         Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
@@ -168,7 +167,6 @@ public class ActivityServiceBeanTest {
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
         List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
         searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
 
         Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
         List<String> purposeCodeList= new ArrayList<>();

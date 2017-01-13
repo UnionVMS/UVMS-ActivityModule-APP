@@ -30,19 +30,15 @@ public class FilterDetails {
     public FilterDetails() {
         super();
     }
-
     public String getJoinString() {
         return joinString;
     }
-
     public void setJoinString(String joinString) {
         this.joinString = joinString;
     }
-
     public String getCondition() {
         return condition;
     }
-
     public void setCondition(String condition) {
         this.condition = condition;
     }
