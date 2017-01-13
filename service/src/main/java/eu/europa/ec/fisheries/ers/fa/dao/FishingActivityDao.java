@@ -13,10 +13,8 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivitySearch;
-import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
@@ -25,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -35,8 +32,6 @@ import java.util.List;
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
-
-    private static  final String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by fa.acceptedDatetime asc ";
 
     private EntityManager em;
 
@@ -50,65 +45,44 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return em;
     }
 
-    public List<FishingActivityEntity> getFishingActivityList() throws ServiceException {
-        return getFishingActivityList(null);
-    }
-
-
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
         if(fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
-        Query query = getEntityManager().createNamedQuery(FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP);
+
+        String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
+        if(multipolgon == null)
+            queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
+
+        Query query = getEntityManager().createNamedQuery(queryName);
 
         query.setParameter("fishingTripId", fishingTripId);
-        query.setParameter("area", multipolgon);
+
+        if(multipolgon != null)
+            query.setParameter("area", multipolgon);
 
         return query.getResultList();
     }
 
-    public List<FishingActivityEntity> getFishingActivityList(Pagination pagination) throws ServiceException {
-        LOG.info("There are no Filters present to filter Fishing Activity Data. so, fetch all the Fishing Activity Records");
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA, FishingActivityEntity.class);
+    public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+           FishingActivitySearch search = new FishingActivitySearch();
+           LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
+           StringBuilder sqlToGetActivityListCount =search.createSQL(query);
 
-        if(pagination!=null) {
-            int listSize =pagination.getListSize();
-            int pageNumber = pagination.getPage();
-            if(listSize ==0 || pageNumber ==0)
-                  throw new ServiceException("Error is pagination list size or page number.Please enter valid values. List Size provided: "+listSize + " Page number:"+pageNumber);
+           Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
 
-            typedQuery.setFirstResult(listSize * (pageNumber - 1));
-            typedQuery.setMaxResults(listSize);
-        }
-
-        return typedQuery.getResultList();
-    }
-
-    public Integer getCountForFishingActivityList()  {
-        LOG.info("Get Total Count for Fishing Activities When no filter criteria is present");
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA, FishingActivityEntity.class);
-        return typedQuery.getResultList().size();
-    }
+           return countQuery.getResultList().size();
+       }
 
 
-    public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
-        FishingActivitySearch search = new FishingActivitySearch();
-        LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
-        StringBuilder sqlToGetActivityListCount =search.createSQL(query);
-
-        Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, multipolygon,search);
-
-        return countQuery.getResultList().size();
-    }
-
-
-    /**
-     * Set typed values for Dynamically generated Query
-     */
-    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, Geometry multipolygon,FishingActivitySearch search) throws ServiceException {
+       /**
+        * Set typed values for Dynamically generated Query
+        */
+    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearch search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
 
         Query typedQuery = em.createQuery(sql.toString());
-        return search.getTypedQueryForFishingActivityFilter(sql, query, multipolygon, typedQuery);
+        return search.fillInValuesForTypedQuery(query,typedQuery);
+
     }
 
 
@@ -116,7 +90,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      Get all the Fishing Activities which match Filter criterias mentioned in the Input. Also, provide the sorted data based on what user has requested.
      Provide paginated data if user has asked for it
      */
-    public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         LOG.info("Get Fishing Activity Report list by Query.");
         FishingActivitySearch search = new FishingActivitySearch();
 
@@ -124,7 +98,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         StringBuilder sqlToGetActivityList = search.createSQL(query);
 
         // Apply real values to Query built
-        Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query, multipolygon,search);
+        Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query, search);
 
         PaginationDto pagination= query.getPagination();
         if(pagination!=null) {

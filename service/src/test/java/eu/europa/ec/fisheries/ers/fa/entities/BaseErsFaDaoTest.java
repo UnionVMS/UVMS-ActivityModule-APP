@@ -267,14 +267,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                             "packaging_unit_count", "packaging_unit_count_code", "calculated_packaging_unit_count", "aap_process_id", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
                             "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "species_code",
                             "spacies_code_list_id", "weighing_means_code", "weighting_means_code_list_id", "usage_code", "usage_code_list_id")
-                    .values(1, "FISH1", "FISH_PACKAGING", 100.00, "C62", 100.00, 1, "C62", 1.0, 1, 2, "C62", 2.0, 15, "C62", 15.00, "HAD", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS", "IND", "PROD_USAGE")
+                    .values(1, "FISH1", "FISH_PACKAGING", 100.00, "C62", 100.00, 1, "C62", 1.0, 1, 2, "C62", 2.0, 15, "C62", 15.00, "PLE", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS", "IND", "PROD_USAGE")
                     .build(),
             insertInto("activity.activity_aap_product")
                     .columns("id", "packaging_type_code", "packaging_type_code_list_id", "packaging_unit_avarage_weight", "packaging_weight_unit_code", "calculated_packaging_weight",
                             "packaging_unit_count", "packaging_unit_count_code", "calculated_packaging_unit_count", "aap_process_id", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
                             "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "species_code",
                             "spacies_code_list_id", "weighing_means_code", "weighting_means_code_list_id", "usage_code", "usage_code_list_id")
-                    .values(2, "FISH1", "FISH_PACKAGING", 100.00, "C62", 100.00, 1, "C62", 1.0 , 1, 2, "C62", 2.0, 10, "C62", 15.00, "HAD", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS", "IND", "PROD_USAGE")
+                    .values(2, "FISH1", "FISH_PACKAGING", 100.00, "C62", 100.00, 1, "C62", 1.0 , 1, 2, "C62", 2.0, 10, "C62", 15.00, "PLE", "FAO_SPECIES", "WEIGHED", "WEIGHT_MEANS", "IND", "PROD_USAGE")
                     .build(),
             insertInto("activity.activity_aap_product")
                     .columns("id", "packaging_type_code", "packaging_type_code_list_id", "packaging_unit_avarage_weight", "packaging_weight_unit_code", "calculated_packaging_weight",

@@ -28,6 +28,14 @@ import java.util.Set;
 						"JOIN FETCH ft.fishingTripIdentifiers fi " +
 						"where (intersects(fa.geom, :area) = true " +
 						"and fi.tripId =:fishingTripId) " +
+						"order by a.typeCode,fa.acceptedDatetime"),
+		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
+				query = "SELECT DISTINCT a  from FishingActivityEntity a " +
+						"JOIN FETCH a.faReportDocument fa " +
+						"JOIN FETCH fa.fluxReportDocument flux " +
+						"JOIN FETCH a.fishingTrips ft " +
+						"JOIN FETCH ft.fishingTripIdentifiers fi " +
+						"where fi.tripId =:fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime")
 })
 
@@ -36,6 +44,7 @@ import java.util.Set;
 public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
+	public static final String FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM = "findActivityListForFishingTripsWithoutGeom";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

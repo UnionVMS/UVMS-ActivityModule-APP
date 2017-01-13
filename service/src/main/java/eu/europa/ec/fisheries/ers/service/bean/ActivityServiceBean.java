@@ -10,12 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
@@ -110,11 +108,21 @@ public class ActivityServiceBean implements ActivityService {
         log.debug("FishingActivityQuery received : {}", query);
 
         // Check if any filters are present. If not, We need to return all fishing activity data
-        Geometry multipolygon = getRestrictedAreaGeom(datasets);
-        query = separateSingleVsMultipleFilters(query);
-        activityList = fishingActivityDao.getFishingActivityListByQuery(query, multipolygon);
 
-        int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query, multipolygon);
+        String areaWkt= getRestrictedAreaGeom(datasets);
+        log.debug("Geometry for the user received from USM : "+ areaWkt);
+        if(areaWkt!=null && areaWkt.length() > 0){
+            Map<SearchFilter, String> mapSearch= query.getSearchCriteriaMap();
+            if(mapSearch ==null) {
+                mapSearch = new HashMap<>();
+                query.setSearchCriteriaMap(mapSearch);
+            }
+            mapSearch.put(SearchFilter.AREA_GEOM,areaWkt);
+        }
+        query = separateSingleVsMultipleFilters(query);
+        activityList = fishingActivityDao.getFishingActivityListByQuery(query);
+
+        int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
 
         if (CollectionUtils.isEmpty(activityList)) {
@@ -164,18 +172,17 @@ public class ActivityServiceBean implements ActivityService {
     /*
      * Query to calculate total number of result set
      */
-    private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query, Geometry multipolygon) throws ServiceException {
+    private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
         log.info(" Get total pages count");
-        return fishingActivityDao.getCountForFishingActivityListByQuery(query, multipolygon);
+        return fishingActivityDao.getCountForFishingActivityListByQuery(query);
     }
 
-    private Geometry getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
+    private String getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
         if (datasets == null || datasets.isEmpty()) {
             return null;
         }
         List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
-        String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
-        return GeometryUtils.wktToGeom(areaWkt);
+        return spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
     }
 
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {

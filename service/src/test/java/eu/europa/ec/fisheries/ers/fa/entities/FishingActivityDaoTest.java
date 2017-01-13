@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class FishingActivityDaoTest extends BaseErsFaDaoTest {
@@ -73,11 +71,9 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-      //  searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
-      // searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
+
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-     //   searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
 
         searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
@@ -86,10 +82,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
-   //     searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
-   //     searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
-
-       //query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
 
        query.setSearchCriteriaMap(searchCriteriaMap);
         PaginationDto pagination =new PaginationDto();
@@ -97,19 +89,12 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         pagination.setOffset(1);
        query.setPagination(pagination);
 
-        // query.setSortKey(new SortKey(SearchFilter.SOURCE, SortOrder.ASC));
-     //    query.setSortKey(new SortKey(SearchFilter.FROM_NAME, SortOrder.ASC));
-    //    query.setSortKey(new SortKey(SearchFilter.PERIOD_START, SortOrder.ASC));
-
-        SortKey sortingDto = new SortKey();
+       SortKey sortingDto = new SortKey();
         sortingDto.setSortBy(SearchFilter.OCCURRENCE);
         sortingDto.setReversed(false);
         query.setSorting(sortingDto);
 
-
-        // query.setPagination( new Pagination(1,2));
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
-
+        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
         System.out.println("done:" + finishingActivityList.size());
 
         assertNotNull(finishingActivityList);
@@ -125,16 +110,29 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues=new ArrayList<>();
+        activityTypeValues.add("FISHING_OPERATION");
+        activityTypeValues.add("DEPARTURE");
+        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+
+        List<String> purposeCodeValues=new ArrayList<>();
+        purposeCodeValues.add("5");
+        purposeCodeValues.add("9");
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
+
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
         searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
         searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-    //    searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
+
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-    //    searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+
 
         searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
@@ -160,7 +158,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
 
 
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query, null);
+        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
 
         System.out.println("done:" + finishingActivityList.size());
 
@@ -182,28 +180,35 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+
+        List<String> purposeCodeValues=new ArrayList<>();
+        purposeCodeValues.add("5");
+        purposeCodeValues.add("9");
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
+
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
+
+
        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
+       searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
 
 
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
-        searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-      //  searchCriteriaMap.put(SearchFilter.PURPOSE, "9");
-        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-       // searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "FISHING_OPERATION");
+       searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
 
-        searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
-        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
-        searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
-        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+       searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
+
+      searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
+       searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
+      searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
+     //   searchCriteriaMap.put(SearchFilter.PORT, "GBR");
 
         searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+       searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
@@ -226,43 +231,10 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         query.setSorting(sortingDto2);
 
 
-        int size  = dao.getCountForFishingActivityListByQuery(query, null);
+        int size  = dao.getCountForFishingActivityListByQuery(query);
 
         System.out.println("done:" + size);
-     //   assertNotEquals(0,size);
-
-    }
-
-
-
-    @Test
-    @SneakyThrows
-    public void testGetFishingActivityList() throws Exception {
-
-        dbSetupTracker.skipNextLaunch();
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityList();
-        assertNotNull(finishingActivityList);
-
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetFishingActivityListByPagination() throws Exception {
-
-        dbSetupTracker.skipNextLaunch();
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityList(new Pagination(1,2));
-        assertNotNull(finishingActivityList);
-
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetCountForFishingActivityList() throws Exception {
-
-        dbSetupTracker.skipNextLaunch();
-        int count = dao.getCountForFishingActivityList();
-        assertNotNull(count);
-        assertNotEquals(0,count);
+        assertNotEquals(0,size);
 
     }
 
@@ -274,6 +246,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         dbSetupTracker.skipNextLaunch();
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null);
         assertNotNull(finishingActivityList);
-        assertEquals(0, finishingActivityList.size());
+        assertNotEquals(0, finishingActivityList.size());
     }
 }
