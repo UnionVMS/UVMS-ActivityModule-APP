@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -148,12 +147,12 @@ public class ActivityServiceBeanTest {
 
         when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
 
-        when(fishingActivityDao.getFishingActivityListByQuery(query, null)).thenReturn(MapperUtil.getFishingActivityEntityList());
+        when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
         //Trigger
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, null);
 
-        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class), Mockito.any(Geometry.class));
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
         assertNotNull(filterFishingActivityReportResultDTO.getResultList());
@@ -185,12 +184,12 @@ public class ActivityServiceBeanTest {
 
         when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
 
-        when(fishingActivityDao.getFishingActivityListByQuery(query, null)).thenReturn(new ArrayList<FishingActivityEntity>());
+        when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(new ArrayList<FishingActivityEntity>());
 
         //Trigger
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, new ArrayList<Dataset>());
 
-        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class), Mockito.any(Geometry.class));
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
         //Verify
          assertNotNull(filterFishingActivityReportResultDTO);
     }
