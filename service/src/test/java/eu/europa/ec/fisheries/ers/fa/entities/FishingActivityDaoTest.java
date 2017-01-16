@@ -38,12 +38,9 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     }
 
 
-
-
     @Test
     @SneakyThrows
     public void testFindEntityById() throws Exception {
-
         dbSetupTracker.skipNextLaunch();
         FishingActivityEntity entity = dao.findEntityById(FishingActivityEntity.class, 1);
         assertNotNull(entity);
@@ -56,19 +53,18 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
-         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
-        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        List<String> activityTypeValues=new ArrayList<>();
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues = new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
-      searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
-       searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
-       searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
+        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
+        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
 
@@ -80,16 +76,16 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
         searchCriteriaMap.put(SearchFilter.PORT, "GBR");
 
-       searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
+        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
 
-       query.setSearchCriteriaMap(searchCriteriaMap);
-        PaginationDto pagination =new PaginationDto();
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        PaginationDto pagination = new PaginationDto();
         pagination.setPageSize(2);
         pagination.setOffset(1);
-       query.setPagination(pagination);
+        query.setPagination(pagination);
 
-       SortKey sortingDto = new SortKey();
+        SortKey sortingDto = new SortKey();
         sortingDto.setSortBy(SearchFilter.OCCURRENCE);
         sortingDto.setReversed(false);
         query.setSorting(sortingDto);
@@ -108,15 +104,15 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
-        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        List<String> activityTypeValues=new ArrayList<>();
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues = new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
 
-        List<String> purposeCodeValues=new ArrayList<>();
+        List<String> purposeCodeValues = new ArrayList<>();
         purposeCodeValues.add("5");
         purposeCodeValues.add("9");
         searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
@@ -124,7 +120,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
@@ -146,16 +141,15 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         query.setSearchCriteriaMap(searchCriteriaMap);
 
-        PaginationDto pagination =new PaginationDto();
+        PaginationDto pagination = new PaginationDto();
         pagination.setPageSize(2);
         pagination.setOffset(1);
-        query.setPagination( pagination);
+        query.setPagination(pagination);
 
         SortKey sortingDto = new SortKey();
         sortingDto.setSortBy(SearchFilter.OCCURRENCE);
         sortingDto.setReversed(false);
         query.setSorting(sortingDto);
-
 
 
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
@@ -173,42 +167,37 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
-        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        List<String> activityTypeValues=new ArrayList<>();
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues = new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
 
-        List<String> purposeCodeValues=new ArrayList<>();
+        List<String> purposeCodeValues = new ArrayList<>();
         purposeCodeValues.add("5");
         purposeCodeValues.add("9");
         searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
 
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
-
-
-       searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
-       searchCriteriaMap.put(SearchFilter.FROM_NAME, "OWNER_NAME1");
-
+        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
 
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
-       searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
+        searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
 
-       searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
 
-      searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
-       searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
-      searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
-     //   searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+        searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
+        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
+        searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
 
         searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
-       searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
@@ -219,10 +208,10 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        PaginationDto pagination =new PaginationDto();
+        PaginationDto pagination = new PaginationDto();
         pagination.setPageSize(2);
         pagination.setOffset(1);
-        query.setPagination( pagination);
+        query.setPagination(pagination);
 
 
         SortKey sortingDto2 = new SortKey();
@@ -231,10 +220,10 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         query.setSorting(sortingDto2);
 
 
-        int size  = dao.getCountForFishingActivityListByQuery(query);
+        int size = dao.getCountForFishingActivityListByQuery(query);
 
         System.out.println("done:" + size);
-        assertNotEquals(0,size);
+        assertNotEquals(0, size);
 
     }
 
