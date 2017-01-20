@@ -4,3 +4,4 @@ target/*
 scripts
 scripts/*
 logging.properties
+/.idea

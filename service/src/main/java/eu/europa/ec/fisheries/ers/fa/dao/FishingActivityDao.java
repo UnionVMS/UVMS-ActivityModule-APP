@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -39,6 +40,25 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         this.em = em;
     }
 
+    public List<Object[]> getCatchSummary(){
+
+        String queryStr= "SELECT activity.occurence, faCatch.speciesCode, sdClassCode.classCode ,vt.country ,vt.name, fg.typeCode, aapProcessCode.typeCode, count(faCatch.id), faCatch " +
+                "FROM FishingActivityEntity activity " +
+                "JOIN activity.faReportDocument fa " +
+                "JOIN fa.vesselTransportMeans vt " +
+                "JOIN activity.faCatchs faCatch " +
+                "JOIN faCatch.sizeDistribution sizeDistribution " +
+                "JOIN faCatch.aapProcesses aprocess "+
+                "JOIN aprocess.aapProcessCode aapProcessCode "+
+                "JOIN sizeDistribution.sizeDistributionClassCode  sdClassCode " +
+                "JOIN activity.fishingGears fg "+
+                "WHERE activity.typeCode ='FISHING_OPERATION' " +
+                "GROUP BY activity.occurence, faCatch.speciesCode, sdClassCode.classCode, vt.country, vt.name ,fg.typeCode, aapProcessCode.typeCode " ;
+
+
+        TypedQuery<Object[]> query = em.createQuery(queryStr, Object[].class);
+        return query.getResultList();
+    }
 
     @Override
     public EntityManager getEntityManager() {

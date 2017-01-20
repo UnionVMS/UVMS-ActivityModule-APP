@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources.config;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingTripResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.PreferenceConfigResource;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.TestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,7 @@ public class RestActivator extends Application {
         set.add(FishingActivityResource.class);
         set.add(FishingTripResource.class);
         set.add(PreferenceConfigResource.class);
+        set.add(TestResource.class);
     }
 
     @Override
