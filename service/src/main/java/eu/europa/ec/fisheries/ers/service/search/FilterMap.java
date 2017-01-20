@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 
 import java.util.EnumMap;
@@ -44,10 +45,14 @@ public class FilterMap {
     public static final String QUNTITY_MAX                  = "maxWeight";
     public static final String CONTACT_PERSON_NAME          = "agent";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS  = "fa.vesselTransportMeans vt";
+    public static final String SIZE_DISTRIBUTION_CODE_TABLE_ALIAS         = " faCatch.sizeDistribution sizeDistribution JOIN sizeDistribution.sizeDistributionClassCode  sdClassCode ";
     public static final String FA_CATCH_TABLE_ALIAS         = " a.faCatchs faCatch ";
     public static String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS  = " fa.fluxReportDocument flux ";
     public static final String FLUX_PARTY_TABLE_ALIAS        = " flux.fluxParty fp  ";
+    public static final String GEAR_TYPE_TABLE_ALIAS        = " a.fishingGears fg ";
+    public static final String AAP_PROCESS_TABLE_ALIAS        = " faCatch.aapProcesses aprocess ";
+    public static final String AAP_PROCESS_CODE_TABLE_ALIAS        = " aprocess.aapProcessCode aapProcessCode ";
     public static final String MASTER_MAPPING                = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE                   = "dataSource";
     public static final String FAREPORT_ID                  = "faReportId";
@@ -64,6 +69,8 @@ public class FilterMap {
     // List of filters which support multiple values
     private static Set<SearchFilter> filtersWhichSupportMultipleValues        = new HashSet<>();
 
+    private static EnumMap<GroupCriteria, GroupCriteriaMapper> groupByMapping        = new EnumMap<>(GroupCriteria.class);
+
     private FilterMap() {
         super();
     }
@@ -74,6 +81,7 @@ public class FilterMap {
         populateFilterQueryParameterMappings();
         populateFilterSortMappings();
         populateFilterSortWhereMappings();
+        populateGroupByMapping();
     }
 
 
@@ -93,9 +101,9 @@ public class FilterMap {
         filterMappings.put(SearchFilter.ACTIVITY_TYPE, new FilterDetails(" ", "a.typeCode IN (:" + ACTIVITY_TYPE_CODE + ")"));
         filterMappings.put(SearchFilter.AREAS, new FilterDetails("a.fluxLocations fluxLoc", "( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:" + AREA_ID + " )"));
         filterMappings.put(SearchFilter.PORT, new FilterDetails("a.fluxLocations fluxLoc", "( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier IN (:" + PORT_ID + " ))"));
-        filterMappings.put(SearchFilter.GEAR, new FilterDetails("a.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
-        filterMappings.put(SearchFilter.SPECIES, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
-        filterMappings.put(SearchFilter.QUNTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ", " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUNTITY_MIN));
+        filterMappings.put(SearchFilter.GEAR, new FilterDetails(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode IN (:" + FISHING_GEAR + ")"));
+        filterMappings.put(SearchFilter.SPECIES, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH "+AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN FETCH aprocess.aapProducts aprod ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
+        filterMappings.put(SearchFilter.QUNTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH "+AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN FETCH aprocess.aapProducts aprod ", " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUNTITY_MIN));
         filterMappings.put(SearchFilter.QUNTITY_MAX, new FilterDetails(" ", "  :" + QUNTITY_MAX + ") "));
         filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + " " +
@@ -104,6 +112,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(" ", "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
 
     }
+
 
     /**
      * For Sort by start date and End date, it needs special treatment. We need to use subQuery to make sure We pick up
@@ -170,7 +179,17 @@ public class FilterMap {
     }
 
 
-    public static Map<SearchFilter, FilterDetails> getFilterMappings() {
+    public static void populateGroupByMapping() {
+        groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.occurence" ));
+        groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(SIZE_DISTRIBUTION_CODE_TABLE_ALIAS, "sdClassCode.classCode" ));
+        groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(VESSEL_TRANSPORT_TABLE_ALIAS, "vt.country" ));
+        groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode" ));
+        groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(AAP_PROCESS_CODE_TABLE_ALIAS, "aapProcessCode.typeCode" ));
+        groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, "faCatch.speciesCode" ));
+
+    }
+
+        public static Map<SearchFilter, FilterDetails> getFilterMappings() {
         return filterMappings;
     }
     public static Map<SearchFilter, String> getFilterSortMappings() {
@@ -184,6 +203,9 @@ public class FilterMap {
     }
     public static Set<SearchFilter> getFiltersWhichSupportMultipleValues() {
         return filtersWhichSupportMultipleValues;
+    }
+    public static Map<GroupCriteria, GroupCriteriaMapper> getGroupByMapping() {
+        return groupByMapping;
     }
 
 }

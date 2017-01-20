@@ -26,7 +26,7 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
-import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -539,7 +539,7 @@ public class FishingTripServiceBean implements FishingTripService {
         log.debug("Fishing trips received from db:" + fishingTripList.size());
 
         // build Fishing trip response from FishingTripEntityList and return
-        return new FishingTripSearch().buildFishingTripSearchRespose(fishingTripList);
+        return new FishingTripSearchBuilder().buildFishingTripSearchRespose(fishingTripList);
     }
 
 }

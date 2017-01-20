@@ -14,9 +14,9 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivitySearch;
-import eu.europa.ec.fisheries.ers.service.search.SearchQueryBuilder;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
+import eu.europa.ec.fisheries.ers.service.search.builder.SearchQueryBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
@@ -71,7 +71,7 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         pagination.setPageSize(2);
         pagination.setOffset(1);
         query.setPagination( pagination);
-        SearchQueryBuilder search= new FishingActivitySearch();
+        SearchQueryBuilder search= new FishingActivitySearchBuilder();
         StringBuilder sql= search.createSQL(query);
         System.out.println("done:" + sql);
         assertNotNull(sql);
@@ -118,7 +118,7 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         sortingDto2.setReversed(false);
         query.setSorting(sortingDto);
         query.setSorting(sortingDto2);
-        SearchQueryBuilder search= new FishingActivitySearch();
+        SearchQueryBuilder search= new FishingActivitySearchBuilder();
         StringBuilder sql= search.createSQL(query);
 
         System.out.println("done:" + sql);

@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 
@@ -24,6 +25,7 @@ public class FishingActivityQuery {
     private Map<SearchFilter,String> searchCriteriaMap;
     private Map<SearchFilter,List<String>> searchCriteriaMapMultipleValues;
     private SortKey sorting;
+    private List<GroupCriteria> groupByFields;
 
 
     public void setPagination(PaginationDto pagination) {
@@ -57,6 +59,14 @@ public class FishingActivityQuery {
 
     public void setSearchCriteriaMapMultipleValues(Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues) {
         this.searchCriteriaMapMultipleValues = searchCriteriaMapMultipleValues;
+    }
+
+    public List<GroupCriteria> getGroupByFields() {
+        return groupByFields;
+    }
+
+    public void setGroupByFields(List<GroupCriteria> groupByFields) {
+        this.groupByFields = groupByFields;
     }
 
     @Override

@@ -11,8 +11,9 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.search;
+package eu.europa.ec.fisheries.ers.service.search.builder;
 
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by sanera on 16/11/2016.
  */
-public class FishingActivitySearch extends SearchQueryBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(FishingActivitySearch.class);
+public class FishingActivitySearchBuilder extends SearchQueryBuilder {
+    private static final Logger LOG = LoggerFactory.getLogger(FishingActivitySearchBuilder.class);
     private static final String FISHING_ACTIVITY_JOIN = "SELECT DISTINCT a from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa ";
 
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
