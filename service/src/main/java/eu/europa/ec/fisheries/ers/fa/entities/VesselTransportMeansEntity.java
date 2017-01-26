@@ -45,6 +45,9 @@ public class VesselTransportMeansEntity implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
     private FaReportDocumentEntity faReportDocument;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
+    private FishingActivityEntity fishingActivity;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<ContactPartyEntity> contactParty;
 
@@ -142,6 +145,14 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setFlapDocuments(Set<FlapDocumentEntity> flapDocuments) {
         this.flapDocuments = flapDocuments;
+    }
+
+    public FishingActivityEntity getFishingActivity() {
+        return fishingActivity;
+    }
+
+    public void setFishingActivity(FishingActivityEntity fishingActivity) {
+        this.fishingActivity = fishingActivity;
     }
 
     @Override

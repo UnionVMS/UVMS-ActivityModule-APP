@@ -55,6 +55,10 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "geom")
 	private Geometry geom;
 
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "vessel_transport_means_id")
+	private VesselTransportMeansEntity vesselTransportMeans;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_report_document_id")
 	private FaReportDocumentEntity faReportDocument;
@@ -439,6 +443,14 @@ public class FishingActivityEntity implements Serializable {
 
 	public void setCalculatedOperationQuantity(Double calculatedOperationQuantity) {
 		this.calculatedOperationQuantity = calculatedOperationQuantity;
+	}
+
+	public VesselTransportMeansEntity getVesselTransportMeans() {
+		return vesselTransportMeans;
+	}
+
+	public void setVesselTransportMeans(VesselTransportMeansEntity vesselTransportMeans) {
+		this.vesselTransportMeans = vesselTransportMeans;
 	}
 
 	@Override
