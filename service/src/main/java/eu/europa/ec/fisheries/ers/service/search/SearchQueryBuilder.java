@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,23 +58,23 @@ public abstract class SearchQueryBuilder {
         LOG.debug("Create Join Tables part of Query");
         Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
-        if (query.getSearchCriteriaMap() != null && !query.getSearchCriteriaMap().isEmpty()) {
+        if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
             keySet.addAll(query.getSearchCriteriaMap().keySet());
         }
-        if(query.getSearchCriteriaMapMultipleValues() !=null && !query.getSearchCriteriaMapMultipleValues().isEmpty()) {
+        if(MapUtils.isNotEmpty(query.getSearchCriteriaMapMultipleValues())) {
             keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
         }
-            for (SearchFilter key : keySet) {
-                FilterDetails details = mappings.get(key);
-                String joinString = null;
-                if (details != null) {
-                    joinString = details.getJoinString();
-                }
-                if (joinString == null || sql.indexOf(joinString) != -1) {// If the Table join for the Filter is already present in SQL, do not join the table again
-                    continue;
-                }
-                completeQueryDependingOnKey(sql, key, joinString);
+        for (SearchFilter key : keySet) {
+            FilterDetails details = mappings.get(key);
+            String joinString = null;
+            if (details != null) {
+                joinString = details.getJoinString();
             }
+            if (joinString == null || sql.indexOf(joinString) != -1) {// If the Table join for the Filter is already present in SQL, do not join the table again
+                continue;
+            }
+            completeQueryDependingOnKey(sql, key, joinString);
+        }
         getJoinPartForSortingOptions(sql, query);
 
         LOG.debug("Generated SQL for JOIN Part :" + sql);
@@ -86,28 +87,34 @@ public abstract class SearchQueryBuilder {
                 if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1) {  // If vesssel table is already joined, use join string accordingly
                     joinString = FilterMap.MASTER_MAPPING;
                 }
-                appendJoinString(sql, joinString);
+                appendJoinFetchString(sql, joinString);
                 break;
             case VESSEL_IDENTIFIRE:
-                tryAppendIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
-                appendOnlyJoinString(sql, joinString);
-                break;
-            case FROM_ID:
-                tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                tryAppendIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS); // Add missing join for required table
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
                 appendJoinString(sql, joinString);
+                break;
+            case OWNER:
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS); // Add missing join for required table
+                appendJoinFetchString(sql, joinString);
+                break;
+            case FROM:
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REP_MESSAGE_FROM_FA_REP);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REP_DOC_FROM_MESSAGE);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_FOR_MESSAGE);
+                appendJoinFetchString(sql, joinString);
                 break;
             default:
-                appendJoinString(sql, joinString);
+                appendJoinFetchString(sql, joinString);
                 break;
         }
     }
 
-    private void appendOnlyJoinString(StringBuilder sql, String joinString) {
+    private void appendJoinString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
-    private  void appendJoinString(StringBuilder sql, String joinString) {
+    private  void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }
 
@@ -117,7 +124,7 @@ public abstract class SearchQueryBuilder {
      * @param sql
      * @param valueToFindAndApply
      */
-    private  void tryAppendIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
+    private  void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN_FETCH).append(valueToFindAndApply);
         }
@@ -147,17 +154,17 @@ public abstract class SearchQueryBuilder {
         // Make sure that the field which we want to sort, table Join is present for it.
         switch (getFiledCase(sql, field)) {
             case 1:
-                appendLeftJoin(sql, FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
+                appendLeftJoinFetch(sql, FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
                 break;
             case 2:
-                appendLeftJoin(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
                 break;
             case 3:
                 if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
-                    appendLeftJoin(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                    appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
                 }
                 if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) {
-                    appendLeftJoin(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
+                    appendLeftJoinFetch(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
                 }
                 break;
             default:
@@ -176,7 +183,7 @@ public abstract class SearchQueryBuilder {
         return 0;
     }
 
-    private  void appendLeftJoin(StringBuilder sql, String delimitedPeriodTableAlias) {
+    private  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
     }
 
@@ -191,9 +198,8 @@ public abstract class SearchQueryBuilder {
             // Create Where part of SQL Query
             int i = 0;
             for (SearchFilter key : keySet) {
-               // String filterMapping=
 
-                if ( (SearchFilter.QUNTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUNTITY_MAX)) ||
+                if ( (SearchFilter.QUANTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUANTITY_MAX)) ||
                         (mappings.get(key) == null )) { // skip this as MIN and MAX both are required to form where part. Treat it differently
                     continue;
                 }
@@ -202,13 +208,13 @@ public abstract class SearchQueryBuilder {
                     sql.append(" and ");
                 }
 
-                if(SearchFilter.QUNTITY_MIN.equals(key) ){
-                    sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUNTITY_MIN).append(" ))") ;
+                if(SearchFilter.QUANTITY_MIN.equals(key) ){
+                    sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" ))") ;
 
-                }else if (SearchFilter.QUNTITY_MAX.equals(key)) {
+                } else if (SearchFilter.QUANTITY_MAX.equals(key)) {
                     sql.append(" ( ");
-                    sql.append(mappings.get(SearchFilter.QUNTITY_MIN).getCondition()).append(" and ").append(mapping);
-                    sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUNTITY_MIN).append(" and :").append(FilterMap.QUNTITY_MAX + ")");
+                    sql.append(mappings.get(SearchFilter.QUANTITY_MIN).getCondition()).append(" and ").append(mapping);
+                    sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUANTITY_MIN).append(" and :").append(FilterMap.QUANTITY_MAX + ")");
                     sql.append(" ) ");
                 } else {
                     sql.append(mapping);
@@ -250,7 +256,7 @@ public abstract class SearchQueryBuilder {
             if(sortFieldMapping ==null) {
                 throw new ServiceException("Information about which database field to be used for sorting is unavailable");
             }
-            sql.append(" order by ").append( sortFieldMapping).append(orderby);
+            sql.append(" order by ").append(sortFieldMapping).append(orderby);
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }
@@ -314,10 +320,10 @@ public abstract class SearchQueryBuilder {
     }
 
 
-    private Query applySingleValuesToQuery(Map<SearchFilter,String> searchCriteriaMap,Query typedQuery) throws ServiceException {
+    private Query applySingleValuesToQuery(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery) throws ServiceException {
 
         // Assign values to created SQL Query
-        for (Map.Entry<SearchFilter,String> entry : searchCriteriaMap.entrySet()){
+        for (Map.Entry<SearchFilter, String> entry : searchCriteriaMap.entrySet()){
 
             SearchFilter key =  entry.getKey();
             String value=  entry.getValue();
@@ -339,10 +345,10 @@ public abstract class SearchQueryBuilder {
                 case PERIOD_END:
                     typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
                     break;
-                case QUNTITY_MIN:
+                case QUANTITY_MIN:
                     typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                     break;
-                case QUNTITY_MAX:
+                case QUANTITY_MAX:
                     typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                     break;
                 case MASTER:
@@ -369,8 +375,15 @@ public abstract class SearchQueryBuilder {
     }
 
 
-
-    private Query applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap,Query typedQuery) throws ServiceException {
+    /**
+     * Applies the values stored in the searchCriteriaMapMultipleValues map to the typedQuery
+     *
+     * @param searchCriteriaMap
+     * @param typedQuery
+     * @return
+     * @throws ServiceException
+     */
+    private Query applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap, Query typedQuery) throws ServiceException {
 
         // Assign values to created SQL Query
         for (Map.Entry<SearchFilter,List<String>> entry : searchCriteriaMap.entrySet()){
@@ -392,7 +405,7 @@ public abstract class SearchQueryBuilder {
                       uppperCaseValList.add(val.toUpperCase());
                   }
                 typedQuery.setParameter(mappings.get(key), uppperCaseValList);
-            }else
+            } else
                  typedQuery.setParameter(mappings.get(key), valueList);
 
         }

@@ -49,7 +49,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedReportIDs(), faReportDocumentEntity))"),
             @Mapping(target = "fishingActivities", expression = "java(getFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))"),
             @Mapping(target = "status", expression = "java(setStatusAsNew())"),
-            @Mapping(target = "source", expression = "java(faReportSourceEnum.getSourceType())")
+            @Mapping(target = "source", expression = "java(faReportSourceEnum.getSourceType())"),
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, @MappingTarget FaReportDocumentEntity faReportDocumentEntity, FaReportSourceEnum faReportSourceEnum);
 

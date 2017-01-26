@@ -11,22 +11,18 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Entity that will map the configuration of Activity module.
  */
 @Entity
 @Table(name = "activity_configuration")
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public class ActivityConfiguration extends BaseEntity {
+public class ActivityConfiguration {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "config_name")
     private String configName;
@@ -52,5 +48,10 @@ public class ActivityConfiguration extends BaseEntity {
     public void setConfigValue(String value) {
         this.configValue = value;
     }
-
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -14,7 +14,9 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,17 +73,26 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
    //     searchCriteriaMap.put(Filters.AREAS, "27.4.b");
      //   searchCriteriaMap.put(Filters.PORT, "GBR");
 
-       // searchCriteriaMap.put(Filters.QUNTITY_MIN, "0");
-      //  searchCriteriaMap.put(Filters.QUNTITY_MAX, "25");
+       // searchCriteriaMap.put(Filters.QUANTITY_MIN, "0");
+      //  searchCriteriaMap.put(Filters.QUANTITY_MAX, "25");
         Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
         List<String> activityTypeValues=new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         activityTypeValues.add("ARRIVAL");
 
+        VesselGroupSearch groupSearch = new VesselGroupSearch();
+        groupSearch.setGuid("234r-34dfe-123ds-12312dsd-sd");
+        groupSearch.setUser("rep_power");
+        groupSearch.setName("JEANNE");
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setVesselGroup(groupSearch);
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
-        List<FishingTripEntity> list= dao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap,searchCriteriaMapMultiVal);
+        List<FishingTripEntity> list= dao.getFishingTripsForMatchingFilterCriteria(query);
 
         System.out.println("done:" + list.size());
 

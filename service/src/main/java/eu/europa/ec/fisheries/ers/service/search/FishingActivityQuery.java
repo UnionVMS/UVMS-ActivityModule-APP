@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.search;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 
 import java.util.List;
@@ -20,43 +21,42 @@ import java.util.Map;
  * Created by sanera on 24/06/2016.
  */
 public class FishingActivityQuery {
-    private PaginationDto pagination;
-    private Map<SearchFilter,String> searchCriteriaMap;
-    private Map<SearchFilter,List<String>> searchCriteriaMapMultipleValues;
-    private SortKey sorting;
 
+    private PaginationDto pagination;
+    private Map<SearchFilter, String> searchCriteriaMap;
+    private Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues;
+    private VesselGroupSearch vesselGroup;
+    private SortKey sorting;
 
     public void setPagination(PaginationDto pagination) {
         this.pagination = pagination;
     }
-
     public Map<SearchFilter, String> getSearchCriteriaMap() {
         return searchCriteriaMap;
     }
-
     public void setSearchCriteriaMap(Map<SearchFilter, String> searchCriteriaMap) {
         this.searchCriteriaMap = searchCriteriaMap;
     }
-
     public PaginationDto getPagination() {
-
         return pagination;
     }
-
     public SortKey getSorting() {
         return sorting;
     }
-
     public void setSorting(SortKey sorting) {
         this.sorting = sorting;
     }
-
     public Map<SearchFilter, List<String>> getSearchCriteriaMapMultipleValues() {
         return searchCriteriaMapMultipleValues;
     }
-
     public void setSearchCriteriaMapMultipleValues(Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues) {
         this.searchCriteriaMapMultipleValues = searchCriteriaMapMultipleValues;
+    }
+    public void setVesselGroup(VesselGroupSearch vesselGroup) {
+        this.vesselGroup = vesselGroup;
+    }
+    public VesselGroupSearch getVesselGroup() {
+        return vesselGroup;
     }
 
     @Override
@@ -64,7 +64,8 @@ public class FishingActivityQuery {
         return "FishingActivityQuery{" +
                 "pagination=" + pagination +
                 ", searchCriteriaMap=" + searchCriteriaMap +
-
+                ", searchCriteriaMapMultipleValues=" + searchCriteriaMapMultipleValues +
+                ", sorting=" + sorting +
                 '}';
     }
 }

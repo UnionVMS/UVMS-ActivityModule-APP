@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -38,7 +39,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 @LocalBean
@@ -68,7 +72,7 @@ public class ActivityEventServiceBean implements EventService {
 
             FLUXFAReportMessage fluxFAReportMessage =extractFLUXFAReportMessage(baseRequest.getRequest());
 
-            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage.getFAReportDocuments(), extractPluginType(baseRequest.getPluginType()));
+            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(baseRequest.getPluginType()));
 
         } catch (ActivityModelMarshallException e) {
             LOG.error("Exception while trying to unmarshall SetFLUXFAReportMessageRequest in Activity",e);
@@ -83,17 +87,27 @@ public class ActivityEventServiceBean implements EventService {
         try {
             LOG.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
-            LOG.debug("FishingTriId Request Unmarshalled");
-            FishingTripResponse baseResponse =fishingTripService.getFishingTripIdsForFilter(extractFiltersAsMap(baseRequest),extractFiltersAsMapWithMultipleValues(baseRequest));
 
-            String response =JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
+            LOG.debug("FishingTriId Request Unmarshalled");
+            FishingTripResponse baseResponse = fishingTripService.getFishingTripIdsForFilter(buildFishingActivityQueryFromRequest(baseRequest));
+
+            String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
             LOG.debug("FishingTriId response marshalled");
+
             producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
             LOG.debug("Response sent back.");
         } catch (ActivityModelMarshallException | ActivityMessageException | JMSException e) {
             LOG.error("Error while communication ", e.getMessage());
             throw new ServiceException(e.getMessage(), e);
         }
+    }
+
+    private FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest));
+        query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest));
+        query.setVesselGroup(baseRequest.getVesselGroupSearch());
+        return query;
     }
 
     private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest) throws ServiceException {
@@ -133,8 +147,8 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     public FLUXFAReportMessage extractFLUXFAReportMessage(String request) throws ActivityModelMarshallException{
-        JAXBContext jc = null;
-        FLUXFAReportMessage fluxFAReportMessage = null;
+        JAXBContext jc;
+        FLUXFAReportMessage fluxFAReportMessage;
         try {
             jc = JAXBContext.newInstance(FLUXFAReportMessage.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();

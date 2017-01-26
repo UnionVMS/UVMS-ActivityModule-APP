@@ -14,15 +14,18 @@ import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.*;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
-import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
 import javax.annotation.PostConstruct;
@@ -49,23 +52,23 @@ public class FluxMessageServiceBean implements FluxMessageService {
 
     private FaReportDocumentDao faReportDocumentDao;
 
+    private FluxFaReportMessageDao fluxReportMessageDao;
+
     @EJB
     private MovementModuleService movementModule;
 
     @EJB
     private AssetModuleService assetModule;
 
-    private static final String PREVIOUS = "PREVIOUS";
-
-    private static final String NEXT = "NEXT";
-
+    private static final String PREVIOUS   = "PREVIOUS";
+    private static final String NEXT       = "NEXT";
     private static final String START_DATE = "START_DATE";
-
-    private static final String END_DATE = "END_DATE";
+    private static final String END_DATE   = "END_DATE";
 
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(em);
+        fluxReportMessageDao = new FluxFaReportMessageDao(em);
     }
 
     /**
@@ -73,17 +76,34 @@ public class FluxMessageServiceBean implements FluxMessageService {
      */
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
-    public void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
-        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
-        for (FAReportDocument faReportDocument : faReportDocuments) {
-            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), faReportSourceEnum);
-            updateGeometry(entity);
-            faReportDocumentEntities.add(entity);
-            log.debug("fishing activity records to be saved : " + entity.getFluxReportDocument().getId());
+    public void saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
+        FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
+        final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
+        for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
+            updateGeometry(faReportDocument);
+            enrichWithGuidsFromAssets(faReportDocument.getVesselTransportMeans());
+            log.debug("fishing activity records to be saved : " + faReportDocument.getFluxReportDocument().getId());
         }
         log.info("Insert fishing activity records into DB");
-        faReportDocumentDao.bulkUploadFaData(faReportDocumentEntities);
-        updateFaReportCorrections(faReportDocuments);
+
+        fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
+        updateFaReportCorrections(faReportMessage.getFAReportDocuments());
+    }
+
+    /**
+     * This method enriches the VesselTransportMeansEntity we got from FLUX with the related GUIDs.
+     *
+     * @param vesselIdentifiers
+     */
+    private void enrichWithGuidsFromAssets(VesselTransportMeansEntity vesselIdentifiers) {
+        try {
+            List<String> guids = assetModule.getAssetGuids(vesselIdentifiers.getVesselIdentifiers());
+            if(CollectionUtils.isNotEmpty(guids)){
+                vesselIdentifiers.setGuid(guids.get(0));
+            }
+        } catch (ServiceException e) {
+            log.error("Error while trying to get guids from Assets Module {}", e);
+        }
     }
 
     /**
@@ -128,7 +148,7 @@ public class FluxMessageServiceBean implements FluxMessageService {
                 if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) { // Interpolate Geometry from movements
                     point = interpolatedPoint;
                     fluxLocation.setGeom(point);
-                }  else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
+                } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
                     point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
                     fluxLocation.setGeom(point);
                 }

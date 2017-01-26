@@ -69,10 +69,10 @@ public class AssetsRequestMapper {
         }
         // TODO: Missing fields from ConfigSearchField enum
         /*
-        if(StringUtils.isNotEmpty(vesselDetailsTripDTO.getGfcm())){
+        if(StringUtils.isVesselGroupNotEmpty(vesselDetailsTripDTO.getGfcm())){
             criteriaList.add(createCriteriaElement(ConfigSearchField.PRODUCER_NAME, vesselDetailsTripDTO.getGfcm()));
         }
-        if(StringUtils.isNotEmpty(vesselDetailsTripDTO.getIccat())){
+        if(StringUtils.isVesselGroupNotEmpty(vesselDetailsTripDTO.getIccat())){
             criteriaList.add(createCriteriaElement(ConfigSearchField.PRODUCER_NAME, vesselDetailsTripDTO.getIccat()));
         }*/
         return criteriaList;

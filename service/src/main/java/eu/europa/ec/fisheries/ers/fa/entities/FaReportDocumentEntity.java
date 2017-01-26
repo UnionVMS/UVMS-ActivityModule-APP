@@ -59,6 +59,10 @@ public class FaReportDocumentEntity implements Serializable {
 	@Column(name = "geom")
 	private Geometry geom;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "flux_fa_report_message_id")
+	private FluxFaReportMessageEntity fluxFaReportMessage;
+
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "vessel_transport_means_id")
 	private VesselTransportMeansEntity vesselTransportMeans;
@@ -172,7 +176,12 @@ public class FaReportDocumentEntity implements Serializable {
 			Set<FishingActivityEntity> fishingActivities) {
 		this.fishingActivities = fishingActivities;
 	}
-
+	public FluxFaReportMessageEntity getFluxFaReportMessage() {
+		return fluxFaReportMessage;
+	}
+	public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
+		this.fluxFaReportMessage = fluxFaReportMessage;
+	}
 	public Geometry getGeom() {
 		return geom;
 	}

@@ -37,6 +37,6 @@ public class FluxMessageServiceIT extends BaseActivityArquillianTest {
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage.getFAReportDocuments(), FaReportSourceEnum.FLUX);
+        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
     }
 }
