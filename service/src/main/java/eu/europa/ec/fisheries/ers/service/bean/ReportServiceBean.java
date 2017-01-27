@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.List;
 
 /**
  * Created by sanera on 17/01/2017.
@@ -34,6 +33,6 @@ public class ReportServiceBean implements ReportService {
 
     public void getCatchSummaryReport(){
      log.debug("inside getCatchSummaryReport");
-        List<Object[]> list= fishingActivityDao.getCatchSummary();
+       // List<Object[]> list= fishingActivityDao.getCatchSummary();
     }
 }

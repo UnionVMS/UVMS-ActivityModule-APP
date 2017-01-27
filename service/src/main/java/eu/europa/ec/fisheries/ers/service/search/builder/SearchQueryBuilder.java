@@ -107,7 +107,7 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    private void appendOnlyJoinString(StringBuilder sql, String joinString) {
+    protected void appendOnlyJoinString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 

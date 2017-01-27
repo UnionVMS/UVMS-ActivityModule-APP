@@ -13,16 +13,14 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
@@ -238,12 +236,44 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertNotEquals(0, finishingActivityList.size());
     }
 
-    @Test
+    //@Test
     public void testGetCatchSummary() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
-        List<Object[]> list = dao.getCatchSummary();
+     /*  List<Object[]> list = dao.getCatchSummary();
+        for(Object[] objArr :list){
+            System.out.println(Arrays.toString(objArr));
+        }*/
+        List<FaCatchSummaryCustomEntity> list = dao.getCatchSummary();
+        for(FaCatchSummaryCustomEntity objArr :list){
+            System.out.println(objArr);
+        }
         assertNotNull(list);
+
+    }
+
+    @Test
+    public void testGetFACatchSummaryReportString() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+
+        List<GroupCriteria> groupByFields = new ArrayList<>();
+        groupByFields.add(GroupCriteria.DATE);
+        groupByFields.add(GroupCriteria.SIZE_CLASS);
+        groupByFields.add(GroupCriteria.SPECIES);
+        groupByFields.add(GroupCriteria.AREA);
+        query.setGroupByFields(groupByFields);
+
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        StringBuilder sqlGenerated = dao.getFACatchSummaryReportString(query);
+        System.out.println("sqlGenerated:" + sqlGenerated);
+        assertNotNull(sqlGenerated);
 
     }
 }

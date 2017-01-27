@@ -7,11 +7,21 @@ public class GroupCriteriaMapper {
 
     private String tableJoin;
     private String columnName;
+    private String methodName; // This is a method name which is used to map criteria to FaCatchSummaryCustomEntity object
 
 
-    public GroupCriteriaMapper(String tableJoin, String columnName) {
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public GroupCriteriaMapper(String tableJoin, String columnName, String methodName) {
         this.tableJoin = tableJoin;
         this.columnName = columnName;
+        this.methodName = methodName;
     }
 
     public GroupCriteriaMapper() {

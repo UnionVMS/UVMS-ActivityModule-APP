@@ -57,6 +57,18 @@ public class FilterMap {
     public static final String DATASOURCE                   = "dataSource";
     public static final String FAREPORT_ID                  = "faReportId";
     public static final String AREA_GEOM                    = "areaGeom";
+    public static final String FA_CATCH_TERITTORY           = "faCatch.territory";
+    public static final String FA_CATCH_FAO_AREA          = "faCatch.faoArea";
+    public static final String FA_CATCH_ICES_STAT_RECTANGLE  = "faCatch.icesStatRectangle";
+    public static final String FA_CATCH_EFFORT_ZONE  = "faCatch.effortZone";
+    public static final String FA_CATCH_RMFO  = "faCatch.rfmo";
+    public static final String FA_CATCH_GFCM_GSA = "faCatch.gfcmGsa";
+    public static final String FA_CATCH_GFCM_STAT_RECTANGLE = "faCatch.gfcmStatRectangle";
+
+
+
+
+
 
     // This contains Table Join and Where condition mapping for each Filter
     private static EnumMap<SearchFilter, FilterDetails> filterMappings        = new EnumMap<>(SearchFilter.class);
@@ -180,12 +192,20 @@ public class FilterMap {
 
 
     public static void populateGroupByMapping() {
-        groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.occurence" ));
-        groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(SIZE_DISTRIBUTION_CODE_TABLE_ALIAS, "sdClassCode.classCode" ));
-        groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(VESSEL_TRANSPORT_TABLE_ALIAS, "vt.country" ));
-        groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode" ));
-        groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(AAP_PROCESS_CODE_TABLE_ALIAS, "aapProcessCode.typeCode" ));
-        groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, "faCatch.speciesCode" ));
+        groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.occurence" , "setDate"));
+        groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(SIZE_DISTRIBUTION_CODE_TABLE_ALIAS, "sdClassCode.classCode" , "setFishClass"));
+        groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(VESSEL_TRANSPORT_TABLE_ALIAS, "vt.country", "setFlagState" ));
+        groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode", "setGearType" ));
+        groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(AAP_PROCESS_CODE_TABLE_ALIAS, "aapProcessCode.typeCode" , "setPresentation"));
+        groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, "faCatch.speciesCode", "setSpecies" ));
+        groupByMapping.put(GroupCriteria.AREA, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_TERITTORY+", "+FA_CATCH_FAO_AREA+", "+FA_CATCH_ICES_STAT_RECTANGLE+", "+FA_CATCH_EFFORT_ZONE+", "+FA_CATCH_RMFO+", "+FA_CATCH_GFCM_GSA+", "+ FA_CATCH_GFCM_STAT_RECTANGLE, ""));
+        groupByMapping.put(GroupCriteria.TERRITORY, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_TERITTORY , "setTerritory"));
+        groupByMapping.put(GroupCriteria.FAO_AREA, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_FAO_AREA , "setFaoArea"));
+        groupByMapping.put(GroupCriteria.ICES_STAT_RECTANGLE, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_ICES_STAT_RECTANGLE , "setIcesStatRectangle"));
+        groupByMapping.put(GroupCriteria.EFFORT_ZONE, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_EFFORT_ZONE , "setEffortZone"));
+        groupByMapping.put(GroupCriteria.RFMO, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_RMFO , "setRfmo"));
+        groupByMapping.put(GroupCriteria.GFCM_GSA, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_GFCM_GSA , "setGfcmGsa"));
+        groupByMapping.put(GroupCriteria.GFCM_STAT_RECTANGLE, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_GFCM_STAT_RECTANGLE , "setGfcmStatRectangle"));
 
     }
 
