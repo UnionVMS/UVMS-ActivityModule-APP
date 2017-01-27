@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -40,9 +39,6 @@ public class JacksonSubclassSerializerTest {
         String val = "someVal";
         map.put(SearchFilter.VESSEL, val);
         fishQuery.setSearchCriteriaMap(map);
-
-        VesselGroupSearch vessGroupSearch = new VesselGroupSearch("JEANNE","12323-erwe-334234-34324","rep_power");
-        fishQuery.setVesselGroup(vessGroupSearch);
 
         String s = null;
         try {

@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyTripD
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
@@ -302,15 +301,9 @@ public class FishingTripServiceBeanTest {
         activityTypeValues.add("DEPARTURE");
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
 
-        VesselGroupSearch vesselGroupSearch = new VesselGroupSearch();
-        vesselGroupSearch.setGuid("udsafiduy-khsdfkjfh-21793hgfds-dsnhfjhf");
-        vesselGroupSearch.setName("JEANNE");
-        vesselGroupSearch.setUser("rep_power");
-
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(searchMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
-        query.setVesselGroup(vesselGroupSearch);
 
         when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(query)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
         //Trigger

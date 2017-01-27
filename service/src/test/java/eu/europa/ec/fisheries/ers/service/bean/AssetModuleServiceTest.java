@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import lombok.SneakyThrows;
@@ -40,14 +39,9 @@ public class AssetModuleServiceTest {
 
     AssetModuleServiceBean assetsModuleBean;
 
-    VesselGroupSearch vesselGroupSearch;
 
     @Before
     public void prepare(){
-        vesselGroupSearch = new VesselGroupSearch();
-        vesselGroupSearch.setGuid("112d-33f1-44r44-ttt6-df12");
-        vesselGroupSearch.setUser("rep_power");
-        vesselGroupSearch.setName("groupX");
 
         assetProducer     = mock(AssetProducerBean.class);
         activityConsumer  = mock(ActivityConsumerBean.class);
@@ -61,10 +55,10 @@ public class AssetModuleServiceTest {
         doReturn("12222-4rrr-566t-dwq11").when(assetProducer).sendModuleMessage(Mockito.anyString(), any(Destination.class));
         doReturn(null).when(activityConsumer).getMessage("12222-4rrr-566t-dwq11", TextMessage.class);
         doReturn(new ArrayList<>()).when(assetsModuleBean).getGuidsFromAssets(Mockito.anyString());
-        assetsModuleBean.getAssetGuids("JEANNE", vesselGroupSearch);
+        assetsModuleBean.getAssetGuids("JEANNE", "test-group");
 
         // Verify
-        Mockito.verify(assetsModuleBean, Mockito.times(1)).getAssetGuids(any(String.class), any(VesselGroupSearch.class));
+        Mockito.verify(assetsModuleBean, Mockito.times(1)).getAssetGuids(any(String.class), any(String.class));
     }
 
 

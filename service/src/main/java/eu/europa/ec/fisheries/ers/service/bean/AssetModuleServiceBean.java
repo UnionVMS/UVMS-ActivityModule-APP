@@ -14,13 +14,11 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.CommonActivityUtil;
 import eu.europa.ec.fisheries.ers.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
@@ -69,7 +67,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     }
 
     @Override
-    public List<String> getAssetGuids(String vesselSearchStr, VesselGroupSearch vesselGroupSearch) throws ServiceException {
+    public List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearch) throws ServiceException {
         List<String> guidsFromVesselSearchStr = null;
         List<String> guidsFromVesselGroup     = null;
         String request;
@@ -87,7 +85,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
 
         // Get the list of guids from assets if vesselGroupSearchName is provided
         // If the list of guids is not empty then we have to provide this on the query also
-        if(CommonActivityUtil.isVesselGroupNotEmpty(vesselGroupSearch)){
+        if(StringUtils.isNotEmpty(vesselGroupSearch)){
             try {
                 request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetGroupQuery(vesselGroupSearch));
             } catch (AssetModelMapperException e) {
@@ -106,37 +104,27 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             resultingList.addAll(guidsFromVesselSearchStr);
         }
         if(CollectionUtils.isNotEmpty(guidsFromVesselGroup)){
-            resultingList.addAll(guidsFromVesselSearchStr);
+            resultingList.addAll(guidsFromVesselGroup);
         }
         return new ArrayList<>(resultingList);
     }
 
     @NotNull
-    private List<AssetGroup> createAssetGroupQuery(VesselGroupSearch vesselGroupSearch) {
+    private List<AssetGroup> createAssetGroupQuery(String vesselGroupSearch) {
         List<AssetGroup> assetGroupList = new ArrayList<>();
         AssetGroup assGroup = new AssetGroup();
         assGroup.getSearchFields().addAll(createAssetGroupSearchFileds(vesselGroupSearch));
-        assGroup.setName(vesselGroupSearch.getName());
-        assGroup.setGuid(vesselGroupSearch.getGuid());
-        assGroup.setUser(vesselGroupSearch.getUser());
+        assGroup.setGuid(vesselGroupSearch);
         assetGroupList.add(assGroup);
         return assetGroupList;
     }
 
-    private List<AssetGroupSearchField> createAssetGroupSearchFileds(VesselGroupSearch vesselGroupSearchName) {
+    private List<AssetGroupSearchField> createAssetGroupSearchFileds(String vesselGroupSearchName) {
         List<AssetGroupSearchField> assetGroupSearchFieldList = new ArrayList<>();
-
-        AssetGroupSearchField assetGroupNameField = new AssetGroupSearchField();
-        assetGroupNameField.setKey(ConfigSearchField.NAME);
-        assetGroupNameField.setValue(vesselGroupSearchName.getName());
-
         AssetGroupSearchField assetGroupGuidField = new AssetGroupSearchField();
         assetGroupGuidField.setKey(ConfigSearchField.GUID);
-        assetGroupGuidField.setValue(vesselGroupSearchName.getGuid());
-
-        assetGroupSearchFieldList.add(assetGroupNameField);
+        assetGroupGuidField.setValue(vesselGroupSearchName);
         assetGroupSearchFieldList.add(assetGroupGuidField);
-
         return assetGroupSearchFieldList;
     }
 

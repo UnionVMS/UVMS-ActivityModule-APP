@@ -106,7 +106,6 @@ public class ActivityEventServiceBean implements EventService {
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest));
         query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest));
-        query.setVesselGroup(baseRequest.getVesselGroupSearch());
         return query;
     }
 

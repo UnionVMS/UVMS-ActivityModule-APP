@@ -14,7 +14,6 @@ import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.CommonActivityUtil;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
@@ -27,7 +26,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityRepor
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -153,8 +151,8 @@ public class ActivityServiceBean implements ActivityService {
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
         List<String> guidsFromAssets;
         String vesselSearchStr      = searchCriteriaMap.get(SearchFilter.VESSEL);
-        VesselGroupSearch vesselGroupSearchStr = query.getVesselGroup();
-        if(StringUtils.isNotEmpty(vesselSearchStr) || CommonActivityUtil.isVesselGroupNotEmpty(vesselGroupSearchStr)){
+        String vesselGroupSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL_GROUP);
+        if(StringUtils.isNotEmpty(vesselSearchStr) || StringUtils.isNotEmpty(vesselGroupSearchStr)){
             guidsFromAssets = assetsServiceBean.getAssetGuids(vesselSearchStr, vesselGroupSearchStr);
             if(CollectionUtils.isEmpty(guidsFromAssets)){
                 return true;

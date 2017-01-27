@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.search;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselGroupSearch;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 
 import java.util.List;
@@ -25,7 +24,6 @@ public class FishingActivityQuery {
     private PaginationDto pagination;
     private Map<SearchFilter, String> searchCriteriaMap;
     private Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues;
-    private VesselGroupSearch vesselGroup;
     private SortKey sorting;
 
     public void setPagination(PaginationDto pagination) {
@@ -51,12 +49,6 @@ public class FishingActivityQuery {
     }
     public void setSearchCriteriaMapMultipleValues(Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues) {
         this.searchCriteriaMapMultipleValues = searchCriteriaMapMultipleValues;
-    }
-    public void setVesselGroup(VesselGroupSearch vesselGroup) {
-        this.vesselGroup = vesselGroup;
-    }
-    public VesselGroupSearch getVesselGroup() {
-        return vesselGroup;
     }
 
     @Override

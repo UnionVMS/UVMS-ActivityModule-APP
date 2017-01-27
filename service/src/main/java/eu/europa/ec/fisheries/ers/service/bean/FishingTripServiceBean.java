@@ -20,7 +20,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
-import eu.europa.ec.fisheries.ers.fa.utils.CommonActivityUtil;
 import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
@@ -538,8 +537,7 @@ public class FishingTripServiceBean implements FishingTripService {
     @Override
     public FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException {
         log.info("getFishingTripResponse For Filter");
-        if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()) &&
-                CommonActivityUtil.isVesselGroupNotEmpty(query.getVesselGroup()))
+        if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
             return new FishingTripResponse();
         }
