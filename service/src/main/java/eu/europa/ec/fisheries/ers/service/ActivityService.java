@@ -49,4 +49,5 @@ public interface ActivityService {
      */
     List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException;
 
+    boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
 }

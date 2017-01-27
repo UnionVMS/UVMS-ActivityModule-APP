@@ -86,8 +86,9 @@ public class FishingActivityResource extends UnionVMSResource {
             faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
         }
 
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage.getFAReportDocuments(), FaReportSourceEnum.FLUX);
+        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
 
+        FLUXFAReportMessage fluxRepMessage = new FLUXFAReportMessage();
         List<FAReportDocument> faReportDocumentList = fluxfaReportMessage.getFAReportDocuments();
         for (FAReportDocument faReportDocument : faReportDocumentList) {
             IDType id = faReportDocument.getRelatedFLUXReportDocument().getIDS().get(0);
@@ -107,7 +108,8 @@ public class FishingActivityResource extends UnionVMSResource {
                 fishingActivity.setRelatedFishingActivities(null);
             }
         }
-        fluxResponseMessageService.saveFishingActivityReportDocuments(faReportDocumentList, FaReportSourceEnum.FLUX);
+        fluxRepMessage.setFAReportDocuments(faReportDocumentList);
+        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxRepMessage, FaReportSourceEnum.FLUX);
         return createSuccessResponse();
     }
 
@@ -129,10 +131,9 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        FilterFishingActivityReportResultDTO resultDTO=activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
-        Response responseMethod = createSuccessPaginatedResponse(resultDTO.getResultList(),resultDTO.getTotalCountOfRecords());
-        log.info("successful");
-        return responseMethod;
+        FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
+        log.info("Successful retrieved");
+        return createSuccessPaginatedResponse(resultDTO.getResultList(),resultDTO.getTotalCountOfRecords());
     }
 
     @GET

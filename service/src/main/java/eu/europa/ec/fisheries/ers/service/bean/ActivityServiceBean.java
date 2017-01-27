@@ -15,8 +15,8 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
@@ -31,6 +31,8 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -60,13 +62,10 @@ public class ActivityServiceBean implements ActivityService {
     private FishingActivityDao fishingActivityDao;
 
     @EJB
-    private ActivityMessageProducer activityProducer;
-
-    @EJB
-    private AssetsMessageConsumerBean activityConsumer;
-
-    @EJB
     private SpatialModuleService spatialModule;
+
+    @EJB
+    AssetModuleService assetsServiceBean;
 
     @PostConstruct
     public void init() {
@@ -107,17 +106,22 @@ public class ActivityServiceBean implements ActivityService {
         List<FishingActivityEntity> activityList;
         log.debug("FishingActivityQuery received : {}", query);
 
-        // Check if any filters are present. If not, We need to return all fishing activity data
+        // Get the VesselTransportMeans guids from Assets if one of the Vessel related filters (VESSEL, VESSEL_GROUP) has been issued.
+        // Returning true means that the query didn't produce results.
+        if (checkAndEnrichIfVesselFiltersArePresent(query)) {
+            return createResultDTO(null, 0);
+        }
 
-        String areaWkt= getRestrictedAreaGeom(datasets);
+        // Check if any filters are present. If not, We need to return all fishing activity data
+        String areaWkt = getRestrictedAreaGeom(datasets);
         log.debug("Geometry for the user received from USM : "+ areaWkt);
-        if(areaWkt!=null && areaWkt.length() > 0){
+        if(areaWkt != null && areaWkt.length() > 0){
             Map<SearchFilter, String> mapSearch= query.getSearchCriteriaMap();
-            if(mapSearch ==null) {
+            if(mapSearch == null) {
                 mapSearch = new HashMap<>();
                 query.setSearchCriteriaMap(mapSearch);
             }
-            mapSearch.put(SearchFilter.AREA_GEOM,areaWkt);
+            mapSearch.put(SearchFilter.AREA_GEOM, areaWkt);
         }
         query = separateSingleVsMultipleFilters(query);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query);
@@ -125,24 +129,62 @@ public class ActivityServiceBean implements ActivityService {
         int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
 
+        return createResultDTO(activityList, totalCountOfRecords);
+    }
+
+    /**
+     * Checks if one of the VESSEL filters is issued.
+     * If true then queries the ASSETS module for guids related to these filters.
+     * If assets answers with some guids then puts those guids in searchCriteriaMapMultipleValues of
+     * FishingActivityQuery and returns false.
+     *
+     * In every other case it returns true, which means that the filters were present but,
+     * there were no matches in ASSET module.
+     *
+     * @param query
+     * @return
+     * @throws ServiceException
+     */
+    @Override
+    public boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException {
+        Map<SearchFilter, String> searchCriteriaMap                     = query.getSearchCriteriaMap();
+        Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
+        List<String> guidsFromAssets;
+        String vesselSearchStr      = searchCriteriaMap.get(SearchFilter.VESSEL);
+        String vesselGroupSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL_GROUP);
+        if(StringUtils.isNotEmpty(vesselSearchStr) || StringUtils.isNotEmpty(vesselGroupSearchStr)){
+            guidsFromAssets = assetsServiceBean.getAssetGuids(vesselSearchStr, vesselGroupSearchStr);
+            if(CollectionUtils.isEmpty(guidsFromAssets)){
+                return true;
+            }
+            searchCriteriaMap.remove(SearchFilter.VESSEL);
+            searchCriteriaMap.remove(SearchFilter.VESSEL_GROUP);
+            if(searchCriteriaMapMultipleValues == null){
+                searchCriteriaMapMultipleValues = new HashMap<>();
+            }
+            searchCriteriaMapMultipleValues.put(SearchFilter.VESSEL_GUIDS, guidsFromAssets);
+        }
+        return false;
+    }
+
+    @NotNull
+    private FilterFishingActivityReportResultDTO createResultDTO(List<FishingActivityEntity> activityList, int totalCountOfRecords) {
         if (CollectionUtils.isEmpty(activityList)) {
             log.debug("Could not find FishingActivity entities matching search criteria");
             activityList = Collections.emptyList();
         }
-
         // Prepare DTO to return to Frontend
         log.debug("Fishing Activity Report resultset size :" + ((activityList == null) ? "list is null" : "" + activityList.size()));
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setTotalCountOfRecords(totalCountOfRecords);
-
         return filterFishingActivityReportResultDTO;
     }
 
     // Improve this part later on
     private FishingActivityQuery separateSingleVsMultipleFilters(FishingActivityQuery query) throws ServiceException {
         Map<SearchFilter, List<String>> searchMapWithMultipleValues = query.getSearchCriteriaMapMultipleValues();
-        if(searchMapWithMultipleValues ==null)
+        if(searchMapWithMultipleValues == null)
             throw new ServiceException("No purpose code provided for the Fishing activity filters! At least one needed!");
 
         Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
@@ -151,16 +193,16 @@ public class ActivityServiceBean implements ActivityService {
 
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
 
-        Iterator<Map.Entry<SearchFilter, String>> it = searchMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<SearchFilter, String> e = it.next();
+        Iterator<Map.Entry<SearchFilter, String>> searchMapIterator = searchMap.entrySet().iterator();
+        while (searchMapIterator.hasNext()) {
+            Map.Entry<SearchFilter, String> e = searchMapIterator.next();
             SearchFilter key = e.getKey();
             String value = e.getValue();
             if (filtersWhichSupportMultipleValues.contains(key)) {
                 List<String> values = new ArrayList<>();
                 values.add(value);
                 searchMapWithMultipleValues.put(key, values);
-                it.remove();
+                searchMapIterator.remove();
             }
         }
 
@@ -178,7 +220,7 @@ public class ActivityServiceBean implements ActivityService {
     }
 
     private String getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
-        if (datasets == null || datasets.isEmpty()) {
+        if (CollectionUtils.isEmpty(datasets)) {
             return null;
         }
         List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
@@ -192,4 +234,5 @@ public class ActivityServiceBean implements ActivityService {
         }
         return activityReportDTOList;
     }
+
 }

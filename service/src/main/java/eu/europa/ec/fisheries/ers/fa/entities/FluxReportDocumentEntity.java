@@ -43,6 +43,10 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(columnDefinition = "text", name = "purpose")
     private String purpose;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "flux_fa_report_message_id")
+    private FluxFaReportMessageEntity fluxFaReportMessage;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
 
@@ -69,75 +73,63 @@ public class FluxReportDocumentEntity implements Serializable {
     public int getId() {
         return this.id;
     }
-
     public String getReferenceId() {
         return this.referenceId;
     }
-
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
     }
-
     public String getReferenceSchemeId() {
         return referenceSchemeId;
     }
-
     public void setReferenceSchemeId(String referenceSchemeId) {
         this.referenceSchemeId = referenceSchemeId;
     }
-
     public Date getCreationDatetime() {
         return this.creationDatetime;
     }
-
     public void setCreationDatetime(Date creationDatetime) {
         this.creationDatetime = creationDatetime;
     }
-
     public String getPurposeCode() {
         return this.purposeCode;
     }
-
     public void setPurposeCode(String purposeCode) {
         this.purposeCode = purposeCode;
     }
-
     public String getPurposeCodeListId() {
         return this.purposeCodeListId;
     }
-
     public void setPurposeCodeListId(String purposeCodeListId) {
         this.purposeCodeListId = purposeCodeListId;
     }
-
     public String getPurpose() {
         return this.purpose;
     }
-
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
-
     public FaReportDocumentEntity getFaReportDocument() {
         return faReportDocument;
     }
-
     public void setFaReportDocument(FaReportDocumentEntity faReportDocument) {
         this.faReportDocument = faReportDocument;
     }
-
     public Set<FluxReportIdentifierEntity> getFluxReportIdentifiers() {
         return fluxReportIdentifiers;
     }
-
     public void setFluxReportIdentifiers(Set<FluxReportIdentifierEntity> fluxReportIdentifiers) {
         this.fluxReportIdentifiers = fluxReportIdentifiers;
     }
-
+    public FluxFaReportMessageEntity getFluxFaReportMessage() {
+        return fluxFaReportMessage;
+    }
+    public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
+        this.fluxFaReportMessage = fluxFaReportMessage;
+    }
     public FluxPartyEntity getFluxParty() {
         return fluxParty;
     }
-
     public void setFluxParty(FluxPartyEntity fluxParty) {
         this.fluxParty = fluxParty;
     }
@@ -151,6 +143,6 @@ public class FluxReportDocumentEntity implements Serializable {
                 ", purposeCode='" + purposeCode + '\'' +
                 ", purposeCodeListId='" + purposeCodeListId + '\'' +
                 ", purpose='" + purpose + '\'' +
-               '}';
+                '}';
     }
 }

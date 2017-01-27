@@ -30,7 +30,6 @@
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
         <activity.model>0.5.8-SNAPSHOT</activity.model>
-        <activity.model.fa>0.5.5</activity.model.fa>
 
         <!-- Other modules dependencies -->
         <reporting.model>0.5.0</reporting.model>
@@ -45,8 +44,8 @@
         <mapstruct.version>1.0.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
-        <asset.model.version>2.0.0</asset.model.version>
-        <movement.model.version>2.0.0</movement.model.version>
+        <asset.model.version>3.0.0</asset.model.version>
+        <movement.model.version>3.0.0</movement.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
@@ -144,6 +143,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-model</artifactId>
                 <version>${asset.model.version}</version>
+                <classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -279,12 +279,6 @@
                 <groupId>ojdbc</groupId>
                 <artifactId>ojdbc</artifactId>
                 <version>14</version>
-            </dependency>
-			
-			 <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-                <artifactId>activity-model-fa</artifactId>
-                <version>${activity.model.fa}</version>
             </dependency>
 
             <dependency>

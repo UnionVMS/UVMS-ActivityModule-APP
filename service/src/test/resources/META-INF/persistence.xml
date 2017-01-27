@@ -8,6 +8,7 @@
 
 		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
 		<!-- ERS Activity entities -->
+		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.GearProblemRecoveryEntity</class>
