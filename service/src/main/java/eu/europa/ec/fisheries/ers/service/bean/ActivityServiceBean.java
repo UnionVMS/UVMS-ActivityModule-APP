@@ -160,7 +160,7 @@ public class ActivityServiceBean implements ActivityService {
             searchCriteriaMap.remove(SearchFilter.VESSEL);
             searchCriteriaMap.remove(SearchFilter.VESSEL_GROUP);
             if(searchCriteriaMapMultipleValues == null){
-                searchCriteriaMapMultipleValues = new HashMap<>();
+                searchCriteriaMapMultipleValues = new EnumMap<>(SearchFilter.class);
             }
             searchCriteriaMapMultipleValues.put(SearchFilter.VESSEL_GUIDS, guidsFromAssets);
         }
