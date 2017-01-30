@@ -116,6 +116,18 @@ public class FilterMap {
     }
 
     /**
+     * Same as populateFilterMappings() but woth the DELIMITED_PERIOD_TABLE_ALIAS alias changed.
+     *
+     * Below method stores mapping for each Filter criteria. Mapping will provide information on table joins
+     * required for the criteria and Where conditions which needs to be applied for the criteria
+     *
+     */
+    public static void populateFilterMappingsWithChangedDelimitedPeriodTable(){
+        DELIMITED_PERIOD_TABLE_ALIAS = " ft.delimitedPeriods dp ";
+        populateFilterMappings();
+    }
+
+    /**
      * For Sort by start date and End date, it needs special treatment. We need to use subQuery to make sure We pick up
      * only first Start or End date from the list of dates.
      * Below method helps that special case.

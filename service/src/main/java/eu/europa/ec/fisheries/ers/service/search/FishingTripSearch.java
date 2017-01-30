@@ -33,8 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static eu.europa.ec.fisheries.ers.service.search.FilterMap.DELIMITED_PERIOD_TABLE_ALIAS;
-import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappings;
+import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
  * Created by sanera on 16/11/2016.
@@ -49,8 +48,7 @@ public class FishingTripSearch extends SearchQueryBuilder {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
 
-        DELIMITED_PERIOD_TABLE_ALIAS = " ft.delimitedPeriods dp ";
-        populateFilterMappings();
+        populateFilterMappingsWithChangedDelimitedPeriodTable();
 
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
 
