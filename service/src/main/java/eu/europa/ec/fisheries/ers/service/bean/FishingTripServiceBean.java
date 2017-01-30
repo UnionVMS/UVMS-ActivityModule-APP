@@ -23,16 +23,17 @@ import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
@@ -40,6 +41,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -51,6 +53,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.*;
+
+//import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -72,6 +76,9 @@ public class FishingTripServiceBean implements FishingTripService {
 
     @EJB
     private SpatialModuleService spatialModule;
+
+    @EJB
+    private ActivityService activityServiceBean;
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
@@ -530,12 +537,13 @@ public class FishingTripServiceBean implements FishingTripService {
     }
 
     @Override
-    public FishingTripResponse getFishingTripIdsForFilter(Map<SearchFilter, String> searchCriteriaMap, Map<SearchFilter, List<String>> searchMapWithMultipleVals) throws ServiceException {
+    public FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException {
         log.info("getFishingTripResponse For Filter");
-        if ((searchCriteriaMap == null || searchCriteriaMap.isEmpty()) && (searchMapWithMultipleVals == null || searchMapWithMultipleVals.isEmpty())) {
+        if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
+                || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
             return new FishingTripResponse();
         }
-        List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(searchCriteriaMap, searchMapWithMultipleVals);
+        List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
         log.debug("Fishing trips received from db:" + fishingTripList.size());
 
         // build Fishing trip response from FishingTripEntityList and return

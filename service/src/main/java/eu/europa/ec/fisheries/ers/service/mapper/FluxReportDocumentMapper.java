@@ -10,10 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -49,6 +46,21 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
             @Mapping(target = "faReportDocument", expression = "java(faReportDocumentEntity)")
     })
     public abstract FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FluxReportDocumentEntity fluxReportDocumentEntity);
+
+
+    @Mappings({
+            @Mapping(target = "referenceId", expression = "java(getIdType(fluxReportDocument.getReferencedID()))"),
+            @Mapping(target = "referenceSchemeId", expression = "java(getIdTypeSchemaId(fluxReportDocument.getReferencedID()))"),
+            @Mapping(target = "creationDatetime", expression = "java(convertToDate(fluxReportDocument.getCreationDateTime()))"),
+            @Mapping(target = "purposeCode", expression = "java(getCodeType(fluxReportDocument.getPurposeCode()))"),
+            @Mapping(target = "purposeCodeListId", expression = "java(getCodeTypeListId(fluxReportDocument.getPurposeCode()))"),
+            @Mapping(target = "purpose", expression = "java(getTextType(fluxReportDocument.getPurpose()))"),
+            @Mapping(target = "fluxParty", expression = "java(getFluxPartyEntity(fluxReportDocument.getOwnerFLUXParty(), fluxReportDocumentEntity))"),
+            @Mapping(target = "fluxReportIdentifiers", expression = "java(mapToFluxReportIdentifierEntities(fluxReportDocument.getIDS(), fluxReportDocumentEntity))"),
+            @Mapping(target = "fluxFaReportMessage", expression = "java(fluxFaReportMessage)")
+    })
+    public abstract FluxReportDocumentEntity mapToFluxReportDocumentEntityFromFluxMessage(FLUXReportDocument fluxReportDocument, FluxFaReportMessageEntity fluxFaReportMessage, @MappingTarget FluxReportDocumentEntity fluxReportDocumentEntity);
+
 
     @Mappings({
             @Mapping(target = "fluxReportIdentifierId", expression = "java(getIdType(idType))"),

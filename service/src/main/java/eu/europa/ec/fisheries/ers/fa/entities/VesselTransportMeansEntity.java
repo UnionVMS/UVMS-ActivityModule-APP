@@ -42,6 +42,9 @@ public class VesselTransportMeansEntity implements Serializable {
     @Column(name = "country")
     private String country;
 
+    @Column(name = "guid")
+    private String guid;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
     private FaReportDocumentEntity faReportDocument;
 
@@ -145,6 +148,14 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setFlapDocuments(Set<FlapDocumentEntity> flapDocuments) {
         this.flapDocuments = flapDocuments;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
     public FishingActivityEntity getFishingActivity() {

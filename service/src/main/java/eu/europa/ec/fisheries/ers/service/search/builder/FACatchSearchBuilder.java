@@ -45,7 +45,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
             GroupCriteriaMapper mapper = groupMAppings.get(criteria);
             if (sql.indexOf(mapper.getTableJoin()) == -1) {
-                appendOnlyJoinString(sql, mapper.getTableJoin());
+                appendJoinString(sql, mapper.getTableJoin());
             }
         }
 

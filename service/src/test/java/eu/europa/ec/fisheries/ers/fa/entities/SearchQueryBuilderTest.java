@@ -45,9 +45,9 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
     public void testCreateSQL() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
-      /*  searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+      /*  searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
@@ -60,8 +60,8 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
         searchCriteriaMap.put(SearchFilter.PORT, "GBR");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
         searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");*/
 
@@ -83,9 +83,9 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
     public void testCreateSQL_DateSorting() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(SearchFilter.FROM_ID, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
         searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27 07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
@@ -98,8 +98,8 @@ public class SearchQueryBuilderTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
         searchCriteriaMap.put(SearchFilter.PORT, "GBR");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MIN, "0");
-        searchCriteriaMap.put(SearchFilter.QUNTITY_MAX, "25");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
         searchCriteriaMap.put(SearchFilter.WEIGHT_MEASURE, "TNE");
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 

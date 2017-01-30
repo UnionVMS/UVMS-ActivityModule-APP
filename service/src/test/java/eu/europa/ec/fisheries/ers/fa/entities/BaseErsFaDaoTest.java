@@ -23,6 +23,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     public void prepare() {
         Operation operation = sequenceOf(
                 DELETE_ALL,
+                INSERT_FLUX_FA_REPORT_MESSAGE_DATA,
                 INSERT_ERS_FLUX_PARTY_DATA,
                 INSERT_ERS_FLUX_PARTY_IDENTIFIER_DATA,
                 INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,
@@ -58,9 +59,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             deleteAllFrom("activity.activity_flux_report_document"),
             deleteAllFrom("activity.activity_vessel_transport_means"),
             deleteAllFrom("activity.activity_fishing_trip"),
-            deleteAllFrom("activity.activity_fishing_trip_Identifier")
-
-
+            deleteAllFrom("activity.activity_fishing_trip_Identifier"),
+            deleteAllFrom("activity.activity_flux_fa_report_message")
     );
 
 
@@ -483,24 +483,24 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     //flux_report_document_id
     protected static final Operation INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA = sequenceOf(
             insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id")
-                    .values(1, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 1)
+                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
+                    .values(1, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 1, 1)
                     .build(),
             insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id")
-                    .values(2, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 2)
+                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
+                    .values(2, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 2, 2)
                     .build(),
             insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id")
-                    .values(3, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 3)
+                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
+                    .values(3, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 3, 3)
                     .build(),
             insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id")
-                    .values(4, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 4)
+                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
+                    .values(4, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 4, 4)
                     .build(),
             insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id")
-                    .values(5, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 5)
+                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
+                    .values(5, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 5, 5)
                     .build()
 
     );
@@ -766,26 +766,54 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
 
     protected static final Operation INSERT_ERS_FA_REPORT_DOCUMENT_DATA = sequenceOf(
             insertInto("activity.activity_fa_report_document")
-                    .columns("id",  "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1, 1, "fmc", "fmc_list", "new", "FLUX")
+                    .columns("id",  "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", 
+                            "source", "flux_fa_report_message_id")
+                    .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1, 1, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2, 2, "fmc", "fmc_list", "new", "FLUX")
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", 
+                            "source", "flux_fa_report_message_id")
+                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2, 2, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id",  "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, 3, "fmc", "fmc_list", "new", "FLUX")
+                    .columns("id",  "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", 
+                            "source", "flux_fa_report_message_id")
+                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, 3, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, 4, "fmc", "fmc_list", "new", "FLUX")
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", 
+                            "source", "flux_fa_report_message_id")
+                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, 4, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", "source")
-                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, 5, "fmc", "fmc_list", "new", "FLUX")
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status", 
+                            "source", "flux_fa_report_message_id")
+                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, 5, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build()
 
+    );
+
+    protected static final Operation INSERT_FLUX_FA_REPORT_MESSAGE_DATA = sequenceOf(
+            insertInto("activity.activity_flux_fa_report_message")
+                    .columns("id")
+                    .values(1)
+                    .build(),
+            insertInto("activity.activity_flux_fa_report_message")
+                    .columns("id")
+                    .values(2)
+                    .build(),
+            insertInto("activity.activity_flux_fa_report_message")
+                    .columns("id")
+                    .values(3)
+                    .build(),
+            insertInto("activity.activity_flux_fa_report_message")
+                    .columns("id")
+                    .values(4)
+                    .build(),
+            insertInto("activity.activity_flux_fa_report_message")
+                    .columns("id")
+                    .values(5)
+                    .build()
     );
 
     protected static final Operation INSERT_FLUX_CHARACTERISTIC = sequenceOf(

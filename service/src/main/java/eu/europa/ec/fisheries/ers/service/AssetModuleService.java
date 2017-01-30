@@ -32,4 +32,6 @@ public interface AssetModuleService {
      * @throws ServiceException
      */
     List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException;
+
+    List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearchName) throws ServiceException;
 }
