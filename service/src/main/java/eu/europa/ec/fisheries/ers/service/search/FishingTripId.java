@@ -49,7 +49,10 @@ public class FishingTripId {
     @Override
     public boolean equals(Object o) {
 
-        if (o == this) return true;
+        if (o == this) {
+            return true;
+        }
+
         if (!(o instanceof FishingTripId)) {
             return false;
         }
