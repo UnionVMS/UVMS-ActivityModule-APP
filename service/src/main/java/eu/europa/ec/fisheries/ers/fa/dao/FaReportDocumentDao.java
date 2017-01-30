@@ -23,6 +23,10 @@ import java.util.List;
  */
 public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
 
+    private static final String REPORT_ID = "reportId";
+    private static final String SCHEME_ID = "schemeId";
+    private static final String TRIP_ID = "tripId";
+
     private EntityManager em;
 
     public FaReportDocumentDao(EntityManager em) {
@@ -33,10 +37,6 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
     public EntityManager getEntityManager() {
         return em;
     }
-
-    private static final String REPORT_ID = "reportId";
-    private static final String SCHEME_ID = "schemeId";
-    private static final String TRIP_ID = "tripId";
 
     /**
      * Get FaReportDocument by one or more Report identifiers

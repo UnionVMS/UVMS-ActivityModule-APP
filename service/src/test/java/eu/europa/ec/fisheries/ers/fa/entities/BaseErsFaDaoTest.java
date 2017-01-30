@@ -52,6 +52,11 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
         dbSetupTracker.launchIfNecessary(dbSetup);
     }
 
+    public void deleteAll() {
+        DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), sequenceOf(DELETE_ALL));
+        dbSetupTracker.launchIfNecessary(dbSetup);
+    }
+
     protected static final Operation DELETE_ALL = sequenceOf(
             deleteAllFrom("activity.activity_size_distribution"),
             deleteAllFrom("activity.activity_fa_catch"),
