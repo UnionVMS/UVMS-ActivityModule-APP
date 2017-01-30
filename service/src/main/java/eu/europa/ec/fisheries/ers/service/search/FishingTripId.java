@@ -19,33 +19,32 @@ import java.util.Objects;
  * Created by sanera on 01/12/2016.
  */
 public class FishingTripId {
+
     private String tripId;
     private String schemeID;
 
-    public String getTripId() {
-        return tripId;
-    }
-
-    public void setTripId(String tripId) {
-        this.tripId = tripId;
-    }
-
-    public String getSchemeID() {
-        return schemeID;
-    }
-
-    public void setSchemeID(String schemeID) {
-        this.schemeID = schemeID;
-    }
-
     public FishingTripId(){
-
+        super();
     }
 
     public FishingTripId(String tripId, String schemeID) {
         this.tripId = tripId;
         this.schemeID = schemeID;
     }
+
+    public String getTripId() {
+        return tripId;
+    }
+    public void setTripId(String tripId) {
+        this.tripId = tripId;
+    }
+    public String getSchemeID() {
+        return schemeID;
+    }
+    public void setSchemeID(String schemeID) {
+        this.schemeID = schemeID;
+    }
+
 
     @Override
     public boolean equals(Object o) {

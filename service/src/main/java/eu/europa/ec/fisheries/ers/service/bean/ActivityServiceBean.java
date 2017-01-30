@@ -116,14 +116,14 @@ public class ActivityServiceBean implements ActivityService {
         String areaWkt = getRestrictedAreaGeom(datasets);
         log.debug("Geometry for the user received from USM : "+ areaWkt);
         if(areaWkt != null && areaWkt.length() > 0){
-            Map<SearchFilter, String> mapSearch= query.getSearchCriteriaMap();
+            Map<SearchFilter, String> mapSearch = query.getSearchCriteriaMap();
             if(mapSearch == null) {
-                mapSearch = new HashMap<>();
+                mapSearch = new EnumMap<>(SearchFilter.class);
                 query.setSearchCriteriaMap(mapSearch);
             }
             mapSearch.put(SearchFilter.AREA_GEOM, areaWkt);
         }
-        query = separateSingleVsMultipleFilters(query);
+        separateSingleVsMultipleFilters(query);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query);
 
         int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query);
@@ -174,7 +174,7 @@ public class ActivityServiceBean implements ActivityService {
             activityList = Collections.emptyList();
         }
         // Prepare DTO to return to Frontend
-        log.debug("Fishing Activity Report resultset size :" + ((activityList == null) ? "list is null" : "" + activityList.size()));
+        log.debug("Fishing Activity Report resultset size : " + ((activityList == null) ? "list is null!" : Integer.toString(activityList.size())));
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setTotalCountOfRecords(totalCountOfRecords);
@@ -182,14 +182,14 @@ public class ActivityServiceBean implements ActivityService {
     }
 
     // Improve this part later on
-    private FishingActivityQuery separateSingleVsMultipleFilters(FishingActivityQuery query) throws ServiceException {
+    private void separateSingleVsMultipleFilters(FishingActivityQuery query) throws ServiceException {
         Map<SearchFilter, List<String>> searchMapWithMultipleValues = query.getSearchCriteriaMapMultipleValues();
         if(searchMapWithMultipleValues == null)
             throw new ServiceException("No purpose code provided for the Fishing activity filters! At least one needed!");
 
         Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
         if(searchMap == null)
-            return query;
+            return;
 
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
 
@@ -208,7 +208,6 @@ public class ActivityServiceBean implements ActivityService {
 
         query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleValues);
         query.setSearchCriteriaMap(searchMap);
-        return query;
     }
 
     /*

@@ -35,7 +35,7 @@ public abstract class SearchQueryBuilder {
     private static final String LEFT = " LEFT ";
     private static final String JOIN =  " JOIN ";
     private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static Map<SearchFilter,String> mappings =  FilterMap.getFilterQueryParameterMappings();
+    private static Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
 
 
     /**
@@ -56,7 +56,7 @@ public abstract class SearchQueryBuilder {
      */
     public  StringBuilder createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
-        Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
+        Map<SearchFilter, FilterDetails> filterMappings = FilterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
         if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
             keySet.addAll(query.getSearchCriteriaMap().keySet());
@@ -65,7 +65,7 @@ public abstract class SearchQueryBuilder {
             keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
         }
         for (SearchFilter key : keySet) {
-            FilterDetails details = mappings.get(key);
+            FilterDetails details = filterMappings.get(key);
             String joinString = null;
             if (details != null) {
                 joinString = details.getJoinString();
@@ -160,18 +160,22 @@ public abstract class SearchQueryBuilder {
                 appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
                 break;
             case 3:
-                if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
-                    appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                }
-                if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) {
-                    appendLeftJoinFetch(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
-                }
+                checkAndAppendIfNeededFluxReportDocTable(sql);
                 break;
             default:
                 break;
         }
 
         return sql;
+    }
+
+    private void checkAndAppendIfNeededFluxReportDocTable(StringBuilder sql) {
+        if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
+            appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+        }
+        if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) {
+            appendLeftJoinFetch(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
+        }
     }
 
     private  int getFiledCase(StringBuilder sql, SearchFilter field) {
@@ -188,40 +192,50 @@ public abstract class SearchQueryBuilder {
     }
 
     public StringBuilder createWherePartForQueryForFilters(StringBuilder sql,FishingActivityQuery query){
-        Map<SearchFilter, FilterDetails> mappings = FilterMap.getFilterMappings();
+        Map<SearchFilter, FilterDetails> filterMappings = FilterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
-        if(query.getSearchCriteriaMap() !=null && !query.getSearchCriteriaMap().isEmpty())
+        if(MapUtils.isNotEmpty(query.getSearchCriteriaMap())){
             keySet.addAll(query.getSearchCriteriaMap().keySet());
-        if(query.getSearchCriteriaMapMultipleValues() !=null && !query.getSearchCriteriaMapMultipleValues().isEmpty())
+        }
+
+        if(MapUtils.isNotEmpty(query.getSearchCriteriaMapMultipleValues())){
             keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
+        }
 
-            // Create Where part of SQL Query
-            int i = 0;
-            for (SearchFilter key : keySet) {
-
-                if ( (SearchFilter.QUANTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUANTITY_MAX)) ||
-                        (mappings.get(key) == null )) { // skip this as MIN and MAX both are required to form where part. Treat it differently
-                    continue;
-                }
-                String mapping = mappings.get(key).getCondition();
-                if (i != 0) {
-                    sql.append(" and ");
-                }
-
-                if(SearchFilter.QUANTITY_MIN.equals(key) ){
-                    sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" ))") ;
-
-                } else if (SearchFilter.QUANTITY_MAX.equals(key)) {
-                    sql.append(" ( ");
-                    sql.append(mappings.get(SearchFilter.QUANTITY_MIN).getCondition()).append(" and ").append(mapping);
-                    sql.append(" OR (aprod.calculatedWeightMeasure  BETWEEN :").append(FilterMap.QUANTITY_MIN).append(" and :").append(FilterMap.QUANTITY_MAX + ")");
-                    sql.append(" ) ");
-                } else {
-                    sql.append(mapping);
-                }
-                i++;
+        // Create Where part of SQL Query
+        int i = 0;
+        for (SearchFilter key : keySet) {
+            if (!appendWhereQueryPart(sql, filterMappings, keySet, i, key)) {
+                continue;
             }
+            i++;
+        }
         return sql;
+    }
+
+    private boolean appendWhereQueryPart(StringBuilder sql, Map<SearchFilter, FilterDetails> filterMappings, Set<SearchFilter> keySet, int i, SearchFilter key) {
+        if ((SearchFilter.QUANTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUANTITY_MAX)) ||
+                (filterMappings.get(key) == null )) { // skip this as MIN and MAX both are required to form where part. Treat it differently
+            return false;
+        }
+
+        String mapping = filterMappings.get(key).getCondition();
+        if (i != 0) {
+            sql.append(" and ");
+        }
+
+        if(SearchFilter.QUANTITY_MIN.equals(key) ){
+            sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" ))") ;
+
+        } else if (SearchFilter.QUANTITY_MAX.equals(key)) {
+            sql.append(" ( ");
+            sql.append(filterMappings.get(SearchFilter.QUANTITY_MIN).getCondition()).append(" and ").append(mapping);
+            sql.append(" OR (aprod.calculatedWeightMeasure BETWEEN :").append(FilterMap.QUANTITY_MIN).append(" and :").append(FilterMap.QUANTITY_MAX + ")");
+            sql.append(" ) ");
+        } else {
+            sql.append(mapping);
+        }
+        return true;
     }
 
     /**
@@ -303,75 +317,68 @@ public abstract class SearchQueryBuilder {
         return valueConverted;
     }
 
-    public Query fillInValuesForTypedQuery(FishingActivityQuery query,Query typedQuery) throws ServiceException {
-
-        Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
+    public Query fillInValuesForTypedQuery(FishingActivityQuery query, Query typedQuery) throws ServiceException {
+        Map<SearchFilter, String> searchCriteriaMap             = query.getSearchCriteriaMap();
         Map<SearchFilter, List<String>> searchForMultipleValues = query.getSearchCriteriaMapMultipleValues();
-
-        if (searchCriteriaMap != null && !searchCriteriaMap.isEmpty()) {
-            typedQuery = applySingleValuesToQuery(searchCriteriaMap, typedQuery);
+        if (MapUtils.isNotEmpty(searchCriteriaMap)) {
+            applySingleValuesToQuery(searchCriteriaMap, typedQuery);
         }
-        if(searchForMultipleValues!=null && !searchForMultipleValues.isEmpty()) {
-            typedQuery = applyListValuesToQuery(searchForMultipleValues, typedQuery);
+        if(MapUtils.isNotEmpty(searchForMultipleValues)) {
+            applyListValuesToQuery(searchForMultipleValues, typedQuery);
         }
-
         return typedQuery;
-
     }
 
 
-    private Query applySingleValuesToQuery(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery) throws ServiceException {
+    private void applySingleValuesToQuery(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery) throws ServiceException {
 
         // Assign values to created SQL Query
         for (Map.Entry<SearchFilter, String> entry : searchCriteriaMap.entrySet()){
 
             SearchFilter key =  entry.getKey();
-            String value=  entry.getValue();
-
+            String value     =  entry.getValue();
 
             //For WeightMeasure there is no mapping present, In that case
-            if(mappings.get(key) ==null) {
+            if(queryParameterMappings.get(key) == null) {
                 continue;
             }
 
-            if(value ==null || value.isEmpty()) {
+            if(StringUtils.isEmpty(value)) {
                 throw new ServiceException("Value for filter " + key + " is null or empty");
             }
 
-            switch (key) {
-                case PERIOD_START:
-                    typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
-                    break;
-                case PERIOD_END:
-                    typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
-                    break;
-                case QUANTITY_MIN:
-                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
-                    break;
-                case QUANTITY_MAX:
-                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
-                    break;
-                case MASTER:
-                    typedQuery.setParameter(mappings.get(key), value.toUpperCase());
-                    break;
-                case FA_REPORT_ID:
-                    typedQuery.setParameter(mappings.get(key), Integer.parseInt(value));
-                    break;
-                case AREA_GEOM:
-                    try {
-                        typedQuery.setParameter(mappings.get(key), GeometryUtils.wktToGeom(value));
-                    } catch (ServiceException e) {
-                        LOG.error("Error while trying to convert AREA_GEOM wkt To Geometry."+value);
-                        throw new ServiceException("Error while trying to convert AREA_GEOM wkt To Geometry.",e);
-                    }
-                    break;
-                default:
-                    typedQuery.setParameter(mappings.get(key), value);
-                    break;
-            }
+            applyValueDependingOnKey(searchCriteriaMap, typedQuery, key, value);
 
         }
-        return typedQuery;
+    }
+
+    private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
+        switch (key) {
+            case PERIOD_START:
+                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
+                break;
+            case PERIOD_END:
+                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
+                break;
+            case QUANTITY_MIN:
+                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
+                break;
+            case QUANTITY_MAX:
+                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
+                break;
+            case MASTER:
+                typedQuery.setParameter(queryParameterMappings.get(key), value.toUpperCase());
+                break;
+            case FA_REPORT_ID:
+                typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
+                break;
+            case AREA_GEOM:
+                typedQuery.setParameter(queryParameterMappings.get(key), GeometryUtils.wktToGeom(value));
+                break;
+            default:
+                typedQuery.setParameter(queryParameterMappings.get(key), value);
+                break;
+        }
     }
 
 
@@ -383,7 +390,7 @@ public abstract class SearchQueryBuilder {
      * @return
      * @throws ServiceException
      */
-    private Query applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap, Query typedQuery) throws ServiceException {
+    private void applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap, Query typedQuery) throws ServiceException {
 
         // Assign values to created SQL Query
         for (Map.Entry<SearchFilter,List<String>> entry : searchCriteriaMap.entrySet()){
@@ -391,7 +398,7 @@ public abstract class SearchQueryBuilder {
             SearchFilter key =  entry.getKey();
             List<String> valueList=  entry.getValue();
             //For WeightMeasure there is no mapping present, In that case
-            if(mappings.get(key) ==null) {
+            if(queryParameterMappings.get(key) ==null) {
                 continue;
             }
 
@@ -401,14 +408,13 @@ public abstract class SearchQueryBuilder {
 
             if(SearchFilter.MASTER.equals(key)){
                 List<String> uppperCaseValList=new ArrayList<>();
-                  for(String val:valueList){
-                      uppperCaseValList.add(val.toUpperCase());
-                  }
-                typedQuery.setParameter(mappings.get(key), uppperCaseValList);
+                for(String val:valueList){
+                    uppperCaseValList.add(val.toUpperCase());
+                }
+                typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
             } else
-                 typedQuery.setParameter(mappings.get(key), valueList);
+                 typedQuery.setParameter(queryParameterMappings.get(key), valueList);
 
         }
-        return typedQuery;
     }
 }

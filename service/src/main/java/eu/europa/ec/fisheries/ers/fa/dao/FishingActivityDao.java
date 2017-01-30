@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * Created by padhyad on 5/3/2016.
  */
-
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
@@ -68,15 +67,15 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
            LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
            StringBuilder sqlToGetActivityListCount =search.createSQL(query);
 
-           Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
+           Query countQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
 
            return countQuery.getResultList().size();
        }
 
 
-       /**
-        * Set typed values for Dynamically generated Query
-        */
+   /**
+    * Set typed values for Dynamically generated Query
+    */
     private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearch search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
 

@@ -39,10 +39,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 @LocalBean
@@ -50,14 +47,14 @@ import java.util.Set;
 public class ActivityEventServiceBean implements EventService {
     private  static final Logger LOG = LoggerFactory.getLogger(ActivityEventServiceBean.class);
 
-     @EJB
-     private FluxMessageService fluxMessageService;
+    @EJB
+    private FluxMessageService fluxMessageService;
 
-    private @EJB
-    FishingTripService fishingTripService;
+    @EJB
+    private FishingTripService fishingTripService;
 
-    private @EJB
-    ActivityMessageProducer producer;
+    @EJB
+    private ActivityMessageProducer producer;
 
     @Override
     public void getFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
@@ -110,9 +107,9 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest) throws ServiceException {
-        Set<SearchFilter> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
-        Map<SearchFilter,String> searchMap = new HashMap<>();
-        List<SingleValueTypeFilter> filterTypes= baseRequest.getSingleValueFilters();
+        Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
+        Map<SearchFilter,String> searchMap          = new EnumMap<>(SearchFilter.class);
+        List<SingleValueTypeFilter> filterTypes     = baseRequest.getSingleValueFilters();
         for(SingleValueTypeFilter filterType : filterTypes) {
             SearchFilter filter = filterType.getKey();
             if (filtersWithMultipleValues.contains(filter)) {
@@ -125,9 +122,9 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest) throws ServiceException {
-        Set<SearchFilter> filtersWithMultipleValues= FilterMap.getFiltersWhichSupportMultipleValues();
-        Map<SearchFilter,List<String>> searchMap = new HashMap<>();
-        List<ListValueTypeFilter> filterTypes= baseRequest.getListValueFilters();
+        Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
+        Map<SearchFilter,List<String>> searchMap    = new EnumMap<>(SearchFilter.class);
+        List<ListValueTypeFilter> filterTypes       = baseRequest.getListValueFilters();
         for(ListValueTypeFilter filterType : filterTypes){
             SearchFilter filter = filterType.getKey();
             if(!filtersWithMultipleValues.contains(filter)) {

@@ -67,15 +67,12 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-
         searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
         searchCriteriaMap.put(SearchFilter.PORT, "GBR");
-
         searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
 
@@ -94,7 +91,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         System.out.println("done:" + finishingActivityList.size());
 
         assertNotNull(finishingActivityList);
-
     }
 
 
@@ -105,7 +101,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         dbSetupTracker.skipNextLaunch();
         FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-
         Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
         List<String> activityTypeValues = new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
@@ -115,8 +110,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         List<String> purposeCodeValues = new ArrayList<>();
         purposeCodeValues.add("5");
         purposeCodeValues.add("9");
-        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
 
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
@@ -124,19 +119,14 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
         searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
         searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
-
         searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
         searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-
-
         searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
         searchCriteriaMap.put(SearchFilter.PORT, "GBR");
-
         searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
-
         searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, "1");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
