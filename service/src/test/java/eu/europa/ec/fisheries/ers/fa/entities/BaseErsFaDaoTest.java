@@ -214,25 +214,25 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
                             "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","size_distribution_id")
-                    .values(1, 7, "UNLOADED", "FLUX_LOCATION_TYPE", "BFT", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","IRL",null,"38F1","J",null,null,null, 2)
+                    .values(1, 7, "DIS", "FLUX_LOCATION_TYPE", "BFT", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","IRL",null,"38F1","J",null,null,null, 2)
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
                             "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
                             "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","size_distribution_id")
-                    .values(2, 7, "ONBOARD", "FLUX_LOCATION_TYPE", "BFT", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,null,null, 1)
+                    .values(2, 7, "DIM", "FLUX_LOCATION_TYPE", "BFT", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,null,null, 1)
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
                             "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id","territory",
                             "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle", "size_distribution_id")
-                    .values(3, 6, "ONBOARD", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,null,null, 2)
+                    .values(3, 6, "DIS", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,null,null, 2)
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
                             "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id","territory",
                             "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle", "size_distribution_id")
-                    .values(4, 6, "KEPT_IN_NET", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE",null,null,null,null,null,null,null, 1)
+                    .values(4, 6, "DIM", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE",null,null,null,null,null,null,null, 1)
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",

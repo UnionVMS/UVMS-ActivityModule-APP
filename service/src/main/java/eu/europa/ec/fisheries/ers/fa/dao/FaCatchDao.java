@@ -56,34 +56,21 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
 
     public StringBuilder getFACatchSummaryReportString(FishingActivityQuery query) throws ServiceException {
-        FACatchSearchBuilder faCatchSearchBuilder = new FACatchSearchBuilder();
-        StringBuilder str =null;
+
+        StringBuilder str =new StringBuilder("test");
         FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
         List<GroupCriteria> groupByFieldList = query.getGroupByFields();
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
 
+        faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);
         query.setGroupByFields(faCatchSummaryHelper.mapAreaGroupCriteriaToAllSchemeIdTypes(groupByFieldList));
 
-        str= faCatchSearchBuilder.createSQL(query);
+        List<FaCatchSummaryCustomEntity> customEntities=  getRecordsForFishClassOrFACatchType(query);
 
-        TypedQuery<Object[]> typedQuery = em.createQuery(str.toString(), Object[].class);
-        typedQuery = (TypedQuery<Object[]>) faCatchSearchBuilder.fillInValuesForTypedQuery(query,typedQuery);
+        faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
 
-        List<Object[]> list=  typedQuery.getResultList();
-        List<FaCatchSummaryCustomEntity> customEntities= new ArrayList<>();
-
-        for(Object[] objArr :list){
-            try {
-                FaCatchSummaryCustomEntity entity= faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr,query);
-                customEntities.add(entity);
-                System.out.println(entity);
-
-            } catch (Exception e) {
-                log.error("Could map sql selection to FaCatchSummaryCustomEntity object", Arrays.toString(objArr));
-            }
-        }
-        log.debug("----------------------------------------------------------------------------------------------------");
+        customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
 
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap = faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
 
@@ -92,7 +79,30 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
         return str;
     }
 
+     private   List<FaCatchSummaryCustomEntity> getRecordsForFishClassOrFACatchType(FishingActivityQuery query) throws ServiceException {
+         FACatchSearchBuilder faCatchSearchBuilder = new FACatchSearchBuilder();
+         FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
+         StringBuilder sql= faCatchSearchBuilder.createSQL(query);
 
+         TypedQuery<Object[]> typedQuery = em.createQuery(sql.toString(), Object[].class);
+         typedQuery = (TypedQuery<Object[]>) faCatchSearchBuilder.fillInValuesForTypedQuery(query,typedQuery);
+
+         List<Object[]> list=  typedQuery.getResultList();
+         List<FaCatchSummaryCustomEntity> customEntities= new ArrayList<>();
+
+         for(Object[] objArr :list){
+             try {
+                 FaCatchSummaryCustomEntity entity= faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr,query);
+                 customEntities.add(entity);
+                 System.out.println(entity);
+
+             } catch (Exception e) {
+                 log.error("Could map sql selection to FaCatchSummaryCustomEntity object", Arrays.toString(objArr));
+             }
+         }
+         log.debug("----------------------------------------------------------------------------------------------------");
+         return customEntities;
+     }
 
     // public List<Object[]> getCatchSummary(){
     public List<FaCatchSummaryCustomEntity> getCatchSummary(){

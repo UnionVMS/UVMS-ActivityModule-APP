@@ -205,12 +205,13 @@ public class FilterMap {
 
 
     public static void populateGroupByMapping() {
-        groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.occurence" , "setDate"));
+        groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.occurence" , "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(SIZE_DISTRIBUTION_CODE_TABLE_ALIAS, "sdClassCode.classCode" , "setFishClass"));
         groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(VESSEL_TRANSPORT_TABLE_ALIAS, "vt.country", "setFlagState" ));
         groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode", "setGearType" ));
         groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(AAP_PROCESS_CODE_TABLE_ALIAS, "aapProcessCode.typeCode" , "setPresentation"));
         groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, "faCatch.speciesCode", "setSpecies" ));
+        groupByMapping.put(GroupCriteria.CATCH_TYPE, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, "faCatch.typeCode", "setTypeCode" ));
         groupByMapping.put(GroupCriteria.AREA, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_TERITTORY+", "+FA_CATCH_FAO_AREA+", "+FA_CATCH_ICES_STAT_RECTANGLE+", "+FA_CATCH_EFFORT_ZONE+", "+FA_CATCH_RMFO+", "+FA_CATCH_GFCM_GSA+", "+ FA_CATCH_GFCM_STAT_RECTANGLE, ""));
         groupByMapping.put(GroupCriteria.TERRITORY, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_TERITTORY , "setTerritory"));
         groupByMapping.put(GroupCriteria.FAO_AREA, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, FA_CATCH_FAO_AREA , "setFaoArea"));

@@ -79,8 +79,8 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
 
         List<GroupCriteria> groupByFields = new ArrayList<>();
         groupByFields.add(GroupCriteria.DATE);
-        groupByFields.add(GroupCriteria.SIZE_CLASS);
-        groupByFields.add(GroupCriteria.SPECIES);
+      //  groupByFields.add(GroupCriteria.SIZE_CLASS);
+        //groupByFields.add(GroupCriteria.SPECIES);
         groupByFields.add(GroupCriteria.AREA);
         query.setGroupByFields(groupByFields);
 

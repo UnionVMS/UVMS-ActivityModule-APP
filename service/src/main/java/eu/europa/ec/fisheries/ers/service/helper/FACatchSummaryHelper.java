@@ -83,6 +83,38 @@ public class FACatchSummaryHelper {
         return groupList;
     }
 
+    public void enrichGroupCriteriaWithFishSizeAndSpecies(List<GroupCriteria> groupList){
+
+        if(groupList.indexOf(GroupCriteria.SIZE_CLASS) == -1){
+            groupList.add(GroupCriteria.SIZE_CLASS);
+        }
+
+        if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
+            groupList.add(GroupCriteria.SPECIES);
+        }
+
+        if(groupList.indexOf(GroupCriteria.CATCH_TYPE) != -1){
+            groupList.remove(GroupCriteria.CATCH_TYPE);
+        }
+
+    }
+
+    public void enrichGroupCriteriaWithFACatchType(List<GroupCriteria> groupList){
+
+        if(groupList.indexOf(GroupCriteria.SIZE_CLASS) != -1){
+            groupList.remove(GroupCriteria.SIZE_CLASS);
+        }
+
+        if(groupList.indexOf(GroupCriteria.CATCH_TYPE) == -1){
+            groupList.add(GroupCriteria.CATCH_TYPE);
+        }
+
+        if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
+            groupList.add(GroupCriteria.SPECIES);
+        }
+
+    }
+
     public Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupByFACatchCustomEntities(List<FaCatchSummaryCustomEntity> customEntities){
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap= new HashMap<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>>();
         for(FaCatchSummaryCustomEntity summaryObj: customEntities){
@@ -132,8 +164,19 @@ public class FACatchSummaryHelper {
                 for(Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()){
                     System.out.println("*"+entrySpecies.getKey()+"---->"+entrySpecies.getValue());
                 }
-                System.out.println("------ End ------------");
+
             }
+
+            Map<FaCatchTypeEnum, Map<String, Long>> fishtypeMap=summaryTable.getSummaryFaCatchType();
+            for(Map.Entry<FaCatchTypeEnum, Map<String, Long>> entry : fishtypeMap.entrySet()){
+                System.out.println("----------"+entry.getKey()+"-----------");
+                Map<String, Long> speciesMap= entry.getValue();
+                for(Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()){
+                    System.out.println("*"+entrySpecies.getKey()+"---->"+entrySpecies.getValue());
+                }
+            }
+
+            System.out.println("------ End ------------");
 
         }
     }

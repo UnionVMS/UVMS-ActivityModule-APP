@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.ers.service.search.builder;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
@@ -52,6 +53,10 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
 
+        if(groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE)!=-1){
+            enrichWherePartOFQueryForDISOrDIM(sql);
+        }
+
         sql.append(" GROUP BY  ");
 
         int i = 0;
@@ -68,6 +73,10 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         log.debug("sql :" + sql);
 
         return sql;
+    }
+
+    private void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
+        sql.append(" and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DIS).append("','").append(FaCatchTypeEnum.DIM).append("') ");
     }
 
     @Override
