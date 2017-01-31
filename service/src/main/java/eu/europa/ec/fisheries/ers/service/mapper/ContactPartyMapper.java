@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -50,7 +51,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
     public abstract ContactPartyRoleEntity mapToContactPartyRoleEntity(CodeType codeType);
 
     protected Set<ContactPartyRoleEntity> getContactPartyRoles(List<CodeType> codeTypes, ContactPartyEntity contactPartyEntity) {
-        if (codeTypes == null || codeTypes.isEmpty()) {
+        if (CollectionUtils.isEmpty(codeTypes)) {
             return Collections.emptySet();
         }
         Set<ContactPartyRoleEntity> contactPartyRoles = new HashSet<>();
@@ -63,14 +64,14 @@ public abstract class ContactPartyMapper extends BaseMapper {
     }
 
     protected ContactPersonEntity getContactPersonEntity(List<ContactPerson> contactPersons, ContactPartyEntity contactPartyEntity) {
-        if(contactPersons == null || contactPersons.isEmpty()) {
+        if(CollectionUtils.isEmpty(contactPersons)) {
             return null;
         }
         return ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPersons.get(0), contactPartyEntity, new ContactPersonEntity());
     }
 
     protected Set<StructuredAddressEntity> getStructuredAddressEntity(List<StructuredAddress> structuredAddresses, ContactPartyEntity contactPartyEntity) {
-        if (structuredAddresses == null || structuredAddresses.isEmpty()) {
+        if (CollectionUtils.isEmpty(structuredAddresses)) {
             return Collections.emptySet();
         }
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();
