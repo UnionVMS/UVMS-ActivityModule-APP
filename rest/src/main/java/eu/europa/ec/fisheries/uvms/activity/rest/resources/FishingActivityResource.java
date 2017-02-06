@@ -73,38 +73,7 @@ public class FishingActivityResource extends UnionVMSResource {
             log.error("Error occured during Unmorshalling of the FLUXFAReportMessage", e);
            throw new ServiceException(e.getMessage());
         }
-
-        /*for (FAReportDocument faReportDocument : fluxfaReportMessage.getFAReportDocuments()) {
-            CodeType purposeCode = new CodeType();
-            purposeCode.setValue("5");
-            purposeCode.setListID("Test scheme Id");
-            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
-        }*/
-
         fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
-
-        /*FLUXFAReportMessage fluxRepMessage = new FLUXFAReportMessage();
-        List<FAReportDocument> faReportDocumentList = fluxfaReportMessage.getFAReportDocuments();
-        for (FAReportDocument faReportDocument : faReportDocumentList) {
-            IDType id = faReportDocument.getRelatedFLUXReportDocument().getIDS().get(0);
-            faReportDocument.getRelatedFLUXReportDocument().setReferencedID(id);
-
-            IDType newId = new IDType();
-            newId.setValue("New Id 1");
-            newId.setSchemeID("New scheme Id 1");
-            faReportDocument.getRelatedFLUXReportDocument().setIDS(Arrays.asList(newId));
-
-            CodeType purposeCode = new CodeType();
-            purposeCode.setValue("5");
-            purposeCode.setListID("Test scheme Id");
-            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
-
-            for (FishingActivity fishingActivity : faReportDocument.getSpecifiedFishingActivities()) {
-                fishingActivity.setRelatedFishingActivities(null);
-            }
-        }
-        fluxRepMessage.setFAReportDocuments(faReportDocumentList);
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxRepMessage, FaReportSourceEnum.FLUX);*/
         return createSuccessResponse();
     }
 
