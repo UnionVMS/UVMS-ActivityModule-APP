@@ -118,6 +118,10 @@ public abstract class SearchQueryBuilder {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
+    protected void appendLeftJoinString(StringBuilder sql, String joinString) {
+        sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
+    }
+
     protected  void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }

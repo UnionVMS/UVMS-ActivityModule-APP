@@ -129,12 +129,12 @@ public class FACatchSummaryHelper {
 
         }
 
-        for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
+      /*  for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
 
-            System.out.println("Key:"+entry.getKey()+":::"+entry.getValue().size());
-            System.out.println(entry.getValue());
-            System.out.println("**********************************************************");
-        }
+            log.debug("Key:"+entry.getKey()+":::"+entry.getValue().size());
+            log.debug(""+entry.getValue());
+            log.debug("**********************************************************");
+        }*/
         return groupedMap;
     }
 
@@ -153,30 +153,34 @@ public class FACatchSummaryHelper {
             catchSummaryDTOList.add(faCatchSummaryDTO);
         }
 
-        System.out.println("Print CatchSummaryDTO");
+        log.debug("Print CatchSummaryDTO");
         for(FACatchSummaryDTO dto:catchSummaryDTOList){
-            System.out.println(dto);
+            log.debug(""+dto);
             SummaryTable summaryTable= dto.getSummaryTable();
             Map<FishSizeClassEnum,Map<String,Long>> fishSizeMap=summaryTable.getSummaryFishSize();
-            for(Map.Entry<FishSizeClassEnum, Map<String, Long>> entry : fishSizeMap.entrySet()){
-                System.out.println("----------"+entry.getKey()+"-----------");
-                Map<String, Long> speciesMap= entry.getValue();
-                for(Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()){
-                    System.out.println("*"+entrySpecies.getKey()+"---->"+entrySpecies.getValue());
-                }
+            if(!MapUtils.isEmpty(fishSizeMap)) {
+                for (Map.Entry<FishSizeClassEnum, Map<String, Long>> entry : fishSizeMap.entrySet()) {
+                    log.debug("----------" + entry.getKey() + "-----------");
+                    Map<String, Long> speciesMap = entry.getValue();
+                    for (Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()) {
+                        log.debug("*" + entrySpecies.getKey() + "---->" + entrySpecies.getValue());
+                    }
 
-            }
-
-            Map<FaCatchTypeEnum, Map<String, Long>> fishtypeMap=summaryTable.getSummaryFaCatchType();
-            for(Map.Entry<FaCatchTypeEnum, Map<String, Long>> entry : fishtypeMap.entrySet()){
-                System.out.println("----------"+entry.getKey()+"-----------");
-                Map<String, Long> speciesMap= entry.getValue();
-                for(Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()){
-                    System.out.println("*"+entrySpecies.getKey()+"---->"+entrySpecies.getValue());
                 }
             }
 
-            System.out.println("------ End ------------");
+                Map<FaCatchTypeEnum, Map<String, Long>> fishtypeMap = summaryTable.getSummaryFaCatchType();
+            if(!MapUtils.isEmpty(fishtypeMap)) {
+                for (Map.Entry<FaCatchTypeEnum, Map<String, Long>> entry : fishtypeMap.entrySet()) {
+                    log.debug("----------" + entry.getKey() + "-----------");
+                    Map<String, Long> speciesMap = entry.getValue();
+                    for (Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()) {
+                        log.debug("*" + entrySpecies.getKey() + "---->" + entrySpecies.getValue());
+                    }
+                }
+            }
+
+            log.debug("------ End ------------");
 
         }
     }

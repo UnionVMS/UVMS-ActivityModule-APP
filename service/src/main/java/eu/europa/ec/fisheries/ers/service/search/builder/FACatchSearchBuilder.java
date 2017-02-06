@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
+import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
@@ -8,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,12 @@ import java.util.Map;
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
   //  private static final String FA_CATCH_JOIN = " from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa JOIN FETCH " + FilterMap.FA_CATCH_TABLE_ALIAS;
-  private static final String FA_CATCH_JOIN = " from FishingActivityEntity a  JOIN  a.faReportDocument fa JOIN  " + FilterMap.FA_CATCH_TABLE_ALIAS;
+   // private static final String FA_CATCH_JOIN = " from FishingActivityEntity a LEFT JOIN a.relatedFishingActivity relatedActivity LEFT JOIN relatedActivity.faCatchs relatedfaCatchs JOIN a.faReportDocument fa JOIN  " + FilterMap.FA_CATCH_TABLE_ALIAS;
+
+   // private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a LEFT JOIN a.relatedFishingActivity relatedActivity LEFT JOIN relatedActivity.faCatchs relatedfaCatchs JOIN a.faReportDocument fa  " ;
+   private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a LEFT JOIN a.relatedFishingActivity relatedActivity JOIN a.faReportDocument fa  " ;
+
+    private static final String FISHING_OPERATION="FISHING_OPERATION";
 
 
     @Override
@@ -39,6 +46,8 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         sql.append(" count(faCatch.id)  ");
         sql.append(FA_CATCH_JOIN);
 
+     //   augmentJoinForFACatchSummaryReport(sql);
+
         // Create join part of SQL query
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
 
@@ -56,6 +65,24 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         if(groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE)!=-1){
             enrichWherePartOFQueryForDISOrDIM(sql);
         }
+
+      //  conditionsForFACatchSummaryReport(sql);
+        sql.append(" and  "
+              //  "(a.typeCode ='FISHING_OPERATION')  "
+         //        "OR " +
+            //    "(a.typeCode='JOINT_FISHING_OPERATION' " +
+           //      " and a.relatedFishingActivity.typeCode='RELOCATION' " +
+           //     " and  a.relatedFishingActivity.vesselTransportMeans.guid = a.vesselTransportMeans.guid " +
+             //   " and  a.relatedFishingActivity.typeCode IN ('ALLOCATED_TO_QUOTA','TAKEN_ON_BOARD','ONBOARD' )" +
+              //  " ) "
+                );
+      /*  sql.append(" faCatch.id IN ( select catch.id from FaCatchEntity catch " +
+                  "JOIN catch.fishingActivity activity " +
+                " JOIN catch.fishingActivity.relatedFishingActivity relatedActivity where " +
+                "  catch.fishingActivity.typeCode='RELOCATION' "  +
+                "and catch.fishingActivity.relatedFishingActivity.typeCode='JOINT_FISHING_OPERATION') "
+             );*/
+        sql.append(" a.typeCode ='RELOCATION' and a.relatedFishingActivity.typeCode='JOINT_FISHING_OPERATION' ");
 
         sql.append(" GROUP BY  ");
 
@@ -76,7 +103,26 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
     }
 
     private void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
-        sql.append(" and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DIS).append("','").append(FaCatchTypeEnum.DIM).append("') ");
+        sql.append(" and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("') ");
+    }
+
+
+
+    private void conditionsForFACatchSummaryReport(StringBuilder sql){
+        sql.append(" and (( a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN ('")
+                .append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  ")
+                .append(" OR ")
+                .append(" ( a.typeCode ='").append(ActivityConstants.JOINT_FISHING_OPERATION).append("' and relatedActivity.typeCode='")
+                .append(ActivityConstants.RELOCATION).append("' ").append(" and relatedActivity.vesselTransportMeans.guid = a.vesselTransportMeans.guid and ").append(" relatedfaCatchs.typeCode IN ('")
+                .append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("','").append(FaCatchTypeEnum.TAKEN_ON_BOARD).append("','").append(FaCatchTypeEnum.ONBOARD).append("')))");
+    }
+
+    private void augmentJoinForFACatchSummaryReport(StringBuilder sql){
+        sql.append(StringUtils.SPACE);
+        sql.append("LEFT ");
+        appendJoinString(sql,"a.relatedFishingActivity relatedActivity ");
+        sql.append("LEFT ");
+        appendJoinString(sql,"relatedActivity.faCatchs relatedfaCatchs ");
     }
 
     @Override

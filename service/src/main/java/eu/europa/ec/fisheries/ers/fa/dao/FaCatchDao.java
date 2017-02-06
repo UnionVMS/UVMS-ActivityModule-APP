@@ -68,9 +68,9 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
         List<FaCatchSummaryCustomEntity> customEntities=  getRecordsForFishClassOrFACatchType(query);
 
-        faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
+       // faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
 
-        customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
+        //customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
 
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap = faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
 
@@ -83,18 +83,18 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
          FACatchSearchBuilder faCatchSearchBuilder = new FACatchSearchBuilder();
          FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
          StringBuilder sql= faCatchSearchBuilder.createSQL(query);
-
+         System.out.println("sql :: "+sql);
          TypedQuery<Object[]> typedQuery = em.createQuery(sql.toString(), Object[].class);
          typedQuery = (TypedQuery<Object[]>) faCatchSearchBuilder.fillInValuesForTypedQuery(query,typedQuery);
 
          List<Object[]> list=  typedQuery.getResultList();
          List<FaCatchSummaryCustomEntity> customEntities= new ArrayList<>();
-
+         log.debug("size of records :"+list.size());
          for(Object[] objArr :list){
              try {
                  FaCatchSummaryCustomEntity entity= faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr,query);
                  customEntities.add(entity);
-                 System.out.println(entity);
+                 log.debug(""+entity);
 
              } catch (Exception e) {
                  log.error("Could map sql selection to FaCatchSummaryCustomEntity object", Arrays.toString(objArr));
@@ -104,10 +104,10 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
          return customEntities;
      }
 
-    // public List<Object[]> getCatchSummary(){
-    public List<FaCatchSummaryCustomEntity> getCatchSummary(){
+     public List<Object[]> getCatchSummary(){
+  //  public List<FaCatchSummaryCustomEntity> getCatchSummary(){
 
-        String queryStr= "SELECT NEW eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity(activity.occurence as date ," +
+      /*  String queryStr= "SELECT NEW eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity(activity.occurence as date ," +
                 "faCatch.territory as territory,faCatch.faoArea as faoArea,faCatch.icesStatRectangle as icesStatRectangle,faCatch.effortZone as effortZone," +
                 "faCatch.rfmo as rfmo,faCatch.gfcmGsa as gfcmGsa, faCatch.gfcmStatRectangle as gfcmStatRectangle," +
                 " sdClassCode.classCode as fishClass ,faCatch.speciesCode as species ,  count(faCatch.id) as count ) " +
@@ -118,11 +118,13 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
                 "JOIN sizeDistribution.sizeDistributionClassCode  sdClassCode " +
                 "WHERE activity.typeCode ='FISHING_OPERATION' " +
                 "GROUP BY activity.occurence, faCatch.territory,faCatch.faoArea,faCatch.icesStatRectangle,faCatch.effortZone,faCatch.rfmo,faCatch.gfcmGsa," +
-                " faCatch.gfcmStatRectangle, sdClassCode.classCode,faCatch.speciesCode " ;
+                " faCatch.gfcmStatRectangle, sdClassCode.classCode,faCatch.speciesCode " ;*/
 
    /* String queryStr= "SELECT activity.occurence, faCatch.speciesCode, sdClassCode.classCode ,vt.country ,vt.name, fg.typeCode, aapProcessCode.typeCode, count(faCatch.id), faCatch " +
                 "FROM FishingActivityEntity activity " +
                 "JOIN activity.faReportDocument fa " +
+                 "JOIN activity.relatedFishingActivity relatedActivity " +
+                 "JOIN relatedActivity.faCatchs relatedfaCatchs " +
                 "JOIN fa.vesselTransportMeans vt " +
                 "JOIN activity.faCatchs faCatch " +
                 "JOIN faCatch.sizeDistribution sizeDistribution " +
@@ -130,9 +132,36 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
                 "JOIN aprocess.aapProcessCode aapProcessCode "+
                 "JOIN sizeDistribution.sizeDistributionClassCode  sdClassCode " +
                 "JOIN activity.fishingGears fg "+
-                "WHERE activity.typeCode ='FISHING_OPERATION' " +
-                "GROUP BY activity.occurence, faCatch.speciesCode, sdClassCode.classCode, vt.country, vt.name ,fg.typeCode, aapProcessCode.typeCode " ;*/
-      /*    String queryStr= "SELECT a.occurence, faCatch.speciesCode, faCatch.fluxLocations, count(faCatch.id) from " +
+                "WHERE activity.typeCode ='FISHING_OPERATION' or (activity.typeCode='JOINT_FISHING_OPERATION' and relatedActivity.typeCode='RELOCATION' " +
+            "and  relatedActivity.vesselTransportMeans.guid = activity.vesselTransportMeans.guid and  relatedfaCatchs.typeCode IN ('ALLOCATED_TO_QUOTA','TAKEN_ON_BOARD','ONBOARD' ) )" +
+                "GROUP BY activity.occurence, faCatch.speciesCode, sdClassCode.classCode, vt.country, vt.name ,fg.typeCode, aapProcessCode.typeCode " ;
+        String queryStr= "SELECT activity.occurence, faCatch.speciesCode, count(faCatch.id) " +
+                "FROM FishingActivityEntity activity " +
+                "JOIN activity.relatedFishingActivity relatedActivity " +
+                "JOIN relatedActivity.faCatchs relatedfaCatchs " +
+                "JOIN activity.faCatchs faCatch " +
+                "WHERE " +
+             //   "activity.typeCode ='FISHING_OPERATION' or " +
+                "(activity.typeCode='JOINT_FISHING_OPERATION' and relatedActivity.typeCode='RELOCATION' " +
+                "and  relatedActivity.vesselTransportMeans.guid = activity.vesselTransportMeans.guid and  relatedfaCatchs.typeCode IN ('ALLOCATED_TO_QUOTA','TAKEN_ON_BOARD','ONBOARD' ) )" +
+                "GROUP BY activity.occurence, faCatch.speciesCode " ;*/
+
+
+
+               String queryStr= "SELECT  a.occurence,  faCatch.speciesCode,  count(faCatch.id)   from  FishingActivityEntity a   \n" +
+                       "LEFT JOIN   a.relatedFishingActivity relatedActivity   \n" +
+                       "LEFT JOIN  relatedActivity.faCatchs relatedfaCatchs  \n" +
+                       "JOIN  a.faCatchs faCatch     \n" +
+                       "where  (a.typeCode ='FISHING_OPERATION')  \n" +
+                       "\tOR (a.typeCode='JOINT_FISHING_OPERATION' \n" +
+                      "\t\tand relatedActivity.typeCode='RELOCATION' \n" +
+                       "\t\tand  relatedActivity.vesselTransportMeans.guid = a.vesselTransportMeans.guid \n" +
+                       "\t\tand  relatedfaCatchs.typeCode IN ('ALLOCATED_TO_QUOTA','TAKEN_ON_BOARD','ONBOARD' )" +
+                       ")\n" +
+                       "GROUP BY a.occurence, faCatch.speciesCode " ;
+
+
+      /*   String queryStr= "SELECT a.occurence, faCatch.speciesCode, faCatch.fluxLocations, count(faCatch.id) from " +
                 "FishingActivityEntity a  JOIN  " +
                 "a.faReportDocument fa JOIN  " +
                 "a.faCatchs faCatch JOIN   " +
@@ -143,11 +172,11 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
                 "fa.source =:dataSource GROUP BY " +
                 "a.occurence ,faCatch.speciesCode, faCatch.fluxLocations";*/
 
-
+      System.out.println(queryStr);
         // TypedQuery<Object[]> query = em.createQuery(queryStr, Object[].class);
         Query query=  em.createQuery(queryStr);
 
-        // query.setParameter("dataSource","FLUX");
+      //   query.setParameter("dataSource","FLUX");
         return query.getResultList();
     }
 }
