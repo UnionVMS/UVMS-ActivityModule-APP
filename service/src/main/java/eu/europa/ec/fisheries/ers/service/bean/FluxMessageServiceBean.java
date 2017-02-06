@@ -173,7 +173,7 @@ public class FluxMessageServiceBean implements FluxMessageService {
         for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
             if (fishingActivity.getOccurence() != null) {
                 dates.add(fishingActivity.getOccurence());
-            } else if (fishingActivity.getDelimitedPeriods() != null) {
+            } else if (CollectionUtils.isNotEmpty(fishingActivity.getDelimitedPeriods())) {
                 dates.add(getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods()));
             }
         }

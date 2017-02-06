@@ -67,7 +67,7 @@ public class ActivityEventServiceBean implements EventService {
                 return;
             }
 
-            FLUXFAReportMessage fluxFAReportMessage =extractFLUXFAReportMessage(baseRequest.getRequest());
+            FLUXFAReportMessage fluxFAReportMessage = extractFLUXFAReportMessage(baseRequest.getRequest());
 
             fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(baseRequest.getPluginType()));
 

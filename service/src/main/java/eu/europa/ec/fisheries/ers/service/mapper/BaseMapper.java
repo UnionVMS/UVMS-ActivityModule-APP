@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import      un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 //import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
@@ -105,14 +106,14 @@ public abstract class BaseMapper {
     }
 
     protected String getTextFromList(List<TextType> textTypes) {
-        if (textTypes == null) {
+        if (CollectionUtils.isEmpty(textTypes)) {
             return null;
         }
         return textTypes.get(0).getValue();
     }
 
     protected String getLanguageIdFromList(List<TextType> textTypes) {
-        if (textTypes == null) {
+        if (CollectionUtils.isEmpty(textTypes)) {
             return null;
         }
         return textTypes.get(0).getLanguageID();
