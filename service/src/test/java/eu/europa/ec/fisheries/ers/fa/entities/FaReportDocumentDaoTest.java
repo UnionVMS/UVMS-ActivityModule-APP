@@ -25,8 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
@@ -115,13 +114,27 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
     @SneakyThrows
     public void testGetLatestFaReportDocumentsForTrip() throws Exception {
         dbSetupTracker.skipNextLaunch();
-
         List<FaReportDocumentEntity> entities=dao.getLatestFaReportDocumentsForTrip("NOR-TRP-20160517234053706");
         assertNotNull(entities);
         assertEquals(2, entities.size());
     }
 
+    @Test
+    @SneakyThrows
+    public void testReturnNullIfEmpty() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        FaReportDocumentEntity faReportDocEntity = dao.findFaReportByIdAndScheme("TEST_NON_EXISTANT-REP-ID", "TEST_NON_EXISTANT-SCH-ID");
+        assertNull(faReportDocEntity);
+    }
 
+    @Test
+    @SneakyThrows
+    public void testGetFaReportDocumentsForTrip() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        List<FaReportDocumentEntity> faReportDocumentsForTrip = dao.getFaReportDocumentsForTrip("NOR-TRP-20160517234053706");
+        assertNotNull(faReportDocumentsForTrip);
+        assertTrue(faReportDocumentsForTrip.size() > 0);
+    }
 
 
 }

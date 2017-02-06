@@ -13,22 +13,17 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.destination.DataSourceDestination;
-import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
-import junit.framework.Assert;
 import lombok.SneakyThrows;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by sanera on 06/09/2016.
@@ -68,5 +63,13 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
         List<FishingTripIdentifierEntity> nextTrips = dao.getNextTrips("EXT_MARK123", "EXT_MARK", "NOR-TRP-20160517234053705", 5);
         assertNotNull(nextTrips);
         assertNotEquals(0, nextTrips.size());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetCurrentTripNullReturn() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        FishingTripIdentifierEntity fishingTrip = dao.getCurrentTrip("SOME-NON-EXISTENT-VAL", "SOME-NON-EXISTENT-VAL");
+        assertNull(fishingTrip);
     }
 }

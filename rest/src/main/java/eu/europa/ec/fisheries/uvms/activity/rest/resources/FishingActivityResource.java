@@ -25,10 +25,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -43,7 +39,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,7 +62,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/save")
     public Response saveFaReportDocument() throws ServiceException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message_cedric_data.xml");
         JAXBContext jaxbContext;
         FLUXFAReportMessage fluxfaReportMessage;
         try {
@@ -78,38 +73,7 @@ public class FishingActivityResource extends UnionVMSResource {
             log.error("Error occured during Unmorshalling of the FLUXFAReportMessage", e);
            throw new ServiceException(e.getMessage());
         }
-
-        for (FAReportDocument faReportDocument : fluxfaReportMessage.getFAReportDocuments()) {
-            CodeType purposeCode = new CodeType();
-            purposeCode.setValue("5");
-            purposeCode.setListID("Test scheme Id");
-            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
-        }
-
         fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
-
-        FLUXFAReportMessage fluxRepMessage = new FLUXFAReportMessage();
-        List<FAReportDocument> faReportDocumentList = fluxfaReportMessage.getFAReportDocuments();
-        for (FAReportDocument faReportDocument : faReportDocumentList) {
-            IDType id = faReportDocument.getRelatedFLUXReportDocument().getIDS().get(0);
-            faReportDocument.getRelatedFLUXReportDocument().setReferencedID(id);
-
-            IDType newId = new IDType();
-            newId.setValue("New Id 1");
-            newId.setSchemeID("New scheme Id 1");
-            faReportDocument.getRelatedFLUXReportDocument().setIDS(Arrays.asList(newId));
-
-            CodeType purposeCode = new CodeType();
-            purposeCode.setValue("5");
-            purposeCode.setListID("Test scheme Id");
-            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
-
-            for (FishingActivity fishingActivity : faReportDocument.getSpecifiedFishingActivities()) {
-                fishingActivity.setRelatedFishingActivities(null);
-            }
-        }
-        fluxRepMessage.setFAReportDocuments(faReportDocumentList);
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxRepMessage, FaReportSourceEnum.FLUX);
         return createSuccessResponse();
     }
 

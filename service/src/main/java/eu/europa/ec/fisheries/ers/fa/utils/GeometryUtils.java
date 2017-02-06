@@ -19,6 +19,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
 import org.opengis.referencing.FactoryException;
@@ -56,6 +57,9 @@ public class GeometryUtils {
     }
 
     public static Geometry createPoint(Double longitude, Double latitude) {
+        if(null == longitude || null == latitude){
+            return null;
+        }
         GeometryFactory geometryFactory = new GeometryFactory();
         Coordinate coordinate = new Coordinate(longitude, latitude);
         Geometry point = geometryFactory.createPoint(coordinate);
@@ -71,7 +75,7 @@ public class GeometryUtils {
     }
 
     public static Geometry createMultipoint(List<Geometry> geometries) {
-        if (geometries == null || geometries.isEmpty()) {
+        if (CollectionUtils.isEmpty(geometries)) {
             return null;
         }
         GeometryFactory geometryFactory = new GeometryFactory();

@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -76,8 +77,15 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return FaReportStatusEnum.NEW.getStatus();
     }
 
+    protected VesselTransportMeansEntity getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
+        if (vesselTransportMeans == null) {
+            return null;
+        }
+        return VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans, faReportDocumentEntity, new VesselTransportMeansEntity());
+    }
+
     protected Set<FishingActivityEntity> getFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
-        if (fishingActivities == null || fishingActivities.isEmpty()) {
+        if (CollectionUtils.isEmpty(fishingActivities)) {
             return Collections.emptySet();
         }
         Set<FishingActivityEntity> fishingActivityEntities =  new HashSet<>();
@@ -91,13 +99,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return fishingActivityEntities;
     }
 
-    protected VesselTransportMeansEntity getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
-        if (vesselTransportMeans == null) {
-            return null;
-        }
-        return VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans, faReportDocumentEntity, new VesselTransportMeansEntity());
-    }
-
     protected FluxReportDocumentEntity getFluxReportDocument(FLUXReportDocument fluxReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
         if (fluxReportDocument == null) {
             return null;
@@ -106,7 +107,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     }
 
     protected Set<FaReportIdentifierEntity> mapToFAReportIdentifierEntities(List<IDType> idTypes, FaReportDocumentEntity faReportDocumentEntity) {
-        if (idTypes == null || idTypes.isEmpty()) {
+        if (CollectionUtils.isEmpty(idTypes)) {
             return Collections.emptySet();
         }
         Set<FaReportIdentifierEntity> faReportIdentifierEntities = new HashSet<>();

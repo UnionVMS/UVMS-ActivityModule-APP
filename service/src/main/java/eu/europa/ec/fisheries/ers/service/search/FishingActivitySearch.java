@@ -31,6 +31,7 @@ public class FishingActivitySearch extends SearchQueryBuilder {
      * @return
      * @throws ServiceException
      */
+    @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
@@ -49,6 +50,7 @@ public class FishingActivitySearch extends SearchQueryBuilder {
     /**
      * Build Where part of the query based on Filter criterias
      */
+    @Override
     public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
         sql.append(" where ");
