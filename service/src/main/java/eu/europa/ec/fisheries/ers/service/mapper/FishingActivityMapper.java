@@ -520,27 +520,31 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return faCatchEntity;
 
         for (FLUXLocation location : fluxLocations) {
-            faCatchEntity.setRfmo(location.getRegionalFisheriesManagementOrganizationCode().getValue());
+            if(location.getRegionalFisheriesManagementOrganizationCode() !=null)
+                faCatchEntity.setRfmo(location.getRegionalFisheriesManagementOrganizationCode().getValue());
 
-            switch (FluxLocationSchemeId.valueOf(location.getID().getSchemeID())) {
-                case TERRITORY:
-                    faCatchEntity.setTerritory(location.getID().getValue());
-                    break;
-                case FAO_AREA:
-                    faCatchEntity.setFaoArea(location.getID().getValue());
-                    break;
-                case ICES_STAT_RECTANGLE:
-                    faCatchEntity.setIcesStatRectangle(location.getID().getValue());
-                    break;
-                case EFFORT_ZONE:
-                    faCatchEntity.setEffortZone(location.getID().getValue());
-                    break;
-                case GFCM_GSA:
-                    faCatchEntity.setGfcmGsa(location.getID().getValue());
-                    break;
-                case GFCM_STAT_RECTANGLE:
-                    faCatchEntity.setGfcmStatRectangle(location.getID().getValue());
-                    break;
+            IDType id=location.getID();
+            if(id !=null) {
+               switch (FluxLocationSchemeId.valueOf(id.getSchemeID())) {
+                    case TERRITORY:
+                        faCatchEntity.setTerritory(id.getValue());
+                        break;
+                    case FAO_AREA:
+                        faCatchEntity.setFaoArea(id.getValue());
+                        break;
+                    case ICES_STAT_RECTANGLE:
+                        faCatchEntity.setIcesStatRectangle(id.getValue());
+                        break;
+                    case EFFORT_ZONE:
+                        faCatchEntity.setEffortZone(id.getValue());
+                        break;
+                    case GFCM_GSA:
+                        faCatchEntity.setGfcmGsa(id.getValue());
+                        break;
+                    case GFCM_STAT_RECTANGLE:
+                        faCatchEntity.setGfcmStatRectangle(id.getValue());
+                        break;
+                }
             }
         }
 

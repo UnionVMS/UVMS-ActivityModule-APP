@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class ActivityConfigurationProperties {
 
-    public static String LIMIT_FISHING_TRIPS ="LIMIT_FISHING_TRIPS";
+    public static final String LIMIT_FISHING_TRIPS ="LIMIT_FISHING_TRIPS";
     private static Map<String,String> configurations = new HashMap<>();
 
     private ActivityConfigurationProperties(){

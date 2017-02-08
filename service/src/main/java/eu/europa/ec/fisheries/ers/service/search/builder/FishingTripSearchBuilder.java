@@ -28,13 +28,14 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeome
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static eu.europa.ec.fisheries.ers.service.search.FilterMap.DELIMITED_PERIOD_TABLE_ALIAS;
-import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappings;
+import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
  * Created by sanera on 16/11/2016.
@@ -44,12 +45,12 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripSearchBuilder.class);
     private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
 
+    @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
 
-        DELIMITED_PERIOD_TABLE_ALIAS = " ft.delimitedPeriods dp ";
-        populateFilterMappings();
+        populateFilterMappingsWithChangedDelimitedPeriodTable();
 
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
 
@@ -61,6 +62,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     }
 
     // Build Where part of the query based on Filter criterias
+    @Override
     public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Where part of Query");
 
@@ -160,16 +162,8 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
                 FishingTripId tripIdObj = new FishingTripId(id.getTripId(), id.getTripSchemeId());
                 try {
-                    List<Geometry> geomList = uniqueTripIdWithGeometry.get(tripIdObj);
-                    if (geomList == null || geomList.isEmpty()) {
-                        geomList = new ArrayList<>();
-                    }
-                    Geometry geometry = id.getFishingTrip().getFishingActivity().getFaReportDocument().getGeom();
-                    if (geometry != null) {
-                        geomList.add(geometry);
-                    }
-
-                    uniqueTripIdWithGeometry.put(tripIdObj, geomList);
+                    uniqueTripIdWithGeometry.put(tripIdObj, fillGeometrylist(uniqueTripIdWithGeometry,
+                            id.getFishingTrip().getFishingActivity().getFaReportDocument().getGeom(), tripIdObj));
                 } catch (Exception e) {
                     LOG.error("Error occurred while trying to find Geometry for FishingTrip. Put tripID into separateList", e);
                     fishingTripIdsWithoutGeom.add(tripIdObj);
@@ -177,8 +171,20 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
             }
 
             FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
-            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId()) == true)
+            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId()))
                 fishingActivityLists.add(FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity()));// Collect Fishing Activity data
         }
+    }
+
+    @NotNull
+    private List<Geometry> fillGeometrylist(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, Geometry geometry, FishingTripId tripIdObj) {
+        List<Geometry> geomList = uniqueTripIdWithGeometry.get(tripIdObj);
+        if (CollectionUtils.isEmpty(geomList)) {
+            geomList = new ArrayList<>();
+        }
+        if (geometry != null) {
+            geomList.add(geometry);
+        }
+        return geomList;
     }
 }

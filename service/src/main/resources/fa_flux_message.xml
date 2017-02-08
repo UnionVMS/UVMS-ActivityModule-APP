@@ -39,7 +39,7 @@
         </RelatedFLUXReportDocument>
         <SpecifiedFishingActivity>
             <ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>
-            <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+            <TypeCode listID="FLUX_FA_TYPE">JOINT_FISHING_OPERATION</TypeCode>
             <OccurrenceDateTime>
                 <ns2:DateTime>2016-06-08T13:53:00.000Z</ns2:DateTime>
             </OccurrenceDateTime>
@@ -605,7 +605,7 @@
             </DestinationVesselStorageCharacteristic>
             <RelatedFishingActivity>
                 <ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>
-                <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+                <TypeCode listID="FLUX_FA_TYPE">RELOCATION</TypeCode>
                 <OccurrenceDateTime>
                     <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                 </OccurrenceDateTime>

@@ -107,6 +107,17 @@ public class FaCatchEntity implements Serializable {
     @Column(name = "gfcm_stat_rectangle")
     private String gfcmStatRectangle;
 
+	public String getFishClassCode() {
+		return fishClassCode;
+	}
+
+	public void setFishClassCode(String fishClassCode) {
+		this.fishClassCode = fishClassCode;
+	}
+
+	@Column(name = "fish_class_code")
+	private String fishClassCode;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapProcessEntity> aapProcesses;
 

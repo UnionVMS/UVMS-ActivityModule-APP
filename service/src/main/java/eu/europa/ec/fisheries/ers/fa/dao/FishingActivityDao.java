@@ -41,9 +41,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
 
-
-
-
     @Override
     public EntityManager getEntityManager() {
         return em;

@@ -94,7 +94,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
              try {
                  FaCatchSummaryCustomEntity entity= faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr,query);
                  customEntities.add(entity);
-                 log.debug(""+entity);
+               //  log.debug(""+entity);
 
              } catch (Exception e) {
                  log.error("Could map sql selection to FaCatchSummaryCustomEntity object", Arrays.toString(objArr));

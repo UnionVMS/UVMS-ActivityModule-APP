@@ -15,6 +15,7 @@ import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -44,13 +45,16 @@ public class FACatchSummaryHelper {
 
         for (int i = 0; i < objectArrSize; i++) {
             GroupCriteria criteria = groupList.get(i);
+            Object value=catchSummaryArr[i];
 
-            if (GroupCriteria.DATE.equals(criteria))
+            if (GroupCriteria.DATE.equals(criteria)) {
                 parameterType = Date.class;
+                value= DateUtils.truncate(value,Calendar.DATE);
+            }
 
             GroupCriteriaMapper mapper = groupMappings.get(criteria);
             Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
-            method.invoke(faCatchSummaryCustomEntityObj, catchSummaryArr[i]);
+            method.invoke(faCatchSummaryCustomEntityObj,value );
             parameterType = String.class;
         }
 
@@ -155,7 +159,7 @@ public class FACatchSummaryHelper {
 
         log.debug("Print CatchSummaryDTO");
         for(FACatchSummaryDTO dto:catchSummaryDTOList){
-            log.debug(""+dto);
+            log.debug("Date :"+dto.getDate());
             SummaryTable summaryTable= dto.getSummaryTable();
             Map<FishSizeClassEnum,Map<String,Long>> fishSizeMap=summaryTable.getSummaryFishSize();
             if(!MapUtils.isEmpty(fishSizeMap)) {
@@ -205,6 +209,8 @@ public class FACatchSummaryHelper {
                         speciesCountMap.put(customEntity.getSpecies().toUpperCase(), speciesCnt);
                     } else {
                         totalCountForSpecies = totalCountForSpecies + speciesCnt;
+                        speciesCountMap.put(customEntity.getSpecies().toUpperCase(),totalCountForSpecies);
+
                     }
                 }
             }

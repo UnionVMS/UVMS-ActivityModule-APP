@@ -15,19 +15,15 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPartyDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -55,5 +51,16 @@ public class ContactPartyMapperTest {
         entity = structuredAddressEntity.getContactParty().getContactPartyRole().iterator().next();
         assertEquals(contactParty.getRoleCodes().get(0).getValue(), entity.getRoleCode());
         assertEquals(contactParty.getRoleCodes().get(0).getListID(), entity.getRoleCodeListId());
+    }
+
+
+    @Test
+    public void testContactPartyMapperNullReturns() {
+        Set<ContactPartyRoleEntity> contactPartyRoles = ContactPartyMapper.INSTANCE.getContactPartyRoles(null, new ContactPartyEntity());
+        assertTrue(contactPartyRoles.size() == 0);
+        ContactPersonEntity contactPersonEntity = ContactPartyMapper.INSTANCE.getContactPersonEntity(null, new ContactPartyEntity());
+        assertNull(contactPersonEntity);
+        Set<StructuredAddressEntity> structuredAddressEntity = ContactPartyMapper.INSTANCE.getStructuredAddressEntity(null, new ContactPartyEntity());
+        assertTrue(structuredAddressEntity.size() == 0);
     }
 }

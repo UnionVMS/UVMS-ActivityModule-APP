@@ -82,7 +82,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
                 "  catch.fishingActivity.typeCode='RELOCATION' "  +
                 "and catch.fishingActivity.relatedFishingActivity.typeCode='JOINT_FISHING_OPERATION') "
              );*/
-        sql.append(" a.typeCode ='RELOCATION' and a.relatedFishingActivity.typeCode='JOINT_FISHING_OPERATION' ");
+        sql.append(" (a.typeCode ='DEPARTURE') OR (a.typeCode ='RELOCATION' and a.relatedFishingActivity.typeCode='JOINT_FISHING_OPERATION') ");
 
         sql.append(" GROUP BY  ");
 
@@ -97,6 +97,8 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
             i++;
         }
 
+
+        sql.append(" ORDER BY a.occurence ");
         log.debug("sql :" + sql);
 
         return sql;
