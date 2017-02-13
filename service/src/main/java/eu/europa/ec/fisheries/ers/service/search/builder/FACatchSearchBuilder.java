@@ -19,11 +19,9 @@ import java.util.Map;
  */
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
-  //  private static final String FA_CATCH_JOIN = " from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa JOIN FETCH " + FilterMap.FA_CATCH_TABLE_ALIAS;
-   // private static final String FA_CATCH_JOIN = " from FishingActivityEntity a LEFT JOIN a.relatedFishingActivity relatedActivity LEFT JOIN relatedActivity.faCatchs relatedfaCatchs JOIN a.faReportDocument fa JOIN  " + FilterMap.FA_CATCH_TABLE_ALIAS;
 
-   // private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a LEFT JOIN a.relatedFishingActivity relatedActivity LEFT JOIN relatedActivity.faCatchs relatedfaCatchs JOIN a.faReportDocument fa  " ;
-   private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a LEFT JOIN a.relatedFishingActivity relatedActivity JOIN a.faReportDocument fa  " ;
+  private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a LEFT JOIN a.relatedFishingActivity relatedActivity  " +
+           "  JOIN a.faReportDocument fa  " ;
 
     private static final String FISHING_OPERATION="FISHING_OPERATION";
 
@@ -62,27 +60,12 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
 
+
         if(groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE)!=-1){
             enrichWherePartOFQueryForDISOrDIM(sql);
+        }else{
+            conditionsForFACatchSummaryReport(sql);
         }
-
-      //  conditionsForFACatchSummaryReport(sql);
-        sql.append(" and  "
-              //  "(a.typeCode ='FISHING_OPERATION')  "
-         //        "OR " +
-            //    "(a.typeCode='JOINT_FISHING_OPERATION' " +
-           //      " and a.relatedFishingActivity.typeCode='RELOCATION' " +
-           //     " and  a.relatedFishingActivity.vesselTransportMeans.guid = a.vesselTransportMeans.guid " +
-             //   " and  a.relatedFishingActivity.typeCode IN ('ALLOCATED_TO_QUOTA','TAKEN_ON_BOARD','ONBOARD' )" +
-              //  " ) "
-                );
-      /*  sql.append(" faCatch.id IN ( select catch.id from FaCatchEntity catch " +
-                  "JOIN catch.fishingActivity activity " +
-                " JOIN catch.fishingActivity.relatedFishingActivity relatedActivity where " +
-                "  catch.fishingActivity.typeCode='RELOCATION' "  +
-                "and catch.fishingActivity.relatedFishingActivity.typeCode='JOINT_FISHING_OPERATION') "
-             );*/
-        sql.append(" (a.typeCode ='DEPARTURE') OR (a.typeCode ='RELOCATION' and a.relatedFishingActivity.typeCode='JOINT_FISHING_OPERATION') ");
 
         sql.append(" GROUP BY  ");
 
@@ -97,26 +80,24 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
             i++;
         }
 
-
-        sql.append(" ORDER BY a.occurence ");
         log.debug("sql :" + sql);
 
         return sql;
     }
 
     private void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
-        sql.append(" and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("') ");
+        sql.append(" and ( a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
     }
 
 
 
     private void conditionsForFACatchSummaryReport(StringBuilder sql){
-        sql.append(" and (( a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN ('")
-                .append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  ")
-                .append(" OR ")
-                .append(" ( a.typeCode ='").append(ActivityConstants.JOINT_FISHING_OPERATION).append("' and relatedActivity.typeCode='")
-                .append(ActivityConstants.RELOCATION).append("' ").append(" and relatedActivity.vesselTransportMeans.guid = a.vesselTransportMeans.guid and ").append(" relatedfaCatchs.typeCode IN ('")
-                .append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("','").append(FaCatchTypeEnum.TAKEN_ON_BOARD).append("','").append(FaCatchTypeEnum.ONBOARD).append("')))");
+        sql.append(" and (" +
+                "(a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN('") .append(FaCatchTypeEnum.ONBOARD)
+                 .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(ActivityConstants.RELOCATION)
+                .append("' and a.relatedFishingActivity.typeCode='").append(ActivityConstants.JOINT_FISHING_OPERATION).append("' and a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid  ")
+                 .append(" and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.TAKEN_ON_BOARD)
+                .append("','").append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("')))");
     }
 
     private void augmentJoinForFACatchSummaryReport(StringBuilder sql){

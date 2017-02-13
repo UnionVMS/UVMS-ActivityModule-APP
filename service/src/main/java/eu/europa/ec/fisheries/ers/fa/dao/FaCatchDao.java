@@ -68,9 +68,9 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
         List<FaCatchSummaryCustomEntity> customEntities=  getRecordsForFishClassOrFACatchType(query);
 
-       // faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
+        faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
 
-        //customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
+        customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
 
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap = faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
 

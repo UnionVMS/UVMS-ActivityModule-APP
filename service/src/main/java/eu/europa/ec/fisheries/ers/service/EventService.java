@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service;
 
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -25,4 +26,6 @@ import javax.enterprise.event.Observes;
 public interface EventService {
     public void getFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message);
     public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException;
+
+    void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException;
 }

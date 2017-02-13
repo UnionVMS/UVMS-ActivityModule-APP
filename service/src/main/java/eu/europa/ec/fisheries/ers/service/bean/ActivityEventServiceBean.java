@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -39,7 +40,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 @LocalBean
@@ -98,6 +102,13 @@ public class ActivityEventServiceBean implements EventService {
             throw new ServiceException(e.getMessage(), e);
         }
     }
+
+
+    @Override
+    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException {
+        LOG.info("Got JMS inside Activity to get FACatchSummaryReport:");
+    }
+
 
     private FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();

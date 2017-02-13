@@ -81,7 +81,7 @@ public class FluxMessageServiceBean implements FluxMessageService {
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             updateGeometry(faReportDocument);
-            enrichWithGuidsFromAssets(faReportDocument.getVesselTransportMeans());
+            enrichFishingActivityWithGuiID(faReportDocument);
             log.debug("fishing activity records to be saved : " + faReportDocument.getFluxReportDocument().getId());
         }
         log.info("Insert fishing activity records into DB");
@@ -90,21 +90,40 @@ public class FluxMessageServiceBean implements FluxMessageService {
         updateFaReportCorrections(faReportMessage.getFAReportDocuments());
     }
 
+    private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument){
+        enrichWithGuidFromAssets(faReportDocument.getVesselTransportMeans());
+        Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
+        for(FishingActivityEntity fishingActivityEntity:fishingActivities){
+            enrichFishingActivityVesselWithGuiId(fishingActivityEntity);
+            if(fishingActivityEntity.getRelatedFishingActivity() !=null)
+                enrichFishingActivityVesselWithGuiId(fishingActivityEntity.getRelatedFishingActivity());
+        }
+    }
+
+    private void enrichFishingActivityVesselWithGuiId(FishingActivityEntity fishingActivityEntity) {
+        VesselTransportMeansEntity vesselTransportMeansEntity=  fishingActivityEntity.getVesselTransportMeans();
+        if(vesselTransportMeansEntity!=null) {
+            enrichWithGuidFromAssets(vesselTransportMeansEntity);
+            fishingActivityEntity.setVesselTransportGuid(vesselTransportMeansEntity.getGuid());
+        }
+    }
+
     /**
      * This method enriches the VesselTransportMeansEntity we got from FLUX with the related GUIDs.
      *
-     * @param vesselIdentifiers
+     * @param
      */
-    private void enrichWithGuidsFromAssets(VesselTransportMeansEntity vesselIdentifiers) {
+    private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) {
         try {
-            List<String> guids = assetModule.getAssetGuids(vesselIdentifiers.getVesselIdentifiers());
+            List<String> guids = assetModule.getAssetGuids(vesselTransport.getVesselIdentifiers());
             if(CollectionUtils.isNotEmpty(guids)){
-                vesselIdentifiers.setGuid(guids.get(0));
+                vesselTransport.setGuid(guids.get(0));
             }
         } catch (ServiceException e) {
             log.error("Error while trying to get guids from Assets Module {}", e);
         }
     }
+
 
     /**
      * If there is a reference Id exist for any of the FaReport Document, than it means this is an update to an existing report.

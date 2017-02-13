@@ -18,10 +18,12 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPe
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
+
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
@@ -70,7 +72,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), fishingActivityEntity))"),
             @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity))"),
-            @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))")
+            @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
+            @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))")
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
@@ -143,6 +146,20 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
         return VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselList.get(0), faReportDocumentEntity, new VesselTransportMeansEntity());
+    }
+
+    protected String getFlagState(FishingActivity fishingActivity) {
+
+        List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();
+        if (CollectionUtils.isEmpty(vesselList)) {
+            return null;
+        }
+
+        VesselTransportMeans vesselTransportMeans=  vesselList.get(0);
+        if(vesselTransportMeans ==null)
+            return null;
+
+        return  getCountry(vesselTransportMeans.getRegistrationVesselCountry());
     }
 
     protected String getWktFromGeometry(FishingActivityEntity entity) {

@@ -46,10 +46,10 @@ public class ReportServiceBean implements ReportService {
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
         List<GroupCriteria> groupByFields = new ArrayList<>();
-        groupByFields.add(GroupCriteria.DATE);
+        groupByFields.add(GroupCriteria.DATE_DAY);
         //  groupByFields.add(GroupCriteria.SIZE_CLASS);
         //groupByFields.add(GroupCriteria.SPECIES);
-        //    groupByFields.add(GroupCriteria.AREA);
+        groupByFields.add(GroupCriteria.AREA);
         query.setGroupByFields(groupByFields);
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");

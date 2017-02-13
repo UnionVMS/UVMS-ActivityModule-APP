@@ -47,10 +47,25 @@ public class FACatchSummaryHelper {
             GroupCriteria criteria = groupList.get(i);
             Object value=catchSummaryArr[i];
 
-            if (GroupCriteria.DATE.equals(criteria)) {
+         /*   if (GroupCriteria.DATE.equals(criteria)) {
                 parameterType = Date.class;
                 value= DateUtils.truncate(value,Calendar.DATE);
+            }*/
+            if (GroupCriteria.DATE_DAY.equals(criteria)) {
+                parameterType = Date.class;
+                value= DateUtils.truncate(value,Calendar.DAY_OF_MONTH);
             }
+
+            if (GroupCriteria.DATE_MONTH.equals(criteria)) {
+                parameterType = Date.class;
+                value= DateUtils.truncate(value,Calendar.MONTH);
+            }
+
+            if (GroupCriteria.DATE_MONTH.equals(criteria)) {
+                parameterType = Date.class;
+                value= DateUtils.truncate(value,Calendar.YEAR);
+            }
+
 
             GroupCriteriaMapper mapper = groupMappings.get(criteria);
             Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
@@ -143,6 +158,7 @@ public class FACatchSummaryHelper {
     }
 
 
+
     public void buildFaCatchSummaryTable(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
         List<FACatchSummaryDTO> catchSummaryDTOList = new ArrayList<>();
 
@@ -159,7 +175,7 @@ public class FACatchSummaryHelper {
 
         log.debug("Print CatchSummaryDTO");
         for(FACatchSummaryDTO dto:catchSummaryDTOList){
-            log.debug("Date :"+dto.getDate());
+            log.debug("Date :"+dto.getDate() +" Area:"+dto.getArea());
             SummaryTable summaryTable= dto.getSummaryTable();
             Map<FishSizeClassEnum,Map<String,Long>> fishSizeMap=summaryTable.getSummaryFishSize();
             if(!MapUtils.isEmpty(fishSizeMap)) {
@@ -187,6 +203,26 @@ public class FACatchSummaryHelper {
             log.debug("------ End ------------");
 
         }
+    }
+
+    private void populateSummaryTableWithTotal( List<FACatchSummaryDTO> catchSummaryDTOList){
+        SummaryTable summaryTableWithTotals= new SummaryTable();
+
+        for(FACatchSummaryDTO faCatchSummaryDTO:catchSummaryDTOList){
+            SummaryTable summaryTable= faCatchSummaryDTO.getSummaryTable();
+            Map<FishSizeClassEnum,Map<String,Long>> fishSizeClassEnumMapMap=summaryTable.getSummaryFishSize();
+            Map<FishSizeClassEnum, Map<String, Long>> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
+            if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
+                totalFishSizeSpeciesMap = new HashMap<>();
+            }else{
+                for (Map.Entry<FishSizeClassEnum, Map<String, Long>> entry : fishSizeClassEnumMapMap.entrySet()) {
+
+                }
+            }
+
+        }
+
+
     }
 
     private void populateSummaryTable(SummaryTable summaryTable,FaCatchSummaryCustomEntity customEntity){
