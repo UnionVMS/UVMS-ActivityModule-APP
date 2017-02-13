@@ -16,6 +16,10 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     private Integer id;*/
 
     private Date date;
+    private int day;
+    private String month;
+    private int year;
+
     private String flagState;
     private String gearType;
     private String presentation;
@@ -57,6 +61,78 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         this.species = species;
         this.typeCode = typeCode;
         this.count = count;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FaCatchSummaryCustomEntity)) return false;
+
+        FaCatchSummaryCustomEntity that = (FaCatchSummaryCustomEntity) o;
+
+        if (getDay() != that.getDay()) return false;
+        if (getYear() != that.getYear()) return false;
+        if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;
+        if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null)
+            return false;
+        if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null)
+            return false;
+        if (getPresentation() != null ? !getPresentation().equals(that.getPresentation()) : that.getPresentation() != null)
+            return false;
+        if (getTerritory() != null ? !getTerritory().equals(that.getTerritory()) : that.getTerritory() != null)
+            return false;
+        if (getFaoArea() != null ? !getFaoArea().equals(that.getFaoArea()) : that.getFaoArea() != null) return false;
+        if (getIcesStatRectangle() != null ? !getIcesStatRectangle().equals(that.getIcesStatRectangle()) : that.getIcesStatRectangle() != null)
+            return false;
+        if (getEffortZone() != null ? !getEffortZone().equals(that.getEffortZone()) : that.getEffortZone() != null)
+            return false;
+        if (getRfmo() != null ? !getRfmo().equals(that.getRfmo()) : that.getRfmo() != null) return false;
+        if (getGfcmGsa() != null ? !getGfcmGsa().equals(that.getGfcmGsa()) : that.getGfcmGsa() != null) return false;
+        return getGfcmStatRectangle() != null ? getGfcmStatRectangle().equals(that.getGfcmStatRectangle()) : that.getGfcmStatRectangle() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getDay();
+        result = 31 * result + (getMonth() != null ? getMonth().hashCode() : 0);
+        result = 31 * result + getYear();
+        result = 31 * result + (getFlagState() != null ? getFlagState().hashCode() : 0);
+        result = 31 * result + (getGearType() != null ? getGearType().hashCode() : 0);
+        result = 31 * result + (getPresentation() != null ? getPresentation().hashCode() : 0);
+        result = 31 * result + (getTerritory() != null ? getTerritory().hashCode() : 0);
+        result = 31 * result + (getFaoArea() != null ? getFaoArea().hashCode() : 0);
+        result = 31 * result + (getIcesStatRectangle() != null ? getIcesStatRectangle().hashCode() : 0);
+        result = 31 * result + (getEffortZone() != null ? getEffortZone().hashCode() : 0);
+        result = 31 * result + (getRfmo() != null ? getRfmo().hashCode() : 0);
+        result = 31 * result + (getGfcmGsa() != null ? getGfcmGsa().hashCode() : 0);
+        result = 31 * result + (getGfcmStatRectangle() != null ? getGfcmStatRectangle().hashCode() : 0);
+        return result;
+    }
+
+    public int getDay() {
+
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public SummaryTable getSummaryTable() {
@@ -190,52 +266,11 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FaCatchSummaryCustomEntity)) return false;
-
-        FaCatchSummaryCustomEntity that = (FaCatchSummaryCustomEntity) o;
-
-        if (getDate() != null ? !getDate().equals(that.getDate()) : that.getDate() != null) return false;
-        if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null)
-            return false;
-        if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null)
-            return false;
-        if (getPresentation() != null ? !getPresentation().equals(that.getPresentation()) : that.getPresentation() != null)
-            return false;
-        if (getTerritory() != null ? !getTerritory().equals(that.getTerritory()) : that.getTerritory() != null)
-            return false;
-        if (getFaoArea() != null ? !getFaoArea().equals(that.getFaoArea()) : that.getFaoArea() != null) return false;
-        if (getIcesStatRectangle() != null ? !getIcesStatRectangle().equals(that.getIcesStatRectangle()) : that.getIcesStatRectangle() != null)
-            return false;
-        if (getEffortZone() != null ? !getEffortZone().equals(that.getEffortZone()) : that.getEffortZone() != null)
-            return false;
-        if (getRfmo() != null ? !getRfmo().equals(that.getRfmo()) : that.getRfmo() != null) return false;
-        if (getGfcmGsa() != null ? !getGfcmGsa().equals(that.getGfcmGsa()) : that.getGfcmGsa() != null) return false;
-        return getGfcmStatRectangle() != null ? getGfcmStatRectangle().equals(that.getGfcmStatRectangle()) : that.getGfcmStatRectangle() == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getDate() != null ? getDate().hashCode() : 0;
-        result = 31 * result + (getFlagState() != null ? getFlagState().hashCode() : 0);
-        result = 31 * result + (getGearType() != null ? getGearType().hashCode() : 0);
-        result = 31 * result + (getPresentation() != null ? getPresentation().hashCode() : 0);
-        result = 31 * result + (getTerritory() != null ? getTerritory().hashCode() : 0);
-        result = 31 * result + (getFaoArea() != null ? getFaoArea().hashCode() : 0);
-        result = 31 * result + (getIcesStatRectangle() != null ? getIcesStatRectangle().hashCode() : 0);
-        result = 31 * result + (getEffortZone() != null ? getEffortZone().hashCode() : 0);
-        result = 31 * result + (getRfmo() != null ? getRfmo().hashCode() : 0);
-        result = 31 * result + (getGfcmGsa() != null ? getGfcmGsa().hashCode() : 0);
-        result = 31 * result + (getGfcmStatRectangle() != null ? getGfcmStatRectangle().hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "FaCatchSummaryCustomEntity{" +
-                "date=" + date +
+                "day=" + day +
+                ", month='" + month + '\'' +
+                ", year=" + year +
                 ", flagState='" + flagState + '\'' +
                 ", gearType='" + gearType + '\'' +
                 ", presentation='" + presentation + '\'' +
@@ -248,6 +283,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
                 ", gfcmStatRectangle='" + gfcmStatRectangle + '\'' +
                 ", fishClass='" + fishClass + '\'' +
                 ", species='" + species + '\'' +
+                ", typeCode='" + typeCode + '\'' +
                 ", count=" + count +
                 '}';
     }

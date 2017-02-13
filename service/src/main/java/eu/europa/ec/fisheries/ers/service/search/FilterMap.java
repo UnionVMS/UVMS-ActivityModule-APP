@@ -218,9 +218,9 @@ public class FilterMap {
 
     public static void populateGroupByMapping() {
       //  groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.occurence" , "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
-        groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.occurence" , "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
-        groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.occurence" , "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
-        groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.occurence" , "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.occurence" , "setDay")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.occurence" , "setMonth")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.occurence" , "setYear")); // set method belongs to class FaCatchSummaryCustomEntity
       //  groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(SIZE_DISTRIBUTION_CODE_TABLE_ALIAS, "sdClassCode.classCode" , "setFishClass"));
         groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(" ", "faCatch.fishClassCode" , "setFishClass"));
         groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(VESSEL_TRANSPORT_TABLE_ALIAS, "vt.country", "setFlagState" ));

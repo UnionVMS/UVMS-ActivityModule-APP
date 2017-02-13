@@ -23,7 +23,10 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     public static final FACatchSummaryMapper INSTANCE = Mappers.getMapper(FACatchSummaryMapper.class);
 
     @Mappings({
-            @Mapping(target = "date", source = "date"),
+        //    @Mapping(target = "date", source = "date"),
+            @Mapping(target = "day", source = "day"),
+            @Mapping(target = "month", source = "month"),
+            @Mapping(target = "year", source = "year"),
             @Mapping(target = "area", expression = "java(getArea(customEntity))"),
             @Mapping(target = "flagState", source = "flagState"),
             @Mapping(target = "gearType", source = "gearType"),

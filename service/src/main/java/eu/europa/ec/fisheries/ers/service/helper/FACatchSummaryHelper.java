@@ -15,11 +15,11 @@ import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -52,18 +52,18 @@ public class FACatchSummaryHelper {
                 value= DateUtils.truncate(value,Calendar.DATE);
             }*/
             if (GroupCriteria.DATE_DAY.equals(criteria)) {
-                parameterType = Date.class;
-                value= DateUtils.truncate(value,Calendar.DAY_OF_MONTH);
+                parameterType = Integer.class;
+                value= extractValueFromDate((Date) value,Calendar.DAY_OF_MONTH);
             }
 
             if (GroupCriteria.DATE_MONTH.equals(criteria)) {
-                parameterType = Date.class;
-                value= DateUtils.truncate(value,Calendar.MONTH);
+                parameterType = String.class;
+                value= extractValueFromDate((Date) value,Calendar.MONTH);
             }
 
-            if (GroupCriteria.DATE_MONTH.equals(criteria)) {
-                parameterType = Date.class;
-                value= DateUtils.truncate(value,Calendar.YEAR);
+            if (GroupCriteria.DATE_YEAR.equals(criteria)) {
+                parameterType = Integer.class;
+                value= extractValueFromDate((Date) value,Calendar.YEAR);
             }
 
 
@@ -79,6 +79,22 @@ public class FACatchSummaryHelper {
         return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
 
 
+    }
+
+    private Object extractValueFromDate(Date date,int field){
+
+        if(Calendar.DAY_OF_MONTH == field){
+            SimpleDateFormat day = new SimpleDateFormat("dd");
+            return Integer.parseInt(day.format(date));
+        }else if(Calendar.MONTH == field){
+            SimpleDateFormat day = new SimpleDateFormat("MMM");
+            return day.format(date);
+        }else if(Calendar.YEAR == field){
+            SimpleDateFormat day = new SimpleDateFormat("YYYY");
+            return Integer.parseInt(day.format(date));
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
+       return sdf.format(date);
     }
 
 
@@ -175,7 +191,7 @@ public class FACatchSummaryHelper {
 
         log.debug("Print CatchSummaryDTO");
         for(FACatchSummaryDTO dto:catchSummaryDTOList){
-            log.debug("Date :"+dto.getDate() +" Area:"+dto.getArea());
+            log.debug("Month :" +dto.getMonth()+" Area:"+dto.getArea());
             SummaryTable summaryTable= dto.getSummaryTable();
             Map<FishSizeClassEnum,Map<String,Long>> fishSizeMap=summaryTable.getSummaryFishSize();
             if(!MapUtils.isEmpty(fishSizeMap)) {
