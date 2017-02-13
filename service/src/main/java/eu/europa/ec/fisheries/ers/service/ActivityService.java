@@ -13,6 +13,7 @@
 package eu.europa.ec.fisheries.ers.service;
 
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -50,4 +51,6 @@ public interface ActivityService {
     List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException;
 
     boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
+
+    FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets) throws ServiceException;
 }
