@@ -10,18 +10,22 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityViewsMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
@@ -167,6 +171,22 @@ public class ActivityServiceBean implements ActivityService {
         return false;
     }
 
+    /**
+     * Gets a FishingActivityEntity with a certain activityId and maps it to a FishingActivityViewDTO representation layer POJO.
+     *
+     * @param activityId
+     * @param datasets
+     * @return
+     * @throws ServiceException
+     */
+    @Override
+    public FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets) throws ServiceException {
+        Geometry geom                        = getRestrictedAreaGeometry(datasets);
+        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
+        return ActivityViewsMapper.INSTANCE.mapFaEntityToFaDto(activityEntity, new FishingActivityViewDTO());
+    }
+
+
     @NotNull
     private FilterFishingActivityReportResultDTO createResultDTO(List<FishingActivityEntity> activityList, int totalCountOfRecords) {
         if (CollectionUtils.isEmpty(activityList)) {
@@ -233,5 +253,15 @@ public class ActivityServiceBean implements ActivityService {
         }
         return activityReportDTOList;
     }
+
+    private Geometry getRestrictedAreaGeometry(List<Dataset> datasets) throws ServiceException {
+        if (datasets == null || datasets.isEmpty()) {
+            return null;
+        }
+        List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
+        String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
+        return GeometryUtils.wktToGeom(areaWkt);
+    }
+
 
 }

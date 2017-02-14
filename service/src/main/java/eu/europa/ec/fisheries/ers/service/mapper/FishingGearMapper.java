@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -75,7 +76,7 @@ public abstract class FishingGearMapper extends BaseMapper {
     public abstract FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
 
     protected Set<FishingGearRoleEntity> mapToFishingGears(List<CodeType> codeTypes, FishingGearEntity fishingGearEntity) {
-        if (codeTypes == null || codeTypes.isEmpty()) {
+        if (CollectionUtils.isEmpty(codeTypes)) {
             Collections.emptySet();
         }
         Set<FishingGearRoleEntity> fishingGearRoles = new HashSet<>();
@@ -88,7 +89,7 @@ public abstract class FishingGearMapper extends BaseMapper {
     }
 
     protected Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
-        if (gearCharacteristics == null || gearCharacteristics.isEmpty()) {
+        if (CollectionUtils.isEmpty(gearCharacteristics)) {
              return Collections.emptySet();
         }
         Set<GearCharacteristicEntity> gearCharacteristicEntities = new HashSet<>();

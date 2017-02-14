@@ -95,9 +95,9 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
         log.info("Successful retrieved");
-        return createSuccessPaginatedResponse(resultDTO.getResultList(),resultDTO.getTotalCountOfRecords());
+        FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
+        return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }
 
     @GET
@@ -112,4 +112,5 @@ public class FishingActivityResource extends UnionVMSResource {
 
         return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
     }
+
 }
