@@ -1,7 +1,10 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.service.ReportService;
+import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -23,6 +26,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 17/01/2017.
@@ -41,7 +48,7 @@ public class TestResource extends UnionVMSResource {
     private USMService usmService;
 
     @EJB
-    private ReportService reportService;
+    private FaCatchReportService reportService;
 
     @GET
     @Path("/list")
@@ -51,7 +58,20 @@ public class TestResource extends UnionVMSResource {
     public Response getTestServiceResult(@Context HttpServletRequest request,
                                               @Context HttpServletResponse response
                                              ) throws ServiceException {
-        reportService.getCatchSummaryReport();
+        FishingActivityQuery query = new FishingActivityQuery();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+
+        List<GroupCriteria> groupByFields = new ArrayList<>();
+        groupByFields.add(GroupCriteria.DATE_MONTH);
+        //  groupByFields.add(GroupCriteria.SIZE_CLASS);
+        //groupByFields.add(GroupCriteria.SPECIES);
+        groupByFields.add(GroupCriteria.AREA);
+        query.setGroupByFields(groupByFields);
+
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        reportService.getCatchSummaryReport(query);
         return createSuccessResponse();
     }
 }

@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTable;
+
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,7 +19,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     private int day;
     private String month;
     private int year;
-
+    private String vesselTransportGuid;
     private String flagState;
     private String gearType;
     private String presentation;
@@ -63,6 +63,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         this.count = count;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,6 +74,8 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         if (getDay() != that.getDay()) return false;
         if (getYear() != that.getYear()) return false;
         if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;
+        if (getVesselTransportGuid() != null ? !getVesselTransportGuid().equals(that.getVesselTransportGuid()) : that.getVesselTransportGuid() != null)
+            return false;
         if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null)
             return false;
         if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null)
@@ -97,6 +100,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         int result = getDay();
         result = 31 * result + (getMonth() != null ? getMonth().hashCode() : 0);
         result = 31 * result + getYear();
+        result = 31 * result + (getVesselTransportGuid() != null ? getVesselTransportGuid().hashCode() : 0);
         result = 31 * result + (getFlagState() != null ? getFlagState().hashCode() : 0);
         result = 31 * result + (getGearType() != null ? getGearType().hashCode() : 0);
         result = 31 * result + (getPresentation() != null ? getPresentation().hashCode() : 0);
@@ -108,6 +112,14 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         result = 31 * result + (getGfcmGsa() != null ? getGfcmGsa().hashCode() : 0);
         result = 31 * result + (getGfcmStatRectangle() != null ? getGfcmStatRectangle().hashCode() : 0);
         return result;
+    }
+
+    public String getVesselTransportGuid() {
+        return vesselTransportGuid;
+    }
+
+    public void setVesselTransportGuid(String vesselTransportGuid) {
+        this.vesselTransportGuid = vesselTransportGuid;
     }
 
     public int getDay() {
@@ -135,15 +147,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         this.year = year;
     }
 
-    public SummaryTable getSummaryTable() {
-        return summaryTable;
-    }
 
-    public void setSummaryTable(SummaryTable summaryTable) {
-        this.summaryTable = summaryTable;
-    }
-
-    private SummaryTable summaryTable;
 
     public long getCount() {
         return count;

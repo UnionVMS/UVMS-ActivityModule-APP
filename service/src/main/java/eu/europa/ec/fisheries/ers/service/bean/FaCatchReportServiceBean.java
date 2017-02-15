@@ -1,10 +1,8 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
-import eu.europa.ec.fisheries.ers.service.ReportService;
+import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,19 +12,15 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sanera on 17/01/2017.
  */
 @Stateless
-@Local(ReportService.class)
+@Local(FaCatchReportService.class)
 @Transactional
 @Slf4j
-public class ReportServiceBean implements ReportService {
+public class FaCatchReportServiceBean implements FaCatchReportService {
 
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
@@ -39,10 +33,11 @@ public class ReportServiceBean implements ReportService {
 
     }
 
-    public void getCatchSummaryReport() throws ServiceException {
+    @Override
+    public void getCatchSummaryReport(FishingActivityQuery query) throws ServiceException {
      log.debug("inside getCatchSummaryReport");
        // List<Object[]> list= fishingActivityDao.getCatchSummary();
-        FishingActivityQuery query = new FishingActivityQuery();
+      /*  FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
         List<GroupCriteria> groupByFields = new ArrayList<>();
@@ -54,7 +49,7 @@ public class ReportServiceBean implements ReportService {
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
-        query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMap(searchCriteriaMap);*/
 
         StringBuilder sqlGenerated = faCatchDao.getFACatchSummaryReportString(query);
     }

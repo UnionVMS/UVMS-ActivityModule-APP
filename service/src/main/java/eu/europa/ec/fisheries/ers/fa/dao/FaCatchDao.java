@@ -14,9 +14,14 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.helper.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FACatchSearchBuilder;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryTable;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import io.jsonwebtoken.lang.Collections;
@@ -74,7 +79,13 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap = faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
 
-        faCatchSummaryHelper.buildFaCatchSummaryTable(groupedMap);
+        List<FACatchSummaryDTO> catchSummaryList= faCatchSummaryHelper.buildFaCatchSummaryTable(groupedMap);
+        SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
+
+        List<FACatchSummaryRecord> faCatchSummaryRecords= faCatchSummaryHelper.buildFACatchSummaryRecordList(catchSummaryList);
+        SummaryTable summaryTable= FACatchSummaryMapper.INSTANCE.mapToSummaryTable(summaryTableDTOTotal);
+        log.debug("SummaryTable XML Schema response---->");
+        faCatchSummaryHelper.printJsonstructure(summaryTable);
 
         return str;
     }

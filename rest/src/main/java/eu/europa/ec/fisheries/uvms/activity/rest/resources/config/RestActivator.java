@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest.resources.config;
 
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResource;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityViewsResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingTripResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.PreferenceConfigResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.TestResource;
@@ -35,6 +36,7 @@ public class RestActivator extends Application {
         set.add(FishingTripResource.class);
         set.add(PreferenceConfigResource.class);
         set.add(TestResource.class);
+        set.add(FishingActivityViewsResource.class);
     }
 
     @Override

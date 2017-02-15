@@ -105,22 +105,41 @@ public class ActivityEventServiceBean implements EventService {
 
 
     @Override
-    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException {
+    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException, ActivityMessageException, ActivityModelMarshallException {
         LOG.info("Got JMS inside Activity to get FACatchSummaryReport:");
+        try {
+            LOG.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
+            FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FACatchSummaryReportRequest.class);
+
+            FACatchSummaryReportResponse baseResponse = new FACatchSummaryReportResponse();
+            String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
+            producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private FishingActivityQuery buildFishingActivityQueryFromRequest(FACatchSummaryReportRequest baseRequest) throws ServiceException {
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest.getSingleValueFilters()));
+        query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest.getListValueFilters()));
+        query.setGroupByFields(baseRequest.getGroupCriterias());
+        return query;
     }
 
 
     private FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();
-        query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest));
-        query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest));
+        query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest.getSingleValueFilters()));
+        query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest.getListValueFilters()));
         return query;
     }
 
-    private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest) throws ServiceException {
+    private Map<SearchFilter,String>  extractFiltersAsMap( List<SingleValueTypeFilter> filterTypes) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,String> searchMap          = new EnumMap<>(SearchFilter.class);
-        List<SingleValueTypeFilter> filterTypes     = baseRequest.getSingleValueFilters();
+     //   List<SingleValueTypeFilter> filterTypes     = baseRequest.getSingleValueFilters();
         for(SingleValueTypeFilter filterType : filterTypes) {
             SearchFilter filter = filterType.getKey();
             if (filtersWithMultipleValues.contains(filter)) {
@@ -132,10 +151,10 @@ public class ActivityEventServiceBean implements EventService {
         return searchMap;
     }
 
-    private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest) throws ServiceException {
+    private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(List<ListValueTypeFilter> filterTypes ) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,List<String>> searchMap    = new EnumMap<>(SearchFilter.class);
-        List<ListValueTypeFilter> filterTypes       = baseRequest.getListValueFilters();
+      //  List<ListValueTypeFilter> filterTypes       = baseRequest.getListValueFilters();
         for(ListValueTypeFilter filterType : filterTypes){
             SearchFilter filter = filterType.getKey();
             if(!filtersWithMultipleValues.contains(filter)) {
