@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.Area;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import org.apache.commons.collections.MapUtils;
@@ -38,7 +38,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
             @Mapping(target = "vesselTransportGuid", expression = "java(customEntity.getVesselTransportGuid())"),
             @Mapping(target = "summaryTable", expression = "java(getSummaryTable(catchSummaryEntityList))")
     })
-    public abstract FACatchSummaryDTO mapToFACatchSummaryDTO(FaCatchSummaryCustomEntity customEntity, List<FaCatchSummaryCustomEntity> catchSummaryEntityList);
+    public abstract FACatchSummaryRecordDTO mapToFACatchSummaryDTO(FaCatchSummaryCustomEntity customEntity, List<FaCatchSummaryCustomEntity> catchSummaryEntityList);
 
 
 

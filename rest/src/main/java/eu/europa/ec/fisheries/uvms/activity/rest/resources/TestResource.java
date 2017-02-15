@@ -71,7 +71,7 @@ public class TestResource extends UnionVMSResource {
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        reportService.getCatchSummaryReport(query);
+        reportService.getCatchSummaryReportForWeb(query);
         return createSuccessResponse();
     }
 }

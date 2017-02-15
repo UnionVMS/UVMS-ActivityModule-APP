@@ -17,7 +17,7 @@ import eu.europa.ec.fisheries.ers.service.helper.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FACatchSearchBuilder;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
@@ -59,6 +59,25 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
         return query.getResultList();
     }
 
+    public Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> getGroupedFaCatchData(FishingActivityQuery query) throws ServiceException {
+        FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
+        List<GroupCriteria> groupByFieldList = query.getGroupByFields();
+        if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
+            throw new ServiceException(" No Group information present to aggregate report.");
+
+        faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);
+        query.setGroupByFields(faCatchSummaryHelper.mapAreaGroupCriteriaToAllSchemeIdTypes(groupByFieldList));
+
+        List<FaCatchSummaryCustomEntity> customEntities=  getRecordsForFishClassOrFACatchType(query);
+
+        faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
+
+        customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
+
+        return faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
+
+    }
+
 
     public StringBuilder getFACatchSummaryReportString(FishingActivityQuery query) throws ServiceException {
 
@@ -79,7 +98,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap = faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
 
-        List<FACatchSummaryDTO> catchSummaryList= faCatchSummaryHelper.buildFaCatchSummaryTable(groupedMap);
+        List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFaCatchSummaryTable(groupedMap);
         SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
 
         List<FACatchSummaryRecord> faCatchSummaryRecords= faCatchSummaryHelper.buildFACatchSummaryRecordList(catchSummaryList);

@@ -8,7 +8,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -166,150 +166,26 @@ public class FACatchSummaryHelper {
 
         }
 
-      /*  for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
-
-            log.debug("Key:"+entry.getKey()+":::"+entry.getValue().size());
-            log.debug(""+entry.getValue());
-            log.debug("**********************************************************");
-        }*/
         return groupedMap;
     }
 
-  /*  public void buildFACatchSummaryResponse(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
-        List<FACatchSummaryRecord> catchSummaryResponseList = new ArrayList<>();
-
-        for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
-            FACatchSummaryRecord faCatchSummaryResponse = new FACatchSummaryRecord();
-            FaCatchSummaryCustomEntity customEntity= entry.getKey();
-            List<GroupCriteriaWithValue> groups =populateGroupCriteriaWithValue(customEntity);
-            faCatchSummaryResponse.setGroups(groups);
-            List<FaCatchSummaryCustomEntity> catchSummaryEntityList=entry.getValue();
-            for(FaCatchSummaryCustomEntity entity :catchSummaryEntityList){
-                SummaryTable summaryTable= populateSummaryTable(entity);
-            }
-
-            catchSummaryResponseList.add(faCatchSummaryResponse);
-        }
-
-
-        log.debug("Summary---->");
-        printJsonstructure(catchSummaryResponseList);
-        populateSummaryTableWithTotal(catchSummaryDTOList);
-
-    }*/
-
-
- /*   private void populateSummaryTable(FaCatchSummaryCustomEntity customEntity){
-        SummaryTable summaryTable = new SummaryTable();
-        long speciesCnt = customEntity.getCount();
-
-        if(customEntity.getFishClass()!=null) {
-            Map<FishSizeClassEnum, Map<String, Long>> fishSizeSummaryMap = summaryTable.getSummaryFishSize();
-
-            if (MapUtils.isEmpty(fishSizeSummaryMap)) {
-                fishSizeSummaryMap = new HashMap<>();
-                fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), getStringLongMap(customEntity, speciesCnt));
-
-            } else {
-                Map<String, Long> speciesCountMap = fishSizeSummaryMap.get(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()));
-                if (MapUtils.isEmpty(speciesCountMap)) {
-                    fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), getStringLongMap(customEntity, speciesCnt));
-                } else if (customEntity.getSpecies() != null) {
-                    Long totalCountForSpecies = speciesCountMap.get(customEntity.getSpecies().toUpperCase());
-                    if (totalCountForSpecies == null) {
-                        speciesCountMap.put(customEntity.getSpecies().toUpperCase(), speciesCnt);
-                    } else {
-                        totalCountForSpecies = totalCountForSpecies + speciesCnt;
-                        speciesCountMap.put(customEntity.getSpecies().toUpperCase(),totalCountForSpecies);
-
-                    }
-                }
-            }
-
-            summaryTable.setSummaryFishSize(fishSizeSummaryMap);
-        }
-
-        if(customEntity.getTypeCode()!=null) {
-            Map<FaCatchTypeEnum, Map<String, Long>> faCatchSummaryMap = summaryTable.getSummaryFaCatchType();
-            if (MapUtils.isEmpty(faCatchSummaryMap)) {
-                faCatchSummaryMap = new HashMap<>();
-                faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), getStringLongMap(customEntity, speciesCnt));
-            } else {
-                Map<String, Long> speciesCountMap = faCatchSummaryMap.get(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()));
-                if (MapUtils.isEmpty(speciesCountMap)) {
-                    faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), getStringLongMap(customEntity, speciesCnt));
-                } else if (customEntity.getSpecies() != null) {
-                    Long totalCountForSpecies = speciesCountMap.get(customEntity.getSpecies().toUpperCase());
-                    if (totalCountForSpecies == null) {
-                        speciesCountMap.put(customEntity.getSpecies().toUpperCase(), speciesCnt);
-                    } else {
-                        totalCountForSpecies = totalCountForSpecies + speciesCnt;
-                    }
-                }
-            }
-            summaryTable.setSummaryFaCatchType(faCatchSummaryMap);
-        }
-
-        // Map<FaCatchTypeEnum,Map<String,Long>> catchTypeMap= summaryTable.getSummaryFaCatchType(); // do catch type table summation later
-
-
-    }*/
-
-
-
-
-
-
-
-    public  List<FACatchSummaryDTO> buildFaCatchSummaryTable(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
-        List<FACatchSummaryDTO> catchSummaryDTOList = new ArrayList<>();
+    public  List<FACatchSummaryRecordDTO> buildFaCatchSummaryTable(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
+        List<FACatchSummaryRecordDTO> catchSummaryDTOList = new ArrayList<>();
 
         for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
             FaCatchSummaryCustomEntity customEntity= entry.getKey();
-            FACatchSummaryDTO faCatchSummaryDTO= FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryDTO(customEntity,entry.getValue());
+            FACatchSummaryRecordDTO faCatchSummaryDTO= FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryDTO(customEntity,entry.getValue());
             catchSummaryDTOList.add(faCatchSummaryDTO);
         }
 
-      /*  log.debug("Print CatchSummaryDTO");
-        for(FACatchSummaryDTO dto:catchSummaryDTOList){
-            log.debug("Month :" +dto.getMonth()+" Area:"+dto.getArea());
-            SummaryTable summaryTable= dto.getSummaryTable();
-            Map<FishSizeClassEnum,Map<String,Long>> fishSizeMap=summaryTable.getSummaryFishSize();
-            if(!MapUtils.isEmpty(fishSizeMap)) {
-                for (Map.Entry<FishSizeClassEnum, Map<String, Long>> entry : fishSizeMap.entrySet()) {
-                    log.debug("----------" + entry.getKey() + "-----------");
-                    Map<String, Long> speciesMap = entry.getValue();
-                    for (Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()) {
-                        log.debug("*" + entrySpecies.getKey() + "---->" + entrySpecies.getValue());
-                    }
-
-                }
-            }
-
-                Map<FaCatchTypeEnum, Map<String, Long>> fishtypeMap = summaryTable.getSummaryFaCatchType();
-            if(!MapUtils.isEmpty(fishtypeMap)) {
-                for (Map.Entry<FaCatchTypeEnum, Map<String, Long>> entry : fishtypeMap.entrySet()) {
-                    log.debug("----------" + entry.getKey() + "-----------");
-                    Map<String, Long> speciesMap = entry.getValue();
-                    for (Map.Entry<String, Long> entrySpecies : speciesMap.entrySet()) {
-                        log.debug("*" + entrySpecies.getKey() + "---->" + entrySpecies.getValue());
-                    }
-                }
-            }
-
-            log.debug("------ End ------------");
-
-        }*/
-        log.debug("Summary---->");
-        printJsonstructure(catchSummaryDTOList);
 
         return catchSummaryDTOList;
 
     }
 
-    public  List<FACatchSummaryRecord> buildFACatchSummaryRecordList(List<FACatchSummaryDTO> catchSummaryDTOList){
+    public  List<FACatchSummaryRecord> buildFACatchSummaryRecordList(List<FACatchSummaryRecordDTO> catchSummaryDTOList){
         List<FACatchSummaryRecord> faCatchSummaryRecords = new ArrayList<>();
-        for(FACatchSummaryDTO faCatchSummaryDTO: catchSummaryDTOList){
+        for(FACatchSummaryRecordDTO faCatchSummaryDTO: catchSummaryDTOList){
             FACatchSummaryRecord faCatchSummaryRecord = new FACatchSummaryRecord();
             faCatchSummaryRecord.setGroups(populateGroupCriteriaWithValue(faCatchSummaryDTO));
             faCatchSummaryRecord.setSummary(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getSummaryTable()));
@@ -323,7 +199,7 @@ public class FACatchSummaryHelper {
 
 
 
-    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FACatchSummaryDTO faCatchSummaryDTO){
+    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FACatchSummaryRecordDTO faCatchSummaryDTO){
         List<GroupCriteriaWithValue> groups = new ArrayList<>();
 
         if(faCatchSummaryDTO.getDay() !=0 ){
@@ -430,10 +306,10 @@ public class FACatchSummaryHelper {
     }
 
 
-    public SummaryTableDTO populateSummaryTableWithTotal( List<FACatchSummaryDTO> catchSummaryDTOList){
+    public SummaryTableDTO populateSummaryTableWithTotal( List<FACatchSummaryRecordDTO> catchSummaryDTOList){
         SummaryTableDTO summaryTableWithTotals= new SummaryTableDTO();
 
-        for(FACatchSummaryDTO faCatchSummaryDTO:catchSummaryDTOList){
+        for(FACatchSummaryRecordDTO faCatchSummaryDTO:catchSummaryDTOList){
             SummaryTableDTO summaryTable= faCatchSummaryDTO.getSummaryTable();
             Map<FishSizeClassEnum,Map<String,Long>> fishSizeClassEnumMapMap=summaryTable.getSummaryFishSize();
             Map<FishSizeClassEnum, Map<String, Long>> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();

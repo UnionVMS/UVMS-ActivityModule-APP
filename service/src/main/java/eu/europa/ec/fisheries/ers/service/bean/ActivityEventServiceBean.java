@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.EventService;
+import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
@@ -56,6 +57,9 @@ public class ActivityEventServiceBean implements EventService {
 
     @EJB
     private FishingTripService fishingTripService;
+
+    @EJB
+    private FaCatchReportService faCatchReportService;
 
     @EJB
     private ActivityMessageProducer producer;
@@ -109,10 +113,9 @@ public class ActivityEventServiceBean implements EventService {
         LOG.info("Got JMS inside Activity to get FACatchSummaryReport:");
         try {
             LOG.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
-            FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FACatchSummaryReportRequest.class);
-
-            FACatchSummaryReportResponse baseResponse = new FACatchSummaryReportResponse();
-            String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
+            FACatchSummaryReportRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FACatchSummaryReportRequest.class);
+            FACatchSummaryReportResponse faCatchSummaryReportResponse= faCatchReportService.getFACatchSummaryReportResponse(buildFishingActivityQueryFromRequest(baseRequest));
+            String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
             producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
         } catch (JMSException e) {
             e.printStackTrace();

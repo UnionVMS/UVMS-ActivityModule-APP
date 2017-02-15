@@ -4,7 +4,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FaCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;

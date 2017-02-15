@@ -1,8 +1,17 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
+import eu.europa.ec.fisheries.ers.service.helper.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryTable;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +21,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 17/01/2017.
@@ -27,30 +38,43 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
 
     private FaCatchDao faCatchDao;
 
+
+
     @PostConstruct
     public void init() {
         faCatchDao = new FaCatchDao(em);
 
     }
 
+    public FACatchSummaryDTO getCatchSummaryReportForWeb(FishingActivityQuery query) throws ServiceException{
+        FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
+        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query);
+        List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFaCatchSummaryTable(groupedData);
+        SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
+        FACatchSummaryDTO faCatchSummaryDTO = new FACatchSummaryDTO();
+        faCatchSummaryDTO.setRecordDTOs(catchSummaryList);
+        faCatchSummaryDTO.setTotal(summaryTableDTOTotal);
+
+        return faCatchSummaryDTO;
+    }
+
     @Override
-    public void getCatchSummaryReport(FishingActivityQuery query) throws ServiceException {
+    public FACatchSummaryReportResponse getFACatchSummaryReportResponse(FishingActivityQuery query) throws ServiceException {
      log.debug("inside getCatchSummaryReport");
-       // List<Object[]> list= fishingActivityDao.getCatchSummary();
-      /*  FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
-        List<GroupCriteria> groupByFields = new ArrayList<>();
-        groupByFields.add(GroupCriteria.DATE_MONTH);
-        //  groupByFields.add(GroupCriteria.SIZE_CLASS);
-        //groupByFields.add(GroupCriteria.SPECIES);
-        groupByFields.add(GroupCriteria.AREA);
-        query.setGroupByFields(groupByFields);
+        FACatchSummaryDTO faCatchSummaryDTO= getCatchSummaryReportForWeb(query);
 
-        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+       FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
+        List<FACatchSummaryRecord> faCatchSummaryRecords= faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs());
+        SummaryTable summaryTable= FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal());
 
-        query.setSearchCriteriaMap(searchCriteriaMap);*/
 
-        StringBuilder sqlGenerated = faCatchDao.getFACatchSummaryReportString(query);
+        FACatchSummaryReportResponse faCatchSummaryReportResponse =new FACatchSummaryReportResponse();
+        faCatchSummaryReportResponse.setSummaryRecords(faCatchSummaryRecords);
+        faCatchSummaryReportResponse.setTotal(summaryTable);
+
+        log.debug("SummaryTable XML Schema response---->");
+        faCatchSummaryHelper.printJsonstructure(faCatchSummaryReportResponse);
+        return faCatchSummaryReportResponse;
     }
 }

@@ -75,7 +75,7 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
         List<GroupCriteria> groupByFields = new ArrayList<>();
-        groupByFields.add(GroupCriteria.DATE);
+         //groupByFields.add(GroupCriteria.DATE);
       //  groupByFields.add(GroupCriteria.SIZE_CLASS);
         //groupByFields.add(GroupCriteria.SPECIES);
     //    groupByFields.add(GroupCriteria.AREA);
@@ -84,7 +84,6 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-
         StringBuilder sqlGenerated = dao.getFACatchSummaryReportString(query);
         System.out.println("sqlGenerated:" + sqlGenerated);
         assertNotNull(sqlGenerated);
