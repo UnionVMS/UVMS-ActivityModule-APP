@@ -78,6 +78,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
     @Mappings({
+            @Mapping(target = "fishingActivityId", source = "id"),
             @Mapping(target = "uniqueFAReportId", expression = "java(getUniqueId(entity))"),
             @Mapping(target = "faReportID", expression = "java(getFAReportId(entity))"),
             @Mapping(target = "fromId", expression = "java(getFromId(entity))"),
@@ -125,6 +126,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     public abstract FishingActivitySummary mapToFishingActivitySummary(FishingActivityEntity entity);
 
     @Mappings({
+            @Mapping(target = "fishingActivityId", source = "id"),
             @Mapping(target = "activityType", source = "typeCode"),
             @Mapping(target = "occurence", source = "occurence"),
             @Mapping(target = "reason", source = "reasonCode"),
