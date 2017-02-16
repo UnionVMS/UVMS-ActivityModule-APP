@@ -228,7 +228,7 @@ public class FilterMap {
         groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(AAP_PROCESS_CODE_TABLE_ALIAS, "aapProcessCode.typeCode" , "setPresentation"));
         groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(" ", "faCatch.speciesCode", "setSpecies" ));
         groupByMapping.put(GroupCriteria.CATCH_TYPE, new GroupCriteriaMapper(FA_CATCH_TABLE_ALIAS, "faCatch.typeCode", "setTypeCode" ));
-        groupByMapping.put(GroupCriteria.AREA, new GroupCriteriaMapper(" ", FA_CATCH_TERITTORY+", "+FA_CATCH_FAO_AREA+", "+FA_CATCH_ICES_STAT_RECTANGLE+", "+FA_CATCH_EFFORT_ZONE+", "+FA_CATCH_RMFO+", "+FA_CATCH_GFCM_GSA+", "+ FA_CATCH_GFCM_STAT_RECTANGLE, ""));
+      //  groupByMapping.put(GroupCriteria.AREA, new GroupCriteriaMapper(" ", FA_CATCH_TERITTORY+", "+FA_CATCH_FAO_AREA+", "+FA_CATCH_ICES_STAT_RECTANGLE+", "+FA_CATCH_EFFORT_ZONE+", "+FA_CATCH_RMFO+", "+FA_CATCH_GFCM_GSA+", "+ FA_CATCH_GFCM_STAT_RECTANGLE, ""));
         groupByMapping.put(GroupCriteria.TERRITORY, new GroupCriteriaMapper(" ", FA_CATCH_TERITTORY , "setTerritory"));
         groupByMapping.put(GroupCriteria.FAO_AREA, new GroupCriteriaMapper(" ", FA_CATCH_FAO_AREA , "setFaoArea"));
         groupByMapping.put(GroupCriteria.ICES_STAT_RECTANGLE, new GroupCriteriaMapper(" ", FA_CATCH_ICES_STAT_RECTANGLE , "setIcesStatRectangle"));

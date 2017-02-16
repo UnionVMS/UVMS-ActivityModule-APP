@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by sanera on 26/01/2017.
@@ -15,7 +14,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;*/
 
-    private Date date;
+   // private Date date;
     private int day;
     private String month;
     private int year;
@@ -44,9 +43,9 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     }
 
 
-    public FaCatchSummaryCustomEntity(Date date, String flagState, String gearType, String presentation, String territory, String faoArea, String icesStatRectangle, String effortZone, String rfmo,
+    public FaCatchSummaryCustomEntity(String flagState, String gearType, String presentation, String territory, String faoArea, String icesStatRectangle, String effortZone, String rfmo,
                                       String gfcmGsa, String gfcmStatRectangle, String fishClass, String species,String typeCode, long count) {
-        this.date = date;
+
         this.flagState = flagState;
         this.gearType = gearType;
         this.presentation = presentation;
@@ -157,13 +156,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         this.count = count;
     }
 
-    public Date getDate() {
-        return date;
-    }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
 
     public String getFishClass() {
         return fishClass;

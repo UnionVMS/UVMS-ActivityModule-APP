@@ -123,6 +123,12 @@ public class ActivityEventServiceBean implements EventService {
 
     }
 
+    /**
+     *
+     * @param baseRequest
+     * @return
+     * @throws ServiceException
+     */
     private FishingActivityQuery buildFishingActivityQueryFromRequest(FACatchSummaryReportRequest baseRequest) throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest.getSingleValueFilters()));
@@ -139,10 +145,19 @@ public class ActivityEventServiceBean implements EventService {
         return query;
     }
 
+    /**
+     * Some Search Filters expect multiple values and some expect only single value.
+     * Below method acts as an adapter for backend searchActivityReports with filters functionality.
+     *
+     * This method creates Map for filters with single value.
+     * @param filterTypes
+     * @return
+     * @throws ServiceException
+     */
     private Map<SearchFilter,String>  extractFiltersAsMap( List<SingleValueTypeFilter> filterTypes) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,String> searchMap          = new EnumMap<>(SearchFilter.class);
-     //   List<SingleValueTypeFilter> filterTypes     = baseRequest.getSingleValueFilters();
+
         for(SingleValueTypeFilter filterType : filterTypes) {
             SearchFilter filter = filterType.getKey();
             if (filtersWithMultipleValues.contains(filter)) {
@@ -154,10 +169,17 @@ public class ActivityEventServiceBean implements EventService {
         return searchMap;
     }
 
+    /**
+     *  This method creates Map for Filters with multiple values.
+     *
+     * @param filterTypes
+     * @return
+     * @throws ServiceException
+     */
     private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(List<ListValueTypeFilter> filterTypes ) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,List<String>> searchMap    = new EnumMap<>(SearchFilter.class);
-      //  List<ListValueTypeFilter> filterTypes       = baseRequest.getListValueFilters();
+
         for(ListValueTypeFilter filterType : filterTypes){
             SearchFilter filter = filterType.getKey();
             if(!filtersWithMultipleValues.contains(filter)) {

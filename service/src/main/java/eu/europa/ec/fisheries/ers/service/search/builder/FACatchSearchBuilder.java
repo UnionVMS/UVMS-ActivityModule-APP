@@ -9,7 +9,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,9 @@ import java.util.Map;
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
 
-  private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a LEFT JOIN a.relatedFishingActivity relatedActivity  " +
+  private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
+          "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
            "  JOIN a.faReportDocument fa  " ;
-
-    private static final String FISHING_OPERATION="FISHING_OPERATION";
 
 
     @Override
@@ -35,6 +33,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
 
+        // Build SELECT part of query.
         for (GroupCriteria criteria : groupByFieldList) {
 
             GroupCriteriaMapper mapper = groupMAppings.get(criteria);
@@ -42,6 +41,8 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
             sql.append(", ");
         }
         sql.append(" count(faCatch.id)  ");
+
+        // Below is default JOIN for the query
         sql.append(FA_CATCH_JOIN);
 
      //   augmentJoinForFACatchSummaryReport(sql);
@@ -49,6 +50,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         // Create join part of SQL query
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
 
+        // Add joins if not added by activity filtering . Below code will add joins required by FA Catch report joins
         for (GroupCriteria criteria : groupByFieldList) {
 
             GroupCriteriaMapper mapper = groupMAppings.get(criteria);
@@ -69,6 +71,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
         sql.append(" GROUP BY  ");
 
+        // Add group by statement based on grouping factors
         int i = 0;
         for (GroupCriteria criteria : groupByFieldList) {
 
@@ -85,7 +88,12 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         return sql;
     }
 
+    /**
+     *  Special condition to get data for DIM/DIS
+     * @param sql
+     */
     private void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
+
         sql.append(" and ( a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
     }
 
@@ -100,13 +108,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
                 .append("','").append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("')))");
     }
 
-    private void augmentJoinForFACatchSummaryReport(StringBuilder sql){
-        sql.append(StringUtils.SPACE);
-        sql.append("LEFT ");
-        appendJoinString(sql,"a.relatedFishingActivity relatedActivity ");
-        sql.append("LEFT ");
-        appendJoinString(sql,"relatedActivity.faCatchs relatedfaCatchs ");
-    }
+
 
     @Override
     public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {

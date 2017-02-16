@@ -47,7 +47,7 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
     }
 
     public FACatchSummaryDTO getCatchSummaryReportForWeb(FishingActivityQuery query) throws ServiceException{
-        FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
+        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query);
         List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFaCatchSummaryTable(groupedData);
         SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
@@ -64,7 +64,7 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
 
         FACatchSummaryDTO faCatchSummaryDTO= getCatchSummaryReportForWeb(query);
 
-       FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
+       FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
         List<FACatchSummaryRecord> faCatchSummaryRecords= faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs());
         SummaryTable summaryTable= FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal());
 
