@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -116,6 +117,14 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         createWherePartForQueryForFilters(sql, query);
         log.debug("Generated Query After Where :" + sql);
         return sql;
+    }
+
+    public  void appendJoinFetchString(StringBuilder sql, String joinString) {
+        sql.append("LEFT JOIN ").append(joinString).append(StringUtils.SPACE);
+    }
+
+    protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
+        sql.append("LEFT ").append(" JOIN ").append(delimitedPeriodTableAlias);
     }
 
 }

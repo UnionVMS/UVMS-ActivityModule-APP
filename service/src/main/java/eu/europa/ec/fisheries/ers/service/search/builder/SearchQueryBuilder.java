@@ -195,7 +195,7 @@ public abstract class SearchQueryBuilder {
         return 0;
     }
 
-    private  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
+    protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
     }
 

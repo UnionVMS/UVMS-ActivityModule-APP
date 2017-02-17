@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.service.helper.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -75,18 +76,29 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
 
         List<GroupCriteria> groupByFields = new ArrayList<>();
-         //groupByFields.add(GroupCriteria.DATE);
+         groupByFields.add(GroupCriteria.DATE_MONTH);
       //  groupByFields.add(GroupCriteria.SIZE_CLASS);
-        //groupByFields.add(GroupCriteria.SPECIES);
+         groupByFields.add(GroupCriteria.SPECIES);
     //    groupByFields.add(GroupCriteria.AREA);
         query.setGroupByFields(groupByFields);
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        StringBuilder sqlGenerated = dao.getFACatchSummaryReportString(query);
-        System.out.println("sqlGenerated:" + sqlGenerated);
-        assertNotNull(sqlGenerated);
+        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+       System.out.println( faCatchSummaryHelper.printJsonstructure(query));
+        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query);
+       for(Map.Entry<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> entry:faCatchSummaryCustomEntityListMap.entrySet()){
+           FaCatchSummaryCustomEntity  key= (FaCatchSummaryCustomEntity) entry.getKey();
+           System.out.println("key:"+key);
+           System.out.println("Values ----------->");
+           for(FaCatchSummaryCustomEntity entity:entry.getValue()){
+               System.out.println(entity);
+           }
+           System.out.println("**************************");
+       }
+
+        assertNotNull(faCatchSummaryCustomEntityListMap);
 
     }
 

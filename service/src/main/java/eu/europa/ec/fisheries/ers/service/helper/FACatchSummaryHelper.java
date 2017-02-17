@@ -337,7 +337,7 @@ public class FACatchSummaryHelper {
         return fishSizeMap;
     }
 
-    public void printJsonstructure(Object obj){
+    public String printJsonstructure(Object obj){
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         String s = null;
@@ -348,6 +348,7 @@ public class FACatchSummaryHelper {
         }
         log.debug("json structure:-------->");
         log.debug(""+s);
+        return s;
     }
 
 

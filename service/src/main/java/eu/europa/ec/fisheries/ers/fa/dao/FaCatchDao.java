@@ -74,36 +74,6 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
     }
 
 
-  /*  public StringBuilder getFACatchSummaryReportString(FishingActivityQuery query) throws ServiceException {
-
-        StringBuilder str =new StringBuilder("test");
-        FACatchSummaryHelper faCatchSummaryHelper = new FACatchSummaryHelper();
-        List<GroupCriteria> groupByFieldList = query.getGroupByFields();
-        if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
-            throw new ServiceException(" No Group information present to aggregate report.");
-
-        faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);
-      //  query.setGroupByFields(faCatchSummaryHelper.mapAreaGroupCriteriaToAllSchemeIdTypes(groupByFieldList));
-
-        List<FaCatchSummaryCustomEntity> customEntities=  getRecordsForFishClassOrFACatchType(query);
-
-        faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
-
-        customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
-
-        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap = faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
-
-        List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFaCatchSummaryTable(groupedMap);
-        SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
-
-        List<FACatchSummaryRecord> faCatchSummaryRecords= faCatchSummaryHelper.buildFACatchSummaryRecordList(catchSummaryList);
-        SummaryTable summaryTable= FACatchSummaryMapper.INSTANCE.mapToSummaryTable(summaryTableDTOTotal);
-        log.debug("SummaryTable XML Schema response---->");
-        faCatchSummaryHelper.printJsonstructure(summaryTable);
-
-        return str;
-    }*/
-
      private   List<FaCatchSummaryCustomEntity> getRecordsForFishClassOrFACatchType(FishingActivityQuery query) throws ServiceException {
          FACatchSearchBuilder faCatchSearchBuilder = new FACatchSearchBuilder();
          FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();

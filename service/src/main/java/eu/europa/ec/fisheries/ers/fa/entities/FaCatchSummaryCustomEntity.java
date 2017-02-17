@@ -10,11 +10,7 @@ import java.io.Serializable;
 //@Entity
 public class FaCatchSummaryCustomEntity implements Serializable {
 
-      /* @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;*/
 
-   // private Date date;
     private int day;
     private String month;
     private int year;
