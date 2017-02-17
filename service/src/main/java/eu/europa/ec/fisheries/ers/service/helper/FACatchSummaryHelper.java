@@ -10,13 +10,15 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -138,9 +140,9 @@ public class FACatchSummaryHelper {
             groupList.add(GroupCriteria.SIZE_CLASS);
         }
 
-        if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
-            groupList.add(GroupCriteria.SPECIES);
-        }
+   //     if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
+     //       groupList.add(GroupCriteria.SPECIES);
+       // }
 
         if(groupList.indexOf(GroupCriteria.CATCH_TYPE) != -1){
             groupList.remove(GroupCriteria.CATCH_TYPE);
@@ -158,9 +160,9 @@ public class FACatchSummaryHelper {
             groupList.add(GroupCriteria.CATCH_TYPE);
         }
 
-        if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
-            groupList.add(GroupCriteria.SPECIES);
-        }
+    //    if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
+      //      groupList.add(GroupCriteria.SPECIES);
+        //}
 
     }
 
@@ -199,7 +201,8 @@ public class FACatchSummaryHelper {
         List<FACatchSummaryRecord> faCatchSummaryRecords = new ArrayList<>();
         for(FACatchSummaryRecordDTO faCatchSummaryDTO: catchSummaryDTOList){
             FACatchSummaryRecord faCatchSummaryRecord = new FACatchSummaryRecord();
-            faCatchSummaryRecord.setGroups(populateGroupCriteriaWithValue(faCatchSummaryDTO));
+          //  faCatchSummaryRecord.setGroups(populateGroupCriteriaWithValue(faCatchSummaryDTO));
+            faCatchSummaryRecord.setGroups(faCatchSummaryDTO.getGroups());
             faCatchSummaryRecord.setSummary(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getSummaryTable()));
             faCatchSummaryRecords.add(faCatchSummaryRecord);
         }
@@ -211,71 +214,7 @@ public class FACatchSummaryHelper {
 
 
 
-    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FACatchSummaryRecordDTO faCatchSummaryDTO){
-        List<GroupCriteriaWithValue> groups = new ArrayList<>();
 
-        if(faCatchSummaryDTO.getDay() !=0 ){
-            groups.add( new GroupCriteriaWithValue(GroupCriteria.DATE_DAY,""+faCatchSummaryDTO.getDay()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getMonth())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.DATE_MONTH,faCatchSummaryDTO.getMonth()));
-        }
-
-
-        if(faCatchSummaryDTO.getYear() !=0){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.DATE_YEAR,""+faCatchSummaryDTO.getYear()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getEffortZone())){
-           groups.add(new GroupCriteriaWithValue(GroupCriteria.EFFORT_ZONE,faCatchSummaryDTO.getArea().getEffortZone()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getFaoArea())){
-           groups.add(new GroupCriteriaWithValue(GroupCriteria.FAO_AREA,faCatchSummaryDTO.getArea().getFaoArea()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getGfcmGsa())){
-           groups.add(new GroupCriteriaWithValue(GroupCriteria.GFCM_GSA,faCatchSummaryDTO.getArea().getGfcmGsa()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getGfcmStatRectangle())){
-           groups.add(new GroupCriteriaWithValue(GroupCriteria.GFCM_STAT_RECTANGLE,faCatchSummaryDTO.getArea().getGfcmStatRectangle()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getIcesStatRectangle())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.ICES_STAT_RECTANGLE,faCatchSummaryDTO.getArea().getIcesStatRectangle()));
-        }
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getTerritory())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.TERRITORY,faCatchSummaryDTO.getArea().getTerritory()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getRfmo())){
-
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.RFMO,faCatchSummaryDTO.getArea().getRfmo()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getFlagState())){
-           groups.add(new GroupCriteriaWithValue(GroupCriteria.FLAG_STATE,faCatchSummaryDTO.getFlagState()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getGearType())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.GEAR_TYPE,faCatchSummaryDTO.getGearType()));
-        }
-
-
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getPresentation())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.PRESENTATION,faCatchSummaryDTO.getPresentation()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getVesselTransportGuid())){
-             groups.add(new GroupCriteriaWithValue(GroupCriteria.VESSEL,faCatchSummaryDTO.getVesselTransportGuid()));
-        }
-
-        return groups;
-
-    }
 
 
     public SummaryTableDTO populateSummaryTableWithTotal( List<FACatchSummaryRecordDTO> catchSummaryDTOList){
@@ -284,77 +223,8 @@ public class FACatchSummaryHelper {
         for(FACatchSummaryRecordDTO faCatchSummaryDTO:catchSummaryDTOList){
             SummaryTableDTO summaryTable= faCatchSummaryDTO.getSummaryTable();
 
-            Map<FishSizeClassEnum, Map<String, Long>> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
-            if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
-                totalFishSizeSpeciesMap = new HashMap<>();
-                summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);
-            }
-
-            Map<FishSizeClassEnum,Map<String,Long>> fishSizeClassEnumMapMap=summaryTable.getSummaryFishSize();
-            for(Map.Entry<FishSizeClassEnum, Map<String, Long>> entry :fishSizeClassEnumMapMap.entrySet()){
-                FishSizeClassEnum fishSize= entry.getKey(); // key fishSize
-
-
-                Map<String, Long> speciesMap=entry.getValue();
-                Map<String, Long> fishSizeMap=  totalFishSizeSpeciesMap.get(fishSize); // check if already present
-                if(MapUtils.isEmpty(fishSizeMap)){
-                    fishSizeMap=new HashMap<>();
-                }
-
-                for(Map.Entry<String, Long> speciesEntry :speciesMap.entrySet()){
-                    String speciesCode=speciesEntry.getKey();
-                    long speciesCount=speciesEntry.getValue();
-
-                    // check in the totals map if the species exist.If yes, add
-                    if(fishSizeMap.containsKey(speciesCode)){
-                        long speciesTotalWeight=fishSizeMap.get(speciesCode);
-                        speciesTotalWeight = speciesTotalWeight+speciesCount;
-                        fishSizeMap.put(speciesCode,speciesTotalWeight);
-                    }else{
-                        fishSizeMap.put(speciesCode,speciesCount);
-                    }
-                }
-
-                totalFishSizeSpeciesMap.put(fishSize,fishSizeMap);
-            }
-
-            //-----------------------------------------
-
-
-            Map<FaCatchTypeEnum, Map<String, Long>> catchTypeEnumMapMap=summaryTable.getSummaryFaCatchType();
-            if(MapUtils.isNotEmpty(catchTypeEnumMapMap)) {
-                Map<FaCatchTypeEnum, Map<String, Long>> totalCatchTypeMap = summaryTableWithTotals.getSummaryFaCatchType();
-                if (MapUtils.isEmpty(totalCatchTypeMap)) {
-                    totalCatchTypeMap = new HashMap<>();
-                    summaryTableWithTotals.setSummaryFaCatchType(totalCatchTypeMap);
-                }
-
-                for (Map.Entry<FaCatchTypeEnum, Map<String, Long>> entry : catchTypeEnumMapMap.entrySet()) {
-                    FaCatchTypeEnum fishSize = entry.getKey(); // key fishSize
-
-                    Map<String, Long> speciesMap = entry.getValue();
-                    Map<String, Long> fishSizeMap = totalCatchTypeMap.get(fishSize); // check if already present
-                    if (MapUtils.isEmpty(fishSizeMap)) {
-                        fishSizeMap = new HashMap<>();
-                    }
-
-                    for (Map.Entry<String, Long> speciesEntry : speciesMap.entrySet()) {
-                        String speciesCode = speciesEntry.getKey();
-                        long speciesCount = speciesEntry.getValue();
-
-                        // check in the totals map if the species exist.If yes, add
-                        if (fishSizeMap.containsKey(speciesCode)) {
-                            long speciesTotalWeight = fishSizeMap.get(speciesCode);
-                            speciesTotalWeight = speciesTotalWeight + speciesCount;
-                            fishSizeMap.put(speciesCode, speciesTotalWeight);
-                        } else {
-                            fishSizeMap.put(speciesCode, speciesCount);
-                        }
-                    }
-
-                    totalCatchTypeMap.put(fishSize, fishSizeMap);
-                }
-            }
+            extractTotalFishSizeMap(summaryTableWithTotals, summaryTable);
+            extractTotalFaCatchMap(summaryTableWithTotals, summaryTable);
 
         }
 
@@ -363,6 +233,108 @@ public class FACatchSummaryHelper {
        // log.debug("Totals---->");
       //  printJsonstructure(summaryTableWithTotals);
       return summaryTableWithTotals;
+    }
+
+    private void extractTotalFaCatchMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
+    //    Map<FaCatchTypeEnum, Map<String, Long>> catchTypeEnumMapMap=summaryTable.getSummaryFaCatchType();
+        Map<FaCatchTypeEnum, Object> catchTypeEnumMapMap=summaryTable.getSummaryFaCatchType();
+        if(MapUtils.isNotEmpty(catchTypeEnumMapMap)) {
+         //   Map<FaCatchTypeEnum, Map<String, Long>> totalCatchTypeMap = summaryTableWithTotals.getSummaryFaCatchType();
+            Map<FaCatchTypeEnum,Object> totalCatchTypeMap = summaryTableWithTotals.getSummaryFaCatchType();
+            if (MapUtils.isEmpty(totalCatchTypeMap)) {
+                totalCatchTypeMap = new HashMap<>();
+                summaryTableWithTotals.setSummaryFaCatchType(totalCatchTypeMap);
+            }
+
+       //     for (Map.Entry<FaCatchTypeEnum, Map<String, Long>> entry : catchTypeEnumMapMap.entrySet()) {
+            for (Map.Entry<FaCatchTypeEnum,Object> entry : catchTypeEnumMapMap.entrySet()) {
+                FaCatchTypeEnum catchType = entry.getKey(); // key fishSize
+
+              //  Map<String, Long> speciesMap = entry.getValue();
+               Object value = entry.getValue();
+
+                if(value instanceof Map){
+                    Map<String, Long> fishSizeMap = (Map<String, Long>) totalCatchTypeMap.get(catchType); // check if already present
+                    fishSizeMap = extractSpeciesCountMAp((Map<String, Long>) value, fishSizeMap);
+                    totalCatchTypeMap.put(catchType, fishSizeMap);
+
+                }else if(value instanceof Long){
+                    Long totalValue = (Long) totalCatchTypeMap.get(catchType); // check if already present
+                    if(totalValue ==null){
+                        totalValue =(Long) value;
+                    }else {
+                        totalValue = totalValue + (Long) value;
+                    }
+                    totalCatchTypeMap.put(catchType, totalValue);
+                    //  fishSizeMap = extractSpeciesCountMAp((Map<String, Long>) value, fishSizeMap);
+                }
+
+
+
+            }
+        }
+    }
+
+    private void extractTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
+      //  Map<FishSizeClassEnum, Map<String, Long>> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
+        Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
+        if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
+            totalFishSizeSpeciesMap = new HashMap<>();
+            summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);
+        }
+
+      //  Map<FishSizeClassEnum,Map<String,Long>> fishSizeClassEnumMapMap=summaryTable.getSummaryFishSize();
+        Map<FishSizeClassEnum,Object> fishSizeClassEnumMapMap=summaryTable.getSummaryFishSize();
+     //   for(Map.Entry<FishSizeClassEnum, Map<String, Long>> entry :fishSizeClassEnumMapMap.entrySet()){
+        for(Map.Entry<FishSizeClassEnum, Object> entry :fishSizeClassEnumMapMap.entrySet()){
+            FishSizeClassEnum fishSize= entry.getKey(); // key fishSize
+
+
+           // Map<String, Long> speciesMap=entry.getValue();
+            Object value = entry.getValue();
+            if(value instanceof Map){
+                Map<String, Long> fishSizeMap = (Map<String, Long>) totalFishSizeSpeciesMap.get(fishSize); // check if already present
+                fishSizeMap = extractSpeciesCountMAp((Map<String, Long>) value, fishSizeMap);
+                totalFishSizeSpeciesMap.put(fishSize, fishSizeMap);
+
+            }else if(value instanceof Long){
+                Long totalValue = (Long) totalFishSizeSpeciesMap.get(fishSize); // check if already present
+                if(totalValue ==null){
+                    totalValue =(Long) value;
+                }else {
+                    totalValue = totalValue + (Long) value;
+                }
+                totalFishSizeSpeciesMap.put(fishSize, totalValue);
+                //  fishSizeMap = extractSpeciesCountMAp((Map<String, Long>) value, fishSizeMap);
+            }
+
+       //     Map<String, Long> fishSizeMap=  totalFishSizeSpeciesMap.get(fishSize); // check if already present
+         //   fishSizeMap = extractSpeciesCountMAp(speciesMap, fishSizeMap);
+
+            //totalFishSizeSpeciesMap.put(fishSize,fishSizeMap);
+        }
+    }
+
+    @NotNull
+    private Map<String, Long> extractSpeciesCountMAp(Map<String, Long> speciesMap, Map<String, Long> fishSizeMap) {
+        if (MapUtils.isEmpty(fishSizeMap)) {
+            fishSizeMap = new HashMap<>();
+        }
+
+        for (Map.Entry<String, Long> speciesEntry : speciesMap.entrySet()) {
+            String speciesCode = speciesEntry.getKey();
+            long speciesCount = speciesEntry.getValue();
+
+            // check in the totals map if the species exist.If yes, add
+            if (fishSizeMap.containsKey(speciesCode)) {
+                long speciesTotalWeight = fishSizeMap.get(speciesCode);
+                speciesTotalWeight = speciesTotalWeight + speciesCount;
+                fishSizeMap.put(speciesCode, speciesTotalWeight);
+            } else {
+                fishSizeMap.put(speciesCode, speciesCount);
+            }
+        }
+        return fishSizeMap;
     }
 
     public void printJsonstructure(Object obj){
@@ -387,5 +359,73 @@ public class FACatchSummaryHelper {
         }
         return speciesCountMap;
     }
+
+
+   /* public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FACatchSummaryRecordDTO faCatchSummaryDTO){
+        List<GroupCriteriaWithValue> groups = new ArrayList<>();
+
+        if(faCatchSummaryDTO.getDay() !=0 ){
+            groups.add( new GroupCriteriaWithValue(GroupCriteria.DATE_DAY,""+faCatchSummaryDTO.getDay()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getMonth())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.DATE_MONTH,faCatchSummaryDTO.getMonth()));
+        }
+
+
+        if(faCatchSummaryDTO.getYear() !=0){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.DATE_YEAR,""+faCatchSummaryDTO.getYear()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getEffortZone())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.EFFORT_ZONE,faCatchSummaryDTO.getArea().getEffortZone()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getFaoArea())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.FAO_AREA,faCatchSummaryDTO.getArea().getFaoArea()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getGfcmGsa())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.GFCM_GSA,faCatchSummaryDTO.getArea().getGfcmGsa()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getGfcmStatRectangle())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.GFCM_STAT_RECTANGLE,faCatchSummaryDTO.getArea().getGfcmStatRectangle()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getIcesStatRectangle())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.ICES_STAT_RECTANGLE,faCatchSummaryDTO.getArea().getIcesStatRectangle()));
+        }
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getTerritory())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.TERRITORY,faCatchSummaryDTO.getArea().getTerritory()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getRfmo())){
+
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.RFMO,faCatchSummaryDTO.getArea().getRfmo()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getFlagState())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.FLAG_STATE,faCatchSummaryDTO.getFlagState()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getGearType())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.GEAR_TYPE,faCatchSummaryDTO.getGearType()));
+        }
+
+
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getPresentation())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.PRESENTATION,faCatchSummaryDTO.getPresentation()));
+        }
+
+        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getVesselTransportGuid())){
+            groups.add(new GroupCriteriaWithValue(GroupCriteria.VESSEL,faCatchSummaryDTO.getVesselTransportGuid()));
+        }
+
+        return groups;
+
+    }*/
+
 
 }

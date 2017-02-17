@@ -64,14 +64,15 @@ public class TestResource extends UnionVMSResource {
         List<GroupCriteria> groupByFields = new ArrayList<>();
         groupByFields.add(GroupCriteria.DATE_MONTH);
         //  groupByFields.add(GroupCriteria.SIZE_CLASS);
-        //groupByFields.add(GroupCriteria.SPECIES);
+        groupByFields.add(GroupCriteria.SPECIES);
        // groupByFields.add(GroupCriteria.AREA);
         query.setGroupByFields(groupByFields);
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        reportService.getCatchSummaryReportForWeb(query);
+      //  reportService.getCatchSummaryReportForWeb(query);
+        reportService.getFACatchSummaryReportResponse(query);
         return createSuccessResponse();
     }
 }

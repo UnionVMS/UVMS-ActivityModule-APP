@@ -107,6 +107,17 @@ public class FaCatchEntity implements Serializable {
     @Column(name = "gfcm_stat_rectangle")
     private String gfcmStatRectangle;
 
+	@Column(name = "gear_type_code")
+	private String gearTypeCode;
+
+	public String getGearTypeCode() {
+		return gearTypeCode;
+	}
+
+	public void setGearTypeCode(String gearTypeCode) {
+		this.gearTypeCode = gearTypeCode;
+	}
+
 	public String getFishClassCode() {
 		return fishClassCode;
 	}

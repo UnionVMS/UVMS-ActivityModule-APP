@@ -23,7 +23,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
-
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
@@ -528,9 +527,19 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FaCatchEntity> faCatchEntities = new HashSet<>();
         for (FACatch faCatch : faCatches) {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, fishingActivityEntity, new FaCatchEntity());
+            faCatchEntity.setGearTypeCode(extractFishingGearTypeCode(faCatchEntity.getFishingGears()));
             faCatchEntities.add(mapFluxLocationSchemeIds(faCatch,faCatchEntity));
         }
         return faCatchEntities;
+    }
+
+    private String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears){
+        String gearTypeCode=null;
+        if(CollectionUtils.isNotEmpty(fishingGears)){
+            FishingGearEntity fishingGearEntity= fishingGears.iterator().next();
+            return  fishingGearEntity.getTypeCode();
+        }
+        return gearTypeCode;
     }
 
     private FaCatchEntity mapFluxLocationSchemeIds(FACatch faCatch, FaCatchEntity faCatchEntity) {
