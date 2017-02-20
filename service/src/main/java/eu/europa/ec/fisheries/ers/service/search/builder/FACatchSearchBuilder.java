@@ -28,6 +28,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         StringBuilder sql = new StringBuilder();
+        FilterMap.populateFilterMAppingsWithChangeForFACatchReport();
         Map<GroupCriteria, GroupCriteriaMapper> groupMAppings = FilterMap.getGroupByMapping();
         sql.append("SELECT  "); // Common Join for all filters
         List<GroupCriteria> groupByFieldList = query.getGroupByFields();
@@ -64,7 +65,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
 
 
-        if(groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE)!=-1){
+      if(groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE)!=-1){
             enrichWherePartOFQueryForDISOrDIM(sql);
         }else{
             conditionsForFACatchSummaryReport(sql);
