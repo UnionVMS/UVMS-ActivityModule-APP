@@ -56,7 +56,11 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomEntity customEntity){
         List<GroupCriteriaWithValue> groups = new ArrayList<>();
 
-        if(customEntity.getDay() !=0 ){
+        if(customEntity ==null){
+            return groups;
+        }
+
+        if(StringUtils.isNotEmpty(customEntity.getDay() ) ){
             groups.add( new GroupCriteriaWithValue(GroupCriteria.DATE_DAY,""+customEntity.getDay()));
         }
 
@@ -65,7 +69,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
         }
 
 
-        if(customEntity.getYear() !=0){
+        if(StringUtils.isNotEmpty(customEntity.getYear())){
             groups.add(new GroupCriteriaWithValue(GroupCriteria.DATE_YEAR,""+customEntity.getYear()));
         }
 

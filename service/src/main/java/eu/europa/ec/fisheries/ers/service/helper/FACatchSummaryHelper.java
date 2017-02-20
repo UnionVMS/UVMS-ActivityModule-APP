@@ -63,7 +63,8 @@ public class FACatchSummaryHelper {
                 value= DateUtils.truncate(value,Calendar.DATE);
             }*/
             if (GroupCriteria.DATE_DAY.equals(criteria)) {
-                parameterType = Integer.class;
+               // parameterType = Integer.class;
+                parameterType = String.class;
                 value= extractValueFromDate((Date) value,Calendar.DAY_OF_MONTH);
             }
 
@@ -73,7 +74,8 @@ public class FACatchSummaryHelper {
             }
 
             if (GroupCriteria.DATE_YEAR.equals(criteria)) {
-                parameterType = Integer.class;
+            //    parameterType = Integer.class;
+                parameterType = String.class;
                 value= extractValueFromDate((Date) value,Calendar.YEAR);
             }
 
@@ -96,13 +98,13 @@ public class FACatchSummaryHelper {
 
         if(Calendar.DAY_OF_MONTH == field){
             SimpleDateFormat day = new SimpleDateFormat("dd");
-            return Integer.parseInt(day.format(date));
+            return day.format(date);
         }else if(Calendar.MONTH == field){
             SimpleDateFormat day = new SimpleDateFormat("MMM");
             return day.format(date);
         }else if(Calendar.YEAR == field){
             SimpleDateFormat day = new SimpleDateFormat("YYYY");
-            return Integer.parseInt(day.format(date));
+            return day.format(date);
         }
         SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
        return sdf.format(date);
