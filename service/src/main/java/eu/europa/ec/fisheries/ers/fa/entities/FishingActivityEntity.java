@@ -129,7 +129,7 @@ public class FishingActivityEntity implements Serializable {
 //	@Column(name = "flap_document_scheme_id")
 //	private String flapDocumentSchemeId;
 
-	@Column(name = "vessel_Transport_guid")
+	@Column(name = "vessel_transport_guid")
 	private String vesselTransportGuid;
 
 	@Column(name = "flag_state")

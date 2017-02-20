@@ -528,9 +528,30 @@ public abstract class FishingActivityMapper extends BaseMapper {
         for (FACatch faCatch : faCatches) {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, fishingActivityEntity, new FaCatchEntity());
             faCatchEntity.setGearTypeCode(extractFishingGearTypeCode(faCatchEntity.getFishingGears()));
+            faCatchEntity.setPresentation(extractPresentation(faCatchEntity.getAapProcesses()));
             faCatchEntities.add(mapFluxLocationSchemeIds(faCatch,faCatchEntity));
         }
         return faCatchEntities;
+    }
+
+    private String extractPresentation(Set<AapProcessEntity> aapProcessEntities){
+        if(CollectionUtils.isEmpty(aapProcessEntities)){
+            return null;
+        }
+
+        for(AapProcessEntity aapProcessEntity: aapProcessEntities){
+                Set<AapProcessCodeEntity>  codeEntities=  aapProcessEntity.getAapProcessCode();
+                if(CollectionUtils.isNotEmpty(codeEntities)){
+                    for(AapProcessCodeEntity aapProcessCodeEntity : codeEntities){
+                        if("FISH_PRESENTATION".equals(aapProcessCodeEntity.getTypeCodeListId())){
+                                  return aapProcessCodeEntity.getTypeCode();
+                        }
+                    }
+                }
+        }
+
+
+        return null;
     }
 
     private String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears){

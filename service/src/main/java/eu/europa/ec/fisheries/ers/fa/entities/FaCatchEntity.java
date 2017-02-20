@@ -107,6 +107,9 @@ public class FaCatchEntity implements Serializable {
     @Column(name = "gfcm_stat_rectangle")
     private String gfcmStatRectangle;
 
+	@Column(name = "presentation")
+	private String presentation;
+
 	@Column(name = "gear_type_code")
 	private String gearTypeCode;
 
@@ -351,7 +354,15 @@ public class FaCatchEntity implements Serializable {
         this.gfcmStatRectangle = gfcmStatRectangle;
     }
 
-    @Override
+	public String getPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
+	}
+
+	@Override
 	public String toString() {
 		return "FaCatchEntity{" +
 				"id=" + id +
