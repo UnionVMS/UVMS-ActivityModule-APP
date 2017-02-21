@@ -25,6 +25,8 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
            "  JOIN a.faReportDocument fa  " ;
 
 
+
+
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         StringBuilder sql = new StringBuilder();

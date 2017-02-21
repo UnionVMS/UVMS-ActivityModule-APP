@@ -2,35 +2,34 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 @Mapper
 public abstract class FishingActivityRequestMapper {
 
     public static FishingActivityRequestMapper INSTANCE = Mappers.getMapper(FishingActivityRequestMapper.class);
 
+
+
     /**
-     *
+     * Backend API expects input as FishingActivityQuery. This method maps FACatchSummaryReportRequest to FishingActivityQuery object
      * @param baseRequest
-     * @return
+     * @return FishingActivityQuery
      * @throws ServiceException
      */
     public static FishingActivityQuery buildFishingActivityQueryFromRequest(FACatchSummaryReportRequest baseRequest) throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest.getSingleValueFilters()));
         query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest.getListValueFilters()));
-        query.setGroupByFields(baseRequest.getGroupCriterias());
+         query.setGroupByFields(baseRequest.getGroupCriterias());
         return query;
     }
 
@@ -42,6 +41,13 @@ public abstract class FishingActivityRequestMapper {
         return query;
     }
 
+    /**
+     * Some search Filters expect only single value. Others support multiple values for search.
+     * This method sorts Filter list and separates filters with single values and return the map with its value.
+     * @param filterTypes
+     * @return Map<SearchFilter,String> Map of SearchFilter and its value
+     * @throws ServiceException
+     */
     private static Map<SearchFilter,String> extractFiltersAsMap(List<SingleValueTypeFilter> filterTypes) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,String> searchMap          = new EnumMap<>(SearchFilter.class);
@@ -57,6 +63,12 @@ public abstract class FishingActivityRequestMapper {
         return searchMap;
     }
 
+    /**
+     * This method sorts incoming list and separates Filters with multiple values and put it into Map.
+     * @param filterTypes List of searchFilters
+     * @return Map<SearchFilter,List<String>> Map of SearchFilter and list of values for the filter
+     * @throws ServiceException
+     */
     private static Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(List<ListValueTypeFilter> filterTypes) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter,List<String>> searchMap = new EnumMap<>(SearchFilter.class);

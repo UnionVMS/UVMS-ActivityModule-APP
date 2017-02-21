@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
-import eu.europa.ec.fisheries.ers.service.helper.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
@@ -46,9 +46,18 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
 
     }
 
+
+    /**
+     *  This method groups FACatch Data, performs business logic to create summary report
+     *  and creates FacatchSummaryDTO object as expected by web interface.
+     * @param query
+     * @return
+     * @throws ServiceException
+     */
+    @Override
     public FACatchSummaryDTO getCatchSummaryReportForWeb(FishingActivityQuery query) throws ServiceException{
-        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query);
+        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
         List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFaCatchSummaryTable(groupedData);
         SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
         FACatchSummaryDTO faCatchSummaryDTO = new FACatchSummaryDTO();

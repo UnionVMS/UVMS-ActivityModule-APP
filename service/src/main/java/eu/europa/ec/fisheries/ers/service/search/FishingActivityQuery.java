@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * This class is used to define Filters to be applied on Fishing Activities
+ * It also contains list of grouping Criterias to be applied
  * Created by sanera on 24/06/2016.
  */
 public class FishingActivityQuery {

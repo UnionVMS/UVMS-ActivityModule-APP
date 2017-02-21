@@ -47,6 +47,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
+
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
 

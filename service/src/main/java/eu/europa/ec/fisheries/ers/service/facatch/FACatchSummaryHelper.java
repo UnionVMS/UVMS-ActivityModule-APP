@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.ers.service.helper;
+package eu.europa.ec.fisheries.ers.service.facatch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
@@ -40,11 +39,9 @@ public class FACatchSummaryHelper {
         return new FACatchSummaryHelper();
     }
 
-    public  FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, FishingActivityQuery query) throws ServiceException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        // FaCatchSummaryCustomEntity faCatchSummaryCustomEntity;
-        Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
-        List<GroupCriteria> groupList = query.getGroupByFields();
-        if (ArrayUtils.isEmpty(catchSummaryArr))
+    public  FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList) throws ServiceException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+
+       if (ArrayUtils.isEmpty(catchSummaryArr))
             return new FaCatchSummaryCustomEntity();
         int objectArrSize = (catchSummaryArr.length - 1);
         if (objectArrSize != groupList.size())  // do not include count field from object array
@@ -55,55 +52,36 @@ public class FACatchSummaryHelper {
         Object faCatchSummaryCustomEntityObj = cls.newInstance();
         Class parameterType = String.class;
 
+        Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
         for (int i = 0; i < objectArrSize; i++) {
             GroupCriteria criteria = groupList.get(i);
             Object value=catchSummaryArr[i];
 
-         /*   if (GroupCriteria.DATE.equals(criteria)) {
-                parameterType = Date.class;
-                value= DateUtils.truncate(value,Calendar.DATE);
-            }*/
-            if (GroupCriteria.DATE_DAY.equals(criteria)) {
-               // parameterType = Integer.class;
-                parameterType = String.class;
-                value= extractValueFromDate((Date) value,Calendar.DAY_OF_MONTH);
+            if(GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
+                    GroupCriteria.DATE_YEAR.equals(criteria) ){
+                value= extractValueFromDate((Date) value,criteria);
             }
-
-            if (GroupCriteria.DATE_MONTH.equals(criteria)) {
-                parameterType = String.class;
-                value= extractValueFromDate((Date) value,Calendar.MONTH);
-            }
-
-            if (GroupCriteria.DATE_YEAR.equals(criteria)) {
-            //    parameterType = Integer.class;
-                parameterType = String.class;
-                value= extractValueFromDate((Date) value,Calendar.YEAR);
-            }
-
 
             GroupCriteriaMapper mapper = groupMappings.get(criteria);
             Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
             method.invoke(faCatchSummaryCustomEntityObj,value );
-            parameterType = String.class;
         }
 
         Method method = cls.getDeclaredMethod("setCount", Long.TYPE);
         method.invoke(faCatchSummaryCustomEntityObj, catchSummaryArr[objectArrSize]);
 
         return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
-
-
     }
 
-    private Object extractValueFromDate(Date date,int field){
+    private Object extractValueFromDate(Date date,GroupCriteria criteria){
 
-        if(Calendar.DAY_OF_MONTH == field){
+        if (GroupCriteria.DATE_DAY.equals(criteria)){
             SimpleDateFormat day = new SimpleDateFormat("dd");
             return day.format(date);
-        }else if(Calendar.MONTH == field){
+        }else  if (GroupCriteria.DATE_MONTH.equals(criteria)){
             SimpleDateFormat day = new SimpleDateFormat("MMM");
             return day.format(date);
-        }else if(Calendar.YEAR == field){
+        }else  if (GroupCriteria.DATE_YEAR.equals(criteria)){
             SimpleDateFormat day = new SimpleDateFormat("YYYY");
             return day.format(date);
         }
@@ -112,27 +90,9 @@ public class FACatchSummaryHelper {
     }
 
 
-/*    public List<GroupCriteria> mapAreaGroupCriteriaToAllSchemeIdTypes(List<GroupCriteria> groupList){
-
-        if(!groupList.contains(GroupCriteria.AREA))
-            return groupList;
-
-        groupList.remove(GroupCriteria.AREA);
-
-        groupList.add(GroupCriteria.TERRITORY);
-        groupList.add(GroupCriteria.FAO_AREA);
-        groupList.add(GroupCriteria.ICES_STAT_RECTANGLE);
-        groupList.add(GroupCriteria.EFFORT_ZONE);
-        groupList.add(GroupCriteria.RFMO);
-        groupList.add(GroupCriteria.GFCM_GSA);
-        groupList.add(GroupCriteria.GFCM_STAT_RECTANGLE);
-
-
-
-        return groupList;
-    }*/
 
     /**
+     *  Add FishClass to the grouping factor and remove FACatch if already present.
      *  Method adds default grouping criterias which are required to build summary table.
      *
      * @param groupList
@@ -142,10 +102,6 @@ public class FACatchSummaryHelper {
         if(groupList.indexOf(GroupCriteria.SIZE_CLASS) == -1){
             groupList.add(GroupCriteria.SIZE_CLASS);
         }
-
-   //     if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
-     //       groupList.add(GroupCriteria.SPECIES);
-       // }
 
         if(groupList.indexOf(GroupCriteria.CATCH_TYPE) != -1){
             groupList.remove(GroupCriteria.CATCH_TYPE);
@@ -162,10 +118,6 @@ public class FACatchSummaryHelper {
         if(groupList.indexOf(GroupCriteria.CATCH_TYPE) == -1){
             groupList.add(GroupCriteria.CATCH_TYPE);
         }
-
-    //    if(groupList.indexOf(GroupCriteria.SPECIES) == -1){
-      //      groupList.add(GroupCriteria.SPECIES);
-        //}
 
     }
 
@@ -366,73 +318,5 @@ public class FACatchSummaryHelper {
         }
         return speciesCountMap;
     }
-
-
-   /* public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FACatchSummaryRecordDTO faCatchSummaryDTO){
-        List<GroupCriteriaWithValue> groups = new ArrayList<>();
-
-        if(faCatchSummaryDTO.getDay() !=0 ){
-            groups.add( new GroupCriteriaWithValue(GroupCriteria.DATE_DAY,""+faCatchSummaryDTO.getDay()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getMonth())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.DATE_MONTH,faCatchSummaryDTO.getMonth()));
-        }
-
-
-        if(faCatchSummaryDTO.getYear() !=0){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.DATE_YEAR,""+faCatchSummaryDTO.getYear()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getEffortZone())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.EFFORT_ZONE,faCatchSummaryDTO.getArea().getEffortZone()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getFaoArea())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.FAO_AREA,faCatchSummaryDTO.getArea().getFaoArea()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getGfcmGsa())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.GFCM_GSA,faCatchSummaryDTO.getArea().getGfcmGsa()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getGfcmStatRectangle())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.GFCM_STAT_RECTANGLE,faCatchSummaryDTO.getArea().getGfcmStatRectangle()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getIcesStatRectangle())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.ICES_STAT_RECTANGLE,faCatchSummaryDTO.getArea().getIcesStatRectangle()));
-        }
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getTerritory())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.TERRITORY,faCatchSummaryDTO.getArea().getTerritory()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getArea().getRfmo())){
-
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.RFMO,faCatchSummaryDTO.getArea().getRfmo()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getFlagState())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.FLAG_STATE,faCatchSummaryDTO.getFlagState()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getGearType())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.GEAR_TYPE,faCatchSummaryDTO.getGearType()));
-        }
-
-
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getPresentation())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.PRESENTATION,faCatchSummaryDTO.getPresentation()));
-        }
-
-        if(StringUtils.isNotEmpty(faCatchSummaryDTO.getVesselTransportGuid())){
-            groups.add(new GroupCriteriaWithValue(GroupCriteria.VESSEL,faCatchSummaryDTO.getVesselTransportGuid()));
-        }
-
-        return groups;
-
-    }*/
-
 
 }

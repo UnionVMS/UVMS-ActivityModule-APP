@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
+import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
      */
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
+        FilterMap.populateFilterMappings();
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
 
