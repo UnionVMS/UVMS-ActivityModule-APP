@@ -121,11 +121,18 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
     }
 
     public  void appendJoinFetchString(StringBuilder sql, String joinString) {
-        sql.append("LEFT JOIN ").append(joinString).append(StringUtils.SPACE);
+        sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
     protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
-        sql.append("LEFT ").append(" JOIN ").append(delimitedPeriodTableAlias);
+        sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
     }
+
+    protected  void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
+        if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
+            sql.append(JOIN).append(valueToFindAndApply);
+        }
+    }
+
 
 }

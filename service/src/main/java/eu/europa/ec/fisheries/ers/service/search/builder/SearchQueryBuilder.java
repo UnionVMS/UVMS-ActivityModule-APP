@@ -35,9 +35,9 @@ import java.util.*;
  */
 public abstract class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
-    private static final String JOIN_FETCH = " JOIN FETCH ";
-    private static final String LEFT = " LEFT ";
-    private static final String JOIN =  " JOIN ";
+    protected static final String JOIN_FETCH = " JOIN FETCH ";
+    protected static final String LEFT = " LEFT ";
+    protected static final String JOIN =  " JOIN ";
     private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
 
@@ -132,7 +132,7 @@ public abstract class SearchQueryBuilder {
      * @param sql
      * @param valueToFindAndApply
      */
-    private  void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
+    protected  void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN_FETCH).append(valueToFindAndApply);
         }

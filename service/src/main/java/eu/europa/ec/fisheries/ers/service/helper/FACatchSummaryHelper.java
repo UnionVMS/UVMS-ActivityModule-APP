@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -191,6 +192,10 @@ public class FACatchSummaryHelper {
         for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
             FaCatchSummaryCustomEntity customEntity= entry.getKey();
             FACatchSummaryRecordDTO faCatchSummaryDTO= FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryDTO(customEntity,entry.getValue());
+            if(CollectionUtils.isEmpty(faCatchSummaryDTO.getGroups())){
+                log.error("No data for the grouping factors found :"+faCatchSummaryDTO);
+                continue;
+            }
             catchSummaryDTOList.add(faCatchSummaryDTO);
         }
 
@@ -287,6 +292,9 @@ public class FACatchSummaryHelper {
 
       //  Map<FishSizeClassEnum,Map<String,Long>> fishSizeClassEnumMapMap=summaryTable.getSummaryFishSize();
         Map<FishSizeClassEnum,Object> fishSizeClassEnumMapMap=summaryTable.getSummaryFishSize();
+        if(MapUtils.isEmpty(fishSizeClassEnumMapMap)){
+           return;
+        }
      //   for(Map.Entry<FishSizeClassEnum, Map<String, Long>> entry :fishSizeClassEnumMapMap.entrySet()){
         for(Map.Entry<FishSizeClassEnum, Object> entry :fishSizeClassEnumMapMap.entrySet()){
             FishSizeClassEnum fishSize= entry.getKey(); // key fishSize
@@ -310,10 +318,6 @@ public class FACatchSummaryHelper {
                 //  fishSizeMap = extractSpeciesCountMAp((Map<String, Long>) value, fishSizeMap);
             }
 
-       //     Map<String, Long> fishSizeMap=  totalFishSizeSpeciesMap.get(fishSize); // check if already present
-         //   fishSizeMap = extractSpeciesCountMAp(speciesMap, fishSizeMap);
-
-            //totalFishSizeSpeciesMap.put(fishSize,fishSizeMap);
         }
     }
 

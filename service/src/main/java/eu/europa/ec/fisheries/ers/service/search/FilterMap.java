@@ -153,7 +153,8 @@ public class FilterMap {
     public static void populateFilterMAppingsWithChangeForFACatchReport(){
 
      //   populateFilterMappings();
-        filterMappings.put(SearchFilter.SPECIES, new FilterDetails( AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN aprocess.aapProducts aprod ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
+        filterMappings.put(SearchFilter.SPECIES, new FilterDetails(" ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") )"));
+        filterMappings.put(SearchFilter.GEAR, new FilterDetails("faCatch.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN aprocess.aapProducts aprod ", " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
         filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN vt.contactParty cparty JOIN cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
@@ -234,13 +235,13 @@ public class FilterMap {
         groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.occurence" , "setDay")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.occurence" , "setMonth")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.occurence" , "setYear")); // set method belongs to class FaCatchSummaryCustomEntity
-        groupByMapping.put(GroupCriteria.VESSEL, new GroupCriteriaMapper(" ", "a.vesselTransportGuid" , "setFishClass"));
+        groupByMapping.put(GroupCriteria.VESSEL, new GroupCriteriaMapper(" ", "a.vesselTransportGuid" , "setVesselTransportGuid"));
         groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(" ", "faCatch.fishClassCode" , "setFishClass"));
        // groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(VESSEL_TRANSPORT_TABLE_ALIAS, "vt.country", "setFlagState" ));
         groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(" " , "a.flagState", "setFlagState" ));
       //  groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode", "setGearType" ));
         groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(" ", "faCatch.gearTypeCode", "setGearType" ));
-        groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(AAP_PROCESS_CODE_TABLE_ALIAS, "aapProcessCode.typeCode" , "setPresentation"));
+        groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(" ", "faCatch.presentation" , "setPresentation"));
         groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(" ", "faCatch.speciesCode", "setSpecies" ));
         groupByMapping.put(GroupCriteria.CATCH_TYPE, new GroupCriteriaMapper(" ", "faCatch.typeCode", "setTypeCode" ));
       //  groupByMapping.put(GroupCriteria.AREA, new GroupCriteriaMapper(" ", FA_CATCH_TERITTORY+", "+FA_CATCH_FAO_AREA+", "+FA_CATCH_ICES_STAT_RECTANGLE+", "+FA_CATCH_EFFORT_ZONE+", "+FA_CATCH_RMFO+", "+FA_CATCH_GFCM_GSA+", "+ FA_CATCH_GFCM_STAT_RECTANGLE, ""));
