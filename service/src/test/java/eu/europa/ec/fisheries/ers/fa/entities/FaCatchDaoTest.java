@@ -51,21 +51,7 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         assertNotNull(entity);
     }
 
-    @Test
-    public void testGetCatchSummary() throws Exception {
 
-        dbSetupTracker.skipNextLaunch();
-       List<Object[]> list = dao.getCatchSummary();
-        for(Object[] objArr :list){
-            System.out.println(Arrays.toString(objArr));
-        }
-     /*   List<FaCatchSummaryCustomEntity> list = dao.getCatchSummary();
-        for(FaCatchSummaryCustomEntity objArr :list){
-            System.out.println(objArr);
-        }*/
-        assertNotNull(list);
-
-    }
 
     @Test
     public void testGetFACatchSummaryReportString() throws Exception {
@@ -77,9 +63,7 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
 
         List<GroupCriteria> groupByFields = new ArrayList<>();
          groupByFields.add(GroupCriteria.DATE_MONTH);
-      //  groupByFields.add(GroupCriteria.SIZE_CLASS);
          groupByFields.add(GroupCriteria.SPECIES);
-    //    groupByFields.add(GroupCriteria.AREA);
         query.setGroupByFields(groupByFields);
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
@@ -88,18 +72,8 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
        System.out.println( faCatchSummaryHelper.printJsonstructure(query));
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query);
-       for(Map.Entry<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> entry:faCatchSummaryCustomEntityListMap.entrySet()){
-           FaCatchSummaryCustomEntity  key= (FaCatchSummaryCustomEntity) entry.getKey();
-           System.out.println("key:"+key);
-           System.out.println("Values ----------->");
-           for(FaCatchSummaryCustomEntity entity:entry.getValue()){
-               System.out.println(entity);
-           }
-           System.out.println("**************************");
-       }
-
         assertNotNull(faCatchSummaryCustomEntityListMap);
-
+      
     }
 
 
