@@ -48,17 +48,13 @@ public class FilterMap {
     public static final String QUANTITY_MIN                 = "minWeight";
     public static final String QUANTITY_MAX                 = "maxWeight";
     public static final String CONTACT_PERSON_NAME          = "agent";
-
-   // public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS  = "fa.vesselTransportMeans vt";
-    public static final String SIZE_DISTRIBUTION_CODE_TABLE_ALIAS         = " faCatch.sizeDistribution sizeDistribution JOIN sizeDistribution.sizeDistributionClassCode  sdClassCode ";
     public static final String FA_CATCH_TABLE_ALIAS         = " a.faCatchs faCatch ";
     public static String DELIMITED_PERIOD_TABLE_ALIAS       = " a.delimitedPeriods dp ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS  = " fa.fluxReportDocument flux ";
     public static final String FLUX_PARTY_TABLE_ALIAS        = " flux.fluxParty fp  ";
     public static final String GEAR_TYPE_TABLE_ALIAS        = " a.fishingGears fg ";
     public static final String AAP_PROCESS_TABLE_ALIAS        = " faCatch.aapProcesses aprocess ";
-    public static final String AAP_PROCESS_CODE_TABLE_ALIAS        = " aprocess.aapProcessCode aapProcessCode ";
     public static final String MASTER_MAPPING                = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE                   = "dataSource";
     public static final String FAREPORT_ID                  = "faReportId";
@@ -70,11 +66,6 @@ public class FilterMap {
     public static final String FA_CATCH_RMFO  = "faCatch.rfmo";
     public static final String FA_CATCH_GFCM_GSA = "faCatch.gfcmGsa";
     public static final String FA_CATCH_GFCM_STAT_RECTANGLE = "faCatch.gfcmStatRectangle";
-
-
-
-
-
 
     public static final String FLUX_REP_MESSAGE_FROM_FA_REP = "fa.fluxFaReportMessage fluxMsg ";
     public static final String FLUX_REP_DOC_FROM_MESSAGE    = "fluxMsg.fluxReportDocument fluxRepDoc ";
@@ -152,7 +143,6 @@ public class FilterMap {
 
     public static void populateFilterMAppingsWithChangeForFACatchReport(){
 
-     //   populateFilterMappings();
         filterMappings.put(SearchFilter.SPECIES, new FilterDetails(" ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") )"));
         filterMappings.put(SearchFilter.GEAR, new FilterDetails("faCatch.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN aprocess.aapProducts aprod ", " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
@@ -231,20 +221,17 @@ public class FilterMap {
 
 
     public static void populateGroupByMapping() {
-      //  groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.occurence" , "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
+
         groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.occurence" , "setDay")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.occurence" , "setMonth")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.occurence" , "setYear")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.VESSEL, new GroupCriteriaMapper(" ", "a.vesselTransportGuid" , "setVesselTransportGuid"));
         groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(" ", "faCatch.fishClassCode" , "setFishClass"));
-       // groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(VESSEL_TRANSPORT_TABLE_ALIAS, "vt.country", "setFlagState" ));
         groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(" " , "a.flagState", "setFlagState" ));
-      //  groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode", "setGearType" ));
         groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(" ", "faCatch.gearTypeCode", "setGearType" ));
         groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(" ", "faCatch.presentation" , "setPresentation"));
         groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(" ", "faCatch.speciesCode", "setSpecies" ));
         groupByMapping.put(GroupCriteria.CATCH_TYPE, new GroupCriteriaMapper(" ", "faCatch.typeCode", "setTypeCode" ));
-      //  groupByMapping.put(GroupCriteria.AREA, new GroupCriteriaMapper(" ", FA_CATCH_TERITTORY+", "+FA_CATCH_FAO_AREA+", "+FA_CATCH_ICES_STAT_RECTANGLE+", "+FA_CATCH_EFFORT_ZONE+", "+FA_CATCH_RMFO+", "+FA_CATCH_GFCM_GSA+", "+ FA_CATCH_GFCM_STAT_RECTANGLE, ""));
         groupByMapping.put(GroupCriteria.TERRITORY, new GroupCriteriaMapper(" ", FA_CATCH_TERITTORY , "setTerritory"));
         groupByMapping.put(GroupCriteria.FAO_AREA, new GroupCriteriaMapper(" ", FA_CATCH_FAO_AREA , "setFaoArea"));
         groupByMapping.put(GroupCriteria.ICES_STAT_RECTANGLE, new GroupCriteriaMapper(" ", FA_CATCH_ICES_STAT_RECTANGLE , "setIcesStatRectangle"));
@@ -255,7 +242,7 @@ public class FilterMap {
 
     }
 
-        public static Map<SearchFilter, FilterDetails> getFilterMappings() {
+     public static Map<SearchFilter, FilterDetails> getFilterMappings() {
         return filterMappings;
     }
     public static Map<SearchFilter, String> getFilterSortMappings() {

@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +73,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
         faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
 
-        customEntities.addAll(getRecordsForFishClassOrFACatchType(query));
+        customEntities.addAll(getRecordsForFishClassOrFACatchType(query)); // Query database again to get records for FACatchType and combine it with previous result
 
         return faCatchSummaryHelper.groupByFACatchCustomEntities(customEntities);
 
@@ -106,7 +105,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
                  FaCatchSummaryCustomEntity entity= faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr,groupCriterias);
                  customEntities.add(entity);
              } catch (Exception e) {
-                 log.error("Could not map sql selection to FaCatchSummaryCustomEntity object", Arrays.toString(objArr));
+                 log.error("Could not map sql selection to FaCatchSummaryCustomEntity object", e);
              }
          }
 

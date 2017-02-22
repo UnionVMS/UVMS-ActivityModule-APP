@@ -28,7 +28,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     private String fishClass;
     private String species;
     private String typeCode;
-    private long count;
+    private double count;
 
 
 
@@ -40,7 +40,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
 
 
     public FaCatchSummaryCustomEntity(String flagState, String gearType, String presentation, String territory, String faoArea, String icesStatRectangle, String effortZone, String rfmo,
-                                      String gfcmGsa, String gfcmStatRectangle, String fishClass, String species,String typeCode, long count) {
+                                      String gfcmGsa, String gfcmStatRectangle, String fishClass, String species,String typeCode, double count) {
 
         this.flagState = flagState;
         this.gearType = gearType;
@@ -194,11 +194,11 @@ public class FaCatchSummaryCustomEntity implements Serializable {
 
 
 
-    public long getCount() {
+    public double getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(double count) {
         this.count = count;
     }
 
