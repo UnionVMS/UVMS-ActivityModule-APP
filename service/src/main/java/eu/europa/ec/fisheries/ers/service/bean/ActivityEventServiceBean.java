@@ -14,10 +14,11 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.EventService;
+import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.search.FilterMap;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -39,8 +40,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.*;
-
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @LocalBean
 @Stateless
@@ -52,6 +55,9 @@ public class ActivityEventServiceBean implements EventService {
 
     @EJB
     private FishingTripService fishingTripService;
+
+    @EJB
+    private FaCatchReportService faCatchReportService;
 
     @EJB
     private ActivityMessageProducer producer;
@@ -86,7 +92,7 @@ public class ActivityEventServiceBean implements EventService {
             FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
 
             LOG.debug("FishingTriId Request Unmarshalled");
-            FishingTripResponse baseResponse = fishingTripService.getFishingTripIdsForFilter(buildFishingActivityQueryFromRequest(baseRequest));
+            FishingTripResponse baseResponse = fishingTripService.getFishingTripIdsForFilter(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
 
             String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
             LOG.debug("FishingTriId response marshalled");
@@ -99,41 +105,22 @@ public class ActivityEventServiceBean implements EventService {
         }
     }
 
-    private FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
-        FishingActivityQuery query = new FishingActivityQuery();
-        query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest));
-        query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest));
-        return query;
-    }
 
-    private Map<SearchFilter,String>  extractFiltersAsMap(FishingTripRequest baseRequest) throws ServiceException {
-        Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
-        Map<SearchFilter,String> searchMap          = new EnumMap<>(SearchFilter.class);
-        List<SingleValueTypeFilter> filterTypes     = baseRequest.getSingleValueFilters();
-        for(SingleValueTypeFilter filterType : filterTypes) {
-            SearchFilter filter = filterType.getKey();
-            if (filtersWithMultipleValues.contains(filter)) {
-                throw new ServiceException("Filter provided with Single Value. Application Expects values as List for the Filter :" + filter);
-            }
-            searchMap.put(filterType.getKey(),filterType.getValue());
+    @Override
+    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException, ActivityMessageException, ActivityModelMarshallException {
+        LOG.info("Got JMS inside Activity to get FACatchSummaryReport:");
+        try {
+            LOG.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
+            FACatchSummaryReportRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FACatchSummaryReportRequest.class);
+            FACatchSummaryReportResponse faCatchSummaryReportResponse= faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
+            String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
+            producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
+        } catch (JMSException e) {
+            e.printStackTrace();
         }
 
-        return searchMap;
     }
 
-    private Map<SearchFilter,List<String>>  extractFiltersAsMapWithMultipleValues(FishingTripRequest baseRequest) throws ServiceException {
-        Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
-        Map<SearchFilter,List<String>> searchMap    = new EnumMap<>(SearchFilter.class);
-        List<ListValueTypeFilter> filterTypes       = baseRequest.getListValueFilters();
-        for(ListValueTypeFilter filterType : filterTypes){
-            SearchFilter filter = filterType.getKey();
-            if(!filtersWithMultipleValues.contains(filter)) {
-                throw new ServiceException("Filter provided with multiple Values do not support Multiple Values. Filter name is:" + filter);
-            }
-            searchMap.put(filterType.getKey(),filterType.getValues());
-        }
-        return searchMap;
-    }
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
         if(pluginType == null){

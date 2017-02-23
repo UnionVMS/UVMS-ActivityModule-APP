@@ -86,6 +86,52 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "weighing_means_code_list_id")
 	private String weighingMeansCodeListId;
 
+	@Column(name = "territory")
+	private String territory;
+
+	@Column(name = "fao_area")
+	private String faoArea;
+
+	@Column(name = "ices_stat_rectangle")
+	private String icesStatRectangle;
+
+	@Column(name = "effort_zone")
+	private String effortZone;
+
+    @Column(name = "rfmo")
+    private String rfmo;
+
+    @Column(name = "gfcm_gsa")
+    private String gfcmGsa;
+
+    @Column(name = "gfcm_stat_rectangle")
+    private String gfcmStatRectangle;
+
+	@Column(name = "presentation")
+	private String presentation;
+
+	@Column(name = "gear_type_code")
+	private String gearTypeCode;
+
+	public String getGearTypeCode() {
+		return gearTypeCode;
+	}
+
+	public void setGearTypeCode(String gearTypeCode) {
+		this.gearTypeCode = gearTypeCode;
+	}
+
+	public String getFishClassCode() {
+		return fishClassCode;
+	}
+
+	public void setFishClassCode(String fishClassCode) {
+		this.fishClassCode = fishClassCode;
+	}
+
+	@Column(name = "fish_class_code")
+	private String fishClassCode;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapProcessEntity> aapProcesses;
 
@@ -250,6 +296,70 @@ public class FaCatchEntity implements Serializable {
 	}
 	public void setCalculatedUnitQuantity(Double calculatedUnitQuantity) {
 		this.calculatedUnitQuantity = calculatedUnitQuantity;
+	}
+
+	public String getTerritory() {
+		return territory;
+	}
+
+	public void setTerritory(String territory) {
+		this.territory = territory;
+	}
+
+	public String getFaoArea() {
+		return faoArea;
+	}
+
+	public void setFaoArea(String faoArea) {
+		this.faoArea = faoArea;
+	}
+
+	public String getIcesStatRectangle() {
+		return icesStatRectangle;
+	}
+
+	public void setIcesStatRectangle(String icesStatRectangle) {
+		this.icesStatRectangle = icesStatRectangle;
+	}
+
+	public String getEffortZone() {
+		return effortZone;
+	}
+
+	public void setEffortZone(String effortZone) {
+		this.effortZone = effortZone;
+	}
+
+    public String getRfmo() {
+        return rfmo;
+    }
+
+    public void setRfmo(String rfmo) {
+        this.rfmo = rfmo;
+    }
+
+    public String getGfcmGsa() {
+        return gfcmGsa;
+    }
+
+    public void setGfcmGsa(String gfcmGsa) {
+        this.gfcmGsa = gfcmGsa;
+    }
+
+    public String getGfcmStatRectangle() {
+        return gfcmStatRectangle;
+    }
+
+    public void setGfcmStatRectangle(String gfcmStatRectangle) {
+        this.gfcmStatRectangle = gfcmStatRectangle;
+    }
+
+	public String getPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
 	}
 
 	@Override

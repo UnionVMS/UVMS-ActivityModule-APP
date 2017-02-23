@@ -14,10 +14,11 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivitySearch;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import java.util.List;
 /**
  * Created by padhyad on 5/3/2016.
  */
+@Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
@@ -65,20 +67,20 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
-        FishingActivitySearch search = new FishingActivitySearch();
-        LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
-        StringBuilder sqlToGetActivityListCount = search.createSQL(query);
+        FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
+           LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
+           StringBuilder sqlToGetActivityListCount =search.createSQL(query);
 
-        Query countQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
+           Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
 
         return countQuery.getResultList().size();
     }
 
 
-    /**
-     * Set typed values for Dynamically generated Query
-     */
-    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearch search) throws ServiceException {
+       /**
+        * Set typed values for Dynamically generated Query
+        */
+    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearchBuilder search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
 
         Query typedQuery = em.createQuery(sql.toString());
@@ -93,7 +95,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      */
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         LOG.info("Get Fishing Activity Report list by Query.");
-        FishingActivitySearch search = new FishingActivitySearch();
+        FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
 
         // Create Query dynamically based on filter and Sort criteria
         StringBuilder sqlToGetActivityList = search.createSQL(query);

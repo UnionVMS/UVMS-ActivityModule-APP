@@ -39,7 +39,7 @@
         </RelatedFLUXReportDocument>
         <SpecifiedFishingActivity>
             <ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>
-            <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+            <TypeCode listID="FLUX_FA_TYPE">JOINT_FISHING_OPERATION</TypeCode>
             <OccurrenceDateTime>
                 <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
             </OccurrenceDateTime>
@@ -57,7 +57,7 @@
                 <WeightMeasure unitCode="C62" unitCodeListVersionID="586jhg-5htuf95-5jfit-5jtier8">123</WeightMeasure>
                 <WeighingMeansCode listID="5854tt5-gjtdir-5j85tui-589git">Weighing means code 1</WeighingMeansCode>
                 <UsageCode listID="58thft-58fjd8-gt85eje-hjgute8">Usage code 1</UsageCode>
-                <TypeCode listID="FA_CATCH_TYPE">Type code 1</TypeCode>
+                <TypeCode listID="FA_CATCH_TYPE">Typecode1</TypeCode>
                 <RelatedFishingTrip>
                     <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
                     <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>
@@ -605,7 +605,7 @@
             </DestinationVesselStorageCharacteristic>
             <RelatedFishingActivity>
                 <ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>
-                <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+                <TypeCode listID="FLUX_FA_TYPE">RELOCATION</TypeCode>
                 <OccurrenceDateTime>
                     <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                 </OccurrenceDateTime>
@@ -625,7 +625,7 @@
                     </WeightMeasure>
                     <WeighingMeansCode listID="5854tt5-gjtdir-5j85tui-589git">Weighing means code 1</WeighingMeansCode>
                     <UsageCode listID="58thft-58fjd8-gt85eje-hjgute8">Usage code 1</UsageCode>
-                    <TypeCode listID="FA_CATCH_TYPE">Type code 1</TypeCode>
+                    <TypeCode listID="FA_CATCH_TYPE">RelocationCode1</TypeCode>
                     <RelatedFishingTrip>
                         <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
                         <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>

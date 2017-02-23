@@ -19,7 +19,7 @@
         <!--<property name="javax.persistence.schema-generation.scripts.create-target" value="create-table.sql"/>-->
 
         <property name="show_sql" value="true" />
-        <property name="format_sql" value="false" />
+        <property name="format_sql" value="true" />
         <property name="use_sql_comments" value="true" />
 
 

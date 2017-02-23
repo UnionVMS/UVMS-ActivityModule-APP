@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
@@ -67,11 +67,12 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * @throws ServiceException
      */
     public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
-        FishingTripSearch search           = new FishingTripSearch();
+        FishingTripSearchBuilder search = new FishingTripSearchBuilder();
         StringBuilder sqlToGetActivityList = search.createSQL(query); // Create SQL Dynamically based on Filters provided
         log.debug("SQL:" + sqlToGetActivityList);
+
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
-        Query listQuery  = search.fillInValuesForTypedQuery(query, typedQuery);  // Add values to the Query built
+        Query listQuery = search.fillInValuesForTypedQuery(query, typedQuery);  // Add values to the Query built
         return listQuery.getResultList();
     }
 }
