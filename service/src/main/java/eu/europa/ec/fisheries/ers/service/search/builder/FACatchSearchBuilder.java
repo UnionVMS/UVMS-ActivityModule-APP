@@ -35,12 +35,17 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
           "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
            "  JOIN a.faReportDocument fa  " ;
 
+    {
+        FilterMap filterMap=FilterMap.createFilterMap();
+        filterMap.populateFilterMAppingsWithChangeForFACatchReport();
+        setFilterMap(filterMap);
+    }
 
 
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         StringBuilder sql = new StringBuilder();
-        FilterMap.populateFilterMAppingsWithChangeForFACatchReport();
+     //   FilterMap.populateFilterMAppingsWithChangeForFACatchReport();
         Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
         List<GroupCriteria> groupByFieldList= query.getGroupByFields();
         sql.append("SELECT  "); // Common Join for all filters
