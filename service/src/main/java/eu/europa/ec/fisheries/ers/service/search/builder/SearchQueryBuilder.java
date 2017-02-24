@@ -39,8 +39,28 @@ public abstract class SearchQueryBuilder {
     protected static final String LEFT = " LEFT ";
     protected static final String JOIN =  " JOIN ";
     private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
+    private Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
+    private FilterMap  filterMap = FilterMap.createFilterMap();
 
+
+
+    protected SearchQueryBuilder(){
+
+    }
+
+
+    protected SearchQueryBuilder(FilterMap  filterMap){
+      this.filterMap = filterMap;
+    }
+
+
+    public FilterMap getFilterMap() {
+        return filterMap;
+    }
+
+    public void setFilterMap(FilterMap filterMap) {
+        this.filterMap = filterMap;
+    }
 
     /**
      * Create SQL dynamically based on Filter criteria
@@ -60,7 +80,7 @@ public abstract class SearchQueryBuilder {
      */
     public  StringBuilder createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
-        Map<SearchFilter, FilterDetails> filterMappings = FilterMap.getFilterMappings();
+        Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
         if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
             keySet.addAll(query.getSearchCriteriaMap().keySet());
@@ -162,10 +182,10 @@ public abstract class SearchQueryBuilder {
         // Make sure that the field which we want to sort, table Join is present for it.
         switch (getFiledCase(sql, field)) {
             case 1:
-                appendLeftJoinFetch(sql, FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
+                appendLeftJoinFetch(sql, filterMap.DELIMITED_PERIOD_TABLE_ALIAS);
                 break;
             case 2:
-                appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                appendLeftJoinFetch(sql, filterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
                 break;
             case 3:
                 checkAndAppendIfNeededFluxReportDocTable(sql);
@@ -187,7 +207,7 @@ public abstract class SearchQueryBuilder {
     }
 
     private  int getFiledCase(StringBuilder sql, SearchFilter field) {
-        if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
+        if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
             return 1;
         } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
             return 2;
@@ -200,7 +220,7 @@ public abstract class SearchQueryBuilder {
     }
 
     public StringBuilder createWherePartForQueryForFilters(StringBuilder sql,FishingActivityQuery query){
-        Map<SearchFilter, FilterDetails> filterMappings = FilterMap.getFilterMappings();
+        Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
         if(MapUtils.isNotEmpty(query.getSearchCriteriaMap())){
             keySet.addAll(query.getSearchCriteriaMap().keySet());
@@ -274,7 +294,7 @@ public abstract class SearchQueryBuilder {
             if(sort.isReversed()) {
                 orderby = " DESC ";
             }
-            String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
+            String sortFieldMapping = filterMap.getFilterSortMappings().get(field);
             if(sortFieldMapping ==null) {
                 throw new ServiceException("Information about which database field to be used for sorting is unavailable");
             }
@@ -294,14 +314,17 @@ public abstract class SearchQueryBuilder {
      * @param query
      * @return
      */
+
+
+
     public  StringBuilder getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
         Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
         if(searchCriteriaMap == null){
             return sql;
         }
         sql.append(" and(  ");
-        sql.append(FilterMap.getFilterSortMappings().get(filter));
-        sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
+        sql.append(filterMap.getFilterSortMappings().get(filter));
+        sql.append(" =(select max(").append(filterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
 
         if (searchCriteriaMap.containsKey(filter)) {
             sql.append(" where ");

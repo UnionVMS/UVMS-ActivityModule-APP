@@ -31,6 +31,10 @@ import java.util.Set;
  */
 public class FilterMap {
 
+    public static FilterMap createFilterMap() {
+        return new FilterMap();
+    }
+
     public static final String OWNER_ID                     = "ownerId";
     public static final String FROM_ID                      = "fromId";
     public static final String OCCURENCE_START_DATE         = "startDate";
@@ -50,7 +54,7 @@ public class FilterMap {
     public static final String CONTACT_PERSON_NAME          = "agent";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS  = "fa.vesselTransportMeans vt";
     public static final String FA_CATCH_TABLE_ALIAS         = " a.faCatchs faCatch ";
-    public static String DELIMITED_PERIOD_TABLE_ALIAS       = " a.delimitedPeriods dp ";
+    public String DELIMITED_PERIOD_TABLE_ALIAS       = " a.delimitedPeriods dp ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS  = " fa.fluxReportDocument flux ";
     public static final String FLUX_PARTY_TABLE_ALIAS        = " flux.fluxParty fp  ";
     public static final String GEAR_TYPE_TABLE_ALIAS        = " a.fishingGears fg ";
@@ -72,7 +76,7 @@ public class FilterMap {
     public static final String FLUX_PARTY_FOR_MESSAGE       = "fluxRepDoc.fluxParty fpFrom ";
 
     // This contains Table Join and Where condition mapping for each Filter
-    private static EnumMap<SearchFilter, FilterDetails> filterMappings        = new EnumMap<>(SearchFilter.class);
+    private EnumMap<SearchFilter, FilterDetails> filterMappings        = new EnumMap<>(SearchFilter.class);
     // For Sort criteria, which expression should be used
     private static EnumMap<SearchFilter, String> filterSortMappings           = new EnumMap<>(SearchFilter.class);
     // Query parameter mapping
@@ -90,19 +94,21 @@ public class FilterMap {
 
     static {
         populateFiltersWhichSupportMultipleValues();
-        populateFilterMappings();
         populateFilterQueryParameterMappings();
         populateFilterSortMappings();
         populateFilterSortWhereMappings();
         populateGroupByMapping();
     }
 
+    {
+        populateFilterMappings();
+    }
 
     /**
      * Below method stores mapping for each Filter criteria. Mapping will provide information on table joins
      * required for the criteria and Where conditions which needs to be applied for the criteria
      */
-    public static void populateFilterMappings() {
+    public void populateFilterMappings() {
         filterMappings.put(SearchFilter.SOURCE, new FilterDetails(StringUtils.SPACE, "fa.source =:" + DATASOURCE));
         filterMappings.put(SearchFilter.OWNER, new FilterDetails(" fp.fluxPartyIdentifiers fpi", "fpi.fluxPartyIdentifierId =:" + OWNER_ID + StringUtils.SPACE));
         filterMappings.put(SearchFilter.FROM,  new FilterDetails(" fpFrom.fluxPartyIdentifiers fpiFrom", "fpiFrom.fluxPartyIdentifierId =:" + FROM_ID + StringUtils.SPACE));
@@ -136,13 +142,14 @@ public class FilterMap {
      * required for the criteria and Where conditions which needs to be applied for the criteria
      *
      */
-    public static void populateFilterMappingsWithChangedDelimitedPeriodTable(){
+    public  void populateFilterMappingsWithChangedDelimitedPeriodTable(){
         DELIMITED_PERIOD_TABLE_ALIAS = " ft.delimitedPeriods dp ";
         populateFilterMappings();
     }
 
-    public static void populateFilterMAppingsWithChangeForFACatchReport(){
-
+    public  void populateFilterMAppingsWithChangeForFACatchReport(){
+        DELIMITED_PERIOD_TABLE_ALIAS   = " a.delimitedPeriods dp ";
+        populateFilterMappings();
         filterMappings.put(SearchFilter.SPECIES, new FilterDetails(" ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") )"));
         filterMappings.put(SearchFilter.GEAR, new FilterDetails("faCatch.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN aprocess.aapProducts aprod ", " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
@@ -242,7 +249,7 @@ public class FilterMap {
 
     }
 
-     public static Map<SearchFilter, FilterDetails> getFilterMappings() {
+     public Map<SearchFilter, FilterDetails> getFilterMappings() {
         return filterMappings;
     }
     public static Map<SearchFilter, String> getFilterSortMappings() {

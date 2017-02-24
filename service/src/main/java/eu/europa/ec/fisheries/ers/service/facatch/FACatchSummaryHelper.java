@@ -321,7 +321,7 @@ public class FACatchSummaryHelper {
         try {
             s = mapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Exception while parsing JSON",e) ;
         }
         log.debug("json structure:-------->");
         log.debug(""+s);

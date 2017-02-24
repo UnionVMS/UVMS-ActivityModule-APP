@@ -26,6 +26,14 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivitySearchBuilder.class);
     private static final String FISHING_ACTIVITY_JOIN = "SELECT DISTINCT a from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa ";
 
+
+    {
+        FilterMap filterMap=FilterMap.createFilterMap();
+        filterMap.populateFilterMappings();
+        setFilterMap(filterMap);
+    }
+
+
     /**
      * Creates an SQL String query parsing all the entries found in FishingActivityQuery query parameter.
      *
@@ -35,7 +43,7 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
      */
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
-        FilterMap.populateFilterMappings();
+    //    FilterMap.populateFilterMappings();
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
 

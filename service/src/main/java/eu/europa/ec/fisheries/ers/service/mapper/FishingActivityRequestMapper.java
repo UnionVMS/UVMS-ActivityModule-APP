@@ -25,7 +25,7 @@ import java.util.Set;
 @Mapper
 public abstract class FishingActivityRequestMapper {
 
-    public static FishingActivityRequestMapper INSTANCE = Mappers.getMapper(FishingActivityRequestMapper.class);
+    public static final FishingActivityRequestMapper INSTANCE = Mappers.getMapper(FishingActivityRequestMapper.class);
 
 
 

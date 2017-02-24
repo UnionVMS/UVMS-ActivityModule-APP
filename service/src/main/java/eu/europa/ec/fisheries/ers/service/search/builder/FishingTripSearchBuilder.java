@@ -21,6 +21,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.ActivityConfigurationProperties;
 import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
+import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
@@ -34,8 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-
-import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
+//import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
  * Created by sanera on 16/11/2016.
@@ -45,13 +45,20 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripSearchBuilder.class);
     private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
 
+
+    {
+        FilterMap filterMap=FilterMap.createFilterMap();
+        filterMap.populateFilterMappingsWithChangedDelimitedPeriodTable();
+        setFilterMap(filterMap);
+    }
+
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
 
         LOG.debug("Start building SQL depending upon Filter Criterias");
+
         StringBuilder sql = new StringBuilder();
 
-        populateFilterMappingsWithChangedDelimitedPeriodTable();
 
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
 

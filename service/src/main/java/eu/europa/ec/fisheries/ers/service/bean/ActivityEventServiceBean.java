@@ -40,10 +40,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @LocalBean
 @Stateless
@@ -116,7 +112,7 @@ public class ActivityEventServiceBean implements EventService {
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
             producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
         } catch (JMSException e) {
-            e.printStackTrace();
+            LOG.error("Error while communication ", e);
         }
 
     }
