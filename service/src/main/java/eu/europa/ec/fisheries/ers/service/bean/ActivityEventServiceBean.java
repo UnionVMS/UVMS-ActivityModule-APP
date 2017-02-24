@@ -103,7 +103,7 @@ public class ActivityEventServiceBean implements EventService {
 
 
     @Override
-    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException, ActivityMessageException, ActivityModelMarshallException {
+    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException {
         LOG.info("Got JMS inside Activity to get FACatchSummaryReport:");
         try {
             LOG.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
@@ -111,7 +111,7 @@ public class ActivityEventServiceBean implements EventService {
             FACatchSummaryReportResponse faCatchSummaryReportResponse= faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
             producer.sendMessageBackToRecipient(message.getJmsMessage(),response);
-        } catch (JMSException e) {
+        } catch (ActivityModelMarshallException | ActivityMessageException | JMSException e) {
             LOG.error("Error while communication ", e);
         }
 

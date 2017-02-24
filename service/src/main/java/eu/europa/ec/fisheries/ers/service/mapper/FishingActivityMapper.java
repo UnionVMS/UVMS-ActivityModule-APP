@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPe
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,6 +34,7 @@ import java.util.*;
  * Created by padhyad on 5/17/2016.
  */
 @Mapper(uses = {FaCatchMapper.class, DelimitedPeriodMapper.class, FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class, FluxCharacteristicsMapper.class})
+@Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
 
     public static final FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
@@ -541,13 +543,16 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
         for(AapProcessEntity aapProcessEntity: aapProcessEntities){
                 Set<AapProcessCodeEntity>  codeEntities=  aapProcessEntity.getAapProcessCode();
-                if(CollectionUtils.isNotEmpty(codeEntities)){
-                    for(AapProcessCodeEntity aapProcessCodeEntity : codeEntities){
-                        if("FISH_PRESENTATION".equals(aapProcessCodeEntity.getTypeCodeListId())){
-                                  return aapProcessCodeEntity.getTypeCode();
-                        }
-                    }
+                if(CollectionUtils.isEmpty(codeEntities)){
+                    continue;
                 }
+
+                for(AapProcessCodeEntity aapProcessCodeEntity : codeEntities){
+                     if("FISH_PRESENTATION".equals(aapProcessCodeEntity.getTypeCodeListId())){
+                          return aapProcessCodeEntity.getTypeCode();
+                     }
+                }
+
         }
 
 
@@ -593,6 +598,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
                     case GFCM_STAT_RECTANGLE:
                         faCatchEntity.setGfcmStatRectangle(id.getValue());
                         break;
+                   default: log.error("Unknown schemeId for FluxLocation."+id.getSchemeID());
+                       break;
                 }
             }
         }
