@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityViewsMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -45,14 +45,14 @@ public class FishingActivityViewMapperTest {
         List<FaReportDocumentEntity> faReportDocuments = new ArrayList<>(fluxRepMessageEntity.getFaReportDocuments());
         FishingActivityEntity fishingActivity = faReportDocuments.get(0).getFishingActivities().iterator().next();
 
-        FishingActivityViewDTO fishingActivityViewDTO = ActivityViewsMapper.INSTANCE.mapFaEntityToFaDto(fishingActivity, new FishingActivityViewDTO());
+        FishingActivityViewDTO fishingActivityViewDTO = ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(fishingActivity, new FishingActivityViewDTO());
 
         assertNotNull(fishingActivityViewDTO.getArrival());
         assertNotNull(fishingActivityViewDTO.getGears());
         assertNotNull(fishingActivityViewDTO.getReportDoc());
         assertTrue(fishingActivityViewDTO.getGears().size() == 1);
 
-        assertNull(ActivityViewsMapper.INSTANCE.mapFaEntityToFaDto(null, new FishingActivityViewDTO()));
+        assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null, new FishingActivityViewDTO()));
 
         System.out.println(new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true).writeValueAsString(fishingActivityViewDTO));
 

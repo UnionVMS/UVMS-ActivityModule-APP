@@ -22,13 +22,14 @@ import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityViewsMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -180,10 +181,10 @@ public class ActivityServiceBean implements ActivityService {
      * @throws ServiceException
      */
     @Override
-    public FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets) throws ServiceException {
+    public FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
         Geometry geom                        = getRestrictedAreaGeometry(datasets);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
-        return ActivityViewsMapper.INSTANCE.mapFaEntityToFaDto(activityEntity, new FishingActivityViewDTO());
+        return ViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity, new FishingActivityViewDTO());
     }
 
 

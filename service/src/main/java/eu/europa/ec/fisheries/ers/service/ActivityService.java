@@ -12,6 +12,7 @@
  */
 package eu.europa.ec.fisheries.ers.service;
 
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
@@ -52,5 +53,5 @@ public interface ActivityService {
 
     boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
 
-    FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets) throws ServiceException;
+    FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException;
 }
