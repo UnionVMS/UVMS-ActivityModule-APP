@@ -28,7 +28,7 @@ import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -53,6 +53,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.*;
+
+//import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -545,7 +547,7 @@ public class FishingTripServiceBean implements FishingTripService {
         log.debug("Fishing trips received from db:" + fishingTripList.size());
 
         // build Fishing trip response from FishingTripEntityList and return
-        return new FishingTripSearch().buildFishingTripSearchRespose(fishingTripList);
+        return new FishingTripSearchBuilder().buildFishingTripSearchRespose(fishingTripList);
     }
 
 }

@@ -181,6 +181,9 @@ public abstract class BaseMapper {
     }
 
     protected String getCountry(VesselCountry country) {
+        if(country==null){
+            return null;
+        }
         return getIdType(country.getID());
     }
 

@@ -55,6 +55,10 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "geom")
 	private Geometry geom;
 
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "vessel_transport_means_id")
+	private VesselTransportMeansEntity vesselTransportMeans;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_report_document_id")
 	private FaReportDocumentEntity faReportDocument;
@@ -124,6 +128,12 @@ public class FishingActivityEntity implements Serializable {
 
 //	@Column(name = "flap_document_scheme_id")
 //	private String flapDocumentSchemeId;
+
+	@Column(name = "vessel_transport_guid")
+	private String vesselTransportGuid;
+
+	@Column(name = "flag_state")
+	private String flagState;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
@@ -441,6 +451,22 @@ public class FishingActivityEntity implements Serializable {
 		this.calculatedOperationQuantity = calculatedOperationQuantity;
 	}
 
+	public VesselTransportMeansEntity getVesselTransportMeans() {
+		return vesselTransportMeans;
+	}
+
+	public void setVesselTransportMeans(VesselTransportMeansEntity vesselTransportMeans) {
+		this.vesselTransportMeans = vesselTransportMeans;
+	}
+
+	public String getVesselTransportGuid() {
+		return vesselTransportGuid;
+	}
+
+	public void setVesselTransportGuid(String vesselTransportGuid) {
+		this.vesselTransportGuid = vesselTransportGuid;
+	}
+
 	@Override
 	public String toString() {
 		return "FishingActivityEntity{" +
@@ -472,4 +498,12 @@ public class FishingActivityEntity implements Serializable {
 	public void setFlapDocuments(Set<FlapDocumentEntity> flapDocuments) {
 		this.flapDocuments = flapDocuments;
 	}
+
+    public String getFlagState() {
+        return flagState;
+    }
+
+    public void setFlagState(String flagState) {
+        this.flagState = flagState;
+    }
 }

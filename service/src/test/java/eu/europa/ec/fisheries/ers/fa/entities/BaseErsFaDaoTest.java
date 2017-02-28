@@ -129,65 +129,81 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(1, "DEPARTURE", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 1)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 1,null,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id",  "fa_report_document_id")
+                            "dest_vessel_char_id",  "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(2, "ARRIVAL", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 1)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 1,null,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(3, "LANDING", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2013-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,2)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,2,null,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(4, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2012-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 2)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 2,null,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(5, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,  6)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,  6,null,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(6, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 3)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 3,null,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(7, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
                     .values(8, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4)
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,null,"AS1222","NLD")
+                    .build(),
+            insertInto("activity.activity_fishing_activity")
+                    .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
+                            "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
+                            "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                    .values(9, "RELOCATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,6,"AS1222","NLD")
+                    .build(),
+            insertInto("activity.activity_fishing_activity")
+                    .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
+                            "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
+                            "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                    .values(10, "JOINT_FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,9,7,"AS1222","NLD")
                     .build()
     );
 
@@ -196,6 +212,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_size_distribution")
                     .columns("id", "category_code", "category_code_list_id")
                     .values(1, "FA_SIZE_CATEGORY", "FA_SIZE_CATEGORY")
+                    .build(),
+            insertInto("activity.activity_size_distribution")
+                    .columns("id", "category_code", "category_code_list_id")
+                    .values(2, "FA_SIZE_CATEGORY", "FA_SIZE_CATEGORY")
                     .build()
     );
 
@@ -206,40 +226,87 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build(),
             insertInto("activity.activity_size_distribution_classcode")
                     .columns("id", "size_distribution_id", "class_code", "class_code_list_id")
-                    .values(2, 1, "BMS", "FISH_SIZE_CLASS")
+                    .values(2, 2, "BMS", "FISH_SIZE_CLASS")
                     .build()
     );
 
     protected static final Operation INSERT_ERS_FA_CATCH_DATA = sequenceOf(
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
-                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
-                    .values(1, 1, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                           "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(1, 7, "DIS", "FLUX_LOCATION_TYPE", "BFT", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","IRL",null,"38F1","J",null,null,null,
+                            "LSC", 2,"TBB")
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
-                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
-                    .values(2, 2, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(2, 7, "DIM", "FLUX_LOCATION_TYPE", "BFT", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,null,null,
+                            "LSC",1,"TBB")
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
-                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
-                    .values(3, 3, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id","territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code", "size_distribution_id","gear_type_code")
+                    .values(3, 6, "DIS", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,null
+                            ,null,"LSC", 2,"TBB")
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
-                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
-                    .values(4, 4, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id","territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code", "size_distribution_id","gear_type_code")
+                    .values(4, 6, "DIM", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE",null,null,null,null,null,
+                            null,null,"LSC", 1,"TBB")
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
-                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
-                    .values(5, 5, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id","territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code", "size_distribution_id","gear_type_code")
+                    .values(5, 5, "KEPT_IN_NET", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,
+                            null,null, "LSC",2,"TBB")
                     .build(),
             insertInto("activity.activity_fa_catch")
                     .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
-                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "size_distribution_id")
-                    .values(6, 5, "AREA", "FLUX_LOCATION_TYPE", "beagle1", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE", 1)
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(6, 5, "ONBOARD", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,
+                            null,null,"LSC", 1,"TBB")
+                    .build(),
+            insertInto("activity.activity_fa_catch")
+                    .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(7, 8, "ONBOARD", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE",null,null,null,null,null,null
+                            ,null, "LSC",2,"TBB")
+                    .build(),
+            insertInto("activity.activity_fa_catch")
+                    .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(8, 9, "KEPT_IN_NET", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null
+                            ,null,null, "LSC",1,"TBB")
+                    .build(),
+            insertInto("activity.activity_fa_catch")
+                    .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(9, 9, "ONBOARD", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,null,
+                            null, "LSC",1,"TBB")
+                    .build(),
+            insertInto("activity.activity_fa_catch")
+                    .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(10, 9, "ALLOCATED_TO_QUOTA", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,
+                            "38F1",null,null,null,null,"LSC", 1,"TBB")
+                    .build(),
+            insertInto("activity.activity_fa_catch")
+                    .columns("id", "fishing_activity_id", "type_code", "type_code_list_id", "species_code", "species_code_listid", "unit_quantity", "unit_quantity_code", "calculated_unit_quantity",
+                            "weight_measure", "weight_measure_unit_code", "calculated_weight_measure", "usage_code", "usage_code_list_id", "weighing_means_code", "weighing_means_code_list_id", "territory",
+                            "fao_area" ,"ices_stat_rectangle" ,"effort_zone" ,"rfmo" ,"gfcm_gsa" ,"gfcm_stat_rectangle","fish_class_code","size_distribution_id","gear_type_code")
+                    .values(11, 10, "ONBOARD", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,
+                            null,null, "LSC",1,"TBB")
                     .build()
     );
 
@@ -252,17 +319,74 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_aap_process")
                     .columns("id", "conversion_factor", "fa_catch_id")
                     .values(2, 3, 1)
+                    .build(),
+            insertInto("activity.activity_aap_process")
+                    .columns("id", "conversion_factor", "fa_catch_id")
+                    .values(3, 3, 2)
+                    .build(),
+            insertInto("activity.activity_aap_process")
+                    .columns("id", "conversion_factor", "fa_catch_id")
+                    .values(4, 3, 3)
+                    .build(),
+            insertInto("activity.activity_aap_process")
+                    .columns("id", "conversion_factor", "fa_catch_id")
+                    .values(5, 3, 4)
+                    .build(),
+            insertInto("activity.activity_aap_process")
+                    .columns("id", "conversion_factor", "fa_catch_id")
+                    .values(6, 3, 5)
+                    .build(),
+            insertInto("activity.activity_aap_process")
+                    .columns("id", "conversion_factor", "fa_catch_id")
+                    .values(7, 3, 6)
+                    .build(),
+            insertInto("activity.activity_aap_process")
+                    .columns("id", "conversion_factor", "fa_catch_id")
+                    .values(8, 3, 7)
+                    .build(),
+            insertInto("activity.activity_aap_process")
+                    .columns("id", "conversion_factor", "fa_catch_id")
+                    .values(9, 3, 7)
                     .build()
+
     );
 
     protected static final Operation INSERT_ERS_AAP_PROCESS_CODE_DATA = sequenceOf(
             insertInto("activity.activity_aap_process_code")
                     .columns("id", "aap_process_id", "type_code", "type_code_list_id")
-                    .values(1, 1, "FISH_PRESENTATION", "FLUX_ PROCESS_TYPE")
+                    .values(1, 1, "GUT", "FISH_PRESENTATION")
                     .build(),
             insertInto("activity.activity_aap_process_code")
                     .columns("id", "aap_process_id", "type_code", "type_code_list_id")
-                    .values(2, 1, "FISH_PRESERVATION", "FLUX_ PROCESS_TYPE")
+                    .values(2, 1, "FRE", "FISH_PRESENTATION")
+                    .build(),
+            insertInto("activity.activity_aap_process_code")
+                    .columns("id", "aap_process_id", "type_code", "type_code_list_id")
+                    .values(3, 2, "A", "FISH_FRESHNESS")
+                    .build(),
+            insertInto("activity.activity_aap_process_code")
+                    .columns("id", "aap_process_id", "type_code", "type_code_list_id")
+                    .values(4, 3, "GUT", "FISH_PRESENTATION")
+                    .build(),
+            insertInto("activity.activity_aap_process_code")
+                    .columns("id", "aap_process_id", "type_code", "type_code_list_id")
+                    .values(5, 4, "GUT", "FISH_PRESENTATION")
+                    .build(),
+            insertInto("activity.activity_aap_process_code")
+                    .columns("id", "aap_process_id", "type_code", "type_code_list_id")
+                    .values(6,5, "FRE", "FISH_PRESENTATION")
+                    .build(),
+            insertInto("activity.activity_aap_process_code")
+                    .columns("id", "aap_process_id", "type_code", "type_code_list_id")
+                    .values(7, 6, "FRE", "FISH_PRESENTATION")
+                    .build(),
+            insertInto("activity.activity_aap_process_code")
+                    .columns("id", "aap_process_id", "type_code", "type_code_list_id")
+                    .values(8, 7, "FRE", "FISH_PRESENTATION")
+                    .build(),
+            insertInto("activity.activity_aap_process_code")
+                    .columns("id", "aap_process_id", "type_code", "type_code_list_id")
+                    .values(9,8, "FRE", "FISH_FRESHNESS")
                     .build()
     );
 
@@ -305,15 +429,31 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
-                    .values(2, 1, 2, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .values(2, 2, 2, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
-                    .values(3, 1, 3, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .values(3, 3, 3, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
                     .build(),
             insertInto("activity.activity_fishing_gear")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
-                    .values(4, 1, 1, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .values(4, 4, 4, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .build(),
+            insertInto("activity.activity_fishing_gear")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
+                    .values(5, 5, 5, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .build(),
+            insertInto("activity.activity_fishing_gear")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
+                    .values(6, 6, 6, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .build(),
+            insertInto("activity.activity_fishing_gear")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
+                    .values(7, 7, 7, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
+                    .build(),
+            insertInto("activity.activity_fishing_gear")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "gear_problem_id", "type_code", "type_code_list_id")
+                    .values(8, 7, 7, null, "GEAR_TYPE", "GEAR_TYPE_LIST")
                     .build()
     );
 
@@ -463,23 +603,31 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     protected static final Operation INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA = sequenceOf(
             insertInto("activity.activity_vessel_transport_means")
                     .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(1, "ROLE_CODE", "LIST_ID", "vessel1", null, null, null)
+                    .values(1, "ROLE_CODE", "LIST_ID", "vessel1", null, "TERRITORY", "FRA")
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
                     .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(2, "ROLE_CODE", "LIST_ID", "vessel2", null, null, null)
+                    .values(2, "ROLE_CODE", "LIST_ID", "vessel2", null,"TERRITORY", "FRA")
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
                     .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(3, "ROLE_CODE", "LIST_ID", "vessel3", null, null, null)
+                    .values(3, "ROLE_CODE", "LIST_ID", "vessel3", null, "TERRITORY", "ESP")
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
                     .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(4, "ROLE_CODE", "LIST_ID", "vessel4", null, null, null)
+                    .values(4, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "ESP")
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
                     .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, null, null)
+                    .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA")
+                    .build(),
+            insertInto("activity.activity_vessel_transport_means")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid")
+                    .values(6, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111")
+                    .build(),
+            insertInto("activity.activity_vessel_transport_means")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid")
+                    .values(7, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111")
                     .build()
     );
 
@@ -517,14 +665,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
                             "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
-                    .values(1, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "27.4.b", "FAO_AREA", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(1, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "J", "EFFORT_ZONE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
                     .build(),
             insertInto("activity.activity_flux_location")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
                             "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
-                    .values(2, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(2, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "IRL", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
                     .build(),
             insertInto("activity.activity_flux_location")
@@ -538,16 +686,73 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
                             "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
-                    .values(4, 1, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(4, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
                     .build(),
             insertInto("activity.activity_flux_location")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
                             "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
-                    .values(5, 1, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(5, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(6, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(7, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(8, 5, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(9, 5,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(10, 3, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(11, 3,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(12, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
+                    .build(),
+            insertInto("activity.activity_flux_location")
+                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(13, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
                     .build()
+
     );
 
 

@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -52,6 +53,10 @@ public class MessageConsumerBean implements MessageListener {
     Event<EventMessage> getFishingTripListEvent;
 
     @Inject
+    @GetFACatchSummaryReportEvent
+    Event<EventMessage> getFACatchSummaryReportEvent;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -86,6 +91,9 @@ public class MessageConsumerBean implements MessageListener {
                     break;
                 case GET_FISHING_TRIPS :
                     getFishingTripListEvent.fire(new EventMessage(textMessage));
+                    break;
+                case GET_FA_CATCH_SUMMARY_REPORT :
+                    getFACatchSummaryReportEvent.fire(new EventMessage(textMessage));
                     break;
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());

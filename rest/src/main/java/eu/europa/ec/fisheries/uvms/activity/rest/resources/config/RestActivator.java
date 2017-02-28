@@ -8,12 +8,11 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.activity.rest.resources.config;
 
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResource;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityViewsResource;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingTripResource;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.PreferenceConfigResource;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,11 @@ public class RestActivator extends Application {
         set.add(FishingActivityResource.class);
         set.add(FishingTripResource.class);
         set.add(PreferenceConfigResource.class);
+        set.add(TestResource.class);
         set.add(FishingActivityViewsResource.class);
+        set.add(FACatchResource.class);
+        set.add(XMLResource.class);
+
     }
 
     @Override

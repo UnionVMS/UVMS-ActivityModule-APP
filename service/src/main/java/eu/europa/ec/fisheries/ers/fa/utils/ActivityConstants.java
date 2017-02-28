@@ -28,8 +28,11 @@ public class ActivityConstants {
     public static final String DECLARATION ="Declaration";
     public static final String NOTIFICATION ="Notification";
     public static final String FISHING_OPERATION ="FISHING_OPERATION";
+    public static final String JOINT_FISHING_OPERATION ="JOINT_FISHING_OPERATION";
+    public static final String RELOCATION ="RELOCATION";
 
     public static final String DELETE = "DELETE";
     public static final String CANCELLATION = "CANCELLATION";
     public static final String CORRECTION = "REPLACEMENT";
+
 }

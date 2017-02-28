@@ -11,11 +11,15 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.*;
 
 import static junit.framework.TestCase.assertNotNull;
 
@@ -45,6 +49,31 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         dbSetupTracker.skipNextLaunch();
         List<Object[]> entity = dao.findFaCatchesByFishingTrip("NOR-TRP-20160517234053706");
         assertNotNull(entity);
+    }
+
+
+
+    @Test
+    public void testGetFACatchSummaryReportString() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+
+        List<GroupCriteria> groupByFields = new ArrayList<>();
+         groupByFields.add(GroupCriteria.DATE_MONTH);
+         groupByFields.add(GroupCriteria.SPECIES);
+        query.setGroupByFields(groupByFields);
+
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+       System.out.println( faCatchSummaryHelper.printJsonstructure(query));
+        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query);
+        assertNotNull(faCatchSummaryCustomEntityListMap);
+      
     }
 
 
