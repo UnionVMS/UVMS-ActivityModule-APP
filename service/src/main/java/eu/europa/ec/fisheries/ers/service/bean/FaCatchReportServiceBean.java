@@ -16,10 +16,13 @@ import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +32,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +59,32 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
 
     }
 
+    @Override
+    public FACatchDetailsDTO getCatchesTableForCatchDetailsScreen(String tripId) throws ServiceException {
+        FishingActivityQuery query = new FishingActivityQuery();
+        List<GroupCriteria> groupByFields = new ArrayList<>();
+        groupByFields.add(GroupCriteria.DATE_DAY);
+        groupByFields.add(GroupCriteria.FAO_AREA);
+        groupByFields.add(GroupCriteria.TERRITORY);
+        groupByFields.add(GroupCriteria.EFFORT_ZONE);
+        groupByFields.add(GroupCriteria.GFCM_GSA);
+        groupByFields.add(GroupCriteria.GFCM_STAT_RECTANGLE);
+        groupByFields.add(GroupCriteria.ICES_STAT_RECTANGLE);
+        groupByFields.add(GroupCriteria.RFMO);
+        groupByFields.add(GroupCriteria.SPECIES);
+
+        query.setGroupByFields(groupByFields);
+
+        Map<SearchFilter, String> searchCriteriaMap = new EnumMap<SearchFilter, String>(SearchFilter.class);
+        searchCriteriaMap.put(SearchFilter.TRIP_ID,tripId);
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        FACatchDetailsDTO faCatchDetailsDTO = new FACatchDetailsDTO();
+        faCatchDetailsDTO.setCatches(getCatchSummaryReportForWeb(query));
+        return faCatchDetailsDTO ;
+      //  log.debug("Result:"+FACatchSummaryHelper.printJsonstructure(getCatchSummaryReportForWeb(query)));
+
+    }
 
     /**
      *  This method groups FACatch Data, performs business logic to create summary report

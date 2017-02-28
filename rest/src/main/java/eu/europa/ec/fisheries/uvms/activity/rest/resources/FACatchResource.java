@@ -71,6 +71,24 @@ public class FACatchResource extends UnionVMSResource {
     }
 
 
+    @GET
+    @Path("/details/{fishingTripId}")
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getFACatchSummaryDetails(@Context HttpServletRequest request,
+                                            @HeaderParam("scopeName") String scopeName,
+                                            @HeaderParam("roleName") String roleName,
+                                             @PathParam("fishingTripId") String tripId) throws ServiceException {
+
+        log.info("getFACatchSummaryDetails: " + tripId);
+
+        return createSuccessResponse( reportService.getCatchesTableForCatchDetailsScreen(tripId));
+
+    }
+
+
 }
 
 
