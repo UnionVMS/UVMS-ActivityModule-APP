@@ -29,10 +29,11 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.11-SNAPSHOT</activity.model>
+        <activity.model>0.5.12-SNAPSHOT</activity.model>
 
         <!-- Other modules dependencies -->
-        <reporting.model>0.5.0</reporting.model>
+        <reporting.model>1.0.2-SNAPSHOT</reporting.model>
+        <spatial.model.version>1.0.4-SNAPSHOT</spatial.model.version>
         <exchange.model>2.0.8</exchange.model>
         <rules.model>2.0.7</rules.model>
 
@@ -45,7 +46,7 @@
         <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
         <asset.model.version>3.0.0</asset.model.version>
-        <movement.model.version>3.0.0</movement.model.version>
+        <movement.model.version>3.0.4</movement.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
@@ -57,7 +58,7 @@
         <hibernate.version>4.3.5.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14-M1</geotools.version>
-        <uvms.commons.version>2.0.17</uvms.commons.version>
+        <uvms.commons.version>2.0.19-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.3</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-search-orm.version>4.5.1.Final</hibernate-search-orm.version>
@@ -70,8 +71,6 @@
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <database.dialect>oracle</database.dialect>
         <geotools.version>14-M1</geotools.version>
-        <movement.model.version>2.0.0</movement.model.version>
-        <spatial.model.version>0.5.4</spatial.model.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
         <lucene.index.directory>/app/indexes/activity</lucene.index.directory>
@@ -113,6 +112,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.model.version}</version>
+                <classifier>xmlgregoriancalendar</classifier>
             </dependency>
 
             <dependency>
@@ -125,6 +125,12 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                        <artifactId>uvms-commons</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -154,7 +160,7 @@
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-commons</artifactId>
+                <artifactId>uvms-commons-wildfly</artifactId>
                 <version>${uvms.commons.version}</version>
             </dependency>
 

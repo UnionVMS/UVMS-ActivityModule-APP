@@ -11,10 +11,10 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.fa.utils;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -23,19 +23,17 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by padhyad on 10/19/2016.
- */
 public class UsmUtils {
 
-    private UsmUtils() {// Static utility class, not supposed to have instances.
-        super();
+    private static char DELIMITER = '_';
+
+    private UsmUtils() {
     }
 
     public static List<AreaIdentifierType> convertDataSetToAreaId(List<Dataset> datasets) throws ServiceException {
         List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
         for (Dataset dataset : datasets) {
-            int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
+            int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(DELIMITER);
 
             if (lastIndexDelimiter > -1 )  {
                 AreaIdentifierType areaIdentifierType = new AreaIdentifierType();

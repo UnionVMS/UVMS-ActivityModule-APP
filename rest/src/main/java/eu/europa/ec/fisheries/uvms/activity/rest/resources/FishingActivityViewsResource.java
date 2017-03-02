@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.USMActivity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
@@ -20,7 +21,6 @@ import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterce
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,7 +79,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
      */
     private Response createActivityView(String scopeName, String roleName, String activityId, HttpServletRequest request) throws ServiceException {
         String username        = request.getRemoteUser();
-        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMActivity.USM_DATASET_CATEGORY, username, USMActivity.APPLICATION_NAME, roleName, scopeName);
         return createSuccessResponse(activityService.getFishingActivityForView(activityId, datasets));
     }
 }

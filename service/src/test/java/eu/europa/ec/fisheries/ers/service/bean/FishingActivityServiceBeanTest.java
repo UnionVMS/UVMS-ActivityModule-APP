@@ -8,7 +8,7 @@ import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerB
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.VesselDetailsTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;

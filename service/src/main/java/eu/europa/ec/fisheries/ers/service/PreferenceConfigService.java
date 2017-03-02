@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import javax.ejb.Local;
