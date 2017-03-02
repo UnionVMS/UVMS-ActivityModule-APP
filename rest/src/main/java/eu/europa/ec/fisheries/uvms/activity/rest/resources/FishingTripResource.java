@@ -15,14 +15,19 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.dto.USMActivity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +37,6 @@ import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -75,7 +79,7 @@ public class FishingTripResource extends UnionVMSResource {
 
         LOG.info("Fishing Trip summary from fishing trip : " + fishingTripId);
         String username = request.getRemoteUser();
-        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMActivity.USM_DATASET_CATEGORY, username, USMActivity.APPLICATION_NAME, roleName, scopeName);
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         LOG.info("Fishing Trip summary from fishing trip : "+fishingTripId);
         return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId, datasets));
     }

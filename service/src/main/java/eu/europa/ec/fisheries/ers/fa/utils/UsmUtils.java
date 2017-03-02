@@ -15,25 +15,24 @@
 package eu.europa.ec.fisheries.ers.fa.utils;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsmUtils {
-
-    private static char DELIMITER = '_';
-
-    private UsmUtils() {
-    }
 
     public static List<AreaIdentifierType> convertDataSetToAreaId(List<Dataset> datasets) throws ServiceException {
         List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
         for (Dataset dataset : datasets) {
-            int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(DELIMITER);
+            int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
 
             if (lastIndexDelimiter > -1 )  {
                 AreaIdentifierType areaIdentifierType = new AreaIdentifierType();

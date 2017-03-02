@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.dto.USMActivity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
@@ -22,6 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterce
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -94,7 +94,7 @@ public class FishingActivityResource extends UnionVMSResource {
             return createErrorResponse("Query to find list is null.");
         }
         String username = request.getRemoteUser();
-        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMActivity.USM_DATASET_CATEGORY, username, USMActivity.APPLICATION_NAME, roleName, scopeName);
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         log.info("Successful retrieved");
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());

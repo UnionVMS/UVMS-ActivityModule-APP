@@ -251,12 +251,13 @@ public class FluxMessageServiceBean implements FluxMessageService {
         }
 
         Geometry faReportGeom;
+        Collections.sort(movements, new MovementTypeComparator());
+        Map<String, MovementType> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
+        MovementType nextMovement = movementTypeMap.get(NEXT);
+        MovementType previousMovement = movementTypeMap.get(PREVIOUS);
 
         try {
-            Collections.sort(movements, new MovementTypeComparator());
-            Map<String, MovementType> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
-            MovementType nextMovement = movementTypeMap.get(NEXT);
-            MovementType previousMovement = movementTypeMap.get(PREVIOUS);
+
             if (previousMovement == null && nextMovement == null) { // If nothing found return null
                 faReportGeom = null;
             } else if (nextMovement == null) { // if no next movement then the last previous movement is the position
@@ -277,10 +278,12 @@ public class FluxMessageServiceBean implements FluxMessageService {
     private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date acceptedDate) throws ServiceException { // starting point = A, end point = B, calculated point = C
         Geometry point;
 
+        Long durationAB = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
+        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
+        Long durationBC = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - acceptedDate.getTime();
+
         try {
-            Long durationAB = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
-            Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
-            Long durationBC = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - acceptedDate.getTime();
+
             if (durationAC == 0) {
                 log.info("The point is same as the start point");
                 point =  GeometryMapper.INSTANCE.wktToGeometry(previousMovement.getWkt()).getValue();

@@ -11,8 +11,8 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.bean;
 
+package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
@@ -69,8 +69,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.*;
-
-//import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
 
 /**
  * Created by padhyad on 9/22/2016.
