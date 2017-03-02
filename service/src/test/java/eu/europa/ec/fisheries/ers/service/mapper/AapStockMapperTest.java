@@ -15,14 +15,8 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProductDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapStockDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

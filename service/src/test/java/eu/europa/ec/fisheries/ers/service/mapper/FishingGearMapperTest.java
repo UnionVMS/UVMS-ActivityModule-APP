@@ -18,13 +18,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingGearDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

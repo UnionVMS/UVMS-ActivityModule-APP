@@ -11,15 +11,12 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.fa.utils;
 
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-
 import java.util.Comparator;
 
-/**
- * Created by padhyad on 10/13/2016.
- */
 public class MovementTypeComparator implements Comparator<MovementType> {
     @Override
     public int compare(MovementType mov1, MovementType mov2) {

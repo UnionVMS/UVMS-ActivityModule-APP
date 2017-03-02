@@ -14,7 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxCharacteristicsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;

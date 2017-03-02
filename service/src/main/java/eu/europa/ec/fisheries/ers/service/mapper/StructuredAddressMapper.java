@@ -14,7 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

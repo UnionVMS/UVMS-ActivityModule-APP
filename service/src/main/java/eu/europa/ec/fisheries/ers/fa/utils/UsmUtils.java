@@ -11,6 +11,7 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.fa.utils;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -18,19 +19,15 @@ import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by padhyad on 10/19/2016.
- */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsmUtils {
-
-    private UsmUtils() {// Static utility class, not supposed to have instances.
-        super();
-    }
 
     public static List<AreaIdentifierType> convertDataSetToAreaId(List<Dataset> datasets) throws ServiceException {
         List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());

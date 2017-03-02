@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

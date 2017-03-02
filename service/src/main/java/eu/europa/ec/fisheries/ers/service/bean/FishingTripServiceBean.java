@@ -11,16 +11,30 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.bean;
 
+package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.dao.*;
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import com.vividsolutions.jts.io.ParseException;
+import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifiersDao;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
-import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
@@ -29,12 +43,14 @@ import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
@@ -53,8 +69,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.*;
-
-//import eu.europa.ec.fisheries.ers.service.search.FishingTripSearch;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -382,9 +396,16 @@ public class FishingTripServiceBean implements FishingTripService {
         if (datasets == null || datasets.isEmpty()) {
             return null;
         }
-        List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
-        String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
-        return GeometryUtils.wktToGeom(areaWkt);
+
+        try {
+            List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
+            String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
+            Geometry geometry = GeometryMapper.INSTANCE.wktToGeometry(areaWkt).getValue();
+            geometry.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
+            return geometry;
+        } catch (ParseException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 
     /**
