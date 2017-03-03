@@ -13,7 +13,19 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteriaWithValue;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SpeciesCount;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryFACatchtype;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryFishSize;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryTable;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -22,8 +34,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-
-import java.util.*;
 
 
 /**
@@ -55,7 +65,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param customEntity
      * @return
      */
-    private List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomEntity customEntity) {
+    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomEntity customEntity) {
         List<GroupCriteriaWithValue> groups = new ArrayList<>();
 
         if (customEntity == null) {
@@ -131,7 +141,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param catchSummaryEntityList
      * @return SummaryTableDTO calculations for perticular group
      */
-    private SummaryTableDTO getSummaryTableDTO(List<FaCatchSummaryCustomEntity> catchSummaryEntityList) {
+    public SummaryTableDTO getSummaryTableDTO(List<FaCatchSummaryCustomEntity> catchSummaryEntityList) {
         SummaryTableDTO summaryTable = new SummaryTableDTO();
 
         for (FaCatchSummaryCustomEntity entity : catchSummaryEntityList) {

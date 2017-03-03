@@ -87,7 +87,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faReportID", expression = "java(getFAReportId(entity))"),
             @Mapping(target = "fromId", expression = "java(getFromId(entity))"),
             @Mapping(target = "fromName", expression = "java(getFrom(entity))"),
-            @Mapping(source = "occurence", target = "occurence"),
             @Mapping(target = "vesselTransportMeansName", expression = "java(getVesselTransportMeansName(entity))"),
             @Mapping(target = "purposeCode", expression = "java(getPurposeCode(entity))"),
             @Mapping(target = "FAReportType", expression = "java(getFAReportTypeCode(entity))"),
@@ -414,7 +413,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return Collections.emptyList();
         }
 
-        List<String> speciesCode = new ArrayList<>();
+        HashSet<String> speciesCode = new HashSet<>();
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
@@ -422,10 +421,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
             getSpeciesCodeFromAapProduct(faCatch, speciesCode);
         }
 
-        return speciesCode;
+        return new ArrayList<>(speciesCode);
     }
 
-    protected void getSpeciesCodeFromAapProduct(FaCatchEntity faCatch, List<String> speciesCode) {
+    protected void getSpeciesCodeFromAapProduct(FaCatchEntity faCatch, HashSet<String> speciesCode) {
         if (faCatch.getAapProcesses() == null)
             return;
 
