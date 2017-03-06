@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FACatchSearchBuilder;
 import eu.europa.ec.fisheries.ers.service.search.builder.FACatchSearchBuilder_Landing;
@@ -65,9 +66,9 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
 
-        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+       FACatchSummaryHelper faCatchSummaryHelper = (isLanding)?FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
 
-      // By default FishSize and FACatch type should be present in the summary table. First Query db with group FishClass
+       // By default FishSize and FACatch type should be present in the summary table. First Query db with group FishClass
         faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);
 
         List<FaCatchSummaryCustomEntity> customEntities=  getRecordsForFishClassOrFACatchType(query,isLanding); // get data with FishClass grouping factor
@@ -99,7 +100,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
          // Map Raw data received from database to custom entity which will help identifing correct groups
          List<FaCatchSummaryCustomEntity> customEntities= new ArrayList<>();
-         FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+         FACatchSummaryHelper faCatchSummaryHelper = (isLanding)?FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
          List<GroupCriteria> groupCriterias=query.getGroupByFields();
          for(Object[] objArr :list){
              try {

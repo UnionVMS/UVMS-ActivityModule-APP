@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchDetailsDTO;
@@ -108,13 +109,34 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
 
         query.setGroupByFields(groupByFields);
 
-        Map<SearchFilter, String> searchCriteriaMap = new EnumMap<SearchFilter, String>(SearchFilter.class);
+        Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
         searchCriteriaMap.put(SearchFilter.TRIP_ID,tripId);
         query.setSearchCriteriaMap(searchCriteriaMap);
         return getCatchSummaryReport(query,true);
     }
 
 
+   /* @Override
+    public FACatchSummaryDTO getCatchSummaryReportForLandingAndPresentation(FishingActivityQuery query) throws ServiceException{
+        // get grouped data
+        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query,true);
+        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION);
+
+        // post process data to create Summary table part of Catch summary Report
+        //   FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+        List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
+
+        // Post process data to calculate Totals for each column
+        SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
+
+        // Create DTO object to send back to the web
+        FACatchSummaryDTO faCatchSummaryDTO = new FACatchSummaryDTO();
+        faCatchSummaryDTO.setRecordDTOs(catchSummaryList);
+        faCatchSummaryDTO.setTotal(summaryTableDTOTotal);
+
+        return faCatchSummaryDTO;
+    }
+*/
 
     /**
      *  This method groups FACatch Data, performs business logic to create summary report
@@ -129,22 +151,25 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query,isLanding);
 
         // post process data to create Summary table part of Catch summary Report
-        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
-        List<FACatchSummaryRecordDTO> catchSummaryList= null;
+     //   FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+        FACatchSummaryHelper faCatchSummaryHelper = (isLanding)? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+        List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
+
+     /*   List<FACatchSummaryRecordDTO> catchSummaryList= null;
         if(isLanding){
             catchSummaryList=  faCatchSummaryHelper.buildFACatchSummaryRecordDTOListWithPresentation(groupedData);
         }else{
             catchSummaryList=  faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
         }
-
-
+*/
+        SummaryTableDTO summaryTableDTOTotal=   faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
         // Post process data to calculate Totals for each column
-        SummaryTableDTO summaryTableDTOTotal=  null;
+      /*  SummaryTableDTO summaryTableDTOTotal=  null;
         if(isLanding){
             summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotalWithPresentation(catchSummaryList);
         }else{
             summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
-        }
+        }*/
 
         // Create DTO object to send back to the web
         FACatchSummaryDTO faCatchSummaryDTO = new FACatchSummaryDTO();
@@ -163,7 +188,8 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
         log.debug("FACatchSummaryDTO created");
 
         // We can not transfter DTO as it is over JMS because of JAVA maps.so, Map DTO to the type transferrable over JMS
-        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+     //   FACatchSummaryHelper faCatchSummaryHelper = (isLanding)? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
 
         // Create response object
         FACatchSummaryReportResponse faCatchSummaryReportResponse =new FACatchSummaryReportResponse();
@@ -177,23 +203,5 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
     }
 
 
-    @Override
-    public FACatchSummaryDTO getCatchSummaryReportForLandingAndPresentation(FishingActivityQuery query) throws ServiceException{
-        // get grouped data
-        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query,true);
 
-        // post process data to create Summary table part of Catch summary Report
-        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
-        List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
-
-        // Post process data to calculate Totals for each column
-        SummaryTableDTO summaryTableDTOTotal=  faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
-
-        // Create DTO object to send back to the web
-        FACatchSummaryDTO faCatchSummaryDTO = new FACatchSummaryDTO();
-        faCatchSummaryDTO.setRecordDTOs(catchSummaryList);
-        faCatchSummaryDTO.setTotal(summaryTableDTOTotal);
-
-        return faCatchSummaryDTO;
-    }
 }
