@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.ContactPersonDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

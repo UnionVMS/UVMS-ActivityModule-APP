@@ -13,7 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import eu.europa.ec.fisheries.ers.fa.utils.GeometryUtils;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
 import eu.europa.ec.fisheries.ers.service.search.FilterDetails;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
@@ -21,14 +22,20 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
-import java.util.*;
 
 /**
  * Created by sanera on 28/09/2016.
@@ -38,7 +45,7 @@ public abstract class SearchQueryBuilder {
     protected static final String JOIN_FETCH = " JOIN FETCH ";
     protected static final String LEFT = " LEFT ";
     protected static final String JOIN =  " JOIN ";
-    private  static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
     private Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
     private FilterMap  filterMap = FilterMap.createFilterMap();
 
@@ -386,10 +393,10 @@ public abstract class SearchQueryBuilder {
     private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
         switch (key) {
             case PERIOD_START:
-                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
+                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value, DateUtils.DATE_TIME_UI_FORMAT));
                 break;
             case PERIOD_END:
-                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
+                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value, DateUtils.DATE_TIME_UI_FORMAT));
                 break;
             case QUANTITY_MIN:
                 typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
@@ -404,7 +411,14 @@ public abstract class SearchQueryBuilder {
                 typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
                 break;
             case AREA_GEOM:
-                typedQuery.setParameter(queryParameterMappings.get(key), GeometryUtils.wktToGeom(value));
+                Geometry geom;
+                try {
+                    geom = GeometryMapper.INSTANCE.wktToGeometry(value).getValue();
+                    geom.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
+                } catch (ParseException e) {
+                    throw new ServiceException(e.getMessage(), e);
+                }
+                typedQuery.setParameter(queryParameterMappings.get(key), geom);
                 break;
             default:
                 typedQuery.setParameter(queryParameterMappings.get(key), value);

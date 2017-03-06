@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
@@ -32,8 +33,14 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
@@ -267,9 +274,17 @@ public class ActivityServiceBean implements ActivityService {
         if (datasets == null || datasets.isEmpty()) {
             return null;
         }
-        List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
-        String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
-        return GeometryUtils.wktToGeom(areaWkt);
+
+        try {
+            List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
+            String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
+            Geometry geometry = GeometryMapper.INSTANCE.wktToGeometry(areaWkt).getValue();
+            geometry.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
+            return geometry;
+        } catch (ParseException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
+
 
 }

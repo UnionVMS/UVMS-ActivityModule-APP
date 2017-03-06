@@ -16,7 +16,6 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.GearProblemDetailsDTO;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 

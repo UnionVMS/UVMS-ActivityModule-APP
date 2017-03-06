@@ -35,7 +35,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
           "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
            "  JOIN a.faReportDocument fa  " ;
 
-    {
+    public FACatchSearchBuilder(){
         FilterMap filterMap=FilterMap.createFilterMap();
         filterMap.populateFilterMAppingsWithChangeForFACatchReport();
         setFilterMap(filterMap);
@@ -152,14 +152,17 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         return sql;
     }
 
+    @Override
     public  void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
+    @Override
     protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
     }
 
+    @Override
     protected  void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN).append(valueToFindAndApply);
