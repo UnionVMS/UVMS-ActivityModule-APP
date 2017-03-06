@@ -71,7 +71,7 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
         FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
        System.out.println( faCatchSummaryHelper.printJsonstructure(query));
-        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query);
+        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query,false);
         assertNotNull(faCatchSummaryCustomEntityListMap);
       
     }

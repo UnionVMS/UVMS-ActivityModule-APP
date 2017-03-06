@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.facatch;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomChildEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
@@ -50,7 +51,7 @@ public class FACatchSummaryHelper {
         return new FACatchSummaryHelper();
     }
 
-    public  FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList) throws ServiceException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public  FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList,boolean isLanding) throws ServiceException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException, IllegalAccessException, InstantiationException {
 
        if (ArrayUtils.isEmpty(catchSummaryArr))
             return new FaCatchSummaryCustomEntity();
@@ -58,8 +59,14 @@ public class FACatchSummaryHelper {
         if (objectArrSize != groupList.size())  // do not include count field from object array
             throw new ServiceException("selected number of SQL fields do not match with grouping criterias asked by user ");
 
+        Class cls;
+        if(isLanding){
+            cls = Class.forName("eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomChildEntity");
+        }else{
+            cls = Class.forName("eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity");
+        }
 
-        Class cls = Class.forName("eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity");
+
         Object faCatchSummaryCustomEntityObj = cls.newInstance();
         Class parameterType = String.class;
 
@@ -81,7 +88,10 @@ public class FACatchSummaryHelper {
         Method method = cls.getDeclaredMethod("setCount", Double.TYPE);
         method.invoke(faCatchSummaryCustomEntityObj,  catchSummaryArr[objectArrSize]);
 
-        return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
+        if(isLanding)
+           return (FaCatchSummaryCustomChildEntity) faCatchSummaryCustomEntityObj;
+        else
+          return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
     }
 
     // This method parses the date to extract either day, month or year
@@ -179,6 +189,29 @@ public class FACatchSummaryHelper {
         return faCatchSummaryRecordDTOs;
 
     }
+    /**
+     *  Post process data received from database to create FACatchSummaryRecordDTO. Every record will have summary calculated for it.
+     *
+     * @param groupedMap
+     * @return List<FACatchSummaryRecordDTO> Processed records having summary data
+     */
+    public  List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOListWithPresentation(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
+        List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
+
+        for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
+            FACatchSummaryRecordDTO faCatchSummaryDTO= FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryRecordDTOWithPresentation(entry.getKey(),entry.getValue());
+            if(CollectionUtils.isEmpty(faCatchSummaryDTO.getGroups())){ // Do not add record to the list if no data for grouping factors found
+                log.error("No data for the grouping factors found :"+faCatchSummaryDTO);
+                continue;
+            }
+            faCatchSummaryRecordDTOs.add(faCatchSummaryDTO);
+        }
+        return faCatchSummaryRecordDTOs;
+
+    }
+
+
+
 
     /**
      * Calculate Total for each column after processing all the records
@@ -200,6 +233,20 @@ public class FACatchSummaryHelper {
         return summaryTableWithTotals;
     }
 
+
+    public SummaryTableDTO populateSummaryTableWithTotalWithPresentation( List<FACatchSummaryRecordDTO> catchSummaryDTOList){
+        SummaryTableDTO summaryTableWithTotals= new SummaryTableDTO();
+
+        for(FACatchSummaryRecordDTO faCatchSummaryDTO:catchSummaryDTOList){
+            SummaryTableDTO summaryTable= faCatchSummaryDTO.getSummaryTable();
+
+            populateTotalFishSizeMapWithPresentation(summaryTableWithTotals, summaryTable);
+    //        populateTotalFaCatchMap(summaryTableWithTotals, summaryTable);
+
+        }
+
+        return summaryTableWithTotals;
+    }
     /**
      * This method processes data to calculate weights for different FishSize classes
      * @param summaryTableWithTotals  Add the calculation to this final class
@@ -235,6 +282,38 @@ public class FACatchSummaryHelper {
         }
     }
 
+
+    /**
+     * This method processes data to calculate weights for different FishSize classes
+     * @param summaryTableWithTotals  Add the calculation to this final class
+     * @param summaryTable process this object to calculate totals
+     */
+    private void populateTotalFishSizeMapWithPresentation(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
+
+        Map<FishSizeClassEnum,Object> fishSizeClassEnumMap=summaryTable.getSummaryFishSize();
+        if(MapUtils.isEmpty(fishSizeClassEnumMap)){
+            return;
+        }
+
+        Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
+        if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
+            totalFishSizeSpeciesMap = new HashMap<>();
+            summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);
+        }
+
+        // Go through all the Fish classes  and calculate total for each fishclass
+        for(Map.Entry<FishSizeClassEnum, Object> entry :fishSizeClassEnumMap.entrySet()){
+            FishSizeClassEnum fishSize= entry.getKey(); // key fishSize
+
+            Object value = entry.getValue();
+            // Value will be Double if species are not present as grouping criteria Else it will be map of Species and its count
+            if(value instanceof Map){
+                Map<String, Map<String,Double>> fishSizeMap = (Map<String, Map<String,Double>>) totalFishSizeSpeciesMap.get(fishSize); // check if already present
+                fishSizeMap = populateSpeciesPresentationMapWithTotal(( Map<String, Map<String,Double>>) value, fishSizeMap);
+                totalFishSizeSpeciesMap.put(fishSize, fishSizeMap);
+            }
+        }
+    }
 
     /**
      * This method processes data to calculate weights for different Catch types
@@ -290,6 +369,29 @@ public class FACatchSummaryHelper {
         return faCatchSummaryRecords;
     }
 
+
+    @NotNull
+    private Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String,Double>> speciesMap, Map<String, Map<String,Double>> resultTotalfishSizeMap) {
+        if (MapUtils.isEmpty(resultTotalfishSizeMap)) {
+            resultTotalfishSizeMap = new HashMap<>();
+        }
+
+        for (Map.Entry<String, Map<String,Double>> speciesEntry : speciesMap.entrySet()) {
+            String speciesCode = speciesEntry.getKey();
+            Map<String,Double> valuePresentationCountMap = speciesEntry.getValue();
+
+            // check in the totals map if the species exist.If yes, add
+            if (resultTotalfishSizeMap.containsKey(speciesCode)) {
+                Map<String,Double> resultPresentationCount = resultTotalfishSizeMap.get(speciesCode);
+                resultPresentationCount= extractSpeciesCountMAp(valuePresentationCountMap,resultPresentationCount);
+                resultTotalfishSizeMap.put(speciesCode,resultPresentationCount);
+            } else {
+
+                resultTotalfishSizeMap.put(speciesCode,valuePresentationCountMap );
+            }
+        }
+        return resultTotalfishSizeMap;
+    }
 
 
     @NotNull

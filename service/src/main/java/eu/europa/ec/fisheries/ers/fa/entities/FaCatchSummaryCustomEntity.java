@@ -42,7 +42,7 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     private double count;
 
 
-    @Override
+   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof FaCatchSummaryCustomEntity)) return false;
@@ -91,6 +91,9 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         result = 31 * result + (getGfcmStatRectangle() != null ? getGfcmStatRectangle().hashCode() : 0);
         return result;
     }
+
+
+
 
     public String getVesselTransportGuid() {
         return vesselTransportGuid;

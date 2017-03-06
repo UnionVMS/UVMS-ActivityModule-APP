@@ -21,9 +21,13 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
  */
 public interface FaCatchReportService {
 
-   FACatchSummaryDTO getCatchSummaryReportForWeb(FishingActivityQuery query) throws ServiceException;
+
+
+   FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding) throws ServiceException;
 
    FACatchSummaryReportResponse getFACatchSummaryReportResponse(FishingActivityQuery query) throws ServiceException;
 
    FACatchDetailsDTO getCatchesTableForCatchDetailsScreen(String tripId) throws ServiceException;
+
+   FACatchSummaryDTO getCatchSummaryReportForLandingAndPresentation(FishingActivityQuery query) throws ServiceException;
 }

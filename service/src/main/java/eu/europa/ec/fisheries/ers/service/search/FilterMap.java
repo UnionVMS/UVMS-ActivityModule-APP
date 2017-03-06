@@ -62,6 +62,7 @@ public class FilterMap {
     public static final String FISHING_TRIP_TABLE_ALIAS        = " a.fishingTrips fishingTrip ";
     public static final String FISHING_TRIP_IDENTIFIER_TABLE_ALIAS        = " fishingTrip.fishingTripIdentifiers fishingTripId ";
     public static final String AAP_PROCESS_TABLE_ALIAS        = " faCatch.aapProcesses aprocess ";
+    public static final String AAP_PRODUCT_TABLE_ALIAS        = " aprocess.aapProducts aprod ";
     public static final String MASTER_MAPPING                = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE                   = "dataSource";
     public static final String FAREPORT_ID                  = "faReportId";
@@ -126,8 +127,8 @@ public class FilterMap {
         filterMappings.put(SearchFilter.AREAS, new FilterDetails("a.fluxLocations fluxLoc", "( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:" + AREA_ID + " )"));
         filterMappings.put(SearchFilter.PORT, new FilterDetails("a.fluxLocations fluxLoc", "( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier IN (:" + PORT_ID + " ))"));
         filterMappings.put(SearchFilter.GEAR, new FilterDetails(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode IN (:" + FISHING_GEAR + ")"));
-        filterMappings.put(SearchFilter.SPECIES, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH "+AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN FETCH aprocess.aapProducts aprod ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
-        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH "+AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN FETCH aprocess.aapProducts aprod ", " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
+        filterMappings.put(SearchFilter.SPECIES, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH "+AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN FETCH "+AAP_PRODUCT_TABLE_ALIAS, "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
+        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH "+AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN FETCH "+AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
         filterMappings.put(SearchFilter.QUANTITY_MAX, new FilterDetails(" ", "  :" + QUANTITY_MAX + ") "));
         filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
@@ -156,7 +157,7 @@ public class FilterMap {
         populateFilterMappings();
         filterMappings.put(SearchFilter.SPECIES, new FilterDetails(" ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") )"));
         filterMappings.put(SearchFilter.GEAR, new FilterDetails("faCatch.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
-        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN aprocess.aapProducts aprod ", " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
+        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(AAP_PROCESS_TABLE_ALIAS+" LEFT JOIN "+AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
         filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN vt.contactParty cparty JOIN cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
                 "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
