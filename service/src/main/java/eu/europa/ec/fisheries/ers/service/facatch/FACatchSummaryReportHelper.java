@@ -1,3 +1,13 @@
+/*
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+
+ */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
@@ -47,20 +57,11 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
 
     }
 
-   /* public SummaryTableDTO populateSummaryTableWithTotal(List<FACatchSummaryRecordDTO> catchSummaryDTOList){
-        SummaryTableDTO summaryTableWithTotals= new SummaryTableDTO();
-
-        for(FACatchSummaryRecordDTO faCatchSummaryDTO:catchSummaryDTOList){
-            SummaryTableDTO summaryTable= faCatchSummaryDTO.getSummaryTable();
-
-            populateTotalFishSizeMap(summaryTableWithTotals, summaryTable);
-            populateTotalFaCatchMap(summaryTableWithTotals, summaryTable);
-
-        }
-
-        return summaryTableWithTotals;
-    }*/
-
+    /**
+     * This method will calculate totals for FishSize section
+     * @param summaryTableWithTotals Add the calculation to this final class
+     * @param summaryTable           process this object to calculate totals
+     */
     public void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
 
         Map<FishSizeClassEnum,Object> fishSizeClassEnumMap=summaryTable.getSummaryFishSize();
@@ -81,9 +82,9 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
             Object value = entry.getValue();
             // Value will be Double if species are not present as grouping criteria Else it will be map of Species and its count
             if(value instanceof Map){
-                Map<String, Double> fishSizeMap = (Map<String, Double>) totalFishSizeSpeciesMap.get(fishSize); // check if already present
-                fishSizeMap = extractSpeciesCountMAp((Map<String, Double>) value, fishSizeMap);
-                totalFishSizeSpeciesMap.put(fishSize, fishSizeMap);
+                Map<String, Double> totalSpeciesMap = (Map<String, Double>) totalFishSizeSpeciesMap.get(fishSize); // check if already present
+                totalSpeciesMap = extractSpeciesCountMap((Map<String, Double>) value, totalSpeciesMap);
+                totalFishSizeSpeciesMap.put(fishSize, totalSpeciesMap);
 
             }else if(value instanceof Double){
                 totalFishSizeSpeciesMap.put(fishSize, calculateTotalValue((Double) value, (Double) totalFishSizeSpeciesMap.get(fishSize)));
@@ -112,9 +113,9 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
                 FaCatchTypeEnum catchType = entry.getKey(); // key fishSize
                 Object value = entry.getValue();
                 if(value instanceof Map){
-                    Map<String, Double> fishSizeMap = (Map<String, Double>) totalCatchTypeMap.get(catchType); // check if already present
-                    fishSizeMap = extractSpeciesCountMAp((Map<String, Double>) value, fishSizeMap);
-                    totalCatchTypeMap.put(catchType, fishSizeMap);
+                    Map<String, Double> resultTotalSpeciesMap = (Map<String, Double>) totalCatchTypeMap.get(catchType); // check if already present
+                    resultTotalSpeciesMap = extractSpeciesCountMap((Map<String, Double>) value, resultTotalSpeciesMap);
+                    totalCatchTypeMap.put(catchType, resultTotalSpeciesMap);
 
                 }else if(value instanceof Double){
                     totalCatchTypeMap.put(catchType, calculateTotalValue((Double) value, (Double) totalCatchTypeMap.get(catchType)));

@@ -1,3 +1,13 @@
+/*
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+
+ */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
@@ -44,9 +54,6 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
                 log.error("No data for the grouping factors found :"+faCatchSummaryDTO);
                 continue;
             }
-
-
-
             faCatchSummaryRecordDTOs.add(faCatchSummaryDTO);
         }
         return faCatchSummaryRecordDTOs;
@@ -124,9 +131,9 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
     }
 
     @NotNull
-    protected Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String,Double>> speciesMap, Map<String, Map<String,Double>> resultTotalfishSizeMap) {
-        if (MapUtils.isEmpty(resultTotalfishSizeMap)) {
-            resultTotalfishSizeMap = new HashMap<>();
+    protected Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String,Double>> speciesMap, Map<String, Map<String,Double>> resultTotalPresentationMap) {
+        if (MapUtils.isEmpty(resultTotalPresentationMap)) {
+            resultTotalPresentationMap = new HashMap<>();
         }
 
         for (Map.Entry<String, Map<String,Double>> speciesEntry : speciesMap.entrySet()) {
@@ -134,16 +141,16 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
             Map<String,Double> valuePresentationCountMap = speciesEntry.getValue();
 
             // check in the totals map if the species exist.If yes, add
-            if (resultTotalfishSizeMap.containsKey(speciesCode)) {
-                Map<String,Double> resultPresentationCount = resultTotalfishSizeMap.get(speciesCode);
-                resultPresentationCount= extractSpeciesCountMAp(valuePresentationCountMap,resultPresentationCount);
-                resultTotalfishSizeMap.put(speciesCode,resultPresentationCount);
+            if (resultTotalPresentationMap.containsKey(speciesCode)) {
+                Map<String,Double> resultPresentationCount = resultTotalPresentationMap.get(speciesCode);
+                resultPresentationCount= extractSpeciesCountMap(valuePresentationCountMap,resultPresentationCount);
+                resultTotalPresentationMap.put(speciesCode,resultPresentationCount);
             } else {
 
-                resultTotalfishSizeMap.put(speciesCode,valuePresentationCountMap );
+                resultTotalPresentationMap.put(speciesCode,valuePresentationCountMap );
             }
         }
-        return resultTotalfishSizeMap;
+        return resultTotalPresentationMap;
     }
 
 }

@@ -240,18 +240,13 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
         Map<FishSizeClassEnum, Object> fishSizeSummaryMap = summaryTable.getSummaryFishSize();
 
-      /*  // Perform logic to calculate weight sum if user has not asked for groupBy Species. So, do not calculate for individual species.
-        if(customEntity.getFishClass() !=null && customEntity.getSpecies() ==null){
-            return populateFishSizeClassMapForOnlyForFishClass(customEntity, speciesCnt, fishSizeSummaryMap);
-        }
-*/
         // Post process data to consider different species and calculate count for it.
         if (MapUtils.isEmpty(fishSizeSummaryMap)) {
             fishSizeSummaryMap = new HashMap<>();
             fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), createPresentationCountMap(customEntity, speciesCnt));
 
         } else {
-           // Map<String, Double> speciesCountMap = (Map<String, Double>) fishSizeSummaryMap.get(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()));
+
             Map<String, Map<String,Double>> speciesCountMap = ( Map<String, Map<String,Double>>) fishSizeSummaryMap.get(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()));
             if (MapUtils.isEmpty(speciesCountMap)) {
                 fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), createPresentationCountMap(customEntity, speciesCnt));
