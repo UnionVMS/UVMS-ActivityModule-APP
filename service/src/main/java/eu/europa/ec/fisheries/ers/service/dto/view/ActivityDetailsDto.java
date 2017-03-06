@@ -13,8 +13,8 @@ package eu.europa.ec.fisheries.ers.service.dto.view;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 import java.util.Date;

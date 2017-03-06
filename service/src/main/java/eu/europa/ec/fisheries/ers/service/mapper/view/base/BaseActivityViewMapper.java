@@ -12,17 +12,17 @@ package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.MappingTarget;
 
 import java.util.*;
 
@@ -35,7 +35,7 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  */
 public abstract class BaseActivityViewMapper {
 
-    public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity, @MappingTarget FishingActivityViewDTO viewDto);
+    public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
     /**
      * This method will populate the type, fluxCharacteristics and occurrence and will leave the population of the
@@ -171,9 +171,10 @@ public abstract class BaseActivityViewMapper {
         }
     }
 
-    protected FaCatchGroupDetailsDto getCatchesFromEntity(FishingActivityEntity faEntity){
+    // TODO : to be implemented
+    protected List<FaCatchGroupDto> getCatchesFromEntity(FishingActivityEntity faEntity){
         FaCatchGroupDetailsDto catchDto = new FaCatchGroupDetailsDto();
-        return catchDto;
+        return null;
     }
 
 }

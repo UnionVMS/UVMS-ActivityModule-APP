@@ -58,13 +58,13 @@ public class FishingActivityViewMapperTest {
 
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.ARRIVAL);
 
-        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(getFishingActivityEntity(), new FishingActivityViewDTO());
+        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(getFishingActivityEntity());
 
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getGears());
         assertNotNull(fishingActivityViewDTO.getReportDoc());
         assertTrue(fishingActivityViewDTO.getGears().size() == 1);
-        assertNull(mapperForView.mapFaEntityToFaDto(null, new FishingActivityViewDTO()));
+        assertNull(mapperForView.mapFaEntityToFaDto(null));
 
         printDtoOnConsole(fishingActivityViewDTO);
     }
@@ -78,11 +78,11 @@ public class FishingActivityViewMapperTest {
     public void testActivityLandingViewMapper(){
 
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.LANDING);
-        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(getFishingActivityEntity(), new FishingActivityViewDTO());
+        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(getFishingActivityEntity());
 
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getReportDoc());
-        assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null, new FishingActivityViewDTO()));
+        assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
 
         printDtoOnConsole(fishingActivityViewDTO);
     }

@@ -14,7 +14,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -26,7 +25,7 @@ public class BaseViewWithInstanceMapper extends BaseActivityViewMapper {
     public static final BaseViewWithInstanceMapper INSTANCE = Mappers.getMapper(BaseViewWithInstanceMapper.class);
 
     @Override
-    public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity, @MappingTarget FishingActivityViewDTO viewDto) {
+    public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
         return null;
     }
 
