@@ -17,10 +17,10 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 /**
  * Created by kovian on 14/02/2017.
  */
-public class ViewMapperFactory {
+public class ActivityViewMapperFactory {
 
-    public static BaseViewMapper getMapperForView(ActivityViewEnum view) throws ServiceException {
-        BaseViewMapper mapper;
+    public static BaseActivityViewMapper getMapperForView(ActivityViewEnum view) throws ServiceException {
+        BaseActivityViewMapper mapper;
         switch (view) {
             case DEPARTURE:
                 mapper = null;

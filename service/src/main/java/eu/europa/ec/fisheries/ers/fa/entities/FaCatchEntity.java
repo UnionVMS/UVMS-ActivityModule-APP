@@ -113,22 +113,6 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "gear_type_code")
 	private String gearTypeCode;
 
-	public String getGearTypeCode() {
-		return gearTypeCode;
-	}
-
-	public void setGearTypeCode(String gearTypeCode) {
-		this.gearTypeCode = gearTypeCode;
-	}
-
-	public String getFishClassCode() {
-		return fishClassCode;
-	}
-
-	public void setFishClassCode(String fishClassCode) {
-		this.fishClassCode = fishClassCode;
-	}
-
 	@Column(name = "fish_class_code")
 	private String fishClassCode;
 
@@ -360,6 +344,90 @@ public class FaCatchEntity implements Serializable {
 
 	public void setPresentation(String presentation) {
 		this.presentation = presentation;
+	}
+	public String getGearTypeCode() {
+		return gearTypeCode;
+	}
+
+	public void setGearTypeCode(String gearTypeCode) {
+		this.gearTypeCode = gearTypeCode;
+	}
+
+	public String getFishClassCode() {
+		return fishClassCode;
+	}
+
+	public void setFishClassCode(String fishClassCode) {
+		this.fishClassCode = fishClassCode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof FaCatchEntity)) return false;
+
+		FaCatchEntity that = (FaCatchEntity) o;
+
+		if (id != that.id) return false;
+		if (unitQuantity != null ? !unitQuantity.equals(that.unitQuantity) : that.unitQuantity != null) return false;
+		if (unitQuantityCode != null ? !unitQuantityCode.equals(that.unitQuantityCode) : that.unitQuantityCode != null)
+			return false;
+		if (calculatedUnitQuantity != null ? !calculatedUnitQuantity.equals(that.calculatedUnitQuantity) : that.calculatedUnitQuantity != null)
+			return false;
+		if (weightMeasureUnitCode != null ? !weightMeasureUnitCode.equals(that.weightMeasureUnitCode) : that.weightMeasureUnitCode != null)
+			return false;
+		if (weightMeasure != null ? !weightMeasure.equals(that.weightMeasure) : that.weightMeasure != null)
+			return false;
+		if (calculatedWeightMeasure != null ? !calculatedWeightMeasure.equals(that.calculatedWeightMeasure) : that.calculatedWeightMeasure != null)
+			return false;
+		if (usageCode != null ? !usageCode.equals(that.usageCode) : that.usageCode != null) return false;
+		if (usageCodeListId != null ? !usageCodeListId.equals(that.usageCodeListId) : that.usageCodeListId != null)
+			return false;
+		if (weighingMeansCode != null ? !weighingMeansCode.equals(that.weighingMeansCode) : that.weighingMeansCode != null)
+			return false;
+		if (weighingMeansCodeListId != null ? !weighingMeansCodeListId.equals(that.weighingMeansCodeListId) : that.weighingMeansCodeListId != null)
+			return false;
+		if (territory != null ? !territory.equals(that.territory) : that.territory != null) return false;
+		if (faoArea != null ? !faoArea.equals(that.faoArea) : that.faoArea != null) return false;
+		if (icesStatRectangle != null ? !icesStatRectangle.equals(that.icesStatRectangle) : that.icesStatRectangle != null)
+			return false;
+		if (effortZone != null ? !effortZone.equals(that.effortZone) : that.effortZone != null) return false;
+		if (rfmo != null ? !rfmo.equals(that.rfmo) : that.rfmo != null) return false;
+		if (gfcmGsa != null ? !gfcmGsa.equals(that.gfcmGsa) : that.gfcmGsa != null) return false;
+		if (gfcmStatRectangle != null ? !gfcmStatRectangle.equals(that.gfcmStatRectangle) : that.gfcmStatRectangle != null)
+			return false;
+		if (presentation != null ? !presentation.equals(that.presentation) : that.presentation != null) return false;
+		if (gearTypeCode != null ? !gearTypeCode.equals(that.gearTypeCode) : that.gearTypeCode != null) return false;
+		if (fishClassCode != null ? !fishClassCode.equals(that.fishClassCode) : that.fishClassCode != null)
+			return false;
+		return fluxLocations != null ? fluxLocations.equals(that.fluxLocations) : that.fluxLocations == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		result = 31 * result + (unitQuantity != null ? unitQuantity.hashCode() : 0);
+		result = 31 * result + (unitQuantityCode != null ? unitQuantityCode.hashCode() : 0);
+		result = 31 * result + (calculatedUnitQuantity != null ? calculatedUnitQuantity.hashCode() : 0);
+		result = 31 * result + (weightMeasureUnitCode != null ? weightMeasureUnitCode.hashCode() : 0);
+		result = 31 * result + (weightMeasure != null ? weightMeasure.hashCode() : 0);
+		result = 31 * result + (calculatedWeightMeasure != null ? calculatedWeightMeasure.hashCode() : 0);
+		result = 31 * result + (usageCode != null ? usageCode.hashCode() : 0);
+		result = 31 * result + (usageCodeListId != null ? usageCodeListId.hashCode() : 0);
+		result = 31 * result + (weighingMeansCode != null ? weighingMeansCode.hashCode() : 0);
+		result = 31 * result + (weighingMeansCodeListId != null ? weighingMeansCodeListId.hashCode() : 0);
+		result = 31 * result + (territory != null ? territory.hashCode() : 0);
+		result = 31 * result + (faoArea != null ? faoArea.hashCode() : 0);
+		result = 31 * result + (icesStatRectangle != null ? icesStatRectangle.hashCode() : 0);
+		result = 31 * result + (effortZone != null ? effortZone.hashCode() : 0);
+		result = 31 * result + (rfmo != null ? rfmo.hashCode() : 0);
+		result = 31 * result + (gfcmGsa != null ? gfcmGsa.hashCode() : 0);
+		result = 31 * result + (gfcmStatRectangle != null ? gfcmStatRectangle.hashCode() : 0);
+		result = 31 * result + (presentation != null ? presentation.hashCode() : 0);
+		result = 31 * result + (gearTypeCode != null ? gearTypeCode.hashCode() : 0);
+		result = 31 * result + (fishClassCode != null ? fishClassCode.hashCode() : 0);
+		result = 31 * result + (fluxLocations != null ? fluxLocations.hashCode() : 0);
+		return result;
 	}
 
 	@Override

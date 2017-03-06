@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityView;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
@@ -71,7 +71,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @GET
     @Path("/landing/{activityId}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView(FishingActivityView.Arrival.class)
+    @JsonView(FishingActivityView.Landing.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityLandingView(@Context HttpServletRequest request,

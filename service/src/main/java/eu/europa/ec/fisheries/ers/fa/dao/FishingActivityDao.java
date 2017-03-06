@@ -135,14 +135,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private void fillQueryConditions(Geometry geom) {
         activityViewQuery = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
-                .append("LEFT JOIN FETCH a.faReportDocument fa ")
+  /*              .append("LEFT JOIN FETCH a.faReportDocument fa ")
                 .append("LEFT JOIN FETCH a.fluxLocations fl ")
                 .append("LEFT JOIN FETCH a.fishingGears fg ")
                 .append("LEFT JOIN FETCH a.fluxCharacteristics fc ")
                 .append("LEFT JOIN FETCH a.faCatchs fCatch ")
                 .append("LEFT JOIN FETCH fg.fishingGearRole ")
                 .append("LEFT JOIN FETCH fg.gearCharacteristics ")
-                .append("LEFT JOIN FETCH fa.fluxReportDocument flux ")
+                .append("LEFT JOIN FETCH fa.fluxReportDocument flux ")*/
                 .append("WHERE ");
         if(geom != null){
             activityViewQuery.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");

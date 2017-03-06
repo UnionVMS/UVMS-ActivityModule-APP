@@ -10,29 +10,57 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseViewMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.DelimitedPeriodDTO;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Date;
+import java.util.Set;
+
 /**
  * Created by kovian on 14/02/2017.
  */
 @Mapper
-public abstract class ActivityLandingViewMapper extends BaseViewMapper {
+public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityLandingViewMapper INSTANCE = Mappers.getMapper(ActivityLandingViewMapper.class);
 
     @Override
     @Mappings({
-            @Mapping(target = "arrival",   expression = "java(null)"),
-            @Mapping(target = "ports",     expression = "java(getPortsFromFluxLocation(faEntity.getFluxLocations()))"),
-            @Mapping(target = "gears",     expression = "java(null)"),
-            @Mapping(target = "reportDoc", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))")
+            @Mapping(target = "activityDetails",   expression = "java(mapActivityDetails(faEntity))"),
+            @Mapping(target = "ports",       expression = "java(getPortsFromFluxLocation(faEntity.getFluxLocations()))"),
+            @Mapping(target = "reportDoc",   expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
+            @Mapping(target = "catches",   expression = "java(getCatchesFromEntity(faEntity))")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity, @MappingTarget FishingActivityViewDTO viewDto);
+
+    @Override
+    protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails){
+        DelimitedPeriodDTO delimitedPeriodDTO = mapToDelimitedPeriodDto(faEntity.getDelimitedPeriods());
+        activityDetails.setLandingTime(delimitedPeriodDTO);
+        return activityDetails;
+    }
+
+    private DelimitedPeriodDTO mapToDelimitedPeriodDto(Set<DelimitedPeriodEntity> delimitedPeriods) {
+        Date startDate  = null;
+        Date endDate    = null;
+        Double duration = null;
+        if(CollectionUtils.isNotEmpty(delimitedPeriods)){
+            DelimitedPeriodEntity delimPeriod = delimitedPeriods.iterator().next();
+            startDate = delimPeriod.getStartDate();
+            endDate   = delimPeriod.getEndDate();
+            duration = delimPeriod.getDuration();
+        }
+        return new DelimitedPeriodDTO(startDate, endDate, duration);
+    }
+
 }
