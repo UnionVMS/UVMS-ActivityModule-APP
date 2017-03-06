@@ -255,9 +255,7 @@ public abstract class FACatchSummaryHelper {
 
             // check in the totals map if the species exist.If yes, add
             if (resultTotalspeciesMap.containsKey(speciesCode)) {
-                Double speciesTotalWeight = resultTotalspeciesMap.get(speciesCode);
-                speciesTotalWeight = speciesTotalWeight + speciesCount;
-                resultTotalspeciesMap.put(speciesCode, speciesTotalWeight);
+                resultTotalspeciesMap.put(speciesCode, resultTotalspeciesMap.get(speciesCode) + speciesCount);
             } else {
                 resultTotalspeciesMap.put(speciesCode, speciesCount);
             }

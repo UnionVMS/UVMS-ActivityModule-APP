@@ -143,7 +143,17 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
         SummaryTableDTO summaryTable = new SummaryTableDTO();
 
         for(FaCatchSummaryCustomEntity entity :catchSummaryEntityList){
-            populateSummaryTable(summaryTable,entity);
+            Double speciesCnt = entity.getCount();
+
+            // If FishClass information is present then only build structure for FishClass
+            if(entity.getFishClass()!=null) {
+                summaryTable.setSummaryFishSize(getFishSizeClassMap(summaryTable, entity, speciesCnt));
+            }
+
+            // If CatchType information is present then only build structure for CatchType
+            if(entity.getTypeCode()!=null) {
+                summaryTable.setSummaryFaCatchType(getFaCatchTypeEnumMap(summaryTable, entity, speciesCnt));
+            }
         }
         return summaryTable;
     }
@@ -158,43 +168,23 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
         SummaryTableDTO summaryTable = new SummaryTableDTO();
 
         for(FaCatchSummaryCustomEntity entity :catchSummaryEntityList){
-            populateSummaryTableWithPresentation(summaryTable,entity);
+            Double count = entity.getCount();
+
+            // If FishClass information is present then only build structure for FishClass
+            if(entity.getFishClass()!=null) {
+                summaryTable.setSummaryFishSize(getFishSizeClassMapWithPresentation(summaryTable, entity, count));
+            }
+
+            // If CatchType information is present then only build structure for CatchType
+            if(entity.getTypeCode()!=null) {
+                summaryTable.setSummaryFaCatchType(getFaCatchTypeEnumMapWithPresentation(summaryTable, entity, count));
+            }
         }
         return summaryTable;
     }
 
-    private void populateSummaryTable(SummaryTableDTO summaryTable,FaCatchSummaryCustomEntity customEntity){
-        Double speciesCnt = customEntity.getCount();
 
-        // If FishClass information is present then only build structure for FishClass
-        if(customEntity.getFishClass()!=null) {
-            summaryTable.setSummaryFishSize(getFishSizeClassMap(summaryTable, customEntity, speciesCnt));
-        }
-
-        // If CatchType information is present then only build structure for CatchType
-        if(customEntity.getTypeCode()!=null) {
-            summaryTable.setSummaryFaCatchType(getFaCatchTypeEnumMap(summaryTable, customEntity, speciesCnt));
-        }
-
-    }
-
-    private void populateSummaryTableWithPresentation(SummaryTableDTO summaryTable,FaCatchSummaryCustomEntity customEntity){
-        Double count = customEntity.getCount();
-
-        // If FishClass information is present then only build structure for FishClass
-        if(customEntity.getFishClass()!=null) {
-            summaryTable.setSummaryFishSize(getFishSizeClassMapWithPresentation(summaryTable, customEntity, count));
-        }
-
-        // If CatchType information is present then only build structure for CatchType
-        if(customEntity.getTypeCode()!=null) {
-            summaryTable.setSummaryFaCatchType(getFaCatchTypeEnumMapWithPresentation(summaryTable, customEntity, count));
-        }
-
-    }
-
-
-    /**
+     /**
      *  Create Map with Different FishClasses and its aggregated weight values.If species information is present, calculate for different species as well.
      * @param summaryTable - Add to this object new calculations.
      * @param customEntity - Process this entity to extract FishSize data
@@ -335,6 +325,13 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
         return faCatchSummaryMap;
     }
 
+    /**
+     *
+     * @param customEntity
+     * @param speciesCnt
+     * @param faCatchSummaryMap
+     * @return
+     */
     @NotNull
     private Map<FaCatchTypeEnum, Object> populateFaCatchTypeMapOnlyForCatchType(FaCatchSummaryCustomEntity customEntity, Double speciesCnt, Map<FaCatchTypeEnum, Object> faCatchSummaryMap) {
         if (MapUtils.isEmpty(faCatchSummaryMap)) {
