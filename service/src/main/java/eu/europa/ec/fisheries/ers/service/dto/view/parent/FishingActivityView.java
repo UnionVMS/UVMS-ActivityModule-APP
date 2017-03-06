@@ -34,4 +34,5 @@ public class FishingActivityView {
     public interface Relocation extends CommonView {}
     public interface NotificationOfRelocation extends CommonView {}
 
+    public interface NoView {}
 }

@@ -113,6 +113,22 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "gear_type_code")
 	private String gearTypeCode;
 
+	public String getGearTypeCode() {
+		return gearTypeCode;
+	}
+
+	public void setGearTypeCode(String gearTypeCode) {
+		this.gearTypeCode = gearTypeCode;
+	}
+
+	public String getFishClassCode() {
+		return fishClassCode;
+	}
+
+	public void setFishClassCode(String fishClassCode) {
+		this.fishClassCode = fishClassCode;
+	}
+
 	@Column(name = "fish_class_code")
 	private String fishClassCode;
 
@@ -344,21 +360,6 @@ public class FaCatchEntity implements Serializable {
 
 	public void setPresentation(String presentation) {
 		this.presentation = presentation;
-	}
-	public String getGearTypeCode() {
-		return gearTypeCode;
-	}
-
-	public void setGearTypeCode(String gearTypeCode) {
-		this.gearTypeCode = gearTypeCode;
-	}
-
-	public String getFishClassCode() {
-		return fishClassCode;
-	}
-
-	public void setFishClassCode(String fishClassCode) {
-		this.fishClassCode = fishClassCode;
 	}
 
 	@Override

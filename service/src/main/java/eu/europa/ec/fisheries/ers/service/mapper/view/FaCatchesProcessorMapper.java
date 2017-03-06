@@ -10,9 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.DestinationLocationDto;
@@ -92,6 +90,12 @@ public class FaCatchesProcessorMapper {
         return group;
     }
 
+    /**
+     * Subgroups and fills the List<FaCatchGroupDto> mapping the required properties.
+     *
+     * @param faCatchGroups
+     * @return
+     */
     private static List<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, List<FaCatchEntity>> faCatchGroups) {
         List<FaCatchGroupDto> faCatchGroupsDtoList = new ArrayList<>();
         for(Map.Entry<String, List<FaCatchEntity>> group : faCatchGroups.entrySet()){
@@ -110,50 +114,46 @@ public class FaCatchesProcessorMapper {
     private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(String groupNr, List<FaCatchEntity> groupCatchList) {
         FaCatchGroupDto groupDto  = new FaCatchGroupDto();
         FaCatchEntity catchEntity = groupCatchList.get(0);
-
         // Set primary properties on groupDto
         groupDto.setType(catchEntity.getTypeCode());
         groupDto.setSpecies(catchEntity.getSpeciesCode());
         groupDto.setCalculatedWeight(catchEntity.getCalculatedUnitQuantity());
-
         // Fill the denomination location part of the GroupDto.
         groupDto.setLocation(FaCatchGroupMapper.INSTANCE.mapFaCatchEntityToDenominationLocation(catchEntity));
-
-        // calculate Totals And Fill Locations Per Subgroup
-        calculateTotalsAndFillLocationsPerSubgroup(groupCatchList, groupDto);
-
+        // calculate Totals And Fill Soecified Locations and Gears Per each Subgroup (subgrupped on BMS/LSC)
+        calculateTotalsAndFillSubgroups(groupCatchList, groupDto);
         return groupDto;
     }
 
-    private static void calculateTotalsAndFillLocationsPerSubgroup(List<FaCatchEntity> groupCatchList, FaCatchGroupDto groupDto) {
+    /**
+     *  Subgroups by BMS and LSC and :
+     *  Calculates the total and fills all the details related to each subgroup.
+     *
+     * @param groupCatchList
+     * @param groupDto
+     */
+    private static void calculateTotalsAndFillSubgroups(List<FaCatchEntity> groupCatchList, FaCatchGroupDto groupDto) {
         Map<String, FaCatchGroupDetailsDto> groupingDetailsMap = groupDto.getGroupingDetails();
         FaCatchGroupDetailsDto lscGroupDetailsDto = new FaCatchGroupDetailsDto();
         FaCatchGroupDetailsDto bmsGroupDetailsDto = new FaCatchGroupDetailsDto();
-
         // Weight and units totals
         Double lscGroupTotalWeight  = 0.0;
         Double lscGroupTotalUnits   = 0.0;
         Double bmsGroupTotalWeight  = 0.0;
         Double bmsGroupTotalUnits   = 0.0;
         for(FaCatchEntity entity : groupCatchList){
-            Set<FluxLocationEntity> fluxLocationsList = entity.getFluxLocations();
-            Set<FishingGearEntity>  fishingGears      = entity.getFishingGears();
             switch(entity.getFishClassCode()){
                 case LSC:
-                    // Weight and Units
+                    // Weight and Units calculation
                     lscGroupTotalWeight += entity.getWeightMeasure();
                     lscGroupTotalUnits  += entity.getUnitQuantity();
-                    // Fill destinationLKocations and SpecifiedFluxLocation (FluxLocationCatchTypeEnum)
-                    fillLocationsAndGearsToDetails(fluxLocationsList, lscGroupDetailsDto);
-                    fillFishingGears(fishingGears, lscGroupDetailsDto);
+                    fillDetailsForSubGroup(lscGroupDetailsDto, entity);
                     break;
                 case BMS:
-                    // Weight and Units
+                    // Weight and Units calculation
                     bmsGroupTotalWeight += entity.getWeightMeasure();
                     bmsGroupTotalUnits  += entity.getUnitQuantity();
-                    // Fill destinationLKocations and SpecifiedFluxLocation (FluxLocationCatchTypeEnum)
-                    fillLocationsAndGearsToDetails(fluxLocationsList, bmsGroupDetailsDto);
-                    fillFishingGears(fishingGears, bmsGroupDetailsDto);
+                    fillDetailsForSubGroup(bmsGroupDetailsDto, entity);
                     break;
                 default :
                     log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : "+entity.getId()+" is neither LSC or BMS!");
@@ -168,13 +168,18 @@ public class FaCatchesProcessorMapper {
     }
 
     /**
-     * Fills the fishing gears toi the FaCatchGroupDetailsDto.
+     * Fills all the details related to the specific LCS / BMS subgroup.
      *
-     * @param fishingGears
      * @param groupDetailsDto
+     * @param actualEntity
      */
-    private static void fillFishingGears(Set<FishingGearEntity> fishingGears, FaCatchGroupDetailsDto groupDetailsDto) {
-        groupDetailsDto.setGears(BaseViewWithInstanceMapper.INSTANCE.getGearsFromEntity(fishingGears));
+    private static void fillDetailsForSubGroup(FaCatchGroupDetailsDto groupDetailsDto, FaCatchEntity actualEntity) {
+        fillSpecifiedAndDestinationLocationsInGroupDetails(actualEntity.getFluxLocations(), groupDetailsDto);
+        fillFishingGears(actualEntity.getFishingGears(), groupDetailsDto);
+        if(!groupDetailsDto.areDetailsSet()){
+            fillGroupDetails(groupDetailsDto, actualEntity);
+        }
+
     }
 
     /**
@@ -183,7 +188,7 @@ public class FaCatchesProcessorMapper {
      * @param fluxLocations
      * @param groupDetailsDto
      */
-    private static void fillLocationsAndGearsToDetails(Set<FluxLocationEntity> fluxLocations, FaCatchGroupDetailsDto groupDetailsDto) {
+    private static void fillSpecifiedAndDestinationLocationsInGroupDetails(Set<FluxLocationEntity> fluxLocations, FaCatchGroupDetailsDto groupDetailsDto) {
         if(CollectionUtils.isEmpty(fluxLocations)){
             return;
         }
@@ -201,5 +206,33 @@ public class FaCatchesProcessorMapper {
         groupDetailsDto.setDestinationLocation(destLocDtoList);
         groupDetailsDto.setSpecifiedFluxLocation(specifiedFluxLocDto);
     }
+
+    /**
+     * Fills the fishing gears toi the FaCatchGroupDetailsDto.
+     *
+     * @param fishingGears
+     * @param groupDetailsDto
+     */
+    private static void fillFishingGears(Set<FishingGearEntity> fishingGears, FaCatchGroupDetailsDto groupDetailsDto) {
+        groupDetailsDto.setGears(BaseViewWithInstanceMapper.INSTANCE.getGearsFromEntity(fishingGears));
+    }
+
+    /**
+     * Fill remaining details on group level;
+     *
+     * @param groupDetailsDto
+     * @param actualEntity
+     */
+    private static void fillGroupDetails(FaCatchGroupDetailsDto groupDetailsDto, FaCatchEntity actualEntity) {
+        String stockId = CollectionUtils.isNotEmpty(actualEntity.getAapStocks()) ? actualEntity.getAapStocks().iterator().next().getStockId() : null;
+        String sizeCategoryCode = actualEntity.getSizeDistribution() != null ? actualEntity.getSizeDistribution().getCategoryCode() : null;
+        String weighingMeansCode = actualEntity.getWeighingMeansCode();
+        Set<FishingTripIdentifierEntity> fishingTripIdentifierEntities = CollectionUtils.isNotEmpty(actualEntity.getFishingTrips()) ? actualEntity.getFishingTrips().iterator().next().getFishingTripIdentifiers() : null;
+        String tripId = CollectionUtils.isNotEmpty(fishingTripIdentifierEntities) ? fishingTripIdentifierEntities.iterator().next().getTripId() : null;
+        String usageCode = actualEntity.getUsageCode();
+        groupDetailsDto.setDetailsAreSet(true);
+    }
+
+
 }
 

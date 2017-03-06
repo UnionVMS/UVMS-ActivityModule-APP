@@ -45,6 +45,9 @@ public class FaCatchGroupDetailsDto {
     @JsonView(FishingActivityView.CommonView.class)
     private String usage;
 
+    @JsonView(FishingActivityView.NoView.class)
+    private boolean detailsSet;
+
     @JsonView(FishingActivityView.CommonView.class)
     private List<DestinationLocationDto> destinationLocation;
 
@@ -130,5 +133,11 @@ public class FaCatchGroupDetailsDto {
     }
     public void setApplicableFluxCharacteristics(List<FluxCharacteristicsViewDto> applicableFluxCharacteristics) {
         this.applicableFluxCharacteristics = applicableFluxCharacteristics;
+    }
+    public boolean areDetailsSet() {
+        return detailsSet;
+    }
+    public void setDetailsAreSet(boolean detailsSet) {
+        this.detailsSet = detailsSet;
     }
 }
