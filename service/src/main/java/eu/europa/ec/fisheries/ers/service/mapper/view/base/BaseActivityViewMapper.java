@@ -15,9 +15,9 @@ import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.model.StringWrapper;
@@ -171,10 +171,8 @@ public abstract class BaseActivityViewMapper {
         }
     }
 
-    // TODO : to be implemented
-    protected List<FaCatchGroupDto> getCatchesFromEntity(FishingActivityEntity faEntity){
-        FaCatchGroupDetailsDto catchDto = new FaCatchGroupDetailsDto();
-        return null;
+    protected List<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity){
+        return FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity.getFaCatchs());
     }
 
 }

@@ -38,7 +38,7 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
             @Mapping(target = "activityDetails",   expression = "java(mapActivityDetails(faEntity))"),
             @Mapping(target = "ports",       expression = "java(getPortsFromFluxLocation(faEntity.getFluxLocations()))"),
             @Mapping(target = "reportDoc",   expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
-            @Mapping(target = "catches",   expression = "java(getCatchesFromEntity(faEntity))")
+            @Mapping(target = "catches",   expression = "java(mapCatchesToGroupDto(faEntity))")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
@@ -57,7 +57,7 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
             DelimitedPeriodEntity delimPeriod = delimitedPeriods.iterator().next();
             startDate = delimPeriod.getStartDate();
             endDate   = delimPeriod.getEndDate();
-            duration = delimPeriod.getDuration();
+            duration  = delimPeriod.getDuration();
         }
         return new DelimitedPeriodDTO(startDate, endDate, duration);
     }

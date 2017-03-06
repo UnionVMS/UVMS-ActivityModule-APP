@@ -37,7 +37,7 @@ public class FaCatchGroupDetailsDto {
     private String size;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String wightingMeans;
+    private String weightingMeans;
 
     @JsonView(FishingActivityView.CommonView.class)
     private String tripId;
@@ -92,11 +92,11 @@ public class FaCatchGroupDetailsDto {
     public void setSize(String size) {
         this.size = size;
     }
-    public String getWightingMeans() {
-        return wightingMeans;
+    public String getWeightingMeans() {
+        return weightingMeans;
     }
-    public void setWightingMeans(String wightingMeans) {
-        this.wightingMeans = wightingMeans;
+    public void setWeightingMeans(String wightingMeans) {
+        this.weightingMeans = wightingMeans;
     }
     public String getTripId() {
         return tripId;

@@ -23,11 +23,9 @@ import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
@@ -188,9 +186,7 @@ public class ActivityServiceBean implements ActivityService {
     public FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
         Geometry geom = getRestrictedAreaGeometry(datasets);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
-        List<FaCatchGroupDto> catchGroupListDto = FaCatchesProcessorMapper.getCatchGroupsFromListEntity(activityEntity.getFaCatchs());
         FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
-        fishingActivityViewDTO.setCatches(catchGroupListDto);
         return fishingActivityViewDTO;
     }
 
