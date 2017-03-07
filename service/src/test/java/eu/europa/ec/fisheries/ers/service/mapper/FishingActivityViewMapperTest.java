@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
@@ -36,7 +37,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -79,7 +82,12 @@ public class FishingActivityViewMapperTest {
     public void testActivityLandingViewMapper(){
 
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.LANDING);
-        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(getFishingActivityEntity());
+        FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
+
+        Set<FaCatchEntity> faCatches = generateFaCatches(fishingActivityEntity.getFaCatchs().iterator().next());
+        fishingActivityEntity.setFaCatchs(faCatches);
+
+        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(fishingActivityEntity);
 
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getReportDoc());
@@ -88,8 +96,37 @@ public class FishingActivityViewMapperTest {
         printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Landing.class);
     }
 
+    private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
+        List<FaCatchEntity> faCatchList = new ArrayList<>();
+        faCatchList.add(cloneEntity(faCatchExample, "LSC", 100.00));
+        faCatchList.add(cloneEntity(faCatchExample, "LSC", 100.00));
+        faCatchList.add(cloneEntity(faCatchExample, "BMS", 200.00));
+        faCatchList.add(cloneEntity(faCatchExample, "BMS", 200.00));
+        return new HashSet<>(faCatchList);
+    }
+
+    private FaCatchEntity cloneEntity(FaCatchEntity faCatchExample, String fishClassCode, Double weight) {
+        FaCatchEntity catchE = new FaCatchEntity();
+        catchE.setTerritory(faCatchExample.getTerritory());
+        catchE.setRfmo(faCatchExample.getRfmo());
+        catchE.setCalculatedUnitQuantity(faCatchExample.getCalculatedUnitQuantity());
+        catchE.setEffortZone(faCatchExample.getEffortZone());
+        catchE.setFaoArea(faCatchExample.getFaoArea());
+        catchE.setFishClassCode(fishClassCode);
+        catchE.setFishingGears(faCatchExample.getFishingGears());
+        catchE.setFishingTrips(faCatchExample.getFishingTrips());
+        catchE.setFluxCharacteristics(faCatchExample.getFluxCharacteristics());
+        catchE.setFluxLocations(faCatchExample.getFluxLocations());
+        catchE.setGfcmGsa(faCatchExample.getGfcmGsa());
+        catchE.setFishClassCode(faCatchExample.getFishClassCode());
+        catchE.setAapStocks(faCatchExample.getAapStocks());
+        catchE.setUnitQuantity(faCatchExample.getUnitQuantity());
+        catchE.setCalculatedWeightMeasure(weight);
+        return catchE;
+    }
+
     private FLUXFAReportMessage getActivityDataFromXML() throws JAXBException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message_cedric_data.xml");
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         return (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
