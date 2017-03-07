@@ -27,6 +27,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import lombok.SneakyThrows;
+import org.apache.commons.lang.SerializationUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,10 +37,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -98,31 +96,23 @@ public class FishingActivityViewMapperTest {
 
     private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
         List<FaCatchEntity> faCatchList = new ArrayList<>();
-        faCatchList.add(cloneEntity(faCatchExample, "LSC", 100.00));
-        faCatchList.add(cloneEntity(faCatchExample, "LSC", 100.00));
-        faCatchList.add(cloneEntity(faCatchExample, "BMS", 200.00));
-        faCatchList.add(cloneEntity(faCatchExample, "BMS", 200.00));
-        return new HashSet<>(faCatchList);
+        FaCatchEntity clone_1 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+        FaCatchEntity clone_2 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+        FaCatchEntity clone_3 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+        FaCatchEntity clone_4 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+
+        faCatchList.add(cloneEntity(clone_1, "LSC", 100.00));
+        faCatchList.add(cloneEntity(clone_2, "LSC", 100.00));
+        faCatchList.add(cloneEntity(clone_3, "BMS", 200.00));
+        faCatchList.add(cloneEntity(clone_4, "BMS", 200.00));
+
+        return new HashSet<>(Arrays.asList(clone_1, clone_2, clone_3, clone_4));
     }
 
     private FaCatchEntity cloneEntity(FaCatchEntity faCatchExample, String fishClassCode, Double weight) {
-        FaCatchEntity catchE = new FaCatchEntity();
-        catchE.setTerritory(faCatchExample.getTerritory());
-        catchE.setRfmo(faCatchExample.getRfmo());
-        catchE.setCalculatedUnitQuantity(faCatchExample.getCalculatedUnitQuantity());
-        catchE.setEffortZone(faCatchExample.getEffortZone());
-        catchE.setFaoArea(faCatchExample.getFaoArea());
-        catchE.setFishClassCode(fishClassCode);
-        catchE.setFishingGears(faCatchExample.getFishingGears());
-        catchE.setFishingTrips(faCatchExample.getFishingTrips());
-        catchE.setFluxCharacteristics(faCatchExample.getFluxCharacteristics());
-        catchE.setFluxLocations(faCatchExample.getFluxLocations());
-        catchE.setGfcmGsa(faCatchExample.getGfcmGsa());
-        catchE.setFishClassCode(faCatchExample.getFishClassCode());
-        catchE.setAapStocks(faCatchExample.getAapStocks());
-        catchE.setUnitQuantity(faCatchExample.getUnitQuantity());
-        catchE.setCalculatedWeightMeasure(weight);
-        return catchE;
+        faCatchExample.setFishClassCode(fishClassCode);
+        faCatchExample.setCalculatedWeightMeasure(weight);
+        return faCatchExample;
     }
 
     private FLUXFAReportMessage getActivityDataFromXML() throws JAXBException {
