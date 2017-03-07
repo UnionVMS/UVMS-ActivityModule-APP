@@ -72,19 +72,16 @@ public class FaCatchesProcessorMapper {
      * @return
      */
     private static List<FaCatchEntity> extractOneGroup(Set<FaCatchEntity> faCatchesSet) {
-        // If the faCatchesSet has only one element
         List<FaCatchEntity> group                  = new ArrayList<>();
         Iterator<FaCatchEntity> catchesIteratorInt = faCatchesSet.iterator();
         FaCatchEntity extCatch                     = catchesIteratorInt.next();
         group.add(extCatch);
-
         while (catchesIteratorInt.hasNext()) {
             FaCatchEntity intCatch = catchesIteratorInt.next();
             if (FaCatchForViewComparator.catchesAreEqual(extCatch, intCatch)) {
                 group.add(intCatch);
             }
         }
-
         faCatchesSet.removeAll(group);
         return group;
     }
@@ -141,19 +138,22 @@ public class FaCatchesProcessorMapper {
         Double bmsGroupTotalUnits  = null;
         for(FaCatchEntity entity : groupCatchList){
             Double calculatedWeightMeasure = entity.getCalculatedWeightMeasure();
+            if(calculatedWeightMeasure == null){
+                calculatedWeightMeasure = extractLiveWeght(entity.getAapProcesses());
+            }
             Double unitQuantity            = entity.getUnitQuantity();
             String fishClassCode = entity.getFishClassCode() != null ? entity.getFishClassCode() : StringUtils.EMPTY;
             switch(fishClassCode){
                 case LSC:
                     // Weight and Units calculation
-                    lscGroupTotalWeight = addWeightOrUnits(calculatedWeightMeasure, lscGroupTotalWeight);
-                    lscGroupTotalUnits  = addWeightOrUnits(unitQuantity, lscGroupTotalUnits);
+                    lscGroupTotalWeight = addDoubles(calculatedWeightMeasure, lscGroupTotalWeight);
+                    lscGroupTotalUnits  = addDoubles(unitQuantity, lscGroupTotalUnits);
                     fillDetailsForSubGroup(lscGroupDetailsDto, entity);
                     break;
                 case BMS:
                     // Weight and Units calculation
-                    bmsGroupTotalWeight = addWeightOrUnits(calculatedWeightMeasure, bmsGroupTotalWeight);
-                    bmsGroupTotalUnits  = addWeightOrUnits(unitQuantity, bmsGroupTotalUnits);
+                    bmsGroupTotalWeight = addDoubles(calculatedWeightMeasure, bmsGroupTotalWeight);
+                    bmsGroupTotalUnits  = addDoubles(unitQuantity, bmsGroupTotalUnits);
                     fillDetailsForSubGroup(bmsGroupDetailsDto, entity);
                     break;
                 default :
@@ -167,23 +167,48 @@ public class FaCatchesProcessorMapper {
 
     }
 
+    private static Double extractLiveWeght(Set<AapProcessEntity> aapProcesses) {
+        Double totalWeight = null;
+        Integer convFc     = 1;
+        Double weightSum   = 0.0;
+        if(CollectionUtils.isNotEmpty(aapProcesses)){
+            for (AapProcessEntity aapProc : aapProcesses) {
+                Integer actConvFac = aapProc.getConversionFactor();
+                convFc = (convFc == 1 && actConvFac != null) ? actConvFac : 1;
+                addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
+            }
+        }
+        if(weightSum != 0.0){
+            totalWeight = convFc * weightSum;
+        }
+        return totalWeight;
+    }
+
+    private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
+        if(CollectionUtils.isNotEmpty(aapProducts)){
+            for(AapProductEntity aapProd : aapProducts){
+                addDoubles(aapProd.getWeightMeasure(), weightSum);
+            }
+        }
+    }
+
     /**
      * Add a quantity to another quantity checking that neither of the values is null;
      * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
      *
      * @param actualMeasureToAdd
-     * @param meausereSubTotalToAddTo
+     * @param meausureSubTotalToAddTo
      * @return
      */
-    private static Double addWeightOrUnits(Double actualMeasureToAdd, Double meausereSubTotalToAddTo) {
+    private static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
         Double returnValue = null;
         if(actualMeasureToAdd != null && actualMeasureToAdd != 0.0){
-            if(meausereSubTotalToAddTo == null){
-                meausereSubTotalToAddTo = 0.0;
+            if(meausureSubTotalToAddTo == null){
+                meausureSubTotalToAddTo = 0.0;
             }
-            returnValue = actualMeasureToAdd + meausereSubTotalToAddTo;
-        } else if(meausereSubTotalToAddTo != null){
-            returnValue = meausereSubTotalToAddTo;
+            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
+        } else if(meausureSubTotalToAddTo != null){
+            returnValue = meausureSubTotalToAddTo;
         }
         return returnValue;
     }
