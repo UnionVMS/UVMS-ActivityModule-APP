@@ -8,21 +8,32 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.fa.utils.*;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
+import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
+import eu.europa.ec.fisheries.ers.service.util.Oracle;
+import eu.europa.ec.fisheries.ers.service.util.PostGres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -39,9 +50,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
-/**
- * Created by padhyad on 5/13/2016.
- */
+
 @Stateless
 @Transactional
 @Slf4j
@@ -51,7 +60,6 @@ public class FluxMessageServiceBean implements FluxMessageService {
     private EntityManager em;
 
     private FaReportDocumentDao faReportDocumentDao;
-
     private FluxFaReportMessageDao fluxReportMessageDao;
 
     @EJB
@@ -60,15 +68,24 @@ public class FluxMessageServiceBean implements FluxMessageService {
     @EJB
     private AssetModuleService assetModule;
 
+    @EJB
+    private PropertiesBean properties;
+
     private static final String PREVIOUS   = "PREVIOUS";
     private static final String NEXT       = "NEXT";
     private static final String START_DATE = "START_DATE";
     private static final String END_DATE   = "END_DATE";
 
+    private DatabaseDialect dialect;
+
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(em);
         fluxReportMessageDao = new FluxFaReportMessageDao(em);
+        dialect = new PostGres();
+        if ("oracle".equals(properties.getProperty("database.dialect"))){
+            dialect = new Oracle();
+        }
     }
 
     /**
@@ -213,43 +230,61 @@ public class FluxMessageServiceBean implements FluxMessageService {
     }
 
     private Geometry interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws ServiceException {
+
         if (movements == null || movements.isEmpty()) {
             return null;
         }
+
+        Geometry faReportGeom;
         Collections.sort(movements, new MovementTypeComparator());
         Map<String, MovementType> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
         MovementType nextMovement = movementTypeMap.get(NEXT);
         MovementType previousMovement = movementTypeMap.get(PREVIOUS);
-        Geometry faReportGeom;
-        if (previousMovement == null && nextMovement == null) { // If nothing found return null
-            faReportGeom = null;
-        } else if (nextMovement == null) { // if no next movement then the last previous movement is the position
-            faReportGeom = GeometryUtils.wktToGeom(previousMovement.getWkt());
-        } else if (previousMovement == null) { // if no previous movement then the first next movement is the position
-            faReportGeom = GeometryUtils.wktToGeom(nextMovement.getWkt());
-        } else { // ideal scenario, find the intersecting position
-            faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
+
+        try {
+
+            if (previousMovement == null && nextMovement == null) { // If nothing found return null
+                faReportGeom = null;
+            } else if (nextMovement == null) { // if no next movement then the last previous movement is the position
+                faReportGeom = GeometryMapper.INSTANCE.wktToGeometry(previousMovement.getWkt()).getValue();
+                faReportGeom.setSRID(dialect.defaultSRID());
+            } else if (previousMovement == null) { // if no previous movement then the first next movement is the position
+                faReportGeom = GeometryMapper.INSTANCE.wktToGeometry(nextMovement.getWkt()).getValue();
+                faReportGeom.setSRID(dialect.defaultSRID());
+            } else { // ideal scenario, find the intersecting position
+                faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
+            }
+        } catch (ParseException e) {
+            throw new ServiceException(e.getMessage(), e);
         }
         return faReportGeom;
     }
 
     private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date acceptedDate) throws ServiceException { // starting point = A, end point = B, calculated point = C
         Geometry point;
+
         Long durationAB = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
         Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
         Long durationBC = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - acceptedDate.getTime();
-        if (durationAC == 0) {
-            log.info("The point is same as the start point");
-            point = GeometryUtils.wktToGeom(previousMovement.getWkt());
-        } else if (durationBC == 0) {
-            log.info("The point is the same as end point");
-            point = GeometryUtils.wktToGeom(nextMovement.getWkt());
-        } else {
-            log.info("The point is between start and end point");
-            LengthIndexedLine lengthIndexedLine = GeometryUtils.createLengthIndexedLine(previousMovement.getWkt(), nextMovement.getWkt());
-            Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB; // Calculate the index to find the intersecting point
-            point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
+
+        try {
+
+            if (durationAC == 0) {
+                log.info("The point is same as the start point");
+                point =  GeometryMapper.INSTANCE.wktToGeometry(previousMovement.getWkt()).getValue();
+            } else if (durationBC == 0) {
+                log.info("The point is the same as end point");
+                point = GeometryMapper.INSTANCE.wktToGeometry(nextMovement.getWkt()).getValue();
+            } else {
+                log.info("The point is between start and end point");
+                LengthIndexedLine lengthIndexedLine = GeometryUtils.createLengthIndexedLine(previousMovement.getWkt(), nextMovement.getWkt());
+                Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB; // Calculate the index to find the intersecting point
+                point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
+            }
+        } catch (ParseException e) {
+            throw new ServiceException(e.getMessage(), e);
         }
+        point.setSRID(dialect.defaultSRID());
         return point;
     }
 

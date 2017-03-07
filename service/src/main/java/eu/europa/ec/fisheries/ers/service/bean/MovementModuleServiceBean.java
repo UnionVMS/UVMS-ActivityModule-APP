@@ -11,17 +11,25 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MovementProducerBean;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +47,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by padhyad on 10/11/2016.
- */
 @Stateless
 @Transactional
 @Slf4j
@@ -79,7 +84,7 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             } else {
                 throw new ServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
-        } catch (ServiceException | MessageException | JMSException | ModelMapperException e) {
+        } catch (MovementDuplicateException | MovementFaultException | ServiceException | MessageException | JMSException | ModelMapperException e) {
             log.error("Exception in communication with movements", e);
             throw new ServiceException(e.getMessage(), e);
         }
