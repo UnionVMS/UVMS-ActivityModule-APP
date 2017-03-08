@@ -746,4 +746,31 @@ public class MapperUtil {
 
         return faCatches;
     }
+
+    public static Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> getGroupedFaCatchSummaryCustomEntityData() {
+        FaCatchSummaryCustomEntity customEntityKey = new FaCatchSummaryCustomEntity("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
+        FaCatchSummaryCustomEntity customEntityValue1 = new FaCatchSummaryCustomEntity("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
+        FaCatchSummaryCustomEntity customEntityValue2 = new FaCatchSummaryCustomEntity("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "SOL", null,200);
+        FaCatchSummaryCustomEntity customEntityValue3 = new FaCatchSummaryCustomEntity("15", null, null, null, null, null, "WHL",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "PLE", null,200);
+        FaCatchSummaryCustomEntity customEntityValue4 = new FaCatchSummaryCustomEntity("15", null, null, null, null, null, "ROE-C",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
+        FaCatchSummaryCustomEntity customEntityValue5 = new FaCatchSummaryCustomEntity("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "COD", null,200);
+
+        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData= new HashMap<>();
+
+        List<FaCatchSummaryCustomEntity> valueList1 = new ArrayList<>();
+        valueList1.add(customEntityValue1);
+        valueList1.add(customEntityValue2);
+        valueList1.add(customEntityValue3);
+        valueList1.add(customEntityValue4);
+        valueList1.add(customEntityValue5);
+        groupedData.put(customEntityKey,valueList1);
+
+        return groupedData;
+    }
 }

@@ -69,7 +69,7 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
      */
 
     @Override
-    public FACatchDetailsDTO getCatchesTableForCatchDetailsScreen(String tripId) throws ServiceException {
+    public FACatchDetailsDTO getCatchDetailsScreen(String tripId) throws ServiceException {
 
         FACatchDetailsDTO faCatchDetailsDTO = new FACatchDetailsDTO();
         faCatchDetailsDTO.setCatches(getCatchDetailsScreenTable(tripId,false));

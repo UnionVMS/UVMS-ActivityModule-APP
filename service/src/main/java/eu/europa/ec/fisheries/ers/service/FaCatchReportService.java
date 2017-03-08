@@ -27,7 +27,7 @@ public interface FaCatchReportService {
 
    FACatchSummaryReportResponse getFACatchSummaryReportResponse(FishingActivityQuery query) throws ServiceException;
 
-   FACatchDetailsDTO getCatchesTableForCatchDetailsScreen(String tripId) throws ServiceException;
+   FACatchDetailsDTO getCatchDetailsScreen(String tripId) throws ServiceException;
 
    //FACatchSummaryDTO getCatchSummaryReportForLandingAndPresentation(FishingActivityQuery query) throws ServiceException;
 }

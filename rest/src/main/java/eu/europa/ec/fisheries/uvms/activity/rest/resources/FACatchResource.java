@@ -84,7 +84,7 @@ public class FACatchResource extends UnionVMSResource {
 
         log.info("getFACatchSummaryDetails: " + tripId);
 
-        return createSuccessResponse( reportService.getCatchesTableForCatchDetailsScreen(tripId));
+        return createSuccessResponse( reportService.getCatchDetailsScreen(tripId));
 
     }
 
