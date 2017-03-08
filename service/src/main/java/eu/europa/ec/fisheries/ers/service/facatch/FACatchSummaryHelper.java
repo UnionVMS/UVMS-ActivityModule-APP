@@ -13,20 +13,20 @@ package eu.europa.ec.fisheries.ers.service.facatch;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomChildEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
+
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -41,51 +41,58 @@ import java.util.*;
  * Created by sanera on 31/01/2017.
  */
 @Slf4j
-public class FACatchSummaryHelper {
+public abstract class FACatchSummaryHelper {
+    protected String faCatchSummaryCustomClassName;
 
-    private FACatchSummaryHelper() {
-    }
 
-    public static FACatchSummaryHelper createFACatchSummaryHelper() {
-        return new FACatchSummaryHelper();
-    }
-
-    public FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList) throws ServiceException {
+    /**
+     * This method maps raw data fetched from database to customEntity.
+     * @param catchSummaryArr
+     * @param groupList
+     * @param isLanding
+     * @return
+     * @throws ServiceException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    public FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList, boolean isLanding) throws ServiceException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException, IllegalAccessException, InstantiationException {
 
         if (ArrayUtils.isEmpty(catchSummaryArr))
             return new FaCatchSummaryCustomEntity();
-        int objectArrSize = catchSummaryArr.length - 1;
+        int objectArrSize = (catchSummaryArr.length - 1);
         if (objectArrSize != groupList.size())  // do not include count field from object array
             throw new ServiceException("selected number of SQL fields do not match with grouping criterias asked by user ");
-        Object faCatchSummaryCustomEntityObj = null;
-        try {
 
-            Class cls = Class.forName("eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity");
+        Class cls = Class.forName(faCatchSummaryCustomClassName);
 
-            faCatchSummaryCustomEntityObj = cls.newInstance();
-            Class parameterType = String.class;
+        Object faCatchSummaryCustomEntityObj = cls.newInstance();
+        Class parameterType = String.class;
 
-            Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
-            for (int i = 0; i < objectArrSize; i++) {
-                GroupCriteria criteria = groupList.get(i);
-                Object value = catchSummaryArr[i];
+        Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
+        for (int i = 0; i < objectArrSize; i++) {
+            GroupCriteria criteria = groupList.get(i);
+            Object value = catchSummaryArr[i];
 
-                if (GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
-                        GroupCriteria.DATE_YEAR.equals(criteria)) {
-                    value = extractValueFromDate((Date) value, criteria);
-                }
-
-                GroupCriteriaMapper mapper = groupMappings.get(criteria);
-                Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
-                method.invoke(faCatchSummaryCustomEntityObj, value);
+            if (GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
+                    GroupCriteria.DATE_YEAR.equals(criteria)) {
+                value = extractValueFromDate((Date) value, criteria);
             }
 
-            Method method = cls.getDeclaredMethod("setCount", Double.TYPE);
-            method.invoke(faCatchSummaryCustomEntityObj, catchSummaryArr[objectArrSize]);
-        } catch (ClassNotFoundException  | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            log.error("Error while trying to map data from database to  FaCatchSummaryCustomEntity" ,e);
+            GroupCriteriaMapper mapper = groupMappings.get(criteria);
+            Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
+            method.invoke(faCatchSummaryCustomEntityObj, value);
         }
-        return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
+
+        Method method = cls.getDeclaredMethod("setCount", Double.TYPE);
+        method.invoke(faCatchSummaryCustomEntityObj, catchSummaryArr[objectArrSize]);
+
+        if (isLanding)
+            return (FaCatchSummaryCustomChildEntity) faCatchSummaryCustomEntityObj;
+        else
+            return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
     }
 
     // This method parses the date to extract either day, month or year
@@ -170,28 +177,14 @@ public class FACatchSummaryHelper {
      * @param groupedMap
      * @return List<FACatchSummaryRecordDTO> Processed records having summary data
      */
-    public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> groupedMap) {
-        List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
+    public abstract List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> groupedMap);
 
-        for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
-            FACatchSummaryRecordDTO faCatchSummaryDTO = FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryRecordDTO(entry.getKey(), entry.getValue());
-            if (CollectionUtils.isEmpty(faCatchSummaryDTO.getGroups())) { // Do not add record to the list if no data for grouping factors found
-                log.error("No data for the grouping factors found :" + faCatchSummaryDTO);
-                continue;
-            }
-            faCatchSummaryRecordDTOs.add(faCatchSummaryDTO);
-        }
-        return faCatchSummaryRecordDTOs;
-
-    }
 
     /**
-     * Calculate Total for each column after processing all the records
-     *
-     * @param catchSummaryDTOList
+     * Creates Summary table structure for provided DTO list
+     * @param catchSummaryDTOList list of records to be processed to create summary structure
      * @return
      */
-
     public SummaryTableDTO populateSummaryTableWithTotal(List<FACatchSummaryRecordDTO> catchSummaryDTOList) {
         SummaryTableDTO summaryTableWithTotals = new SummaryTableDTO();
 
@@ -202,9 +195,9 @@ public class FACatchSummaryHelper {
             populateTotalFaCatchMap(summaryTableWithTotals, summaryTable);
 
         }
-
         return summaryTableWithTotals;
     }
+
 
     /**
      * This method processes data to calculate weights for different FishSize classes
@@ -212,36 +205,7 @@ public class FACatchSummaryHelper {
      * @param summaryTableWithTotals Add the calculation to this final class
      * @param summaryTable           process this object to calculate totals
      */
-    private void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
-
-        Map<FishSizeClassEnum, Object> fishSizeClassEnumMap = summaryTable.getSummaryFishSize();
-        if (MapUtils.isEmpty(fishSizeClassEnumMap)) {
-            return;
-        }
-
-        Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap = summaryTableWithTotals.getSummaryFishSize();
-        if (MapUtils.isEmpty(totalFishSizeSpeciesMap)) {
-            totalFishSizeSpeciesMap = new EnumMap<>(FishSizeClassEnum.class);
-            summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);
-        }
-
-        // Go through all the Fish classes  and calculate total for each fishclass
-        for (Map.Entry<FishSizeClassEnum, Object> entry : fishSizeClassEnumMap.entrySet()) {
-            FishSizeClassEnum fishSize = entry.getKey(); // key fishSize
-
-            Object value = entry.getValue();
-            // Value will be Double if species are not present as grouping criteria Else it will be map of Species and its count
-            if (value instanceof Map && MapUtils.isNotEmpty((Map<String, Double>) totalFishSizeSpeciesMap.get(fishSize))) {
-
-                Map<String, Double> fishSizeMap = (Map<String, Double>) totalFishSizeSpeciesMap.get(fishSize); // check if already present
-                fishSizeMap = extractSpeciesCountMAp((Map<String, Double>) value, fishSizeMap);
-                totalFishSizeSpeciesMap.put(fishSize, fishSizeMap);
-
-            } else if (value instanceof Double) {
-                totalFishSizeSpeciesMap.put(fishSize, calculateTotalValue((Double) value, (Double) totalFishSizeSpeciesMap.get(fishSize)));
-            }
-        }
-    }
+    public abstract void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable);
 
 
     /**
@@ -250,39 +214,16 @@ public class FACatchSummaryHelper {
      * @param summaryTableWithTotals Add the calculation to this final class
      * @param summaryTable           process this object to calculate totals
      */
-    private void populateTotalFaCatchMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
+    public abstract void populateTotalFaCatchMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable);
 
-        Map<FaCatchTypeEnum, Object> catchTypeEnumMapMap = summaryTable.getSummaryFaCatchType();
-        if (MapUtils.isNotEmpty(catchTypeEnumMapMap)) {
 
-            Map<FaCatchTypeEnum, Object> totalCatchTypeMap = summaryTableWithTotals.getSummaryFaCatchType();
-            if (MapUtils.isEmpty(totalCatchTypeMap)) {
-                totalCatchTypeMap =  new EnumMap<>(FaCatchTypeEnum.class);
-                summaryTableWithTotals.setSummaryFaCatchType(totalCatchTypeMap);
-            }
-
-            // Go through all the catch types and calculate total for each type
-            for (Map.Entry<FaCatchTypeEnum, Object> entry : catchTypeEnumMapMap.entrySet()) {
-                FaCatchTypeEnum catchType = entry.getKey(); // key fishSize
-                Object value = entry.getValue();
-                if (value instanceof Map && MapUtils.isNotEmpty((Map<String, Double>) totalCatchTypeMap.get(catchType))) {
-                    Map<String, Double> fishSizeMap = (Map<String, Double>) totalCatchTypeMap.get(catchType); // check if already present
-                    fishSizeMap = extractSpeciesCountMAp((Map<String, Double>) value, fishSizeMap);
-                    totalCatchTypeMap.put(catchType, fishSizeMap);
-
-                } else if (value instanceof Double) {
-                    totalCatchTypeMap.put(catchType, calculateTotalValue((Double) value, (Double) totalCatchTypeMap.get(catchType)));
-                }
-            }
-        }
-    }
-
-    private Double calculateTotalValue(Double value, Double totalValue) {
+    protected Double calculateTotalValue(Double value, Double totalValue) {
         if (totalValue == null) {
-            return value;
+            totalValue = value;
         } else {
-            return totalValue + value;
+            totalValue = totalValue + value;
         }
+        return totalValue;
     }
 
 
@@ -298,27 +239,33 @@ public class FACatchSummaryHelper {
         return faCatchSummaryRecords;
     }
 
-
+    /**
+     *  This method tries to add the species into resultMap
+     * @param valueSpeciesMap This map will be processed and the values will be added into result map
+     * @param resultTotalspeciesMap values will be added to this map
+     * @return
+     */
     @NotNull
-    private Map<String, Double> extractSpeciesCountMAp(Map<String, Double> speciesMap, Map<String, Double> fishSizeMap) {
+    protected Map<String, Double> extractSpeciesCountMap(Map<String, Double> valueSpeciesMap, Map<String, Double> resultTotalspeciesMap) {
+        if (MapUtils.isEmpty(resultTotalspeciesMap)) {
+            resultTotalspeciesMap = new HashMap<>();
+        }
 
-        for (Map.Entry<String, Double> speciesEntry : speciesMap.entrySet()) {
+        for (Map.Entry<String, Double> speciesEntry : valueSpeciesMap.entrySet()) {
             String speciesCode = speciesEntry.getKey();
             Double speciesCount = speciesEntry.getValue();
 
             // check in the totals map if the species exist.If yes, add
-            if (fishSizeMap.containsKey(speciesCode)) {
-                Double speciesTotalWeight = fishSizeMap.get(speciesCode);
-                speciesTotalWeight = speciesTotalWeight + speciesCount;
-                fishSizeMap.put(speciesCode, speciesTotalWeight);
+            if (resultTotalspeciesMap.containsKey(speciesCode)) {
+                resultTotalspeciesMap.put(speciesCode, resultTotalspeciesMap.get(speciesCode) + speciesCount);
             } else {
-                fishSizeMap.put(speciesCode, speciesCount);
+                resultTotalspeciesMap.put(speciesCode, speciesCount);
             }
         }
-        return fishSizeMap;
+        return resultTotalspeciesMap;
     }
 
-    public String printJsonstructure(Object obj) {
+    public static String printJsonstructure(Object obj) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         String s = null;

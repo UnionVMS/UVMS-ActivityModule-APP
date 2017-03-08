@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
-import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -19,7 +18,10 @@ import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
 
@@ -69,9 +71,9 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
-       System.out.println( faCatchSummaryHelper.printJsonstructure(query));
-        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query);
+       // FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
+       //System.out.println( faCatchSummaryHelper.printJsonstructure(query));
+        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query,false);
         assertNotNull(faCatchSummaryCustomEntityListMap);
       
     }

@@ -31,11 +31,13 @@ import java.util.Map;
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
 
-  private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
+  protected String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
           "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
            "  JOIN a.faReportDocument fa  " ;
 
-    public FACatchSearchBuilder(){
+    protected String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure)  " ;
+
+    {
         FilterMap filterMap=FilterMap.createFilterMap();
         filterMap.populateFilterMAppingsWithChangeForFACatchReport();
         setFilterMap(filterMap);
@@ -63,7 +65,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         return sql;
     }
 
-    private void createGroupByPartOfTheQuery(StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMappings, List<GroupCriteria> groupByFieldList) {
+    protected void createGroupByPartOfTheQuery(StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMappings, List<GroupCriteria> groupByFieldList) {
         sql.append(" GROUP BY  ");
 
         // Add group by statement based on grouping factors
@@ -79,7 +81,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         }
     }
 
-    private void createWherePartOfQuery(FishingActivityQuery query, StringBuilder sql, List<GroupCriteria> groupByFieldList) {
+    protected void createWherePartOfQuery(FishingActivityQuery query, StringBuilder sql, List<GroupCriteria> groupByFieldList) {
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
 
         if(groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE)!=-1){
@@ -89,7 +91,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
           }
     }
 
-    private void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings, List<GroupCriteria> groupByFieldList) {
+    protected void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings, List<GroupCriteria> groupByFieldList) {
         // Below is default JOIN for the query
         sql.append(FA_CATCH_JOIN);
 
@@ -107,7 +109,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
     }
 
     @NotNull
-    private void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings) throws ServiceException {
+    protected void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings) throws ServiceException {
 
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
@@ -120,21 +122,21 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
             sql.append(", ");
         }
 
-        sql.append(" SUM(faCatch.calculatedWeightMeasure)  ");
+        sql.append(SUM_WEIGHT);
     }
 
     /**
      *  Special condition to get data for DIM/DIS
      * @param sql
      */
-    private void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
+    protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
 
         sql.append(" and ( a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
     }
 
 
 
-    private void conditionsForFACatchSummaryReport(StringBuilder sql){
+    protected void conditionsForFACatchSummaryReport(StringBuilder sql){
         sql.append(" and (" +
                 "(a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN('") .append(FaCatchTypeEnum.ONBOARD)
                  .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(ActivityConstants.RELOCATION)
