@@ -11,7 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityView;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
@@ -58,12 +59,27 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @JsonView(FishingActivityView.Arrival.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getActivitiesForArrivalView(@Context HttpServletRequest request,
+    public Response getActivityArrivalView(@Context HttpServletRequest request,
                                          @Context HttpServletResponse response,
                                          @HeaderParam("scopeName") String scopeName,
                                          @HeaderParam("roleName") String roleName,
                                          @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request);
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.ARRIVAL);
+    }
+
+
+    @GET
+    @Path("/landing/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(FishingActivityView.Landing.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getActivityLandingView(@Context HttpServletRequest request,
+                                                @Context HttpServletResponse response,
+                                                @HeaderParam("scopeName") String scopeName,
+                                                @HeaderParam("roleName") String roleName,
+                                                @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.LANDING);
     }
 
 
@@ -77,9 +93,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
      * @return View DTO
      * @throws ServiceException
      */
-    private Response createActivityView(String scopeName, String roleName, String activityId, HttpServletRequest request) throws ServiceException {
+    private Response createActivityView(String scopeName, String roleName, String activityId, HttpServletRequest request, ActivityViewEnum view) throws ServiceException {
         String username        = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        return createSuccessResponse(activityService.getFishingActivityForView(activityId, datasets));
+        return createSuccessResponse(activityService.getFishingActivityForView(activityId, datasets, view));
     }
 }

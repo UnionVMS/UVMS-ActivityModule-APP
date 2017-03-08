@@ -8,64 +8,74 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
-package eu.europa.ec.fisheries.ers.service.mapper.view;
+package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.ArrivalDto;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.GearDto;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.PortDto;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.ReportDocumentDto;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.viewDto.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
 
 /**
- * Created by kovian on 09/02/2017.
+ * Created by kovian on 14/02/2017.
+ *
+ * Base Class to be extended by all the mappers related to Activity Views (LANDING, ARRIVAL, AREA_ENTRY  etc..)
  */
-@Mapper
-public abstract class ActivityViewsMapper extends BaseMapper {
+public abstract class BaseActivityViewMapper {
 
-    public static final ActivityViewsMapper INSTANCE = Mappers.getMapper(ActivityViewsMapper.class);
+    public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
-    @Mappings({
-            @Mapping(target = "arrival",   expression = "java(getArrivalFromFishingEntity(faEntity))"),
-            @Mapping(target = "ports",     expression = "java(getPortsFromFluxLocation(faEntity.getFluxLocations()))"),
-            @Mapping(target = "gears",     expression = "java(getGearsFromEntity(faEntity.getFishingGears()))"),
-            @Mapping(target = "reportDoc", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))")
-    })
-    public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity, @MappingTarget FishingActivityViewDTO viewDto);
-
-
-    protected ArrivalDto getArrivalFromFishingEntity(FishingActivityEntity faEntity) {
-        ArrivalDto arrival = new ArrivalDto();
-        arrival.setArrivalTime(DateUtils.dateToString(faEntity.getOccurence()));
-        arrival.setIntendedLandingTime(extractLandingTime(faEntity.getFluxCharacteristics()));
-        arrival.setReason(faEntity.getReasonCode());
-        return arrival;
+    /**
+     * This method will populate the type, fluxCharacteristics and occurrence and will leave the population of the
+     * other fields to the specific (the class that extends BaseActivityViewMapper) implementation of  populateActivityDetails(faEntity, activityDetails).
+     *
+     * @param faEntity
+     * @return
+     */
+    protected ActivityDetailsDto mapActivityDetails(FishingActivityEntity faEntity){
+        ActivityDetailsDto activityDetails = new ActivityDetailsDto();
+        activityDetails.setType(faEntity.getTypeCode());
+        activityDetails.setOccurrence(faEntity.getOccurence());
+        Set<FluxCharacteristicEntity> fluxCharacteristics = faEntity.getFluxCharacteristics();
+        if(CollectionUtils.isNotEmpty(fluxCharacteristics)){
+            Map<String, String> characMap = new HashMap<>();
+            for(FluxCharacteristicEntity fluxCharac : fluxCharacteristics){
+                characMap.put(fluxCharac.getTypeCode(), fluxCharac.getValueText());
+            }
+            activityDetails.setCharacteristics(characMap);
+        }
+        return populateActivityDetails(faEntity, activityDetails);
     }
 
+    /**
+     * The method mapActivityDetails(..,..) maps type and fluxCharacteristics to the ActivityDetailsDto.
+     * The rest of the fields are mapped by this method which MUST be implemented by all the Mappers that extend this one.
+     *
+     * @param faEntity
+     * @param activityDetails
+     * @return
+     */
+    protected abstract ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails);
 
-    protected List<PortDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+    protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         if (CollectionUtils.isEmpty(fLocEntities)) {
             return null;
         }
-        List<PortDto> portsListDto = new ArrayList<>();
+        List<FluxLocationDto> portsListDto = new ArrayList<>();
         for(FluxLocationEntity flEntity : fLocEntities){
-            PortDto port = new PortDto();
+            FluxLocationDto port = new FluxLocationDto();
             StringWrapper geomStrWrapper = GeometryMapper.INSTANCE.geometryToWkt(flEntity.getGeom());
             if(geomStrWrapper != null){
                 port.setGeometry(geomStrWrapper.getValue());
@@ -77,7 +87,25 @@ public abstract class ActivityViewsMapper extends BaseMapper {
     }
 
 
-    protected List<GearDto> getGearsFromEntity(Set<FishingGearEntity> fishingGearEntities) {
+    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
+        if(faRepDocEntity == null){
+            return null;
+        }
+        ReportDocumentDto repDocDto = new ReportDocumentDto();
+        repDocDto.setType(faRepDocEntity.getTypeCode());
+        repDocDto.setDateAccepted(DateUtils.dateToString(faRepDocEntity.getAcceptedDatetime()));
+        FluxReportDocumentEntity fluxReportDocument = faRepDocEntity.getFluxReportDocument();
+        if(fluxReportDocument != null){
+            repDocDto.setCreationDate(DateUtils.dateToString(fluxReportDocument.getCreationDatetime()));
+            repDocDto.setId(fluxReportDocument.getReferenceSchemeId());
+            repDocDto.setRefId(fluxReportDocument.getReferenceId());
+            repDocDto.setPurpose(fluxReportDocument.getPurpose());
+            repDocDto.setPurposeCode(fluxReportDocument.getPurposeCode());
+        }
+        return repDocDto;
+    }
+
+    public List<GearDto> getGearsFromEntity(Set<FishingGearEntity> fishingGearEntities) {
         if (CollectionUtils.isEmpty(fishingGearEntities)) {
             return Collections.emptyList();
         }
@@ -90,40 +118,6 @@ public abstract class ActivityViewsMapper extends BaseMapper {
         }
         return gearDtoList;
     }
-
-
-    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
-        if(faRepDocEntity == null){
-            return null;
-        }
-        ReportDocumentDto repDocDto = new ReportDocumentDto();
-        repDocDto.setType(faRepDocEntity.getTypeCode());
-        repDocDto.setDateAccepted(DateUtils.dateToString(faRepDocEntity.getAcceptedDatetime()));
-
-        FluxReportDocumentEntity fluxReportDocument = faRepDocEntity.getFluxReportDocument();
-        if(fluxReportDocument != null){
-            repDocDto.setCreationDate(DateUtils.dateToString(fluxReportDocument.getCreationDatetime()));
-            repDocDto.setId(fluxReportDocument.getReferenceSchemeId());
-            repDocDto.setRefId(fluxReportDocument.getReferenceId());
-            repDocDto.setPurpose(fluxReportDocument.getPurpose());
-            repDocDto.setPurposeCode(fluxReportDocument.getPurposeCode());
-        }
-        return repDocDto;
-    }
-
-
-    private String extractLandingTime(Set<FluxCharacteristicEntity> fluxCharacteristics) {
-        if(CollectionUtils.isNotEmpty(fluxCharacteristics)){
-            for(FluxCharacteristicEntity charact : fluxCharacteristics){
-                if(StringUtils.equals("FA_CHARACTERISTIC", charact.getTypeCodeListId())
-                        && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())){
-                    return DateUtils.dateToString(charact.getValueDateTime());
-                }
-            }
-        }
-        return null;
-    }
-
 
     private void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
         Set<FishingGearRoleEntity> fishingGearRole = gearEntity.getFishingGearRole();
@@ -143,33 +137,33 @@ public abstract class ActivityViewsMapper extends BaseMapper {
         String quantityOnly     = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
         String quantityWithUnit = new  StringBuilder(quantityOnly).append(charac.getValueMeasureUnitCode()).toString();
         switch(charac.getTypeCode()){
-            case "ME" :
+            case GEAR_CHARAC_TYPE_CODE_ME :
                 gearDto.setMeshSize(quantityWithUnit);
                 break;
-            case "GM" :
+            case GEAR_CHARAC_TYPE_CODE_GM :
                 gearDto.setLengthWidth(quantityWithUnit);
                 break;
-            case "GN" :
+            case GEAR_CHARAC_TYPE_CODE_GN :
                 gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
                 break;
-            case "HE" :
+            case GEAR_CHARAC_TYPE_CODE_HE :
                 gearDto.setHeight(quantityWithUnit);
                 break;
-            case "NI" :
+            case GEAR_CHARAC_TYPE_CODE_NI :
                 gearDto.setNrOfLines(quantityWithUnit);
                 break;
-            case "NN" :
+            case GEAR_CHARAC_TYPE_CODE_NN :
                 gearDto.setNrOfNets(quantityWithUnit);
                 break;
-            case "NL" :
+            case GEAR_CHARAC_TYPE_CODE_NL :
                 gearDto.setNominalLengthOfNet(quantityWithUnit);
                 break;
-            case "QG" :
-                if(charac.getValueQuantityCode() != "C62"){
+            case GEAR_CHARAC_TYPE_CODE_QG :
+                if(charac.getValueQuantityCode() != GEAR_CHARAC_Q_CODE_C62){
                     gearDto.setQuantity(quantityWithUnit);
                 }
                 break;
-            case "GD" :
+            case GEAR_CHARAC_TYPE_CODE_GD :
                 gearDto.setDescription(charac.getDescription());
                 break;
             default :
@@ -177,6 +171,8 @@ public abstract class ActivityViewsMapper extends BaseMapper {
         }
     }
 
+    protected List<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity){
+        return FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity.getFaCatchs());
+    }
+
 }
-
-

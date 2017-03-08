@@ -37,6 +37,17 @@ public class DelimitedPeriodDTO {
     @JsonProperty("duration")
     private Double duration;
 
+
+    public DelimitedPeriodDTO() {
+        super();
+    }
+
+    public DelimitedPeriodDTO(Date startDate, Date endDate, Double duration) {
+        setStartDate(startDate);
+        setEndDate(endDate);
+        setDuration(duration);
+    }
+
     @JsonProperty("startDate")
     public Date getStartDate() {
         return startDate;

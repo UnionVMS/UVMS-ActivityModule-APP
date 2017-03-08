@@ -39,7 +39,6 @@ public class FluxCharacteristicEntity implements Serializable {
 	@JoinColumn(name = "specified_flap_document_id")
 	private FlapDocumentEntity flapDocument;
 
-
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
 

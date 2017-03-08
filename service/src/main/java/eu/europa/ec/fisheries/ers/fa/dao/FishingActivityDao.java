@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
@@ -134,18 +135,25 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     private void fillQueryConditions(Geometry geom) {
+        FaCatchEntity fa = new FaCatchEntity();
         activityViewQuery = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
                 .append("LEFT JOIN FETCH a.faReportDocument fa ")
                 .append("LEFT JOIN FETCH a.fluxLocations fl ")
                 .append("LEFT JOIN FETCH a.fishingGears fg ")
-                .append("LEFT JOIN FETCH a.fluxCharacteristics fc")
+                .append("LEFT JOIN FETCH a.fluxCharacteristics fc ")
+                .append("LEFT JOIN FETCH a.faCatchs fCatch ")
+                .append("LEFT JOIN FETCH fCatch.fluxLocations ")
+                .append("LEFT JOIN FETCH fCatch.sizeDistribution ")
+                .append("LEFT JOIN FETCH fCatch.fishingGears ")
+                .append("LEFT JOIN FETCH fCatch.fluxCharacteristics ")
                 .append("LEFT JOIN FETCH fg.fishingGearRole ")
                 .append("LEFT JOIN FETCH fg.gearCharacteristics ")
-                .append("LEFT JOIN FETCH fa.fluxReportDocument flux ");
+                .append("LEFT JOIN FETCH fa.fluxReportDocument flux ")
+                .append("WHERE ");
         if(geom != null){
-            activityViewQuery.append("WHERE (intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
+            activityViewQuery.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
         } else {
-            activityViewQuery.append("WHERE a.id=:fishingActivityId ");
+            activityViewQuery.append("a.id=:fishingActivityId ");
         }
     }
 
