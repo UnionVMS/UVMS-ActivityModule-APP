@@ -31,7 +31,7 @@ public class FaCatchGroupDto {
     private Double calculatedWeight;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private FaCatchDenomLocationDto location;
+    private FaCatchDenomLocationDto locations;
 
     @JsonView(FishingActivityView.CommonView.class)
     private Map<String, FaCatchGroupDetailsDto> groupingDetails;
@@ -46,11 +46,11 @@ public class FaCatchGroupDto {
     public void setType(String type) {
         this.type = type;
     }
-    public FaCatchDenomLocationDto getLocation() {
-        return location;
+    public FaCatchDenomLocationDto getLocations() {
+        return locations;
     }
-    public void setLocation(FaCatchDenomLocationDto location) {
-        this.location = location;
+    public void setLocations(FaCatchDenomLocationDto locations) {
+        this.locations = locations;
     }
     public String getSpecies() {
         return species;

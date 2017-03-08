@@ -33,8 +33,8 @@ public class DestinationLocationDto {
 
     public DestinationLocationDto(String id, String countryId, String name) {
         this.id = id;
-        this.name = name;
         this.countryId = countryId;
+        this.name = name;
     }
 
     public String getId() {

@@ -57,11 +57,9 @@ public class FaCatchesProcessorMapper {
      */
     private static Map<String, List<FaCatchEntity>> groupCatches(Set<FaCatchEntity> faCatches) {
         Map<String, List<FaCatchEntity>> groups    = new HashMap<>();
-        Iterator<FaCatchEntity> catchesIteratorExt = faCatches.iterator();
-        Iterator<FaCatchEntity> catchesIteratorInt = faCatches.iterator();
         int group_nr = 0;
-        while(faCatches.size() != 0){
-            groups.put(String.valueOf(group_nr), extractGroupBelongingToThisFaCatch(catchesIteratorExt, catchesIteratorInt));
+        while(CollectionUtils.isNotEmpty(faCatches)){
+            groups.put(String.valueOf(group_nr), extractOneGroup(faCatches));
             group_nr++;
         }
         return groups;
@@ -70,24 +68,21 @@ public class FaCatchesProcessorMapper {
     /**
      * Extracts a group that has the needed properties in common with the catchesIteratorExt.next()
      *
-     * @param catchesIteratorExt
-     * @param catchesIteratorInt
+     * @param faCatchesSet Set<FaCatchEntity>
      * @return
      */
-    private static List<FaCatchEntity> extractGroupBelongingToThisFaCatch(Iterator<FaCatchEntity> catchesIteratorExt,
-                                                                          Iterator<FaCatchEntity> catchesIteratorInt) {
-        List<FaCatchEntity> group = new ArrayList<>();
-        while(catchesIteratorExt.hasNext()) {
-            FaCatchEntity catchEntity = catchesIteratorExt.next();
-            group.add(catchEntity);
-            while (catchesIteratorInt.hasNext()) {
-                FaCatchEntity intCatch = catchesIteratorInt.next();
-                if (FaCatchForViewComparator.catchesAreEqual(intCatch, catchEntity)) {
-                    group.add(intCatch);
-                    catchesIteratorInt.remove();
-                }
+    private static List<FaCatchEntity> extractOneGroup(Set<FaCatchEntity> faCatchesSet) {
+        List<FaCatchEntity> group                  = new ArrayList<>();
+        Iterator<FaCatchEntity> catchesIteratorInt = faCatchesSet.iterator();
+        FaCatchEntity extCatch                     = catchesIteratorInt.next();
+        group.add(extCatch);
+        while (catchesIteratorInt.hasNext()) {
+            FaCatchEntity intCatch = catchesIteratorInt.next();
+            if (FaCatchForViewComparator.catchesAreEqual(extCatch, intCatch)) {
+                group.add(intCatch);
             }
         }
+        faCatchesSet.removeAll(group);
         return group;
     }
 
@@ -119,7 +114,7 @@ public class FaCatchesProcessorMapper {
         groupDto.setType(catchEntity.getTypeCode());
         groupDto.setSpecies(catchEntity.getSpeciesCode());
         // Fill the denomination location part of the GroupDto.
-        groupDto.setLocation(FaCatchGroupMapper.INSTANCE.mapFaCatchEntityToDenominationLocation(catchEntity));
+        groupDto.setLocations(FaCatchGroupMapper.INSTANCE.mapFaCatchEntityToDenominationLocation(catchEntity));
         // calculate Totals And Fill Soecified Locations and Gears Per each Subgroup (subgrupped on BMS/LSC)
         calculateTotalsAndFillSubgroups(groupCatchList, groupDto);
         return groupDto;
@@ -137,36 +132,99 @@ public class FaCatchesProcessorMapper {
         FaCatchGroupDetailsDto lscGroupDetailsDto = new FaCatchGroupDetailsDto();
         FaCatchGroupDetailsDto bmsGroupDetailsDto = new FaCatchGroupDetailsDto();
         // Weight and units totals
-        Double lscGroupTotalWeight  = 0.0;
-        Double lscGroupTotalUnits   = 0.0;
-        Double bmsGroupTotalWeight  = 0.0;
-        Double bmsGroupTotalUnits   = 0.0;
+        Double lscGroupTotalWeight = null;
+        Double lscGroupTotalUnits  = null;
+        Double bmsGroupTotalWeight = null;
+        Double bmsGroupTotalUnits  = null;
         for(FaCatchEntity entity : groupCatchList){
-            switch(entity.getFishClassCode()){
+            Double calculatedWeightMeasure = entity.getCalculatedWeightMeasure();
+            if(calculatedWeightMeasure == null){
+                calculatedWeightMeasure = extractLiveWeight(entity.getAapProcesses());
+            }
+            Double unitQuantity            = entity.getUnitQuantity();
+            String fishClassCode = entity.getFishClassCode() != null ? entity.getFishClassCode() : StringUtils.EMPTY;
+            switch(fishClassCode){
                 case LSC:
                     // Weight and Units calculation
-                    lscGroupTotalWeight += entity.getCalculatedWeightMeasure();
-                    lscGroupTotalUnits  += entity.getUnitQuantity();
+                    lscGroupTotalWeight = addDoubles(calculatedWeightMeasure, lscGroupTotalWeight);
+                    lscGroupTotalUnits  = addDoubles(unitQuantity, lscGroupTotalUnits);
                     fillDetailsForSubGroup(lscGroupDetailsDto, entity);
                     break;
                 case BMS:
                     // Weight and Units calculation
-                    bmsGroupTotalWeight += entity.getCalculatedWeightMeasure();
-                    bmsGroupTotalUnits  += entity.getUnitQuantity();
+                    bmsGroupTotalWeight = addDoubles(calculatedWeightMeasure, bmsGroupTotalWeight);
+                    bmsGroupTotalUnits  = addDoubles(unitQuantity, bmsGroupTotalUnits);
                     fillDetailsForSubGroup(bmsGroupDetailsDto, entity);
                     break;
                 default :
                     log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : "+entity.getId()+" is neither LSC or BMS!");
             }
         }
+        setWeightsForSubGroup(groupDto, lscGroupDetailsDto, bmsGroupDetailsDto, lscGroupTotalWeight, lscGroupTotalUnits, bmsGroupTotalWeight, bmsGroupTotalUnits);
+        // Put the 2 subgroup properties in the groupingDetailsMap (property of FaCatchGroupDto).
+        groupingDetailsMap.put(LSC, lscGroupDetailsDto);
+        groupingDetailsMap.put(BMS, bmsGroupDetailsDto);
+
+    }
+
+    private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
+        Double totalWeight = null;
+        Integer convFc     = 1;
+        Double weightSum   = 0.0;
+        if(CollectionUtils.isNotEmpty(aapProcesses)){
+            for (AapProcessEntity aapProc : aapProcesses) {
+                Integer actConvFac = aapProc.getConversionFactor();
+                convFc = (convFc == 1 && actConvFac != null) ? actConvFac : 1;
+                addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
+            }
+        }
+        if(weightSum != 0.0){
+            totalWeight = convFc * weightSum;
+        }
+        return totalWeight;
+    }
+
+    private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
+        if(CollectionUtils.isNotEmpty(aapProducts)){
+            for(AapProductEntity aapProd : aapProducts){
+                addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
+            }
+        }
+    }
+
+    /**
+     * Add a quantity to another quantity checking that neither of the values is null;
+     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
+     *
+     * @param actualMeasureToAdd
+     * @param meausureSubTotalToAddTo
+     * @return
+     */
+    private static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
+        Double returnValue = null;
+        if(actualMeasureToAdd != null && actualMeasureToAdd != 0.0){
+            if(meausureSubTotalToAddTo == null){
+                meausureSubTotalToAddTo = 0.0;
+            }
+            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
+        } else if(meausureSubTotalToAddTo != null){
+            returnValue = meausureSubTotalToAddTo;
+        }
+        return returnValue;
+    }
+
+
+    private static void setWeightsForSubGroup(FaCatchGroupDto groupDto, FaCatchGroupDetailsDto lscGroupDetailsDto, FaCatchGroupDetailsDto bmsGroupDetailsDto, Double lscGroupTotalWeight, Double lscGroupTotalUnits, Double bmsGroupTotalWeight, Double bmsGroupTotalUnits) {
 
         // Set total weight and units for BMS and LSC
         lscGroupDetailsDto.setUnit(lscGroupTotalUnits);
         lscGroupDetailsDto.setWeight(lscGroupTotalWeight);
         bmsGroupDetailsDto.setUnit(bmsGroupTotalUnits);
         bmsGroupDetailsDto.setWeight(bmsGroupTotalWeight);
-        groupingDetailsMap.put(LSC, lscGroupDetailsDto);
-        groupingDetailsMap.put(BMS, bmsGroupDetailsDto);
+
+        // Set total group weight (LSC + BMS) (checking nullity : if both of them are null the sum must be 0.0)
+        lscGroupTotalWeight = lscGroupTotalWeight != null ? lscGroupTotalWeight : 0.0;
+        bmsGroupTotalWeight = bmsGroupTotalWeight != null ? bmsGroupTotalWeight : 0.0;
 
         // Set total group weight (LSC + BMS)
         groupDto.setCalculatedWeight(lscGroupTotalWeight + bmsGroupTotalWeight);
@@ -200,18 +258,18 @@ public class FaCatchesProcessorMapper {
             return;
         }
         List<DestinationLocationDto> destLocDtoList = groupDetailsDto.getDestinationLocation();
-        List<FluxLocationDto> specifiedFluxLocDto   = groupDetailsDto.getSpecifiedFluxLocation();
+        List<FluxLocationDto> specifiedFluxLocDto   = groupDetailsDto.getSpecifiedFluxLocations();
         for (FluxLocationEntity actLoc : fluxLocations) {
             String fluxLocationType = actLoc.getFluxLocationType();
             if(StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType())){
-                destLocDtoList.add(new DestinationLocationDto(actLoc.getFluxLocationIdentifierSchemeId(), actLoc.getCountryId(), actLoc.getName()));
+                destLocDtoList.add(new DestinationLocationDto(actLoc.getFluxLocationIdentifier(), actLoc.getCountryId(), actLoc.getName()));
             } else if(StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType())){
                 StringWrapper geometryStrWrapp = GeometryMapper.INSTANCE.geometryToWkt(actLoc.getGeom());
                 specifiedFluxLocDto.add(new FluxLocationDto(actLoc.getName(), geometryStrWrapp != null ? geometryStrWrapp.getValue() : null));
             }
         }
         groupDetailsDto.setDestinationLocation(destLocDtoList);
-        groupDetailsDto.setSpecifiedFluxLocation(specifiedFluxLocDto);
+        groupDetailsDto.setSpecifiedFluxLocations(specifiedFluxLocDto);
     }
 
     /**
@@ -244,7 +302,7 @@ public class FaCatchesProcessorMapper {
         if(CollectionUtils.isEmpty(fluxCharacteristics)){
             return;
         }
-        List<FluxCharacteristicsViewDto> applicableFluxCharacteristics = groupDetailsDto.getApplicableFluxCharacteristics();
+        List<FluxCharacteristicsViewDto> applicableFluxCharacteristics = groupDetailsDto.getCharacteristics();
         for(FluxCharacteristicEntity flCharacEnt : fluxCharacteristics){
             applicableFluxCharacteristics.add(FluxCharacteristicsViewDtoMapper.INSTANCE.mapFluxCharacteristicsEntityListToDtoList(flCharacEnt));
         }

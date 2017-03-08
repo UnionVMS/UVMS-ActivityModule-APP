@@ -23,7 +23,7 @@ import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import lombok.SneakyThrows;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -33,6 +33,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -98,10 +99,9 @@ public class FluxMessageServiceBeanTest {
         fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocument());
     }
 
-    @Test
-    @Ignore
-    @SneakyThrows
-    public void testSaveFishingActivityReportDocuments() {
+ //   @Test
+   // @SneakyThrows
+    public void testSaveFishingActivityReportDocuments() throws ServiceException, ParseException, DatatypeConfigurationException {
 
         //Mock the APIs
         Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));

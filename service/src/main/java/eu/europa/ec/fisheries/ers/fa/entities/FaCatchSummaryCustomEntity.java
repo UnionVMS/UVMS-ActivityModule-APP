@@ -41,6 +41,31 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     private String typeCode;
     private double count;
 
+    public FaCatchSummaryCustomEntity(){
+
+    }
+
+
+    public FaCatchSummaryCustomEntity(String day, String month, String year, String vesselTransportGuid, String flagState, String gearType, String presentation, String icesStatRectangle, String territory, String faoArea, String effortZone, String rfmo, String gfcmGsa, String gfcmStatRectangle, String fishClass, String species, String typeCode, double count) {
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.vesselTransportGuid = vesselTransportGuid;
+        this.flagState = flagState;
+        this.gearType = gearType;
+        this.presentation = presentation;
+        this.icesStatRectangle = icesStatRectangle;
+        this.territory = territory;
+        this.faoArea = faoArea;
+        this.effortZone = effortZone;
+        this.rfmo = rfmo;
+        this.gfcmGsa = gfcmGsa;
+        this.gfcmStatRectangle = gfcmStatRectangle;
+        this.fishClass = fishClass;
+        this.species = species;
+        this.typeCode = typeCode;
+        this.count = count;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -91,6 +116,9 @@ public class FaCatchSummaryCustomEntity implements Serializable {
         result = 31 * result + (getGfcmStatRectangle() != null ? getGfcmStatRectangle().hashCode() : 0);
         return result;
     }
+
+
+
 
     public String getVesselTransportGuid() {
         return vesselTransportGuid;

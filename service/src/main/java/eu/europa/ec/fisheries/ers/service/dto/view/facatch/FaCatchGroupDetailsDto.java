@@ -55,17 +55,17 @@ public class FaCatchGroupDetailsDto {
     private List<GearDto> gears;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private List<FluxLocationDto> specifiedFluxLocation;
+    private List<FluxLocationDto> specifiedFluxLocations;
 
     @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<FluxCharacteristicsViewDto> applicableFluxCharacteristics;
+    private List<FluxCharacteristicsViewDto> characteristics;
 
     public FaCatchGroupDetailsDto() {
         destinationLocation   = new ArrayList<>();
         gears                 = new ArrayList<>();
-        specifiedFluxLocation = new ArrayList<>();
-        applicableFluxCharacteristics = new ArrayList<>();
+        specifiedFluxLocations = new ArrayList<>();
+        characteristics = new ArrayList<>();
     }
 
     public Double getWeight() {
@@ -122,17 +122,17 @@ public class FaCatchGroupDetailsDto {
     public void setGears(List<GearDto> gears) {
         this.gears = gears;
     }
-    public List<FluxLocationDto> getSpecifiedFluxLocation() {
-        return specifiedFluxLocation;
+    public List<FluxLocationDto> getSpecifiedFluxLocations() {
+        return specifiedFluxLocations;
     }
-    public void setSpecifiedFluxLocation(List<FluxLocationDto> specifiedFluxLocation) {
-        this.specifiedFluxLocation = specifiedFluxLocation;
+    public void setSpecifiedFluxLocations(List<FluxLocationDto> specifiedFluxLocations) {
+        this.specifiedFluxLocations = specifiedFluxLocations;
     }
-    public List<FluxCharacteristicsViewDto> getApplicableFluxCharacteristics() {
-        return applicableFluxCharacteristics;
+    public List<FluxCharacteristicsViewDto> getCharacteristics() {
+        return characteristics;
     }
-    public void setApplicableFluxCharacteristics(List<FluxCharacteristicsViewDto> applicableFluxCharacteristics) {
-        this.applicableFluxCharacteristics = applicableFluxCharacteristics;
+    public void setCharacteristics(List<FluxCharacteristicsViewDto> characteristics) {
+        this.characteristics = characteristics;
     }
     public boolean areDetailsSet() {
         return detailsSet;

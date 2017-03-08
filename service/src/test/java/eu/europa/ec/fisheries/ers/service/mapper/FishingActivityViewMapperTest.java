@@ -12,17 +12,23 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import lombok.SneakyThrows;
+import org.apache.commons.lang.SerializationUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -31,8 +37,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -66,25 +71,48 @@ public class FishingActivityViewMapperTest {
         assertTrue(fishingActivityViewDTO.getGears().size() == 1);
         assertNull(mapperForView.mapFaEntityToFaDto(null));
 
-        printDtoOnConsole(fishingActivityViewDTO);
+        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Arrival.class);
     }
 
-    private void printDtoOnConsole(FishingActivityViewDTO fishingActivityViewDTO) throws JsonProcessingException {
-        System.out.println(new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true).writeValueAsString(fishingActivityViewDTO));
-    }
 
     @Test
     @SneakyThrows
     public void testActivityLandingViewMapper(){
 
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.LANDING);
-        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(getFishingActivityEntity());
+        FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
+
+        Set<FaCatchEntity> faCatches = generateFaCatches(fishingActivityEntity.getFaCatchs().iterator().next());
+        fishingActivityEntity.setFaCatchs(faCatches);
+
+        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(fishingActivityEntity);
 
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getReportDoc());
         assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
 
-        printDtoOnConsole(fishingActivityViewDTO);
+        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Landing.class);
+    }
+
+    private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
+        List<FaCatchEntity> faCatchList = new ArrayList<>();
+        FaCatchEntity clone_1 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+        FaCatchEntity clone_2 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+        FaCatchEntity clone_3 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+        FaCatchEntity clone_4 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+
+        faCatchList.add(cloneEntity(clone_1, "LSC", 100.00));
+        faCatchList.add(cloneEntity(clone_2, "LSC", 100.00));
+        faCatchList.add(cloneEntity(clone_3, "BMS", 200.00));
+        faCatchList.add(cloneEntity(clone_4, "BMS", 200.00));
+
+        return new HashSet<>(Arrays.asList(clone_1, clone_2, clone_3, clone_4));
+    }
+
+    private FaCatchEntity cloneEntity(FaCatchEntity faCatchExample, String fishClassCode, Double weight) {
+        faCatchExample.setFishClassCode(fishClassCode);
+        faCatchExample.setCalculatedWeightMeasure(weight);
+        return faCatchExample;
     }
 
     private FLUXFAReportMessage getActivityDataFromXML() throws JAXBException {
@@ -99,5 +127,21 @@ public class FishingActivityViewMapperTest {
             initFishingActivityEntity();
         }
         return fishingActivity;
+    }
+
+
+    private void printDtoOnConsole(FishingActivityViewDTO fishingActivityViewDTO, final Class<?> view) throws JsonProcessingException {
+        System.out.println(getObjectMapperForView(view).configure(SerializationFeature.INDENT_OUTPUT, true).writeValueAsString(fishingActivityViewDTO));
+    }
+
+    @NotNull
+    private ObjectMapper getObjectMapperForView(final Class<?> view) {
+        return new ObjectMapper() {
+                private static final long serialVersionUID = 1L;
+                @Override
+                protected DefaultSerializerProvider _serializerProvider(SerializationConfig config) {
+                    return super._serializerProvider(config.withView(view));
+                }
+            };
     }
 }
