@@ -139,7 +139,7 @@ public class FaCatchesProcessorMapper {
         for(FaCatchEntity entity : groupCatchList){
             Double calculatedWeightMeasure = entity.getCalculatedWeightMeasure();
             if(calculatedWeightMeasure == null){
-                calculatedWeightMeasure = extractLiveWeght(entity.getAapProcesses());
+                calculatedWeightMeasure = extractLiveWeight(entity.getAapProcesses());
             }
             Double unitQuantity            = entity.getUnitQuantity();
             String fishClassCode = entity.getFishClassCode() != null ? entity.getFishClassCode() : StringUtils.EMPTY;
@@ -167,7 +167,7 @@ public class FaCatchesProcessorMapper {
 
     }
 
-    private static Double extractLiveWeght(Set<AapProcessEntity> aapProcesses) {
+    private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
         Integer convFc     = 1;
         Double weightSum   = 0.0;
@@ -187,7 +187,7 @@ public class FaCatchesProcessorMapper {
     private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
         if(CollectionUtils.isNotEmpty(aapProducts)){
             for(AapProductEntity aapProd : aapProducts){
-                addDoubles(aapProd.getWeightMeasure(), weightSum);
+                addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
             }
         }
     }
