@@ -39,7 +39,6 @@ public class ReportDocumentDto {
     @JsonView(FishingActivityView.CommonView.class)
     private String purpose;
 
-
     public String getType() {
         return type;
     }

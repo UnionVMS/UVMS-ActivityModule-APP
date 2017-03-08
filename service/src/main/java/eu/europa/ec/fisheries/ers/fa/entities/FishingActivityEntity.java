@@ -18,6 +18,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @NamedQueries({
@@ -502,7 +503,7 @@ public class FishingActivityEntity implements Serializable {
 	public Set<FluxLocationEntity> getRelatedFluxLocations() {
 
 		FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip();
-		Set<FluxLocationEntity> relatedFluxLocations = null;
+		Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
 
 		if (specifiedFishingTrip != null){
 			relatedFluxLocations = specifiedFishingTrip.getRelatedFluxLocations();
@@ -511,4 +512,15 @@ public class FishingActivityEntity implements Serializable {
 		return relatedFluxLocations;
 	}
 
+    public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {
+
+        Set<FaReportIdentifierEntity> relatedReportForFaReportDocument = new HashSet<>();
+
+        if (faReportDocument != null){
+            relatedReportForFaReportDocument = faReportDocument.getFaReportIdentifiers();
+        }
+
+        return relatedReportForFaReportDocument;
+
+    }
 }

@@ -87,8 +87,7 @@ public abstract class FluxLocationMapper extends BaseMapper {
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation, FluxLocationCatchTypeEnum fluxLocationTypeEnum, FaCatchEntity faCatchEntity, @MappingTarget FluxLocationEntity fluxLocationEntity);
 
     @Mappings({
-            @Mapping(source = "wkt",target = "geometry"),
-
+            @Mapping(source = "wkt",target = "geometry")
     })
     public abstract FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
 

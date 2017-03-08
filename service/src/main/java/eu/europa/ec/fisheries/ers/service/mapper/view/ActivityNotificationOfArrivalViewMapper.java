@@ -53,7 +53,7 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
                 mapFaReportDocumentToReportDocumentDto(faEntity.getFaReportDocument(), faEntity.getFluxReportDocument());
         fishingActivityViewDTO.setReportDoc(reportDocumentDto);
 
-        // Applied AAP process Tile
+        // Applied AAP process tile
 
         return fishingActivityViewDTO;
     }
