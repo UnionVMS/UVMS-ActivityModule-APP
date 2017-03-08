@@ -35,6 +35,9 @@ public class FaCatchesProcessorMapper {
     public static final String LSC = "LSC";
     public static final String BMS = "BMS";
 
+    private FaCatchesProcessorMapper(){
+
+    }
     /**
      * Takes a list of FaCatches and returns the list of groupDtos.
      *
@@ -43,7 +46,7 @@ public class FaCatchesProcessorMapper {
      */
     public static List<FaCatchGroupDto> getCatchGroupsFromListEntity(Set<FaCatchEntity> faCatches) {
         if(CollectionUtils.isEmpty(faCatches)){
-            return null;
+            return Collections.emptyList();
         }
         Map<String, List<FaCatchEntity>> faCatchGroups = groupCatches(faCatches);
         return computeSumsAndMapToDtoGroups(faCatchGroups);
@@ -178,7 +181,7 @@ public class FaCatchesProcessorMapper {
                 addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
         }
-        if(weightSum != 0.0){
+        if(weightSum > 0){
             totalWeight = convFc * weightSum;
         }
         return totalWeight;
@@ -223,8 +226,13 @@ public class FaCatchesProcessorMapper {
         bmsGroupDetailsDto.setWeight(bmsGroupTotalWeight);
 
         // Set total group weight (LSC + BMS) (checking nullity : if both of them are null the sum must be 0.0)
-        lscGroupTotalWeight = lscGroupTotalWeight != null ? lscGroupTotalWeight : 0.0;
-        bmsGroupTotalWeight = bmsGroupTotalWeight != null ? bmsGroupTotalWeight : 0.0;
+        if(lscGroupTotalWeight == null){
+            lscGroupTotalWeight = 0.0;
+        }
+
+        if(bmsGroupTotalWeight == null){
+            bmsGroupTotalWeight = 0.0;
+        }
 
         // Set total group weight (LSC + BMS)
         groupDto.setCalculatedWeight(lscGroupTotalWeight + bmsGroupTotalWeight);
