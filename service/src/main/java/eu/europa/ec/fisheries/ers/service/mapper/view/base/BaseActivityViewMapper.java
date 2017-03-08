@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;

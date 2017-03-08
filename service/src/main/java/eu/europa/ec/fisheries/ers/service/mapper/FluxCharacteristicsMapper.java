@@ -15,12 +15,17 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDTO;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by padhyad on 6/14/2016.
@@ -96,4 +101,14 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(source = "valueDateTime",target = "valueDateTime")
     })
     public abstract FluxCharacteristicsDTO mapToFluxCharacteristicsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
+
+    public Map<String,String> mapFluxCharacteristicEntityToMap(Set<FluxCharacteristicEntity> fluxCharacteristics){
+        Map<String, String> map = new HashMap<>();
+        if(CollectionUtils.isNotEmpty(fluxCharacteristics)){
+            for(FluxCharacteristicEntity fluxCharac : fluxCharacteristics){
+                map.put(fluxCharac.getTypeCode(), fluxCharac.getValueText());
+            }
+        }
+        return map;
+    }
 }

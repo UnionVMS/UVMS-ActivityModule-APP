@@ -169,7 +169,6 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments;
 
-
 	public FishingActivityEntity() {
 		super();
 	}
@@ -506,4 +505,15 @@ public class FishingActivityEntity implements Serializable {
     public void setFlagState(String flagState) {
         this.flagState = flagState;
     }
+
+	public FishingTripEntity getSpecifiedFishingTrip() {
+
+		FishingTripEntity fishingTripEntity = null;
+
+		if (fishingTrips != null && !fishingTrips.isEmpty()) {
+			fishingTripEntity = fishingTrips.iterator().next();
+		}
+
+		return fishingTripEntity;
+	}
 }

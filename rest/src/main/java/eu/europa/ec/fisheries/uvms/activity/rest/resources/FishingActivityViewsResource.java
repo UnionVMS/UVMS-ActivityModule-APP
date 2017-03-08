@@ -82,6 +82,20 @@ public class FishingActivityViewsResource extends UnionVMSResource {
         return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.LANDING);
     }
 
+    @GET
+    @Path("/notification/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(FishingActivityView.NotificationOfArrival.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getActivityNotificationOfArrivalView(@Context HttpServletRequest request,
+                                           @Context HttpServletResponse response,
+                                           @HeaderParam("scopeName") String scopeName,
+                                           @HeaderParam("roleName") String roleName,
+                                           @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.PRIOR_NOTIFICATION_OF_ARRIVAL);
+    }
+
 
     /**
      * Depending on the view creates the DTO to return to the front-end.

@@ -14,6 +14,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -118,4 +120,15 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         }
         return faReportIdentifierEntities;
     }
+
+    @Mappings({
+            @Mapping(target = "type" , source = "faReportDocument.typeCode"),
+            @Mapping(target = "dateAccepted" , source = "faReportDocument.acceptedDatetime", dateFormat = DateUtils.FORMAT),
+            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.FORMAT),
+            @Mapping(target = "id" , source = "fluxReportDocument.referenceSchemeId"),
+            @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
+            @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode")
+    })
+    public abstract ReportDocumentDto map(FaReportDocumentEntity faReportDocument, FluxReportDocumentEntity fluxReportDocument);
+
 }

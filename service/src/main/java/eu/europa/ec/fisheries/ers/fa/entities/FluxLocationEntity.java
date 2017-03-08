@@ -11,9 +11,23 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -29,6 +43,9 @@ public class FluxLocationEntity implements Serializable {
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	@Column(name = "geom")
 	private Geometry geom;
+
+	@Transient
+	private String wkt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
@@ -286,6 +303,10 @@ public class FluxLocationEntity implements Serializable {
 		this.geom = geom;
 	}
 
+	public String getWkt() {
+		return wkt;
+	}
+
 	@Override
 	public String toString() {
 		return "FluxLocationEntity{" +
@@ -311,4 +332,10 @@ public class FluxLocationEntity implements Serializable {
 				", systemId='" + systemId + '\'' +
 				'}';
 	}
+
+	@PostLoad
+	private void onLoad() {
+		this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
+	}
+
 }
