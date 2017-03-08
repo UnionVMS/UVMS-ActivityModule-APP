@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
@@ -33,9 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by padhyad on 5/13/2016.
- */
 @Mapper(uses = {VesselTransportMeansMapper.class, FishingActivityMapper.class})
 public abstract class FaReportDocumentMapper extends BaseMapper {
 
@@ -127,8 +126,9 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.FORMAT),
             @Mapping(target = "id" , source = "fluxReportDocument.referenceSchemeId"),
             @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
+            @Mapping(target = "purpose" , source = "fluxReportDocument.purpose"),
             @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode")
     })
-    public abstract ReportDocumentDto map(FaReportDocumentEntity faReportDocument, FluxReportDocumentEntity fluxReportDocument);
+    public abstract ReportDocumentDto mapFaReportDocumentToReportDocumentDto(FaReportDocumentEntity faReportDocument, FluxReportDocumentEntity fluxReportDocument);
 
 }

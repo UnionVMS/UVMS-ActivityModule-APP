@@ -12,21 +12,20 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.ActivityDetailsMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 @Mapper
@@ -36,38 +35,27 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
 
     @Override
     public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
-        if ( faEntity == null ) {
-            return null;
-        }
 
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
-
-        // Activity Details
-        ActivityDetailsDto activityDetailsDto =
-                ActivityDetailsMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(faEntity);
+        // Fishing Activity Tile
+        ActivityDetailsDto activityDetailsDto = ActivityDetailsMapper.INSTANCE.
+                mapFishingActivityEntityToActivityDetailsDto(faEntity);
         fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
-        FishingTripEntity specifiedFishingTrip = faEntity.getSpecifiedFishingTrip();
-
-        // Ports
-        Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(specifiedFishingTrip);
+        // Intented Port of Landing Tile
+        Set<FluxLocationEntity> relatedFluxLocation = faEntity.getRelatedFluxLocations();
         Set<FluxLocationDto> fluxLocationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(relatedFluxLocation);
         fishingActivityViewDTO.setPorts(new ArrayList<>(fluxLocationDtos));
 
+        // Activity Report document tile
+        ReportDocumentDto reportDocumentDto = FaReportDocumentMapper.INSTANCE.
+                mapFaReportDocumentToReportDocumentDto(faEntity.getFaReportDocument(), faEntity.getFluxReportDocument());
+        fishingActivityViewDTO.setReportDoc(reportDocumentDto);
+
+        // Applied AAP process Tile
+
         return fishingActivityViewDTO;
     }
-
-
-    private Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity fishingTripEntity) {
-
-        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
-
-        if (fishingTripEntity != null){
-            relatedFluxLocations = fishingTripEntity.getRelatedFluxLocations();
-        }
-        return relatedFluxLocations;
-    }
-
 
 }

@@ -312,4 +312,8 @@ public class FluxMessageServiceBean implements FluxMessageService {
         }
     }
 
+    public void setDialect(DatabaseDialect dialect) {
+        this.dialect = dialect;
+    }
+
 }

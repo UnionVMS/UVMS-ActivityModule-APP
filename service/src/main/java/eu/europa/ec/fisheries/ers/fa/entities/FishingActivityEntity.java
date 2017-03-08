@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -17,7 +19,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-
 
 @NamedQueries({
 		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
@@ -38,7 +39,6 @@ import java.util.Set;
 						"where fi.tripId =:fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime")
 })
-
 @Entity
 @Table(name = "activity_fishing_activity")
 public class FishingActivityEntity implements Serializable {
@@ -122,12 +122,6 @@ public class FishingActivityEntity implements Serializable {
 
 	@Column(name = "calculated_fishing_duration")
 	private Double calculatedFishingDuration;
-
-//	@Column(name = "flap_document_id")
-//	private String flapDocumentId;
-
-//	@Column(name = "flap_document_scheme_id")
-//	private String flapDocumentSchemeId;
 
 	@Column(name = "vessel_transport_guid")
 	private String vesselTransportGuid;
@@ -316,14 +310,6 @@ public class FishingActivityEntity implements Serializable {
 		this.fishingDurationMeasure = fishingDurationMeasure;
 	}
 
-/*	public String getFlapDocumentId() {
-		return this.flapDocumentId;
-	}
-
-	public void setFlapDocumentId(String flapDocumentId) {
-		this.flapDocumentId = flapDocumentId;
-	}*/
-
 	public FishingActivityEntity getRelatedFishingActivity() {
 		return relatedFishingActivity;
 	}
@@ -331,14 +317,6 @@ public class FishingActivityEntity implements Serializable {
 	public void setRelatedFishingActivity(FishingActivityEntity relatedFishingActivity) {
 		this.relatedFishingActivity = relatedFishingActivity;
 	}
-
-	/*public String getFlapDocumentSchemeId() {
-		return this.flapDocumentSchemeId;
-	}
-
-	public void setFlapDocumentSchemeId(String flapDocumentSchemeId) {
-		this.flapDocumentSchemeId = flapDocumentSchemeId;
-	}*/
 
 	public Set<FaCatchEntity> getFaCatchs() {
 		return this.faCatchs;
@@ -506,7 +484,7 @@ public class FishingActivityEntity implements Serializable {
         this.flagState = flagState;
     }
 
-	public FishingTripEntity getSpecifiedFishingTrip() {
+	private FishingTripEntity getSpecifiedFishingTrip() {
 
 		FishingTripEntity fishingTripEntity = null;
 
@@ -516,4 +494,21 @@ public class FishingActivityEntity implements Serializable {
 
 		return fishingTripEntity;
 	}
+
+	public FluxReportDocumentEntity getFluxReportDocument() {
+		return  getFaReportDocument() != null ? getFaReportDocument().getFluxReportDocument() : null;
+	}
+
+	public Set<FluxLocationEntity> getRelatedFluxLocations() {
+
+		FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip();
+		Set<FluxLocationEntity> relatedFluxLocations = null;
+
+		if (specifiedFishingTrip != null){
+			relatedFluxLocations = specifiedFishingTrip.getRelatedFluxLocations();
+		}
+
+		return relatedFluxLocations;
+	}
+
 }
