@@ -98,7 +98,7 @@ public class FaCatchesProcessorMapper {
     private static List<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, List<FaCatchEntity>> faCatchGroups) {
         List<FaCatchGroupDto> faCatchGroupsDtoList = new ArrayList<>();
         for(Map.Entry<String, List<FaCatchEntity>> group : faCatchGroups.entrySet()){
-            faCatchGroupsDtoList.add(mapFaCatchListToCatchGroupDto(group.getKey(), group.getValue()));
+            faCatchGroupsDtoList.add(mapFaCatchListToCatchGroupDto(group.getValue()));
         }
         return faCatchGroupsDtoList;
     }
@@ -106,11 +106,10 @@ public class FaCatchesProcessorMapper {
     /**
      * Maps a list of CatchEntities (rappresenting a froup) to a  FaCatchGroupDto;
      *
-     * @param groupNr
      * @param groupCatchList
      * @return
      */
-    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(String groupNr, List<FaCatchEntity> groupCatchList) {
+    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto( List<FaCatchEntity> groupCatchList) {
         FaCatchGroupDto groupDto  = new FaCatchGroupDto();
         FaCatchEntity catchEntity = groupCatchList.get(0);
         // Set primary properties on groupDto

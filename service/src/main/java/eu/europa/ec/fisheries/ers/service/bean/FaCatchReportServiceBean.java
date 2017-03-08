@@ -89,7 +89,7 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
         List<GroupCriteria> groupByFields = getGroupByFields(isLanding);
         query.setGroupByFields(groupByFields);
 
-        Map<SearchFilter, String> searchCriteriaMap = new EnumMap<SearchFilter, String>(SearchFilter.class);
+        Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
         searchCriteriaMap.put(SearchFilter.TRIP_ID,tripId);
         query.setSearchCriteriaMap(searchCriteriaMap);
         return getCatchSummaryReport(query,isLanding);
@@ -128,7 +128,7 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
         Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query,isLanding);
 
         // post process data to create Summary table part of Catch summary Report
-        FACatchSummaryHelper faCatchSummaryHelper = (isLanding)? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+        FACatchSummaryHelper faCatchSummaryHelper = isLanding? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
         List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
 
         // Post process data to calculate Totals for each column
@@ -158,7 +158,7 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
         faCatchSummaryReportResponse.setSummaryRecords(faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs()));
         faCatchSummaryReportResponse.setTotal(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal()));
 
-        log.debug("SummaryTable XML Schema response---->"+faCatchSummaryHelper.printJsonstructure(faCatchSummaryReportResponse));
+        log.debug("SummaryTable XML Schema response---->"+FACatchSummaryHelper.printJsonstructure(faCatchSummaryReportResponse));
 
         return faCatchSummaryReportResponse;
     }
