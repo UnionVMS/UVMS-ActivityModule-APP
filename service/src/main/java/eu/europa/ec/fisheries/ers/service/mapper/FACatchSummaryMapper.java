@@ -11,8 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;

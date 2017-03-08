@@ -12,8 +12,8 @@ package eu.europa.ec.fisheries.ers.service.facatch;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
 import lombok.extern.slf4j.Slf4j;
