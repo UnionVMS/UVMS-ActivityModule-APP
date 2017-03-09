@@ -335,7 +335,9 @@ public class FluxLocationEntity implements Serializable {
 
 	@PostLoad
 	private void onLoad() {
-		this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
+		if(this.geom != null){
+			this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
+		}
 	}
 
 }

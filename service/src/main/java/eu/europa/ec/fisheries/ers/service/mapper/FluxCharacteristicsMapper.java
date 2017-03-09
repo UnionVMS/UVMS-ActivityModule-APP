@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
@@ -15,7 +17,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDTO;
-import org.apache.commons.collections.CollectionUtils;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,13 +25,11 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by padhyad on 6/14/2016.
- */
 @Mapper
 public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
@@ -98,17 +98,33 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
 
     @Mappings({
-            @Mapping(source = "valueDateTime",target = "valueDateTime")
+            @Mapping(source = "valueDateTime", target = "valueDateTime")
     })
     public abstract FluxCharacteristicsDTO mapToFluxCharacteristicsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
 
-    public Map<String,String> mapFluxCharacteristicEntityToMap(Set<FluxCharacteristicEntity> fluxCharacteristics){
-        Map<String, String> map = new HashMap<>();
-        if(CollectionUtils.isNotEmpty(fluxCharacteristics)){
-            for(FluxCharacteristicEntity fluxCharac : fluxCharacteristics){
-                map.put(fluxCharac.getTypeCode(), fluxCharac.getValueText());
-            }
+    public Map<String, String> map(Set<FluxCharacteristicEntity> fluxCharacteristics) {
+        if (fluxCharacteristics == null) {
+            return Collections.emptyMap();
         }
-        return map;
+        Map<String, String> characMap = new HashMap<>();
+        for (FluxCharacteristicEntity fluxCharacteristic : fluxCharacteristics) {
+            String value = null;
+            if (fluxCharacteristic.getValueMeasure() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueMeasure());
+            } else if (fluxCharacteristic.getValueDateTime() != null) {
+                value = DateUtils.dateToString(fluxCharacteristic.getValueDateTime());
+            } else if (fluxCharacteristic.getValueIndicator() != null) {
+                value = fluxCharacteristic.getValueIndicator();
+            } else if (fluxCharacteristic.getValueCode() != null) {
+                value = fluxCharacteristic.getValueCode();
+            } else if (fluxCharacteristic.getValueText() != null) {
+                value = fluxCharacteristic.getValueText();
+            } else if (fluxCharacteristic.getValueQuantity() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueQuantity());
+            }
+            characMap.put(fluxCharacteristic.getTypeCode(), value);
+        }
+        return characMap;
     }
+
 }

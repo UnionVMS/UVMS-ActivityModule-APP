@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -122,13 +123,23 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "type" , source = "faReportDocument.typeCode"),
-            @Mapping(target = "dateAccepted" , source = "faReportDocument.acceptedDatetime", dateFormat = DateUtils.FORMAT),
+            @Mapping(target = "acceptedDate" , source = "faReportDocument.acceptedDatetime", dateFormat = DateUtils.FORMAT),
             @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.FORMAT),
-            @Mapping(target = "id" , source = "fluxReportDocument.referenceSchemeId"),
+            @Mapping(target = "id" , expression = "java(fluxReportDocument.getFluxPartyIdentifierBySchemeId(\"FLUX_GP_PARTY\"))"),
             @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
-            @Mapping(target = "purpose" , source = "fluxReportDocument.purpose"),
-            @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode")
+            @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),
+            @Mapping(target = "fmcMark" , source = "faReportDocument.fmcMarker"),
+            @Mapping(target = "relatedReports" , source = "faReportDocument.faReportIdentifiers"),
+            @Mapping(target = "owner" , expression = "java(fluxReportDocument.getFluxPartyIdentifierBySchemeId(\"UUID\"))"),
     })
     public abstract ReportDocumentDto mapFaReportDocumentToReportDocumentDto(FaReportDocumentEntity faReportDocument, FluxReportDocumentEntity fluxReportDocument);
+
+    @Mappings({
+            @Mapping(target = "id" , source = "faReportIdentifierId"),
+            @Mapping(target = "schemeId" , source = "faReportIdentifierSchemeId"),
+    })
+    public abstract RelatedReportDto mapFaReportDocumentEntityToRelatedReportDto(FaReportIdentifierEntity entity);
+
+    public abstract List<RelatedReportDto> mapFaReportDocumentEntityListToRelatedReportDto(List<FaReportIdentifierEntity> entity);
 
 }

@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
@@ -36,7 +37,7 @@ import java.util.*;
 /**
  * Created by padhyad on 5/17/2016.
  */
-@Mapper(uses = {FaCatchMapper.class, DelimitedPeriodMapper.class, FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class, FluxCharacteristicsMapper.class})
+@Mapper(uses = { FaCatchMapper.class, DelimitedPeriodMapper.class, FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class, FluxCharacteristicsMapper.class})
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
 
@@ -714,5 +715,18 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
         return (flapDocument.getID() == null) ? null : getIdTypeSchemaId(flapDocument.getID());
+    }
+
+    @Mappings ({
+            @Mapping(target = "type", source = "typeCode"),
+            @Mapping(target = "occurrence", source = "occurence"),
+            @Mapping(target = "characteristics", expression = "java(mapCharacteristics(entity))")
+    })
+    public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
+
+    public Map<String, String> mapCharacteristics(FishingActivityEntity entity){
+        Map<String, String> map = FluxCharacteristicsMapper.INSTANCE.map(entity.getFluxCharacteristics());
+        map.putAll(FlapDocumentMapper.INSTANCE.map(entity.getFlapDocuments()));
+        return map;
     }
 }

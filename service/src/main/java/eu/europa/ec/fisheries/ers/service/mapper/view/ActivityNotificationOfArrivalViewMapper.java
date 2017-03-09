@@ -18,8 +18,8 @@ import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.ActivityDetailsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.mapstruct.Mapper;
@@ -39,7 +39,7 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
         // Fishing Activity Tile
-        ActivityDetailsDto activityDetailsDto = ActivityDetailsMapper.INSTANCE.
+        ActivityDetailsDto activityDetailsDto = FishingActivityMapper.INSTANCE.
                 mapFishingActivityEntityToActivityDetailsDto(faEntity);
         fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
@@ -51,9 +51,13 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
         // Activity Report document tile
         ReportDocumentDto reportDocumentDto = FaReportDocumentMapper.INSTANCE.
                 mapFaReportDocumentToReportDocumentDto(faEntity.getFaReportDocument(), faEntity.getFluxReportDocument());
-        fishingActivityViewDTO.setReportDoc(reportDocumentDto);
+        fishingActivityViewDTO.setReportDetails(reportDocumentDto);
 
-        // Applied AAP process tile
+        // Catch tile
+        fishingActivityViewDTO.setCatches(FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity.getFaCatchs()));
+
+        // Applied AAP process Tile
+        //TODO
 
         return fishingActivityViewDTO;
     }
