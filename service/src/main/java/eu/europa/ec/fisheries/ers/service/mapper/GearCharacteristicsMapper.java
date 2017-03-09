@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import com.vividsolutions.jts.util.CollectionUtil;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
@@ -60,8 +61,13 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);
 
     public GearDto mapGearDtoToFishingGearEntity(FishingGearEntity fishingGearEntity) {
+        GearDto gearDto = null;
         List<GearDto> gearDtos = mapFishingGearEntitiesToGearDtos(newSet(fishingGearEntity));
-        return gearDtos.get(0);
+        if (!CollectionUtils.isEmpty(gearDtos)){
+            gearDto = gearDtos.get(0);
+
+        }
+        return gearDto;
     }
 
     public List<GearDto> mapFishingGearEntitiesToGearDtos(Set<FishingGearEntity> fishingGearEntities) {

@@ -83,7 +83,7 @@
                             "values": [
                                 "FAReportType",
                                 "activityType",
-                                "occurence",
+                                "occurrence",
                                 "purposeCode",
                                 "dataSource",
                                 "fromName",
@@ -104,7 +104,7 @@
                             "order": [
                                 "FAReportType",
                                 "activityType",
-                                "occurence",
+                                "occurrence",
                                 "purposeCode",
                                 "dataSource",
                                 "fromName",
