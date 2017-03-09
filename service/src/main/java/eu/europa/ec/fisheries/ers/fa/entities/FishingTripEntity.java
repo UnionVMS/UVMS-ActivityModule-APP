@@ -89,8 +89,7 @@ public class FishingTripEntity implements Serializable {
 		return this.delimitedPeriods;
 	}
 
-	public void setDelimitedPeriods(
-			Set<DelimitedPeriodEntity> delimitedPeriods) {
+	public void setDelimitedPeriods(Set<DelimitedPeriodEntity> delimitedPeriods) {
 		this.delimitedPeriods = delimitedPeriods;
 	}
 
@@ -98,8 +97,7 @@ public class FishingTripEntity implements Serializable {
 		return this.fishingTripIdentifiers;
 	}
 
-	public void setFishingTripIdentifiers(
-			Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
+	public void setFishingTripIdentifiers(Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
 		this.fishingTripIdentifiers = fishingTripIdentifiers;
 	}
 
@@ -110,13 +108,5 @@ public class FishingTripEntity implements Serializable {
 				", typeCode='" + typeCode + '\'' +
 				", typeCodeListId='" + typeCodeListId + '\'' +
 				'}';
-	}
-
-	public Set<FluxLocationEntity> getRelatedFluxLocations() {
-		Set<FluxLocationEntity> fluxLocations = new HashSet<>();
-		if (fishingActivity != null){
-			fluxLocations = fishingActivity.getFluxLocations();
-		}
-		return fluxLocations;
 	}
 }

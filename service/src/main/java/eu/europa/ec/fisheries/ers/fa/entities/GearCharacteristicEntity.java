@@ -219,8 +219,4 @@ public class GearCharacteristicEntity implements Serializable {
 		this.calculatedValueQuantity = calculatedValueQuantity;
 	}
 
-    public GearCharacteristicEntity withTypeCode(String typeCode) {
-        this.typeCode = typeCode;
-        return this;
-    }
 }

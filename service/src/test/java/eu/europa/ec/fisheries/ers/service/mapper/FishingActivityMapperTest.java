@@ -114,4 +114,11 @@ public class FishingActivityMapperTest {
 
 
 
+    @Test
+    public void test(){
+
+        FishingActivityEntity build = FishingActivityEntity.builder().build();
+
+        FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(build);
+    }
 }

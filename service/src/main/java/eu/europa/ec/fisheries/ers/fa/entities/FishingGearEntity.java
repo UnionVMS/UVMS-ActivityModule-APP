@@ -12,7 +12,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,6 +22,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "activity_fishing_gear")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class FishingGearEntity implements Serializable {
 
 	@Id
@@ -50,20 +55,6 @@ public class FishingGearEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
 	private Set<GearCharacteristicEntity> gearCharacteristics;
-
-	public FishingGearEntity() {
-		super();
-	}
-
-	@Builder
-	public FishingGearEntity(Set<GearCharacteristicEntity> gearCharacteristics, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
-       	this.gearCharacteristics = gearCharacteristics;
-		this.typeCode = typeCode;
-		this.fishingActivity = fishingActivity;
-		this.gearProblem = gearProblem;
-		this.faCatch = faCatch;
-		this.typeCodeListId = typeCodeListId;
-	}
 
 	public int getId() {
 		return this.id;

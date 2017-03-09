@@ -44,17 +44,17 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
         fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
         // Intented Port of Landing Tile
-        Set<FluxLocationEntity> relatedFluxLocation = faEntity.getRelatedFluxLocations();
+        Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);
         Set<FluxLocationDto> fluxLocationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(relatedFluxLocation);
         fishingActivityViewDTO.setPorts(new ArrayList<>(fluxLocationDtos));
 
         // Activity Report document tile
         ReportDocumentDto reportDocumentDto = FaReportDocumentMapper.INSTANCE.
-                mapFaReportDocumentToReportDocumentDto(faEntity.getFaReportDocument(), faEntity.getFluxReportDocument());
+                mapFaReportDocumentToReportDocumentDto(faEntity.getFaReportDocument(), getFluxReportDocument(faEntity));
         fishingActivityViewDTO.setReportDetails(reportDocumentDto);
 
         // Catch tile
-        fishingActivityViewDTO.setCatches(FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity.getFaCatchs()));
+        fishingActivityViewDTO.setCatches(mapCatchesToGroupDto(faEntity));
 
         // Applied AAP process Tile
         //TODO

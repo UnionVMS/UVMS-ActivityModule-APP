@@ -13,6 +13,9 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import com.vividsolutions.jts.geom.Geometry;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -42,6 +45,9 @@ import java.util.Set;
 })
 @Entity
 @Table(name = "activity_fishing_activity")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
@@ -163,10 +169,6 @@ public class FishingActivityEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments;
-
-	public FishingActivityEntity() {
-		super();
-	}
 
 	public int getId() {
 		return this.id;
@@ -485,34 +487,4 @@ public class FishingActivityEntity implements Serializable {
         this.flagState = flagState;
     }
 
-	private FishingTripEntity getSpecifiedFishingTrip() {
-
-		FishingTripEntity fishingTripEntity = null;
-
-		if (fishingTrips != null && !fishingTrips.isEmpty()) {
-			fishingTripEntity = fishingTrips.iterator().next();
-		}
-
-		return fishingTripEntity;
-	}
-
-	public FluxReportDocumentEntity getFluxReportDocument() {
-		return getFaReportDocument() != null ? getFaReportDocument().getFluxReportDocument() : null;
-	}
-
-	public Set<FluxLocationEntity> getRelatedFluxLocations() {
-
-		FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip();
-		Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
-
-		if (specifiedFishingTrip != null){
-			relatedFluxLocations = specifiedFishingTrip.getRelatedFluxLocations();
-		}
-
-		return relatedFluxLocations;
-	}
-
-    public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {
-        return faReportDocument.getFaReportIdentifiers();
-    }
 }
