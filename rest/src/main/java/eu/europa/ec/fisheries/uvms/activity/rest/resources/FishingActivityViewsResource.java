@@ -60,10 +60,10 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityArrivalView(@Context HttpServletRequest request,
-                                         @Context HttpServletResponse response,
-                                         @HeaderParam("scopeName") String scopeName,
-                                         @HeaderParam("roleName") String roleName,
-                                         @PathParam("activityId") String activityId) throws ServiceException {
+                                           @Context HttpServletResponse response,
+                                           @HeaderParam("scopeName") String scopeName,
+                                           @HeaderParam("roleName") String roleName,
+                                           @PathParam("activityId") String activityId) throws ServiceException {
         return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.ARRIVAL);
     }
 
@@ -75,11 +75,25 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityLandingView(@Context HttpServletRequest request,
-                                                @Context HttpServletResponse response,
-                                                @HeaderParam("scopeName") String scopeName,
-                                                @HeaderParam("roleName") String roleName,
-                                                @PathParam("activityId") String activityId) throws ServiceException {
+                                           @Context HttpServletResponse response,
+                                           @HeaderParam("scopeName") String scopeName,
+                                           @HeaderParam("roleName") String roleName,
+                                           @PathParam("activityId") String activityId) throws ServiceException {
         return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.LANDING);
+    }
+
+    @GET
+    @Path("/departure/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(FishingActivityView.Departure.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getActivityDepartureView(@Context HttpServletRequest request,
+                                             @Context HttpServletResponse response,
+                                             @HeaderParam("scopeName") String scopeName,
+                                             @HeaderParam("roleName") String roleName,
+                                             @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.DEPARTURE);
     }
 
 

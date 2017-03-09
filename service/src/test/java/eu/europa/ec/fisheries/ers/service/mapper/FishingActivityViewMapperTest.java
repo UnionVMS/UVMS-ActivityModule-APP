@@ -67,7 +67,7 @@ public class FishingActivityViewMapperTest {
 
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getGears());
-        assertNotNull(fishingActivityViewDTO.getReportDoc());
+        assertNotNull(fishingActivityViewDTO.getReportDetails());
         assertTrue(fishingActivityViewDTO.getGears().size() == 1);
         assertNull(mapperForView.mapFaEntityToFaDto(null));
 
@@ -88,10 +88,26 @@ public class FishingActivityViewMapperTest {
         FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(fishingActivityEntity);
 
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
-        assertNotNull(fishingActivityViewDTO.getReportDoc());
+        assertNotNull(fishingActivityViewDTO.getReportDetails());
         assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
 
         printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Landing.class);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testActivityDepartureViewMapper() {
+        BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.DEPARTURE);
+        FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
+
+        Set<FaCatchEntity> faCatches = generateFaCatches(fishingActivityEntity.getFaCatchs().iterator().next());
+        fishingActivityEntity.setFaCatchs(faCatches);
+
+        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(fishingActivityEntity);
+
+        assertNotNull(fishingActivityViewDTO.getActivityDetails());
+        assertNotNull(fishingActivityViewDTO.getReportDetails());
+        assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
     }
 
     private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {

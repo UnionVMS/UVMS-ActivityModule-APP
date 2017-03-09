@@ -37,7 +37,7 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
     @Mappings({
             @Mapping(target = "activityDetails",   expression = "java(mapActivityDetails(faEntity))"),
             @Mapping(target = "ports",       expression = "java(getPortsFromFluxLocation(faEntity.getFluxLocations()))"),
-            @Mapping(target = "reportDoc",   expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
+            @Mapping(target = "reportDetails",   expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches",   expression = "java(mapCatchesToGroupDto(faEntity))")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
