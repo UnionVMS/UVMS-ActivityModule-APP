@@ -31,14 +31,14 @@ public class FishingActivityViewDTO {
     @JsonView(FishingActivityView.CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class})
+    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
     private List<FluxLocationDto> ports;
 
-    @JsonView(FishingActivityView.Arrival.class)
+    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class})
-    private ReportDocumentDto reportDoc;
+    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
+    private ReportDocumentDto reportDetails;
 
     @JsonView(FishingActivityView.CommonView.class)
     private List<FaCatchGroupDto> catches;
@@ -61,11 +61,11 @@ public class FishingActivityViewDTO {
     public void setGears(List<GearDto> gears) {
         this.gears = gears;
     }
-    public ReportDocumentDto getReportDoc() {
-        return reportDoc;
+    public ReportDocumentDto getReportDetails() {
+        return reportDetails;
     }
-    public void setReportDoc(ReportDocumentDto reportDoc) {
-        this.reportDoc = reportDoc;
+    public void setReportDetails(ReportDocumentDto reportDetails) {
+        this.reportDetails = reportDetails;
     }
     public List<FaCatchGroupDto> getCatches() {
         return catches;
