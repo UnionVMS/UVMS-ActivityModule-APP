@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class ActivityDetailsDto {
     private Map<String, String> characteristics;
 
     @JsonView({FishingActivityView.Arrival.class, FishingActivityView.NotificationOfArrival.class
-            ,FishingActivityView.Departure.class, FishingActivityView.AreaEntry.class
+            , FishingActivityView.AreaEntry.class
             ,FishingActivityView.Discard.class})
     private String reason;
 
@@ -94,6 +95,9 @@ public class ActivityDetailsDto {
 
 
     public Map<String, String> getCharacteristics() {
+        if (characteristics == null) {
+            characteristics = new HashMap<>();
+        }
         return characteristics;
     }
     public void setCharacteristics(Map<String, String> characteristics) {
