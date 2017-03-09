@@ -8,17 +8,17 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import com.vividsolutions.jts.util.CollectionUtil;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
-import      un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
-//import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -209,45 +209,4 @@ public abstract class BaseMapper {
         }
     }
 
-    private FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
-
-        FishingTripEntity fishingTripEntity = null;
-
-        Set<FishingTripEntity> fishingTrips = activityEntity.getFishingTrips();
-        if (!CollectionUtils.isEmpty(fishingTrips)) {
-            fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
-        }
-
-        return fishingTripEntity;
-    }
-
-    public FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
-        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
-        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
-    }
-
-    public Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
-
-        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
-        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
-
-        if (specifiedFishingTrip != null){
-            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
-        }
-
-        return relatedFluxLocations;
-    }
-
-    public Set<FaReportIdentifierEntity> getFaReportIdentifiers(FishingActivityEntity activityEntity) {
-        return activityEntity.getFaReportDocument().getFaReportIdentifiers();
-    }
-
-    public Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity tripEntity) {
-        Set<FluxLocationEntity> fluxLocations = new HashSet<>();
-        FishingActivityEntity fishingActivity = tripEntity.getFishingActivity();
-        if (fishingActivity != null){
-            fluxLocations = fishingActivity.getFluxLocations();
-        }
-        return fluxLocations;
-    }
 }
