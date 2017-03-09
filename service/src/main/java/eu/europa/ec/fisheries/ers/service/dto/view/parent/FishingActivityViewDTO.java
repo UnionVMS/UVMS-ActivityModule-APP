@@ -11,10 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 
 import java.util.List;
@@ -42,6 +39,9 @@ public class FishingActivityViewDTO {
 
     @JsonView(FishingActivityView.CommonView.class)
     private List<FaCatchGroupDto> catches;
+
+    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
+    private List<GearShotRetrievalDto> gearShotRetrievalList;
 
     public List<FluxLocationDto> getPorts() {
         return ports;
