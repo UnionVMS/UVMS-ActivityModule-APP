@@ -31,14 +31,13 @@ public class FishingActivityViewDTO {
     @JsonView(FishingActivityView.CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Arrival.class})
+    @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Arrival.class})
     private List<FluxLocationDto> ports;
 
     @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
+    @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(FishingActivityView.CommonView.class)
