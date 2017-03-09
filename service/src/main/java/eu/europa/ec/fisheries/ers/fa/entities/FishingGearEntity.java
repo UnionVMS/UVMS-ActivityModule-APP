@@ -8,7 +8,11 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.fa.entities;
+
+import lombok.Builder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -51,6 +55,7 @@ public class FishingGearEntity implements Serializable {
 		super();
 	}
 
+	@Builder
 	public FishingGearEntity(Set<GearCharacteristicEntity> gearCharacteristics, String typeCodeListId, String typeCode, FishingActivityEntity fishingActivity, GearProblemEntity gearProblem, FaCatchEntity faCatch) {
        	this.gearCharacteristics = gearCharacteristics;
 		this.typeCode = typeCode;

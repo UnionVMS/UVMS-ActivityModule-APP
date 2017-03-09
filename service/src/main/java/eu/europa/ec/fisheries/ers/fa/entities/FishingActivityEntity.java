@@ -497,7 +497,7 @@ public class FishingActivityEntity implements Serializable {
 	}
 
 	public FluxReportDocumentEntity getFluxReportDocument() {
-		return  getFaReportDocument() != null ? getFaReportDocument().getFluxReportDocument() : null;
+		return getFaReportDocument() != null ? getFaReportDocument().getFluxReportDocument() : null;
 	}
 
 	public Set<FluxLocationEntity> getRelatedFluxLocations() {
@@ -513,14 +513,6 @@ public class FishingActivityEntity implements Serializable {
 	}
 
     public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {
-
-        Set<FaReportIdentifierEntity> relatedReportForFaReportDocument = new HashSet<>();
-
-        if (faReportDocument != null){
-            relatedReportForFaReportDocument = faReportDocument.getFaReportIdentifiers();
-        }
-
-        return relatedReportForFaReportDocument;
-
+        return faReportDocument.getFaReportIdentifiers();
     }
 }

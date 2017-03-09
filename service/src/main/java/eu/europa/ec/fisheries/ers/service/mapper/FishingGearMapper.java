@@ -65,7 +65,6 @@ public abstract class FishingGearMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(source = "typeCode",target = "gearTypeCode"),
-            //@Mapping(source = "roleCode",target = "gearRoleCode")
     })
     public abstract FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
 
