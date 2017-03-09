@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.CustomMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
@@ -28,7 +29,10 @@ import org.mapstruct.factory.Mappers;
 import java.util.ArrayList;
 import java.util.Set;
 
-@Mapper
+import static eu.europa.ec.fisheries.ers.service.mapper.CustomMapper.getFluxReportDocument;
+import static eu.europa.ec.fisheries.ers.service.mapper.CustomMapper.getRelatedFluxLocations;
+
+@Mapper(uses = CustomMapper.class)
 public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityNotificationOfArrivalViewMapper INSTANCE = Mappers.getMapper(ActivityNotificationOfArrivalViewMapper.class);
