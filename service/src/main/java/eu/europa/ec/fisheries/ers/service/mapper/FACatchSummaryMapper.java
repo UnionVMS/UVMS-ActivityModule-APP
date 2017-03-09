@@ -231,7 +231,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
         // Post process data to consider different species and calculate count for it.
         if (MapUtils.isEmpty(fishSizeSummaryMap)) {
-            fishSizeSummaryMap = new HashMap<>();
+            fishSizeSummaryMap = new EnumMap<>(FishSizeClassEnum.class);
             fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), createPresentationCountMap(customEntity, speciesCnt));
 
         } else {
@@ -261,7 +261,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
           // This method will calculate data for FACatchType including species information
         if (MapUtils.isEmpty(faCatchSummaryMap)) {
-            faCatchSummaryMap = new HashMap<>();
+            faCatchSummaryMap = new EnumMap<>(FaCatchTypeEnum.class);
             faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), createPresentationCountMap(customEntity, speciesCnt));
         } else {
             Map<String, Map<String,Double>> speciesCountMap = (Map<String, Map<String,Double>>) faCatchSummaryMap.get(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()));

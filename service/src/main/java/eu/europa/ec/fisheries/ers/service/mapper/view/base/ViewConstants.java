@@ -14,7 +14,10 @@ package eu.europa.ec.fisheries.ers.service.mapper.view.base;
  * Created by kovian on 14/02/2017.
  */
 public final class ViewConstants {
-    
+
+    private ViewConstants(){
+        super();
+    }
     public static final String GEAR_CHARAC_TYPE_CODE_ME = "ME";
     public static final String GEAR_CHARAC_TYPE_CODE_GM = "GM";
     public static final String GEAR_CHARAC_TYPE_CODE_GN = "GN";

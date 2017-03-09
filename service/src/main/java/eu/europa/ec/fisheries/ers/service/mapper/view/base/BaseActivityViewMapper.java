@@ -71,7 +71,7 @@ public abstract class BaseActivityViewMapper {
 
     protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         if (CollectionUtils.isEmpty(fLocEntities)) {
-            return null;
+            return Collections.emptyList();
         }
         List<FluxLocationDto> portsListDto = new ArrayList<>();
         for(FluxLocationEntity flEntity : fLocEntities){
