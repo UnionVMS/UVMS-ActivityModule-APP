@@ -94,6 +94,7 @@ public class FilterMap {
 
     private FilterMap() {
         super();
+        populateFilterMappings();
     }
 
     static {
@@ -104,11 +105,7 @@ public class FilterMap {
         populateGroupByMapping();
     }
 
-    {
-        populateFilterMappings();
-    }
-
-    /**
+     /**
      * Below method stores mapping for each Filter criteria. Mapping will provide information on table joins
      * required for the criteria and Where conditions which needs to be applied for the criteria
      */

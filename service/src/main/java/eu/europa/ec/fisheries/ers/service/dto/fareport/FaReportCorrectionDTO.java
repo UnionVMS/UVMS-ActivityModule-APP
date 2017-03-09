@@ -136,4 +136,20 @@ public class FaReportCorrectionDTO implements Serializable, Comparable {
     public int compareTo(Object o) {
         return acceptedDate.compareTo(((FaReportCorrectionDTO) o).getAcceptedDate());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FaReportCorrectionDTO)) return false;
+
+        FaReportCorrectionDTO that = (FaReportCorrectionDTO) o;
+
+        return getAcceptedDate() != null ? getAcceptedDate().equals(that.getAcceptedDate()) : that.getAcceptedDate() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getAcceptedDate() != null ? getAcceptedDate().hashCode() : 0;
+    }
 }
