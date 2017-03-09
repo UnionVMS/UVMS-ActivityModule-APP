@@ -33,7 +33,9 @@ public abstract class FlapDocumentMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "flapDocumentId", expression = "java(getIdType(flapDocument.getID()))"),
             @Mapping(target = "flapDocumentSchemeId", expression = "java(getIdTypeSchemaId(flapDocument.getID()))"),
-            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)")
+            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
+            @Mapping(target = "flapTypeCode", expression = "java(getCodeType(flapDocument.getTypeCode()))"),
+            @Mapping(target = "flapTypeCodeListId", expression = "java(getCodeTypeListId(flapDocument.getTypeCode()))")
     })
     public abstract FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
 }

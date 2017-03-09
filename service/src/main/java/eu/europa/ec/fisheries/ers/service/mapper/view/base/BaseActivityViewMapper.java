@@ -11,10 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
@@ -40,6 +37,10 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  */
 public abstract class BaseActivityViewMapper {
 
+    public static String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
+
+    public static String FLUX_REPORT_DOCUMENT_ID = "UUID";
+
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
     /**
@@ -54,14 +55,48 @@ public abstract class BaseActivityViewMapper {
         activityDetails.setType(faEntity.getTypeCode());
         activityDetails.setOccurrence(faEntity.getOccurence());
         Set<FluxCharacteristicEntity> fluxCharacteristics = faEntity.getFluxCharacteristics();
-        if(CollectionUtils.isNotEmpty(fluxCharacteristics)){
-            Map<String, String> characMap = new HashMap<>();
-            for(FluxCharacteristicEntity fluxCharac : fluxCharacteristics){
-                characMap.put(fluxCharac.getTypeCode(), fluxCharac.getValueText());
-            }
-            activityDetails.setCharacteristics(characMap);
-        }
+        activityDetails.getCharacteristics().putAll(getFluxCharacteristicsTypeCodeValue(fluxCharacteristics));
+        Set<FlapDocumentEntity> flapDocumentEntities = faEntity.getFlapDocuments();
+        activityDetails.getCharacteristics().putAll(getFlapDocumentTypeCodeValue(flapDocumentEntities));
         return populateActivityDetails(faEntity, activityDetails);
+    }
+
+    private Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
+        if (fluxCharacteristics == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> characMap = new HashMap<>();
+        for(FluxCharacteristicEntity fluxCharacteristic : fluxCharacteristics) {
+            String value = null;
+            if (fluxCharacteristic.getValueMeasure() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueMeasure());
+            } else if (fluxCharacteristic.getValueDateTime() != null) {
+                value = DateUtils.dateToString(fluxCharacteristic.getValueDateTime());
+            } else if (fluxCharacteristic.getValueIndicator() != null) {
+                value = fluxCharacteristic.getValueIndicator();
+            } else if (fluxCharacteristic.getValueCode() != null) {
+                value = fluxCharacteristic.getValueCode();
+            } else if (fluxCharacteristic.getValueText() != null) {
+                value = fluxCharacteristic.getValueText();
+            } else if (fluxCharacteristic.getValueQuantity() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueQuantity());
+            }
+            characMap.put(fluxCharacteristic.getTypeCode(), value);
+        }
+        return characMap;
+    }
+
+    private Map<String, String> getFlapDocumentTypeCodeValue(Set<FlapDocumentEntity> flapDocument) {
+        if (flapDocument == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> characMap = new HashMap<>();
+        for (FlapDocumentEntity flapDocumentEntity : flapDocument) {
+            if (flapDocumentEntity.getFlapDocumentId() != null && flapDocumentEntity.getFlapTypeCode() != null) {
+                characMap.put(flapDocumentEntity.getFlapTypeCode(), flapDocumentEntity.getFlapDocumentId() + ":" +flapDocumentEntity.getFlapDocumentSchemeId());
+            }
+        }
+        return characMap;
     }
 
     /**
@@ -97,16 +132,52 @@ public abstract class BaseActivityViewMapper {
         }
         ReportDocumentDto repDocDto = new ReportDocumentDto();
         repDocDto.setType(faRepDocEntity.getTypeCode());
-        repDocDto.setDateAccepted(DateUtils.dateToString(faRepDocEntity.getAcceptedDatetime()));
+        repDocDto.setAcceptedDate(DateUtils.dateToString(faRepDocEntity.getAcceptedDatetime()));
         FluxReportDocumentEntity fluxReportDocument = faRepDocEntity.getFluxReportDocument();
-        if(fluxReportDocument != null){
-            repDocDto.setCreationDate(DateUtils.dateToString(fluxReportDocument.getCreationDatetime()));
-            repDocDto.setId(fluxReportDocument.getReferenceSchemeId());
-            repDocDto.setRefId(fluxReportDocument.getReferenceId());
-            repDocDto.setPurpose(fluxReportDocument.getPurpose());
-            repDocDto.setPurposeCode(fluxReportDocument.getPurposeCode());
-        }
+
+        repDocDto.setType(faRepDocEntity.getTypeCode());
+        repDocDto.setCreationDate(DateUtils.dateToString(fluxReportDocument.getCreationDatetime()));
+        repDocDto.setPurposeCode(fluxReportDocument.getPurposeCode());
+        repDocDto.setOwner(getFluxPartyIdentiferBySchemeId(fluxReportDocument, FLUX_PARTY_OWNER_SCHEME_ID));
+        repDocDto.setId(getFluxReportDocumentIdBySchemeId(fluxReportDocument, FLUX_REPORT_DOCUMENT_ID));
+        repDocDto.setRefId(fluxReportDocument.getReferenceId());
+        repDocDto.setAcceptedDate(DateUtils.dateToString(faRepDocEntity.getAcceptedDatetime()));
+        repDocDto.setFmcMark(faRepDocEntity.getFmcMarker());
+        repDocDto.setRelatedReports(getRelatedReportForFaReportDocument(faRepDocEntity));
+
         return repDocDto;
+    }
+
+    public String getFluxPartyIdentiferBySchemeId(FluxReportDocumentEntity fluxReportDocument, String schemeId) {
+        FluxPartyEntity fluxParty = fluxReportDocument.getFluxParty();
+        if (fluxParty != null) {
+            for (FluxPartyIdentifierEntity fluxPartyIdentifier : fluxParty.getFluxPartyIdentifiers()) {
+                if (fluxPartyIdentifier.getFluxPartyIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
+                    return fluxPartyIdentifier.getFluxPartyIdentifierId();
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getFluxReportDocumentIdBySchemeId(FluxReportDocumentEntity fluxReportDocument, String schemeId) {
+        for (FluxReportIdentifierEntity fluxReportIdentifier : fluxReportDocument.getFluxReportIdentifiers()) {
+            if (fluxReportIdentifier.getFluxReportIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
+                return fluxReportIdentifier.getFluxReportIdentifierId();
+            }
+        }
+        return null;
+    }
+
+    public List<RelatedReportDto> getRelatedReportForFaReportDocument(FaReportDocumentEntity faReportDocument) {
+        List<RelatedReportDto> relatedReportDtos = new ArrayList<>();
+        for (FaReportIdentifierEntity faReportIdentifier : faReportDocument.getFaReportIdentifiers()) {
+            RelatedReportDto relatedReportDto = new RelatedReportDto();
+            relatedReportDto.setId(faReportIdentifier.getFaReportIdentifierId());
+            relatedReportDto.setSchemeId(faReportIdentifier.getFaReportIdentifierSchemeId());
+            relatedReportDtos.add(relatedReportDto);
+        }
+        return relatedReportDtos;
     }
 
     public List<GearDto> getGearsFromEntity(Set<FishingGearEntity> fishingGearEntities) {
