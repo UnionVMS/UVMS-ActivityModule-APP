@@ -13,6 +13,8 @@ package eu.europa.ec.fisheries.ers.service.dto.view;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
+import java.util.List;
+
 /**
  * Created by kovian on 09/02/2017.
  */
@@ -22,7 +24,13 @@ public class ReportDocumentDto {
     private String type;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String dateAccepted;
+    private String creationDate;
+
+    @JsonView(FishingActivityView.CommonView.class)
+    private String purposeCode;
+
+    @JsonView(FishingActivityView.CommonView.class)
+    private String owner;
 
     @JsonView(FishingActivityView.CommonView.class)
     private String id;
@@ -31,13 +39,13 @@ public class ReportDocumentDto {
     private String refId;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String creationDate;
+    private String acceptedDate;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String purposeCode;
+    private String fmcMark;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String purpose;
+    private List<RelatedReportDto> relatedReports;
 
 
     public String getType() {
@@ -46,11 +54,11 @@ public class ReportDocumentDto {
     public void setType(String type) {
         this.type = type;
     }
-    public String getDateAccepted() {
-        return dateAccepted;
+    public String getAcceptedDate() {
+        return acceptedDate;
     }
-    public void setDateAccepted(String dateAccepted) {
-        this.dateAccepted = dateAccepted;
+    public void setAcceptedDate(String acceptedDate) {
+        this.acceptedDate = acceptedDate;
     }
     public String getId() {
         return id;
@@ -76,10 +84,28 @@ public class ReportDocumentDto {
     public void setPurposeCode(String purposeCode) {
         this.purposeCode = purposeCode;
     }
-    public String getPurpose() {
-        return purpose;
+
+    public String getOwner() {
+        return owner;
     }
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getFmcMark() {
+        return fmcMark;
+    }
+
+    public void setFmcMark(String fmcMark) {
+        this.fmcMark = fmcMark;
+    }
+
+    public List<RelatedReportDto> getRelatedReports() {
+        return relatedReports;
+    }
+
+    public void setRelatedReports(List<RelatedReportDto> relatedReports) {
+        this.relatedReports = relatedReports;
     }
 }

@@ -45,6 +45,12 @@ public class FlapDocumentEntity implements Serializable {
     @Column(name = "flap_document_scheme_id")
     private String flapDocumentSchemeId;
 
+    @Column(name = "flap_type_code")
+    private String flapTypeCode;
+
+    @Column(name = "flap_type_code_list_id")
+    private String flapTypeCodeListId;
+
     public int getId() {
         return id;
     }
@@ -87,5 +93,21 @@ public class FlapDocumentEntity implements Serializable {
 
     public void setFluxCharacteristic(FluxCharacteristicEntity fluxCharacteristic) {
         this.fluxCharacteristic = fluxCharacteristic;
+    }
+
+    public String getFlapTypeCode() {
+        return flapTypeCode;
+    }
+
+    public void setFlapTypeCode(String flapTypeCode) {
+        this.flapTypeCode = flapTypeCode;
+    }
+
+    public String getFlapTypeCodeListId() {
+        return flapTypeCodeListId;
+    }
+
+    public void setFlapTypeCodeListId(String flapTypeCodeListId) {
+        this.flapTypeCodeListId = flapTypeCodeListId;
     }
 }
