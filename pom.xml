@@ -74,6 +74,7 @@
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
         <lucene.index.directory>/app/indexes/activity</lucene.index.directory>
+        <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
 
     <dependencyManagement>
@@ -254,7 +255,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.4</version>
+                <version>1.16.14</version>
             </dependency>
 
             <dependency>
@@ -432,11 +433,6 @@
                     <goalPrefix>plugin</goalPrefix>
                     <outputDirectory>target/dir</outputDirectory>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.sonar-plugins.java</groupId>
-                <artifactId>sonar-java-plugin</artifactId>
-                <version>3.2</version>
             </plugin>
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>

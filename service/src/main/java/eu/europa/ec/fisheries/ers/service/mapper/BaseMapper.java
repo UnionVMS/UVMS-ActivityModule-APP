@@ -10,7 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import com.vividsolutions.jts.util.CollectionUtil;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 
@@ -206,5 +207,47 @@ public abstract class BaseMapper {
             log.error(e.getMessage(), e);
             return null;
         }
+    }
+
+    private FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
+
+        FishingTripEntity fishingTripEntity = null;
+
+        Set<FishingTripEntity> fishingTrips = activityEntity.getFishingTrips();
+        if (!CollectionUtils.isEmpty(fishingTrips)) {
+            fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
+        }
+
+        return fishingTripEntity;
+    }
+
+    public FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
+        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
+        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
+    }
+
+    public Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
+
+        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
+        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
+
+        if (specifiedFishingTrip != null){
+            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
+        }
+
+        return relatedFluxLocations;
+    }
+
+    public Set<FaReportIdentifierEntity> getFaReportIdentifiers(FishingActivityEntity activityEntity) {
+        return activityEntity.getFaReportDocument().getFaReportIdentifiers();
+    }
+
+    public Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity tripEntity) {
+        Set<FluxLocationEntity> fluxLocations = new HashSet<>();
+        FishingActivityEntity fishingActivity = tripEntity.getFishingActivity();
+        if (fishingActivity != null){
+            fluxLocations = fishingActivity.getFluxLocations();
+        }
+        return fluxLocations;
     }
 }
