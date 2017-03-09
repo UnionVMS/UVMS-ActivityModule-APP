@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.dto.view;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +35,9 @@ public class GearShotRetrievalDto {
 
     @JsonView(FishingActivityView.CommonView.class)
     private Map<String, String> characteristics;
+
+    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
+    private List<GearProblemDto> gearProblems;
 
     @JsonView(FishingActivityView.CommonView.class)
     private FluxLocationDto location;
@@ -73,5 +77,11 @@ public class GearShotRetrievalDto {
     }
     public void setLocation(FluxLocationDto location) {
         this.location = location;
+    }
+    public List<GearProblemDto> getGearProblems() {
+        return gearProblems;
+    }
+    public void setGearProblems(List<GearProblemDto> gearProblems) {
+        this.gearProblems = gearProblems;
     }
 }

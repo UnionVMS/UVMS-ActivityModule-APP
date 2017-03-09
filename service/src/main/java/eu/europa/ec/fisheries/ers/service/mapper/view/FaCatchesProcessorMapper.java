@@ -12,11 +12,14 @@ package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.DestinationLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FluxCharacteristicsViewDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseViewWithInstanceMapper;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.model.StringWrapper;
@@ -30,7 +33,7 @@ import java.util.*;
  * Created by kovian on 03/03/2017.
  */
 @Slf4j
-public class FaCatchesProcessorMapper {
+public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
 
     public static final String LSC = "LSC";
     public static final String BMS = "BMS";
@@ -192,27 +195,6 @@ public class FaCatchesProcessorMapper {
         }
     }
 
-    /**
-     * Add a quantity to another quantity checking that neither of the values is null;
-     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
-     *
-     * @param actualMeasureToAdd
-     * @param meausureSubTotalToAddTo
-     * @return
-     */
-    private static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
-        Double returnValue = null;
-        if(actualMeasureToAdd != null && actualMeasureToAdd != 0.0){
-            if(meausureSubTotalToAddTo == null){
-                meausureSubTotalToAddTo = 0.0;
-            }
-            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
-        } else if(meausureSubTotalToAddTo != null){
-            returnValue = meausureSubTotalToAddTo;
-        }
-        return returnValue;
-    }
-
 
     private static void setWeightsForSubGroup(FaCatchGroupDto groupDto, FaCatchGroupDetailsDto lscGroupDetailsDto, FaCatchGroupDetailsDto bmsGroupDetailsDto, Double lscGroupTotalWeight, Double lscGroupTotalUnits, Double bmsGroupTotalWeight, Double bmsGroupTotalUnits) {
 
@@ -306,6 +288,16 @@ public class FaCatchesProcessorMapper {
         for(FluxCharacteristicEntity flCharacEnt : fluxCharacteristics){
             applicableFluxCharacteristics.add(FluxCharacteristicsViewDtoMapper.INSTANCE.mapFluxCharacteristicsEntityListToDtoList(flCharacEnt));
         }
+    }
+
+    @Override
+    public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
+        return null;
+    }
+
+    @Override
+    protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
+        return null;
     }
 
     /**

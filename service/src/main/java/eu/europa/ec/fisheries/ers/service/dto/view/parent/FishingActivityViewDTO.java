@@ -73,5 +73,10 @@ public class FishingActivityViewDTO {
     public void setCatches(List<FaCatchGroupDto> catches) {
         this.catches = catches;
     }
-
+    public List<GearShotRetrievalDto> getGearShotRetrievalList() {
+        return gearShotRetrievalList;
+    }
+    public void setGearShotRetrievalList(List<GearShotRetrievalDto> gearShotRetrievalList) {
+        this.gearShotRetrievalList = gearShotRetrievalList;
+    }
 }

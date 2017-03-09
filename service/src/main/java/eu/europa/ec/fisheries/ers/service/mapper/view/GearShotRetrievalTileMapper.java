@@ -10,70 +10,91 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearProblemDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by kovian on 09/03/2017.
+ *
+ * This class maps a fishingActivity to gearShotRetrieval DTO.
+ *
  */
 @Mapper
 public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper {
 
-    protected abstract List<GearShotRetrievalDto> mapEntityListToDtoList(List<FishingActivityEntity> entity);
+    public static final GearShotRetrievalTileMapper INSTANCE = Mappers.getMapper(GearShotRetrievalTileMapper.class);
+
+
+    public abstract List<GearShotRetrievalDto> mapEntityListToDtoList(Set<FishingActivityEntity> entity);
+
 
     @Mappings({
-            @Mapping(target = "type",            source = "typeCode"),
-            @Mapping(target = "occurrence",      source = "occurrence"),
-            @Mapping(target = "duration",        expression = "java(getDurationFromActivity(entity.delimitedPeriods))"),
-            @Mapping(target = "gear",            expression = ""),
-            @Mapping(target = "characteristics", expression = ""),
-            @Mapping(target = "location",        expression = "java()")
+            @Mapping(target = "type",            source     = "typeCode"),
+            @Mapping(target = "occurrence",      source     = "occurence"),
+            @Mapping(target = "duration",        expression = "java(getDurationFromActivity(entity.getDelimitedPeriods()))"),
+            @Mapping(target = "gear",            expression = "java(mapToFirstFishingGear(entity.getFishingGears()))"),
+            @Mapping(target = "gearProblems",    source     = "gearProblems"),
+            @Mapping(target = "characteristics", expression = "java(getFluxCharacteristicsTypeCodeValue(entity.getFluxCharacteristics()))"),
+            @Mapping(target = "location",        expression = "java(mapSingleFluxLocationFromEntity(entity.getFluxLocations()))")
     })
     protected abstract GearShotRetrievalDto mapSingleEntityToSingleDto(FishingActivityEntity entity);
 
 
-    protected abstract String mapDelimitedPerion(DelimitedPeriodEntity delimitPeriod);
+    protected abstract List<GearProblemDto> mapGearProblemsToGearsDto(Set<GearProblemEntity> gearProblems);
 
 
-    protected Double getDurationFromActivity(List<DelimitedPeriodEntity> periodsList){
+    @Mappings({
+            @Mapping(target = "type",            source = "typeCode"),
+            @Mapping(target = "nrOfGears",       source = "affectedQuantity"),
+            @Mapping(target = "recoveryMeasure", expression = "java(mapToFirstRecoveryMeasure(entity.getGearProblemRecovery()))"),
+            @Mapping(target = "location",        expression = "java(getFluxLocationDtoFromEntity(entity.getLocation()))")
+    })
+    protected abstract GearProblemDto  mapGearProblemToGearsDto(GearProblemEntity entity);
+
+
+    protected Double getDurationFromActivity(Set<DelimitedPeriodEntity> periodsList){
         if(CollectionUtils.isEmpty(periodsList)){
             return null;
         }
-        Double duration = null;
+        Double durationSubTotal = null;
         for(DelimitedPeriodEntity period : periodsList){
-            Double calculatedDuration = period.getCalculatedDuration();
-
+            durationSubTotal = addDoubles(period.getCalculatedDuration(), durationSubTotal);
         }
-
-
-        return duration;
-
+        return durationSubTotal;
     }
 
-/*
-    @JsonView(FishingActivityView.CommonView.class)
-    private String ;
 
-    @JsonView(FishingActivityView.CommonView.class)
-    private String ;
+    protected FluxLocationDto mapSingleFluxLocationFromEntity(Set<FluxLocationEntity> fluxLocations){
+        if(CollectionUtils.isEmpty(fluxLocations)){
+            return null;
+        }
+        return getFluxLocationDtoFromEntity(fluxLocations.iterator().next());
+    }
 
-    @JsonView(FishingActivityView.CommonView.class)
-    private String ;
+    protected String mapToFirstRecoveryMeasure(Set<GearProblemRecoveryEntity> recoveries){
+        if(CollectionUtils.isEmpty(recoveries)){
+            return null;
+        }
+        String probRecoveryMeasure = null;
+        for(GearProblemRecoveryEntity probRecovEnt : recoveries){
+            if(StringUtils.isNotEmpty(probRecovEnt.getRecoveryMeasureCode())){
+                probRecoveryMeasure = probRecovEnt.getRecoveryMeasureCode();
+                break;
+            }
+        }
+        return probRecoveryMeasure;
+    }
 
-    @JsonView(FishingActivityView.CommonView.class)
-    private GearDto ;
-
-    @JsonView(FishingActivityView.CommonView.class)
-    private Map<String, String> ;
-
-    @JsonView(FishingActivityView.CommonView.class)
-    private FluxLocationDto ;*/
 }

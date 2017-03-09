@@ -56,7 +56,7 @@ public abstract class BaseActivityViewMapper {
         return populateActivityDetails(faEntity, activityDetails);
     }
 
-    private Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
+    protected Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
         if (fluxCharacteristics == null) {
             return Collections.emptyMap();
         }
@@ -110,15 +110,22 @@ public abstract class BaseActivityViewMapper {
         }
         List<FluxLocationDto> portsListDto = new ArrayList<>();
         for(FluxLocationEntity flEntity : fLocEntities){
-            FluxLocationDto port = new FluxLocationDto();
-            StringWrapper geomStrWrapper = GeometryMapper.INSTANCE.geometryToWkt(flEntity.getGeom());
-            if(geomStrWrapper != null){
-                port.setGeometry(geomStrWrapper.getValue());
-            }
-            port.setName(flEntity.getFluxLocationIdentifierSchemeId());
-            portsListDto.add(port);
+            portsListDto.add(getFluxLocationDtoFromEntity(flEntity));
         }
         return portsListDto;
+    }
+
+    protected FluxLocationDto getFluxLocationDtoFromEntity(FluxLocationEntity flEntity) {
+        if(flEntity == null){
+            return null;
+        }
+        FluxLocationDto port = new FluxLocationDto();
+        StringWrapper geomStrWrapper = GeometryMapper.INSTANCE.geometryToWkt(flEntity.getGeom());
+        if(geomStrWrapper != null){
+            port.setGeometry(geomStrWrapper.getValue());
+        }
+        port.setName(flEntity.getFluxLocationIdentifierSchemeId());
+        return port;
     }
 
 
@@ -182,12 +189,23 @@ public abstract class BaseActivityViewMapper {
         }
         List<GearDto> gearDtoList = new ArrayList<>();
         for (FishingGearEntity gearEntity : fishingGearEntities) {
-            GearDto gearDto = new GearDto();
-            gearDto.setType(gearEntity.getTypeCode());
-            fillRoleAndCharacteristics(gearDto, gearEntity);
-            gearDtoList.add(gearDto);
+            gearDtoList.add(mapSingleGearToDto(gearEntity));
         }
         return gearDtoList;
+    }
+
+    private GearDto mapSingleGearToDto(FishingGearEntity gearEntity) {
+        GearDto gearDto = new GearDto();
+        gearDto.setType(gearEntity.getTypeCode());
+        fillRoleAndCharacteristics(gearDto, gearEntity);
+        return gearDto;
+    }
+
+    protected GearDto mapToFirstFishingGear(Set<FishingGearEntity> fishingGearEntities){
+        if(CollectionUtils.isEmpty(fishingGearEntities)){
+            return null;
+        }
+        return mapSingleGearToDto(fishingGearEntities.iterator().next());
     }
 
     private void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
@@ -202,6 +220,27 @@ public abstract class BaseActivityViewMapper {
                 fillCharacteristicField(charac, gearDto);
             }
         }
+    }
+
+    /**
+     * Add a quantity to another quantity checking that neither of the values is null;
+     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
+     *
+     * @param actualMeasureToAdd
+     * @param meausureSubTotalToAddTo
+     * @return
+     */
+    protected static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
+        Double returnValue = null;
+        if(actualMeasureToAdd != null && actualMeasureToAdd != 0.0){
+            if(meausureSubTotalToAddTo == null){
+                meausureSubTotalToAddTo = 0.0;
+            }
+            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
+        } else if(meausureSubTotalToAddTo != null){
+            returnValue = meausureSubTotalToAddTo;
+        }
+        return returnValue;
     }
 
     private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {

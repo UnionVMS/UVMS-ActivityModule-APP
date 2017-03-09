@@ -13,8 +13,6 @@ package eu.europa.ec.fisheries.ers.service.dto.view;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
-import java.util.List;
-
 /**
  * Created by kovian on 09/02/2017.
  */
@@ -52,9 +50,6 @@ public class GearDto {
 
     @JsonView(FishingActivityView.CommonView.class)
     private String description;
-
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
-    private List<GearProblemDto> gearProblems;
 
     public String getType() {
         return type;
@@ -122,10 +117,5 @@ public class GearDto {
     public void setDescription(String description) {
         this.description = description;
     }
-    public List<GearProblemDto> getGearProblems() {
-        return gearProblems;
-    }
-    public void setGearProblems(List<GearProblemDto> gearProblems) {
-        this.gearProblems = gearProblems;
-    }
+
 }
