@@ -74,7 +74,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
             @Mapping(target = "type",            source     = "typeCode"),
             @Mapping(target = "nrOfGears",       source     = "affectedQuantity"),
             @Mapping(target = "recoveryMeasure", expression = "java(mapToFirstRecoveryMeasure(entity.getGearProblemRecovery()))"),
-            @Mapping(target = "locations",       source     = "entity.locations")
+            @Mapping(target = "location",       expression = "java(mapSingleFluxLocationFromEntity(entity.getLocations()))")
     })
     protected abstract GearProblemDto  mapGearProblemToGearsDto(GearProblemEntity entity);
 

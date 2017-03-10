@@ -13,8 +13,6 @@ package eu.europa.ec.fisheries.ers.service.dto.view;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
-import java.util.List;
-
 /**
  * Created by kovian on 08/03/2017.
  */
@@ -30,7 +28,7 @@ public class GearProblemDto {
     private String recoveryMeasure;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private List<FluxLocationDto> locations;
+    private FluxLocationDto location;
 
     public String getType() {
         return type;
@@ -50,10 +48,10 @@ public class GearProblemDto {
     public void setRecoveryMeasure(String recoveryMeasure) {
         this.recoveryMeasure = recoveryMeasure;
     }
-    public List<FluxLocationDto> getLocations() {
-        return locations;
+    public FluxLocationDto getLocation() {
+        return location;
     }
-    public void setLocations(List<FluxLocationDto> locations) {
-        this.locations = locations;
+    public void setLocation(FluxLocationDto location) {
+        this.location = location;
     }
 }

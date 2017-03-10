@@ -16,6 +16,9 @@ import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,6 +68,8 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return productsDtos;
     }
 
+
+
     protected List<ProcessingProductsDto> getPPByAapProduct(Collection<AapProductEntity> aapProducts) {
         if (aapProducts == null) {
             return Collections.emptyList();
@@ -74,6 +79,33 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             productsDtos.add(AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity));
         }
         return productsDtos;
+    }
+
+
+
+    protected Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
+        if (fluxCharacteristics == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> characMap = new HashMap<>();
+        for(FluxCharacteristicEntity fluxCharacteristic : fluxCharacteristics) {
+            String value = null;
+            if (fluxCharacteristic.getValueMeasure() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueMeasure());
+            } else if (fluxCharacteristic.getValueDateTime() != null) {
+                value = DateUtils.dateToString(fluxCharacteristic.getValueDateTime());
+            } else if (fluxCharacteristic.getValueIndicator() != null) {
+                value = fluxCharacteristic.getValueIndicator();
+            } else if (fluxCharacteristic.getValueCode() != null) {
+                value = fluxCharacteristic.getValueCode();
+            } else if (fluxCharacteristic.getValueText() != null) {
+                value = fluxCharacteristic.getValueText();
+            } else if (fluxCharacteristic.getValueQuantity() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueQuantity());
+            }
+            characMap.put(fluxCharacteristic.getTypeCode(), value);
+        }
+        return characMap;
     }
 
     /**
@@ -139,6 +171,19 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         }
     }
 
+    protected FluxLocationDto getFluxLocationDtoFromEntity(FluxLocationEntity flEntity) {
+        if(flEntity == null){
+            return null;
+        }
+        FluxLocationDto port = new FluxLocationDto();
+        StringWrapper geomStrWrapper = GeometryMapper.INSTANCE.geometryToWkt(flEntity.getGeom());
+        if(geomStrWrapper != null){
+            port.setGeometry(geomStrWrapper.getValue());
+        }
+        port.setName(flEntity.getFluxLocationIdentifierSchemeId());
+        return port;
+    }
+
     /**
      * Add a quantity to another quantity checking that neither of the values is null;
      * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
@@ -196,6 +241,17 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             default :
                 break;
         }
+    }
+
+    protected List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+        if (CollectionUtils.isEmpty(fLocEntities)) {
+            return null;
+        }
+        List<FluxLocationDto> portsListDto = new ArrayList<>();
+        for (FluxLocationEntity flEntity : fLocEntities) {
+            portsListDto.add(getFluxLocationDtoFromEntity(flEntity));
+        }
+        return portsListDto;
     }
 
     protected List<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity){
