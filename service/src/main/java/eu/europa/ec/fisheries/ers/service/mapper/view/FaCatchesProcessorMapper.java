@@ -176,7 +176,7 @@ public class FaCatchesProcessorMapper {
         if(CollectionUtils.isNotEmpty(aapProcesses)){
             for (AapProcessEntity aapProc : aapProcesses) {
                 Integer actConvFac = aapProc.getConversionFactor();
-                convFc = (convFc == 1 && actConvFac != null) ? actConvFac : 1;
+                convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
                 addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
         }

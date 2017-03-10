@@ -18,24 +18,23 @@ import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.ers.service.mapper.BaseMapper.getFluxReportDocument;
-import static eu.europa.ec.fisheries.ers.service.mapper.BaseMapper.getRelatedFluxLocations;
-
-@Mapper(uses = BaseMapper.class)
+@Mapper
 public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityNotificationOfArrivalViewMapper INSTANCE = Mappers.getMapper(ActivityNotificationOfArrivalViewMapper.class);
+
 
     @Override
     public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
@@ -43,24 +42,20 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
         // Fishing Activity Tile
-        ActivityDetailsDto detailsDto = FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(faEntity);
-        detailsDto.setReason(faEntity.getReasonCode());
+        fishingActivityViewDTO.setActivityDetails(mapActivityDetails(faEntity));
 
         // Intented Port of Landing Tile
         Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);
-        Set<FluxLocationDto> fluxLocationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(relatedFluxLocation);
-        fishingActivityViewDTO.setPorts(new ArrayList<>(fluxLocationDtos));
+        fishingActivityViewDTO.setPorts(getPortsFromFluxLocation(relatedFluxLocation));
 
         // Activity Report document tile
-        ReportDocumentDto reportDocumentDto = FaReportDocumentMapper.INSTANCE.
-                mapFaReportDocumentToReportDocumentDto(faEntity.getFaReportDocument(), getFluxReportDocument(faEntity));
-        fishingActivityViewDTO.setReportDetails(reportDocumentDto);
+        fishingActivityViewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
 
         // Catch tile
         fishingActivityViewDTO.setCatches(mapCatchesToGroupDto(faEntity));
 
         // Applied AAP process Tile
-        //TODO
+        fishingActivityViewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
 
         return fishingActivityViewDTO;
     }

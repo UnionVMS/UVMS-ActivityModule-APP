@@ -13,10 +13,15 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -59,5 +64,39 @@ public class AapProductMapperTest {
 
         assertEquals(aapProduct.getUsageCode().getValue(), aapProductEntity.getUsageCode());
         assertEquals(aapProduct.getUsageCode().getListID(), aapProductEntity.getUsageCodeListId());
+    }
+
+    @Test
+    public void testMapToProcessingProduct() {
+
+        // Prepare
+        FACatch faCatch = MapperUtil.getFaCatch();
+        FaCatchEntity faCatchEntity = new FaCatchEntity();
+        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, null, faCatchEntity);
+
+        AAPProcess aapProcess = MapperUtil.getAapProcess();
+        AapProcessEntity aapProcessEntity = new AapProcessEntity();
+        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
+        aapProcessEntity.setFaCatch(faCatchEntity);
+
+        AAPProduct aapProduct = MapperUtil.getAapProduct();
+        AapProductEntity aapProductEntity = new AapProductEntity();
+        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        aapProductEntity.setAapProcess(aapProcessEntity);
+
+        // Create Input data
+        ProcessingProductsDto processingProductsDto = AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity);
+        assertEquals(processingProductsDto.getType(), faCatchEntity.getTypeCode());
+        assertEquals(processingProductsDto.getGear(), faCatchEntity.getGearTypeCode());
+        assertEquals(processingProductsDto.getSpecies(), faCatchEntity.getSpeciesCode());
+        assertNull(processingProductsDto.getPreservation());
+        assertNull(processingProductsDto.getPresentation());
+        assertNull(processingProductsDto.getFreshness());
+        assertEquals(processingProductsDto.getConversionFactor(), aapProcessEntity.getConversionFactor());
+        assertEquals(processingProductsDto.getWeight(), aapProductEntity.getCalculatedWeightMeasure());
+        assertEquals(processingProductsDto.getQuantity(), aapProductEntity.getUnitQuantity());
+        assertEquals(processingProductsDto.getPackageWeight(), aapProductEntity.getPackagingUnitAvarageWeight());
+        assertEquals(processingProductsDto.getPackageQuantity(), aapProductEntity.getCalculatedPackagingWeight());
+        assertEquals(processingProductsDto.getPackagingType(), aapProductEntity.getPackagingTypeCode());
     }
 }
