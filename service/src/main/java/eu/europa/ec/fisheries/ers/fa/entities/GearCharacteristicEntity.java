@@ -8,14 +8,37 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.fa.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "activity_gear_characteristic")
+@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GearCharacteristicEntity implements Serializable {
 
 	@Id
@@ -28,10 +51,12 @@ public class GearCharacteristicEntity implements Serializable {
 	private FishingGearEntity fishingGear;
 
 	@Column(name = "type_code", nullable = false)
-	private String typeCode;
+    @NotNull
+	private String typeCode = StringUtils.EMPTY;
 
 	@Column(name = "type_code_list_id", nullable = false)
-	private String typeCodeListId;
+    @NotNull
+	private String typeCodeListId = StringUtils.EMPTY;
 
 	@Column(name = "description")
 	private String description;
@@ -61,7 +86,7 @@ public class GearCharacteristicEntity implements Serializable {
 	@Column(name = "value_text")
 	private String valueText;
 
-	@Column(name = "value_quantity", precision = 17, scale = 17)
+    @Column(name = "value_quantity", precision = 17, scale = 17)
 	private Double valueQuantity;
 
 	@Column(name = "value_quantity_code")
@@ -69,10 +94,6 @@ public class GearCharacteristicEntity implements Serializable {
 
 	@Column(name = "calculated_value_quantity")
 	private Double calculatedValueQuantity;
-
-	public GearCharacteristicEntity() {
-		super();
-	}
 
 	public int getId() {
 		return this.id;
@@ -197,4 +218,5 @@ public class GearCharacteristicEntity implements Serializable {
 	public void setCalculatedValueQuantity(Double calculatedValueQuantity) {
 		this.calculatedValueQuantity = calculatedValueQuantity;
 	}
+
 }

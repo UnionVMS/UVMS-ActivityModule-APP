@@ -25,17 +25,13 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
+import java.util.*;
 
 /**
  * Created by sanera on 28/09/2016.
@@ -192,7 +188,7 @@ public abstract class SearchQueryBuilder {
                 appendLeftJoinFetch(sql, filterMap.DELIMITED_PERIOD_TABLE_ALIAS);
                 break;
             case 2:
-                appendLeftJoinFetch(sql, filterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
                 break;
             case 3:
                 checkAndAppendIfNeededFluxReportDocTable(sql);
@@ -301,7 +297,7 @@ public abstract class SearchQueryBuilder {
             if(sort.isReversed()) {
                 orderby = " DESC ";
             }
-            String sortFieldMapping = filterMap.getFilterSortMappings().get(field);
+            String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
             if(sortFieldMapping ==null) {
                 throw new ServiceException("Information about which database field to be used for sorting is unavailable");
             }
@@ -330,8 +326,8 @@ public abstract class SearchQueryBuilder {
             return sql;
         }
         sql.append(" and(  ");
-        sql.append(filterMap.getFilterSortMappings().get(filter));
-        sql.append(" =(select max(").append(filterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
+        sql.append(FilterMap.getFilterSortMappings().get(filter));
+        sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
 
         if (searchCriteriaMap.containsKey(filter)) {
             sql.append(" where ");

@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -31,11 +32,11 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  *
  * Base Class to be extended by all the mappers related to Activity Views (LANDING, ARRIVAL, AREA_ENTRY  etc..)
  */
-public abstract class BaseActivityViewMapper {
+public abstract class BaseActivityViewMapper extends BaseMapper {
 
-    public static String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
+    public static final String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
 
-    public static String FLUX_REPORT_DOCUMENT_ID = "UUID";
+    public static final String FLUX_REPORT_DOCUMENT_ID = "UUID";
 
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
@@ -141,7 +142,7 @@ public abstract class BaseActivityViewMapper {
 
     protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         if (CollectionUtils.isEmpty(fLocEntities)) {
-            return null;
+            return Collections.emptyList();
         }
         List<FluxLocationDto> portsListDto = new ArrayList<>();
         for(FluxLocationEntity flEntity : fLocEntities){
@@ -156,9 +157,8 @@ public abstract class BaseActivityViewMapper {
         return portsListDto;
     }
 
-
-    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
-        if (faRepDocEntity == null) {
+    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
+        if(faRepDocEntity == null){
             return null;
         }
         ReportDocumentDto repDocDto = new ReportDocumentDto();

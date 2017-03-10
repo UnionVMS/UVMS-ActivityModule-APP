@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by kovian on 07/02/2017.
  *
- * This DTO will be returned to the requestor for every request of activity views.
+ * This DTO will be returned to the requester for every request of activity views.
  * It will serialize only the properties that are configured to be present for the specific view Eg : @JsonView(FishingActivityView.Arrival.class).
  *
  */
@@ -28,13 +28,13 @@ public class FishingActivityViewDTO {
     @JsonView(FishingActivityView.CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
+    @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Departure.class, FishingActivityView.Landing.class, FishingActivityView.Arrival.class})
     private List<FluxLocationDto> ports;
 
     @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
+    @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(FishingActivityView.CommonView.class)

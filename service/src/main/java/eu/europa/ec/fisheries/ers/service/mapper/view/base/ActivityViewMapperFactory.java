@@ -8,17 +8,24 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http: break;//www.gnu.org/licenses/>.
 
 */
+
+
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityNotificationOfArrivalViewMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 /**
  * Created by kovian on 14/02/2017.
  */
 public class ActivityViewMapperFactory {
+
+    private ActivityViewMapperFactory(){
+
+    }
 
     public static BaseActivityViewMapper getMapperForView(ActivityViewEnum view) throws ServiceException {
         BaseActivityViewMapper mapper;
@@ -45,7 +52,7 @@ public class ActivityViewMapperFactory {
                 mapper = null;
                 break;
             case PRIOR_NOTIFICATION_OF_ARRIVAL:
-                mapper = null;
+                mapper = ActivityNotificationOfArrivalViewMapper.INSTANCE;
                 break;
             case ARRIVAL:
                 mapper = ActivityArrivalViewMapper.INSTANCE;

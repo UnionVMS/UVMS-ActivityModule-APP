@@ -47,7 +47,6 @@ public class ReportDocumentDto {
     @JsonView(FishingActivityView.CommonView.class)
     private List<RelatedReportDto> relatedReports;
 
-
     public String getType() {
         return type;
     }
