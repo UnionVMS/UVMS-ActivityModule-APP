@@ -43,9 +43,8 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
         // Fishing Activity Tile
-        ActivityDetailsDto activityDetailsDto = FishingActivityMapper.INSTANCE.
-                mapFishingActivityEntityToActivityDetailsDto(faEntity);
-        fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
+        ActivityDetailsDto detailsDto = FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(faEntity);
+        detailsDto.setReason(faEntity.getReasonCode());
 
         // Intented Port of Landing Tile
         Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);
