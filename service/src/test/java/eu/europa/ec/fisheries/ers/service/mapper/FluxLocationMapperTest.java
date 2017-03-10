@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -70,10 +71,9 @@ public class FluxLocationMapperTest {
 
     @Test
     public void mapToFluxLocationDTOTest(){
-     /*   FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
-        FluxLocationDTO fluxLocationDTO = FluxLocationMapper.INSTANCE.mapToFluxLocationDTO(fluxLocationEntity);
-        assertNotNull(fluxLocationDTO);
-        assertEquals(fluxLocationDTO.getLocationType(), "AREA");*/
+        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
+        FluxLocationDto locationDto = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocationEntity);
+        assertNotNull(locationDto);
     }
 
     @Test
