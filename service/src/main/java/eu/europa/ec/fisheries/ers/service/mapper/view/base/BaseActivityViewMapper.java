@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -37,6 +38,50 @@ public abstract class BaseActivityViewMapper {
     public static String FLUX_REPORT_DOCUMENT_ID = "UUID";
 
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
+
+    /**
+     * The method mapActivityDetails(..,..) maps type and fluxCharacteristics to the ActivityDetailsDto.
+     * The rest of the fields are mapped by this method which MUST be implemented by all the Mappers that extend this one.
+     *
+     * @param faEntity
+     * @param activityDetails
+     * @return
+     */
+    protected abstract ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails);
+
+
+    protected List<ProcessingProductsDto> getProcessingProductsByFaCatches(Collection<FaCatchEntity> faCatches) {
+        if (faCatches == null) {
+            return Collections.emptyList();
+        }
+        List<ProcessingProductsDto> productsDtos = new ArrayList<>();
+        for (FaCatchEntity faCatchEntity : faCatches) {
+            productsDtos.addAll(getProcessingProductByAapProcess(faCatchEntity.getAapProcesses()));
+        }
+        return productsDtos;
+    }
+
+    protected List<ProcessingProductsDto> getProcessingProductByAapProcess(Collection<AapProcessEntity> aapProcesses) {
+        if (aapProcesses == null) {
+            return Collections.emptyList();
+        }
+        List<ProcessingProductsDto> productsDtos = new ArrayList<>();
+        for (AapProcessEntity aapProcessEntity : aapProcesses) {
+            productsDtos.addAll(getPPByAapProduct(aapProcessEntity.getAapProducts()));
+        }
+        return productsDtos;
+    }
+
+    protected List<ProcessingProductsDto> getPPByAapProduct(Collection<AapProductEntity> aapProducts) {
+        if (aapProducts == null) {
+            return Collections.emptyList();
+        }
+        List<ProcessingProductsDto> productsDtos = new ArrayList<>();
+        for (AapProductEntity aapProductEntity : aapProducts) {
+            productsDtos.add(AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity));
+        }
+        return productsDtos;
+    }
 
     /**
      * This method will populate the type, fluxCharacteristics and occurrence and will leave the population of the
@@ -93,16 +138,6 @@ public abstract class BaseActivityViewMapper {
         }
         return characMap;
     }
-
-    /**
-     * The method mapActivityDetails(..,..) maps type and fluxCharacteristics to the ActivityDetailsDto.
-     * The rest of the fields are mapped by this method which MUST be implemented by all the Mappers that extend this one.
-     *
-     * @param faEntity
-     * @param activityDetails
-     * @return
-     */
-    protected abstract ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails);
 
     protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         if (CollectionUtils.isEmpty(fLocEntities)) {
