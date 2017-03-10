@@ -19,6 +19,9 @@ public class FACatchSummaryHelperFactory {
     public static final String PRESENTATION="presentation";
     public static final String STANDARD="standard";
 
+    private FACatchSummaryHelperFactory(){
+        super();
+    }
     public static FACatchSummaryHelper getFACatchSummaryHelper(String criteria)
     {
         if ( criteria.equals(PRESENTATION) )

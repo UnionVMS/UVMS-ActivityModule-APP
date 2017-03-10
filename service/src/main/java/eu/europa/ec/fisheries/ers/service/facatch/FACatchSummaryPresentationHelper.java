@@ -21,10 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by sanera on 06/03/2017.
@@ -43,6 +40,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
  * @param groupedMap
  * @return List<FACatchSummaryRecordDTO> Processed records having summary data
  */
+  @Override
   public  List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
         List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
 
@@ -60,21 +58,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
 
     }
 
- /*   public SummaryTableDTO populateSummaryTableWithTotal(List<FACatchSummaryRecordDTO> catchSummaryDTOList){
-        SummaryTableDTO summaryTableWithTotals= new SummaryTableDTO();
-
-        for(FACatchSummaryRecordDTO faCatchSummaryDTO:catchSummaryDTOList){
-            SummaryTableDTO summaryTable= faCatchSummaryDTO.getSummaryTable();
-
-            populateTotalFishSizeMap(summaryTableWithTotals, summaryTable);
-            populateTotalFaCatchMapWithPresentation(summaryTableWithTotals, summaryTable);
-
-        }
-
-        return summaryTableWithTotals;
-    }*/
-
-
+    @Override
     public void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
 
         Map<FishSizeClassEnum,Object> fishSizeClassEnumMap=summaryTable.getSummaryFishSize();
@@ -84,7 +68,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
 
         Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
         if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
-            totalFishSizeSpeciesMap = new HashMap<>();
+            totalFishSizeSpeciesMap = new EnumMap<>(FishSizeClassEnum.class);
             summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);
         }
 
@@ -103,7 +87,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
     }
 
 
-
+    @Override
     public void populateTotalFaCatchMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
 
         Map<FaCatchTypeEnum, Object> catchTypeEnumMapMap=summaryTable.getSummaryFaCatchType();
@@ -111,7 +95,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
 
             Map<FaCatchTypeEnum,Object> totalCatchTypeMap = summaryTableWithTotals.getSummaryFaCatchType();
             if (MapUtils.isEmpty(totalCatchTypeMap)) {
-                totalCatchTypeMap = new HashMap<>();
+                totalCatchTypeMap = new EnumMap<>(FaCatchTypeEnum.class);
                 summaryTableWithTotals.setSummaryFaCatchType(totalCatchTypeMap);
             }
 

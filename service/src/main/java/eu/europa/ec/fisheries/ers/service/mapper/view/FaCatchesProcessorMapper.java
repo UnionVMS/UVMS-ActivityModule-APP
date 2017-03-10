@@ -35,6 +35,9 @@ public class FaCatchesProcessorMapper {
     public static final String LSC = "LSC";
     public static final String BMS = "BMS";
 
+    private FaCatchesProcessorMapper(){
+
+    }
     /**
      * Takes a list of FaCatches and returns the list of groupDtos.
      *
@@ -43,7 +46,7 @@ public class FaCatchesProcessorMapper {
      */
     public static List<FaCatchGroupDto> getCatchGroupsFromListEntity(Set<FaCatchEntity> faCatches) {
         if(CollectionUtils.isEmpty(faCatches)){
-            return null;
+            return Collections.emptyList();
         }
         Map<String, List<FaCatchEntity>> faCatchGroups = groupCatches(faCatches);
         return computeSumsAndMapToDtoGroups(faCatchGroups);
@@ -95,7 +98,7 @@ public class FaCatchesProcessorMapper {
     private static List<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, List<FaCatchEntity>> faCatchGroups) {
         List<FaCatchGroupDto> faCatchGroupsDtoList = new ArrayList<>();
         for(Map.Entry<String, List<FaCatchEntity>> group : faCatchGroups.entrySet()){
-            faCatchGroupsDtoList.add(mapFaCatchListToCatchGroupDto(group.getKey(), group.getValue()));
+            faCatchGroupsDtoList.add(mapFaCatchListToCatchGroupDto(group.getValue()));
         }
         return faCatchGroupsDtoList;
     }
@@ -103,11 +106,10 @@ public class FaCatchesProcessorMapper {
     /**
      * Maps a list of CatchEntities (rappresenting a froup) to a  FaCatchGroupDto;
      *
-     * @param groupNr
      * @param groupCatchList
      * @return
      */
-    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(String groupNr, List<FaCatchEntity> groupCatchList) {
+    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto( List<FaCatchEntity> groupCatchList) {
         FaCatchGroupDto groupDto  = new FaCatchGroupDto();
         FaCatchEntity catchEntity = groupCatchList.get(0);
         // Set primary properties on groupDto
@@ -178,7 +180,7 @@ public class FaCatchesProcessorMapper {
                 addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
         }
-        if(weightSum != 0.0){
+        if(weightSum > 0){
             totalWeight = convFc * weightSum;
         }
         return totalWeight;
@@ -223,8 +225,13 @@ public class FaCatchesProcessorMapper {
         bmsGroupDetailsDto.setWeight(bmsGroupTotalWeight);
 
         // Set total group weight (LSC + BMS) (checking nullity : if both of them are null the sum must be 0.0)
-        lscGroupTotalWeight = lscGroupTotalWeight != null ? lscGroupTotalWeight : 0.0;
-        bmsGroupTotalWeight = bmsGroupTotalWeight != null ? bmsGroupTotalWeight : 0.0;
+        if(lscGroupTotalWeight == null){
+            lscGroupTotalWeight = 0.0;
+        }
+
+        if(bmsGroupTotalWeight == null){
+            bmsGroupTotalWeight = 0.0;
+        }
 
         // Set total group weight (LSC + BMS)
         groupDto.setCalculatedWeight(lscGroupTotalWeight + bmsGroupTotalWeight);

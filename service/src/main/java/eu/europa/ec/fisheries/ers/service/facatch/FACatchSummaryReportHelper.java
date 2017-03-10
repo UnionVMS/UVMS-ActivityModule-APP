@@ -11,19 +11,16 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.facatch;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
-import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by sanera on 06/03/2017.
@@ -42,6 +39,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
      * @param groupedMap
      * @return List<FACatchSummaryRecordDTO> Processed records having summary data
      */
+    @Override
     public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
         List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
 
@@ -62,6 +60,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
      * @param summaryTableWithTotals Add the calculation to this final class
      * @param summaryTable           process this object to calculate totals
      */
+    @Override
     public void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
 
         Map<FishSizeClassEnum,Object> fishSizeClassEnumMap=summaryTable.getSummaryFishSize();
@@ -71,7 +70,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
 
         Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
         if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
-            totalFishSizeSpeciesMap = new HashMap<>();
+            totalFishSizeSpeciesMap = new EnumMap<>(FishSizeClassEnum.class);
             summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);
         }
 
@@ -97,6 +96,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
      * @param summaryTableWithTotals  Add the calculation to this final class
      * @param summaryTable process this object to calculate totals
      */
+    @Override
     public void populateTotalFaCatchMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
 
         Map<FaCatchTypeEnum, Object> catchTypeEnumMapMap=summaryTable.getSummaryFaCatchType();
@@ -104,7 +104,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
 
             Map<FaCatchTypeEnum,Object> totalCatchTypeMap = summaryTableWithTotals.getSummaryFaCatchType();
             if (MapUtils.isEmpty(totalCatchTypeMap)) {
-                totalCatchTypeMap = new HashMap<>();
+                totalCatchTypeMap = new EnumMap<>(FaCatchTypeEnum.class);
                 summaryTableWithTotals.setSummaryFaCatchType(totalCatchTypeMap);
             }
 

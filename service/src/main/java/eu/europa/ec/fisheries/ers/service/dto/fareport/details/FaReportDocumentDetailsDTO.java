@@ -24,6 +24,8 @@ import java.util.List;
  */
 public class FaReportDocumentDetailsDTO extends FaReportDocumentDTO implements Serializable {
 
+    private static final long serialVersionUID = -6463484239384168922L;
+
     @JsonProperty("fishingActivity")
     private List<FishingActivityDetailsDTO> fishingActivityDetails;
 
