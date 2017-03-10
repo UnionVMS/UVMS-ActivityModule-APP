@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -21,7 +22,12 @@ import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
 
@@ -30,7 +36,7 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  *
  * Base Class to be extended by all the mappers related to Activity Views (LANDING, ARRIVAL, AREA_ENTRY  etc..)
  */
-public abstract class BaseActivityViewMapper {
+public abstract class BaseActivityViewMapper extends BaseMapper {
 
     public static final String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
 
@@ -121,9 +127,8 @@ public abstract class BaseActivityViewMapper {
         return portsListDto;
     }
 
-
-    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
-        if (faRepDocEntity == null) {
+    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
+        if(faRepDocEntity == null){
             return null;
         }
         ReportDocumentDto repDocDto = new ReportDocumentDto();

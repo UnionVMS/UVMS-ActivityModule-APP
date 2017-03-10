@@ -11,6 +11,7 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
@@ -22,11 +23,18 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.ers.service.util.PostGres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Rule;
-import org.mockito.*;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -38,13 +46,14 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by padhyad on 8/3/2016.
- */
 public class FluxMessageServiceBeanTest {
 
     @Mock
@@ -88,8 +97,8 @@ public class FluxMessageServiceBeanTest {
         fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocument());
     }
 
- //   @Test
-   // @SneakyThrows
+    @Test
+    @SneakyThrows
     public void testSaveFishingActivityReportDocuments() throws ServiceException, ParseException, DatatypeConfigurationException {
 
         //Mock the APIs
@@ -102,6 +111,7 @@ public class FluxMessageServiceBeanTest {
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
+        fluxMessageService.setDialect(new PostGres());
         fluxMessageService.saveFishingActivityReportDocuments(fluxFaReportMessage, FaReportSourceEnum.FLUX);
 
         //Verify

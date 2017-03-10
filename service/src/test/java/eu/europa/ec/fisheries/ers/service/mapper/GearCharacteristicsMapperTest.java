@@ -11,20 +11,28 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 
+import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.internal.util.collections.Sets.newSet;
 
-/**
- * Created by padhyad on 7/29/2016.
- */
+
+@RunWith(JUnitParamsRunner.class)
 public class GearCharacteristicsMapperTest {
 
     @Test
@@ -47,5 +55,33 @@ public class GearCharacteristicsMapperTest {
         assertEquals(gearCharacteristic.getValueQuantity().getUnitCode(), gearCharacteristicEntity.getValueQuantityCode());
         assertEquals(gearCharacteristic.getValueQuantity().getValue().intValue(), gearCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertNull(gearCharacteristicEntity.getFishingGear());
+    }
+
+    @Test
+    @Parameters(method = "methodName")
+    public void testMapGearDtoToFishingGearEntityWithTypeCodeDG(GearCharacteristicEntity entity, String typeCode, GearDto expectedDto) {
+
+        entity.setTypeCode(typeCode);
+        FishingGearEntity build = FishingGearEntity.builder().gearCharacteristics(newSet(entity)).build();
+        GearDto mappedDto = GearCharacteristicsMapper.INSTANCE.mapGearDtoToFishingGearEntity(build);
+        assertTrue(expectedDto.equals(mappedDto));
+
+    }
+
+    protected Object[] methodName(){
+
+        GearCharacteristicEntity entity = GearCharacteristicEntity
+                .builder().
+                        valueMeasure(20.25).
+                        valueMeasureUnitCode("kg").
+                        typeCode(ViewConstants.GEAR_CHARAC_TYPE_CODE_GD).
+                        description("Trawls & Seines")
+                .build();
+
+        return $(
+                $(entity, ViewConstants.GEAR_CHARAC_TYPE_CODE_GD, GearDto.builder().description("Trawls & Seines").build()),
+                $(entity, ViewConstants.GEAR_CHARAC_TYPE_CODE_ME, GearDto.builder().meshSize("20.25kg").build())
+                // TODO TEST ALL CASES
+        );
     }
 }

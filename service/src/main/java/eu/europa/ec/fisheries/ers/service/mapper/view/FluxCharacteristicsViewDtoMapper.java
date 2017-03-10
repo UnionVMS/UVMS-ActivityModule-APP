@@ -19,9 +19,9 @@ import org.mapstruct.factory.Mappers;
  * Created by kovian on 06/03/2017.
  */
 @Mapper
-public abstract class FluxCharacteristicsViewDtoMapper {
+public interface FluxCharacteristicsViewDtoMapper {
 
-    public static final FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
+    FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
 
-    protected abstract FluxCharacteristicsViewDto mapFluxCharacteristicsEntityListToDtoList(FluxCharacteristicEntity firstCatchEntity);
+    FluxCharacteristicsViewDto mapFluxCharacteristicsEntityListToDtoList(FluxCharacteristicEntity firstCatchEntity);
 }

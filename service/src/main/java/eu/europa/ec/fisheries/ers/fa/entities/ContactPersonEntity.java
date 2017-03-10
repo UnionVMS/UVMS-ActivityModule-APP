@@ -10,11 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_contact_person")
+@ToString
 public class ContactPersonEntity implements Serializable {
 
 	@Id
@@ -137,18 +140,4 @@ public class ContactPersonEntity implements Serializable {
 		this.contactParty = contactParty;
 	}
 
-	@Override
-	public String toString() {
-		return "ContactPersonEntity{" +
-				"id=" + id +
-				", title='" + title + '\'' +
-				", givenName='" + givenName + '\'' +
-				", middleName='" + middleName + '\'' +
-				", familyName='" + familyName + '\'' +
-				", familyNamePrefix='" + familyNamePrefix + '\'' +
-				", nameSuffix='" + nameSuffix + '\'' +
-				", gender='" + gender + '\'' +
-				", alias='" + alias + '\'' +
-				'}';
-	}
 }

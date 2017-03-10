@@ -22,6 +22,11 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by padhyad on 9/16/2016.
  */
@@ -38,4 +43,18 @@ public abstract class FlapDocumentMapper extends BaseMapper {
             @Mapping(target = "flapTypeCodeListId", expression = "java(getCodeTypeListId(flapDocument.getTypeCode()))")
     })
     public abstract FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
+
+    public Map<String, String> map(Set<FlapDocumentEntity> flapDocument) {
+        if (flapDocument == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> characMap = new HashMap<>();
+        for (FlapDocumentEntity flapDocumentEntity : flapDocument) {
+            if (flapDocumentEntity.getFlapDocumentId() != null && flapDocumentEntity.getFlapTypeCode() != null) {
+                characMap.put(flapDocumentEntity.getFlapTypeCode(), flapDocumentEntity.getFlapDocumentId() + ":" +flapDocumentEntity.getFlapDocumentSchemeId());
+            }
+        }
+        return characMap;
+    }
+
 }
