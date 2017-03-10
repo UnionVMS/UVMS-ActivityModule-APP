@@ -10,8 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -19,13 +21,22 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by padhyad on 6/14/2016.
  */
 @Mapper
-public abstract class  AapProductMapper extends BaseMapper {
+public abstract class AapProductMapper extends BaseMapper {
 
     public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
+
+    public static final String FISH_PRESENTATION = "FISH_PRESENTATION";
+
+    public static final String FISH_PRESERVATION = "FISH_PRESERVATION";
+
+    public static final String FISH_FRESHNESS = "FISH_FRESHNESS";
 
     @Mappings({
             @Mapping(target = "packagingTypeCode", expression = "java(getCodeType(aapProduct.getPackagingTypeCode()))"),
@@ -51,4 +62,41 @@ public abstract class  AapProductMapper extends BaseMapper {
             @Mapping(target = "aapProcess", expression = "java(aapProcessEntity)")
     })
     public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct, AapProcessEntity aapProcessEntity, @MappingTarget AapProductEntity aapProductEntity);
+
+    @Mappings({
+            @Mapping(target = "type", source = "aapProcess.faCatch.typeCode"),
+            @Mapping(target = "locations", expression = "java(getDenormalizedLocations(aapProduct))"),
+            @Mapping(target = "species", source = "aapProcess.faCatch.speciesCode"),
+            @Mapping(target = "gear", source = "aapProcess.faCatch.gearTypeCode"),
+            @Mapping(target = "presentation", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_PRESENTATION))"),
+            @Mapping(target = "preservation", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_PRESERVATION))"),
+            @Mapping(target = "freshness", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_FRESHNESS))"),
+            @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactor"),
+            @Mapping(target = "weight", source = "calculatedWeightMeasure"),
+            @Mapping(target = "quantity", source = "unitQuantity"),
+            @Mapping(target = "packageWeight", source = "calculatedPackagingWeight"),
+            @Mapping(target = "packageQuantity", source = "packagingUnitCount"),
+            @Mapping(target = "packagingType", source = "packagingTypeCode")
+    })
+    public abstract ProcessingProductsDto mapToProcessingProduct(AapProductEntity aapProduct);
+
+    protected Map<String, String> getDenormalizedLocations(AapProductEntity aapProduct) {
+        Map<String, String> locations = new HashMap<>();
+        locations.put("ices_stat_rectangle", aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle());
+        locations.put("fao_area", aapProduct.getAapProcess().getFaCatch().getFaoArea());
+        locations.put("gfcm_gsa", aapProduct.getAapProcess().getFaCatch().getGfcmGsa());
+        locations.put("effort_zone", aapProduct.getAapProcess().getFaCatch().getEffortZone());
+        locations.put("territory", aapProduct.getAapProcess().getFaCatch().getTerritory());
+        return locations;
+    }
+
+    protected String getAapProcessTypeByCode(AapProcessEntity aapProcess, String typeCode) {
+        String fishPresentation = null;
+        for(AapProcessCodeEntity aapProcessCode : aapProcess.getAapProcessCode()) {
+            if (aapProcessCode.getTypeCodeListId().equalsIgnoreCase(typeCode)) {
+                fishPresentation = aapProcessCode.getTypeCode();
+            }
+        }
+        return fishPresentation;
+    }
 }

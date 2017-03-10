@@ -14,11 +14,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,29 +30,7 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  */
 public abstract class BaseActivityViewMapper extends BaseMapper {
 
-    public static String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
-
-    public static String FLUX_REPORT_DOCUMENT_ID = "UUID";
-
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
-
-    /**
-     * This method will populate the type, fluxCharacteristics and occurrence and will leave the population of the
-     * other fields to the specific (the class that extends BaseActivityViewMapper) implementation of  populateActivityDetails(faEntity, activityDetails).
-     *
-     * @param faEntity
-     * @return
-     */
-    protected ActivityDetailsDto mapActivityDetails(FishingActivityEntity faEntity){
-        ActivityDetailsDto activityDetails = new ActivityDetailsDto();
-        activityDetails.setType(faEntity.getTypeCode());
-        activityDetails.setOccurrence(faEntity.getOccurence());
-        Set<FluxCharacteristicEntity> fluxCharacteristics = faEntity.getFluxCharacteristics();
-        activityDetails.getCharacteristics().putAll(getFluxCharacteristicsTypeCodeValue(fluxCharacteristics));
-        Set<FlapDocumentEntity> flapDocumentEntities = faEntity.getFlapDocuments();
-        activityDetails.getCharacteristics().putAll(getFlapDocumentTypeCodeValue(flapDocumentEntities));
-        return populateActivityDetails(faEntity, activityDetails);
-    }
 
     /**
      * The method mapActivityDetails(..,..) maps type and fluxCharacteristics to the ActivityDetailsDto.
@@ -67,120 +42,62 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
      */
     protected abstract ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails);
 
-    protected Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
-        if (fluxCharacteristics == null) {
-            return Collections.emptyMap();
+
+    protected List<ProcessingProductsDto> getProcessingProductsByFaCatches(Collection<FaCatchEntity> faCatches) {
+        if (faCatches == null) {
+            return Collections.emptyList();
         }
-        Map<String, String> characMap = new HashMap<>();
-        for(FluxCharacteristicEntity fluxCharacteristic : fluxCharacteristics) {
-            String value = null;
-            if (fluxCharacteristic.getValueMeasure() != null) {
-                value = String.valueOf(fluxCharacteristic.getValueMeasure());
-            } else if (fluxCharacteristic.getValueDateTime() != null) {
-                value = DateUtils.dateToString(fluxCharacteristic.getValueDateTime());
-            } else if (fluxCharacteristic.getValueIndicator() != null) {
-                value = fluxCharacteristic.getValueIndicator();
-            } else if (fluxCharacteristic.getValueCode() != null) {
-                value = fluxCharacteristic.getValueCode();
-            } else if (fluxCharacteristic.getValueText() != null) {
-                value = fluxCharacteristic.getValueText();
-            } else if (fluxCharacteristic.getValueQuantity() != null) {
-                value = String.valueOf(fluxCharacteristic.getValueQuantity());
-            }
-            characMap.put(fluxCharacteristic.getTypeCode(), value);
+        List<ProcessingProductsDto> productsDtos = new ArrayList<>();
+        for (FaCatchEntity faCatchEntity : faCatches) {
+            productsDtos.addAll(getProcessingProductByAapProcess(faCatchEntity.getAapProcesses()));
         }
-        return characMap;
+        return productsDtos;
     }
 
-    private Map<String, String> getFlapDocumentTypeCodeValue(Set<FlapDocumentEntity> flapDocument) {
-        if (flapDocument == null) {
-            return Collections.emptyMap();
+    protected List<ProcessingProductsDto> getProcessingProductByAapProcess(Collection<AapProcessEntity> aapProcesses) {
+        if (aapProcesses == null) {
+            return Collections.emptyList();
         }
-        Map<String, String> characMap = new HashMap<>();
-        for (FlapDocumentEntity flapDocumentEntity : flapDocument) {
-            if (flapDocumentEntity.getFlapDocumentId() != null && flapDocumentEntity.getFlapTypeCode() != null) {
-                characMap.put(flapDocumentEntity.getFlapTypeCode(), flapDocumentEntity.getFlapDocumentId() + ":" +flapDocumentEntity.getFlapDocumentSchemeId());
-            }
+        List<ProcessingProductsDto> productsDtos = new ArrayList<>();
+        for (AapProcessEntity aapProcessEntity : aapProcesses) {
+            productsDtos.addAll(getPPByAapProduct(aapProcessEntity.getAapProducts()));
         }
-        return characMap;
+        return productsDtos;
     }
 
-    protected List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
-        if (CollectionUtils.isEmpty(fLocEntities)) {
-            return null;
+    protected List<ProcessingProductsDto> getPPByAapProduct(Collection<AapProductEntity> aapProducts) {
+        if (aapProducts == null) {
+            return Collections.emptyList();
         }
-        List<FluxLocationDto> portsListDto = new ArrayList<>();
-        for(FluxLocationEntity flEntity : fLocEntities){
-            portsListDto.add(getFluxLocationDtoFromEntity(flEntity));
+        List<ProcessingProductsDto> productsDtos = new ArrayList<>();
+        for (AapProductEntity aapProductEntity : aapProducts) {
+            productsDtos.add(AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity));
         }
-        return portsListDto;
+        return productsDtos;
     }
 
-    protected FluxLocationDto getFluxLocationDtoFromEntity(FluxLocationEntity flEntity) {
-        if(flEntity == null){
-            return null;
+    /**
+     * This method will populate the type, fluxCharacteristics and occurrence and will leave the population of the
+     * other fields to the specific (the class that extends BaseActivityViewMapper) implementation of  populateActivityDetails(faEntity, activityDetails).
+     *
+     * @param faEntity
+     * @return
+     */
+    protected ActivityDetailsDto mapActivityDetails(FishingActivityEntity faEntity){
+        ActivityDetailsDto activityDetails = FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(faEntity);
+        return populateActivityDetails(faEntity, activityDetails);
+    }
+
+    protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+        Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
+        if (locationDtos != null) {
+            return new ArrayList<>(locationDtos);
         }
-        FluxLocationDto port = new FluxLocationDto();
-        StringWrapper geomStrWrapper = GeometryMapper.INSTANCE.geometryToWkt(flEntity.getGeom());
-        if(geomStrWrapper != null){
-            port.setGeometry(geomStrWrapper.getValue());
-        }
-        port.setName(flEntity.getFluxLocationIdentifierSchemeId());
-        return port;
+         return Collections.emptyList();
     }
 
     protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
-        if(faRepDocEntity == null){
-            return null;
-        }
-        ReportDocumentDto repDocDto = new ReportDocumentDto();
-        repDocDto.setType(faRepDocEntity.getTypeCode());
-        repDocDto.setAcceptedDate(DateUtils.dateToString(faRepDocEntity.getAcceptedDatetime()));
-        FluxReportDocumentEntity fluxReportDocument = faRepDocEntity.getFluxReportDocument();
-
-        repDocDto.setType(faRepDocEntity.getTypeCode());
-        repDocDto.setCreationDate(DateUtils.dateToString(fluxReportDocument.getCreationDatetime()));
-        repDocDto.setPurposeCode(fluxReportDocument.getPurposeCode());
-        repDocDto.setOwner(getFluxPartyIdentiferBySchemeId(fluxReportDocument, FLUX_PARTY_OWNER_SCHEME_ID));
-        repDocDto.setId(getFluxReportDocumentIdBySchemeId(fluxReportDocument, FLUX_REPORT_DOCUMENT_ID));
-        repDocDto.setRefId(fluxReportDocument.getReferenceId());
-        repDocDto.setAcceptedDate(DateUtils.dateToString(faRepDocEntity.getAcceptedDatetime()));
-        repDocDto.setFmcMark(faRepDocEntity.getFmcMarker());
-        repDocDto.setRelatedReports(getRelatedReportForFaReportDocument(faRepDocEntity));
-
-        return repDocDto;
-    }
-
-    public String getFluxPartyIdentiferBySchemeId(FluxReportDocumentEntity fluxReportDocument, String schemeId) {
-        FluxPartyEntity fluxParty = fluxReportDocument.getFluxParty();
-        if (fluxParty != null) {
-            for (FluxPartyIdentifierEntity fluxPartyIdentifier : fluxParty.getFluxPartyIdentifiers()) {
-                if (fluxPartyIdentifier.getFluxPartyIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
-                    return fluxPartyIdentifier.getFluxPartyIdentifierId();
-                }
-            }
-        }
-        return null;
-    }
-
-    public String getFluxReportDocumentIdBySchemeId(FluxReportDocumentEntity fluxReportDocument, String schemeId) {
-        for (FluxReportIdentifierEntity fluxReportIdentifier : fluxReportDocument.getFluxReportIdentifiers()) {
-            if (fluxReportIdentifier.getFluxReportIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
-                return fluxReportIdentifier.getFluxReportIdentifierId();
-            }
-        }
-        return null;
-    }
-
-    public List<RelatedReportDto> getRelatedReportForFaReportDocument(FaReportDocumentEntity faReportDocument) {
-        List<RelatedReportDto> relatedReportDtos = new ArrayList<>();
-        for (FaReportIdentifierEntity faReportIdentifier : faReportDocument.getFaReportIdentifiers()) {
-            RelatedReportDto relatedReportDto = new RelatedReportDto();
-            relatedReportDto.setId(faReportIdentifier.getFaReportIdentifierId());
-            relatedReportDto.setSchemeId(faReportIdentifier.getFaReportIdentifierSchemeId());
-            relatedReportDtos.add(relatedReportDto);
-        }
-        return relatedReportDtos;
+        return FaReportDocumentMapper.INSTANCE.mapFaReportDocumentToReportDocumentDto(faRepDocEntity);
     }
 
     public List<GearDto> getGearsFromEntity(Set<FishingGearEntity> fishingGearEntities) {

@@ -267,7 +267,7 @@ public class MapperUtil {
     }
 
     public static AAPProcess getAapProcess() {
-        List<CodeType> codeList = Arrays.asList(getCodeType("FISH_FRESHNESS", "FLUX_ PROCESS_TYPE"));
+        List<CodeType> codeList = Arrays.asList(getCodeType("FISH_FRESHNESS", "FLUX_PROCESS_TYPE"));
         NumericType numericType = getNumericType(123);
         AAPProcess aapProcess = new AAPProcess(codeList, numericType, null, Arrays.asList(getAapProduct()));
         return aapProcess;

@@ -43,6 +43,9 @@ public class FishingActivityViewDTO {
     @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
     private List<GearShotRetrievalDto> gearShotRetrievalList;
 
+    @JsonView(FishingActivityView.CommonView.class)
+    private List<ProcessingProductsDto> processingProducts;
+
     public List<FluxLocationDto> getLocations() {
         return locations;
     }
@@ -72,6 +75,14 @@ public class FishingActivityViewDTO {
     }
     public void setCatches(List<FaCatchGroupDto> catches) {
         this.catches = catches;
+    }
+
+    public List<ProcessingProductsDto> getProcessingProducts() {
+        return processingProducts;
+    }
+
+    public void setProcessingProducts(List<ProcessingProductsDto> processingProducts) {
+        this.processingProducts = processingProducts;
     }
     public List<GearShotRetrievalDto> getGearShotRetrievalList() {
         return gearShotRetrievalList;

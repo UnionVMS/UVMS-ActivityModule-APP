@@ -58,15 +58,18 @@ public abstract class FACatchSummaryHelper {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList, boolean isLanding) throws ServiceException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList, boolean isLanding) throws ServiceException {
 
         if (ArrayUtils.isEmpty(catchSummaryArr))
             return new FaCatchSummaryCustomEntity();
-        int objectArrSize = (catchSummaryArr.length - 1);
+        int objectArrSize = catchSummaryArr.length - 1;
         if (objectArrSize != groupList.size())  // do not include count field from object array
             throw new ServiceException("selected number of SQL fields do not match with grouping criterias asked by user ");
 
-        Class cls = Class.forName(faCatchSummaryCustomClassName);
+        Class cls = null;
+        try {
+            cls = Class.forName(faCatchSummaryCustomClassName);
+
 
         Object faCatchSummaryCustomEntityObj = cls.newInstance();
         Class parameterType = String.class;
@@ -93,6 +96,10 @@ public abstract class FACatchSummaryHelper {
             return (FaCatchSummaryCustomChildEntity) faCatchSummaryCustomEntityObj;
         else
             return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            log.debug("Error while trying to map FaCatchSummaryCustomEntity. ",e);
+        }
+        return new FaCatchSummaryCustomEntity();
     }
 
     // This method parses the date to extract either day, month or year
@@ -219,11 +226,10 @@ public abstract class FACatchSummaryHelper {
 
     protected Double calculateTotalValue(Double value, Double totalValue) {
         if (totalValue == null) {
-            totalValue = value;
+            return value;
         } else {
-            totalValue = totalValue + value;
+            return totalValue + value;
         }
-        return totalValue;
     }
 
 

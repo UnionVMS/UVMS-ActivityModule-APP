@@ -37,7 +37,8 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
     protected String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure)  " ;
 
-    {
+   public FACatchSearchBuilder() {
+        super();
         FilterMap filterMap=FilterMap.createFilterMap();
         filterMap.populateFilterMAppingsWithChangeForFACatchReport();
         setFilterMap(filterMap);

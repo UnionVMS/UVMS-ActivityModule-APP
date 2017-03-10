@@ -36,7 +36,8 @@ public abstract class ActivityDepartureViewMapper extends BaseActivityViewMapper
             @Mapping(target = "locations",     expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
             @Mapping(target = "gears",     expression = "java(getGearsFromEntity(faEntity.getFishingGears()))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
-            @Mapping(target = "catches",   expression = "java(mapCatchesToGroupDto(faEntity))")
+            @Mapping(target = "catches",   expression = "java(mapCatchesToGroupDto(faEntity))"),
+            @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
