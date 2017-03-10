@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -88,8 +89,7 @@ public class FishingTripEntity implements Serializable {
 		return this.delimitedPeriods;
 	}
 
-	public void setDelimitedPeriods(
-			Set<DelimitedPeriodEntity> delimitedPeriods) {
+	public void setDelimitedPeriods(Set<DelimitedPeriodEntity> delimitedPeriods) {
 		this.delimitedPeriods = delimitedPeriods;
 	}
 
@@ -97,8 +97,7 @@ public class FishingTripEntity implements Serializable {
 		return this.fishingTripIdentifiers;
 	}
 
-	public void setFishingTripIdentifiers(
-			Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
+	public void setFishingTripIdentifiers(Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
 		this.fishingTripIdentifiers = fishingTripIdentifiers;
 	}
 

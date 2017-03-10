@@ -8,7 +8,13 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.fa.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,6 +23,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "activity_flux_report_document")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FluxReportDocumentEntity implements Serializable {
 
     @Id
@@ -57,81 +66,99 @@ public class FluxReportDocumentEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
     private Set<FluxReportIdentifierEntity> fluxReportIdentifiers;
 
-    public FluxReportDocumentEntity() {
-        super();
-    }
-
-    public FluxReportDocumentEntity(String referenceId, Date creationDatetime, String purposeCode, String purposeCodeListId, String purpose, FaReportDocumentEntity faReportDocument) {
-        this.referenceId = referenceId;
-        this.creationDatetime = creationDatetime;
-        this.purposeCode = purposeCode;
-        this.purposeCodeListId = purposeCodeListId;
-        this.purpose = purpose;
-        this.faReportDocument = faReportDocument;
-    }
-
     public int getId() {
         return this.id;
     }
+
     public String getReferenceId() {
         return this.referenceId;
     }
+
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
     }
+
     public String getReferenceSchemeId() {
         return referenceSchemeId;
     }
+
     public void setReferenceSchemeId(String referenceSchemeId) {
         this.referenceSchemeId = referenceSchemeId;
     }
+
     public Date getCreationDatetime() {
         return this.creationDatetime;
     }
+
     public void setCreationDatetime(Date creationDatetime) {
         this.creationDatetime = creationDatetime;
     }
+
     public String getPurposeCode() {
         return this.purposeCode;
     }
+
     public void setPurposeCode(String purposeCode) {
         this.purposeCode = purposeCode;
     }
+
     public String getPurposeCodeListId() {
         return this.purposeCodeListId;
     }
+
     public void setPurposeCodeListId(String purposeCodeListId) {
         this.purposeCodeListId = purposeCodeListId;
     }
+
     public String getPurpose() {
         return this.purpose;
     }
+
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
+
     public FaReportDocumentEntity getFaReportDocument() {
         return faReportDocument;
     }
+
     public void setFaReportDocument(FaReportDocumentEntity faReportDocument) {
         this.faReportDocument = faReportDocument;
     }
+
     public Set<FluxReportIdentifierEntity> getFluxReportIdentifiers() {
         return fluxReportIdentifiers;
     }
+
     public void setFluxReportIdentifiers(Set<FluxReportIdentifierEntity> fluxReportIdentifiers) {
         this.fluxReportIdentifiers = fluxReportIdentifiers;
     }
+
     public FluxFaReportMessageEntity getFluxFaReportMessage() {
         return fluxFaReportMessage;
     }
+
     public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
         this.fluxFaReportMessage = fluxFaReportMessage;
     }
+
     public FluxPartyEntity getFluxParty() {
         return fluxParty;
     }
+
     public void setFluxParty(FluxPartyEntity fluxParty) {
         this.fluxParty = fluxParty;
+    }
+
+    public String getFluxPartyIdentifierBySchemeId(String schemeId) {
+        if (fluxParty != null) {
+            for (FluxPartyIdentifierEntity fluxPartyIdentifier : fluxParty.getFluxPartyIdentifiers()) {
+                if (fluxPartyIdentifier.getFluxPartyIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
+                    return fluxPartyIdentifier.getFluxPartyIdentifierId();
+                }
+            }
+        }
+        return null;
     }
 
     @Override

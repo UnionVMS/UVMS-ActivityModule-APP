@@ -128,9 +128,8 @@ public abstract class BaseActivityViewMapper {
         return port;
     }
 
-
-    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
-        if (faRepDocEntity == null) {
+    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
+        if(faRepDocEntity == null){
             return null;
         }
         ReportDocumentDto repDocDto = new ReportDocumentDto();
