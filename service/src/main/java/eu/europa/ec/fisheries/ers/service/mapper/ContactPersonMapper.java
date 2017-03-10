@@ -44,7 +44,7 @@ public abstract class ContactPersonMapper extends BaseMapper {
             @Mapping(target = "alias", expression = "java(getTextType(contactPerson.getAlias()))"),
             @Mapping(target = "contactParty", expression = "java(contactPartyEntity)")
     })
-    public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson, ContactPartyEntity contactPartyEntity, @MappingTarget ContactPersonEntity contactPersonEntity);
+    public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson, ContactPartyEntity contactPartyEntity);
 
     @Mappings({
             @Mapping(target = "title", source = "title"),
@@ -57,22 +57,6 @@ public abstract class ContactPersonMapper extends BaseMapper {
             @Mapping(target = "alias", source = "alias")
     })
     public abstract ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
-
-    protected List<String> getRoles(ContactPersonEntity contactPersonEntity){
-        List<String> roles = new ArrayList<>();
-        for(ContactPartyRoleEntity roleEntity : contactPersonEntity.getContactParty().getContactPartyRole()){
-            roles.add(roleEntity.getRoleCode());
-        }
-        return roles;
-    }
-
-    protected List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles){
-        List<String> roles = new ArrayList<>();
-        for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
-            roles.add(roleEntity.getRoleCode());
-        }
-        return roles;
-    }
 
     @Mappings({
             @Mapping(target = "title", expression = "java(contactPerson.getTitle())"),
