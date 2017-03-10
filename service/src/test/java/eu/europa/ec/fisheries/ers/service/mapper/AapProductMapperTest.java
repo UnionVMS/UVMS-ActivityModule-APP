@@ -92,11 +92,11 @@ public class AapProductMapperTest {
         assertNull(processingProductsDto.getPreservation());
         assertNull(processingProductsDto.getPresentation());
         assertNull(processingProductsDto.getFreshness());
-        //assertEquals(processingProductsDto.getConversionFactor(), aapProcessEntity.getConversionFactor());
+        assertEquals(processingProductsDto.getConversionFactor(), aapProcessEntity.getConversionFactor().doubleValue());
         assertEquals(processingProductsDto.getWeight(), aapProductEntity.getCalculatedWeightMeasure());
         assertEquals(processingProductsDto.getQuantity(), aapProductEntity.getUnitQuantity());
         assertEquals(processingProductsDto.getPackageWeight(), aapProductEntity.getPackagingUnitAvarageWeight());
-        //assertEquals(processingProductsDto.getPackageQuantity(), aapProductEntity.getCalculatedPackagingWeight());
+        assertEquals(processingProductsDto.getPackageQuantity().doubleValue(), aapProductEntity.getPackagingUnitCount().doubleValue());
         assertEquals(processingProductsDto.getPackagingType(), aapProductEntity.getPackagingTypeCode());
     }
 }
