@@ -41,6 +41,8 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
 
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
+        fishingActivityViewDTO.getActivityDetails().setReason(faEntity.getReasonCode());
+
         // Fishing Activity Tile
         fishingActivityViewDTO.setActivityDetails(mapActivityDetails(faEntity));
 
