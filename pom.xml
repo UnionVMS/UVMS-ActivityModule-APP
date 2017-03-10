@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -373,11 +374,14 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</connection>
-        <developerConnection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</developerConnection>
+        <connection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git
+        </connection>
+        <developerConnection>
+            scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git
+        </developerConnection>
         <url>https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
 
     <build>
@@ -400,12 +404,16 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
+                            <configuration>
+                                <additionalparam>${javadoc.opts}</additionalparam>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -520,7 +528,17 @@
                 <!-- the record -->
             </properties>
         </profile>
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
     </profiles>
+
     <modules>
         <!-- <module>model</module>-->
         <module>rest</module>
