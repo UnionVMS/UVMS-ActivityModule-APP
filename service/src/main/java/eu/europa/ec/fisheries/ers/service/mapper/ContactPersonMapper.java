@@ -44,7 +44,7 @@ public abstract class ContactPersonMapper extends BaseMapper {
             @Mapping(target = "alias", expression = "java(getTextType(contactPerson.getAlias()))"),
             @Mapping(target = "contactParty", expression = "java(contactPartyEntity)")
     })
-    public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson, ContactPartyEntity contactPartyEntity);
+    public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson, ContactPartyEntity contactPartyEntity, @MappingTarget ContactPersonEntity contactPersonEntity);
 
     @Mappings({
             @Mapping(target = "title", source = "title"),
