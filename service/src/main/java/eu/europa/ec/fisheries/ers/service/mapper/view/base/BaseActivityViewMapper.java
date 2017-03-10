@@ -38,9 +38,9 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  */
 public abstract class BaseActivityViewMapper extends BaseMapper {
 
-    public static String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
+    public static final String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
 
-    public static String FLUX_REPORT_DOCUMENT_ID = "UUID";
+    public static final String FLUX_REPORT_DOCUMENT_ID = "UUID";
 
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
@@ -112,7 +112,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
 
     protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         if (CollectionUtils.isEmpty(fLocEntities)) {
-            return null;
+            return Collections.emptyList();
         }
         List<FluxLocationDto> portsListDto = new ArrayList<>();
         for(FluxLocationEntity flEntity : fLocEntities){

@@ -46,7 +46,8 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
 
 
-    {
+   public FishingTripSearchBuilder(){
+        super();
         FilterMap filterMap=FilterMap.createFilterMap();
         filterMap.populateFilterMappingsWithChangedDelimitedPeriodTable();
         setFilterMap(filterMap);

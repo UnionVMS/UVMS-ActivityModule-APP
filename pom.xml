@@ -74,7 +74,6 @@
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
         <lucene.index.directory>/app/indexes/activity</lucene.index.directory>
-        <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
 
     <dependencyManagement>

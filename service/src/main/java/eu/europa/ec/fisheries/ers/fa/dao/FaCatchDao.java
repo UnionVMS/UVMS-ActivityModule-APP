@@ -66,7 +66,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
 
-       FACatchSummaryHelper faCatchSummaryHelper = (isLanding)?FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+       FACatchSummaryHelper faCatchSummaryHelper = isLanding?FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
 
        // By default FishSize and FACatch type should be present in the summary table. First Query db with group FishClass
         faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);
@@ -100,7 +100,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
          // Map Raw data received from database to custom entity which will help identifing correct groups
          List<FaCatchSummaryCustomEntity> customEntities= new ArrayList<>();
-         FACatchSummaryHelper faCatchSummaryHelper = (isLanding)?FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+         FACatchSummaryHelper faCatchSummaryHelper = isLanding?FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
          List<GroupCriteria> groupCriterias=query.getGroupByFields();
          for(Object[] objArr :list){
              try {
