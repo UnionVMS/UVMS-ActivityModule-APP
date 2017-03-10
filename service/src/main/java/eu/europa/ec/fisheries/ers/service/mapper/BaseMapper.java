@@ -10,15 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import com.vividsolutions.jts.util.CollectionUtil;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
-import      un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
-//import un.unece.uncefact.data.standard.unqualifieddatatype._18.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -29,6 +26,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 /**
  * Created by padhyad on 6/14/2016.

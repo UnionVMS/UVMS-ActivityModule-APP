@@ -29,7 +29,7 @@ public class FishingActivityViewDTO {
     private ActivityDetailsDto activityDetails;
 
     @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Departure.class, FishingActivityView.Landing.class, FishingActivityView.Arrival.class})
-    private List<FluxLocationDto> ports;
+    private List<FluxLocationDto> locations;
 
     @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Departure.class})
     private List<GearDto> gears;
@@ -43,11 +43,11 @@ public class FishingActivityViewDTO {
     @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
     private List<GearShotRetrievalDto> gearShotRetrievalList;
 
-    public List<FluxLocationDto> getPorts() {
-        return ports;
+    public List<FluxLocationDto> getLocations() {
+        return locations;
     }
-    public void setPorts(List<FluxLocationDto> ports) {
-        this.ports = ports;
+    public void setLocations(List<FluxLocationDto> locations) {
+        this.locations = locations;
     }
     public ActivityDetailsDto getActivityDetails() {
         return activityDetails;

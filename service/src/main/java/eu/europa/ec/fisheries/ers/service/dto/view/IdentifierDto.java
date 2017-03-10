@@ -26,6 +26,15 @@ public class IdentifierDto {
     @JsonView(FishingActivityView.CommonView.class)
     private String schemeId;
 
+    public IdentifierDto() {
+        super();
+    }
+
+    public IdentifierDto(String id, String schemeId) {
+        this.id = id;
+        this.schemeId = schemeId;
+    }
+
     public String getId() {
         return id;
     }

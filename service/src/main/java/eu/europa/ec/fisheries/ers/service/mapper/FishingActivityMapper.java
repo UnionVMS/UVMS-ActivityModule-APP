@@ -132,6 +132,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "fishingActivityId", source = "id"),
             @Mapping(target = "activityType", source = "typeCode"),
+            @Mapping(target = "occurence", source = "occurence"),
             @Mapping(target = "reason", source = "reasonCode"),
             @Mapping(target = "faReportDocumentType", expression = "java(getFAReportTypeCode(entity))"),
             @Mapping(target = "faReportAcceptedDateTime", expression = "java(getAcceptedDateTime(entity))"),

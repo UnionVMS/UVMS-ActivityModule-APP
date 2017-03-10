@@ -13,12 +13,9 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxLocationDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXGeographicalCoordinate;
@@ -79,6 +76,31 @@ public abstract class FluxLocationMapper extends BaseMapper {
             @Mapping(target = "jurisdictionCountryCode", expression = "java(getIdType(fluxLocation.getJurisdictionCountryID()))"),
             @Mapping(target = "altitude", expression = "java(getAltitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate()))"),
             @Mapping(target = "systemId", expression = "java(getSystemId(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate()))"),
+            @Mapping(target = "gearProblem", expression = "java(gearProblem)"),
+            @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntities(fluxLocation.getPostalStructuredAddresses(), fluxLocation.getPhysicalStructuredAddress(), fluxLocationEntity))")
+    })
+    public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation, FluxLocationCatchTypeEnum fluxLocationTypeEnum, GearProblemEntity gearProblem, @MappingTarget FluxLocationEntity fluxLocationEntity);
+
+
+    @Mappings({
+            @Mapping(target = "typeCode", expression = "java(getCodeType(fluxLocation.getTypeCode()))"),
+            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fluxLocation.getTypeCode()))"),
+            @Mapping(target = "countryId", expression = "java(getIdType(fluxLocation.getCountryID()))"),
+            @Mapping(target = "rfmoCode", expression = "java(getCodeType(fluxLocation.getRegionalFisheriesManagementOrganizationCode()))"),
+            @Mapping(target = "longitude", expression = "java(getLongitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate()))"),
+            @Mapping(target = "latitude", expression = "java(getLatitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate()))"),
+            @Mapping(target = "fluxLocationType", expression = "java(fluxLocationTypeEnum.getType())"),
+            @Mapping(target = "countryIdSchemeId", expression = "java(getIdTypeSchemaId(fluxLocation.getCountryID()))"),
+            @Mapping(target = "fluxLocationIdentifier", expression = "java(getIdType(fluxLocation.getID()))"),
+            @Mapping(target = "fluxLocationIdentifierSchemeId", expression = "java(getIdTypeSchemaId(fluxLocation.getID()))"),
+            @Mapping(target = "geopoliticalRegionCode", expression = "java(getCodeType(fluxLocation.getGeopoliticalRegionCode()))"),
+            @Mapping(target = "geopoliticalRegionCodeListId", expression = "java(getCodeTypeListId(fluxLocation.getGeopoliticalRegionCode()))"),
+            @Mapping(target = "name", expression = "java(getTextFromList(fluxLocation.getNames()))"),
+            @Mapping(target = "nameLanguageId", expression = "java(getLanguageIdFromList(fluxLocation.getNames()))"),
+            @Mapping(target = "sovereignRightsCountryCode", expression = "java(getIdType(fluxLocation.getSovereignRightsCountryID()))"),
+            @Mapping(target = "jurisdictionCountryCode", expression = "java(getIdType(fluxLocation.getJurisdictionCountryID()))"),
+            @Mapping(target = "altitude", expression = "java(getAltitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate()))"),
+            @Mapping(target = "systemId", expression = "java(getSystemId(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate()))"),
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)"),
        //     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(fluxLocation.getApplicableFLUXCharacteristics(), fluxLocationEntity))"),
             @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntities(fluxLocation.getPostalStructuredAddresses(), fluxLocation.getPhysicalStructuredAddress(), fluxLocationEntity))")
@@ -86,14 +108,12 @@ public abstract class FluxLocationMapper extends BaseMapper {
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation, FluxLocationCatchTypeEnum fluxLocationTypeEnum, FaCatchEntity faCatchEntity, @MappingTarget FluxLocationEntity fluxLocationEntity);
 
     @Mappings({
-            @Mapping(source = "typeCode",target = "locationType"),
-            @Mapping(source = "fluxLocationIdentifierSchemeId",target = "fluxLocationListId"),
-            @Mapping(source = "fluxLocationIdentifier",target = "fluxLocationIdentifier"),
-            @Mapping(source = "longitude",target = "longitude"),
-            @Mapping(source = "latitude",target = "latitude"),
-            @Mapping(source = "rfmoCode",target = "rfmoCode")
+            @Mapping(source = "wkt",target = "geometry")
     })
-    public abstract FluxLocationDTO mapToFluxLocationDTO(FluxLocationEntity fluxLocation);
+    public abstract FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
+
+    @InheritInverseConfiguration
+    public abstract Set<FluxLocationDto> mapEntityToFluxLocationDto(Set<FluxLocationEntity> fluxLocation);
 
     protected AddressDetailsDTO getPhysicalAddressDetails(Set<StructuredAddressEntity> structuredAddresses) {
         for (StructuredAddressEntity structuredAddressEntity : structuredAddresses) {

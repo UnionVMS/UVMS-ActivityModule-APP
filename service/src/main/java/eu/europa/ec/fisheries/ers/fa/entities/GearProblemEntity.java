@@ -36,8 +36,9 @@ public class GearProblemEntity implements Serializable {
 	@Column(name = "affected_quantity", nullable = false)
 	private int affectedQuantity;
 
-	@Column(name = "location")
-	private FluxLocationEntity location;
+	@Column(name = "locations")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
+	private Set<FluxLocationEntity> locations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
 	private Set<GearProblemRecoveryEntity> gearProblemRecovery;
@@ -89,10 +90,10 @@ public class GearProblemEntity implements Serializable {
 	public void setFishingGears(Set<FishingGearEntity> fishingGears) {
 		this.fishingGears = fishingGears;
 	}
-	public FluxLocationEntity getLocation() {
-		return location;
+	public Set<FluxLocationEntity> getLocations() {
+		return locations;
 	}
-	public void setLocation(FluxLocationEntity location) {
-		this.location = location;
+	public void setLocations(Set<FluxLocationEntity> locations) {
+		this.locations = locations;
 	}
 }

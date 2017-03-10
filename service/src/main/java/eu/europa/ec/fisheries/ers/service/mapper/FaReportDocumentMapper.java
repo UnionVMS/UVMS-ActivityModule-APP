@@ -123,8 +123,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "type" , source = "faReportDocument.typeCode"),
-            @Mapping(target = "acceptedDate" , source = "faReportDocument.acceptedDatetime", dateFormat = DateUtils.FORMAT),
-            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.FORMAT),
+            @Mapping(target = "acceptedDate" , source = "faReportDocument.acceptedDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
             @Mapping(target = "id" , expression = "java(fluxReportDocument.getFluxPartyIdentifierBySchemeId(\"FLUX_GP_PARTY\"))"),
             @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
             @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),

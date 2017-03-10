@@ -46,7 +46,7 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
         // Intented Port of Landing Tile
         Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);
         Set<FluxLocationDto> fluxLocationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(relatedFluxLocation);
-        fishingActivityViewDTO.setPorts(new ArrayList<>(fluxLocationDtos));
+        fishingActivityViewDTO.setLocations(new ArrayList<>(fluxLocationDtos));
 
         // Activity Report document tile
         ReportDocumentDto reportDocumentDto = FaReportDocumentMapper.INSTANCE.

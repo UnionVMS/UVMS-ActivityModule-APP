@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -30,7 +31,7 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  *
  * Base Class to be extended by all the mappers related to Activity Views (LANDING, ARRIVAL, AREA_ENTRY  etc..)
  */
-public abstract class BaseActivityViewMapper {
+public abstract class BaseActivityViewMapper extends BaseMapper {
 
     public static String FLUX_PARTY_OWNER_SCHEME_ID = "FLUX_GP_PARTY";
 
@@ -55,6 +56,16 @@ public abstract class BaseActivityViewMapper {
         activityDetails.getCharacteristics().putAll(getFlapDocumentTypeCodeValue(flapDocumentEntities));
         return populateActivityDetails(faEntity, activityDetails);
     }
+
+    /**
+     * The method mapActivityDetails(..,..) maps type and fluxCharacteristics to the ActivityDetailsDto.
+     * The rest of the fields are mapped by this method which MUST be implemented by all the Mappers that extend this one.
+     *
+     * @param faEntity
+     * @param activityDetails
+     * @return
+     */
+    protected abstract ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails);
 
     protected Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
         if (fluxCharacteristics == null) {
@@ -94,17 +105,7 @@ public abstract class BaseActivityViewMapper {
         return characMap;
     }
 
-    /**
-     * The method mapActivityDetails(..,..) maps type and fluxCharacteristics to the ActivityDetailsDto.
-     * The rest of the fields are mapped by this method which MUST be implemented by all the Mappers that extend this one.
-     *
-     * @param faEntity
-     * @param activityDetails
-     * @return
-     */
-    protected abstract ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails);
-
-    protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+    protected List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         if (CollectionUtils.isEmpty(fLocEntities)) {
             return null;
         }
