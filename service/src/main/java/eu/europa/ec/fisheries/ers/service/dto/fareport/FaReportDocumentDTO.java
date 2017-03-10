@@ -26,6 +26,8 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FaReportDocumentDTO implements Serializable {
 
+    private static final long serialVersionUID = -376115183141490362L;
+
     @JsonProperty("typeCode")
     private String typeCode;
 

@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
@@ -135,7 +134,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     private void fillQueryConditions(Geometry geom) {
-        FaCatchEntity fa = new FaCatchEntity();
+
         activityViewQuery = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
                 .append("LEFT JOIN FETCH a.faReportDocument fa ")
                 .append("LEFT JOIN FETCH a.fluxLocations fl ")

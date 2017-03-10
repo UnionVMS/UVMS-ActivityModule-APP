@@ -12,15 +12,16 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Stateless
 @Slf4j
@@ -55,7 +56,7 @@ public class PropertiesBean {
     }
 
     @PreDestroy
-    private void shutdown() {
+    protected void shutdown() {
         log.info("In PropertiesBean(Singleton)::shutdown()");
     }
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -23,6 +24,7 @@ import java.util.Random;
  * Created by sanera on 08/11/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@Slf4j
 public class TripMapGeoJsonDTO {
 
     final static Logger LOG = LoggerFactory.getLogger(TripMapGeoJsonDTO.class);
@@ -78,7 +80,7 @@ public class TripMapGeoJsonDTO {
         try {
             rootNode.set("trips", new FeatureToGeoJsonJacksonMapper().convert(trips));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Json conversion failed",e);
         }
         return rootNode;
     }
