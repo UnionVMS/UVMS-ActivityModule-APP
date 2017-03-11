@@ -7,11 +7,12 @@
     <version>0.5.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
+    <url>http://www.your.site.com/</url>
 
     <developers>
         <developer>
             <name>Gregory Rinaldi</name>
-            <email>gregory.rinaldi@ordina.be</email>
+            <email>rinaldi.gregory@gmail.com</email>
         </developer>
         <developer>
             <name>Georgi Georgiev</name>
@@ -373,16 +374,42 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</connection>
-        <developerConnection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</developerConnection>
+        <connection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git
+        </connection>
+        <developerConnection>
+            scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git
+        </developerConnection>
         <url>https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
 
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <ejbVersion>3.1</ejbVersion>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.9</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
@@ -400,12 +427,16 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
+                            <configuration>
+                                <additionalparam>${javadoc.opts}</additionalparam>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -501,11 +532,6 @@
             <id>Hibernate Spatial Repo</id>
             <url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>
         </repository>
-        <!--<repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
-        </repository>-->
-        <!-- add JBOSS repository for easy access to Hibernate libraries -->
         <repository>
             <id>JBOSS</id>
             <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
@@ -520,7 +546,17 @@
                 <!-- the record -->
             </properties>
         </profile>
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
     </profiles>
+
     <modules>
         <!-- <module>model</module>-->
         <module>rest</module>
