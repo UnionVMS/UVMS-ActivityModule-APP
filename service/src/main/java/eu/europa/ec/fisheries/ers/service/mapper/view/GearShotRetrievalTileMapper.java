@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearProblemDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -108,7 +109,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
         if(CollectionUtils.isEmpty(fluxLocations)){
             return null;
         }
-        return getFluxLocationDtoFromEntity(fluxLocations.iterator().next());
+        return FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocations.iterator().next());
     }
 
     protected String mapToFirstRecoveryMeasure(Set<GearProblemRecoveryEntity> recoveries){

@@ -38,9 +38,10 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     public static final String LSC = "LSC";
     public static final String BMS = "BMS";
 
-    private FaCatchesProcessorMapper(){
+    private FaCatchesProcessorMapper() {
 
     }
+
     /**
      * Takes a list of FaCatches and returns the list of groupDtos.
      *
@@ -48,7 +49,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @return List<FaCatchGroupDto>
      */
     public static List<FaCatchGroupDto> getCatchGroupsFromListEntity(Set<FaCatchEntity> faCatches) {
-        if(CollectionUtils.isEmpty(faCatches)){
+        if (CollectionUtils.isEmpty(faCatches)) {
             return Collections.emptyList();
         }
         Map<String, List<FaCatchEntity>> faCatchGroups = groupCatches(faCatches);
@@ -62,9 +63,9 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @return
      */
     private static Map<String, List<FaCatchEntity>> groupCatches(Set<FaCatchEntity> faCatches) {
-        Map<String, List<FaCatchEntity>> groups    = new HashMap<>();
+        Map<String, List<FaCatchEntity>> groups = new HashMap<>();
         int group_nr = 0;
-        while(CollectionUtils.isNotEmpty(faCatches)){
+        while (CollectionUtils.isNotEmpty(faCatches)) {
             groups.put(String.valueOf(group_nr), extractOneGroup(faCatches));
             group_nr++;
         }
@@ -78,9 +79,9 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @return
      */
     private static List<FaCatchEntity> extractOneGroup(Set<FaCatchEntity> faCatchesSet) {
-        List<FaCatchEntity> group                  = new ArrayList<>();
+        List<FaCatchEntity> group = new ArrayList<>();
         Iterator<FaCatchEntity> catchesIteratorInt = faCatchesSet.iterator();
-        FaCatchEntity extCatch                     = catchesIteratorInt.next();
+        FaCatchEntity extCatch = catchesIteratorInt.next();
         group.add(extCatch);
         while (catchesIteratorInt.hasNext()) {
             FaCatchEntity intCatch = catchesIteratorInt.next();
@@ -100,7 +101,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      */
     private static List<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, List<FaCatchEntity>> faCatchGroups) {
         List<FaCatchGroupDto> faCatchGroupsDtoList = new ArrayList<>();
-        for(Map.Entry<String, List<FaCatchEntity>> group : faCatchGroups.entrySet()){
+        for (Map.Entry<String, List<FaCatchEntity>> group : faCatchGroups.entrySet()) {
             faCatchGroupsDtoList.add(mapFaCatchListToCatchGroupDto(group.getValue()));
         }
         return faCatchGroupsDtoList;
@@ -112,8 +113,8 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param groupCatchList
      * @return
      */
-    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto( List<FaCatchEntity> groupCatchList) {
-        FaCatchGroupDto groupDto  = new FaCatchGroupDto();
+    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(List<FaCatchEntity> groupCatchList) {
+        FaCatchGroupDto groupDto = new FaCatchGroupDto();
         FaCatchEntity catchEntity = groupCatchList.get(0);
         // Set primary properties on groupDto
         groupDto.setType(catchEntity.getTypeCode());
@@ -126,8 +127,8 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     }
 
     /**
-     *  Subgroups by BMS and LSC and :
-     *  Calculates the total and fills all the details related to each subgroup.
+     * Subgroups by BMS and LSC and :
+     * Calculates the total and fills all the details related to each subgroup.
      *
      * @param groupCatchList
      * @param groupDto
@@ -138,31 +139,31 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         FaCatchGroupDetailsDto bmsGroupDetailsDto = new FaCatchGroupDetailsDto();
         // Weight and units totals
         Double lscGroupTotalWeight = null;
-        Double lscGroupTotalUnits  = null;
+        Double lscGroupTotalUnits = null;
         Double bmsGroupTotalWeight = null;
-        Double bmsGroupTotalUnits  = null;
-        for(FaCatchEntity entity : groupCatchList){
+        Double bmsGroupTotalUnits = null;
+        for (FaCatchEntity entity : groupCatchList) {
             Double calculatedWeightMeasure = entity.getCalculatedWeightMeasure();
-            if(calculatedWeightMeasure == null){
+            if (calculatedWeightMeasure == null) {
                 calculatedWeightMeasure = extractLiveWeight(entity.getAapProcesses());
             }
-            Double unitQuantity            = entity.getUnitQuantity();
+            Double unitQuantity = entity.getUnitQuantity();
             String fishClassCode = entity.getFishClassCode() != null ? entity.getFishClassCode() : StringUtils.EMPTY;
-            switch(fishClassCode){
+            switch (fishClassCode) {
                 case LSC:
                     // Weight and Units calculation
                     lscGroupTotalWeight = addDoubles(calculatedWeightMeasure, lscGroupTotalWeight);
-                    lscGroupTotalUnits  = addDoubles(unitQuantity, lscGroupTotalUnits);
+                    lscGroupTotalUnits = addDoubles(unitQuantity, lscGroupTotalUnits);
                     fillDetailsForSubGroup(lscGroupDetailsDto, entity);
                     break;
                 case BMS:
                     // Weight and Units calculation
                     bmsGroupTotalWeight = addDoubles(calculatedWeightMeasure, bmsGroupTotalWeight);
-                    bmsGroupTotalUnits  = addDoubles(unitQuantity, bmsGroupTotalUnits);
+                    bmsGroupTotalUnits = addDoubles(unitQuantity, bmsGroupTotalUnits);
                     fillDetailsForSubGroup(bmsGroupDetailsDto, entity);
                     break;
-                default :
-                    log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : "+entity.getId()+" is neither LSC or BMS!");
+                default:
+                    log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : " + entity.getId() + " is neither LSC or BMS!");
             }
         }
         setWeightsForSubGroup(groupDto, lscGroupDetailsDto, bmsGroupDetailsDto, lscGroupTotalWeight, lscGroupTotalUnits, bmsGroupTotalWeight, bmsGroupTotalUnits);
@@ -174,24 +175,24 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
 
     private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
-        Integer convFc     = 1;
-        Double weightSum   = 0.0;
-        if(CollectionUtils.isNotEmpty(aapProcesses)){
+        Integer convFc = 1;
+        Double weightSum = 0.0;
+        if (CollectionUtils.isNotEmpty(aapProcesses)) {
             for (AapProcessEntity aapProc : aapProcesses) {
                 Integer actConvFac = aapProc.getConversionFactor();
                 convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
                 addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
         }
-        if(weightSum > 0){
+        if (weightSum > 0) {
             totalWeight = convFc * weightSum;
         }
         return totalWeight;
     }
 
     private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
-        if(CollectionUtils.isNotEmpty(aapProducts)){
-            for(AapProductEntity aapProd : aapProducts){
+        if (CollectionUtils.isNotEmpty(aapProducts)) {
+            for (AapProductEntity aapProd : aapProducts) {
                 addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
             }
         }
@@ -207,11 +208,11 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         bmsGroupDetailsDto.setWeight(bmsGroupTotalWeight);
 
         // Set total group weight (LSC + BMS) (checking nullity : if both of them are null the sum must be 0.0)
-        if(lscGroupTotalWeight == null){
+        if (lscGroupTotalWeight == null) {
             lscGroupTotalWeight = 0.0;
         }
 
-        if(bmsGroupTotalWeight == null){
+        if (bmsGroupTotalWeight == null) {
             bmsGroupTotalWeight = 0.0;
         }
 
@@ -229,7 +230,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     private static void fillDetailsForSubGroup(FaCatchGroupDetailsDto groupDetailsDto, FaCatchEntity actualEntity) {
         fillSpecifiedAndDestinationLocationsInGroupDetails(actualEntity.getFluxLocations(), groupDetailsDto);
         fillFishingGears(actualEntity.getFishingGears(), groupDetailsDto);
-        if(!groupDetailsDto.areDetailsSet()){
+        if (!groupDetailsDto.areDetailsSet()) {
             fillGroupDetails(groupDetailsDto, actualEntity);
         }
         fillFluxCharacteristics(groupDetailsDto, actualEntity.getFluxCharacteristics());
@@ -243,16 +244,16 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param groupDetailsDto
      */
     private static void fillSpecifiedAndDestinationLocationsInGroupDetails(Set<FluxLocationEntity> fluxLocations, FaCatchGroupDetailsDto groupDetailsDto) {
-        if(CollectionUtils.isEmpty(fluxLocations)){
+        if (CollectionUtils.isEmpty(fluxLocations)) {
             return;
         }
         List<DestinationLocationDto> destLocDtoList = groupDetailsDto.getDestinationLocation();
-        List<FluxLocationDto> specifiedFluxLocDto   = groupDetailsDto.getSpecifiedFluxLocations();
+        List<FluxLocationDto> specifiedFluxLocDto = groupDetailsDto.getSpecifiedFluxLocations();
         for (FluxLocationEntity actLoc : fluxLocations) {
             String fluxLocationType = actLoc.getFluxLocationType();
-            if(StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType())){
+            if (StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType())) {
                 destLocDtoList.add(new DestinationLocationDto(actLoc.getFluxLocationIdentifier(), actLoc.getCountryId(), actLoc.getName()));
-            } else if(StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType())){
+            } else if (StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType())) {
                 StringWrapper geometryStrWrapp = GeometryMapper.INSTANCE.geometryToWkt(actLoc.getGeom());
                 specifiedFluxLocDto.add(new FluxLocationDto(actLoc.getName(), geometryStrWrapp != null ? geometryStrWrapp.getValue() : null));
             }
@@ -288,11 +289,11 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     }
 
     private static void fillFluxCharacteristics(FaCatchGroupDetailsDto groupDetailsDto, Set<FluxCharacteristicEntity> fluxCharacteristics) {
-        if(CollectionUtils.isEmpty(fluxCharacteristics)){
+        if (CollectionUtils.isEmpty(fluxCharacteristics)) {
             return;
         }
         List<FluxCharacteristicsViewDto> applicableFluxCharacteristics = groupDetailsDto.getCharacteristics();
-        for(FluxCharacteristicEntity flCharacEnt : fluxCharacteristics){
+        for (FluxCharacteristicEntity flCharacEnt : fluxCharacteristics) {
             applicableFluxCharacteristics.add(FluxCharacteristicsViewDtoMapper.INSTANCE.mapFluxCharacteristicsEntityListToDtoList(flCharacEnt));
         }
     }
@@ -315,9 +316,9 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         public static boolean catchesAreEqual(FaCatchEntity thisCatch, FaCatchEntity thatCatch) {
             if (thisCatch == thatCatch)
                 return true;
-            if(thisCatch == null && thatCatch == null)
+            if (thisCatch == null && thatCatch == null)
                 return true;
-            if(thisCatch == null || thatCatch == null)
+            if (thisCatch == null || thatCatch == null)
                 return false;
             if (thisCatch.getTypeCode() != null ? !thisCatch.getTypeCode().equals(thatCatch.getTypeCode()) : thatCatch.getTypeCode() != null)
                 return false;
@@ -327,13 +328,16 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
                 return false;
             if (thisCatch.getTerritory() != null ? !thisCatch.getTerritory().equals(thatCatch.getTerritory()) : thatCatch.getTerritory() != null)
                 return false;
-            if (thisCatch.getFaoArea() != null ? !thisCatch.getFaoArea().equals(thatCatch.getFaoArea()) : thatCatch.getFaoArea() != null) return false;
+            if (thisCatch.getFaoArea() != null ? !thisCatch.getFaoArea().equals(thatCatch.getFaoArea()) : thatCatch.getFaoArea() != null)
+                return false;
             if (thisCatch.getIcesStatRectangle() != null ? !thisCatch.getIcesStatRectangle().equals(thatCatch.getIcesStatRectangle()) : thatCatch.getIcesStatRectangle() != null)
                 return false;
             if (thisCatch.getEffortZone() != null ? !thisCatch.getEffortZone().equals(thatCatch.getEffortZone()) : thatCatch.getEffortZone() != null)
                 return false;
-            if (thisCatch.getRfmo() != null ? !thisCatch.getRfmo().equals(thatCatch.getRfmo()) : thatCatch.getRfmo() != null) return false;
-            if (thisCatch.getGfcmGsa() != null ? !thisCatch.getGfcmGsa().equals(thatCatch.getGfcmGsa()) : thatCatch.getGfcmGsa() != null) return false;
+            if (thisCatch.getRfmo() != null ? !thisCatch.getRfmo().equals(thatCatch.getRfmo()) : thatCatch.getRfmo() != null)
+                return false;
+            if (thisCatch.getGfcmGsa() != null ? !thisCatch.getGfcmGsa().equals(thatCatch.getGfcmGsa()) : thatCatch.getGfcmGsa() != null)
+                return false;
             if (thisCatch.getGfcmStatRectangle() != null ? !thisCatch.getGfcmStatRectangle().equals(thatCatch.getGfcmStatRectangle()) : thatCatch.getGfcmStatRectangle() != null)
                 return false;
             if (!sizeDestributionsAreEqual(thisCatch.getSizeDistribution(), thatCatch.getSizeDistribution()))
@@ -345,50 +349,50 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             return true;
         }
 
-        private static boolean sizeDestributionsAreEqual(SizeDistributionEntity sizeThis, SizeDistributionEntity sizeThat){
+        private static boolean sizeDestributionsAreEqual(SizeDistributionEntity sizeThis, SizeDistributionEntity sizeThat) {
             if (sizeThis == sizeThat)
                 return true;
-            if(sizeThis == null && sizeThat == null)
+            if (sizeThis == null && sizeThat == null)
                 return true;
-            if(sizeThis == null || sizeThat == null)
+            if (sizeThis == null || sizeThat == null)
                 return false;
-            if(!StringUtils.equals(sizeThis.getCategoryCode(), sizeThat.getCategoryCode()))
+            if (!StringUtils.equals(sizeThis.getCategoryCode(), sizeThat.getCategoryCode()))
                 return false;
             return true;
         }
 
-        private static boolean aapStocsAreEqual(Set<AapStockEntity> aapList_1, Set<AapStockEntity> aapList_2){
+        private static boolean aapStocsAreEqual(Set<AapStockEntity> aapList_1, Set<AapStockEntity> aapList_2) {
             AapStockEntity aapStockThis = CollectionUtils.isNotEmpty(aapList_1) ? aapList_1.iterator().next() : null;
             AapStockEntity aapStockThat = CollectionUtils.isNotEmpty(aapList_2) ? aapList_2.iterator().next() : null;
             if (aapStockThis == aapStockThat)
                 return true;
-            if(aapStockThis == null && aapStockThat == null)
+            if (aapStockThis == null && aapStockThat == null)
                 return true;
-            if(aapStockThis == null || aapStockThat == null)
+            if (aapStockThis == null || aapStockThat == null)
                 return false;
-            if(!StringUtils.equals(aapStockThis.getStockId(), aapStockThat.getStockId()))
+            if (!StringUtils.equals(aapStockThis.getStockId(), aapStockThat.getStockId()))
                 return false;
             return true;
         }
 
-        private static boolean fishingTripsAreEquals(Set<FishingTripEntity> aapList_1, Set<FishingTripEntity> aapList_2){
+        private static boolean fishingTripsAreEquals(Set<FishingTripEntity> aapList_1, Set<FishingTripEntity> aapList_2) {
             FishingTripEntity aapStockThis = CollectionUtils.isNotEmpty(aapList_1) ? aapList_1.iterator().next() : null;
             FishingTripEntity aapStockThat = CollectionUtils.isNotEmpty(aapList_2) ? aapList_2.iterator().next() : null;
             if (aapStockThis == aapStockThat)
                 return true;
-            if(aapStockThis == null && aapStockThat == null)
+            if (aapStockThis == null && aapStockThat == null)
                 return true;
-            if(aapStockThis == null || aapStockThat == null)
+            if (aapStockThis == null || aapStockThat == null)
                 return false;
             FishingTripIdentifierEntity identifierThis = CollectionUtils.isNotEmpty(aapStockThis.getFishingTripIdentifiers()) ? aapStockThis.getFishingTripIdentifiers().iterator().next() : null;
             FishingTripIdentifierEntity identifierThat = CollectionUtils.isNotEmpty(aapStockThis.getFishingTripIdentifiers()) ? aapStockThis.getFishingTripIdentifiers().iterator().next() : null;
             if (identifierThis == identifierThat)
                 return true;
-            if(identifierThis == null && identifierThat == null)
+            if (identifierThis == null && identifierThat == null)
                 return true;
-            if(identifierThis == null || identifierThat == null)
+            if (identifierThis == null || identifierThat == null)
                 return false;
-            if(!StringUtils.equals(identifierThis.getTripId(), identifierThat.getTripId()))
+            if (!StringUtils.equals(identifierThis.getTripId(), identifierThat.getTripId()))
                 return false;
             return true;
         }

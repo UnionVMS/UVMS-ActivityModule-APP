@@ -17,8 +17,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -120,7 +118,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return populateActivityDetails(faEntity, activityDetails);
     }
 
-    protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+    protected List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
         if (locationDtos != null) {
             return new ArrayList<>(locationDtos);
@@ -171,18 +169,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         }
     }
 
-    protected FluxLocationDto getFluxLocationDtoFromEntity(FluxLocationEntity flEntity) {
-        if(flEntity == null){
-            return null;
-        }
-        FluxLocationDto port = new FluxLocationDto();
-        StringWrapper geomStrWrapper = GeometryMapper.INSTANCE.geometryToWkt(flEntity.getGeom());
-        if(geomStrWrapper != null){
-            port.setGeometry(geomStrWrapper.getValue());
-        }
-        port.setName(flEntity.getFluxLocationIdentifierSchemeId());
-        return port;
-    }
 
     /**
      * Add a quantity to another quantity checking that neither of the values is null;
@@ -241,17 +227,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             default :
                 break;
         }
-    }
-
-    protected List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
-        if (CollectionUtils.isEmpty(fLocEntities)) {
-            return null;
-        }
-        List<FluxLocationDto> portsListDto = new ArrayList<>();
-        for (FluxLocationEntity flEntity : fLocEntities) {
-            portsListDto.add(getFluxLocationDtoFromEntity(flEntity));
-        }
-        return portsListDto;
     }
 
     protected List<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity){

@@ -35,30 +35,30 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
 
     @Override
     @Mappings({
-            @Mapping(target = "activityDetails",   expression = "java(mapActivityDetails(faEntity))"),
-            @Mapping(target = "locations",       expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
-            @Mapping(target = "reportDetails",   expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
-            @Mapping(target = "catches",   expression = "java(mapCatchesToGroupDto(faEntity))"),
+            @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
+            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
+            @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
+            @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
     @Override
-    protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails){
+    protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
         DelimitedPeriodDTO delimitedPeriodDTO = mapToDelimitedPeriodDto(faEntity.getDelimitedPeriods());
         activityDetails.setLandingTime(delimitedPeriodDTO);
         return activityDetails;
     }
 
     private DelimitedPeriodDTO mapToDelimitedPeriodDto(Set<DelimitedPeriodEntity> delimitedPeriods) {
-        Date startDate  = null;
-        Date endDate    = null;
+        Date startDate = null;
+        Date endDate = null;
         Double duration = null;
-        if(CollectionUtils.isNotEmpty(delimitedPeriods)){
+        if (CollectionUtils.isNotEmpty(delimitedPeriods)) {
             DelimitedPeriodEntity delimPeriod = delimitedPeriods.iterator().next();
             startDate = delimPeriod.getStartDate();
-            endDate   = delimPeriod.getEndDate();
-            duration  = delimPeriod.getDuration();
+            endDate = delimPeriod.getEndDate();
+            duration = delimPeriod.getDuration();
         }
         return new DelimitedPeriodDTO(startDate, endDate, duration);
     }
