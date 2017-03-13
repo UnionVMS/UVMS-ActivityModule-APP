@@ -20,9 +20,11 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
@@ -110,6 +112,14 @@ public class FishingActivityViewMapperTest {
         assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
     }
 
+    @Test
+    @SneakyThrows
+    public void testGearShotAndRetrieval(){
+        Set<FishingActivityEntity> fishingActivityEntity = new HashSet(Arrays.asList(getFishingActivityEntity()));
+        List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntity);
+        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
+    }
+
     private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
         List<FaCatchEntity> faCatchList = new ArrayList<>();
         FaCatchEntity clone_1 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
@@ -146,7 +156,7 @@ public class FishingActivityViewMapperTest {
     }
 
 
-    private void printDtoOnConsole(FishingActivityViewDTO fishingActivityViewDTO, final Class<?> view) throws JsonProcessingException {
+    private void printDtoOnConsole(Object fishingActivityViewDTO, final Class<?> view) throws JsonProcessingException {
         System.out.println(getObjectMapperForView(view).configure(SerializationFeature.INDENT_OUTPUT, true).writeValueAsString(fishingActivityViewDTO));
     }
 

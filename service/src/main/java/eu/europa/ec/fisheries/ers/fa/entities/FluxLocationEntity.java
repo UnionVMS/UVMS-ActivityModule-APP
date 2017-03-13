@@ -115,6 +115,10 @@ public class FluxLocationEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "gear_problem_id")
+	private GearProblemEntity gearProblem;
+
 	public FluxLocationEntity() {
 		super();
 	}
@@ -340,4 +344,11 @@ public class FluxLocationEntity implements Serializable {
 		}
 	}
 
+	public GearProblemEntity getGearProblem() {
+		return gearProblem;
+	}
+
+	public void setGearProblem(GearProblemEntity gearProblem) {
+		this.gearProblem = gearProblem;
+	}
 }

@@ -29,7 +29,7 @@ public class FishingActivityViewDTO {
     private ActivityDetailsDto activityDetails;
 
     @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Departure.class, FishingActivityView.Landing.class, FishingActivityView.Arrival.class})
-    private List<FluxLocationDto> ports;
+    private List<FluxLocationDto> locations;
 
     @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Departure.class})
     private List<GearDto> gears;
@@ -40,14 +40,17 @@ public class FishingActivityViewDTO {
     @JsonView(FishingActivityView.CommonView.class)
     private List<FaCatchGroupDto> catches;
 
+    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
+    private List<GearShotRetrievalDto> gearShotRetrievalList;
+
     @JsonView(FishingActivityView.CommonView.class)
     private List<ProcessingProductsDto> processingProducts;
 
-    public List<FluxLocationDto> getPorts() {
-        return ports;
+    public List<FluxLocationDto> getLocations() {
+        return locations;
     }
-    public void setPorts(List<FluxLocationDto> ports) {
-        this.ports = ports;
+    public void setLocations(List<FluxLocationDto> locations) {
+        this.locations = locations;
     }
     public ActivityDetailsDto getActivityDetails() {
         return activityDetails;
@@ -80,5 +83,11 @@ public class FishingActivityViewDTO {
 
     public void setProcessingProducts(List<ProcessingProductsDto> processingProducts) {
         this.processingProducts = processingProducts;
+    }
+    public List<GearShotRetrievalDto> getGearShotRetrievalList() {
+        return gearShotRetrievalList;
+    }
+    public void setGearShotRetrievalList(List<GearShotRetrievalDto> gearShotRetrievalList) {
+        this.gearShotRetrievalList = gearShotRetrievalList;
     }
 }

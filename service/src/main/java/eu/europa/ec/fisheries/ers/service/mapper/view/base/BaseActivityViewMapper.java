@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,6 +66,8 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return productsDtos;
     }
 
+
+
     protected List<ProcessingProductsDto> getPPByAapProduct(Collection<AapProductEntity> aapProducts) {
         if (aapProducts == null) {
             return Collections.emptyList();
@@ -74,6 +77,33 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             productsDtos.add(AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity));
         }
         return productsDtos;
+    }
+
+
+
+    protected Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
+        if (fluxCharacteristics == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> characMap = new HashMap<>();
+        for(FluxCharacteristicEntity fluxCharacteristic : fluxCharacteristics) {
+            String value = null;
+            if (fluxCharacteristic.getValueMeasure() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueMeasure());
+            } else if (fluxCharacteristic.getValueDateTime() != null) {
+                value = DateUtils.dateToString(fluxCharacteristic.getValueDateTime());
+            } else if (fluxCharacteristic.getValueIndicator() != null) {
+                value = fluxCharacteristic.getValueIndicator();
+            } else if (fluxCharacteristic.getValueCode() != null) {
+                value = fluxCharacteristic.getValueCode();
+            } else if (fluxCharacteristic.getValueText() != null) {
+                value = fluxCharacteristic.getValueText();
+            } else if (fluxCharacteristic.getValueQuantity() != null) {
+                value = String.valueOf(fluxCharacteristic.getValueQuantity());
+            }
+            characMap.put(fluxCharacteristic.getTypeCode(), value);
+        }
+        return characMap;
     }
 
     /**
@@ -88,7 +118,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return populateActivityDetails(faEntity, activityDetails);
     }
 
-    protected List<FluxLocationDto> getPortsFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+    protected List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
         if (locationDtos != null) {
             return new ArrayList<>(locationDtos);
@@ -106,12 +136,23 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         }
         List<GearDto> gearDtoList = new ArrayList<>();
         for (FishingGearEntity gearEntity : fishingGearEntities) {
-            GearDto gearDto = new GearDto();
-            gearDto.setType(gearEntity.getTypeCode());
-            fillRoleAndCharacteristics(gearDto, gearEntity);
-            gearDtoList.add(gearDto);
+            gearDtoList.add(mapSingleGearToDto(gearEntity));
         }
         return gearDtoList;
+    }
+
+    private GearDto mapSingleGearToDto(FishingGearEntity gearEntity) {
+        GearDto gearDto = new GearDto();
+        gearDto.setType(gearEntity.getTypeCode());
+        fillRoleAndCharacteristics(gearDto, gearEntity);
+        return gearDto;
+    }
+
+    protected GearDto mapToFirstFishingGear(Set<FishingGearEntity> fishingGearEntities){
+        if(CollectionUtils.isEmpty(fishingGearEntities)){
+            return null;
+        }
+        return mapSingleGearToDto(fishingGearEntities.iterator().next());
     }
 
     private void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
@@ -126,6 +167,28 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
                 fillCharacteristicField(charac, gearDto);
             }
         }
+    }
+
+
+    /**
+     * Add a quantity to another quantity checking that neither of the values is null;
+     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
+     *
+     * @param actualMeasureToAdd
+     * @param meausureSubTotalToAddTo
+     * @return
+     */
+    protected static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
+        Double returnValue = null;
+        if(actualMeasureToAdd != null && actualMeasureToAdd != 0.0){
+            if(meausureSubTotalToAddTo == null){
+                meausureSubTotalToAddTo = 0.0;
+            }
+            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
+        } else if(meausureSubTotalToAddTo != null){
+            returnValue = meausureSubTotalToAddTo;
+        }
+        return returnValue;
     }
 
     private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {

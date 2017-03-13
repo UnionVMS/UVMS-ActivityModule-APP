@@ -10,41 +10,48 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
 /**
- * Created by kovian on 28/02/2017.
+ * Created by kovian on 08/03/2017.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class IdentifierDto {
+public class GearProblemDto {
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String id;
+    private String type;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String schemeId;
+    private Integer nrOfGears;
 
-    public IdentifierDto() {
-        super();
-    }
+    @JsonView(FishingActivityView.CommonView.class)
+    private String recoveryMeasure;
 
-    public IdentifierDto(String id, String schemeId) {
-        this.id = id;
-        this.schemeId = schemeId;
-    }
+    @JsonView(FishingActivityView.CommonView.class)
+    private FluxLocationDto location;
 
-    public String getId() {
-        return id;
+    public String getType() {
+        return type;
     }
-    public void setId(String id) {
-        this.id = id;
+    public void setType(String type) {
+        this.type = type;
     }
-    public String getSchemeId() {
-        return schemeId;
+    public Integer getNrOfGears() {
+        return nrOfGears;
     }
-    public void setSchemeId(String schemeId) {
-        this.schemeId = schemeId;
+    public void setNrOfGears(Integer nrOfGears) {
+        this.nrOfGears = nrOfGears;
+    }
+    public String getRecoveryMeasure() {
+        return recoveryMeasure;
+    }
+    public void setRecoveryMeasure(String recoveryMeasure) {
+        this.recoveryMeasure = recoveryMeasure;
+    }
+    public FluxLocationDto getLocation() {
+        return location;
+    }
+    public void setLocation(FluxLocationDto location) {
+        this.location = location;
     }
 }

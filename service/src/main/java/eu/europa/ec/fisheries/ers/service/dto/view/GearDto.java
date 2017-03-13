@@ -146,4 +146,5 @@ public class GearDto {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }
