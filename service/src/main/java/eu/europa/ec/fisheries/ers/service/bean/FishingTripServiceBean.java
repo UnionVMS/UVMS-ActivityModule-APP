@@ -14,6 +14,22 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.jms.TextMessage;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
@@ -40,11 +56,23 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
-import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.VesselDetailsTripDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.ContactPersonMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingTripToGeoJsonMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.StructuredAddressMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
@@ -60,16 +88,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.TextMessage;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import java.util.*;
-
 /**
  * Created by padhyad on 9/22/2016.
  */
@@ -79,30 +97,24 @@ import java.util.*;
 @Slf4j
 public class FishingTripServiceBean implements FishingTripService {
 
+    private static final String PREVIOUS = "PREVIOUS";
+    private static final String NEXT = "NEXT";
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
-
     @EJB
     private ActivityMessageProducer activityProducer;
-
     @EJB
     private AssetsMessageConsumerBean activityConsumer;
-
     @EJB
     private SpatialModuleService spatialModule;
-
     @EJB
     private ActivityService activityServiceBean;
-
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
     private FishingTripIdentifierDao fishingTripIdentifierDao;
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
-
-    private static final String PREVIOUS = "PREVIOUS";
-    private static final String NEXT = "NEXT";
 
     @PostConstruct
     public void init() {
@@ -252,7 +264,11 @@ public class FishingTripServiceBean implements FishingTripService {
             for (ContactPartyEntity contactParty : contactParties) {
                 ContactPersonDetailsDTO contactPersDTO = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsWithRolesDTO(contactParty.getContactPerson(), contactParty.getContactPartyRole());
                 Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
-                contactPersDTO.setAdresses(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses));
+
+                Set<AddressDetailsDTO> addressDetailsDTOS = StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses);
+                if (!CollectionUtils.isEmpty(addressDetailsDTOS)) {
+                    contactPersDTO.setAdresses(new ArrayList<>(addressDetailsDTOS));
+                }
                 checkAndSetIsCaptain(contactPersDTO, contactParty);
                 contactPersonsListDTO.add(contactPersDTO);
             }
@@ -292,9 +308,8 @@ public class FishingTripServiceBean implements FishingTripService {
             String response = null;
             TextMessage message = null;
             try {
-                // Create request object;
                 String assetsRequest = AssetsRequestMapper.mapToAssetsRequest(vesselDetailsTripDTO);
-                // Send message to Assets module and get response;
+
                 String messageID = activityProducer.sendAssetsModuleSynchronousMessage(assetsRequest);
                 message = activityConsumer.getMessage(messageID, TextMessage.class);
                 response = message.getText();
@@ -328,6 +343,7 @@ public class FishingTripServiceBean implements FishingTripService {
             JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
             return true;
         } catch (ActivityModelMarshallException e) {
+            log.info(e.getMessage(), e);
             return false;
         }
     }
