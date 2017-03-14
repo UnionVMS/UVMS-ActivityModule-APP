@@ -54,7 +54,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddress.getPlotIdentification().getValue(), structuredAddressEntity.getPlotId());
         assertEquals(structuredAddress.getPostcodeCode().getValue(), structuredAddressEntity.getPostcode());
         assertEquals(structuredAddress.getPostOfficeBox().getValue(), structuredAddressEntity.getPostOfficeBox());
-        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetname());
+        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetName());
         assertEquals(structuredAddressTypeEnum.getType(), structuredAddressEntity.getStructuredAddressType());
 
         assertNull(structuredAddressEntity.getContactParty());
@@ -79,7 +79,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddress.getPlotIdentification().getValue(), structuredAddressEntity.getPlotId());
         assertEquals(structuredAddress.getPostcodeCode().getValue(), structuredAddressEntity.getPostcode());
         assertEquals(structuredAddress.getPostOfficeBox().getValue(), structuredAddressEntity.getPostOfficeBox());
-        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetname());
+        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetName());
         assertEquals(structuredAddressTypeEnum.getType(), structuredAddressEntity.getStructuredAddressType());
 
         assertNull(structuredAddressEntity.getFluxLocation());
@@ -105,7 +105,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddressEntity.getPlotId(), addressDetailsDTO.getPlotId());
         assertEquals(structuredAddressEntity.getPostcode(), addressDetailsDTO.getPostcode());
         assertEquals(structuredAddressEntity.getPostOfficeBox(), addressDetailsDTO.getPostOfficeBox());
-        assertEquals(structuredAddressEntity.getStreetname(), addressDetailsDTO.getStreetname());
+        assertEquals(structuredAddressEntity.getStreetName(), addressDetailsDTO.getStreetName());
     }
 
     @Test
@@ -128,6 +128,6 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddressEntity.getPlotId(), addressDetailsDTO.get(0).getPlotId());
         assertEquals(structuredAddressEntity.getPostcode(), addressDetailsDTO.get(0).getPostcode());
         assertEquals(structuredAddressEntity.getPostOfficeBox(), addressDetailsDTO.get(0).getPostOfficeBox());
-        assertEquals(structuredAddressEntity.getStreetname(), addressDetailsDTO.get(0).getStreetname());
+        assertEquals(structuredAddressEntity.getStreetName(), addressDetailsDTO.get(0).getStreetName());
     }
 }

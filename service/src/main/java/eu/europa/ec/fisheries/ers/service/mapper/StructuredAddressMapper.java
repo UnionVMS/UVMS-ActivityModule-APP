@@ -43,7 +43,7 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
             @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
             @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
-            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "streetName", expression = "java(getTextType(structuredAddress.getStreetName()))"),
             @Mapping(target = "contactParty", expression = "java(contactPartyEntity)"),
             @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
     })
@@ -61,7 +61,7 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
             @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
             @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
-            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "streetName", expression = "java(getTextType(structuredAddress.getStreetName()))"),
             @Mapping(target = "fluxLocation", expression = "java(fluxLocationEntity)"),
             @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
     })
