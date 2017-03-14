@@ -160,7 +160,7 @@ public class AddressDetailsDTO {
         this.streetName = streetName;
     }
 
-    @JsonProperty("characteristics")
+    @JsonProperty("characteristic")
     public Map<String, String> getCharacteristicMap() {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("buildingName", buildingName);
