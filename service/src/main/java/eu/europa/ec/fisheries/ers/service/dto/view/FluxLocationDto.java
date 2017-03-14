@@ -8,43 +8,102 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-/**
- * Created by kovian on 09/02/2017.
- */
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class FluxLocationDto {
 
     @JsonView(FishingActivityView.CommonView.class)
-    private String name;
+    @JsonProperty("country")
+    private String countryId;
 
     @JsonView(FishingActivityView.CommonView.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String rfmoCode;
+
+    @JsonView(FishingActivityView.CommonView.class)
+    @JsonInclude(Include.NON_NULL)
     private String geometry;
 
-    public FluxLocationDto() {
-        super();
-    }
+    @JsonIgnore
+    private String fluxLocationIdentifier;
 
-    public FluxLocationDto(String name, String geometry) {
-        this.name = name;
-        this.geometry = geometry;
-    }
+    @JsonIgnore
+    private String fluxLocationIdentifierSchemeId;
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    @JsonView(FishingActivityView.CommonView.class)
+    private Set<AddressDetailsDTO> structuredAddresses;
+
     public String getGeometry() {
         return geometry;
     }
+
     public void setGeometry(String geometry) {
         this.geometry = geometry;
+    }
+
+    public String getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(String countryId) {
+        this.countryId = countryId;
+    }
+
+    public String getRfmoCode() {
+        return rfmoCode;
+    }
+
+    public void setRfmoCode(String rfmoCode) {
+        this.rfmoCode = rfmoCode;
+    }
+
+    public Set<AddressDetailsDTO> getStructuredAddresses() {
+        return structuredAddresses;
+    }
+
+    public void setStructuredAddresses(Set<AddressDetailsDTO> structuredAddresses) {
+        this.structuredAddresses = structuredAddresses;
+    }
+
+    public String getFluxLocationIdentifier() {
+        return fluxLocationIdentifier;
+    }
+
+    public void setFluxLocationIdentifier(String fluxLocationIdentifier) {
+        this.fluxLocationIdentifier = fluxLocationIdentifier;
+    }
+
+    public String getFluxLocationIdentifierSchemeId() {
+        return fluxLocationIdentifierSchemeId;
+    }
+
+    public void setFluxLocationIdentifierSchemeId(String fluxLocationIdentifierSchemeId) {
+        this.fluxLocationIdentifierSchemeId = fluxLocationIdentifierSchemeId;
+    }
+
+    @JsonProperty("identifier")
+    public Map<String, String> getIdentifier() {
+        HashMap<String, String> stringStringHashMap = new HashMap<>();
+        stringStringHashMap.put("id", fluxLocationIdentifier);
+        stringStringHashMap.put("schemeId", fluxLocationIdentifierSchemeId);
+        stringStringHashMap.values().removeAll(Collections.singleton(null));
+        return stringStringHashMap;
     }
 }

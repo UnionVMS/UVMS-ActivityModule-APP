@@ -12,14 +12,14 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-
-import java.util.Set;
 
 @Mapper
 public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivityViewMapper {
@@ -32,10 +32,9 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
 
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
-        fishingActivityViewDTO.getActivityDetails().setReason(faEntity.getReasonCode());
-
         // Fishing Activity Tile
         fishingActivityViewDTO.setActivityDetails(mapActivityDetails(faEntity));
+        fishingActivityViewDTO.getActivityDetails().setReason(faEntity.getReasonCode());
 
         // Intented Port of Landing Tile
         Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);

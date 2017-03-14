@@ -10,7 +10,15 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
@@ -64,7 +72,7 @@ public class StructuredAddressEntity implements Serializable {
 	private String postcode;
 
 	@Column(name = "streetname", length = 1000)
-	private String streetname;
+	private String streetName;
 
 	@Column(name = "structured_address_type")
 	private String structuredAddressType;
@@ -183,12 +191,12 @@ public class StructuredAddressEntity implements Serializable {
 		this.postcode = postcode;
 	}
 
-	public String getStreetname() {
-		return this.streetname;
+	public String getStreetName() {
+		return this.streetName;
 	}
 
-	public void setStreetname(String streetname) {
-		this.streetname = streetname;
+	public void setStreetName(String streetName) {
+		this.streetName = streetName;
 	}
 
 	public String getStructuredAddressType() {
