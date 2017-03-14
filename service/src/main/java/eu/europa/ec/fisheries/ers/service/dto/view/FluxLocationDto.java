@@ -99,7 +99,7 @@ public class FluxLocationDto {
     }
 
     @JsonProperty("identifier")
-    public Map<String, String> getIdentifiers() {
+    public Map<String, String> getIdentifier() {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("id", fluxLocationIdentifier);
         stringStringHashMap.put("schemeId", fluxLocationIdentifierSchemeId);
