@@ -152,11 +152,11 @@ public class AddressDetailsDTO {
         this.postcode = postcode;
     }
 
-    public String getStreetname() {
+    public String getStreetName() {
         return streetName;
     }
 
-    public void setStreetname(String streetName) {
+    public void setStreetName(String streetName) {
         this.streetName = streetName;
     }
 

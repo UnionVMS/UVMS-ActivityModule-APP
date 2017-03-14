@@ -98,7 +98,7 @@ public class FluxLocationDto {
         this.fluxLocationIdentifierSchemeId = fluxLocationIdentifierSchemeId;
     }
 
-    @JsonProperty("identifiers")
+    @JsonProperty("identifier")
     public Map<String, String> getIdentifiers() {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("id", fluxLocationIdentifier);
