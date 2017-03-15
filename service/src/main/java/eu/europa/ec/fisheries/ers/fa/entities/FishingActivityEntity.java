@@ -135,6 +135,10 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "flag_state")
 	private String flagState;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "calculated_start_time", length = 29)
+	private Date calculatedStartTime;
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
 	private FishingActivityEntity relatedFishingActivity;
@@ -486,4 +490,11 @@ public class FishingActivityEntity implements Serializable {
         this.flagState = flagState;
     }
 
+	public Date getCalculatedStartTime() {
+		return calculatedStartTime;
+	}
+
+	public void setCalculatedStartTime(Date calculatedStartTime) {
+		this.calculatedStartTime = calculatedStartTime;
+	}
 }

@@ -16,10 +16,11 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.*;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import java.util.*;
@@ -78,7 +80,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity))"),
             @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
-            @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))")
+            @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))"),
+            @Mapping(target = "calculatedStartTime", expression = "java(convertToDate(getCalculatedStartTime(fishingActivity)))")
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
@@ -144,6 +147,22 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingGears", expression = "java(getFishingGearDTOList(entity))")
     })
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
+
+
+    protected DateTimeType getCalculatedStartTime(FishingActivity fishingActivity){
+        if(fishingActivity == null)
+             return null;
+
+        if(fishingActivity.getOccurrenceDateTime()!=null)
+            return fishingActivity.getOccurrenceDateTime();
+
+        if(CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())){
+            List<DelimitedPeriod> delimitedPeriodEntities=  fishingActivity.getSpecifiedDelimitedPeriods();
+            return delimitedPeriodEntities.iterator().next().getStartDateTime();
+        }
+
+        return null;
+    }
 
     protected VesselTransportMeansEntity getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
 
@@ -224,11 +243,15 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
 
     protected Date getStartDate(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
+    /*    if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
             return null;
         }
 
-        return entity.getDelimitedPeriods().iterator().next().getStartDate();
+        return entity.getDelimitedPeriods().iterator().next().getStartDate();*/
+        if(entity == null){
+            return null;
+        }
+        return entity.getCalculatedStartTime();
 
     }
 
