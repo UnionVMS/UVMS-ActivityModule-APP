@@ -79,7 +79,7 @@ public abstract class BaseMapper {
                 }
             }
         } catch (ParseException e) {
-            //log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return value;
     }
@@ -94,7 +94,7 @@ public abstract class BaseMapper {
                 calander.setTimezone(DatatypeConstants.FIELD_UNDEFINED); //If we do not want timeZone to be included, set this
             }
         } catch (DatatypeConfigurationException e) {
-            //log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
       return calander;
     }
@@ -207,7 +207,7 @@ public abstract class BaseMapper {
         try {
             return Integer.parseInt(purposeCode);
         } catch (NumberFormatException e) {
-            //log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return null;
         }
     }
