@@ -177,8 +177,11 @@ public abstract class BaseMapper {
     }
 
     protected Integer getNumericInteger(NumericType numericType) {
-        BigDecimal conversionFactor = numericType.getValue();
-        return conversionFactor != null ? conversionFactor.intValue() : null;
+        if (numericType != null) {
+            BigDecimal conversionFactor = numericType.getValue();
+            return conversionFactor.intValue();
+        }
+        return null;
     }
 
     protected String getCountry(VesselCountry country) {
