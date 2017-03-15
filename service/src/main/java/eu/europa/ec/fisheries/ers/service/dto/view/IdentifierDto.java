@@ -8,11 +8,14 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
 /**
  * Created by kovian on 28/02/2017.
@@ -20,31 +23,28 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IdentifierDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
-    private String id;
+    @JsonProperty("id")
+    @JsonView(CommonView.class)
+    private String faIdentifierId;
 
-    @JsonView(FishingActivityView.CommonView.class)
-    private String schemeId;
+    @JsonProperty("schemeId")
+    @JsonView(CommonView.class)
+    private String faIdentifierSchemeId;
 
-    public IdentifierDto() {
-        super();
-    }
-
-    public IdentifierDto(String id, String schemeId) {
-        this.id = id;
-        this.schemeId = schemeId;
+    public String getFaIdentifierId() {
+        return faIdentifierId;
     }
 
-    public String getId() {
-        return id;
+    public void setFaIdentifierId(String faIdentifierId) {
+        this.faIdentifierId = faIdentifierId;
     }
-    public void setId(String id) {
-        this.id = id;
+
+    public String getFaIdentifierSchemeId() {
+        return faIdentifierSchemeId;
     }
-    public String getSchemeId() {
-        return schemeId;
+
+    public void setFaIdentifierSchemeId(String faIdentifierSchemeId) {
+        this.faIdentifierSchemeId = faIdentifierSchemeId;
     }
-    public void setSchemeId(String schemeId) {
-        this.schemeId = schemeId;
-    }
+
 }

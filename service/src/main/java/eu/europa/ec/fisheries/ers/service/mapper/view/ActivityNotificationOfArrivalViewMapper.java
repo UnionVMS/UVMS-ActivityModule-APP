@@ -9,23 +9,17 @@ details. You should have received a copy of the GNU General Public License along
 
 */
 
-
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
-@Mapper
-public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivityViewMapper {
-
-    public static final ActivityNotificationOfArrivalViewMapper INSTANCE = Mappers.getMapper(ActivityNotificationOfArrivalViewMapper.class);
-
+public class ActivityNotificationOfArrivalViewMapper extends BaseActivityViewMapper {
 
     @Override
     public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
@@ -33,8 +27,9 @@ public abstract class ActivityNotificationOfArrivalViewMapper extends BaseActivi
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
         // Fishing Activity Tile
-        fishingActivityViewDTO.setActivityDetails(mapActivityDetails(faEntity));
-        fishingActivityViewDTO.getActivityDetails().setReason(faEntity.getReasonCode());
+        ActivityDetailsDto activityDetailsDto = mapActivityDetails(faEntity);
+        activityDetailsDto.setReason(faEntity.getReasonCode());
+        fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
         // Intented Port of Landing Tile
         Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);

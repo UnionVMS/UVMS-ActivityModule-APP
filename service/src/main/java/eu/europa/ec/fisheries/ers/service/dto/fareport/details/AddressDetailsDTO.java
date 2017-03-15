@@ -27,10 +27,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@JsonInclude(Include.NON_NULL)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(Include.NON_NULL)
 public class AddressDetailsDTO {
 
     @JsonIgnore
@@ -170,6 +170,9 @@ public class AddressDetailsDTO {
         stringStringHashMap.put("addressId", addressId);
         stringStringHashMap.put("postOfficeBox", postOfficeBox);
         stringStringHashMap.values().removeAll(Collections.singleton(null));
+        if (stringStringHashMap.isEmpty()) {
+            stringStringHashMap = null;
+        }
         return stringStringHashMap;
     }
 }
