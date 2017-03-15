@@ -10,10 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +26,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Set;
+
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "activity_flux_location")

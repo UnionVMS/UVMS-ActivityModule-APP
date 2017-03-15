@@ -8,26 +8,41 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import org.mapstruct.*;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXGeographicalCoordinate;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-import java.util.*;
-
 /**
  * Created by padhyad on 6/14/2016.
  */
-@Mapper(uses = {FluxCharacteristicsMapper.class})
+@Mapper(uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class})
 public abstract class FluxLocationMapper extends BaseMapper {
 
     public static final FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
@@ -107,7 +122,7 @@ public abstract class FluxLocationMapper extends BaseMapper {
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation, FluxLocationCatchTypeEnum fluxLocationTypeEnum, FaCatchEntity faCatchEntity, @MappingTarget FluxLocationEntity fluxLocationEntity);
 
     @Mappings({
-            @Mapping(source = "wkt",target = "geometry")
+            @Mapping(target = "geometry", source = "wkt")
     })
     public abstract FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
 

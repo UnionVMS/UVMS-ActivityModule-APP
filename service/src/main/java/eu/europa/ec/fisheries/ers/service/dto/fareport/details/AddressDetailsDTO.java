@@ -11,188 +11,165 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-/**
- * Created by padhyad on 8/11/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AddressDetailsDTO {
 
-    @JsonProperty("blockName")
+    @JsonIgnore
     private String blockName;
 
-    @JsonProperty("buildingName")
+    @JsonIgnore
     private String buildingName;
 
-    @JsonProperty("cityName")
     private String cityName;
 
-    @JsonProperty("citySubdivisionName")
+    @JsonIgnore
     private String citySubdivisionName;
 
-    @JsonProperty("country")
+    @JsonIgnore
     private String country;
 
-    @JsonProperty("countryName")
     private String countryName;
 
-    @JsonProperty("countrySubdivisionName")
+    @JsonIgnore
     private String countrySubdivisionName;
 
-    @JsonProperty("addressId")
+    @JsonIgnore
     private String addressId;
 
-    @JsonProperty("plotId")
     private String plotId;
 
-    @JsonProperty("postOfficeBox")
+    @JsonIgnore
     private String postOfficeBox;
 
-    @JsonProperty("postcode")
     private String postcode;
 
-    @JsonProperty("streetname")
-    private String streetname;
+    private String streetName;
 
-    public AddressDetailsDTO() {
-    }
-
-    public AddressDetailsDTO(String blockName, String buildingName, String cityName, String citySubdivisionName, String country, String countryName, String countrySubdivisionName, String addressId, String plotId, String postOfficeBox, String postcode, String streetname) {
-        this.blockName = blockName;
-        this.buildingName = buildingName;
-        this.cityName = cityName;
-        this.citySubdivisionName = citySubdivisionName;
-        this.country = country;
-        this.countryName = countryName;
-        this.countrySubdivisionName = countrySubdivisionName;
-        this.addressId = addressId;
-        this.plotId = plotId;
-        this.postOfficeBox = postOfficeBox;
-        this.postcode = postcode;
-        this.streetname = streetname;
-    }
-
-    @JsonProperty("blockName")
     public String getBlockName() {
         return blockName;
     }
 
-    @JsonProperty("blockName")
     public void setBlockName(String blockName) {
         this.blockName = blockName;
     }
 
-    @JsonProperty("buildingName")
     public String getBuildingName() {
         return buildingName;
     }
 
-    @JsonProperty("buildingName")
     public void setBuildingName(String buildingName) {
         this.buildingName = buildingName;
     }
 
-    @JsonProperty("cityName")
     public String getCityName() {
         return cityName;
     }
 
-    @JsonProperty("cityName")
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
 
-    @JsonProperty("citySubdivisionName")
     public String getCitySubdivisionName() {
         return citySubdivisionName;
     }
 
-    @JsonProperty("citySubdivisionName")
     public void setCitySubdivisionName(String citySubdivisionName) {
         this.citySubdivisionName = citySubdivisionName;
     }
 
-    @JsonProperty("country")
     public String getCountry() {
         return country;
     }
 
-    @JsonProperty("country")
     public void setCountry(String country) {
         this.country = country;
     }
 
-    @JsonProperty("countryName")
     public String getCountryName() {
         return countryName;
     }
 
-    @JsonProperty("countryName")
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
 
-    @JsonProperty("countrySubdivisionName")
     public String getCountrySubdivisionName() {
         return countrySubdivisionName;
     }
 
-    @JsonProperty("countrySubdivisionName")
     public void setCountrySubdivisionName(String countrySubdivisionName) {
         this.countrySubdivisionName = countrySubdivisionName;
     }
 
-    @JsonProperty("addressId")
     public String getAddressId() {
         return addressId;
     }
 
-    @JsonProperty("addressId")
     public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
-    @JsonProperty("plotId")
     public String getPlotId() {
         return plotId;
     }
 
-    @JsonProperty("plotId")
     public void setPlotId(String plotId) {
         this.plotId = plotId;
     }
 
-    @JsonProperty("postOfficeBox")
     public String getPostOfficeBox() {
         return postOfficeBox;
     }
 
-    @JsonProperty("postOfficeBox")
     public void setPostOfficeBox(String postOfficeBox) {
         this.postOfficeBox = postOfficeBox;
     }
 
-    @JsonProperty("postcode")
     public String getPostcode() {
         return postcode;
     }
 
-    @JsonProperty("postcode")
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 
-    @JsonProperty("streetname")
-    public String getStreetname() {
-        return streetname;
+    public String getStreetName() {
+        return streetName;
     }
 
-    @JsonProperty("streetname")
-    public void setStreetname(String streetname) {
-        this.streetname = streetname;
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    @JsonProperty("characteristic")
+    public Map<String, String> getCharacteristicMap() {
+        HashMap<String, String> stringStringHashMap = new HashMap<>();
+        stringStringHashMap.put("buildingName", buildingName);
+        stringStringHashMap.put("blockName", blockName);
+        stringStringHashMap.put("citySubdivisionName", citySubdivisionName);
+        stringStringHashMap.put("countrySubdivisionName", countrySubdivisionName);
+        stringStringHashMap.put("addressId", addressId);
+        stringStringHashMap.put("postOfficeBox", postOfficeBox);
+        stringStringHashMap.values().removeAll(Collections.singleton(null));
+        return stringStringHashMap;
     }
 }

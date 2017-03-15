@@ -26,6 +26,7 @@ import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
@@ -66,30 +67,24 @@ import java.util.*;
 @Slf4j
 public class FishingTripServiceBean implements FishingTripService {
 
+    private static final String PREVIOUS = "PREVIOUS";
+    private static final String NEXT = "NEXT";
     @PersistenceContext(unitName = "activityPU")
     private EntityManager em;
-
     @EJB
     private ActivityMessageProducer activityProducer;
-
     @EJB
     private AssetsMessageConsumerBean activityConsumer;
-
     @EJB
     private SpatialModuleService spatialModule;
-
     @EJB
     private ActivityService activityServiceBean;
-
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
     private FishingTripIdentifierDao fishingTripIdentifierDao;
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
-
-    private static final String PREVIOUS = "PREVIOUS";
-    private static final String NEXT = "NEXT";
 
     @PostConstruct
     public void init() {
@@ -239,7 +234,11 @@ public class FishingTripServiceBean implements FishingTripService {
             for (ContactPartyEntity contactParty : contactParties) {
                 ContactPersonDetailsDTO contactPersDTO = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsWithRolesDTO(contactParty.getContactPerson(), contactParty.getContactPartyRole());
                 Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
-                contactPersDTO.setAdresses(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses));
+
+                Set<AddressDetailsDTO> addressDetailsDTOS = StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses);
+                if (!CollectionUtils.isEmpty(addressDetailsDTOS)) {
+                    contactPersDTO.setAdresses(new ArrayList<>(addressDetailsDTOS));
+                }
                 checkAndSetIsCaptain(contactPersDTO, contactParty);
                 contactPersonsListDTO.add(contactPersDTO);
             }
@@ -279,9 +278,8 @@ public class FishingTripServiceBean implements FishingTripService {
             String response = null;
             TextMessage message = null;
             try {
-                // Create request object;
                 String assetsRequest = AssetsRequestMapper.mapToAssetsRequest(vesselDetailsTripDTO);
-                // Send message to Assets module and get response;
+
                 String messageID = activityProducer.sendAssetsModuleSynchronousMessage(assetsRequest);
                 message = activityConsumer.getMessage(messageID, TextMessage.class);
                 response = message.getText();
@@ -315,6 +313,7 @@ public class FishingTripServiceBean implements FishingTripService {
             JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
             return true;
         } catch (ActivityModelMarshallException e) {
+            log.info(e.getMessage(), e);
             return false;
         }
     }
