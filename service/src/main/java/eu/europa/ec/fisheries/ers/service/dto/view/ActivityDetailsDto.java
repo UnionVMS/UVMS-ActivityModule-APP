@@ -8,91 +8,95 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Discard;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfRelocation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfTranshipment;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-/**
- * Created by kovian on 28/02/2017.
- */
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+
 public class ActivityDetailsDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> characteristics;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.NotificationOfArrival.class
-            , FishingActivityView.AreaEntry.class
-            ,FishingActivityView.Discard.class})
+    @JsonView({Arrival.class, NotificationOfArrival.class, AreaEntry.class, Discard.class})
     private String reason;
 
     @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonView({FishingActivityView.Landing.class, FishingActivityView.Departure.class
-            ,FishingActivityView.AreaEntry.class, FishingActivityView.AreaExit.class
-            ,FishingActivityView.FishingOperation.class, FishingActivityView.Discard.class
-            ,FishingActivityView.JointFishingOperation.class, FishingActivityView.Relocation.class
-            ,FishingActivityView.NotificationOfTranshipment.class, FishingActivityView.NotificationOfRelocation.class})
+    @JsonView({Landing.class, Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
+            JointFishingOperation.class, Relocation.class, NotificationOfTranshipment.class,
+            NotificationOfRelocation.class})
     private Date occurrence;
 
     @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonView(FishingActivityView.Arrival.class)
+    @JsonView(Arrival.class)
     private Date arrivalTime;
 
-    @JsonView(FishingActivityView.Arrival.class)
+    @JsonView(Arrival.class)
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date intendedLandingTime;
 
-    @JsonView(FishingActivityView.NotificationOfArrival.class)
+    @JsonView(NotificationOfArrival.class)
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date estimatedArrivalTime;
 
-    @JsonView(FishingActivityView.Landing.class)
+    @JsonView(Landing.class)
     private DelimitedPeriodDTO landingTime;
 
-    @JsonView({FishingActivityView.Departure.class, FishingActivityView.AreaEntry.class
-            ,FishingActivityView.AreaExit.class, FishingActivityView.FishingOperation.class
-            ,FishingActivityView.JointFishingOperation.class})
+    @JsonView({Departure.class, AreaEntry.class
+            , AreaExit.class, FishingOperation.class
+            , JointFishingOperation.class})
     private String fisheryType;
 
-    @JsonView({FishingActivityView.Departure.class, FishingActivityView.AreaEntry.class
-            ,FishingActivityView.AreaExit.class, FishingActivityView.FishingOperation.class
-            ,FishingActivityView.JointFishingOperation.class})
+    @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
     private String speciesTarget;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
+    @JsonView({FishingOperation.class, JointFishingOperation.class})
     private String vesselActivity;
 
-    @JsonView(FishingActivityView.FishingOperation.class)
+    @JsonView(FishingOperation.class)
     private Integer nrOfOperation;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.Discard.class
-            ,FishingActivityView.Transhipment.class, FishingActivityView.JointFishingOperation.class
-            ,FishingActivityView.Relocation.class, FishingActivityView.NotificationOfTranshipment.class
-            ,FishingActivityView.NotificationOfRelocation.class})
-    private List<IdentifierDto> identifiers;
+    @JsonView({FishingOperation.class, Discard.class, Transhipment.class, JointFishingOperation.class
+            , Relocation.class, NotificationOfTranshipment.class, NotificationOfRelocation.class})
+    private Set<IdentifierDto> identifiers;
 
-    @JsonView({FishingActivityView.NotificationOfTranshipment.class, FishingActivityView.NotificationOfRelocation.class})
+    @JsonView({NotificationOfTranshipment.class, NotificationOfRelocation.class})
     private List<IdentifierDto> authorizations;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
+    @JsonView({FishingOperation.class, JointFishingOperation.class})
     private DelimitedPeriodDTO fishingTime;
 
-    @JsonView(FishingActivityView.Transhipment.class)
+    @JsonView(Transhipment.class)
     private DelimitedPeriodDTO transhipmentTime;
-
 
     public Map<String, String> getCharacteristics() {
         if (characteristics == null) {
@@ -100,96 +104,127 @@ public class ActivityDetailsDto {
         }
         return characteristics;
     }
+
     public void setCharacteristics(Map<String, String> characteristics) {
         this.characteristics = characteristics;
     }
+
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
+
     public String getReason() {
         return reason;
     }
+
     public void setReason(String reason) {
         this.reason = reason;
     }
+
     public Date getOccurrence() {
         return occurrence;
     }
+
     public void setOccurrence(Date occurrence) {
         this.occurrence = occurrence;
     }
+
     public Date getArrivalTime() {
         return arrivalTime;
     }
+
     public void setArrivalTime(Date arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
+
     public Date getIntendedLandingTime() {
         return intendedLandingTime;
     }
+
     public void setIntendedLandingTime(Date intendedLandingTime) {
         this.intendedLandingTime = intendedLandingTime;
     }
+
     public Date getEstimatedArrivalTime() {
         return estimatedArrivalTime;
     }
+
     public void setEstimatedArrivalTime(Date estimatedArrivalTime) {
         this.estimatedArrivalTime = estimatedArrivalTime;
     }
+
     public DelimitedPeriodDTO getLandingTime() {
         return landingTime;
     }
+
     public void setLandingTime(DelimitedPeriodDTO landingTime) {
         this.landingTime = landingTime;
     }
+
     public String getFisheryType() {
         return fisheryType;
     }
+
     public void setFisheryType(String fisheryType) {
         this.fisheryType = fisheryType;
     }
+
     public String getSpeciesTarget() {
         return speciesTarget;
     }
+
     public void setSpeciesTarget(String speciesTarget) {
         this.speciesTarget = speciesTarget;
     }
+
     public String getVesselActivity() {
         return vesselActivity;
     }
+
     public void setVesselActivity(String vesselActivity) {
         this.vesselActivity = vesselActivity;
     }
+
     public Integer getNrOfOperation() {
         return nrOfOperation;
     }
+
     public void setNrOfOperation(Integer nrOfOperation) {
         this.nrOfOperation = nrOfOperation;
     }
-    public List<IdentifierDto> getIdentifiers() {
+
+    public Set<IdentifierDto> getIdentifiers() {
         return identifiers;
     }
-    public void setIdentifiers(List<IdentifierDto> identifiers) {
+
+    public void setIdentifiers(Set<IdentifierDto> identifiers) {
         this.identifiers = identifiers;
     }
+
     public List<IdentifierDto> getAuthorizations() {
         return authorizations;
     }
+
     public void setAuthorizations(List<IdentifierDto> authorizations) {
         this.authorizations = authorizations;
     }
+
     public DelimitedPeriodDTO getFishingTime() {
         return fishingTime;
     }
+
     public void setFishingTime(DelimitedPeriodDTO fishingTime) {
         this.fishingTime = fishingTime;
     }
+
     public DelimitedPeriodDTO getTranshipmentTime() {
         return transhipmentTime;
     }
+
     public void setTranshipmentTime(DelimitedPeriodDTO transhipmentTime) {
         this.transhipmentTime = transhipmentTime;
     }

@@ -9,10 +9,10 @@ details. You should have received a copy of the GNU General Public License along
 
 */
 
-
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,20 +24,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@JsonInclude(Include.NON_NULL)
 public class FluxLocationDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     @JsonProperty("country")
     private String countryId;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String rfmoCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     @JsonInclude(Include.NON_NULL)
     private String geometry;
 
@@ -47,7 +47,7 @@ public class FluxLocationDto {
     @JsonIgnore
     private String fluxLocationIdentifierSchemeId;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private Set<AddressDetailsDTO> structuredAddresses;
 
     public String getGeometry() {
@@ -104,6 +104,9 @@ public class FluxLocationDto {
         stringStringHashMap.put("id", fluxLocationIdentifier);
         stringStringHashMap.put("schemeId", fluxLocationIdentifierSchemeId);
         stringStringHashMap.values().removeAll(Collections.singleton(null));
+        if (stringStringHashMap.isEmpty()) {
+            stringStringHashMap = null;
+        }
         return stringStringHashMap;
     }
 }
