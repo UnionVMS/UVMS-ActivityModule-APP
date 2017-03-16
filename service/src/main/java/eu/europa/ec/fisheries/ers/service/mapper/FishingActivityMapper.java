@@ -8,9 +8,39 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
@@ -30,16 +60,28 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-import java.util.*;
-
-/**
- * Created by padhyad on 5/17/2016.
- */
-@Mapper(uses = { FaCatchMapper.class, DelimitedPeriodMapper.class, FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class, FluxCharacteristicsMapper.class})
+@Mapper(uses = {FishingActivityIdentifierMapper.class,
+        FaCatchMapper.class,
+        DelimitedPeriodMapper.class,
+        FishingGearMapper.class,
+        GearProblemMapper.class,
+        FishingTripMapper.class,
+        FluxCharacteristicsMapper.class})
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
 
@@ -180,11 +222,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
 
-        VesselTransportMeans vesselTransportMeans=  vesselList.get(0);
-        if(vesselTransportMeans ==null)
+        VesselTransportMeans vesselTransportMeans = vesselList.get(0);
+        if (vesselTransportMeans == null)
             return null;
 
-        return  getCountry(vesselTransportMeans.getRegistrationVesselCountry());
+        return getCountry(vesselTransportMeans.getRegistrationVesselCountry());
     }
 
     protected String getWktFromGeometry(FishingActivityEntity entity) {
@@ -557,27 +599,27 @@ public abstract class FishingActivityMapper extends BaseMapper {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, fishingActivityEntity, new FaCatchEntity());
             faCatchEntity.setGearTypeCode(extractFishingGearTypeCode(faCatchEntity.getFishingGears()));
             faCatchEntity.setPresentation(extractPresentation(faCatchEntity.getAapProcesses()));
-            faCatchEntities.add(mapFluxLocationSchemeIds(faCatch,faCatchEntity));
+            faCatchEntities.add(mapFluxLocationSchemeIds(faCatch, faCatchEntity));
         }
         return faCatchEntities;
     }
 
-    private String extractPresentation(Set<AapProcessEntity> aapProcessEntities){
-        if(CollectionUtils.isEmpty(aapProcessEntities)){
+    private String extractPresentation(Set<AapProcessEntity> aapProcessEntities) {
+        if (CollectionUtils.isEmpty(aapProcessEntities)) {
             return null;
         }
 
-        for(AapProcessEntity aapProcessEntity: aapProcessEntities){
-                Set<AapProcessCodeEntity>  codeEntities=  aapProcessEntity.getAapProcessCode();
-                if(CollectionUtils.isEmpty(codeEntities)){
-                    continue;
-                }
+        for (AapProcessEntity aapProcessEntity : aapProcessEntities) {
+            Set<AapProcessCodeEntity> codeEntities = aapProcessEntity.getAapProcessCode();
+            if (CollectionUtils.isEmpty(codeEntities)) {
+                continue;
+            }
 
-                for(AapProcessCodeEntity aapProcessCodeEntity : codeEntities){
-                     if("FISH_PRESENTATION".equals(aapProcessCodeEntity.getTypeCodeListId())){
-                          return aapProcessCodeEntity.getTypeCode();
-                     }
+            for (AapProcessCodeEntity aapProcessCodeEntity : codeEntities) {
+                if ("FISH_PRESENTATION".equals(aapProcessCodeEntity.getTypeCodeListId())) {
+                    return aapProcessCodeEntity.getTypeCode();
                 }
+            }
 
         }
 
@@ -585,11 +627,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return null;
     }
 
-    private String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears){
-        String gearTypeCode=null;
-        if(CollectionUtils.isNotEmpty(fishingGears)){
-            FishingGearEntity fishingGearEntity= fishingGears.iterator().next();
-            return  fishingGearEntity.getTypeCode();
+    private String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears) {
+        String gearTypeCode = null;
+        if (CollectionUtils.isNotEmpty(fishingGears)) {
+            FishingGearEntity fishingGearEntity = fishingGears.iterator().next();
+            return fishingGearEntity.getTypeCode();
         }
         return gearTypeCode;
     }
@@ -600,12 +642,12 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return faCatchEntity;
 
         for (FLUXLocation location : fluxLocations) {
-            if(location.getRegionalFisheriesManagementOrganizationCode() !=null)
+            if (location.getRegionalFisheriesManagementOrganizationCode() != null)
                 faCatchEntity.setRfmo(location.getRegionalFisheriesManagementOrganizationCode().getValue());
 
-            IDType id=location.getID();
-            if(id !=null) {
-               switch (FluxLocationSchemeId.valueOf(id.getSchemeID())) {
+            IDType id = location.getID();
+            if (id != null) {
+                switch (FluxLocationSchemeId.valueOf(id.getSchemeID())) {
                     case TERRITORY:
                         faCatchEntity.setTerritory(id.getValue());
                         break;
@@ -624,8 +666,9 @@ public abstract class FishingActivityMapper extends BaseMapper {
                     case GFCM_STAT_RECTANGLE:
                         faCatchEntity.setGfcmStatRectangle(id.getValue());
                         break;
-                   default: log.error("Unknown schemeId for FluxLocation."+id.getSchemeID());
-                       break;
+                    default:
+                        log.error("Unknown schemeId for FluxLocation." + id.getSchemeID());
+                        break;
                 }
             }
         }
@@ -741,14 +784,15 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return (flapDocument.getID() == null) ? null : getIdTypeSchemaId(flapDocument.getID());
     }
 
-    @Mappings ({
+    @Mappings({
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "occurrence", source = "occurence"),
-            @Mapping(target = "characteristics", expression = "java(mapCharacteristics(entity))")
+            @Mapping(target = "characteristics", expression = "java(mapCharacteristics(entity))"),
+            @Mapping(target = "identifiers", source = "fishingActivityIdentifiers")
     })
     public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
 
-    public Map<String, String> mapCharacteristics(FishingActivityEntity entity){
+    public Map<String, String> mapCharacteristics(FishingActivityEntity entity) {
         Map<String, String> map = FluxCharacteristicsMapper.INSTANCE.map(entity.getFluxCharacteristics());
         map.putAll(FlapDocumentMapper.INSTANCE.map(entity.getFlapDocuments()));
         return map;

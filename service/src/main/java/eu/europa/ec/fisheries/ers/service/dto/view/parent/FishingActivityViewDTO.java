@@ -10,11 +10,24 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.*;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 
 /**
  * Created by kovian on 07/02/2017.
@@ -25,25 +38,25 @@ import java.util.List;
  */
 public class FishingActivityViewDTO {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Departure.class, FishingActivityView.Landing.class, FishingActivityView.Arrival.class})
+    @JsonView({NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class})
     private List<FluxLocationDto> locations;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.Departure.class})
+    @JsonView({Arrival.class, Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({FishingActivityView.NotificationOfArrival.class, FishingActivityView.Arrival.class, FishingActivityView.Landing.class, FishingActivityView.Departure.class})
+    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class})
     private ReportDocumentDto reportDetails;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private List<FaCatchGroupDto> catches;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
+    @JsonView({FishingOperation.class, JointFishingOperation.class})
     private List<GearShotRetrievalDto> gearShotRetrievalList;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private List<ProcessingProductsDto> processingProducts;
 
     public List<FluxLocationDto> getLocations() {

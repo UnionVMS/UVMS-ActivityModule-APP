@@ -10,19 +10,51 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.service.dto.view.*;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_Q_CODE_C62;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GM;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GN;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_HE;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_ME;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NI;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NL;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NN;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_QG;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.*;
-
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
 
 /**
  * Created by kovian on 14/02/2017.
@@ -31,18 +63,40 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
  */
 public abstract class BaseActivityViewMapper extends BaseMapper {
 
+    /**
+     * Add a quantity to another quantity checking that neither of the values is null;
+     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
+     *
+     * @param actualMeasureToAdd
+     * @param meausureSubTotalToAddTo
+     * @return
+     */
+    protected static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
+        Double returnValue = null;
+        if (actualMeasureToAdd != null && actualMeasureToAdd != 0.0) {
+            if (meausureSubTotalToAddTo == null) {
+                meausureSubTotalToAddTo = 0.0;
+            }
+            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
+        } else if (meausureSubTotalToAddTo != null) {
+            returnValue = meausureSubTotalToAddTo;
+        }
+        return returnValue;
+    }
+
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
     /**
      * The method mapActivityDetails(..,..) maps type and fluxCharacteristics to the ActivityDetailsDto.
-     * The rest of the fields are mapped by this method which MUST be implemented by all the Mappers that extend this one.
+     * The rest of the fields are mapped by this method which CAN be implemented by all the Mappers that extend this one.
      *
      * @param faEntity
      * @param activityDetails
      * @return
      */
-    protected abstract ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails);
-
+    protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
+        return activityDetails;
+    }
 
     protected List<ProcessingProductsDto> getProcessingProductsByFaCatches(Collection<FaCatchEntity> faCatches) {
         if (faCatches == null) {
@@ -66,8 +120,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return productsDtos;
     }
 
-
-
     protected List<ProcessingProductsDto> getPPByAapProduct(Collection<AapProductEntity> aapProducts) {
         if (aapProducts == null) {
             return Collections.emptyList();
@@ -78,8 +130,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         }
         return productsDtos;
     }
-
-
 
     protected Map<String, String> getFluxCharacteristicsTypeCodeValue(Set<FluxCharacteristicEntity> fluxCharacteristics) {
         if (fluxCharacteristics == null) {
@@ -167,28 +217,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
                 fillCharacteristicField(charac, gearDto);
             }
         }
-    }
-
-
-    /**
-     * Add a quantity to another quantity checking that neither of the values is null;
-     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
-     *
-     * @param actualMeasureToAdd
-     * @param meausureSubTotalToAddTo
-     * @return
-     */
-    protected static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
-        Double returnValue = null;
-        if(actualMeasureToAdd != null && actualMeasureToAdd != 0.0){
-            if(meausureSubTotalToAddTo == null){
-                meausureSubTotalToAddTo = 0.0;
-            }
-            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
-        } else if(meausureSubTotalToAddTo != null){
-            returnValue = meausureSubTotalToAddTo;
-        }
-        return returnValue;
     }
 
     private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {

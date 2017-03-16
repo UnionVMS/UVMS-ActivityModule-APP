@@ -14,6 +14,12 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,16 +27,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_NULL)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(Include.NON_NULL)
 public class AddressDetailsDTO {
 
     @JsonIgnore
@@ -170,6 +170,9 @@ public class AddressDetailsDTO {
         stringStringHashMap.put("addressId", addressId);
         stringStringHashMap.put("postOfficeBox", postOfficeBox);
         stringStringHashMap.values().removeAll(Collections.singleton(null));
+        if (stringStringHashMap.isEmpty()) {
+            stringStringHashMap = null;
+        }
         return stringStringHashMap;
     }
 }
