@@ -125,7 +125,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         FishingActivityEntity lastFishingActivity =  fishingTripList.get(fishingTripList.size()-1).getFishingActivity();
 
         Double duration=new Double(0);
-        if(firstFishingActivity!=null && lastFishingActivity !=null) {
+        if(firstFishingActivity!=null && firstFishingActivity.getCalculatedStartTime()!=null && lastFishingActivity !=null && lastFishingActivity.getCalculatedStartTime()!=null) {
             Date startDate = firstFishingActivity.getCalculatedStartTime();
             Date endDate = lastFishingActivity.getCalculatedStartTime();
             duration = Double.valueOf(endDate.getTime() - startDate.getTime());
