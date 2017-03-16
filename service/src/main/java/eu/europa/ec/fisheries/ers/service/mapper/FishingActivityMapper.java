@@ -71,6 +71,8 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class,
@@ -120,7 +122,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity))"),
             @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
-            @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))")
+            @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))"),
+            @Mapping(target = "calculatedStartTime", expression = "java(convertToDate(getCalculatedStartTime(fishingActivity)))")
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
@@ -152,6 +155,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fluxReportReferenceSchemeId", expression = "java(getFluxReportReferenceSchemeID(entity))")
     })
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
+
 
     @Mappings({
             @Mapping(target = "activityType", source = "typeCode"),
@@ -185,6 +189,22 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingGears", expression = "java(getFishingGearDTOList(entity))")
     })
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
+
+
+    protected DateTimeType getCalculatedStartTime(FishingActivity fishingActivity){
+        if(fishingActivity == null)
+             return null;
+
+        if(fishingActivity.getOccurrenceDateTime()!=null)
+            return fishingActivity.getOccurrenceDateTime();
+
+        if(CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())){
+            List<DelimitedPeriod> delimitedPeriodEntities=  fishingActivity.getSpecifiedDelimitedPeriods();
+            return delimitedPeriodEntities.iterator().next().getStartDateTime();
+        }
+
+        return null;
+    }
 
     protected VesselTransportMeansEntity getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
 
@@ -265,11 +285,15 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
 
     protected Date getStartDate(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
+    /*    if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
             return null;
         }
 
-        return entity.getDelimitedPeriods().iterator().next().getStartDate();
+        return entity.getDelimitedPeriods().iterator().next().getStartDate();*/
+        if(entity == null){
+            return null;
+        }
+        return entity.getCalculatedStartTime();
 
     }
 
@@ -280,6 +304,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
         return entity.getDelimitedPeriods().iterator().next().getEndDate();
 
+    }
+
+    protected List<String> getFishingActivityIds(Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers) {
+        List<String> fishingActivityIds = new ArrayList<>();
+        for (FishingActivityIdentifierEntity identifierEntity : fishingActivityIdentifiers) {
+            fishingActivityIds.add(identifierEntity.getFaIdentifierId());
+        }
+        return fishingActivityIds;
     }
 
     @Mappings({

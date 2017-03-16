@@ -308,7 +308,7 @@ public class FishingTripServiceBeanTest {
         when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(query)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
         //Trigger
         FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(query);
-        Mockito.verify(fishingTripDao, Mockito.times(1)).getFishingTripsForMatchingFilterCriteria(Mockito.any(FishingActivityQuery.class));
+        Mockito.verify(fishingTripDao, Mockito.times(2)).getFishingTripsForMatchingFilterCriteria(Mockito.any(FishingActivityQuery.class));
         System.out.println("response:"+response);
         assertNotNull(response);
         assertNotEquals(0,response.getFishingTripIdLists().size());
