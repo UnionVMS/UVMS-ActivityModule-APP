@@ -8,10 +8,10 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import org.mapstruct.Mapper;
@@ -21,13 +21,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-/**
- * Created by padhyad on 6/8/2016.
- */
 @Mapper
 public abstract class ContactPersonMapper extends BaseMapper {
 
@@ -46,28 +39,5 @@ public abstract class ContactPersonMapper extends BaseMapper {
     })
     public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson, ContactPartyEntity contactPartyEntity, @MappingTarget ContactPersonEntity contactPersonEntity);
 
-    @Mappings({
-            @Mapping(target = "title", source = "title"),
-            @Mapping(target = "givenName", source = "givenName"),
-            @Mapping(target = "middleName", source = "middleName"),
-            @Mapping(target = "familyName", source = "familyName"),
-            @Mapping(target = "familyNamePrefix", source = "familyNamePrefix"),
-            @Mapping(target = "nameSuffix", source = "nameSuffix"),
-            @Mapping(target = "gender", source = "gender"),
-            @Mapping(target = "alias", source = "alias")
-    })
     public abstract ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
-
-    @Mappings({
-            @Mapping(target = "title", expression = "java(contactPerson.getTitle())"),
-            @Mapping(target = "roles", expression = "java(getRoles(contactPartyRoles))"),
-            @Mapping(target = "givenName", expression = "java(contactPerson.getGivenName())"),
-            @Mapping(target = "middleName", expression = "java(contactPerson.getMiddleName())"),
-            @Mapping(target = "familyName", expression = "java(contactPerson.getFamilyName())"),
-            @Mapping(target = "familyNamePrefix", expression = "java(contactPerson.getFamilyNamePrefix())"),
-            @Mapping(target = "nameSuffix", expression = "java(contactPerson.getNameSuffix())"),
-            @Mapping(target = "gender", expression = "java(contactPerson.getGender())"),
-            @Mapping(target = "alias", expression = "java(contactPerson.getAlias())")
-    })
-    public abstract ContactPersonDetailsDTO mapToContactPersonDetailsWithRolesDTO(ContactPersonEntity contactPerson, Set<ContactPartyRoleEntity> contactPartyRoles);
 }

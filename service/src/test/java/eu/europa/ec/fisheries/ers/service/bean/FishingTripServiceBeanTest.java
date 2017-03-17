@@ -13,19 +13,38 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.dao.*;
+import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -38,54 +57,35 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import javax.persistence.EntityManager;
-import java.util.*;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-
 /**
  * Created by padhyad on 9/29/2016.
  */
 public class FishingTripServiceBeanTest {
 
-    @Mock
-    EntityManager em;
-
-    @Mock
-    ActivityMessageProducer producer;
-
-    @Mock
-    AssetsMessageConsumerBean consumer;
-
-    @Mock
-    FaReportDocumentDao faReportDocumentDao;
-
-    @Mock
-    FishingActivityDao fishingActivityDao;
-
-    @Mock
-    VesselIdentifiersDao vesselIdentifiersDao;
-
-    @Mock
-    FishingTripIdentifierDao fishingTripIdentifierDao;
-
-    @Mock
-    FishingTripDao fishingTripDao;
-
-    @Mock
-    FaCatchDao faCatchDao;
-
-    @Mock
-    ActivityServiceBean activityServiceBean;
-
-    @InjectMocks
-    FishingTripServiceBean fishingTripService;
-
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+    @Mock
+    EntityManager em;
+    @Mock
+    ActivityMessageProducer producer;
+    @Mock
+    AssetsMessageConsumerBean consumer;
+    @Mock
+    FaReportDocumentDao faReportDocumentDao;
+    @Mock
+    FishingActivityDao fishingActivityDao;
+    @Mock
+    VesselIdentifierDao vesselIdentifiersDao;
+    @Mock
+    FishingTripIdentifierDao fishingTripIdentifierDao;
+    @Mock
+    FishingTripDao fishingTripDao;
+    @Mock
+    FaCatchDao faCatchDao;
+    @Mock
+    ActivityServiceBean activityServiceBean;
+    @InjectMocks
+    FishingTripServiceBean fishingTripService;
 
     @Test
     @SneakyThrows

@@ -8,13 +8,26 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
+import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
@@ -23,12 +36,8 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import java.util.*;
-
-/**
- * Created by padhyad on 5/17/2016.
- */
-@Mapper(uses = {FaReportDocumentMapper.class, ContactPartyMapper.class})
+@Mapper(nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL,
+        uses = {FaReportDocumentMapper.class, ContactPartyMapper.class, VesselIdentifierMapper.class})
 public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public static final VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
@@ -48,10 +57,12 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
     public abstract VesselTransportMeansEntity mapToVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget VesselTransportMeansEntity vesselTransportMeansEntity);
 
     @Mappings({
-            @Mapping(target = "vesselIdentifierId", expression = "java(getIdType(idType))"),
-            @Mapping(target = "vesselIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
+            @Mapping(target = "vesselIdentifierId", source = "value"),
+            @Mapping(target = "vesselIdentifierSchemeId", source = "schemeID")
     })
     protected abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
+
+    public abstract VesselDetailsDTO map(VesselTransportMeansEntity entity);
 
     protected Set<FlapDocumentEntity> getFlapDocumentEntities(List<FLAPDocument> flapDocuments, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (flapDocuments == null || flapDocuments.isEmpty()) {
@@ -63,14 +74,6 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             flapDocumentEntities.add(entity);
         }
         return flapDocumentEntities;
-    }
-
-    protected List<String> getVesselIds(Set<VesselIdentifierEntity> vesselIdentifierEntities) {
-        List<String> ids = new ArrayList<>();
-        for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifierEntities) {
-            ids.add(vesselIdentifierEntity.getVesselIdentifierId());
-        }
-        return ids;
     }
 
     protected Set<ContactPartyEntity> getContactPartyEntity(List<ContactParty> contactParties, VesselTransportMeansEntity vesselTransportMeansEntity) {
@@ -107,19 +110,5 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     protected String getTextType(List<TextType> textTypes) {
         return (textTypes == null || textTypes.isEmpty()) ? null : textTypes.get(0).getValue();
-    }
-
-    protected String getFlapDocumentId(List<FLAPDocument> flapDocuments) {
-        if (flapDocuments == null || flapDocuments.isEmpty()) {
-            return null;
-        }
-        return (flapDocuments.get(0).getID() == null) ? null : flapDocuments.get(0).getID().getValue();
-    }
-
-    protected String getFlapDocumentschemaId(List<FLAPDocument> flapDocuments) {
-        if (flapDocuments == null || flapDocuments.isEmpty()) {
-            return null;
-        }
-        return (flapDocuments.get(0).getID() == null) ? null : flapDocuments.get(0).getID().getSchemeID();
     }
 }

@@ -10,8 +10,18 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetailsDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,11 +32,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by padhyad on 6/8/2016.
@@ -81,4 +86,9 @@ public abstract class ContactPartyMapper extends BaseMapper {
         }
         return structuredAddressEntities;
     }
+
+    public abstract ContactPartyDetailsDTO map(ContactPartyEntity entity);
+
+    public abstract Set<ContactPartyDetailsDTO> map(Set<ContactPartyEntity> entities);
+
 }

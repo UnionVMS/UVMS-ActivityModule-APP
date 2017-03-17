@@ -13,15 +13,19 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -32,15 +36,15 @@ public interface FishingTripService {
      * <p>
      * This API returns the list of cronology of selected fishing trip,
      * Additionally it also return the current trip for the vessel.
-     *
+     * <p>
      * <code>if (Count == 0)</code> Then return all the previous and next
-     *</p>
+     * </p>
+     *
      * @param tripId currently selected
-     * @param count number of trip Id to view
+     * @param count  number of trip Id to view
      * @return list of fishing trips
      */
-    CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count);
-
+    CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException;
 
 
     /**
@@ -59,7 +63,7 @@ public interface FishingTripService {
      * @param fishingTripId
      * @return
      */
-    VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId);
+    VesselDetailsDTO getVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException;
 
 
     /**
@@ -80,16 +84,18 @@ public interface FishingTripService {
 
     /**
      * Retrieve GEO data for Fishing Trip MAp
+     *
      * @param tripId
      * @return
      */
     public ObjectNode getTripMapDetailsForTripId(String tripId);
 
     /**
-     *  This method will Return filtered FishingTrips which match with provided filter criterias
+     * This method will Return filtered FishingTrips which match with provided filter criterias
+     *
      * @param query Filter criterias
-     * @return  List of unique Fishing tripIds with their Geometries
-     *          List of Fishing Activities which happened duriong those fishing trips
+     * @return List of unique Fishing tripIds with their Geometries
+     * List of Fishing Activities which happened duriong those fishing trips
      * @throws ServiceException
      */
 

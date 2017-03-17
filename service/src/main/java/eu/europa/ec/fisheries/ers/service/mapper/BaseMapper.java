@@ -9,15 +9,7 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.ers.service.mapper;
-
-import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -27,14 +19,103 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IndicatorType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.NumericType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 /**
- * Created by padhyad on 6/14/2016.
+ * TODO create test
  */
 @Slf4j
-public abstract class BaseMapper {
+@NoArgsConstructor
+public class BaseMapper {
+
+    public static List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles) {
+        List<String> roles = new ArrayList<>();
+        for (ContactPartyRoleEntity roleEntity : contactPartyRoles) {
+            roles.add(roleEntity.getRoleCode());
+        }
+        return roles;
+    }
+
+    public static FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
+        FishingTripEntity fishingTripEntity = null;
+        Set<FishingTripEntity> fishingTrips = activityEntity.getFishingTrips();
+        if (!CollectionUtils.isEmpty(fishingTrips)) {
+            fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
+        }
+        return fishingTripEntity;
+    }
+
+    public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
+        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
+        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
+    }
+
+    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
+        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
+        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
+        if (specifiedFishingTrip != null) {
+            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
+        }
+        return relatedFluxLocations;
+    }
+
+    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity tripEntity) {
+        Set<FluxLocationEntity> fluxLocations = new HashSet<>();
+        FishingActivityEntity fishingActivity = tripEntity.getFishingActivity();
+        if (fishingActivity != null) {
+            fluxLocations = fishingActivity.getFluxLocations();
+        }
+        return fluxLocations;
+    }
+
+    public static List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<IdentifierDto> identifierDtoSet) {
+        List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
+        for (IdentifierDto identifierDto : identifierDtoSet) {
+            AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
+            ConfigSearchField key = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+            String identifierId = identifierDto.getIdentifierId();
+            if (key != null && identifierId != null) {
+                criteriaPair.setKey(key);
+                criteriaPair.setValue(identifierId);
+                criteriaList.add(criteriaPair);
+            }
+        }
+        return criteriaList;
+    }
 
     protected String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
@@ -87,16 +168,16 @@ public abstract class BaseMapper {
     protected XMLGregorianCalendar convertToXMLGregorianCalendar(Date dateTime, boolean includeTimeZone) {
         XMLGregorianCalendar calander = null;
         try {
-            GregorianCalendar cal = new  GregorianCalendar();
+            GregorianCalendar cal = new GregorianCalendar();
             cal.setTimeInMillis(dateTime.getTime());
             calander = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-            if(!includeTimeZone) {
+            if (!includeTimeZone) {
                 calander.setTimezone(DatatypeConstants.FIELD_UNDEFINED); //If we do not want timeZone to be included, set this
             }
         } catch (DatatypeConfigurationException e) {
             log.error(e.getMessage(), e);
         }
-      return calander;
+        return calander;
     }
 
     protected String getValueIndicator(IndicatorType indicatorType) {
@@ -182,7 +263,7 @@ public abstract class BaseMapper {
     }
 
     protected String getCountry(VesselCountry country) {
-        if(country==null){
+        if (country == null) {
             return null;
         }
         return getIdType(country.getID());
@@ -208,45 +289,4 @@ public abstract class BaseMapper {
             return null;
         }
     }
-
-    public static List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles){
-        List<String> roles = new ArrayList<>();
-        for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
-            roles.add(roleEntity.getRoleCode());
-        }
-        return roles;
-    }
-
-    public static FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
-        FishingTripEntity fishingTripEntity = null;
-        Set<FishingTripEntity> fishingTrips = activityEntity.getFishingTrips();
-        if (!CollectionUtils.isEmpty(fishingTrips)) {
-            fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
-        }
-        return fishingTripEntity;
-    }
-
-    public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
-        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
-        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
-    }
-
-    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
-        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
-        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
-        if (specifiedFishingTrip != null){
-            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
-        }
-        return relatedFluxLocations;
-    }
-
-    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity tripEntity) {
-        Set<FluxLocationEntity> fluxLocations = new HashSet<>();
-        FishingActivityEntity fishingActivity = tripEntity.getFishingActivity();
-        if (fishingActivity != null){
-            fluxLocations = fishingActivity.getFluxLocations();
-        }
-        return fluxLocations;
-    }
-
 }

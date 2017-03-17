@@ -13,21 +13,18 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by sanera on 17/08/2016.
- */
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FishingTripSummaryViewDTO {
 
     @JsonProperty("fishingTripId")
     private String fishingTripId;
-
 
     @JsonProperty("summary")
     private Map<String,FishingActivityTypeDTO> summary;
@@ -35,8 +32,7 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("activityReports")
     private List<ReportDTO> activityReports;
 
-    @JsonProperty("vesselDetails")
-    private VesselDetailsTripDTO vesselDetails;
+    private VesselDetailsDTO vesselDetails;
 
     @JsonProperty("messagesCount")
     private MessageCountDTO messagesCount;
@@ -46,7 +42,6 @@ public class FishingTripSummaryViewDTO {
 
     @JsonProperty("currentTripId")
     private String currentTripId;
-
 
     @JsonProperty("fishingTripId")
     public String getFishingTripId() {
@@ -58,8 +53,6 @@ public class FishingTripSummaryViewDTO {
         this.fishingTripId = fishingTripId;
     }
 
-
-
     @JsonProperty("activityReports")
     public List<ReportDTO> getActivityReports() {
         return activityReports;
@@ -68,16 +61,6 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("activityReports")
     public void setActivityReports(List<ReportDTO> activityReports) {
         this.activityReports = activityReports;
-    }
-
-    @JsonProperty("vesselDetails")
-    public VesselDetailsTripDTO getVesselDetails() {
-        return vesselDetails;
-    }
-
-    @JsonProperty("vesselDetails")
-    public void setVesselDetails(VesselDetailsTripDTO vesselDetails) {
-        this.vesselDetails = vesselDetails;
     }
 
     @JsonProperty("messagesCount")
@@ -118,5 +101,13 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("summary")
     public void setSummary(Map<String, FishingActivityTypeDTO> summary) {
         this.summary = summary;
+    }
+
+    public VesselDetailsDTO getVesselDetails() {
+        return vesselDetails;
+    }
+
+    public void setVesselDetails(VesselDetailsDTO vesselDetails) {
+        this.vesselDetails = vesselDetails;
     }
 }
