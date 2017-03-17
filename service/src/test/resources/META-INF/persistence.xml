@@ -45,6 +45,7 @@
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselPositionEventEntity</class>
 
 		<properties>
 			<property name="hibernate.default_schema" value="activity" />

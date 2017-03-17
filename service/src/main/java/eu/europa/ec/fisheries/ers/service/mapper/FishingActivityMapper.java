@@ -11,36 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
@@ -60,20 +31,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+
+import java.util.*;
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class,
         FaCatchMapper.class,
@@ -285,15 +247,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
 
     protected Date getStartDate(FishingActivityEntity entity) {
-    /*    if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
-            return null;
+        if(entity != null){
+            return entity.getCalculatedStartTime();
         }
-
-        return entity.getDelimitedPeriods().iterator().next().getStartDate();*/
-        if(entity == null){
-            return null;
-        }
-        return entity.getCalculatedStartTime();
+        return null;
 
     }
 
@@ -306,16 +263,9 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     }
 
-    protected List<String> getFishingActivityIds(Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers) {
-        List<String> fishingActivityIds = new ArrayList<>();
-        for (FishingActivityIdentifierEntity identifierEntity : fishingActivityIdentifiers) {
-            fishingActivityIds.add(identifierEntity.getFaIdentifierId());
-        }
-        return fishingActivityIds;
-    }
 
     @Mappings({
-            @Mapping(target = "faIdentifierId", expression = "java(getIdType(idType))"),
+            @Mapping(target = "faIdentifierId", source = "idType.value"),
             @Mapping(target = "faIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
     })
     protected abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);

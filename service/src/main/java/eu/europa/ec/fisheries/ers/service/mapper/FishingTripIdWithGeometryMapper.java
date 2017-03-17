@@ -20,6 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -28,7 +29,7 @@ import java.util.*;
 /**
  * Created by sanera on 02/12/2016.
  */
-@Mapper
+@Mapper(nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL)
 public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
     public static final FishingTripIdWithGeometryMapper INSTANCE = Mappers.getMapper(FishingTripIdWithGeometryMapper.class);
 

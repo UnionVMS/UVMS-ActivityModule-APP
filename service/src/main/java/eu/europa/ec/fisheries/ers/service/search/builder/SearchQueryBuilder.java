@@ -210,7 +210,6 @@ public abstract class SearchQueryBuilder {
     }
 
     private  int getFiledCase(StringBuilder sql, SearchFilter field) {
-  //      if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
         if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
             return 1;
         } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
@@ -291,7 +290,6 @@ public abstract class SearchQueryBuilder {
         SortKey sort = query.getSorting();
         if (sort != null && sort.getSortBy() !=null) {
             SearchFilter field = sort.getSortBy();
-          //  if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field)) {
             if (SearchFilter.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
             }

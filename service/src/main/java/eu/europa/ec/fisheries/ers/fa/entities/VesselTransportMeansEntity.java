@@ -60,6 +60,9 @@ public class VesselTransportMeansEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<FlapDocumentEntity> flapDocuments;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    private Set<VesselPositionEventEntity> vesselPositionEvents;
+
     public VesselTransportMeansEntity() {
         super();
     }
@@ -164,6 +167,14 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setFishingActivity(FishingActivityEntity fishingActivity) {
         this.fishingActivity = fishingActivity;
+    }
+
+    public Set<VesselPositionEventEntity> getVesselPositionEvents() {
+        return vesselPositionEvents;
+    }
+
+    public void setVesselPositionEvents(Set<VesselPositionEventEntity> vesselPositionEvents) {
+        this.vesselPositionEvents = vesselPositionEvents;
     }
 
     @Override

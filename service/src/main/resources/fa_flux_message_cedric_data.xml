@@ -11156,6 +11156,9 @@
 					<ram:Alias>Jean François</ram:Alias>
 				</ram:SpecifiedContactPerson>
 			</ram:SpecifiedContactParty>
+			<ram:SpecifiedVesselPositionEvent>
+				<ram:TypeCode listID="VESSEL_POSITION_TYPE">POSITION_EVENT</ram:TypeCode>				
+			</ram:SpecifiedVesselPositionEvent>			
 		</ram:SpecifiedVesselTransportMeans>
 	</rsm:FAReportDocument>
 	<rsm:FAReportDocument>

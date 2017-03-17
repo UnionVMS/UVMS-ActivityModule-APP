@@ -99,38 +99,6 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
     }
 
-    // Add list of fishing trip ids without geometry to master list
-  /*  public List<FishingTripIdWithGeometry> addFishingTripIdsWithoutGeomToResponseList(Set<FishingTripId> fishingTripIdsWithoutGeom) {
-        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        for (FishingTripId fishingTripId : fishingTripIdsWithoutGeom) {
-            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null));
-        }
-        return fishingTripIdLists;
-    }*/
-
-    /*
-       For Every Fishing trip, combine all geometries into one and convert it into Wkt
-
-    public List<FishingTripIdWithGeometry> mapFishingTripIdsToGeomWkt(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
-        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        Set<FishingTripId> tripIdSet = uniqueTripIdWithGeometry.keySet();
-        for (FishingTripId fishingTripId : tripIdSet) {
-            Geometry geometry = GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
-            if (geometry == null) {
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null));
-            }
-            else {
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue()));
-            }
-        }
-
-        return fishingTripIdLists;
-    }    */
-
-    public void getAllFishingActivitiesForTripIdInformation(String tripId){
-
-    }
-
     /**
      * Process FishingTripEntities to identify Unique FishingTrips.
      * Every FishingTripEntity has List of FishingTripIdentifiers. Every FishingTrip can ideally have maximum 2 Identifiers in the list.
