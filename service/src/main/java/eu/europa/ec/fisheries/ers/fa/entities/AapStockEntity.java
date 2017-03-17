@@ -17,10 +17,10 @@ import java.io.Serializable;
 @Table(name = "activity_aap_stock")
 public class AapStockEntity implements Serializable {
 
-	
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="aap_stock_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -9,14 +9,14 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-package eu.europa.ec.fisheries.ers.fa.entities;
+package eu.europa.ec.fisheries.ers.fa.dao.proxy;
 
 /**
  * This class do not consider PRESENTATION value in equals in Hashcode.
  * For landing screen we want to calculate values for PRESENTATION separately so, we want to omit it from equals and hashCode
  * Created by sanera on 03/03/2017.
  */
-public class FaCatchSummaryCustomChildEntity extends FaCatchSummaryCustomEntity {
+public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
 
 
     @Override
@@ -117,9 +117,9 @@ public class FaCatchSummaryCustomChildEntity extends FaCatchSummaryCustomEntity 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FaCatchSummaryCustomEntity)) return false;
+        if (!(o instanceof FaCatchSummaryCustomProxy)) return false;
 
-        FaCatchSummaryCustomEntity that = (FaCatchSummaryCustomEntity) o;
+        FaCatchSummaryCustomProxy that = (FaCatchSummaryCustomProxy) o;
 
         if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) return false;
         if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;

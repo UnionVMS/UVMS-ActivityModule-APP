@@ -20,7 +20,8 @@ public class VesselTransportMeansEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="SEQ_GEN", sequenceName="vsl_trp_seq")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
     private int id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

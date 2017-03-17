@@ -17,7 +17,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEv
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
@@ -28,7 +28,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
 import javax.jms.*;
 
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.CONNECTION_FACTORY;
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_MODULE_ACTIVITY;
 
 /**
@@ -37,37 +36,17 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_MODULE_
 @Stateless
 @LocalBean
 @Slf4j
-public class ActivityMessageServiceBean extends AbstractMessageService {
+public class ActivityMessageServiceBean extends AbstractProducer {
 
-    @Resource(mappedName = QUEUE_MODULE_ACTIVITY)
-    private Destination request;
+    private static final String MODULE_NAME = "activity";
 
-    @Resource(lookup = CONNECTION_FACTORY)
-    private ConnectionFactory connectionFactory;
-
-    @Override
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    @Override
-    protected Destination getEventDestination() {
-        return request;
-    }
-
-    @Override
-    protected Destination getResponseDestination() {
-        return null;
-    }
-
-    @Override
     public String getModuleName() {
-        return "activity";
+        return MODULE_NAME;
     }
 
     @Override
-    public long getMilliseconds() {
-        return 10000L;
+    public String getDestinationName() {
+        return QUEUE_MODULE_ACTIVITY;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -75,7 +54,7 @@ public class ActivityMessageServiceBean extends AbstractMessageService {
         try {
             log.info("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getJmsMessage().getJMSMessageID(),
                     message.getJmsMessage().getJMSReplyTo());
-            Session session = connectToQueue();
+            Session session = getSession();
             String data = JAXBMarshaller.marshallJaxBObjectToString(message.getFault());
             TextMessage response = session.createTextMessage(data);
             response.setJMSCorrelationID(message.getJmsMessage().getJMSMessageID());

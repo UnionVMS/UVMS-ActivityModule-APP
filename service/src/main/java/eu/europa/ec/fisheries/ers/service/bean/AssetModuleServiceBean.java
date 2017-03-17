@@ -17,8 +17,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.VesselDetailsTripDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
@@ -34,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import java.util.*;
@@ -51,6 +56,25 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
 
     @EJB
     private ActivityConsumerBean activityConsumer;
+
+    public ListAssetResponse getAssetListResponse(VesselDetailsTripDTO vesselDetailsTripDTO) throws ServiceException {
+
+        try {
+            if (someVesselDetailsAreMissing(vesselDetailsTripDTO)) {
+                String assetsRequest = AssetsRequestMapper.INSTANCE.mapToAssetsRequest(vesselDetailsTripDTO);
+                String messageID = assetProducer.sendModuleMessage(assetsRequest, activityConsumer.getDestination());
+                TextMessage message = activityConsumer.getMessage(messageID, TextMessage.class);
+                String response = message.getText();
+                if (StringUtils.isNotEmpty(response) && !isFaultMessage(message)) {
+                    return JAXBMarshaller.unmarshallTextMessage(response, ListAssetResponse.class);
+                }
+            }
+        } catch (JMSException | MessageException | ActivityModelMarshallException e) {
+            log.error("Error while trying to send message to Assets module.", e);
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
+        return null;
+    }
 
     /**
      * {@inheritDoc}
@@ -99,6 +123,27 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         return joinResults(guidsFromVesselSearchStr, guidsFromVesselGroup);
     }
 
+    @NotNull
+    protected List<String> getGuidsFromAssets(String request) throws ServiceException {
+        try {
+            String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
+            TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class);
+            if (response != null && !isUserFault(response)) {
+                List<Asset> assets = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationId);
+                List<String> assetGuids = new ArrayList<>();
+                for (Asset asset : assets) {
+                    assetGuids.add(asset.getAssetId().getGuid());
+                }
+                return assetGuids;
+            } else {
+                throw new ServiceException("FAILED TO GET DATA FROM ASSET");
+            }
+        } catch (ServiceException | MessageException | AssetModelMapperException e) {
+            log.error("Exception in communication with movements", e);
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
     private List<String> joinResults(List<String> guidsFromVesselSearchStr, List<String> guidsFromVesselGroup) {
         Set<String> resultingList = new HashSet<>();
         if(CollectionUtils.isNotEmpty(guidsFromVesselSearchStr)){
@@ -127,28 +172,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         assetGroupGuidField.setValue(vesselGroupSearchName);
         assetGroupSearchFieldList.add(assetGroupGuidField);
         return assetGroupSearchFieldList;
-    }
-
-
-    @NotNull
-    protected List<String> getGuidsFromAssets(String request) throws ServiceException {
-        try {
-            String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
-            TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class);
-            if (response != null && !isUserFault(response)) {
-                List<Asset> assets = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationId);
-                List<String> assetGuids = new ArrayList<>();
-                for (Asset asset : assets) {
-                    assetGuids.add(asset.getAssetId().getGuid());
-                }
-                return assetGuids;
-            } else {
-                throw new ServiceException("FAILED TO GET DATA FROM ASSET");
-            }
-        } catch (ServiceException | MessageException | AssetModelMapperException e) {
-            log.error("Exception in communication with movements", e);
-            throw new ServiceException(e.getMessage(), e);
-        }
     }
 
 
@@ -200,6 +223,32 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         assetListQuery.setPagination(pagination);
 
         return assetListQuery;
+    }
+
+    private boolean isFaultMessage(TextMessage response) {
+        try {
+            JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
+            return true;
+        } catch (ActivityModelMarshallException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if some vessel details are missing
+     *
+     * @param vesselDetailsTripDTO
+     * @return
+     */
+    private boolean someVesselDetailsAreMissing(VesselDetailsTripDTO vesselDetailsTripDTO) {
+        return StringUtils.isEmpty(vesselDetailsTripDTO.getCfr())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getExMark())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getUvi())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getGfcm())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getIccat())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getIrcs())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getName())
+                || StringUtils.isEmpty(vesselDetailsTripDTO.getFlagState());
     }
 
 }

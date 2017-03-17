@@ -54,12 +54,10 @@ import java.util.*;
 @Stateless
 @Transactional
 @Slf4j
-public class FluxMessageServiceBean implements FluxMessageService {
-
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
+public class FluxMessageServiceBean extends BaseActivityBean implements FluxMessageService {
 
     private FaReportDocumentDao faReportDocumentDao;
+
     private FluxFaReportMessageDao fluxReportMessageDao;
 
     @EJB
@@ -80,8 +78,9 @@ public class FluxMessageServiceBean implements FluxMessageService {
 
     @PostConstruct
     public void init() {
-        faReportDocumentDao = new FaReportDocumentDao(em);
-        fluxReportMessageDao = new FluxFaReportMessageDao(em);
+        initEntityManager();
+        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
+        fluxReportMessageDao = new FluxFaReportMessageDao(getEntityManager());
         dialect = new PostGres();
         if ("oracle".equals(properties.getProperty("database.dialect"))){
             dialect = new Oracle();
