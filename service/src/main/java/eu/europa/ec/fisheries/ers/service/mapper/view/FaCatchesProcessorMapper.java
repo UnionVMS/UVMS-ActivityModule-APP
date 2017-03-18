@@ -39,7 +39,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FluxCharacteristicsVi
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseViewWithInstanceMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -283,7 +282,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param groupDetailsDto
      */
     private static void fillFishingGears(Set<FishingGearEntity> fishingGears, FaCatchGroupDetailsDto groupDetailsDto) {
-        groupDetailsDto.setGears(BaseViewWithInstanceMapper.INSTANCE.getGearsFromEntity(fishingGears));
+        groupDetailsDto.setGears(ActivityArrivalViewMapper.INSTANCE.getGearsFromEntity(fishingGears));
     }
 
     /**
