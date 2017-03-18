@@ -11,8 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.hibernate.search.util.impl.CollectionHelper.asSet;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
@@ -46,7 +46,6 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
@@ -72,15 +71,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper(uses = {FishingActivityIdentifierMapper.class,
-        FaCatchMapper.class,
-        DelimitedPeriodMapper.class,
-        FishingGearMapper.class,
-        GearProblemMapper.class,
-        FishingTripMapper.class,
-        FluxCharacteristicsMapper.class,
-        FaReportDocumentMapper.class,
-        GeometryMapper.class
+@Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
+        FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
+        FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class
 })
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
@@ -194,6 +187,12 @@ public abstract class FishingActivityMapper extends BaseMapper {
     })
     public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
 
+    @Mappings({
+            @Mapping(target = "faIdentifierId", source = "value"),
+            @Mapping(target = "faIdentifierSchemeId", source = "schemeID")
+    })
+    protected abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
+
     protected VesselTransportMeansEntity getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
 
         List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();
@@ -253,13 +252,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         return entity.getDelimitedPeriods().iterator().next().getEndDate();
     }
-
-    @Mappings({
-            @Mapping(target = "faIdentifierId", source = "value"),
-            @Mapping(target = "faIdentifierSchemeId", source = "schemeID")
-    })
-    protected abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
-
 
     protected List<DelimitedPeriodDTO> getDelimitedPeriodDTOList(FishingActivityEntity entity) {
         if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
@@ -378,20 +370,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
     }
 
-    protected List<ContactPersonDetailsDTO> getContactPerson(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() == null
-                || entity.getFaReportDocument().getVesselTransportMeans().getContactParty() == null) {
-            return Collections.emptyList();
-        }
-        List<ContactPersonDetailsDTO> contactPersonList = new ArrayList<>();
-        Set<ContactPartyEntity> contactPartyList = entity.getFaReportDocument().getVesselTransportMeans().getContactParty();
-
-        for (ContactPartyEntity contactParty : contactPartyList) {
-            contactPersonList.add(ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactParty.getContactPerson()));
-        }
-        return contactPersonList;
-    }
-
     protected List<Double> getQuantity(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {
             return Collections.emptyList();
@@ -420,7 +398,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
     }
 
-
     protected List<String> getFishingGears(FishingActivityEntity entity) {
         if (entity == null || entity.getFishingGears() == null) {
             return Collections.emptyList();
@@ -433,7 +410,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         return gears;
     }
-
 
     protected List<String> getFishingActivityLocationTypes(FishingActivityEntity entity, String locationType) {
         if (entity == null || entity.getFluxLocations() == null) {
@@ -449,7 +425,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         return areas;
     }
-
 
     protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
         if (fishingActivity == null || fishingActivity.isEmpty()) {
@@ -602,7 +577,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingTrip == null) {
             return Collections.emptySet();
         }
-        return new HashSet<>(Arrays.asList(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity())));
+        return asSet(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity()));
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
