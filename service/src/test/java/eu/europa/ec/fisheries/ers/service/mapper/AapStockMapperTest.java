@@ -21,16 +21,12 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
 
-/**
- * Created by padhyad on 7/27/2016.
- */
 public class AapStockMapperTest {
 
     @Test
     public void testAapStockMapper() {
         AAPStock aapStock = MapperUtil.getAapStock();
-        AapStockEntity aapStockEntity = new AapStockEntity();
-        AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
+        AapStockEntity aapStockEntity = AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
 
         assertEquals(aapStock.getID().getValue(), aapStockEntity.getStockId());
         assertEquals(aapStock.getID().getSchemeID(), aapStockEntity.getStockSchemeId());

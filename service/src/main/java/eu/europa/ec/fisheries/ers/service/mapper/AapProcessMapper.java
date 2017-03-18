@@ -45,8 +45,8 @@ public abstract class AapProcessMapper extends BaseMapper {
     public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess, FaCatchEntity faCatchEntity, @MappingTarget AapProcessEntity aapProcessEntity);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(codeType))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(codeType))")
+            @Mapping(target = "typeCode", source = "value"),
+            @Mapping(target = "typeCodeListId", source = "listID")
     })
     public abstract AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
 

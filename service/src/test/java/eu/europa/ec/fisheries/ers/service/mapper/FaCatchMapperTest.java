@@ -36,8 +36,7 @@ public class FaCatchMapperTest {
     @Test
     public void testFaCatchMapper() {
         FACatch faCatch = MapperUtil.getFaCatch();
-        FaCatchEntity faCatchEntity = new FaCatchEntity();
-        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
+        FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
         assertFaCatchFields(faCatch, faCatchEntity);
         assertNull(faCatchEntity.getFishingActivity());
