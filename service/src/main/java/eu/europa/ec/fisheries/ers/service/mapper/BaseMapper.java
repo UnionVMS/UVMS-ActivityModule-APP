@@ -20,11 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
@@ -55,11 +53,6 @@ public class BaseMapper {
             fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
         }
         return fishingTripEntity;
-    }
-
-    public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
-        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
-        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
     }
 
     public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
