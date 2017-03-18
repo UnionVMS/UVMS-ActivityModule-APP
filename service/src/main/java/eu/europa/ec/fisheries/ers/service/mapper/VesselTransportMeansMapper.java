@@ -46,7 +46,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "name", expression = "java(getTextType(vesselTransportMeans.getNames()))"),
             @Mapping(target = "flapDocuments", expression = "java(getFlapDocumentEntities(vesselTransportMeans.getGrantedFLAPDocuments(), vesselTransportMeansEntity))"),
             @Mapping(target = "country", source = "vesselTransportMeans.registrationVesselCountry.ID.value"),
-            @Mapping(target = "countrySchemeId", expression = "java(getCountrySchemeId(vesselTransportMeans.getRegistrationVesselCountry()))"),
+            @Mapping(target = "countrySchemeId", source = "vesselTransportMeans.registrationVesselCountry.ID.schemeID"),
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToVesselIdentifierEntities(vesselTransportMeans.getIDS(), vesselTransportMeansEntity))"),
             @Mapping(target = "contactParty", expression = "java(getContactPartyEntity(vesselTransportMeans.getSpecifiedContactParties(), vesselTransportMeansEntity))"),
             @Mapping(target = "registrationEvent", expression = "java(getRegistrationEventEntity(vesselTransportMeans.getSpecifiedRegistrationEvents(), vesselTransportMeansEntity))"),

@@ -230,10 +230,6 @@ public class BaseMapper {
         return getIdType(country.getID());
     }
 
-    protected String getCountrySchemeId(VesselCountry country) {
-        return getIdTypeSchemaId(country.getID());
-    }
-
     protected Map<String, String> getReportIdMap(Collection<FluxReportIdentifierEntity> identifiers) {
         Map<String, String> recordMap = new HashMap<>();
         for (FluxReportIdentifierEntity identifier : identifiers) {
