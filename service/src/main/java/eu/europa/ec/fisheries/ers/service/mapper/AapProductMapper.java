@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.HashMap;
@@ -24,9 +25,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
-/**
- * Created by padhyad on 6/14/2016.
- */
 @Mapper
 public abstract class AapProductMapper extends BaseMapper {
 
@@ -39,10 +37,10 @@ public abstract class AapProductMapper extends BaseMapper {
     public static final String FISH_FRESHNESS = "FISH_FRESHNESS";
 
     @Mappings({
-            @Mapping(target = "packagingTypeCode", expression = "java(getCodeType(aapProduct.getPackagingTypeCode()))"),
-            @Mapping(target = "packagingTypeCodeListId", expression = "java(getCodeTypeListId(aapProduct.getPackagingTypeCode()))"),
+            @Mapping(target = "packagingTypeCode", source = "aapProduct.packagingTypeCode.value"),
+            @Mapping(target = "packagingTypeCodeListId", source = "aapProduct.packagingTypeCode.listID"),
             @Mapping(target = "packagingUnitAvarageWeight", source = "aapProduct.packagingUnitAverageWeightMeasure.value"),
-            @Mapping(target = "packagingWeightUnitCode", expression = "java(getMeasureUnitCode(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
+            @Mapping(target = "packagingWeightUnitCode", source = "aapProduct.packagingUnitAverageWeightMeasure.unitCode"),
             @Mapping(target = "calculatedPackagingWeight", expression = "java(getCalculatedMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
             @Mapping(target = "packagingUnitCount", source = "aapProduct.packagingUnitQuantity.value"),
             @Mapping(target = "packagingUnitCountCode", source = "aapProduct.packagingUnitQuantity.unitCode"),
@@ -55,10 +53,10 @@ public abstract class AapProductMapper extends BaseMapper {
             @Mapping(target = "weightMeasure", source = "aapProduct.weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", source = "aapProduct.weightMeasure.unitCode"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(aapProduct.getWeightMeasure()))"),
-            @Mapping(target = "weighingMeansCode", expression = "java(getCodeType(aapProduct.getWeighingMeansCode()))"),
-            @Mapping(target = "weighingMeansCodeListId", expression = "java(getCodeTypeListId(aapProduct.getWeighingMeansCode()))"),
-            @Mapping(target = "usageCode", expression = "java(getCodeType(aapProduct.getUsageCode()))"),
-            @Mapping(target = "usageCodeListId", expression = "java(getCodeTypeListId(aapProduct.getUsageCode()))"),
+            @Mapping(target = "weighingMeansCode", source = "aapProduct.weighingMeansCode.value"),
+            @Mapping(target = "weighingMeansCodeListId", source = "aapProduct.weighingMeansCode.listID"),
+            @Mapping(target = "usageCode", source = "aapProduct.usageCode.value"),
+            @Mapping(target = "usageCodeListId", source = "aapProduct.usageCode.listID"),
             @Mapping(target = "aapProcess", expression = "java(aapProcessEntity)")
     })
     public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct, AapProcessEntity aapProcessEntity, @MappingTarget AapProductEntity aapProductEntity);
