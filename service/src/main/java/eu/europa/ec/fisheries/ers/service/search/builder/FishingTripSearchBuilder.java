@@ -13,6 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
+import javax.xml.datatype.DatatypeConstants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -33,8 +41,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 //import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
@@ -180,8 +186,11 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
             }
 
             FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
-            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId()))
+            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId())) {
+                FishingActivitySummary summary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity());
+                summary.getAcceptedDateTime().setTimezone(DatatypeConstants.FIELD_UNDEFINED);
                 fishingActivityLists.add(FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity()));// Collect Fishing Activity data
+            }
         }
     }
 

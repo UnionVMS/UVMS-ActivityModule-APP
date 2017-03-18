@@ -27,7 +27,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
-import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
@@ -36,8 +35,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-@Mapper(nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL,
-        uses = {FaReportDocumentMapper.class, ContactPartyMapper.class, VesselIdentifierMapper.class})
+@Mapper(uses = {FaReportDocumentMapper.class, ContactPartyMapper.class, VesselIdentifierMapper.class})
 public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public static final VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
@@ -47,7 +45,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(vesselTransportMeans.getRoleCode()))"),
             @Mapping(target = "name", expression = "java(getTextType(vesselTransportMeans.getNames()))"),
             @Mapping(target = "flapDocuments", expression = "java(getFlapDocumentEntities(vesselTransportMeans.getGrantedFLAPDocuments(), vesselTransportMeansEntity))"),
-            @Mapping(target = "country", expression = "java(getCountry(vesselTransportMeans.getRegistrationVesselCountry()))"),
+            @Mapping(target = "country", source = "vesselTransportMeans.registrationVesselCountry.ID.value"),
             @Mapping(target = "countrySchemeId", expression = "java(getCountrySchemeId(vesselTransportMeans.getRegistrationVesselCountry()))"),
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToVesselIdentifierEntities(vesselTransportMeans.getIDS(), vesselTransportMeansEntity))"),
             @Mapping(target = "contactParty", expression = "java(getContactPartyEntity(vesselTransportMeans.getSpecifiedContactParties(), vesselTransportMeansEntity))"),

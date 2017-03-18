@@ -61,7 +61,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, @MappingTarget FaReportDocumentEntity faReportDocumentEntity, FaReportSourceEnum faReportSourceEnum);
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
             @Mapping(target = "correctionType", source = "status"),
             @Mapping(target = "creationDate", source = "fluxReportDocument.creationDatetime"),
             @Mapping(target = "acceptedDate", source = "acceptedDatetime"),

@@ -11,10 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,7 +44,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IndicatorType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.NumericType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
@@ -120,10 +114,6 @@ public class BaseMapper {
         return textType == null ? null : textType.getValue();
     }
 
-    protected String getLanguageId(TextType textType) {
-        return textType == null ? null : textType.getLanguageID();
-    }
-
     protected String getIndicatorType(IndicatorType indicatorType) {
         if (indicatorType == null) {
             return null;
@@ -154,21 +144,6 @@ public class BaseMapper {
             log.error(e.getMessage(), e);
         }
         return value;
-    }
-
-    protected XMLGregorianCalendar convertToXMLGregorianCalendar(Date dateTime, boolean includeTimeZone) {
-        XMLGregorianCalendar calander = null;
-        try {
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTimeInMillis(dateTime.getTime());
-            calander = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-            if (!includeTimeZone) {
-                calander.setTimezone(DatatypeConstants.FIELD_UNDEFINED); //If we do not want timeZone to be included, set this
-            }
-        } catch (DatatypeConfigurationException e) {
-            log.error(e.getMessage(), e);
-        }
-        return calander;
     }
 
     protected String getValueIndicator(IndicatorType indicatorType) {
@@ -246,11 +221,6 @@ public class BaseMapper {
         } else {
             return null;
         }
-    }
-
-    protected Integer getNumericInteger(NumericType numericType) {
-        BigDecimal conversionFactor = numericType.getValue();
-        return conversionFactor != null ? conversionFactor.intValue() : null;
     }
 
     protected String getCountry(VesselCountry country) {

@@ -10,6 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -23,11 +28,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Created by padhyad on 6/14/2016.
  */
@@ -37,7 +37,7 @@ public abstract class AapProcessMapper extends BaseMapper {
     public static final AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
 
     @Mappings({
-            @Mapping(target = "conversionFactor", expression = "java(getNumericInteger(aapProcess.getConversionFactorNumeric()))"),
+            @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactorNumeric.value"),
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)"),
             @Mapping(target = "aapProducts", expression = "java(getAapProductEntities(aapProcess.getResultAAPProducts(), aapProcessEntity))"),
             @Mapping(target = "aapProcessCode", expression = "java(getAapProcessCodes(aapProcess.getTypeCodes(), aapProcessEntity))")

@@ -79,7 +79,9 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
         FishingGearMapper.class,
         GearProblemMapper.class,
         FishingTripMapper.class,
-        FluxCharacteristicsMapper.class})
+        FluxCharacteristicsMapper.class,
+        FaReportDocumentMapper.class
+})
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
 
@@ -156,7 +158,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "activityType", source = "typeCode"),
             @Mapping(target = "geometry", expression = "java(getWktFromGeometry(entity))"),
-            @Mapping(target = "acceptedDateTime", expression = "java(convertToXMLGregorianCalendar(getAcceptedDateTime(entity),false))"),
+            @Mapping(target = "acceptedDateTime", source = "entity.faReportDocument.acceptedDatetime"),
             @Mapping(target = "dataSource", expression = "java(getDataSource(entity))"),
             @Mapping(target = "reportType", expression = "java(getFAReportTypeCode(entity))"),
             @Mapping(target = "purposeCode", expression = "java(getPurposeCode(entity))"),
@@ -180,7 +182,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"),
             @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))"),
             @Mapping(target = "fluxLocations", ignore = true),
-            //@Mapping(target = "locations", expression = "java(getFishingActivityLocationTypes(entity,null))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsDTOList(entity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearDTOList(entity))")
     })
