@@ -130,20 +130,6 @@ public class BaseMapper {
         return textTypes.get(0).getLanguageID();
     }
 
-    protected Double getQuantity(QuantityType quantityType) {
-        if (quantityType == null) {
-            return null;
-        }
-        return quantityType.getValue().doubleValue();
-    }
-
-    protected String getQuantityUnitCode(QuantityType quantityType) {
-        if (quantityType == null) {
-            return null;
-        }
-        return quantityType.getUnitCode();
-    }
-
     protected Double getCalculatedQuantity(QuantityType quantityType) {
         if (quantityType == null) {
             return null;

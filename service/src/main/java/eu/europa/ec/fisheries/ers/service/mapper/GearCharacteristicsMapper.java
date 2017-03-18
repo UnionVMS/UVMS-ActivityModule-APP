@@ -61,8 +61,8 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "valueIndicator", source = "gearCharacteristic.valueIndicator.indicatorString.value"),
             @Mapping(target = "valueCode", expression = "java(getCodeType(gearCharacteristic.getValueCode()))"),
             @Mapping(target = "valueText", expression = "java(getTextType(gearCharacteristic.getValue()))"),
-            @Mapping(target = "valueQuantity", expression = "java(getQuantity(gearCharacteristic.getValueQuantity()))"),
-            @Mapping(target = "valueQuantityCode", expression = "java(getQuantityUnitCode(gearCharacteristic.getValueQuantity()))"),
+            @Mapping(target = "valueQuantity", source = "gearCharacteristic.valueQuantity.value"),
+            @Mapping(target = "valueQuantityCode", source = "gearCharacteristic.valueQuantity.unitCode"),
             @Mapping(target = "calculatedValueQuantity", expression = "java(getCalculatedQuantity(gearCharacteristic.getValueQuantity()))"),
             @Mapping(target = "fishingGear", expression = "java(fishingGearEntity)")
     })

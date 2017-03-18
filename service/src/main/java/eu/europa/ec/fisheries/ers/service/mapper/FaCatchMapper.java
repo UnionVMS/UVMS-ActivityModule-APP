@@ -55,7 +55,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "speciesCode", expression = "java(getCodeType(faCatch.getSpeciesCode()))"),
             @Mapping(target = "speciesCodeListid", expression = "java(getCodeTypeListId(faCatch.getSpeciesCode()))"),
             @Mapping(target = "unitQuantity", source = "faCatch.unitQuantity.value"),
-            @Mapping(target = "unitQuantityCode", expression = "java(getQuantityUnitCode(faCatch.getUnitQuantity()))"),
+            @Mapping(target = "unitQuantityCode", source = "faCatch.unitQuantity.unitCode"),
             @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(faCatch.getUnitQuantity()))"),
             @Mapping(target = "weightMeasure", source = "faCatch.weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", expression = "java(getMeasureUnitCode(faCatch.getWeightMeasure()))"),
