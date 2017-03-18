@@ -10,6 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -20,9 +23,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by padhyad on 6/14/2016.
@@ -41,7 +41,7 @@ public abstract class AapProductMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "packagingTypeCode", expression = "java(getCodeType(aapProduct.getPackagingTypeCode()))"),
             @Mapping(target = "packagingTypeCodeListId", expression = "java(getCodeTypeListId(aapProduct.getPackagingTypeCode()))"),
-            @Mapping(target = "packagingUnitAvarageWeight", expression = "java(getMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
+            @Mapping(target = "packagingUnitAvarageWeight", source = "aapProduct.packagingUnitAverageWeightMeasure.value"),
             @Mapping(target = "packagingWeightUnitCode", expression = "java(getMeasureUnitCode(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
             @Mapping(target = "calculatedPackagingWeight", expression = "java(getCalculatedMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
             @Mapping(target = "packagingUnitCount", expression = "java(getQuantity(aapProduct.getPackagingUnitQuantity()))"),
@@ -52,7 +52,7 @@ public abstract class AapProductMapper extends BaseMapper {
             @Mapping(target = "unitQuantity", expression = "java(getQuantity(aapProduct.getUnitQuantity()))"),
             @Mapping(target = "unitQuantityCode", expression = "java(getQuantityUnitCode(aapProduct.getUnitQuantity()))"),
             @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(aapProduct.getUnitQuantity()))"),
-            @Mapping(target = "weightMeasure", expression = "java(getMeasure(aapProduct.getWeightMeasure()))"),
+            @Mapping(target = "weightMeasure", source = "aapProduct.weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", expression = "java(getMeasureUnitCode(aapProduct.getWeightMeasure()))"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(aapProduct.getWeightMeasure()))"),
             @Mapping(target = "weighingMeansCode", expression = "java(getCodeType(aapProduct.getWeighingMeansCode()))"),

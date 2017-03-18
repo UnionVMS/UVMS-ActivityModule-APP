@@ -12,6 +12,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
@@ -25,11 +30,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 @Mapper
 public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
@@ -38,7 +38,7 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fluxCharacteristic.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "valueMeasure", expression = "java(getMeasure(fluxCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "valueMeasure", source = "fluxCharacteristic.valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", expression = "java(getMeasureUnitCode(fluxCharacteristic.getValueMeasure()))"),
             @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(fluxCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", expression = "java(convertToDate(fluxCharacteristic.getValueDateTime()))"),
@@ -58,7 +58,7 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fluxCharacteristic.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "valueMeasure", expression = "java(getMeasure(fluxCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "valueMeasure", source = "fluxCharacteristic.valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", expression = "java(getMeasureUnitCode(fluxCharacteristic.getValueMeasure()))"),
             @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(fluxCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", expression = "java(convertToDate(fluxCharacteristic.getValueDateTime()))"),
@@ -79,7 +79,7 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", expression = "java(getCodeType(fluxCharacteristic.getTypeCode()))"),
             @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "valueMeasure", expression = "java(getMeasure(fluxCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "valueMeasure", source = "fluxCharacteristic.valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", expression = "java(getMeasureUnitCode(fluxCharacteristic.getValueMeasure()))"),
             @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(fluxCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", expression = "java(convertToDate(fluxCharacteristic.getValueDateTime()))"),

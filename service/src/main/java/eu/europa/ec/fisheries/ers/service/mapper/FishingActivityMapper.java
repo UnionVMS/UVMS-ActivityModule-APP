@@ -62,7 +62,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
@@ -104,11 +103,9 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "operationQuantity", expression = "java(getQuantity(fishingActivity.getOperationsQuantity()))"),
             @Mapping(target = "operationQuantityCode", expression = "java(getQuantityUnitCode(fishingActivity.getOperationsQuantity()))"),
             @Mapping(target = "calculatedOperationQuantity", expression = "java(getCalculatedQuantity(fishingActivity.getOperationsQuantity()))"),
-            @Mapping(target = "fishingDurationMeasure", expression = "java(getMeasure(fishingActivity.getFishingDurationMeasure()))"),
+            @Mapping(target = "fishingDurationMeasure", source = "fishingActivity.fishingDurationMeasure.value"),
             @Mapping(target = "fishingDurationMeasureCode", expression = "java(getMeasureUnitCode(fishingActivity.getFishingDurationMeasure()))"),
             @Mapping(target = "calculatedFishingDuration", expression = "java(getCalculatedMeasure(fishingActivity.getFishingDurationMeasure()))"),
-            //    @Mapping(target = "flapDocumentId", expression = "java(getFlapDocId(fishingActivity.getSpecifiedFLAPDocument()))"),
-            //   @Mapping(target = "flapDocumentSchemeId", expression = "java(getFlapDocSchemeId(fishingActivity.getSpecifiedFLAPDocument()))"),
             @Mapping(target = "faReportDocument", expression = "java(faReportDocumentEntity)"),
             @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
@@ -591,8 +588,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             }
 
         }
-
-
         return null;
     }
 
@@ -737,20 +732,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
         return VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
-    }
-
-    protected String getFlapDocId(FLAPDocument flapDocument) {
-        if (flapDocument == null) {
-            return null;
-        }
-        return (flapDocument.getID() == null) ? null : getIdType(flapDocument.getID());
-    }
-
-    protected String getFlapDocSchemeId(FLAPDocument flapDocument) {
-        if (flapDocument == null) {
-            return null;
-        }
-        return (flapDocument.getID() == null) ? null : getIdTypeSchemaId(flapDocument.getID());
     }
 
     @Mappings({

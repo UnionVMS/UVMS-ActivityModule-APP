@@ -10,7 +10,23 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,9 +35,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
-
-import java.util.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 
 /**
  * Created by padhyad on 5/17/2016.
@@ -39,7 +60,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "unitQuantity", expression = "java(getQuantity(faCatch.getUnitQuantity()))"),
             @Mapping(target = "unitQuantityCode", expression = "java(getQuantityUnitCode(faCatch.getUnitQuantity()))"),
             @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(faCatch.getUnitQuantity()))"),
-            @Mapping(target = "weightMeasure", expression = "java(getMeasure(faCatch.getWeightMeasure()))"),
+            @Mapping(target = "weightMeasure", source = "faCatch.weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", expression = "java(getMeasureUnitCode(faCatch.getWeightMeasure()))"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(faCatch.getWeightMeasure()))"),
             @Mapping(target = "usageCode", expression = "java(getCodeType(faCatch.getUsageCode()))"),
@@ -56,26 +77,6 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fishingTrips", expression = "java(getFishingTripEntities(faCatch.getRelatedFishingTrips(), faCatchEntity))")
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch, FishingActivityEntity fishingActivityEntity, @MappingTarget FaCatchEntity faCatchEntity);
-
-/*    protected List<FluxLocationDetailsDTO> getSpecifiedFluxLocations(Set<FluxLocationEntity> fluxLocations) {
-        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
-        for (FluxLocationEntity fluxLocationEntity : fluxLocations) {
-            if (fluxLocationEntity.getFluxLocationType().equalsIgnoreCase(FluxLocationTypeEnum.FA_CATCH_SPECIFIED.getType())) {
-                fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
-            }
-        }
-        return fluxLocationDetailsDTOs;
-    }
-
-    protected List<FluxLocationDetailsDTO> getDestFluxLocations(Set<FluxLocationEntity> fluxLocations) {
-        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
-        for (FluxLocationEntity fluxLocationEntity : fluxLocations) {
-            if (fluxLocationEntity.getFluxLocationType().equalsIgnoreCase(FluxLocationTypeEnum.FA_CATCH_DESTINATION.getType())) {
-                fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
-            }
-        }
-        return fluxLocationDetailsDTOs;
-    }*/
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
         if (sizeDistribution == null) {

@@ -195,13 +195,6 @@ public class BaseMapper {
         }
     }
 
-    protected Double getMeasure(MeasureType measureType) {
-        if (measureType == null) {
-            return null;
-        }
-        return measureType.getValue().doubleValue();
-    }
-
     protected String getMeasureUnitCode(MeasureType measureType) {
         if (measureType == null) {
             return null;
