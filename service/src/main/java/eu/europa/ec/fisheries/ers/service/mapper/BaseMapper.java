@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -60,14 +59,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 @Slf4j
 @NoArgsConstructor
 public class BaseMapper {
-
-    public static List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles) {
-        List<String> roles = new ArrayList<>();
-        for (ContactPartyRoleEntity roleEntity : contactPartyRoles) {
-            roles.add(roleEntity.getRoleCode());
-        }
-        return roles;
-    }
 
     public static FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
         FishingTripEntity fishingTripEntity = null;
@@ -279,14 +270,5 @@ public class BaseMapper {
             recordMap.put(identifier.getFluxReportIdentifierId(), identifier.getFluxReportIdentifierSchemeId());
         }
         return recordMap;
-    }
-
-    protected Integer getPurposeCode(String purposeCode) {
-        try {
-            return Integer.parseInt(purposeCode);
-        } catch (NumberFormatException e) {
-            log.error(e.getMessage(), e);
-            return null;
-        }
     }
 }
