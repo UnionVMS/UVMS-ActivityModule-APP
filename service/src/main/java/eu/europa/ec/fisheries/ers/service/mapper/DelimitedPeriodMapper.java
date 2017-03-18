@@ -28,8 +28,8 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
     public static final DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
 
     @Mappings({
-            @Mapping(target = "startDate", expression = "java(convertToDate(delimitedPeriod.getStartDateTime()))"),
-            @Mapping(target = "endDate", expression = "java(convertToDate(delimitedPeriod.getEndDateTime()))"),
+            @Mapping(target = "startDate", source = "delimitedPeriod.startDateTime.dateTime"),
+            @Mapping(target = "endDate", source = "delimitedPeriod.endDateTime.dateTime"),
             @Mapping(target = "duration", source = "delimitedPeriod.durationMeasure.value"),
             @Mapping(target = "durationUnitCode", expression = "java(getMeasureUnitCode(delimitedPeriod.getDurationMeasure()))"),
             @Mapping(target = "calculatedDuration", expression = "java(getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
@@ -38,8 +38,8 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
     public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod, FishingActivityEntity fishingActivityEntity, @MappingTarget DelimitedPeriodEntity delimitedPeriodEntity);
 
     @Mappings({
-            @Mapping(target = "startDate", expression = "java(convertToDate(delimitedPeriod.getStartDateTime()))"),
-            @Mapping(target = "endDate", expression = "java(convertToDate(delimitedPeriod.getEndDateTime()))"),
+            @Mapping(target = "startDate", source = "delimitedPeriod.startDateTime.dateTime"),
+            @Mapping(target = "endDate", source = "delimitedPeriod.endDateTime.dateTime"),
             @Mapping(target = "duration", source = "delimitedPeriod.durationMeasure.value"),
             @Mapping(target = "durationUnitCode", expression = "java(getMeasureUnitCode(delimitedPeriod.getDurationMeasure()))"),
             @Mapping(target = "calculatedDuration", expression = "java(getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
@@ -48,4 +48,5 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
     public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod, FishingTripEntity fishingTripEntity, @MappingTarget DelimitedPeriodEntity delimitedPeriodEntity);
 
     public abstract DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
+
 }

@@ -13,6 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
@@ -22,9 +25,6 @@ import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -72,7 +72,7 @@ public class AapProductMapperTest {
         // Prepare
         FACatch faCatch = MapperUtil.getFaCatch();
         FaCatchEntity faCatchEntity = new FaCatchEntity();
-        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, null, faCatchEntity);
+        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
         AAPProcess aapProcess = MapperUtil.getAapProcess();
         AapProcessEntity aapProcessEntity = new AapProcessEntity();

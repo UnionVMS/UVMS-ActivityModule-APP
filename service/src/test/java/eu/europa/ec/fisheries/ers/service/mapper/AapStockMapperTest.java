@@ -13,13 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -30,7 +30,7 @@ public class AapStockMapperTest {
     public void testAapStockMapper() {
         AAPStock aapStock = MapperUtil.getAapStock();
         AapStockEntity aapStockEntity = new AapStockEntity();
-        AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock, null, aapStockEntity);
+        AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
 
         assertEquals(aapStock.getID().getValue(), aapStockEntity.getStockId());
         assertEquals(aapStock.getID().getSchemeID(), aapStockEntity.getStockSchemeId());

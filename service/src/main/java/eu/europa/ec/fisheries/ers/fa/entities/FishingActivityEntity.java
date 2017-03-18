@@ -12,16 +12,34 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
 
 @NamedQueries({
 		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
@@ -168,6 +186,9 @@ public class FishingActivityEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments;
+
+    @Transient
+    private String wkt;
 
 	public int getId() {
 		return this.id;
@@ -446,6 +467,10 @@ public class FishingActivityEntity implements Serializable {
 		this.vesselTransportGuid = vesselTransportGuid;
 	}
 
+    public String getWkt() {
+        return wkt;
+    }
+
 	@Override
 	public String toString() {
 		return "FishingActivityEntity{" +
@@ -484,6 +509,13 @@ public class FishingActivityEntity implements Serializable {
 
     public void setFlagState(String flagState) {
         this.flagState = flagState;
+    }
+
+    @PostLoad
+    private void onLoad() {
+        if (this.geom != null) {
+            this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
+        }
     }
 
 }

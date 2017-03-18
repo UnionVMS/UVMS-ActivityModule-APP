@@ -12,12 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,9 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IndicatorType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
@@ -114,43 +108,12 @@ public class BaseMapper {
         return textType == null ? null : textType.getValue();
     }
 
-    protected String getIndicatorType(IndicatorType indicatorType) {
-        if (indicatorType == null) {
-            return null;
-        }
-        return indicatorType.getIndicatorString() == null ? null : indicatorType.getIndicatorString().getValue();
-    }
-
     protected String getCodeType(CodeType codeType) {
         return (codeType == null) ? null : codeType.getValue();
     }
 
     protected String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
-    }
-
-    protected Date convertToDate(DateTimeType dateTime) {
-        Date value = null;
-        try {
-            if (dateTime != null) {
-                if (dateTime.getDateTime() != null) {
-                    value = dateTime.getDateTime().toGregorianCalendar().getTime();
-                } else if (dateTime.getDateTimeString() != null) {
-                    DateFormat df = new SimpleDateFormat(dateTime.getDateTimeString().getFormat());
-                    value = df.parse(dateTime.getDateTimeString().getValue());
-                }
-            }
-        } catch (ParseException e) {
-            log.error(e.getMessage(), e);
-        }
-        return value;
-    }
-
-    protected String getValueIndicator(IndicatorType indicatorType) {
-        if (indicatorType == null) {
-            return null;
-        }
-        return indicatorType.getIndicatorString() == null ? null : indicatorType.getIndicatorString().getValue();
     }
 
     protected String getTextFromList(List<TextType> textTypes) {

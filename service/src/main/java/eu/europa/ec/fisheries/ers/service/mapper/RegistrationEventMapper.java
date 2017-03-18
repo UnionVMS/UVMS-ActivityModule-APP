@@ -10,6 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
+
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
@@ -22,8 +24,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import java.util.List;
-
 /**
  * Created by padhyad on 5/17/2016.
  */
@@ -35,7 +35,7 @@ public abstract class RegistrationEventMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "description", expression = "java(getDescription(registrationEvent.getDescriptions()))"),
             @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(registrationEvent.getDescriptions()))"),
-            @Mapping(target = "occurrenceDatetime", expression = "java(convertToDate(registrationEvent.getOccurrenceDateTime()))"),
+            @Mapping(target = "occurrenceDatetime", source = "registrationEvent.occurrenceDateTime.dateTime"),
             @Mapping(target = "registrationLocation", expression = "java(mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))"),
             @Mapping(target = "vesselTransportMeanses", expression = "java(vesselTransportMeansEntity)")
     })

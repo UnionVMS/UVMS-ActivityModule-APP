@@ -10,7 +10,16 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,11 +29,6 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by padhyad on 5/13/2016.
@@ -37,7 +41,7 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "referenceId", expression = "java(getIdType(fluxReportDocument.getReferencedID()))"),
             @Mapping(target = "referenceSchemeId", expression = "java(getIdTypeSchemaId(fluxReportDocument.getReferencedID()))"),
-            @Mapping(target = "creationDatetime", expression = "java(convertToDate(fluxReportDocument.getCreationDateTime()))"),
+            @Mapping(target = "creationDatetime", source = "fluxReportDocument.creationDateTime.dateTime"),
             @Mapping(target = "purposeCode", expression = "java(getCodeType(fluxReportDocument.getPurposeCode()))"),
             @Mapping(target = "purposeCodeListId", expression = "java(getCodeTypeListId(fluxReportDocument.getPurposeCode()))"),
             @Mapping(target = "purpose", expression = "java(getTextType(fluxReportDocument.getPurpose()))"),
@@ -47,11 +51,10 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
     })
     public abstract FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FluxReportDocumentEntity fluxReportDocumentEntity);
 
-
     @Mappings({
             @Mapping(target = "referenceId", expression = "java(getIdType(fluxReportDocument.getReferencedID()))"),
             @Mapping(target = "referenceSchemeId", expression = "java(getIdTypeSchemaId(fluxReportDocument.getReferencedID()))"),
-            @Mapping(target = "creationDatetime", expression = "java(convertToDate(fluxReportDocument.getCreationDateTime()))"),
+            @Mapping(target = "creationDatetime", source = "fluxReportDocument.creationDateTime.dateTime"),
             @Mapping(target = "purposeCode", expression = "java(getCodeType(fluxReportDocument.getPurposeCode()))"),
             @Mapping(target = "purposeCodeListId", expression = "java(getCodeTypeListId(fluxReportDocument.getPurposeCode()))"),
             @Mapping(target = "purpose", expression = "java(getTextType(fluxReportDocument.getPurpose()))"),
@@ -60,7 +63,6 @@ public abstract class FluxReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fluxFaReportMessage", expression = "java(fluxFaReportMessage)")
     })
     public abstract FluxReportDocumentEntity mapToFluxReportDocumentEntityFromFluxMessage(FLUXReportDocument fluxReportDocument, FluxFaReportMessageEntity fluxFaReportMessage, @MappingTarget FluxReportDocumentEntity fluxReportDocumentEntity);
-
 
     @Mappings({
             @Mapping(target = "fluxReportIdentifierId", expression = "java(getIdType(idType))"),
