@@ -80,7 +80,8 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         }
         Set<ContactPartyEntity> contactPartyEntities = new HashSet<>();
         for (ContactParty contactParty : contactParties) {
-            ContactPartyEntity contactPartyEntity = ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty, vesselTransportMeansEntity, new ContactPartyEntity());
+            ContactPartyEntity contactPartyEntity = ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty);
+            contactPartyEntity.setVesselTransportMeans(vesselTransportMeansEntity);
             contactPartyEntities.add(contactPartyEntity);
         }
         return contactPartyEntities;

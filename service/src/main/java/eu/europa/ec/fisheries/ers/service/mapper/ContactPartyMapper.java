@@ -19,13 +19,11 @@ import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetailsDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
@@ -44,10 +42,9 @@ public abstract class ContactPartyMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "contactPerson", expression = "java(getContactPersonEntity(contactParty.getSpecifiedContactPersons(), contactPartyEntity))"),
             @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntity(contactParty.getSpecifiedStructuredAddresses(), contactPartyEntity))"),
-            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
             @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
     })
-    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget ContactPartyEntity contactPartyEntity);
+    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty);
 
     @Mappings({
             @Mapping(target = "roleCode", expression = "java(getCodeType(codeType))"),
