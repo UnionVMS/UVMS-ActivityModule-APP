@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.Collections;
@@ -31,9 +32,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-/**
- * Created by padhyad on 6/8/2016.
- */
 @Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class})
 public abstract class ContactPartyMapper extends BaseMapper {
 
@@ -47,8 +45,8 @@ public abstract class ContactPartyMapper extends BaseMapper {
     public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty);
 
     @Mappings({
-            @Mapping(target = "roleCode", expression = "java(getCodeType(codeType))"),
-            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(codeType))")
+            @Mapping(target = "roleCode", source = "value"),
+            @Mapping(target = "roleCodeListId", source = "listID")
     })
     public abstract ContactPartyRoleEntity mapToContactPartyRoleEntity(CodeType codeType);
 
