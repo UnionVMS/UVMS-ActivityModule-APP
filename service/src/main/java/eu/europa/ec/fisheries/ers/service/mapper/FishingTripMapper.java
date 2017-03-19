@@ -8,9 +8,9 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,17 +30,14 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-/**
- * Created by padhyad on 6/15/2016.
- */
 @Mapper(uses = {DelimitedPeriodMapper.class})
 public abstract class FishingTripMapper extends BaseMapper {
 
     public static final FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fishingTrip.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingTrip.getTypeCode()))"),
+            @Mapping(target = "typeCode", source = "fishingTrip.typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "fishingTrip.typeCode.listID"),
             @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS(), fishingTripEntity))"),
             @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)"),
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
@@ -48,25 +45,17 @@ public abstract class FishingTripMapper extends BaseMapper {
     public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity, @MappingTarget FishingTripEntity fishingTripEntity);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fishingTrip.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingTrip.getTypeCode()))"),
+            @Mapping(target = "typeCode", source = "fishingTrip.typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "fishingTrip.typeCode.listID"),
             @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS(), fishingTripEntity))"),
             @Mapping(target = "faCatch", expression = "java(faCatchEntity)"),
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
     })
     public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FaCatchEntity faCatchEntity, @MappingTarget FishingTripEntity fishingTripEntity);
 
-    protected List<String> getTripIds(Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
-        List<String> ids = new ArrayList<>();
-        for (FishingTripIdentifierEntity identifierEntity : fishingTripIdentifiers) {
-            ids.add(identifierEntity.getTripId());
-        }
-        return ids;
-    }
-
     @Mappings({
-            @Mapping(target = "tripId", expression = "java(getIdType(idType))"),
-            @Mapping(target = "tripSchemeId", expression = "java(getIdTypeSchemaId(idType))")
+            @Mapping(target = "tripId", source = "value"),
+            @Mapping(target = "tripSchemeId", source = "schemeID")
     })
     protected abstract FishingTripIdentifierEntity mapToFishingTripIdentifierEntity(IDType idType);
 
