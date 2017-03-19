@@ -12,39 +12,27 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
-@Mapper
-public abstract class DelimitedPeriodMapper extends BaseMapper {
+@Mapper(imports = BaseMapper.class)
+public interface DelimitedPeriodMapper {
 
-    public static final DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
-
-    @Mappings({
-            @Mapping(target = "startDate", source = "delimitedPeriod.startDateTime.dateTime"),
-            @Mapping(target = "endDate", source = "delimitedPeriod.endDateTime.dateTime"),
-            @Mapping(target = "duration", source = "delimitedPeriod.durationMeasure.value"),
-            @Mapping(target = "durationUnitCode", source = "delimitedPeriod.durationMeasure.unitCode"),
-            @Mapping(target = "calculatedDuration", expression = "java(getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
-    })
-    public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
+    DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
 
     @Mappings({
-            @Mapping(target = "startDate", source = "delimitedPeriod.startDateTime.dateTime"),
-            @Mapping(target = "endDate", source = "delimitedPeriod.endDateTime.dateTime"),
-            @Mapping(target = "duration", source = "delimitedPeriod.durationMeasure.value"),
-            @Mapping(target = "durationUnitCode", source = "delimitedPeriod.durationMeasure.unitCode"),
-            @Mapping(target = "calculatedDuration", expression = "java(getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
-            @Mapping(target = "fishingTrip", expression = "java(fishingTripEntity)")
+            @Mapping(target = "startDate", source = "startDateTime.dateTime"),
+            @Mapping(target = "endDate", source = "endDateTime.dateTime"),
+            @Mapping(target = "duration", source = "durationMeasure.value"),
+            @Mapping(target = "durationUnitCode", source = "durationMeasure.unitCode"),
+            @Mapping(target = "calculatedDuration", expression = "java(BaseMapper.getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
     })
-    public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod, FishingTripEntity fishingTripEntity, @MappingTarget DelimitedPeriodEntity delimitedPeriodEntity);
+    DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
 
-    public abstract DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
+    DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
 
 }

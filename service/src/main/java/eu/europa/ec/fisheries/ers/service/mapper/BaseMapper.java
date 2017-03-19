@@ -89,6 +89,20 @@ public class BaseMapper {
         return criteriaList;
     }
 
+    public static Double getCalculatedMeasure(MeasureType measureType) {
+        if (measureType == null) {
+            return null;
+        }
+        UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(measureType.getUnitCode());
+        if (unitCodeEnum != null) {
+            BigDecimal measuredValue = measureType.getValue();
+            BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+            return result.doubleValue();
+        } else {
+            return null;
+        }
+    }
+
     protected String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
     }
@@ -142,20 +156,6 @@ public class BaseMapper {
             return null;
         }
         return measureType.getUnitCode();
-    }
-
-    protected Double getCalculatedMeasure(MeasureType measureType) {
-        if (measureType == null) {
-            return null;
-        }
-        UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(measureType.getUnitCode());
-        if (unitCodeEnum != null) {
-            BigDecimal measuredValue = measureType.getValue();
-            BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
-            return result.doubleValue();
-        } else {
-            return null;
-        }
     }
 
     protected String getCountry(VesselCountry country) {

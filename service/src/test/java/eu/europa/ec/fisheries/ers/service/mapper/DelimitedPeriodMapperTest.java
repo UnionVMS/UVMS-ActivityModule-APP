@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
@@ -43,9 +42,7 @@ public class DelimitedPeriodMapperTest {
     @Test
     public void testDelimitedPeriodMapperForFishingTrip() {
         DelimitedPeriod delimitedPeriod = MapperUtil.getDelimitedPeriod();
-        DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
-        FishingTripEntity fishingTrip = null;
-        DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingTrip, delimitedPeriodEntity);
+        DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod);
 
         assertEquals(delimitedPeriod.getStartDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getStartDate());
         assertEquals(delimitedPeriod.getEndDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getEndDate());
