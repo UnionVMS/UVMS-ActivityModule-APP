@@ -216,13 +216,6 @@ public class BaseMapper {
         }
     }
 
-    protected String getMeasureUnitCode(MeasureType measureType) {
-        if (measureType == null) {
-            return null;
-        }
-        return measureType.getUnitCode();
-    }
-
     protected String getCountry(VesselCountry country) {
         if (country == null) {
             return null;
