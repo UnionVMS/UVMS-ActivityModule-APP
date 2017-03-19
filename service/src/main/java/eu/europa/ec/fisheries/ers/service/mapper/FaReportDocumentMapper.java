@@ -108,7 +108,9 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         if (fluxReportDocument == null) {
             return null;
         }
-        return FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument, faReportDocumentEntity, new FluxReportDocumentEntity());
+        FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
+        fluxReportDocumentEntity.setFaReportDocument(faReportDocumentEntity);
+        return fluxReportDocumentEntity;
     }
 
     protected Set<FaReportIdentifierEntity> mapToFAReportIdentifierEntities(List<IDType> idTypes, FaReportDocumentEntity faReportDocumentEntity) {
