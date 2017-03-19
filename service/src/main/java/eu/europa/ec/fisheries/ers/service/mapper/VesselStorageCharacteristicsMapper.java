@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.Collections;
@@ -26,25 +27,22 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-/**
- * Created by padhyad on 6/13/2016.
- */
 @Mapper
 public abstract class VesselStorageCharacteristicsMapper extends BaseMapper {
 
     public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
 
     @Mappings({
-            @Mapping(target = "vesselId", expression = "java(getIdType(vesselStorageCharacteristic.getID()))"),
-            @Mapping(target = "vesselSchemaId", expression = "java(getIdTypeSchemaId(vesselStorageCharacteristic.getID()))"),
+            @Mapping(target = "vesselId", source = "vesselStorageCharacteristic.ID.value"),
+            @Mapping(target = "vesselSchemaId", source = "vesselStorageCharacteristic.ID.schemeID"),
             @Mapping(target = "vesselStorageCharCode", expression = "java(mapToVesselStorageCharCodes(vesselStorageCharacteristic.getTypeCodes(), vesselStorageCharacteristicsEntity))"),
             @Mapping(target = "fishingActivitiesForDestVesselCharId", expression = "java(fishingActivityEntity)")
     })
     public abstract VesselStorageCharacteristicsEntity mapToDestVesselStorageCharEntity(VesselStorageCharacteristic vesselStorageCharacteristic, FishingActivityEntity fishingActivityEntity, @MappingTarget VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity);
 
     @Mappings({
-            @Mapping(target = "vesselId", expression = "java(getIdType(vesselStorageCharacteristic.getID()))"),
-            @Mapping(target = "vesselSchemaId", expression = "java(getIdTypeSchemaId(vesselStorageCharacteristic.getID()))"),
+            @Mapping(target = "vesselId", source = "vesselStorageCharacteristic.ID.value"),
+            @Mapping(target = "vesselSchemaId", source = "vesselStorageCharacteristic.ID.schemeID"),
             @Mapping(target = "vesselStorageCharCode", expression = "java(mapToVesselStorageCharCodes(vesselStorageCharacteristic.getTypeCodes(), vesselStorageCharacteristicsEntity))"),
             @Mapping(target = "fishingActivitiesForSourceVesselCharId", expression = "java(fishingActivityEntity)")
     })
