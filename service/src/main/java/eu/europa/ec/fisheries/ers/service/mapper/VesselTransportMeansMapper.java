@@ -91,7 +91,9 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         if (registrationEvents == null || registrationEvents.isEmpty()) {
             return null;
         }
-        return RegistrationEventMapper.INSTANCE.mapToRegistrationEventEntity(registrationEvents.get(0), vesselTransportMeansEntity, new RegistrationEventEntity());
+        RegistrationEventEntity registrationEventEntity = RegistrationEventMapper.INSTANCE.mapToRegistrationEventEntity(registrationEvents.get(0));
+        registrationEventEntity.setVesselTransportMeanses(vesselTransportMeansEntity);
+        return registrationEventEntity;
     }
 
     protected Set<VesselIdentifierEntity> mapToVesselIdentifierEntities(List<IDType> idTypes, VesselTransportMeansEntity vesselTransportMeansEntity) {

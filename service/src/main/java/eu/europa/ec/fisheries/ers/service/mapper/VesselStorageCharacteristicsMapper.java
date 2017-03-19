@@ -10,6 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
@@ -20,11 +25,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by padhyad on 6/13/2016.
@@ -51,8 +51,8 @@ public abstract class VesselStorageCharacteristicsMapper extends BaseMapper {
     public abstract VesselStorageCharacteristicsEntity mapToSourceVesselStorageCharEntity(VesselStorageCharacteristic vesselStorageCharacteristic, FishingActivityEntity fishingActivityEntity, @MappingTarget VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity);
 
     @Mappings({
-            @Mapping(target = "vesselTypeCode", expression = "java(getCodeType(codeType))"),
-            @Mapping(target = "vesselTypeCodeListId", expression = "java(getCodeTypeListId(codeType))")
+            @Mapping(target = "vesselTypeCode", source = "value"),
+            @Mapping(target = "vesselTypeCodeListId", source = "listID")
     })
     protected abstract VesselStorageCharCodeEntity mapToVesselStorageCharCodeEntity(CodeType codeType);
 

@@ -43,8 +43,8 @@ public abstract class FluxPartyMapper extends BaseMapper {
     public abstract FluxPartyEntity mapToFluxPartyEntity(FLUXParty fluxParty);
 
     @Mappings({
-            @Mapping(target = "fluxPartyIdentifierId", expression = "java(getIdType(idType))"),
-            @Mapping(target = "fluxPartyIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
+            @Mapping(target = "fluxPartyIdentifierId", source = "value"),
+            @Mapping(target = "fluxPartyIdentifierSchemeId", source = "schemeID")
     })
     public abstract FluxPartyIdentifierEntity mapToFluxPartyIdentifierEntity(IDType idType);
 

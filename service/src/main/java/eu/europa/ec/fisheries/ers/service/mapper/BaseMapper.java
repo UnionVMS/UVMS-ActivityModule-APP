@@ -30,6 +30,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -40,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
@@ -53,6 +56,17 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 @Slf4j
 @NoArgsConstructor
 public class BaseMapper {
+
+    public static RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
+        if (registrationLocation == null) {
+            return null;
+        }
+        return RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation, registrationEventEntity, new RegistrationLocationEntity());
+    }
+
+    public static String getDescription(List<TextType> descriptions) {
+        return (descriptions == null || descriptions.isEmpty()) ? null : descriptions.get(0).getValue();
+    }
 
     public static Set<FishingGearRoleEntity> mapToFishingGears(List<CodeType> codeTypes, FishingGearEntity fishingGearEntity) {
         if (CollectionUtils.isEmpty(codeTypes)) {
@@ -158,6 +172,13 @@ public class BaseMapper {
         }
     }
 
+    public static String getLanguageIdFromList(List<TextType> textTypes) {
+        if (CollectionUtils.isEmpty(textTypes)) {
+            return null;
+        }
+        return textTypes.get(0).getLanguageID();
+    }
+
     protected String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
     }
@@ -183,13 +204,6 @@ public class BaseMapper {
             return null;
         }
         return textTypes.get(0).getValue();
-    }
-
-    protected String getLanguageIdFromList(List<TextType> textTypes) {
-        if (CollectionUtils.isEmpty(textTypes)) {
-            return null;
-        }
-        return textTypes.get(0).getLanguageID();
     }
 
     protected Double getCalculatedQuantity(QuantityType quantityType) {
