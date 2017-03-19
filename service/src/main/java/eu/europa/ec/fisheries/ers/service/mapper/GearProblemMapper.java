@@ -39,8 +39,8 @@ public abstract class GearProblemMapper extends BaseMapper {
     public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(gearProblem.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(gearProblem.getTypeCode()))"),
+            @Mapping(target = "typeCode", source = "gearProblem.typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "gearProblem.typeCode.listID"),
             @Mapping(target = "affectedQuantity", source = "gearProblem.affectedQuantity.value"),
             @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))"),
@@ -49,8 +49,8 @@ public abstract class GearProblemMapper extends BaseMapper {
     public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem);
 
     @Mappings({
-            @Mapping(target = "recoveryMeasureCode", expression = "java(getCodeType(codeType))"),
-            @Mapping(target = "recoveryMeasureCodeListId", expression = "java(getCodeTypeListId(codeType))")
+            @Mapping(target = "recoveryMeasureCode", source = "value"),
+            @Mapping(target = "recoveryMeasureCodeListId", source = "listID")
     })
     public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
 
