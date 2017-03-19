@@ -566,7 +566,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, fishingActivityEntity, new FishingGearEntity());
+            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            fishingGearEntity.setFishingActivity(fishingActivityEntity);
             fishingGearEntities.add(fishingGearEntity);
         }
         return fishingGearEntities;

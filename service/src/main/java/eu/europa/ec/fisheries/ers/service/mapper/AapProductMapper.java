@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
@@ -57,9 +56,8 @@ public abstract class AapProductMapper extends BaseMapper {
             @Mapping(target = "weighingMeansCodeListId", source = "aapProduct.weighingMeansCode.listID"),
             @Mapping(target = "usageCode", source = "aapProduct.usageCode.value"),
             @Mapping(target = "usageCodeListId", source = "aapProduct.usageCode.listID"),
-            @Mapping(target = "aapProcess", expression = "java(aapProcessEntity)")
     })
-    public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct, AapProcessEntity aapProcessEntity, @MappingTarget AapProductEntity aapProductEntity);
+    public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct);
 
     @Mappings({
             @Mapping(target = "type", source = "aapProcess.faCatch.typeCode"),

@@ -22,11 +22,14 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -36,6 +39,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
@@ -49,6 +53,31 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 @Slf4j
 @NoArgsConstructor
 public class BaseMapper {
+
+    public static Set<FishingGearRoleEntity> mapToFishingGears(List<CodeType> codeTypes, FishingGearEntity fishingGearEntity) {
+        if (CollectionUtils.isEmpty(codeTypes)) {
+            Collections.emptySet();
+        }
+        Set<FishingGearRoleEntity> fishingGearRoles = new HashSet<>();
+        for (CodeType codeType : codeTypes) {
+            FishingGearRoleEntity gearRole = FishingGearMapper.INSTANCE.mapToFishingGearRoleEntity(codeType);
+            gearRole.setFishingGear(fishingGearEntity);
+            fishingGearRoles.add(gearRole);
+        }
+        return fishingGearRoles;
+    }
+
+    public static Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
+        if (CollectionUtils.isEmpty(gearCharacteristics)) {
+            return Collections.emptySet();
+        }
+        Set<GearCharacteristicEntity> gearCharacteristicEntities = new HashSet<>();
+        for (GearCharacteristic gearCharacteristic : gearCharacteristics) {
+            GearCharacteristicEntity gearCharacteristicEntity = GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(gearCharacteristic, fishingGearEntity, new GearCharacteristicEntity());
+            gearCharacteristicEntities.add(gearCharacteristicEntity);
+        }
+        return gearCharacteristicEntities;
+    }
 
     public static FluxPartyEntity getFluxPartyEntity(FLUXParty fluxParty, FluxReportDocumentEntity fluxReportDocumentEntity) {
         if (fluxParty == null) {

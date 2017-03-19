@@ -34,8 +34,7 @@ public class AapProductMapperTest {
     @Test
     public void testAapProductMapper() {
         AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = new AapProductEntity();
-        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
 
         assertEquals(aapProduct.getPackagingTypeCode().getValue(), aapProductEntity.getPackagingTypeCode());
         assertEquals(aapProduct.getPackagingTypeCode().getListID(), aapProductEntity.getPackagingTypeCodeListId());
@@ -75,13 +74,11 @@ public class AapProductMapperTest {
         FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
         AAPProcess aapProcess = MapperUtil.getAapProcess();
-        AapProcessEntity aapProcessEntity = new AapProcessEntity();
-        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
+        AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
         aapProcessEntity.setFaCatch(faCatchEntity);
 
         AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = new AapProductEntity();
-        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
         aapProductEntity.setAapProcess(aapProcessEntity);
 
         // Create Input data

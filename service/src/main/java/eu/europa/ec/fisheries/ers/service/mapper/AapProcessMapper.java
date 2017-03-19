@@ -18,10 +18,8 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
@@ -38,11 +36,10 @@ public abstract class AapProcessMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactorNumeric.value"),
-            @Mapping(target = "faCatch", expression = "java(faCatchEntity)"),
             @Mapping(target = "aapProducts", expression = "java(getAapProductEntities(aapProcess.getResultAAPProducts(), aapProcessEntity))"),
             @Mapping(target = "aapProcessCode", expression = "java(getAapProcessCodes(aapProcess.getTypeCodes(), aapProcessEntity))")
     })
-    public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess, FaCatchEntity faCatchEntity, @MappingTarget AapProcessEntity aapProcessEntity);
+    public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
 
     @Mappings({
             @Mapping(target = "typeCode", source = "value"),
@@ -69,7 +66,9 @@ public abstract class AapProcessMapper extends BaseMapper {
         }
         Set<AapProductEntity> aapProductEntities = new HashSet<>();
         for (AAPProduct aapProduct : aapProducts) {
-            aapProductEntities.add(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, aapProcessEntity, new AapProductEntity()));
+            AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
+            aapProductEntity.setAapProcess(aapProcessEntity);
+            aapProductEntities.add(aapProductEntity);
         }
         return aapProductEntities;
     }

@@ -145,7 +145,9 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            fishingGearEntities.add(FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, faCatchEntity, new FishingGearEntity()));
+            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            fishingGearEntity.setFaCatch(faCatchEntity);
+            fishingGearEntities.add(fishingGearEntity);
         }
         return fishingGearEntities;
     }
@@ -156,7 +158,8 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<AapProcessEntity> aapProcessEntities = new HashSet<>();
         for (AAPProcess aapProcess : aapProcesses) {
-            AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, faCatchEntity, new AapProcessEntity());
+            AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+            aapProcessEntity.setFaCatch(faCatchEntity);
             aapProcessEntities.add(aapProcessEntity);
         }
         return aapProcessEntities;

@@ -85,7 +85,8 @@ public abstract class GearProblemMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, gearProblemEntity, new FishingGearEntity());
+            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            fishingGearEntity.setGearProblem(gearProblemEntity);
             fishingGearEntities.add(fishingGearEntity);
         }
         return fishingGearEntities;
