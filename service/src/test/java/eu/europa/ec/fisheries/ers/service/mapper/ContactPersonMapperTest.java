@@ -13,14 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -30,8 +30,7 @@ public class ContactPersonMapperTest {
     @Test
     public void  testContactPersonMapper() {
         ContactPerson contactPerson = MapperUtil.getContactPerson();
-        ContactPersonEntity contactPersonEntity = new ContactPersonEntity();
-        ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPerson, null, contactPersonEntity);
+        ContactPersonEntity contactPersonEntity = ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPerson);
 
         assertEquals(contactPerson.getAlias().getValue(), contactPersonEntity.getAlias());
         assertEquals(contactPerson.getFamilyName().getValue(), contactPersonEntity.getFamilyName());
@@ -47,8 +46,7 @@ public class ContactPersonMapperTest {
     @Test
     public void testContactPersonDetailsDTOMapper() {
         ContactPerson contactPerson = MapperUtil.getContactPerson();
-        ContactPersonEntity contactPersonEntity = new ContactPersonEntity();
-        ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPerson, null, contactPersonEntity);
+        ContactPersonEntity contactPersonEntity = ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPerson);
 
         ContactPersonDetailsDTO contactPersonDetailsDTO = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsDTO(contactPersonEntity);
 

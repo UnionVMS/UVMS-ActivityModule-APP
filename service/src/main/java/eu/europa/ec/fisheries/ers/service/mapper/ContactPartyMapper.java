@@ -72,7 +72,9 @@ public abstract class ContactPartyMapper extends BaseMapper {
         if(CollectionUtils.isEmpty(contactPersons)) {
             return null;
         }
-        return ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPersons.get(0), contactPartyEntity, new ContactPersonEntity());
+        ContactPersonEntity contactPersonEntity = ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPersons.get(0));
+        contactPersonEntity.setContactParty(contactPartyEntity);
+        return contactPersonEntity;
     }
 
     protected Set<StructuredAddressEntity> getStructuredAddressEntity(List<StructuredAddress> structuredAddresses, ContactPartyEntity contactPartyEntity) {

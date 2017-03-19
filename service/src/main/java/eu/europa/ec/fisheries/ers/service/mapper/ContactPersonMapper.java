@@ -11,33 +11,30 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 
 @Mapper
-public abstract class ContactPersonMapper extends BaseMapper {
+public interface ContactPersonMapper {
 
-    public static final ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
+    ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
 
     @Mappings({
-            @Mapping(target = "title", expression = "java(getTextType(contactPerson.getTitle()))"),
-            @Mapping(target = "givenName", expression = "java(getTextType(contactPerson.getGivenName()))"),
-            @Mapping(target = "middleName", expression = "java(getTextType(contactPerson.getMiddleName()))"),
-            @Mapping(target = "familyName", expression = "java(getTextType(contactPerson.getFamilyName()))"),
-            @Mapping(target = "familyNamePrefix", expression = "java(getTextType(contactPerson.getFamilyNamePrefix()))"),
-            @Mapping(target = "nameSuffix", expression = "java(getTextType(contactPerson.getNameSuffix()))"),
-            @Mapping(target = "gender", expression = "java(getCodeType(contactPerson.getGenderCode()))"),
-            @Mapping(target = "alias", expression = "java(getTextType(contactPerson.getAlias()))"),
-            @Mapping(target = "contactParty", expression = "java(contactPartyEntity)")
+            @Mapping(target = "title", source = "title.value"),
+            @Mapping(target = "givenName", source = "givenName.value"),
+            @Mapping(target = "middleName", source = "middleName.value"),
+            @Mapping(target = "familyName", source = "familyName.value"),
+            @Mapping(target = "familyNamePrefix", source = "familyNamePrefix.value"),
+            @Mapping(target = "nameSuffix", source = "nameSuffix.value"),
+            @Mapping(target = "gender", source = "genderCode.value"),
+            @Mapping(target = "alias", source = "alias.value"),
     })
-    public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson, ContactPartyEntity contactPartyEntity, @MappingTarget ContactPersonEntity contactPersonEntity);
+    ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
 
-    public abstract ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
+    ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 }

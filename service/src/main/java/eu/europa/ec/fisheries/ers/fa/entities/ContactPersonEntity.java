@@ -10,10 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import lombok.ToString;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
+
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_contact_person")
@@ -60,7 +67,6 @@ public class ContactPersonEntity implements Serializable {
 		return this.id;
 	}
 
-	
 	public String getTitle() {
 		return this.title;
 	}
