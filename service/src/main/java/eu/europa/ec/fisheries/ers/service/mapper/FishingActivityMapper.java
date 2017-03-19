@@ -585,7 +585,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<DelimitedPeriodEntity> delimitedPeriodEntities = new HashSet<>();
         for (DelimitedPeriod delimitedPeriod : delimitedPeriods) {
-            DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingActivityEntity, new DelimitedPeriodEntity());
+            DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod);
+            delimitedPeriodEntity.setFishingActivity(fishingActivityEntity);
             delimitedPeriodEntities.add(delimitedPeriodEntity);
         }
         return delimitedPeriodEntities;

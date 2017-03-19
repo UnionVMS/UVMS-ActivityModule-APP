@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import org.mapstruct.Mapper;
@@ -33,9 +32,8 @@ public abstract class DelimitedPeriodMapper extends BaseMapper {
             @Mapping(target = "duration", source = "delimitedPeriod.durationMeasure.value"),
             @Mapping(target = "durationUnitCode", source = "delimitedPeriod.durationMeasure.unitCode"),
             @Mapping(target = "calculatedDuration", expression = "java(getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
-            @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)")
     })
-    public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod, FishingActivityEntity fishingActivityEntity, @MappingTarget DelimitedPeriodEntity delimitedPeriodEntity);
+    public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
 
     @Mappings({
             @Mapping(target = "startDate", source = "delimitedPeriod.startDateTime.dateTime"),
