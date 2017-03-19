@@ -187,10 +187,6 @@ public class BaseMapper {
         return (idType == null) ? null : idType.getSchemeID();
     }
 
-    protected String getTextType(TextType textType) {
-        return textType == null ? null : textType.getValue();
-    }
-
     protected String getCodeType(CodeType codeType) {
         return (codeType == null) ? null : codeType.getValue();
     }
