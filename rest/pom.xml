@@ -49,7 +49,7 @@
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons-wildfly</artifactId>
+            <artifactId>uvms-commons</artifactId>
         </dependency>
 
         <dependency>

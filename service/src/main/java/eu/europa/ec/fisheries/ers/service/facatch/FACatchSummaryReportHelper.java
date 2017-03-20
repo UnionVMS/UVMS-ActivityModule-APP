@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
@@ -30,7 +30,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
 
     public FACatchSummaryReportHelper(){
         super();
-        this.faCatchSummaryCustomClassName="eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity";
+        this.faCatchSummaryCustomClassName="eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomEntity";
     }
 
     /**
@@ -40,10 +40,10 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
      * @return List<FACatchSummaryRecordDTO> Processed records having summary data
      */
     @Override
-    public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedMap){
+    public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> groupedMap){
         List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
 
-        for (Map.Entry<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> entry : groupedMap.entrySet()) {
+        for (Map.Entry<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> entry : groupedMap.entrySet()) {
             FACatchSummaryRecordDTO faCatchSummaryDTO= FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryRecordDTO(entry.getKey(),entry.getValue());
             if(CollectionUtils.isEmpty(faCatchSummaryDTO.getGroups())){ // Do not add record to the list if no data for grouping factors found
                 log.error("No data for the grouping factors found :"+faCatchSummaryDTO);

@@ -19,7 +19,8 @@ public class AapProductEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="aap_product_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

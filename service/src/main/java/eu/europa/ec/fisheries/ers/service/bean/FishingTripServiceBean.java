@@ -53,6 +53,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
 import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
@@ -81,6 +82,7 @@ import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
@@ -93,25 +95,16 @@ import org.apache.commons.collections.MapUtils;
 @Local(FishingTripService.class)
 @Transactional
 @Slf4j
-public class FishingTripServiceBean implements FishingTripService {
-
-    private static final String PREVIOUS = "PREVIOUS";
-    private static final String NEXT = "NEXT";
-
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
-
-    @EJB
-    private ActivityMessageProducer activityProducer;
-
-    @EJB
-    private AssetsMessageConsumerBean assetConsumerBean;
+public class FishingTripServiceBean extends BaseActivityBean implements FishingTripService {
 
     @EJB
     private SpatialModuleService spatialModule;
 
     @EJB
     private ActivityService activityServiceBean;
+
+    @EJB
+    private AssetModuleService assetModule;
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
@@ -123,12 +116,13 @@ public class FishingTripServiceBean implements FishingTripService {
 
     @PostConstruct
     public void init() {
-        fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
-        vesselIdentifierDao = new VesselIdentifierDao(em);
-        fishingActivityDao = new FishingActivityDao(em);
-        faReportDocumentDao = new FaReportDocumentDao(em);
-        faCatchDao = new FaCatchDao(em);
-        fishingTripDao = new FishingTripDao(em);
+        initEntityManager();
+        fishingTripIdentifierDao = new FishingTripIdentifierDao(getEntityManager());
+        vesselIdentifierDao = new VesselIdentifierDao(getEntityManager());
+        fishingActivityDao = new FishingActivityDao(getEntityManager());
+        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
+        faCatchDao = new FaCatchDao(getEntityManager());
+        fishingTripDao = new FishingTripDao(getEntityManager());
         vesselTransportMeansDao = new VesselTransportMeansDao(em);
     }
 

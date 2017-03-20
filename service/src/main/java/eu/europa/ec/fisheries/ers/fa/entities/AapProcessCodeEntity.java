@@ -25,7 +25,8 @@ public class AapProcessCodeEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="SEQ_GEN", sequenceName="aap_procode_seq")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)

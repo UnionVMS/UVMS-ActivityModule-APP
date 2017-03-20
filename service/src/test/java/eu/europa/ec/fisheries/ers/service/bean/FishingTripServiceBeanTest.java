@@ -39,7 +39,6 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
@@ -64,26 +63,31 @@ public class FishingTripServiceBeanTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Mock
     EntityManager em;
-    @Mock
-    ActivityMessageProducer producer;
-    @Mock
-    AssetsMessageConsumerBean consumer;
+
     @Mock
     FaReportDocumentDao faReportDocumentDao;
+
     @Mock
     FishingActivityDao fishingActivityDao;
+
     @Mock
-    VesselIdentifierDao vesselIdentifiersDao;
+    VesselIdentifiersDao vesselIdentifiersDao;
+
     @Mock
     FishingTripIdentifierDao fishingTripIdentifierDao;
+
     @Mock
     FishingTripDao fishingTripDao;
+
     @Mock
     FaCatchDao faCatchDao;
+
     @Mock
     ActivityServiceBean activityServiceBean;
+
     @InjectMocks
     FishingTripServiceBean fishingTripService;
 

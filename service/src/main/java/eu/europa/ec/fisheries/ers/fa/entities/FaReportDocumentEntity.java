@@ -52,7 +52,8 @@ public class FaReportDocumentEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="SEQ_GEN", sequenceName="fa_rep_doc_seq")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
     private int id;
 
     @Type(type = "org.hibernate.spatial.GeometryType")

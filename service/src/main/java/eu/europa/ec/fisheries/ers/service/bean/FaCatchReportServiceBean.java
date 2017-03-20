@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelperFactory;
@@ -46,18 +46,14 @@ import java.util.Map;
 @Local(FaCatchReportService.class)
 @Transactional
 @Slf4j
-public class FaCatchReportServiceBean implements FaCatchReportService {
-
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
+public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatchReportService {
 
     private FaCatchDao faCatchDao;
 
-
-
     @PostConstruct
     public void init() {
-        faCatchDao = new FaCatchDao(em);
+        initEntityManager();
+        faCatchDao = new FaCatchDao(getEntityManager());
 
     }
 
@@ -125,7 +121,7 @@ public class FaCatchReportServiceBean implements FaCatchReportService {
     @Override
     public FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding) throws ServiceException{
         // get grouped data
-        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData = faCatchDao.getGroupedFaCatchData(query,isLanding);
+        Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> groupedData = faCatchDao.getGroupedFaCatchData(query,isLanding);
 
         // post process data to create Summary table part of Catch summary Report
         FACatchSummaryHelper faCatchSummaryHelper = isLanding? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);

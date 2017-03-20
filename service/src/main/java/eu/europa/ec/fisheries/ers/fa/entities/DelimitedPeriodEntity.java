@@ -18,10 +18,10 @@ import java.util.Date;
 @Table(name = "activity_delimited_period")
 public class DelimitedPeriodEntity implements Serializable {
 
-	
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="del_period_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

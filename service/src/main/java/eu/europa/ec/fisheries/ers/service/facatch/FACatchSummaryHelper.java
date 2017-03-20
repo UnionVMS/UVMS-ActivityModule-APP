@@ -13,8 +13,8 @@ package eu.europa.ec.fisheries.ers.service.facatch;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomChildEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomChildProxy;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
@@ -58,10 +58,10 @@ public abstract class FACatchSummaryHelper {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public FaCatchSummaryCustomEntity mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList, boolean isLanding) throws ServiceException {
+    public FaCatchSummaryCustomProxy mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList, boolean isLanding) throws ServiceException {
 
         if (ArrayUtils.isEmpty(catchSummaryArr))
-            return new FaCatchSummaryCustomEntity();
+            return new FaCatchSummaryCustomProxy();
         int objectArrSize = catchSummaryArr.length - 1;
         if (objectArrSize != groupList.size())  // do not include count field from object array
             throw new ServiceException("selected number of SQL fields do not match with grouping criterias asked by user ");
@@ -93,13 +93,13 @@ public abstract class FACatchSummaryHelper {
         method.invoke(faCatchSummaryCustomEntityObj, catchSummaryArr[objectArrSize]);
 
         if (isLanding)
-            return (FaCatchSummaryCustomChildEntity) faCatchSummaryCustomEntityObj;
+            return (FaCatchSummaryCustomChildProxy) faCatchSummaryCustomEntityObj;
         else
-            return (FaCatchSummaryCustomEntity) faCatchSummaryCustomEntityObj;
+            return (FaCatchSummaryCustomProxy) faCatchSummaryCustomEntityObj;
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             log.debug("Error while trying to map FaCatchSummaryCustomEntity. ",e);
         }
-        return new FaCatchSummaryCustomEntity();
+        return new FaCatchSummaryCustomProxy();
     }
 
     // This method parses the date to extract either day, month or year
@@ -162,10 +162,10 @@ public abstract class FACatchSummaryHelper {
      * @param customEntities
      * @return Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> key => group value => list of records with that group
      */
-    public Map<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> groupByFACatchCustomEntities(List<FaCatchSummaryCustomEntity> customEntities) {
-        Map<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> groupedMap = new HashMap<>();
-        for (FaCatchSummaryCustomEntity summaryObj : customEntities) {
-            List<FaCatchSummaryCustomEntity> tempList = groupedMap.get(summaryObj);
+    public Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupByFACatchCustomEntities(List<FaCatchSummaryCustomProxy> customEntities) {
+        Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap = new HashMap<>();
+        for (FaCatchSummaryCustomProxy summaryObj : customEntities) {
+            List<FaCatchSummaryCustomProxy> tempList = groupedMap.get(summaryObj);
             if (Collections.isEmpty(tempList)) {
                 tempList = new ArrayList<>();
                 tempList.add(summaryObj);
@@ -184,7 +184,7 @@ public abstract class FACatchSummaryHelper {
      * @param groupedMap
      * @return List<FACatchSummaryRecordDTO> Processed records having summary data
      */
-    public abstract List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomEntity, List<FaCatchSummaryCustomEntity>> groupedMap);
+    public abstract List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap);
 
 
     /**

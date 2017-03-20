@@ -30,7 +30,6 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -75,10 +74,10 @@ public class ActivityServiceBeanTest {
     ActivityServiceBean activityService;
     @InjectMocks
     FishingTripServiceBean fishingTripService;
+
     @Mock
-    ActivityMessageProducerBean activityProducer;
-    @Mock
-    AssetsMessageConsumerBean activityConsumer;
+    private SpatialModuleService spatialModule;
+
     @Mock
     JAXBMarshaller marshaller;
     @Mock
