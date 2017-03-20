@@ -51,35 +51,39 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-/**
- * Created by padhyad on 8/9/2016.
- */
+
 public class ActivityServiceBeanTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Mock
     EntityManager em;
+
     @Mock
     FishingActivityDao fishingActivityDao;
+
     @Mock
     FaReportDocumentDao faReportDocumentDao;
+
     @Mock
     FishingTripDao fishingTripDao;
+
     @Mock
     FishingTripIdentifierDao fishingTripIdentifierDao;
+
     @Mock
     VesselTransportMeansDao vesselIdentifiersDao;
+
     @InjectMocks
     ActivityServiceBean activityService;
+
     @InjectMocks
     FishingTripServiceBean fishingTripService;
 
     @Mock
-    private SpatialModuleService spatialModule;
-
-    @Mock
     JAXBMarshaller marshaller;
+
     @Mock
     private SpatialModuleService spatialModule;
 

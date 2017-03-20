@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -29,11 +30,11 @@ public class ContactPersonEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@SequenceGenerator(name="SEQ_GEN", sequenceName="ct_person_seq")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
-	private int id;
-	
-	@Column(name = "title")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ct_person_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    private int id;
+
+    @Column(name = "title")
 	private String title;
 	
 	@Column(name = "given_name")

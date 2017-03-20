@@ -19,9 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.jms.TextMessage;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,8 +47,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
-import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
@@ -71,17 +66,12 @@ import eu.europa.ec.fisheries.ers.service.mapper.FishingTripToGeoJsonMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
-import eu.europa.ec.fisheries.uvms.activity.message.constants.ModuleQueue;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
-import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -97,6 +87,9 @@ import org.apache.commons.collections.MapUtils;
 @Slf4j
 public class FishingTripServiceBean extends BaseActivityBean implements FishingTripService {
 
+    private static final String PREVIOUS = "PREVIOUS";
+    private static final String NEXT = "NEXT";
+
     @EJB
     private SpatialModuleService spatialModule;
 
@@ -104,7 +97,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private ActivityService activityServiceBean;
 
     @EJB
-    private AssetModuleService assetModule;
+    private AssetProducerBean assetProducerBean;
+
+    @EJB
+    private AssetModuleService assetModuleService;
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
@@ -160,7 +156,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             next = nextTripCount;
         } else if (count != 1) {
             log.info("Count the number of previous and next result based on count received");
-            count = count - 1;
+            count = count - 1; // FIXME squid:S1226 intoduce a new variable instead of reusing
             if (count % 2 == 0) {
                 previous = count / 2;
                 next = count / 2;
@@ -257,17 +253,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 criteria.getCriterias().addAll(assetListCriteriaPairs);
                 AssetListQuery query = new AssetListQuery();
                 query.setAssetSearchCriteria(criteria);
-                String request = AssetModuleRequestMapper.createAssetListModuleRequest(query);
-                String correlationId = activityProducer.sendModuleMessage(request, ModuleQueue.ASSET);// FIXME
-                TextMessage message = assetConsumerBean.getMessage(correlationId, TextMessage.class);
-                List<Asset> assets = AssetModuleResponseMapper.mapToAssetListFromResponse(message, correlationId);
+                List<Asset> assetList = assetModuleService.getAssetListResponse(query);
+                vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
 
-                vesselDetailsDTO.enrichIdentifiers(assets.get(0));
-
-            } catch (MessageException | ActivityMessageException e) {
+            } catch (ServiceException e) {
                 log.error("Error while trying to send message to Assets module.", e);
-            } catch (AssetModelMapperException e) {
-                log.error("Error while trying to marshal asset.", e);
             }
         }
     }

@@ -1,10 +1,8 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,19 +16,15 @@ import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
@@ -85,10 +79,6 @@ public class FishingActivityServiceBeanTest {
     @Mock
     JAXBMarshaller marshaller;
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-
     @Test
     @SneakyThrows
     public void testGetVesselDetailsForFishingTrip() throws ServiceException {
@@ -120,16 +110,15 @@ public class FishingActivityServiceBeanTest {
     public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() {
 
         when(vesselTransportMeansDao.findLatestVesselByTripId(Mockito.anyString())).thenReturn(new VesselTransportMeansEntity());
-        ListAssetResponse listAssetResponse = new ListAssetResponse();
+        List<Asset> listAssetResponse = new ArrayList<>();
         Asset asset = new Asset();
         asset.setCfr("UPDATED_CFR");
         asset.setIrcs("UPDATED_IRCS");
         asset.setImo("UPDATED_IMO");
         asset.setName("name");
-        listAssetResponse.setTotalNumberOfPages(10);
+        listAssetResponse.add(asset);
 
-        listAssetResponse.getAsset().add(asset);
-        when(assetModule.getAssetListResponse(Mockito.any(VesselDetailsTripDTO.class))).thenReturn(listAssetResponse);
+        when(assetModule.getAssetListResponse(Mockito.any(AssetListQuery.class))).thenReturn(listAssetResponse);
 
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 

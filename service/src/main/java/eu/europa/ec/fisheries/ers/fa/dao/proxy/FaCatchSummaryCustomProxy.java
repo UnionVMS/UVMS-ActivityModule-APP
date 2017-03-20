@@ -41,7 +41,7 @@ public class FaCatchSummaryCustomProxy implements Serializable {
     private String typeCode;
     private double count;
 
-    public FaCatchSummaryCustomProxy(){
+    public FaCatchSummaryCustomProxy() {
 
     }
 
@@ -69,31 +69,54 @@ public class FaCatchSummaryCustomProxy implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FaCatchSummaryCustomProxy)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FaCatchSummaryCustomProxy)) {
+            return false;
+        }
 
         FaCatchSummaryCustomProxy that = (FaCatchSummaryCustomProxy) o;
 
-        if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) return false;
-        if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;
-        if (getYear() != null ? !getYear().equals(that.getYear()) : that.getYear() != null) return false;
-        if (getVesselTransportGuid() != null ? !getVesselTransportGuid().equals(that.getVesselTransportGuid()) : that.getVesselTransportGuid() != null)
+        if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) {
             return false;
-        if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null)
+        }
+        if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) {
             return false;
-        if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null)
+        }
+        if (getYear() != null ? !getYear().equals(that.getYear()) : that.getYear() != null) {
             return false;
-        if (getPresentation() != null ? !getPresentation().equals(that.getPresentation()) : that.getPresentation() != null)
+        }
+        if (getVesselTransportGuid() != null ? !getVesselTransportGuid().equals(that.getVesselTransportGuid()) : that.getVesselTransportGuid() != null) {
             return false;
-        if (getTerritory() != null ? !getTerritory().equals(that.getTerritory()) : that.getTerritory() != null)
+        }
+        if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null) {
             return false;
-        if (getFaoArea() != null ? !getFaoArea().equals(that.getFaoArea()) : that.getFaoArea() != null) return false;
-        if (getIcesStatRectangle() != null ? !getIcesStatRectangle().equals(that.getIcesStatRectangle()) : that.getIcesStatRectangle() != null)
+        }
+        if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null) {
             return false;
-        if (getEffortZone() != null ? !getEffortZone().equals(that.getEffortZone()) : that.getEffortZone() != null)
+        }
+        if (getPresentation() != null ? !getPresentation().equals(that.getPresentation()) : that.getPresentation() != null) {
             return false;
-        if (getRfmo() != null ? !getRfmo().equals(that.getRfmo()) : that.getRfmo() != null) return false;
-        if (getGfcmGsa() != null ? !getGfcmGsa().equals(that.getGfcmGsa()) : that.getGfcmGsa() != null) return false;
+        }
+        if (getTerritory() != null ? !getTerritory().equals(that.getTerritory()) : that.getTerritory() != null) {
+            return false;
+        }
+        if (getFaoArea() != null ? !getFaoArea().equals(that.getFaoArea()) : that.getFaoArea() != null) {
+            return false;
+        }
+        if (getIcesStatRectangle() != null ? !getIcesStatRectangle().equals(that.getIcesStatRectangle()) : that.getIcesStatRectangle() != null) {
+            return false;
+        }
+        if (getEffortZone() != null ? !getEffortZone().equals(that.getEffortZone()) : that.getEffortZone() != null) {
+            return false;
+        }
+        if (getRfmo() != null ? !getRfmo().equals(that.getRfmo()) : that.getRfmo() != null) {
+            return false;
+        }
+        if (getGfcmGsa() != null ? !getGfcmGsa().equals(that.getGfcmGsa()) : that.getGfcmGsa() != null) {
+            return false;
+        }
         return getGfcmStatRectangle() != null ? getGfcmStatRectangle().equals(that.getGfcmStatRectangle()) : that.getGfcmStatRectangle() == null;
 
     }

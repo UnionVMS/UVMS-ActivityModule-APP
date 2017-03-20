@@ -13,16 +13,22 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.jms.TextMessage;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.VesselDetailsTripDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
@@ -30,22 +36,17 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
-import eu.europa.ec.fisheries.wsdl.asset.types.*;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.transaction.Transactional;
-import java.util.*;
-
-/**
- * Created by padhyad on 10/12/2016.
- */
 @Stateless
 @Transactional
 @Slf4j
@@ -57,23 +58,24 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     @EJB
     private ActivityConsumerBean activityConsumer;
 
-    public ListAssetResponse getAssetListResponse(VesselDetailsTripDTO vesselDetailsTripDTO) throws ServiceException {
+    @Override
+    public List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException {
+
+        List<Asset> assetList;
 
         try {
-            if (someVesselDetailsAreMissing(vesselDetailsTripDTO)) {
-                String assetsRequest = AssetsRequestMapper.INSTANCE.mapToAssetsRequest(vesselDetailsTripDTO);
-                String messageID = assetProducer.sendModuleMessage(assetsRequest, activityConsumer.getDestination());
-                TextMessage message = activityConsumer.getMessage(messageID, TextMessage.class);
-                String response = message.getText();
-                if (StringUtils.isNotEmpty(response) && !isFaultMessage(message)) {
-                    return JAXBMarshaller.unmarshallTextMessage(response, ListAssetResponse.class);
-                }
-            }
-        } catch (JMSException | MessageException | ActivityModelMarshallException e) {
+
+            String assetsRequest = AssetModuleRequestMapper.createAssetListModuleRequest(assetListQuery);
+            String correlationID = assetProducer.sendModuleMessage(assetsRequest, activityConsumer.getDestination());
+            TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
+            assetList = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationID);
+
+        } catch (AssetModelMapperException | MessageException e) {
             log.error("Error while trying to send message to Assets module.", e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }
-        return null;
+
+        return assetList;
     }
 
     /**
@@ -81,7 +83,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
      */
     @Override
     public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
-        String request = null;
+        String request;
         try {
             request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselIdentifiers));
         } catch (AssetModelMapperException e) {
@@ -223,32 +225,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         assetListQuery.setPagination(pagination);
 
         return assetListQuery;
-    }
-
-    private boolean isFaultMessage(TextMessage response) {
-        try {
-            JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
-            return true;
-        } catch (ActivityModelMarshallException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if some vessel details are missing
-     *
-     * @param vesselDetailsTripDTO
-     * @return
-     */
-    private boolean someVesselDetailsAreMissing(VesselDetailsTripDTO vesselDetailsTripDTO) {
-        return StringUtils.isEmpty(vesselDetailsTripDTO.getCfr())
-                || StringUtils.isEmpty(vesselDetailsTripDTO.getExMark())
-                || StringUtils.isEmpty(vesselDetailsTripDTO.getUvi())
-                || StringUtils.isEmpty(vesselDetailsTripDTO.getGfcm())
-                || StringUtils.isEmpty(vesselDetailsTripDTO.getIccat())
-                || StringUtils.isEmpty(vesselDetailsTripDTO.getIrcs())
-                || StringUtils.isEmpty(vesselDetailsTripDTO.getName())
-                || StringUtils.isEmpty(vesselDetailsTripDTO.getFlagState());
     }
 
 }

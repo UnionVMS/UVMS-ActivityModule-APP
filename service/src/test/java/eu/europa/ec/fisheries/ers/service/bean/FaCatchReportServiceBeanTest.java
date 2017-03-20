@@ -10,12 +10,22 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static junit.framework.TestCase.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -28,35 +38,20 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
-import static junit.framework.TestCase.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
 /**
  * Created by sanera on 07/03/2017.
  */
 public class FaCatchReportServiceBeanTest {
 
 
-    @Mock
-    EntityManager em;
-
-    @Mock
-    FaCatchDao faCatchDao;
-
-
-    @InjectMocks
-    FaCatchReportServiceBean faCatchReportService;
-
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
-
+    @Mock
+    EntityManager em;
+    @Mock
+    FaCatchDao faCatchDao;
+    @InjectMocks
+    FaCatchReportServiceBean faCatchReportService;
 
     @Test
     @SneakyThrows
@@ -110,7 +105,7 @@ public class FaCatchReportServiceBeanTest {
         Map<SearchFilter, String> searchCriteriaMap = new EnumMap<SearchFilter, String>(SearchFilter.class);
         searchCriteriaMap.put(SearchFilter.TRIP_ID,"NOR-TRP-20160517234053706");
         query.setSearchCriteriaMap(searchCriteriaMap);
-        Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> groupedData=MapperUtil.getGroupedFaCatchSummaryCustomEntityData();
+        Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = MapperUtil.getGroupedFaCatchSummaryCustomEntityData();
         when((faCatchDao).getGroupedFaCatchData(any(FishingActivityQuery.class),any(Boolean.class))).thenReturn(groupedData);
 
    //     when(faCatchDao.getGroupedFaCatchData(query,true)).thenReturn(MapperUtil.getGroupedFaCatchSummaryCustomEntityData());

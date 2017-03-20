@@ -1,5 +1,3 @@
-package eu.europa.ec.fisheries.ers.fa.entities;
-
 /*
 Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
 
@@ -11,7 +9,15 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-import javax.persistence.*;
+package eu.europa.ec.fisheries.ers.fa.entities;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Entity that will map the configuration of Activity module.
@@ -22,8 +28,8 @@ public class ActivityConfiguration {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name="SEQ_GEN", sequenceName="act_config_seq")
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "act_config_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private Long id;
 
     @Column(name = "config_name")

@@ -13,19 +13,12 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
-import javax.annotation.Resource;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.jms.Destination;
-
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_MODULE_ACTIVITY;
-
-/**
- * Created by padhyad on 10/12/2016.
- */
 @Stateless
 @LocalBean
 public class AssetProducerBean extends AbstractProducer {

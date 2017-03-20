@@ -74,7 +74,7 @@ public class FishingTripServiceBeanTest {
     FishingActivityDao fishingActivityDao;
 
     @Mock
-    VesselIdentifiersDao vesselIdentifiersDao;
+    VesselIdentifierDao vesselIdentifiersDao;
 
     @Mock
     FishingTripIdentifierDao fishingTripIdentifierDao;
