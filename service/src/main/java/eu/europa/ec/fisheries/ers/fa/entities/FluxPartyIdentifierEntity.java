@@ -25,7 +25,8 @@ public class FluxPartyIdentifierEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="SEQ_GEN", sequenceName="pty_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,8 +39,8 @@ public class FluxPartyIdentifierEntity implements Serializable {
     @Column(name = "flux_party_identifier_scheme_id")
     private String fluxPartyIdentifierSchemeId;
 
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public FluxPartyEntity getFluxParty() {

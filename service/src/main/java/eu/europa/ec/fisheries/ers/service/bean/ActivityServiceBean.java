@@ -32,6 +32,7 @@ import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -58,14 +59,10 @@ import java.util.*;
 @Local(ActivityService.class)
 @Transactional
 @Slf4j
-public class ActivityServiceBean implements ActivityService {
-
-    static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
+public class ActivityServiceBean extends BaseActivityBean implements ActivityService {
 
     private FaReportDocumentDao faReportDocumentDao;
+
     private FishingActivityDao fishingActivityDao;
 
     @EJB
@@ -76,8 +73,9 @@ public class ActivityServiceBean implements ActivityService {
 
     @PostConstruct
     public void init() {
-        fishingActivityDao = new FishingActivityDao(em);
-        faReportDocumentDao = new FaReportDocumentDao(em);
+        initEntityManager();
+        fishingActivityDao = new FishingActivityDao(getEntityManager());
+        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
     }
 
     /**

@@ -21,6 +21,8 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 
+import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_MODULE_ACTIVITY;
+
 /**
  * Created by padhyad on 10/12/2016.
  */
@@ -28,12 +30,8 @@ import javax.jms.Destination;
 @LocalBean
 public class AssetProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_ASSET_EVENT)
-    private Destination destination;
-
     @Override
-    public Destination getDestination() {
-        return destination;
+    public String getDestinationName() {
+        return MessageConstants.QUEUE_ASSET_EVENT;
     }
-
 }

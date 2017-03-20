@@ -21,7 +21,9 @@ import javax.persistence.*;
 public class ActivityConfiguration {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    @SequenceGenerator(name="SEQ_GEN", sequenceName="act_config_seq", allocationSize = 1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
     private Long id;
 
     @Column(name = "config_name")

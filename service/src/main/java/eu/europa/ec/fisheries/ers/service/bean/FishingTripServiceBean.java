@@ -22,8 +22,8 @@ import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
@@ -54,8 +54,6 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.TextMessage;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -66,20 +64,17 @@ import java.util.*;
 @Local(FishingTripService.class)
 @Transactional
 @Slf4j
-public class FishingTripServiceBean implements FishingTripService {
+public class FishingTripServiceBean extends BaseActivityBean implements FishingTripService {
 
-    private static final String PREVIOUS = "PREVIOUS";
-    private static final String NEXT = "NEXT";
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
-    @EJB
-    private ActivityMessageProducer activityProducer;
-    @EJB
-    private AssetsMessageConsumerBean activityConsumer;
     @EJB
     private SpatialModuleService spatialModule;
+
     @EJB
     private ActivityService activityServiceBean;
+
+    @EJB
+    private AssetModuleService assetModule;
+
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
@@ -87,14 +82,19 @@ public class FishingTripServiceBean implements FishingTripService {
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
 
+    private static final String PREVIOUS = "PREVIOUS";
+    private static final String NEXT = "NEXT";
+
+
     @PostConstruct
     public void init() {
-        fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
-        vesselIdentifiersDao = new VesselIdentifiersDao(em);
-        fishingActivityDao = new FishingActivityDao(em);
-        faReportDocumentDao = new FaReportDocumentDao(em);
-        faCatchDao = new FaCatchDao(em);
-        fishingTripDao = new FishingTripDao(em);
+        initEntityManager();
+        fishingTripIdentifierDao = new FishingTripIdentifierDao(getEntityManager());
+        vesselIdentifiersDao = new VesselIdentifiersDao(getEntityManager());
+        fishingActivityDao = new FishingActivityDao(getEntityManager());
+        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
+        faCatchDao = new FaCatchDao(getEntityManager());
+        fishingTripDao = new FishingTripDao(getEntityManager());
     }
 
     /**
@@ -200,7 +200,7 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     @Override
-    public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId) {
+    public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException {
 
         VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
 
@@ -274,33 +274,9 @@ public class FishingTripServiceBean implements FishingTripService {
      * @param vesselDetailsTripDTO
      */
 
-    private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsTripDTO vesselDetailsTripDTO) {
-        if (someVesselDetailsAreMissing(vesselDetailsTripDTO)) {
-            String response = null;
-            TextMessage message = null;
-            try {
-                String assetsRequest = AssetsRequestMapper.mapToAssetsRequest(vesselDetailsTripDTO);
-
-                String messageID = activityProducer.sendAssetsModuleSynchronousMessage(assetsRequest);
-                message = activityConsumer.getMessage(messageID, TextMessage.class);
-                response = message.getText();
-            } catch (Exception e) {
-                log.error("Error while trying to send message to Assets module.", e);
-            }
-            if (isFaultMessage(message)) {
-                log.error("The Asset module responded with a fault message related to Vessel Details Enrichment: ", response);
-                log.debug("The original VesselDetailsTripDTO that the request for enrichment was made for : ", vesselDetailsTripDTO.toString());
-                return;
-            }
-            if (StringUtils.isNotEmpty(response)) {
-                try {
-                    ListAssetResponse listResp = JAXBMarshaller.unmarshallTextMessage(response, ListAssetResponse.class);
-                    AssetsRequestMapper.mapAssetsResponseToVesselDetailsTripDTO(listResp, vesselDetailsTripDTO);
-                } catch (ActivityModelMarshallException e) {
-                    log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment", e);
-                }
-            }
-        }
+    private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsTripDTO vesselDetailsTripDTO) throws ServiceException {
+        ListAssetResponse listAssetResponse = assetModule.getAssetListResponse(vesselDetailsTripDTO);
+        AssetsRequestMapper.INSTANCE.mapAssetsResponseToVesselDetailsTripDTO(listAssetResponse, vesselDetailsTripDTO);
     }
 
     /**

@@ -59,13 +59,12 @@
         <hibernate.version>4.3.5.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14-M1</geotools.version>
-        <uvms.commons.version>2.0.19-SNAPSHOT</uvms.commons.version>
+        <uvms.commons.version>2.0.20-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.3</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
-        <hibernate-search-orm.version>4.5.1.Final</hibernate-search-orm.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
         <infinispan-directory-provider.version>8.2.4.Final</infinispan-directory-provider.version>
-        <usm4uvms.version>2.0.16</usm4uvms.version>
+        <usm4uvms.version>2.0.19-SNAPSHOT</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
@@ -74,7 +73,6 @@
         <geotools.version>14-M1</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
-        <lucene.index.directory>/app/indexes/activity</lucene.index.directory>
     </properties>
 
     <dependencyManagement>
@@ -101,7 +99,6 @@
                 <version>${jackson.version}</version>
                 <scope>provided</scope>
             </dependency>
-
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
@@ -161,7 +158,7 @@
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-commons-wildfly</artifactId>
+                <artifactId>uvms-commons</artifactId>
                 <version>${uvms.commons.version}</version>
             </dependency>
 
@@ -302,12 +299,6 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!--HIBERNATE SEARCH-->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-search-orm</artifactId>
-                <version>${hibernate-search-orm.version}</version>
-            </dependency>
             <!-- If using JPA, add: -->
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -562,6 +553,7 @@
         <module>rest</module>
         <module>service</module>
         <module>message</module>
-        <module>deploy</module>
+        <module>deploy-wildfly</module>
+        <module>deploy-weblogic</module>
     </modules>
 </project>

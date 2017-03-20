@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.uvms.activity.message.consumer;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractConsumer;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
 import javax.annotation.Resource;
 import javax.ejb.Local;
@@ -29,11 +30,7 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_ACTIVIT
 @Local
 public class ActivityConsumerBean extends AbstractConsumer {
 
-    @Resource(mappedName = QUEUE_ACTIVITY)
-    private Destination destination;
-
-    @Override
-    public Destination getDestination() {
-        return destination;
+    public String getDestinationName(){
+        return MessageConstants.QUEUE_ACTIVITY;
     }
 }

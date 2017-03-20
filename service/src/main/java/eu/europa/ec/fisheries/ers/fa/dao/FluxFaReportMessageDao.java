@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 import javax.persistence.EntityManager;
@@ -31,7 +32,7 @@ public class FluxFaReportMessageDao extends AbstractDAO<FluxFaReportMessageEntit
         return em;
     }
 
-    public void saveFluxFaReportMessage(FluxFaReportMessageEntity entity) {
-        getEntityManager().merge(entity);
+    public void saveFluxFaReportMessage(FluxFaReportMessageEntity entity) throws ServiceException {
+        createEntity(entity);
     }
 }

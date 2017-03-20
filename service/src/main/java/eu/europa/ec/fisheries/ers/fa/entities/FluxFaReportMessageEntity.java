@@ -23,7 +23,8 @@ public class FluxFaReportMessageEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="SEQ_GEN", sequenceName="rep_msg_seq", allocationSize = 1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
     private int id;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxFaReportMessage", cascade = CascadeType.ALL)
@@ -31,6 +32,10 @@ public class FluxFaReportMessageEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxFaReportMessage", cascade = CascadeType.ALL)
     private Set<FaReportDocumentEntity> faReportDocuments;
+
+    public int getId() {
+        return id;
+    }
 
     public FluxReportDocumentEntity getFluxReportDocument() {
         return fluxReportDocument;

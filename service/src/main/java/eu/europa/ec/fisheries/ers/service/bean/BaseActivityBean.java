@@ -11,25 +11,34 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.message.producer;
+package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
-
-import javax.annotation.Resource;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.Destination;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
- * Created by padhyad on 10/12/2016.
+ * Created by padhyad on 3/17/2017.
  */
-@Stateless
-@Local
-public class SpatialProducerBean extends AbstractProducer {
+public abstract class BaseActivityBean {
 
-    @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_MODULE_SPATIAL;
+    protected EntityManager em;
+
+    @PersistenceContext(unitName = "activityPUpostgres")
+    protected EntityManager postgres;
+
+    @PersistenceContext(unitName = "activityPUoracle")
+    protected EntityManager oracle;
+
+    protected void initEntityManager() {
+        String dbDialect = System.getProperty("db.dialect");
+        if ("oracle".equalsIgnoreCase(dbDialect)) {
+            em = oracle;
+        } else {
+            em = postgres;
+        }
+    }
+
+    protected EntityManager getEntityManager() {
+        return em;
     }
 }

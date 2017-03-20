@@ -9,7 +9,7 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-package eu.europa.ec.fisheries.ers.fa.entities;
+package eu.europa.ec.fisheries.ers.fa.dao.proxy;
 
 
 
@@ -19,7 +19,7 @@ import java.io.Serializable;
  * Created by sanera on 26/01/2017.
  */
 //@Entity
-public class FaCatchSummaryCustomEntity implements Serializable {
+public class FaCatchSummaryCustomProxy implements Serializable {
 
 
     private String day;
@@ -41,12 +41,12 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     private String typeCode;
     private double count;
 
-    public FaCatchSummaryCustomEntity(){
+    public FaCatchSummaryCustomProxy(){
 
     }
 
 
-    public FaCatchSummaryCustomEntity(String day, String month, String year, String vesselTransportGuid, String flagState, String gearType, String presentation, String icesStatRectangle, String territory, String faoArea, String effortZone, String rfmo, String gfcmGsa, String gfcmStatRectangle, String fishClass, String species, String typeCode, double count) {
+    public FaCatchSummaryCustomProxy(String day, String month, String year, String vesselTransportGuid, String flagState, String gearType, String presentation, String icesStatRectangle, String territory, String faoArea, String effortZone, String rfmo, String gfcmGsa, String gfcmStatRectangle, String fishClass, String species, String typeCode, double count) {
         this.day = day;
         this.month = month;
         this.year = year;
@@ -70,9 +70,9 @@ public class FaCatchSummaryCustomEntity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FaCatchSummaryCustomEntity)) return false;
+        if (!(o instanceof FaCatchSummaryCustomProxy)) return false;
 
-        FaCatchSummaryCustomEntity that = (FaCatchSummaryCustomEntity) o;
+        FaCatchSummaryCustomProxy that = (FaCatchSummaryCustomProxy) o;
 
         if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) return false;
         if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;
