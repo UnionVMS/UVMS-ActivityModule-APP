@@ -20,7 +20,7 @@ public class SizeDistributionEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@SequenceGenerator(name="SEQ_GEN", sequenceName="size_dist_seq")
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="size_dist_seq", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
 	private int id;
 
