@@ -13,21 +13,22 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -53,7 +54,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddress.getPlotIdentification().getValue(), structuredAddressEntity.getPlotId());
         assertEquals(structuredAddress.getPostcodeCode().getValue(), structuredAddressEntity.getPostcode());
         assertEquals(structuredAddress.getPostOfficeBox().getValue(), structuredAddressEntity.getPostOfficeBox());
-        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetname());
+        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetName());
         assertEquals(structuredAddressTypeEnum.getType(), structuredAddressEntity.getStructuredAddressType());
 
         assertNull(structuredAddressEntity.getContactParty());
@@ -78,7 +79,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddress.getPlotIdentification().getValue(), structuredAddressEntity.getPlotId());
         assertEquals(structuredAddress.getPostcodeCode().getValue(), structuredAddressEntity.getPostcode());
         assertEquals(structuredAddress.getPostOfficeBox().getValue(), structuredAddressEntity.getPostOfficeBox());
-        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetname());
+        assertEquals(structuredAddress.getStreetName().getValue(), structuredAddressEntity.getStreetName());
         assertEquals(structuredAddressTypeEnum.getType(), structuredAddressEntity.getStructuredAddressType());
 
         assertNull(structuredAddressEntity.getFluxLocation());
@@ -104,7 +105,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddressEntity.getPlotId(), addressDetailsDTO.getPlotId());
         assertEquals(structuredAddressEntity.getPostcode(), addressDetailsDTO.getPostcode());
         assertEquals(structuredAddressEntity.getPostOfficeBox(), addressDetailsDTO.getPostOfficeBox());
-        assertEquals(structuredAddressEntity.getStreetname(), addressDetailsDTO.getStreetname());
+        assertEquals(structuredAddressEntity.getStreetName(), addressDetailsDTO.getStreetName());
     }
 
     @Test
@@ -115,7 +116,7 @@ public class StructuredAddressMapperTest {
         FluxLocationEntity fluxLocationEntity = null;
         StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress, structuredAddressTypeEnum, fluxLocationEntity, structuredAddressEntity);
 
-        List<AddressDetailsDTO> addressDetailsDTO = StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(new HashSet<StructuredAddressEntity>(Arrays.asList(structuredAddressEntity)));
+        List<AddressDetailsDTO> addressDetailsDTO = new ArrayList<>(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(new HashSet<>(Arrays.asList(structuredAddressEntity))));
         assertEquals(structuredAddressEntity.getAddressId(), addressDetailsDTO.get(0).getAddressId());
         assertEquals(structuredAddressEntity.getBlockName(), addressDetailsDTO.get(0).getBlockName());
         assertEquals(structuredAddressEntity.getBuildingName(), addressDetailsDTO.get(0).getBuildingName());
@@ -127,6 +128,6 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddressEntity.getPlotId(), addressDetailsDTO.get(0).getPlotId());
         assertEquals(structuredAddressEntity.getPostcode(), addressDetailsDTO.get(0).getPostcode());
         assertEquals(structuredAddressEntity.getPostOfficeBox(), addressDetailsDTO.get(0).getPostOfficeBox());
-        assertEquals(structuredAddressEntity.getStreetname(), addressDetailsDTO.get(0).getStreetname());
+        assertEquals(structuredAddressEntity.getStreetName(), addressDetailsDTO.get(0).getStreetName());
     }
 }

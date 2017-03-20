@@ -8,7 +8,11 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.ers.service.mapper;
+
+import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
@@ -22,12 +26,6 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-import java.util.List;
-import java.util.Set;
-
-/**
- * Created by padhyad on 6/13/2016.
- */
 @Mapper
 public abstract class StructuredAddressMapper extends BaseMapper {
 
@@ -45,7 +43,7 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
             @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
             @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
-            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "streetName", expression = "java(getTextType(structuredAddress.getStreetName()))"),
             @Mapping(target = "contactParty", expression = "java(contactPartyEntity)"),
             @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
     })
@@ -63,27 +61,13 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
             @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
             @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
-            @Mapping(target = "streetname", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "streetName", expression = "java(getTextType(structuredAddress.getStreetName()))"),
             @Mapping(target = "fluxLocation", expression = "java(fluxLocationEntity)"),
             @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
     })
     public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, StructuredAddressTypeEnum structuredAddressTypeEnum, FluxLocationEntity fluxLocationEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
 
-    @Mappings({
-            @Mapping(target = "blockName", source = "blockName"),
-            @Mapping(target = "buildingName", source = "buildingName"),
-            @Mapping(target = "cityName", source = "cityName"),
-            @Mapping(target = "citySubdivisionName", source = "citySubdivisionName"),
-            @Mapping(target = "country", source = "country"),
-            @Mapping(target = "countryName", source = "countryName"),
-            @Mapping(target = "countrySubdivisionName", source = "countrySubdivisionName"),
-            @Mapping(target = "addressId", source = "addressId"),
-            @Mapping(target = "plotId", source = "plotId"),
-            @Mapping(target = "postOfficeBox", source = "postOfficeBox"),
-            @Mapping(target = "postcode", source = "postcode"),
-            @Mapping(target = "streetname", source = "streetname")
-    })
     public abstract AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
-    public abstract List<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
+    public abstract Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
 }

@@ -10,11 +10,30 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
@@ -24,17 +43,6 @@ import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.List;
 
 /**
  * Created by kovian on 08/02/2017.
@@ -56,7 +64,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @GET
     @Path("/arrival/{activityId}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView(FishingActivityView.Arrival.class)
+    @JsonView(Arrival.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityArrivalView(@Context HttpServletRequest request,
@@ -71,7 +79,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @GET
     @Path("/landing/{activityId}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView(FishingActivityView.Landing.class)
+    @JsonView(Landing.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityLandingView(@Context HttpServletRequest request,
@@ -83,9 +91,23 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     }
 
     @GET
+    @Path("/discard/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(Landing.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getDiscardAtSeaView(@Context HttpServletRequest request,
+                                        @Context HttpServletResponse response,
+                                        @HeaderParam("scopeName") String scopeName,
+                                        @HeaderParam("roleName") String roleName,
+                                        @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.DISCARD_AT_SEA);
+    }
+
+    @GET
     @Path("/departure/{activityId}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView(FishingActivityView.Departure.class)
+    @JsonView(Departure.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityDepartureView(@Context HttpServletRequest request,
@@ -99,7 +121,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @GET
     @Path("/notification/{activityId}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView(FishingActivityView.NotificationOfArrival.class)
+    @JsonView(NotificationOfArrival.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityNotificationOfArrivalView(@Context HttpServletRequest request,

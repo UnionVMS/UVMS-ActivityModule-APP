@@ -65,7 +65,7 @@ public class StructuredAddressEntity implements Serializable {
 	private String postcode;
 
 	@Column(name = "streetname", length = 1000)
-	private String streetname;
+	private String streetName;
 
 	@Column(name = "structured_address_type")
 	private String structuredAddressType;
@@ -184,12 +184,12 @@ public class StructuredAddressEntity implements Serializable {
 		this.postcode = postcode;
 	}
 
-	public String getStreetname() {
-		return this.streetname;
+	public String getStreetName() {
+		return this.streetName;
 	}
 
-	public void setStreetname(String streetname) {
-		this.streetname = streetname;
+	public void setStreetName(String streetName) {
+		this.streetName = streetName;
 	}
 
 	public String getStructuredAddressType() {

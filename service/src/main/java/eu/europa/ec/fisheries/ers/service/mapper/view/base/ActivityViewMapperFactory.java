@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityNotificationOfArrivalViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.DiscardViewMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 /**
@@ -46,13 +47,13 @@ public class ActivityViewMapperFactory {
                 mapper = null;
                 break;
             case DISCARD_AT_SEA:
-                mapper = null;
+                mapper = new DiscardViewMapper();
                 break;
             case RELOCATION:
                 mapper = null;
                 break;
             case PRIOR_NOTIFICATION_OF_ARRIVAL:
-                mapper = ActivityNotificationOfArrivalViewMapper.INSTANCE;
+                mapper = new ActivityNotificationOfArrivalViewMapper();
                 break;
             case ARRIVAL:
                 mapper = ActivityArrivalViewMapper.INSTANCE;

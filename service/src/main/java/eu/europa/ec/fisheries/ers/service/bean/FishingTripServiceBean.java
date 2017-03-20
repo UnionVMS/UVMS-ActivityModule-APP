@@ -26,19 +26,21 @@ import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetFault;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -233,7 +235,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             for (ContactPartyEntity contactParty : contactParties) {
                 ContactPersonDetailsDTO contactPersDTO = ContactPersonMapper.INSTANCE.mapToContactPersonDetailsWithRolesDTO(contactParty.getContactPerson(), contactParty.getContactPartyRole());
                 Set<StructuredAddressEntity> structuredAddresses = contactParty.getStructuredAddresses();
-                contactPersDTO.setAdresses(StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses));
+
+                Set<AddressDetailsDTO> addressDetailsDTOS = StructuredAddressMapper.INSTANCE.mapToAddressDetailsDTOList(structuredAddresses);
+                if (!CollectionUtils.isEmpty(addressDetailsDTOS)) {
+                    contactPersDTO.setAdresses(new ArrayList<>(addressDetailsDTOS));
+                }
                 checkAndSetIsCaptain(contactPersDTO, contactParty);
                 contactPersonsListDTO.add(contactPersDTO);
             }
@@ -284,6 +290,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             JAXBMarshaller.unmarshallTextMessage(response, AssetFault.class);
             return true;
         } catch (ActivityModelMarshallException e) {
+            log.info(e.getMessage(), e);
             return false;
         }
     }
@@ -312,23 +319,23 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private void setVesselIdentifierDetails(VesselIdentifierEntity vesselIdentifier, VesselDetailsTripDTO vesselDetailsTripDTO) {
         String fieldName = vesselIdentifier.getVesselIdentifierSchemeId().toUpperCase();
         String fieldValue = vesselIdentifier.getVesselIdentifierId();
-        switch (fieldName) {
-            case "EXT_MARK":
+        switch (VesselIdentifierSchemeIdEnum.valueOf(fieldName)) {
+            case EXT_MARK:
                 vesselDetailsTripDTO.setExMark(fieldValue);
                 break;
-            case "IRCS":
+            case IRCS:
                 vesselDetailsTripDTO.setIrcs(fieldValue);
                 break;
-            case "CFR":
+            case CFR:
                 vesselDetailsTripDTO.setCfr(fieldValue);
                 break;
-            case "UVI":
+            case UVI:
                 vesselDetailsTripDTO.setUvi(fieldValue);
                 break;
-            case "ICCAT":
+            case ICCAT:
                 vesselDetailsTripDTO.setIccat(fieldValue);
                 break;
-            case "GFCM":
+            case GFCM:
                 vesselDetailsTripDTO.setGfcm(fieldValue);
                 break;
             default:
@@ -524,7 +531,61 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         log.debug("Fishing trips received from db:" + fishingTripList.size());
 
         // build Fishing trip response from FishingTripEntityList and return
-        return new FishingTripSearchBuilder().buildFishingTripSearchRespose(fishingTripList);
+        return buildFishingTripSearchRespose(fishingTripList);
     }
+
+    public FishingTripResponse buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList) throws ServiceException {
+        if (fishingTripList == null || fishingTripList.isEmpty()) {
+            return new FishingTripResponse();
+        }
+        FishingTripSearchBuilder fishingTripSearchBuilder=new FishingTripSearchBuilder();
+        //  List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>(); // List of unique fishing trip ids with geometry
+        List<FishingActivitySummary> fishingActivityLists = new ArrayList<>(); // List of FishingActivities with details required by response
+        Set<FishingTripId> fishingTripIdsWithoutGeom = new HashSet<>();  // List of unique fishing Trip ids without geometry information
+
+        Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry = new HashMap<>(); // Stores unique Fishing tripIds and Geometries associated with its FA Report
+
+
+        fishingTripSearchBuilder.processFishingTripsToCollectUniqueTrips(fishingTripList, uniqueTripIdWithGeometry, fishingActivityLists, fishingTripIdsWithoutGeom); // process data to find out unique FishingTrip with their Geometries
+        fishingTripSearchBuilder.checkThresholdForFishingTripList(uniqueTripIdWithGeometry); // Check if the size of unique Fishing trips is withing threshold specified
+        List<FishingTripIdWithGeometry> fishingTripIdLists= getFishingTripIdWithGeometryList(uniqueTripIdWithGeometry); // Convert list of Geometries to WKT
+       // fishingTripIdLists.addAll(fishingTripSearchBuilder.addFishingTripIdsWithoutGeomToResponseList(fishingTripIdsWithoutGeom)); // There could be some fishing trips without geometries, consider those trips as well
+
+        // populate response object
+        FishingTripResponse response = new FishingTripResponse();
+        response.setFishingActivityLists(fishingActivityLists);
+        response.setFishingTripIdLists(fishingTripIdLists);
+        return response;
+    }
+
+
+    public List<FishingTripIdWithGeometry> getFishingTripIdWithGeometryList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
+        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
+        Set<FishingTripId> tripIdSet = uniqueTripIdWithGeometry.keySet();
+        for (FishingTripId fishingTripId : tripIdSet) {
+            Geometry geometry = GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
+
+            FishingActivityQuery query = new FishingActivityQuery();
+            Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
+            searchCriteriaMap.put(SearchFilter.TRIP_ID,fishingTripId.getTripId());
+            query.setSearchCriteriaMap(searchCriteriaMap);
+            SortKey sortKey = new SortKey();
+            sortKey.setSortBy(SearchFilter.PERIOD_START);
+            sortKey.setReversed(false);
+            query.setSorting(sortKey);
+            List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
+
+            if (geometry == null) {
+                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null,fishingTripList));
+            }
+            else {
+                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue(),fishingTripList));
+            }
+        }
+
+        return fishingTripIdLists;
+    }
+
+
 
 }
