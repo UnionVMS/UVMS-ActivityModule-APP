@@ -39,9 +39,9 @@ public abstract class GearProblemMapper extends BaseMapper {
     public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", source = "gearProblem.typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "gearProblem.typeCode.listID"),
-            @Mapping(target = "affectedQuantity", source = "gearProblem.affectedQuantity.value"),
+            @Mapping(target = "typeCode", source = "typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "affectedQuantity", source = "affectedQuantity.value"),
             @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))"),
             @Mapping(target = "locations", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations(), gearProblemEntity))")
