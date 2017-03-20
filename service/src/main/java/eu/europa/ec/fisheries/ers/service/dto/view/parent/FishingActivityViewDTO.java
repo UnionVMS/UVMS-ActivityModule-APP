@@ -21,13 +21,13 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 
 /**
  * Created by kovian on 07/02/2017.
