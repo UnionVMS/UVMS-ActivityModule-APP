@@ -78,7 +78,8 @@ public abstract class FaCatchMapper extends BaseMapper {
         if (sizeDistribution == null) {
             return null;
         }
-        SizeDistributionEntity sizeDistributionEntity =SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution, faCatchEntity, new SizeDistributionEntity());
+        SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution);
+        sizeDistributionEntity.setFaCatch(faCatchEntity);
         Set<SizeDistributionClassCodeEntity> sizeDistributionSet=sizeDistributionEntity.getSizeDistributionClassCode();
         if(CollectionUtils.isNotEmpty(sizeDistributionSet)){
             faCatchEntity.setFishClassCode(sizeDistributionSet.iterator().next().getClassCode());

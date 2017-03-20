@@ -99,6 +99,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build(),
             insertInto("activity.activity_fishing_trip_Identifier")
                     .row()
+                    .column("id", 1)
                     .column("trip_id", 1)
                     .column("fishing_trip_id", 1)
                     .column("trip_scheme_id", "TRIP_SCHEME_ID")

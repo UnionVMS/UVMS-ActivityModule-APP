@@ -33,7 +33,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 @Mapper(uses = {FaReportDocumentMapper.class, ContactPartyMapper.class, VesselIdentifierMapper.class})
 public abstract class VesselTransportMeansMapper extends BaseMapper {
@@ -41,9 +40,9 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
     public static final VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
 
     @Mappings({
-            @Mapping(target = "roleCode", expression = "java(getCodeType(vesselTransportMeans.getRoleCode()))"),
-            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(vesselTransportMeans.getRoleCode()))"),
-            @Mapping(target = "name", expression = "java(getTextType(vesselTransportMeans.getNames()))"),
+            @Mapping(target = "roleCode", source = "vesselTransportMeans.roleCode.value"),
+            @Mapping(target = "roleCodeListId", source = "vesselTransportMeans.roleCode.listID"),
+            @Mapping(target = "name", expression = "java(getTextFromList(vesselTransportMeans.getNames()))"),
             @Mapping(target = "flapDocuments", expression = "java(getFlapDocumentEntities(vesselTransportMeans.getGrantedFLAPDocuments(), vesselTransportMeansEntity))"),
             @Mapping(target = "country", source = "vesselTransportMeans.registrationVesselCountry.ID.value"),
             @Mapping(target = "countrySchemeId", source = "vesselTransportMeans.registrationVesselCountry.ID.schemeID"),
@@ -109,7 +108,4 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         return vesselIdentifierEntities;
     }
 
-    protected String getTextType(List<TextType> textTypes) {
-        return (textTypes == null || textTypes.isEmpty()) ? null : textTypes.get(0).getValue();
-    }
 }

@@ -13,14 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by padhyad on 7/28/2016.
@@ -30,8 +30,7 @@ public class RegistrationLocationMapperTest {
     @Test
     public void testRegistrationLocationMapper() {
         RegistrationLocation registrationLocation = MapperUtil.getRegistrationLocation();
-        RegistrationLocationEntity registrationLocationEntity = new RegistrationLocationEntity();
-        RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation, null, registrationLocationEntity);
+        RegistrationLocationEntity registrationLocationEntity = RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation);
 
         assertTrue(registrationLocationEntity.getDescription().startsWith(registrationLocation.getDescriptions().get(0).getValue()));
         assertTrue(registrationLocationEntity.getName().startsWith(registrationLocation.getNames().get(0).getValue()));

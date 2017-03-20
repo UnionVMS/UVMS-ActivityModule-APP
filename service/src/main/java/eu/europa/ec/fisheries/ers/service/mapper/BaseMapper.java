@@ -32,6 +32,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -57,11 +59,26 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 @NoArgsConstructor
 public class BaseMapper {
 
+    public static Set<SizeDistributionClassCodeEntity> mapToSizeDistributionClassCodes(List<CodeType> codeTypes, SizeDistributionEntity sizeDistributionEntity) {
+        if (codeTypes == null || codeTypes.isEmpty()) {
+            Collections.emptySet();
+        }
+        Set<SizeDistributionClassCodeEntity> classCodes = new HashSet<>();
+        for (CodeType codeType : codeTypes) {
+            SizeDistributionClassCodeEntity entity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(codeType);
+            entity.setSizeDistribution(sizeDistributionEntity);
+            classCodes.add(entity);
+        }
+        return classCodes;
+    }
+
     public static RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
         if (registrationLocation == null) {
             return null;
         }
-        return RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation, registrationEventEntity, new RegistrationLocationEntity());
+        RegistrationLocationEntity registrationLocationEntity = RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation);
+        registrationLocationEntity.setRegistrationEvent(registrationEventEntity);
+        return registrationLocationEntity;
     }
 
     public static String getDescription(List<TextType> descriptions) {
@@ -179,6 +196,13 @@ public class BaseMapper {
         return textTypes.get(0).getLanguageID();
     }
 
+    public static String getTextFromList(List<TextType> textTypes) {
+        if (CollectionUtils.isEmpty(textTypes)) {
+            return null;
+        }
+        return textTypes.get(0).getValue();
+    }
+
     protected String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
     }
@@ -193,13 +217,6 @@ public class BaseMapper {
 
     protected String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
-    }
-
-    protected String getTextFromList(List<TextType> textTypes) {
-        if (CollectionUtils.isEmpty(textTypes)) {
-            return null;
-        }
-        return textTypes.get(0).getValue();
     }
 
     protected Double getCalculatedQuantity(QuantityType quantityType) {
