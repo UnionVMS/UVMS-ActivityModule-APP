@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
@@ -39,14 +39,14 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
             @Mapping(target = "groups", expression = "java(populateGroupCriteriaWithValue(customEntity))"),
             @Mapping(target = "summaryTable", expression = "java(getSummaryTableDTO(catchSummaryEntityList))")
     })
-    public abstract FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTO(FaCatchSummaryCustomEntity customEntity, List<FaCatchSummaryCustomEntity> catchSummaryEntityList);
+    public abstract FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTO(FaCatchSummaryCustomProxy customEntity, List<FaCatchSummaryCustomProxy> catchSummaryEntityList);
 
 
     @Mappings({
             @Mapping(target = "groups", expression = "java(populateGroupCriteriaWithValue(customEntity))"),
             @Mapping(target = "summaryTable", expression = "java(getSummaryTableDTOWithPresentation(catchSummaryEntityList))")
     })
-    public abstract FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTOWithPresentation(FaCatchSummaryCustomEntity customEntity, List<FaCatchSummaryCustomEntity> catchSummaryEntityList);
+    public abstract FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTOWithPresentation(FaCatchSummaryCustomProxy customEntity, List<FaCatchSummaryCustomProxy> catchSummaryEntityList);
 
 
     @Mappings({
@@ -62,7 +62,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param customEntity
      * @return
      */
-    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomEntity customEntity){
+    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomProxy customEntity){
         List<GroupCriteriaWithValue> groups = new ArrayList<>();
 
         if(customEntity ==null){
@@ -138,10 +138,10 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param catchSummaryEntityList
      * @return SummaryTableDTO calculations for perticular group
      */
-    public SummaryTableDTO getSummaryTableDTO(List<FaCatchSummaryCustomEntity> catchSummaryEntityList) {
+    public SummaryTableDTO getSummaryTableDTO(List<FaCatchSummaryCustomProxy> catchSummaryEntityList) {
         SummaryTableDTO summaryTable = new SummaryTableDTO();
 
-        for(FaCatchSummaryCustomEntity entity :catchSummaryEntityList){
+        for(FaCatchSummaryCustomProxy entity :catchSummaryEntityList){
             Double speciesCnt = entity.getCount();
 
             // If FishClass information is present then only build structure for FishClass
@@ -163,10 +163,10 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param catchSummaryEntityList
      * @return SummaryTableDTO calculations for perticular group
      */
-    protected SummaryTableDTO getSummaryTableDTOWithPresentation(List<FaCatchSummaryCustomEntity> catchSummaryEntityList) {
+    protected SummaryTableDTO getSummaryTableDTOWithPresentation(List<FaCatchSummaryCustomProxy> catchSummaryEntityList) {
         SummaryTableDTO summaryTable = new SummaryTableDTO();
 
-        for(FaCatchSummaryCustomEntity entity :catchSummaryEntityList){
+        for(FaCatchSummaryCustomProxy entity :catchSummaryEntityList){
             Double count = entity.getCount();
 
             // If FishClass information is present then only build structure for FishClass
@@ -191,7 +191,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @return
      */
     @NotNull
-    private Map<FishSizeClassEnum, Object> getFishSizeClassMap(SummaryTableDTO summaryTable, FaCatchSummaryCustomEntity customEntity, Double speciesCnt) {
+    private Map<FishSizeClassEnum, Object> getFishSizeClassMap(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
 
         Map<FishSizeClassEnum, Object> fishSizeSummaryMap = summaryTable.getSummaryFishSize();
 
@@ -225,7 +225,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @return
      */
     @NotNull
-    private Map<FishSizeClassEnum, Object> getFishSizeClassMapWithPresentation(SummaryTableDTO summaryTable, FaCatchSummaryCustomEntity customEntity, Double speciesCnt) {
+    private Map<FishSizeClassEnum, Object> getFishSizeClassMapWithPresentation(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
 
         Map<FishSizeClassEnum, Object> fishSizeSummaryMap = summaryTable.getSummaryFishSize();
 
@@ -255,7 +255,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @return
      */
     @NotNull
-    private Map<FaCatchTypeEnum, Object> getFaCatchTypeEnumMapWithPresentation(SummaryTableDTO summaryTable, FaCatchSummaryCustomEntity customEntity, Double speciesCnt) {
+    private Map<FaCatchTypeEnum, Object> getFaCatchTypeEnumMapWithPresentation(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
 
         Map<FaCatchTypeEnum, Object> faCatchSummaryMap = summaryTable.getSummaryFaCatchType();
 
@@ -276,7 +276,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
 
     @NotNull
-    private Map<FishSizeClassEnum, Object> populateFishSizeClassMapForOnlyForFishClass(FaCatchSummaryCustomEntity customEntity, Double speciesCnt, Map<FishSizeClassEnum, Object> fishSizeSummaryMap) {
+    private Map<FishSizeClassEnum, Object> populateFishSizeClassMapForOnlyForFishClass(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FishSizeClassEnum, Object> fishSizeSummaryMap) {
         if (MapUtils.isEmpty(fishSizeSummaryMap)) {
             fishSizeSummaryMap = new EnumMap<>(FishSizeClassEnum.class);
             fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), speciesCnt);
@@ -300,7 +300,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @return
      */
     @NotNull
-    private Map<FaCatchTypeEnum, Object> getFaCatchTypeEnumMap(SummaryTableDTO summaryTable, FaCatchSummaryCustomEntity customEntity, Double speciesCnt) {
+    private Map<FaCatchTypeEnum, Object> getFaCatchTypeEnumMap(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
 
         Map<FaCatchTypeEnum, Object> faCatchSummaryMap = summaryTable.getSummaryFaCatchType();
 
@@ -332,7 +332,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @return
      */
     @NotNull
-    private Map<FaCatchTypeEnum, Object> populateFaCatchTypeMapOnlyForCatchType(FaCatchSummaryCustomEntity customEntity, Double speciesCnt, Map<FaCatchTypeEnum, Object> faCatchSummaryMap) {
+    private Map<FaCatchTypeEnum, Object> populateFaCatchTypeMapOnlyForCatchType(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FaCatchTypeEnum, Object> faCatchSummaryMap) {
         if (MapUtils.isEmpty(faCatchSummaryMap)) {
             faCatchSummaryMap = new EnumMap<>(FaCatchTypeEnum.class);
             faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), speciesCnt);
@@ -415,7 +415,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     }
 
 
-    private void populateSpeciesMap(FaCatchSummaryCustomEntity customEntity, Double speciesCnt, Map<String, Double> speciesCountMap) {
+    private void populateSpeciesMap(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<String, Double> speciesCountMap) {
         Double totalCountForSpecies = speciesCountMap.get(customEntity.getSpecies().toUpperCase());
         if (totalCountForSpecies == null) {
             speciesCountMap.put(customEntity.getSpecies().toUpperCase(), speciesCnt);
@@ -425,7 +425,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
         }
     }
 
-    private void populateSpeciesMapWithPresentation(FaCatchSummaryCustomEntity customEntity, Double speciesCnt, Map<String, Map<String,Double>> speciesPresentationCountMap) {
+    private void populateSpeciesMapWithPresentation(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<String, Map<String,Double>> speciesPresentationCountMap) {
         Map<String,Double> presentationMap= speciesPresentationCountMap.get(customEntity.getSpecies().toUpperCase());
         if(MapUtils.isEmpty(presentationMap)){
             if(customEntity.getPresentation()!=null){
@@ -448,7 +448,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
 
     @NotNull
-    private Map<String, Double> createSpeciesCountMap(FaCatchSummaryCustomEntity customEntity, Double speciesCnt) {
+    private Map<String, Double> createSpeciesCountMap(FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
         Map<String,Double> speciesCountMap = new HashMap<>();
         if(customEntity.getSpecies() !=null) {
             speciesCountMap.put(customEntity.getSpecies().toUpperCase(), speciesCnt);
@@ -458,7 +458,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
 
     @NotNull
-    private Map<String,Map<String,Double>> createPresentationCountMap(FaCatchSummaryCustomEntity customEntity, Double presentationCnt) {
+    private Map<String,Map<String,Double>> createPresentationCountMap(FaCatchSummaryCustomProxy customEntity, Double presentationCnt) {
         Map<String,Map<String,Double>> speciesMap = new HashMap<>();
 
         if(customEntity.getSpecies() !=null  && customEntity.getPresentation() !=null) {

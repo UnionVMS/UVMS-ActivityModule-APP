@@ -18,7 +18,13 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
@@ -42,24 +48,29 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 @Stateless
 @Transactional
 @Slf4j
-public class FluxMessageServiceBean implements FluxMessageService {
-
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
+public class FluxMessageServiceBean extends BaseActivityBean implements FluxMessageService {
 
     private FaReportDocumentDao faReportDocumentDao;
+
     private FluxFaReportMessageDao fluxReportMessageDao;
 
     @EJB
@@ -80,8 +91,9 @@ public class FluxMessageServiceBean implements FluxMessageService {
 
     @PostConstruct
     public void init() {
-        faReportDocumentDao = new FaReportDocumentDao(em);
-        fluxReportMessageDao = new FluxFaReportMessageDao(em);
+        initEntityManager();
+        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
+        fluxReportMessageDao = new FluxFaReportMessageDao(getEntityManager());
         dialect = new PostGres();
         if ("oracle".equals(properties.getProperty("database.dialect"))){
             dialect = new Oracle();

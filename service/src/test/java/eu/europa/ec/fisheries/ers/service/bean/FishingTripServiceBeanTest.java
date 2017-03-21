@@ -20,12 +20,11 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -53,12 +52,6 @@ public class FishingTripServiceBeanTest {
 
     @Mock
     EntityManager em;
-
-    @Mock
-    ActivityMessageProducer producer;
-
-    @Mock
-    AssetsMessageConsumerBean consumer;
 
     @Mock
     FaReportDocumentDao faReportDocumentDao;

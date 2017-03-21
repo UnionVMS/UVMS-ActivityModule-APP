@@ -10,6 +10,18 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
+
+import java.util.List;
+
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
@@ -17,17 +29,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
-
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 
 /**
  * Created by kovian on 07/02/2017.
@@ -47,7 +48,7 @@ public class FishingActivityViewDTO {
     @JsonView({Arrival.class, Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class})
+    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, FishingActivityView.AreaEntry.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)
@@ -58,6 +59,9 @@ public class FishingActivityViewDTO {
 
     @JsonView(CommonView.class)
     private List<ProcessingProductsDto> processingProducts;
+
+    @JsonView(FishingActivityView.AreaEntry.class)
+    private AreaDto areas;
 
     public List<FluxLocationDto> getLocations() {
         return locations;
@@ -102,5 +106,13 @@ public class FishingActivityViewDTO {
     }
     public void setGearShotRetrievalList(List<GearShotRetrievalDto> gearShotRetrievalList) {
         this.gearShotRetrievalList = gearShotRetrievalList;
+    }
+
+    public AreaDto getAreas() {
+        return areas;
+    }
+
+    public void setAreas(AreaDto areas) {
+        this.areas = areas;
     }
 }

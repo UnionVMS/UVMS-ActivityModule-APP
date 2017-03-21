@@ -28,12 +28,8 @@ import javax.jms.Destination;
 @LocalBean
 public class MovementProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_MODULE_MOVEMENT)
-    private Destination destination;
-
     @Override
-    protected Destination getDestination() {
-        return destination;
+    public String getDestinationName() {
+        return MessageConstants.QUEUE_MODULE_MOVEMENT;
     }
-
 }

@@ -12,12 +12,32 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IndicatorType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.NumericType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -27,7 +47,15 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -252,4 +280,53 @@ public abstract class BaseMapper {
         return fluxLocations;
     }
 
+    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList,FishingActivityTypeEnum faTypeToExtract) {
+       if(CollectionUtils.isEmpty(fishingActivityList)){
+           return null;
+       }
+
+        for(FishingActivityEntity fishingActivityEntity:fishingActivityList){
+            if(faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())){
+                return fishingActivityEntity;
+            }
+        }
+
+        return null;
+    }
+
+
+    protected FluxLocationEntity extractFLUXPosition(Set<FluxLocationEntity> fluxLocationEntityList) {
+        if(CollectionUtils.isEmpty(fluxLocationEntityList)){
+            return null;
+        }
+
+        for(FluxLocationEntity locationEntity : fluxLocationEntityList){
+            if(FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())){
+                return locationEntity;
+            }
+        }
+        return null;
+    }
+
+    protected String extractGeometryWkt(Double longitude,Double latitude){
+        Geometry geom = GeometryUtils.createPoint(longitude, latitude);
+
+       return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
+    }
+
+    @NotNull
+    protected PositionDto extractPositionDtoFromFishingActivity(FishingActivityEntity faEntity) {
+        if(faEntity == null){
+            return null;
+        }
+        PositionDto positionDto = new PositionDto();
+        positionDto.setOccurence(faEntity.getOccurence());
+        if(CollectionUtils.isNotEmpty(faEntity.getFluxLocations())){
+            FluxLocationEntity locationEntity= extractFLUXPosition(faEntity.getFluxLocations());
+            if(locationEntity !=null) {
+                positionDto.setGeometry(extractGeometryWkt(locationEntity.getLongitude(), locationEntity.getLatitude()));
+            }
+        }
+        return positionDto;
+    }
 }

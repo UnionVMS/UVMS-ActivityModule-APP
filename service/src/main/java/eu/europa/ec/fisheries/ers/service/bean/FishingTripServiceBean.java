@@ -18,55 +18,25 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
-import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifiersDao;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.*;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.VesselDetailsTripDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.AssetsRequestMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.ContactPersonMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingTripToGeoJsonMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.StructuredAddressMapper;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -84,18 +54,8 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.TextMessage;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -104,20 +64,17 @@ import java.util.Set;
 @Local(FishingTripService.class)
 @Transactional
 @Slf4j
-public class FishingTripServiceBean implements FishingTripService {
+public class FishingTripServiceBean extends BaseActivityBean implements FishingTripService {
 
-    private static final String PREVIOUS = "PREVIOUsS";
-    private static final String NEXT = "NEXT";
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
-    @EJB
-    private ActivityMessageProducer activityProducer;
-    @EJB
-    private AssetsMessageConsumerBean activityConsumer;
     @EJB
     private SpatialModuleService spatialModule;
+
     @EJB
     private ActivityService activityServiceBean;
+
+    @EJB
+    private AssetModuleService assetModule;
+
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifiersDao vesselIdentifiersDao;
@@ -125,14 +82,19 @@ public class FishingTripServiceBean implements FishingTripService {
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
 
+    private static final String PREVIOUS = "PREVIOUS";
+    private static final String NEXT = "NEXT";
+
+
     @PostConstruct
     public void init() {
-        fishingTripIdentifierDao = new FishingTripIdentifierDao(em);
-        vesselIdentifiersDao = new VesselIdentifiersDao(em);
-        fishingActivityDao = new FishingActivityDao(em);
-        faReportDocumentDao = new FaReportDocumentDao(em);
-        faCatchDao = new FaCatchDao(em);
-        fishingTripDao = new FishingTripDao(em);
+        initEntityManager();
+        fishingTripIdentifierDao = new FishingTripIdentifierDao(getEntityManager());
+        vesselIdentifiersDao = new VesselIdentifiersDao(getEntityManager());
+        fishingActivityDao = new FishingActivityDao(getEntityManager());
+        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
+        faCatchDao = new FaCatchDao(getEntityManager());
+        fishingTripDao = new FishingTripDao(getEntityManager());
     }
 
     /**
@@ -238,7 +200,7 @@ public class FishingTripServiceBean implements FishingTripService {
 
 
     @Override
-    public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId) {
+    public VesselDetailsTripDTO getVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException {
 
         VesselDetailsTripDTO vesselDetailsTripDTO = new VesselDetailsTripDTO();
 
@@ -312,33 +274,9 @@ public class FishingTripServiceBean implements FishingTripService {
      * @param vesselDetailsTripDTO
      */
 
-    private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsTripDTO vesselDetailsTripDTO) {
-        if (someVesselDetailsAreMissing(vesselDetailsTripDTO)) {
-            String response = null;
-            TextMessage message = null;
-            try {
-                String assetsRequest = AssetsRequestMapper.mapToAssetsRequest(vesselDetailsTripDTO);
-
-                String messageID = activityProducer.sendAssetsModuleSynchronousMessage(assetsRequest);
-                message = activityConsumer.getMessage(messageID, TextMessage.class);
-                response = message.getText();
-            } catch (Exception e) {
-                log.error("Error while trying to send message to Assets module.", e);
-            }
-            if (isFaultMessage(message)) {
-                log.error("The Asset module responded with a fault message related to Vessel Details Enrichment: ", response);
-                log.debug("The original VesselDetailsTripDTO that the request for enrichment was made for : ", vesselDetailsTripDTO.toString());
-                return;
-            }
-            if (StringUtils.isNotEmpty(response)) {
-                try {
-                    ListAssetResponse listResp = JAXBMarshaller.unmarshallTextMessage(response, ListAssetResponse.class);
-                    AssetsRequestMapper.mapAssetsResponseToVesselDetailsTripDTO(listResp, vesselDetailsTripDTO);
-                } catch (ActivityModelMarshallException e) {
-                    log.error("Error while trying to unmarshall response from Asset Module regarding VesselDetailsTripDTO enrichment", e);
-                }
-            }
-        }
+    private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsTripDTO vesselDetailsTripDTO) throws ServiceException {
+        ListAssetResponse listAssetResponse = assetModule.getAssetListResponse(vesselDetailsTripDTO);
+        AssetsRequestMapper.INSTANCE.mapAssetsResponseToVesselDetailsTripDTO(listAssetResponse, vesselDetailsTripDTO);
     }
 
     /**

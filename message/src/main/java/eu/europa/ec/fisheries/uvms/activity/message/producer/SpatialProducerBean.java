@@ -28,11 +28,8 @@ import javax.jms.Destination;
 @Local
 public class SpatialProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_MODULE_SPATIAL)
-    private Destination destination;
-
     @Override
-    protected Destination getDestination() {
-        return destination;
+    public String getDestinationName() {
+        return MessageConstants.QUEUE_MODULE_SPATIAL;
     }
 }

@@ -11,6 +11,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
@@ -25,18 +37,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfTranshipment;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 public class ActivityDetailsDto {
 

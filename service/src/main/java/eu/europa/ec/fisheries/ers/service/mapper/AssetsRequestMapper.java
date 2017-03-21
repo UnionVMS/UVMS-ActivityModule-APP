@@ -27,11 +27,9 @@ import java.util.List;
  */
 public class AssetsRequestMapper {
 
-    // This class isn't supposed to have instances
-    private AssetsRequestMapper(){
-    }
+    public static final AssetsRequestMapper INSTANCE = new AssetsRequestMapper();
 
-    public static String mapToAssetsRequest(VesselDetailsTripDTO vesselDetailsTripDTO) throws ActivityModelMarshallException {
+    public String mapToAssetsRequest(VesselDetailsTripDTO vesselDetailsTripDTO) throws ActivityModelMarshallException {
         AssetListModuleRequest assetsModuleRequest = new AssetListModuleRequest();
         AssetListQuery assetsQuery                 = new AssetListQuery();
         AssetListCriteria assetsListCrit           = new AssetListCriteria();
@@ -85,7 +83,7 @@ public class AssetsRequestMapper {
         return assetListCrit;
     }
 
-    public static void mapAssetsResponseToVesselDetailsTripDTO(ListAssetResponse listResp,
+    public void mapAssetsResponseToVesselDetailsTripDTO(ListAssetResponse listResp,
                                                                VesselDetailsTripDTO vesselDetailsTripDTO) {
 
         if(listResp == null

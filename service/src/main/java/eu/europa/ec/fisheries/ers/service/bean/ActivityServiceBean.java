@@ -45,10 +45,14 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -58,14 +62,10 @@ import java.util.*;
 @Local(ActivityService.class)
 @Transactional
 @Slf4j
-public class ActivityServiceBean implements ActivityService {
-
-    static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    @PersistenceContext(unitName = "activityPU")
-    private EntityManager em;
+public class ActivityServiceBean extends BaseActivityBean implements ActivityService {
 
     private FaReportDocumentDao faReportDocumentDao;
+
     private FishingActivityDao fishingActivityDao;
 
     @EJB
@@ -76,8 +76,9 @@ public class ActivityServiceBean implements ActivityService {
 
     @PostConstruct
     public void init() {
-        fishingActivityDao = new FishingActivityDao(em);
-        faReportDocumentDao = new FaReportDocumentDao(em);
+        initEntityManager();
+        fishingActivityDao = new FishingActivityDao(getEntityManager());
+        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
     }
 
     /**

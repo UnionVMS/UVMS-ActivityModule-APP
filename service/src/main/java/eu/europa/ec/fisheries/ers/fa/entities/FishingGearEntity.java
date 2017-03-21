@@ -29,7 +29,8 @@ public class FishingGearEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="fa_gear_seq", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
 	private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

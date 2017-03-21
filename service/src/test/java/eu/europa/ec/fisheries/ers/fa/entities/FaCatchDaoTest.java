@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -73,7 +74,7 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
        // FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
        //System.out.println( faCatchSummaryHelper.printJsonstructure(query));
-        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query,false);
+        Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query,false);
         assertNotNull(faCatchSummaryCustomEntityListMap);
       
     }

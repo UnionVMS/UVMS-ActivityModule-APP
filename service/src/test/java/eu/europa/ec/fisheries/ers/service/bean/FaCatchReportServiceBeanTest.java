@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchSummaryCustomEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchDetailsDTO;
@@ -110,7 +110,7 @@ public class FaCatchReportServiceBeanTest {
         Map<SearchFilter, String> searchCriteriaMap = new EnumMap<SearchFilter, String>(SearchFilter.class);
         searchCriteriaMap.put(SearchFilter.TRIP_ID,"NOR-TRP-20160517234053706");
         query.setSearchCriteriaMap(searchCriteriaMap);
-        Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> groupedData=MapperUtil.getGroupedFaCatchSummaryCustomEntityData();
+        Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> groupedData=MapperUtil.getGroupedFaCatchSummaryCustomEntityData();
         when((faCatchDao).getGroupedFaCatchData(any(FishingActivityQuery.class),any(Boolean.class))).thenReturn(groupedData);
 
    //     when(faCatchDao.getGroupedFaCatchData(query,true)).thenReturn(MapperUtil.getGroupedFaCatchSummaryCustomEntityData());

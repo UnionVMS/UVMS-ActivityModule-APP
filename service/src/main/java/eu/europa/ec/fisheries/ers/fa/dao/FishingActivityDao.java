@@ -141,6 +141,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH a.fishingGears fg ")
                 .append("LEFT JOIN FETCH a.fluxCharacteristics fc ")
                 .append("LEFT JOIN FETCH a.faCatchs fCatch ")
+                .append("LEFT JOIN FETCH a.allRelatedFishingActivities relatedActivities ")
                 .append("LEFT JOIN FETCH fCatch.fluxLocations ")
                 .append("LEFT JOIN FETCH fCatch.sizeDistribution ")
                 .append("LEFT JOIN FETCH fCatch.fishingGears ")
