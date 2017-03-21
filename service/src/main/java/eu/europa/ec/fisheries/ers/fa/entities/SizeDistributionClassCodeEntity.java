@@ -34,7 +34,7 @@ public class SizeDistributionClassCodeEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "dist_code_seq")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "dist_code_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 

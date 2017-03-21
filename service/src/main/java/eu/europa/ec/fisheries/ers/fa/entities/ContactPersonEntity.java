@@ -30,7 +30,7 @@ public class ContactPersonEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ct_person_seq")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ct_person_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
@@ -69,6 +69,7 @@ public class ContactPersonEntity implements Serializable {
 		return this.id;
 	}
 
+	
 	public String getTitle() {
 		return this.title;
 	}

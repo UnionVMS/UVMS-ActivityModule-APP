@@ -27,16 +27,11 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConfigurationProperties;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -92,32 +87,11 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     /*
        Create FishingTrip resopnse as expected by Execute report Filter Fishing trips functionality
      */
-    public FishingTripResponse buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList) throws ServiceException {
-        if (fishingTripList == null || fishingTripList.isEmpty()) {
-            return new FishingTripResponse();
-        }
-
-        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>(); // List of unique fishing trip ids with geometry
-        List<FishingActivitySummary> fishingActivityLists = new ArrayList<>(); // List of FishingActivities with details required by response
-        Set<FishingTripId> fishingTripIdsWithoutGeom = new HashSet<>();  // List of unique fishing Trip ids without geometry information
-
-        Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry = new HashMap<>(); // Stores unique Fishing tripIds and Geometries associated with its FA Report
 
 
-        processFishingTripsToCollectUniqueTrips(fishingTripList, uniqueTripIdWithGeometry, fishingActivityLists, fishingTripIdsWithoutGeom); // process data to find out unique FishingTrip with their Geometries
-        checkThresholdForFishingTripList(uniqueTripIdWithGeometry); // Check if the size of unique Fishing trips is withing threshold specified
-        mapFishingTripIdsToGeomWkt(uniqueTripIdWithGeometry, fishingTripIdLists); // Convert list of Geometries to WKT
-        addFishingTripIdsWithoutGeomToResponseList(fishingTripIdLists, fishingTripIdsWithoutGeom); // There could be some fishing trips without geometries, consider those trips as well
-
-        // populate response object
-        FishingTripResponse response = new FishingTripResponse();
-        response.setFishingActivityLists(fishingActivityLists);
-        response.setFishingTripIdLists(fishingTripIdLists);
-        return response;
-    }
 
     // Check if the size of unique Fishing trips is withing threshold specified
-    private void checkThresholdForFishingTripList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
+    public void checkThresholdForFishingTripList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
 
         String tresholdTrips = ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
         if (tresholdTrips != null) {
@@ -132,17 +106,19 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     }
 
     // Add list of fishing trip ids without geometry to master list
-    private void addFishingTripIdsWithoutGeomToResponseList(List<FishingTripIdWithGeometry> fishingTripIdLists, Set<FishingTripId> fishingTripIdsWithoutGeom) {
+  /*  public List<FishingTripIdWithGeometry> addFishingTripIdsWithoutGeomToResponseList(Set<FishingTripId> fishingTripIdsWithoutGeom) {
+        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
         for (FishingTripId fishingTripId : fishingTripIdsWithoutGeom) {
             fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null));
         }
-    }
+        return fishingTripIdLists;
+    }*/
 
     /*
        For Every Fishing trip, combine all geometries into one and convert it into Wkt
-     */
-    private void mapFishingTripIdsToGeomWkt(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, List<FishingTripIdWithGeometry> fishingTripIdLists) throws ServiceException {
 
+    public List<FishingTripIdWithGeometry> mapFishingTripIdsToGeomWkt(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
+        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
         Set<FishingTripId> tripIdSet = uniqueTripIdWithGeometry.keySet();
         for (FishingTripId fishingTripId : tripIdSet) {
             Geometry geometry = GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
@@ -153,8 +129,13 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
                 fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue()));
             }
         }
-    }
 
+        return fishingTripIdLists;
+    }    */
+
+    public void getAllFishingActivitiesForTripIdInformation(String tripId){
+
+    }
 
     /**
      * Process FishingTripEntities to identify Unique FishingTrips.
@@ -163,7 +144,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
      *
      * This method identifies unique FishingTripIdentifiers and collect Geometries for those trips.
      */
-    private void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom) {
+    public void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom) {
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 

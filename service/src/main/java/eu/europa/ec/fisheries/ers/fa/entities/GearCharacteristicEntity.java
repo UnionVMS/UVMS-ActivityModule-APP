@@ -44,7 +44,7 @@ public class GearCharacteristicEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "gear_char_seq")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "gear_char_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 

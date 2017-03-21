@@ -10,6 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,7 +43,7 @@ public class FluxLocationEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_loc_seq")
+    @SequenceGenerator(name="SEQ_GEN", sequenceName="flux_loc_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
@@ -311,6 +316,14 @@ public class FluxLocationEntity implements Serializable {
 
 	public String getWkt() {
 		return wkt;
+	}
+
+	public FluxCharacteristicEntity getFluxCharacteristic() {
+		return fluxCharacteristic;
+	}
+
+	public void setFluxCharacteristic(FluxCharacteristicEntity fluxCharacteristic) {
+		this.fluxCharacteristic = fluxCharacteristic;
 	}
 
 	@Override

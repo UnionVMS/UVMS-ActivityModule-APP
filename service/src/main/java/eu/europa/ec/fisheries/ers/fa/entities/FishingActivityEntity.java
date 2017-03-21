@@ -73,7 +73,7 @@ public class FishingActivityEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_seq")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
@@ -154,6 +154,10 @@ public class FishingActivityEntity implements Serializable {
 
 	@Column(name = "flag_state")
 	private String flagState;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "calculated_start_time", length = 29)
+	private Date calculatedStartTime;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
@@ -513,6 +517,13 @@ public class FishingActivityEntity implements Serializable {
         this.flagState = flagState;
     }
 
+	public Date getCalculatedStartTime() {
+		return calculatedStartTime;
+	}
+
+	public void setCalculatedStartTime(Date calculatedStartTime) {
+		this.calculatedStartTime = calculatedStartTime;
+	}
     @PostLoad
     private void onLoad() {
         if (this.geom != null) {

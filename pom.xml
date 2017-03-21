@@ -554,6 +554,7 @@
         <module>rest</module>
         <module>service</module>
         <module>message</module>
-        <module>deploy</module>
+        <module>deploy-wildfly</module>
+        <module>deploy-weblogic</module>
     </modules>
 </project>
