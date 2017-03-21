@@ -13,24 +13,20 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-/**
- * Created by padhyad on 7/29/2016.
- */
 public class SizeDistributionMapperTest {
 
     @Test
     public void testSizeDistributionMapper() {
         SizeDistribution sizeDistribution = MapperUtil.getSizeDistribution();
-        SizeDistributionEntity sizeDistributionEntity = new SizeDistributionEntity();
-        SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution, null, sizeDistributionEntity);
+        SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution);
 
         assertEquals(sizeDistribution.getCategoryCode().getValue(), sizeDistributionEntity.getCategoryCode());
         assertEquals(sizeDistribution.getCategoryCode().getListID(), sizeDistributionEntity.getCategoryCodeListId());

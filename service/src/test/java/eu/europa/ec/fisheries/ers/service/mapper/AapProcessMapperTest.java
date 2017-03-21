@@ -13,16 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -33,8 +33,7 @@ public class AapProcessMapperTest {
     public void testAapProcessMapper() {
 
         AAPProcess aapProcess = MapperUtil.getAapProcess();
-        AapProcessEntity aapProcessEntity = new AapProcessEntity();
-        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
+        AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
 
         AapProcessCodeEntity entity = aapProcessEntity.getAapProcessCode().iterator().next();
         assertEquals(aapProcess.getTypeCodes().get(0).getValue(), entity.getTypeCode());

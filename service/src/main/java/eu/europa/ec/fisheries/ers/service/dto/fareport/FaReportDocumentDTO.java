@@ -13,20 +13,24 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static eu.europa.ec.fisheries.uvms.common.DateUtils.DATE_TIME_UI_FORMAT;
 
-import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by padhyad on 8/9/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class FaReportDocumentDTO implements Serializable {
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-    private static final long serialVersionUID = -376115183141490362L;
+@JsonInclude(Include.NON_EMPTY)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class FaReportDocumentDTO {
 
     @JsonProperty("typeCode")
     private String typeCode;
@@ -35,11 +39,11 @@ public class FaReportDocumentDTO implements Serializable {
     private String fmcMarker;
 
     @JsonProperty("acceptedDateTime")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
+    @JsonFormat(shape = STRING, pattern = DATE_TIME_UI_FORMAT)
     private Date acceptedDateTime;
 
     @JsonProperty("creationDateTime")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
+    @JsonFormat(shape = STRING, pattern = DATE_TIME_UI_FORMAT)
     private Date creationDateTime;
 
     @JsonProperty("fluxReportDocumentId")
@@ -57,107 +61,74 @@ public class FaReportDocumentDTO implements Serializable {
     @JsonProperty("status")
     private String status;
 
-    public FaReportDocumentDTO() {
-    }
-
-    public FaReportDocumentDTO(String typeCode, String fmcMarker, Date acceptedDateTime, Date creationDateTime, String fluxReportDocumentId, String purposeCode, String referenceId, String ownerFluxPartyId, String status) {
-        this.typeCode = typeCode;
-        this.fmcMarker = fmcMarker;
-        this.acceptedDateTime = acceptedDateTime;
-        this.creationDateTime = creationDateTime;
-        this.fluxReportDocumentId = fluxReportDocumentId;
-        this.purposeCode = purposeCode;
-        this.referenceId = referenceId;
-        this.ownerFluxPartyId = ownerFluxPartyId;
-        this.status = status;
-    }
-
-    @JsonProperty("typeCode")
     public String getTypeCode() {
         return typeCode;
     }
 
-    @JsonProperty("typeCode")
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
     }
 
-    @JsonProperty("fmcMarker")
     public String getFmcMarker() {
         return fmcMarker;
     }
 
-    @JsonProperty("fmcMarker")
     public void setFmcMarker(String fmcMarker) {
         this.fmcMarker = fmcMarker;
     }
 
-    @JsonProperty("acceptedDateTime")
     public Date getAcceptedDateTime() {
         return acceptedDateTime;
     }
 
-    @JsonProperty("acceptedDateTime")
     public void setAcceptedDateTime(Date acceptedDateTime) {
         this.acceptedDateTime = acceptedDateTime;
     }
 
-    @JsonProperty("creationDateTime")
     public Date getCreationDateTime() {
         return creationDateTime;
     }
 
-    @JsonProperty("creationDateTime")
     public void setCreationDateTime(Date creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
-    @JsonProperty("fluxReportDocumentId")
     public String getFluxReportDocumentId() {
         return fluxReportDocumentId;
     }
 
-    @JsonProperty("fluxReportDocumentId")
     public void setFluxReportDocumentId(String fluxReportDocumentId) {
         this.fluxReportDocumentId = fluxReportDocumentId;
     }
 
-    @JsonProperty("purposeCode")
     public String getPurposeCode() {
         return purposeCode;
     }
 
-    @JsonProperty("purposeCode")
     public void setPurposeCode(String purposeCode) {
         this.purposeCode = purposeCode;
     }
 
-    @JsonProperty("referenceId")
     public String getReferenceId() {
         return referenceId;
     }
 
-    @JsonProperty("referenceId")
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
     }
 
-    @JsonProperty("ownerFluxPartyId")
     public String getOwnerFluxPartyId() {
         return ownerFluxPartyId;
     }
 
-    @JsonProperty("ownerFluxPartyId")
     public void setOwnerFluxPartyId(String ownerFluxPartyId) {
         this.ownerFluxPartyId = ownerFluxPartyId;
     }
 
-    @JsonProperty("status")
     public String getStatus() {
         return status;
     }
 
-    @JsonProperty("status")
     public void setStatus(String status) {
         this.status = status;
     }

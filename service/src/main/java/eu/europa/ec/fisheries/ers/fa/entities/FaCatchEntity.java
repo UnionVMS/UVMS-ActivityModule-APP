@@ -8,11 +8,27 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
+
 @NamedQueries({
 		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
 				query = "SELECT faCatch.typeCode, faCatch.speciesCode, sum(faCatch.weightMeasure) " +
@@ -33,9 +49,9 @@ public class FaCatchEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@SequenceGenerator(name="SEQ_GEN", sequenceName="fa_catch_seq", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
-	private int id;
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_catch_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_activity_id")
@@ -114,22 +130,6 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "gear_type_code")
 	private String gearTypeCode;
 
-	public String getGearTypeCode() {
-		return gearTypeCode;
-	}
-
-	public void setGearTypeCode(String gearTypeCode) {
-		this.gearTypeCode = gearTypeCode;
-	}
-
-	public String getFishClassCode() {
-		return fishClassCode;
-	}
-
-	public void setFishClassCode(String fishClassCode) {
-		this.fishClassCode = fishClassCode;
-	}
-
 	@Column(name = "fish_class_code")
 	private String fishClassCode;
 
@@ -162,191 +162,255 @@ public class FaCatchEntity implements Serializable {
 		return this.fishingActivity;
 	}
 
-	public void setFishingActivity(
-			FishingActivityEntity fishingActivity) {
-		this.fishingActivity = fishingActivity;
-	}
+    public void setFishingActivity(FishingActivityEntity fishingActivity) {
+        this.fishingActivity = fishingActivity;
+    }
 	public SizeDistributionEntity getSizeDistribution() {
 		return this.sizeDistribution;
 	}
+
 	public void setSizeDistribution(
 			SizeDistributionEntity sizeDistribution) {
 		this.sizeDistribution = sizeDistribution;
 	}
+
+    public String getGearTypeCode() {
+        return gearTypeCode;
+    }
+
+    public void setGearTypeCode(String gearTypeCode) {
+        this.gearTypeCode = gearTypeCode;
+    }
+
+    public String getFishClassCode() {
+        return fishClassCode;
+    }
+
+    public void setFishClassCode(String fishClassCode) {
+        this.fishClassCode = fishClassCode;
+    }
+
 	public String getTypeCode() {
 		return this.typeCode;
 	}
+
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
 	}
+
 	public String getTypeCodeListId() {
 		return this.typeCodeListId;
 	}
+
 	public void setTypeCodeListId(String typeCodeListId) {
 		this.typeCodeListId = typeCodeListId;
 	}
+
 	public String getSpeciesCode() {
 		return this.speciesCode;
 	}
-	public void setSpeciesCode(String speciesCode) {
-		this.speciesCode = speciesCode;
+
+    public void setSpeciesCode(String speciesCode) {
+        this.speciesCode = speciesCode;
 	}
-	public String getSpeciesCodeListid() {
-		return this.speciesCodeListid;
+
+    public String getSpeciesCodeListid() {
+        return this.speciesCodeListid;
 	}
-	public void setSpeciesCodeListid(String speciesCodeListid) {
-		this.speciesCodeListid = speciesCodeListid;
+
+    public void setSpeciesCodeListid(String speciesCodeListid) {
+        this.speciesCodeListid = speciesCodeListid;
 	}
-	public Double getUnitQuantity() {
-		return this.unitQuantity;
+
+    public Double getUnitQuantity() {
+        return this.unitQuantity;
 	}
-	public void setUnitQuantity(Double unitQuantity) {
-		this.unitQuantity = unitQuantity;
+
+    public void setUnitQuantity(Double unitQuantity) {
+        this.unitQuantity = unitQuantity;
 	}
-	public Double getWeightMeasure() {
-		return this.weightMeasure;
+
+    public Double getWeightMeasure() {
+        return this.weightMeasure;
 	}
-	public void setWeightMeasure(Double weightMeasure) {
-		this.weightMeasure = weightMeasure;
+
+    public void setWeightMeasure(Double weightMeasure) {
+        this.weightMeasure = weightMeasure;
 	}
-	public String getWeightMeasureUnitCode() {
-		return this.weightMeasureUnitCode;
+
+    public String getWeightMeasureUnitCode() {
+        return this.weightMeasureUnitCode;
 	}
-	public void setWeightMeasureUnitCode(String weightMeasureUnitCode) {
-		this.weightMeasureUnitCode = weightMeasureUnitCode;
+
+    public void setWeightMeasureUnitCode(String weightMeasureUnitCode) {
+        this.weightMeasureUnitCode = weightMeasureUnitCode;
 	}
 	public Double getCalculatedWeightMeasure() {
 		return calculatedWeightMeasure;
 	}
-	public void setCalculatedWeightMeasure(Double calculatedWeightMeasure) {
-		this.calculatedWeightMeasure = calculatedWeightMeasure;
+
+    public void setCalculatedWeightMeasure(Double calculatedWeightMeasure) {
+        this.calculatedWeightMeasure = calculatedWeightMeasure;
 	}
 	public String getUsageCode() {
 		return this.usageCode;
 	}
-	public void setUsageCode(String usageCode) {
-		this.usageCode = usageCode;
+
+    public void setUsageCode(String usageCode) {
+        this.usageCode = usageCode;
 	}
-	public String getUsageCodeListId() {
-		return this.usageCodeListId;
+
+    public String getUsageCodeListId() {
+        return this.usageCodeListId;
 	}
-	public void setUsageCodeListId(String usageCodeListId) {
-		this.usageCodeListId = usageCodeListId;
+
+    public void setUsageCodeListId(String usageCodeListId) {
+        this.usageCodeListId = usageCodeListId;
 	}
-	public String getWeighingMeansCode() {
-		return this.weighingMeansCode;
+
+    public String getWeighingMeansCode() {
+        return this.weighingMeansCode;
 	}
-	public void setWeighingMeansCode(String weighingMeansCode) {
-		this.weighingMeansCode = weighingMeansCode;
+
+    public void setWeighingMeansCode(String weighingMeansCode) {
+        this.weighingMeansCode = weighingMeansCode;
 	}
-	public String getWeighingMeansCodeListId() {
-		return this.weighingMeansCodeListId;
+
+    public String getWeighingMeansCodeListId() {
+        return this.weighingMeansCodeListId;
 	}
-	public void setWeighingMeansCodeListId(String weighingMeansCodeListId) {
-		this.weighingMeansCodeListId = weighingMeansCodeListId;
+
+    public void setWeighingMeansCodeListId(String weighingMeansCodeListId) {
+        this.weighingMeansCodeListId = weighingMeansCodeListId;
 	}
-	public Set<AapProcessEntity> getAapProcesses() {
-		return this.aapProcesses;
+
+    public Set<AapProcessEntity> getAapProcesses() {
+        return this.aapProcesses;
 	}
-	public void setAapProcesses(
-			Set<AapProcessEntity> aapProcesses) {
-		this.aapProcesses = aapProcesses;
+
+    public void setAapProcesses(Set<AapProcessEntity> aapProcesses) {
+        this.aapProcesses = aapProcesses;
+    }
+
+    public Set<FishingGearEntity> getFishingGears() {
+        return this.fishingGears;
 	}
-	public Set<FishingGearEntity> getFishingGears() {
-		return this.fishingGears;
+
+    public void setFishingGears(Set<FishingGearEntity> fishingGears) {
+        this.fishingGears = fishingGears;
+    }
+
+    public Set<FluxLocationEntity> getFluxLocations() {
+        return this.fluxLocations;
 	}
-	public void setFishingGears(
-			Set<FishingGearEntity> fishingGears) {
-		this.fishingGears = fishingGears;
+
+    public void setFluxLocations(Set<FluxLocationEntity> fluxLocations) {
+        this.fluxLocations = fluxLocations;
+    }
+
+    public Set<FluxCharacteristicEntity> getFluxCharacteristics() {
+        return this.fluxCharacteristics;
 	}
-	public Set<FluxLocationEntity> getFluxLocations() {
-		return this.fluxLocations;
+
+    public void setFluxCharacteristics(Set<FluxCharacteristicEntity> fluxCharacteristics) {
+        this.fluxCharacteristics = fluxCharacteristics;
+    }
+
+    public Set<AapStockEntity> getAapStocks() {
+        return this.aapStocks;
 	}
-	public void setFluxLocations(
-			Set<FluxLocationEntity> fluxLocations) {
-		this.fluxLocations = fluxLocations;
+
+    public void setAapStocks(Set<AapStockEntity> aapStocks) {
+        this.aapStocks = aapStocks;
 	}
-	public Set<FluxCharacteristicEntity> getFluxCharacteristics() {
-		return this.fluxCharacteristics;
+
+    public Set<FishingTripEntity> getFishingTrips() {
+        return this.fishingTrips;
 	}
-	public void setFluxCharacteristics(
-			Set<FluxCharacteristicEntity> fluxCharacteristics) {
-		this.fluxCharacteristics = fluxCharacteristics;
+
+    public void setFishingTrips(Set<FishingTripEntity> fishingTrips) {
+        this.fishingTrips = fishingTrips;
+    }
+
+    public String getUnitQuantityCode() {
+        return unitQuantityCode;
 	}
-	public Set<AapStockEntity> getAapStocks() {
-		return this.aapStocks;
+
+    public void setUnitQuantityCode(String unitQuantityCode) {
+        this.unitQuantityCode = unitQuantityCode;
 	}
-	public void setAapStocks(Set<AapStockEntity> aapStocks) {
-		this.aapStocks = aapStocks;
+
+    public Double getCalculatedUnitQuantity() {
+        return calculatedUnitQuantity;
 	}
-	public Set<FishingTripEntity> getFishingTrips() {
-		return this.fishingTrips;
+
+    public void setCalculatedUnitQuantity(Double calculatedUnitQuantity) {
+        this.calculatedUnitQuantity = calculatedUnitQuantity;
 	}
-	public void setFishingTrips(
-			Set<FishingTripEntity> fishingTrips) {
-		this.fishingTrips = fishingTrips;
+
+    public String getTerritory() {
+        return territory;
 	}
-	public String getUnitQuantityCode() {
-		return unitQuantityCode;
+
+    public void setTerritory(String territory) {
+        this.territory = territory;
 	}
-	public void setUnitQuantityCode(String unitQuantityCode) {
-		this.unitQuantityCode = unitQuantityCode;
+
+    public String getFaoArea() {
+        return faoArea;
 	}
-	public Double getCalculatedUnitQuantity() {
-		return calculatedUnitQuantity;
+
+    public void setFaoArea(String faoArea) {
+        this.faoArea = faoArea;
 	}
-	public void setCalculatedUnitQuantity(Double calculatedUnitQuantity) {
-		this.calculatedUnitQuantity = calculatedUnitQuantity;
+
+    public String getIcesStatRectangle() {
+        return icesStatRectangle;
 	}
-	public String getTerritory() {
-		return territory;
+
+    public void setIcesStatRectangle(String icesStatRectangle) {
+        this.icesStatRectangle = icesStatRectangle;
 	}
-	public void setTerritory(String territory) {
-		this.territory = territory;
+
+    public String getEffortZone() {
+        return effortZone;
 	}
-	public String getFaoArea() {
-		return faoArea;
+
+    public void setEffortZone(String effortZone) {
+        this.effortZone = effortZone;
 	}
-	public void setFaoArea(String faoArea) {
-		this.faoArea = faoArea;
-	}
-	public String getIcesStatRectangle() {
-		return icesStatRectangle;
-	}
-	public void setIcesStatRectangle(String icesStatRectangle) {
-		this.icesStatRectangle = icesStatRectangle;
-	}
-	public String getEffortZone() {
-		return effortZone;
-	}
-	public void setEffortZone(String effortZone) {
-		this.effortZone = effortZone;
-	}
+
     public String getRfmo() {
         return rfmo;
     }
+
     public void setRfmo(String rfmo) {
         this.rfmo = rfmo;
     }
+
     public String getGfcmGsa() {
         return gfcmGsa;
     }
+
     public void setGfcmGsa(String gfcmGsa) {
         this.gfcmGsa = gfcmGsa;
     }
+
     public String getGfcmStatRectangle() {
         return gfcmStatRectangle;
     }
+
     public void setGfcmStatRectangle(String gfcmStatRectangle) {
         this.gfcmStatRectangle = gfcmStatRectangle;
     }
-	public String getPresentation() {
-		return presentation;
-	}
-	public void setPresentation(String presentation) {
-		this.presentation = presentation;
-	}
 
+    public String getPresentation() {
+        return presentation;
+    }
+
+    public void setPresentation(String presentation) {
+        this.presentation = presentation;
+	}
 
 	@Override
 	public String toString() {

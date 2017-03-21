@@ -10,6 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import static junit.framework.TestCase.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
@@ -18,13 +25,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static junit.framework.TestCase.assertNotNull;
 
 public class FaCatchDaoTest extends BaseErsFaDaoTest {
 
@@ -74,7 +74,7 @@ public class FaCatchDaoTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
        // FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelper.createFACatchSummaryHelper();
        //System.out.println( faCatchSummaryHelper.printJsonstructure(query));
-        Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query,false);
+        Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> faCatchSummaryCustomEntityListMap = dao.getGroupedFaCatchData(query, false);
         assertNotNull(faCatchSummaryCustomEntityListMap);
       
     }

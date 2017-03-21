@@ -8,30 +8,16 @@
  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.fisheries.ers.service.dto;
+package eu.europa.ec.fisheries.ers.dao;
 
-/**
- * TODO create test
- */
-public class FishingActivityIdentifierDTO {
+import eu.europa.ec.fisheries.ers.fa.entities.BaseErsFaDaoTest;
+import org.junit.Test;
 
-    private String faIdentifierId;
+public class VesselIdentifierDaoTest extends BaseErsFaDaoTest {
 
-    private String faIdentifierSchemeId;
+    @Test
+    public void name() throws Exception {
 
-    public String getFaIdentifierId() {
-        return faIdentifierId;
-    }
 
-    public void setFaIdentifierId(String faIdentifierId) {
-        this.faIdentifierId = faIdentifierId;
-    }
-
-    public String getFaIdentifierSchemeId() {
-        return faIdentifierSchemeId;
-    }
-
-    public void setFaIdentifierSchemeId(String faIdentifierSchemeId) {
-        this.faIdentifierSchemeId = faIdentifierSchemeId;
     }
 }

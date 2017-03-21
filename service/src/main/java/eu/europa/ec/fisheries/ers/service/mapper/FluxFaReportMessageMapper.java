@@ -10,6 +10,10 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
@@ -22,10 +26,6 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by kovian on 18/01/2017.
@@ -57,7 +57,9 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
         if(fluxReportDocument == null){
             return null;
         }
-        return FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntityFromFluxMessage(fluxReportDocument, fluxFaReportMessage, new FluxReportDocumentEntity());
+        FluxReportDocumentEntity entity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
+        entity.setFluxFaReportMessage(fluxFaReportMessage);
+        return entity;
     }
 
 }

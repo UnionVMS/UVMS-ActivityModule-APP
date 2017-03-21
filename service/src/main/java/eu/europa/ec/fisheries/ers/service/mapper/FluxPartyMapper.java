@@ -13,21 +13,19 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 /**
  * Created by padhyad on 9/16/2016.
@@ -41,13 +39,12 @@ public abstract class FluxPartyMapper extends BaseMapper {
             @Mapping(target = "fluxPartyName", expression = "java(getTextFromList(fluxParty.getNames()))"),
             @Mapping(target = "nameLanguageId", expression = "java(getLanguageIdFromList(fluxParty.getNames()))"),
             @Mapping(target = "fluxPartyIdentifiers", expression = "java(mapToFluxPartyIdentifierEntities(fluxParty.getIDS(), fluxPartyEntity))"),
-            @Mapping(target = "fluxReportDocument", expression = "java(fluxReportDocumentEntity)")
     })
-    public abstract FluxPartyEntity mapToFluxPartyEntity(FLUXParty fluxParty, FluxReportDocumentEntity fluxReportDocumentEntity, @MappingTarget FluxPartyEntity fluxPartyEntity);
+    public abstract FluxPartyEntity mapToFluxPartyEntity(FLUXParty fluxParty);
 
     @Mappings({
-            @Mapping(target = "fluxPartyIdentifierId", expression = "java(getIdType(idType))"),
-            @Mapping(target = "fluxPartyIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
+            @Mapping(target = "fluxPartyIdentifierId", source = "value"),
+            @Mapping(target = "fluxPartyIdentifierSchemeId", source = "schemeID")
     })
     public abstract FluxPartyIdentifierEntity mapToFluxPartyIdentifierEntity(IDType idType);
 

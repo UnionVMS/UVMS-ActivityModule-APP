@@ -10,24 +10,25 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearProblemRecoveryEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by padhyad on 6/14/2016.
@@ -38,19 +39,18 @@ public abstract class GearProblemMapper extends BaseMapper {
     public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(gearProblem.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(gearProblem.getTypeCode()))"),
-            @Mapping(target = "affectedQuantity", expression = "java(getAffectedQuantity(gearProblem.getAffectedQuantity()))"),
+            @Mapping(target = "typeCode", source = "typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "affectedQuantity", source = "affectedQuantity.value"),
             @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))"),
-            @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))"),
             @Mapping(target = "locations", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations(), gearProblemEntity))")
     })
-    public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem, FishingActivityEntity fishingActivityEntity, @MappingTarget GearProblemEntity gearProblemEntity);
+    public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem);
 
     @Mappings({
-            @Mapping(target = "recoveryMeasureCode", expression = "java(getCodeType(codeType))"),
-            @Mapping(target = "recoveryMeasureCodeListId", expression = "java(getCodeTypeListId(codeType))")
+            @Mapping(target = "recoveryMeasureCode", source = "value"),
+            @Mapping(target = "recoveryMeasureCodeListId", source = "listID")
     })
     public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
 
@@ -85,18 +85,10 @@ public abstract class GearProblemMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, gearProblemEntity, new FishingGearEntity());
+            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            fishingGearEntity.setGearProblem(gearProblemEntity);
             fishingGearEntities.add(fishingGearEntity);
         }
         return fishingGearEntities;
-    }
-
-    protected Integer getAffectedQuantity(QuantityType quantityType) {
-        Double qty = super.getQuantity(quantityType);
-        if (qty != null) {
-            return qty.intValue();
-        } else {
-            return null;
-        }
     }
 }

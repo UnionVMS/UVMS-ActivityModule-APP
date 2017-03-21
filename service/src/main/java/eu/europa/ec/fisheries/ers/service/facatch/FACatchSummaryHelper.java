@@ -10,31 +10,33 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomChildProxy;
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
-
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * This class acts as helper class for FAcatchSummary Report functionality.
@@ -44,6 +46,19 @@ import java.util.*;
 public abstract class FACatchSummaryHelper {
     protected String faCatchSummaryCustomClassName;
 
+    public static String printJsonstructure(Object obj) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        String s = null;
+        try {
+            s = mapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.error("Exception while parsing JSON", e);
+        }
+        log.debug("json structure:-------->");
+        log.debug("" + s);
+        return s;
+    }
 
     /**
      * This method maps raw data fetched from database to customEntity.
@@ -119,7 +134,6 @@ public abstract class FACatchSummaryHelper {
         return sdf.format(date);
     }
 
-
     /**
      * Add FishClass to the grouping factor and remove FACatch if already present.
      * Method adds default grouping criterias which are required to build summary table.
@@ -155,7 +169,6 @@ public abstract class FACatchSummaryHelper {
 
     }
 
-
     /**
      * This method creates groups for various aggregation criterias and combine records for the group
      *
@@ -186,7 +199,6 @@ public abstract class FACatchSummaryHelper {
      */
     public abstract List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap);
 
-
     /**
      * Creates Summary table structure for provided DTO list
      * @param catchSummaryDTOList list of records to be processed to create summary structure
@@ -205,7 +217,6 @@ public abstract class FACatchSummaryHelper {
         return summaryTableWithTotals;
     }
 
-
     /**
      * This method processes data to calculate weights for different FishSize classes
      *
@@ -213,7 +224,6 @@ public abstract class FACatchSummaryHelper {
      * @param summaryTable           process this object to calculate totals
      */
     public abstract void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable);
-
 
     /**
      * This method processes data to calculate weights for different Catch types
@@ -223,7 +233,6 @@ public abstract class FACatchSummaryHelper {
      */
     public abstract void populateTotalFaCatchMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable);
 
-
     protected Double calculateTotalValue(Double value, Double totalValue) {
         if (totalValue == null) {
             return value;
@@ -231,7 +240,6 @@ public abstract class FACatchSummaryHelper {
             return totalValue + value;
         }
     }
-
 
     public List<FACatchSummaryRecord> buildFACatchSummaryRecordList(List<FACatchSummaryRecordDTO> catchSummaryDTOList) {
         List<FACatchSummaryRecord> faCatchSummaryRecords = new ArrayList<>();
@@ -254,7 +262,7 @@ public abstract class FACatchSummaryHelper {
     @NotNull
     protected Map<String, Double> extractSpeciesCountMap(Map<String, Double> valueSpeciesMap, Map<String, Double> resultTotalspeciesMap) {
         if (MapUtils.isEmpty(resultTotalspeciesMap)) {
-            resultTotalspeciesMap = new HashMap<>();
+            resultTotalspeciesMap = new HashMap<>(); // FIXME squid:S1226 introduce a new variable instead of reusing
         }
 
         for (Map.Entry<String, Double> speciesEntry : valueSpeciesMap.entrySet()) {
@@ -269,20 +277,6 @@ public abstract class FACatchSummaryHelper {
             }
         }
         return resultTotalspeciesMap;
-    }
-
-    public static String printJsonstructure(Object obj) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        String s = null;
-        try {
-            s = mapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            log.error("Exception while parsing JSON", e);
-        }
-        log.debug("json structure:-------->");
-        log.debug("" + s);
-        return s;
     }
 
 

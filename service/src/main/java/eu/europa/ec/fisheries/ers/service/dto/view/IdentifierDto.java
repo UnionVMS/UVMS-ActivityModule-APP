@@ -11,40 +11,61 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-/**
- * Created by kovian on 28/02/2017.
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(Include.NON_NULL)
+@EqualsAndHashCode
+@AllArgsConstructor(suppressConstructorProperties = true)
+@RequiredArgsConstructor(suppressConstructorProperties = true)
+@NoArgsConstructor
+@ToString
 public class IdentifierDto {
 
     @JsonProperty("id")
     @JsonView(CommonView.class)
-    private String faIdentifierId;
+    private String identifierId;
 
     @JsonProperty("schemeId")
     @JsonView(CommonView.class)
-    private String faIdentifierSchemeId;
+    @NonNull
+    private VesselIdentifierSchemeIdEnum identifierSchemeId;
 
-    public String getFaIdentifierId() {
-        return faIdentifierId;
+    private boolean fromAssets;
+
+    public String getIdentifierId() {
+        return identifierId;
     }
 
-    public void setFaIdentifierId(String faIdentifierId) {
-        this.faIdentifierId = faIdentifierId;
+    public void setIdentifierId(String identifierId) {
+        this.identifierId = identifierId;
     }
 
-    public String getFaIdentifierSchemeId() {
-        return faIdentifierSchemeId;
+    public boolean getFromAssets() {
+        return fromAssets;
     }
 
-    public void setFaIdentifierSchemeId(String faIdentifierSchemeId) {
-        this.faIdentifierSchemeId = faIdentifierSchemeId;
+    public void setFromAssets(boolean fromAssets) {
+        this.fromAssets = fromAssets;
+    }
+
+    public VesselIdentifierSchemeIdEnum getIdentifierSchemeId() {
+        return identifierSchemeId;
+    }
+
+    public void setIdentifierSchemeId(VesselIdentifierSchemeIdEnum identifierSchemeId) {
+        this.identifierSchemeId = identifierSchemeId;
     }
 
 }

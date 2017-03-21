@@ -10,10 +10,23 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteriaWithValue;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SpeciesCount;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryFACatchtype;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryFishSize;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryTable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -22,8 +35,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-
-import java.util.*;
 
 
 /**
@@ -62,7 +73,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param customEntity
      * @return
      */
-    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomProxy customEntity){
+    public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomProxy customEntity) {
         List<GroupCriteriaWithValue> groups = new ArrayList<>();
 
         if(customEntity ==null){
@@ -141,7 +152,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     public SummaryTableDTO getSummaryTableDTO(List<FaCatchSummaryCustomProxy> catchSummaryEntityList) {
         SummaryTableDTO summaryTable = new SummaryTableDTO();
 
-        for(FaCatchSummaryCustomProxy entity :catchSummaryEntityList){
+        for (FaCatchSummaryCustomProxy entity : catchSummaryEntityList) {
             Double speciesCnt = entity.getCount();
 
             // If FishClass information is present then only build structure for FishClass
@@ -166,7 +177,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     protected SummaryTableDTO getSummaryTableDTOWithPresentation(List<FaCatchSummaryCustomProxy> catchSummaryEntityList) {
         SummaryTableDTO summaryTable = new SummaryTableDTO();
 
-        for(FaCatchSummaryCustomProxy entity :catchSummaryEntityList){
+        for (FaCatchSummaryCustomProxy entity : catchSummaryEntityList) {
             Double count = entity.getCount();
 
             // If FishClass information is present then only build structure for FishClass
@@ -278,7 +289,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     @NotNull
     private Map<FishSizeClassEnum, Object> populateFishSizeClassMapForOnlyForFishClass(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FishSizeClassEnum, Object> fishSizeSummaryMap) {
         if (MapUtils.isEmpty(fishSizeSummaryMap)) {
-            fishSizeSummaryMap = new EnumMap<>(FishSizeClassEnum.class);
+            fishSizeSummaryMap = new EnumMap<>(FishSizeClassEnum.class); // FIXME squid:S1226 introduce a new variable instead of reusing
             fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), speciesCnt);
         } else {
             Object count = fishSizeSummaryMap.get(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()));
@@ -334,7 +345,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     @NotNull
     private Map<FaCatchTypeEnum, Object> populateFaCatchTypeMapOnlyForCatchType(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FaCatchTypeEnum, Object> faCatchSummaryMap) {
         if (MapUtils.isEmpty(faCatchSummaryMap)) {
-            faCatchSummaryMap = new EnumMap<>(FaCatchTypeEnum.class);
+            faCatchSummaryMap = new EnumMap<>(FaCatchTypeEnum.class); // FIXME squid:S1226 introduce a new variable instead of reusing
             faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), speciesCnt);
         }else {
 
@@ -425,7 +436,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
         }
     }
 
-    private void populateSpeciesMapWithPresentation(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<String, Map<String,Double>> speciesPresentationCountMap) {
+    private void populateSpeciesMapWithPresentation(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<String, Map<String, Double>> speciesPresentationCountMap) {
         Map<String,Double> presentationMap= speciesPresentationCountMap.get(customEntity.getSpecies().toUpperCase());
         if(MapUtils.isEmpty(presentationMap)){
             if(customEntity.getPresentation()!=null){
@@ -458,7 +469,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
 
     @NotNull
-    private Map<String,Map<String,Double>> createPresentationCountMap(FaCatchSummaryCustomProxy customEntity, Double presentationCnt) {
+    private Map<String, Map<String, Double>> createPresentationCountMap(FaCatchSummaryCustomProxy customEntity, Double presentationCnt) {
         Map<String,Map<String,Double>> speciesMap = new HashMap<>();
 
         if(customEntity.getSpecies() !=null  && customEntity.getPresentation() !=null) {

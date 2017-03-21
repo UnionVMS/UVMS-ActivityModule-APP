@@ -11,6 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
@@ -24,20 +30,14 @@ import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by padhyad on 5/3/2016.
  */
 @Slf4j
 public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
-    private EntityManager em;
     private static final String TRIP_ID = "tripId";
+    private EntityManager em;
 
     public FaCatchDao(EntityManager em) {
         this.em = em;
@@ -60,7 +60,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
      * @return Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> key = object represnting common group, value is list of different objects which belong to  that group
      * @throws ServiceException
      */
-   public Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> getGroupedFaCatchData(FishingActivityQuery query,boolean isLanding) throws ServiceException {
+    public Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> getGroupedFaCatchData(FishingActivityQuery query, boolean isLanding) throws ServiceException {
 
         List<GroupCriteria> groupByFieldList = query.getGroupByFields();
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
@@ -71,7 +71,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
        // By default FishSize and FACatch type should be present in the summary table. First Query db with group FishClass
         faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);
 
-        List<FaCatchSummaryCustomProxy> customEntities=  getRecordsForFishClassOrFACatchType(query,isLanding); // get data with FishClass grouping factor
+        List<FaCatchSummaryCustomProxy> customEntities = getRecordsForFishClassOrFACatchType(query, isLanding); // get data with FishClass grouping factor
 
         faCatchSummaryHelper.enrichGroupCriteriaWithFACatchType(query.getGroupByFields());
 
@@ -88,7 +88,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
      * @return List<FaCatchSummaryCustomEntity> custom object represnting aggregation factors and its count
      * @throws ServiceException
      */
-     private   List<FaCatchSummaryCustomProxy> getRecordsForFishClassOrFACatchType(FishingActivityQuery query,boolean isLanding) throws ServiceException {
+    private List<FaCatchSummaryCustomProxy> getRecordsForFishClassOrFACatchType(FishingActivityQuery query, boolean isLanding) throws ServiceException {
 
          // create Query to get grouped data from FACatch table, also combine query to filter records as per filters provided by users
          FACatchSearchBuilder faCatchSearchBuilder = createCorrectBuilderForFACatch(isLanding);
@@ -99,12 +99,12 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
          log.debug("size of records received from DB :"+list.size());
 
          // Map Raw data received from database to custom entity which will help identifing correct groups
-         List<FaCatchSummaryCustomProxy> customEntities= new ArrayList<>();
+        List<FaCatchSummaryCustomProxy> customEntities = new ArrayList<>();
          FACatchSummaryHelper faCatchSummaryHelper = isLanding?FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
          List<GroupCriteria> groupCriterias=query.getGroupByFields();
          for(Object[] objArr :list){
              try {
-                 FaCatchSummaryCustomProxy entity= faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr,groupCriterias,isLanding);
+                 FaCatchSummaryCustomProxy entity = faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr, groupCriterias, isLanding);
                  customEntities.add(entity);
              } catch (Exception e) {
                  log.error("Could not map sql selection to FaCatchSummaryCustomEntity object", e);

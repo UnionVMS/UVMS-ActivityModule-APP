@@ -1,21 +1,30 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.dao.*;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.message.exception.ActivityMessageException;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.VesselDetailsTripDTO;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,22 +35,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-/**
- * Created by kovian on 29/09/2016.
- */
 public class FishingActivityServiceBeanTest {
 
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     EntityManager em;
@@ -59,7 +56,10 @@ public class FishingActivityServiceBeanTest {
     FishingTripIdentifierDao fishingTripIdentifierDao;
 
     @Mock
-    VesselIdentifiersDao vesselIdentifiersDao;
+    VesselIdentifierDao vesselIdentifiersDao;
+
+    @Mock
+    VesselTransportMeansDao vesselTransportMeansDao;
 
     @InjectMocks
     ActivityServiceBean activityService;
@@ -79,70 +79,52 @@ public class FishingActivityServiceBeanTest {
     @Mock
     JAXBMarshaller marshaller;
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-
     @Test
     @SneakyThrows
     public void testGetVesselDetailsForFishingTrip() throws ServiceException {
-        when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
-        when(vesselIdentifiersDao.getLatestVesselIdByTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getVesselIdentifiersList());
+
+        when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
 
         //Trigger
-        VesselDetailsTripDTO vesselDetailsTripDTO= fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
-        Mockito.verify(vesselIdentifiersDao, Mockito.times(1)).getLatestVesselIdByTrip(Mockito.any(String.class));
+        Mockito.verify(vesselTransportMeansDao, Mockito.times(1)).findLatestVesselByTripId(Mockito.any(String.class));
         //Verify
 
-        assertNotNull( vesselDetailsTripDTO);
-        assertEquals("vesselGroup1", vesselDetailsTripDTO.getName());
+        assertNotNull(vesselDetailsDTO);
     }
 
     @Test
     @SneakyThrows
-    public void testGetVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException {
+    public void testGetVesselDetailsAndContactPartiesForFishingTrip() {
 
-        when(vesselIdentifiersDao.getLatestVesselIdByTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getVesselIdentifiersList());
+        when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
 
-        VesselDetailsTripDTO vesselDetailsTripDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
-        assertNotNull(vesselDetailsTripDTO);
-        assertEquals(2, vesselDetailsTripDTO.getContactPersons().size());
-        assertEquals("vesselGroup1", vesselDetailsTripDTO.getName());
+        assertNotNull(vesselDetailsDTO);
     }
 
     @Test
     @SneakyThrows
-    public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() throws ServiceException, ActivityModelMarshallException, ActivityMessageException, MessageException, JMSException {
+    public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() {
 
-        when(vesselIdentifiersDao.getLatestVesselIdByTrip(Mockito.anyString())).thenReturn(MapperUtil.getVesselIdentifiersList());
-        ListAssetResponse listAssetResponse = new ListAssetResponse();
+        when(vesselTransportMeansDao.findLatestVesselByTripId(Mockito.anyString())).thenReturn(new VesselTransportMeansEntity());
+        List<Asset> listAssetResponse = new ArrayList<>();
         Asset asset = new Asset();
         asset.setCfr("UPDATED_CFR");
         asset.setIrcs("UPDATED_IRCS");
         asset.setImo("UPDATED_IMO");
         asset.setName("name");
-        listAssetResponse.setTotalNumberOfPages(10);
+        listAssetResponse.add(asset);
 
-        listAssetResponse.getAsset().add(asset);
-        when(assetModule.getAssetListResponse(Mockito.any(VesselDetailsTripDTO.class))).thenReturn(listAssetResponse);
+        when(assetModule.getAssetListResponse(Mockito.any(AssetListQuery.class))).thenReturn(listAssetResponse);
 
-        VesselDetailsTripDTO vesselDetailsTripDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
-        assertNotNull(vesselDetailsTripDTO);
+        assertNotNull(vesselDetailsDTO);
 
-        // Checking that the VesselDetailsTripDTO has been enriched;
-        assertEquals("UPDATED_IRCS", vesselDetailsTripDTO.getIrcs());
-        assertEquals(true, vesselDetailsTripDTO.isIrcsEnriched());
-
-        assertEquals("UPDATED_IMO", vesselDetailsTripDTO.getUvi());
-        assertEquals(true, vesselDetailsTripDTO.isUviEnriched());
-
-        assertEquals(false, vesselDetailsTripDTO.isExMarkEnriched());
-        assertEquals(false, vesselDetailsTripDTO.isFlagStateEnriched());
     }
-
 
     @Test
     @SneakyThrows

@@ -10,18 +10,22 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
-import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
 
 /**
  * Created by sanera on 06/03/2017.
@@ -31,7 +35,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
 
     public FACatchSummaryPresentationHelper(){
         super();
-        this.faCatchSummaryCustomClassName="eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomChildEntity";
+        this.faCatchSummaryCustomClassName = "eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomChildEntity";
     }
 
 /**
@@ -41,11 +45,11 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
  * @return List<FACatchSummaryRecordDTO> Processed records having summary data
  */
   @Override
-  public  List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> groupedMap){
+  public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap) {
         List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
 
-        for (Map.Entry<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> entry : groupedMap.entrySet()) {
-            FaCatchSummaryCustomProxy customEntity= entry.getKey();
+      for (Map.Entry<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> entry : groupedMap.entrySet()) {
+          FaCatchSummaryCustomProxy customEntity = entry.getKey();
             customEntity.setPresentation(null); // We dont want Presentation to be part of group criteria. We want to display this information in summmary table so, remove it
             FACatchSummaryRecordDTO faCatchSummaryDTO= FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryRecordDTOWithPresentation(entry.getKey(),entry.getValue());
             if(CollectionUtils.isEmpty(faCatchSummaryDTO.getGroups())){ // Do not add record to the list if no data for grouping factors found
@@ -105,7 +109,6 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
                 Object value = entry.getValue();
                 if(value instanceof Map){
                     Map<String, Map<String,Double>> fishSizeMap = (Map<String, Map<String,Double>>) totalCatchTypeMap.get(catchType); // check if already present
-                    //  fishSizeMap = extractSpeciesCountMAp((Map<String, Double>) value, fishSizeMap);
                     fishSizeMap = populateSpeciesPresentationMapWithTotal(( Map<String, Map<String,Double>>) value, fishSizeMap);
                     totalCatchTypeMap.put(catchType, fishSizeMap);
 
@@ -117,7 +120,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
     @NotNull
     protected Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String,Double>> speciesMap, Map<String, Map<String,Double>> resultTotalPresentationMap) {
         if (MapUtils.isEmpty(resultTotalPresentationMap)) {
-            resultTotalPresentationMap = new HashMap<>();
+            resultTotalPresentationMap = new HashMap<>(); // FIXME squid:S1226 introduce a new variable instead of reusing
         }
 
         for (Map.Entry<String, Map<String,Double>> speciesEntry : speciesMap.entrySet()) {

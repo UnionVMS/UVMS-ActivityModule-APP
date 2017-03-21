@@ -32,28 +32,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
+@JsonInclude(Include.NON_NULL)
 public class ActivityDetailsDto {
 
     @JsonView(CommonView.class)
     private String type;
 
     @JsonView(CommonView.class)
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(Include.NON_EMPTY)
     private Map<String, String> characteristics;
+
+    @JsonIgnore
+    private Geometry geom;
 
     @JsonView({Arrival.class, NotificationOfArrival.class, AreaEntry.class, Discard.class})
     private String reason;
 
     @JsonSerialize(using = CustomDateSerializer.class)
     @JsonView({Landing.class, Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
-            JointFishingOperation.class, Relocation.class, NotificationOfTranshipment.class,
-            NotificationOfRelocation.class})
+            JointFishingOperation.class, Relocation.class, NotificationOfTranshipment.class, NotificationOfRelocation.class})
     private Date occurrence;
 
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -71,9 +79,7 @@ public class ActivityDetailsDto {
     @JsonView(Landing.class)
     private DelimitedPeriodDTO landingTime;
 
-    @JsonView({Departure.class, AreaEntry.class
-            , AreaExit.class, FishingOperation.class
-            , JointFishingOperation.class})
+    @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
     private String fisheryType;
 
     @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
@@ -227,5 +233,22 @@ public class ActivityDetailsDto {
 
     public void setTranshipmentTime(DelimitedPeriodDTO transhipmentTime) {
         this.transhipmentTime = transhipmentTime;
+    }
+
+    @JsonProperty("geom")
+    public String getWkt() {
+        String wkt = null;
+        if (geom != null) {
+            wkt = GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
+        }
+        return wkt;
+    }
+
+    public Geometry getGeom() {
+        return geom;
+    }
+
+    public void setGeom(Geometry geom) {
+        this.geom = geom;
     }
 }

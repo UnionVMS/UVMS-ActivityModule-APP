@@ -13,6 +13,11 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import org.mapstruct.Mapper;
@@ -22,25 +27,17 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * Created by padhyad on 9/16/2016.
- */
 @Mapper
 public abstract class FlapDocumentMapper extends BaseMapper {
 
     public static final FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
 
     @Mappings({
-            @Mapping(target = "flapDocumentId", expression = "java(getIdType(flapDocument.getID()))"),
-            @Mapping(target = "flapDocumentSchemeId", expression = "java(getIdTypeSchemaId(flapDocument.getID()))"),
+            @Mapping(target = "flapDocumentId", source = "flapDocument.ID.value"),
+            @Mapping(target = "flapDocumentSchemeId", source = "flapDocument.ID.schemeID"),
             @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
-            @Mapping(target = "flapTypeCode", expression = "java(getCodeType(flapDocument.getTypeCode()))"),
-            @Mapping(target = "flapTypeCodeListId", expression = "java(getCodeTypeListId(flapDocument.getTypeCode()))")
+            @Mapping(target = "flapTypeCode", source = "flapDocument.typeCode.value"),
+            @Mapping(target = "flapTypeCodeListId", source = "flapDocument.typeCode.listID")
     })
     public abstract FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
 

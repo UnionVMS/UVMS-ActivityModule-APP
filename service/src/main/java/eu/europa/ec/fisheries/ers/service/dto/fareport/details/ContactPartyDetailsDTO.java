@@ -13,62 +13,51 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.util.List;
 
-/**
- * Created by padhyad on 8/11/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@JsonInclude(Include.NON_EMPTY)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ContactPartyDetailsDTO {
 
-    @JsonProperty("role")
     private String role;
 
-    @JsonProperty("contactPerson")
-    private ContactPersonDetailsDTO contactPersonDetails;
+    private ContactPersonDetailsDTO contactPerson;
 
     @JsonProperty("structuredAddress")
-    private List<AddressDetailsDTO> addressDetails;
+    private List<AddressDetailsDTO> structuredAddresses;
 
-    public ContactPartyDetailsDTO() {
+    public ContactPersonDetailsDTO getContactPerson() {
+        return contactPerson;
     }
 
-    public ContactPartyDetailsDTO(String role, ContactPersonDetailsDTO contactPersonDetails, List<AddressDetailsDTO> addressDetails) {
-        this.role = role;
-        this.contactPersonDetails = contactPersonDetails;
-        this.addressDetails = addressDetails;
+    public void setContactPerson(ContactPersonDetailsDTO contactPerson) {
+        this.contactPerson = contactPerson;
     }
 
-    @JsonProperty("role")
+    public List<AddressDetailsDTO> getStructuredAddresses() {
+        return structuredAddresses;
+    }
+
+    public void setStructuredAddresses(List<AddressDetailsDTO> structuredAddresses) {
+        this.structuredAddresses = structuredAddresses;
+    }
+
     public String getRole() {
         return role;
     }
 
-    @JsonProperty("role")
     public void setRole(String role) {
         this.role = role;
     }
 
-    @JsonProperty("contactPerson")
-    public ContactPersonDetailsDTO getContactPersonDetails() {
-        return contactPersonDetails;
-    }
-
-    @JsonProperty("contactPerson")
-    public void setContactPersonDetails(ContactPersonDetailsDTO contactPersonDetails) {
-        this.contactPersonDetails = contactPersonDetails;
-    }
-
-    @JsonProperty("structuredAddress")
-    public List<AddressDetailsDTO> getAddressDetails() {
-        return addressDetails;
-    }
-
-    @JsonProperty("structuredAddress")
-    public void setAddressDetails(List<AddressDetailsDTO> addressDetails) {
-        this.addressDetails = addressDetails;
-    }
 }

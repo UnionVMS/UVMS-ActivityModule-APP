@@ -8,20 +8,54 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@NamedQueries({
+        @NamedQuery(name = VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
+                query = "SELECT vt FROM FishingTripIdentifierEntity fti " +
+                        "INNER JOIN fti.fishingTrip ft " +
+                        "INNER JOIN ft.fishingActivity fa " +
+                        "INNER JOIN fa.faReportDocument frd " +
+                        "INNER JOIN frd.vesselTransportMeans vt " +
+                        "INNER JOIN vt.vesselIdentifiers vi " +
+                        "WHERE fti.tripId = :tripId " +
+                        "ORDER BY frd.acceptedDatetime DESC")
+})
 @Entity
 @Table(name = "activity_vessel_transport_means")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VesselTransportMeansEntity implements Serializable {
+
+    public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "vesselTransportMeansEntity.findLatestVesselByTripId";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name="SEQ_GEN", sequenceName="vsl_trp_seq", allocationSize = 1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_trp_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -60,10 +94,6 @@ public class VesselTransportMeansEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<FlapDocumentEntity> flapDocuments;
-
-    public VesselTransportMeansEntity() {
-        super();
-    }
 
     public int getId() {
         return this.id;

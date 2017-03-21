@@ -8,10 +8,26 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @NamedQueries({
 		@NamedQuery(name = VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
@@ -27,15 +43,18 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_vessel_identifier")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VesselIdentifierEntity implements Serializable {
 
 	public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "findLatestVesselByTripId";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@SequenceGenerator(name="SEQ_GEN", sequenceName="vsl_id_seq", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
-	private int id;
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vessel_transport_mean_id")
@@ -46,10 +65,6 @@ public class VesselIdentifierEntity implements Serializable {
 
 	@Column(name = "vessel_identifier_scheme_id")
 	private String vesselIdentifierSchemeId;
-
-	public VesselIdentifierEntity() {
-		super();
-	}
 
 	public int getId() {
 		return this.id;

@@ -13,147 +13,110 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-/**
- * Created by padhyad on 8/11/2016.
- */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ContactPersonDetailsDTO {
 
-    @JsonProperty("isCaptain")
+    @JsonIgnore
     private boolean isCaptain;
 
-    @JsonProperty("roles")
-    private List<String> roles;
-
-    @JsonProperty("title")
+    @JsonIgnore
     private String title;
 
-    @JsonProperty("givenName")
     private String givenName;
 
-    @JsonProperty("middleName")
+    @JsonIgnore
     private String middleName;
 
-    @JsonProperty("familyName")
     private String familyName;
 
-    @JsonProperty("familyNamePrefix")
+    @JsonIgnore
     private String familyNamePrefix;
 
-    @JsonProperty("nameSuffix")
+    @JsonIgnore
     private String nameSuffix;
 
-    @JsonProperty("gender")
+    @JsonIgnore
     private String gender;
 
-    @JsonProperty("alias")
     private String alias;
 
-    @JsonProperty("adresses")
-    private List<AddressDetailsDTO> adresses;
-
-    public ContactPersonDetailsDTO() {
-    }
-
-    public ContactPersonDetailsDTO(String title, String givenName, String middleName, String familyName, String familyNamePrefix, String nameSuffix, String gender, String alias) {
-        this.title = title;
-        this.givenName = givenName;
-        this.middleName = middleName;
-        this.familyName = familyName;
-        this.familyNamePrefix = familyNamePrefix;
-        this.nameSuffix = nameSuffix;
-        this.gender = gender;
-        this.alias = alias;
-    }
-
-    @JsonProperty("isCaptain")
     public boolean isCaptain() {
         return isCaptain;
     }
-    @JsonProperty("isCaptain")
+
     public void setCaptain(boolean captain) {
         isCaptain = captain;
     }
-    @JsonProperty("title")
+
     public String getTitle() {
         return title;
     }
-    @JsonProperty("title")
+
     public void setTitle(String title) {
         this.title = title;
     }
-    @JsonProperty("givenName")
+
     public String getGivenName() {
         return givenName;
     }
-    @JsonProperty("givenName")
+
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
-    @JsonProperty("middleName")
+
     public String getMiddleName() {
         return middleName;
     }
-    @JsonProperty("middleName")
+
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
     }
-    @JsonProperty("familyName")
+
     public String getFamilyName() {
         return familyName;
     }
-    @JsonProperty("familyName")
+
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
     }
-    @JsonProperty("familyNamePrefix")
+
     public String getFamilyNamePrefix() {
         return familyNamePrefix;
     }
-    @JsonProperty("familyNamePrefix")
+
     public void setFamilyNamePrefix(String familyNamePrefix) {
         this.familyNamePrefix = familyNamePrefix;
     }
-    @JsonProperty("nameSuffix")
+
     public String getNameSuffix() {
         return nameSuffix;
     }
-    @JsonProperty("nameSuffix")
+
     public void setNameSuffix(String nameSuffix) {
         this.nameSuffix = nameSuffix;
     }
-    @JsonProperty("gender")
+
     public String getGender() {
         return gender;
     }
-    @JsonProperty("gender")
+
     public void setGender(String gender) {
         this.gender = gender;
     }
-    @JsonProperty("alias")
+
     public String getAlias() {
         return alias;
     }
-    @JsonProperty("alias")
+
     public void setAlias(String alias) {
         this.alias = alias;
     }
-    @JsonProperty("adresses")
-    public List<AddressDetailsDTO> getAdresses() {
-        return adresses;
-    }
-    @JsonProperty("adresses")
-    public void setAdresses(List<AddressDetailsDTO> adresses) {
-        this.adresses = adresses;
-    }
-    @JsonProperty("roles")
-    public List<String> getRoles() {
-        return roles;
-    }
-    @JsonProperty("roles")
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
+
 }

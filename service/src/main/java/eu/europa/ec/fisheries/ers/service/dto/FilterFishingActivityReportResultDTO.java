@@ -13,22 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
-/**
- * Created by sanera on 19/09/2016.
- */
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FilterFishingActivityReportResultDTO {
 
     @JsonProperty("resultList")
     private List<FishingActivityReportDTO> resultList;
 
     private int totalCountOfRecords;
-
-  //  @JsonProperty("pagination")
-    //private PaginationDTO pagination;
 
     @JsonProperty("resultList")
     public List<FishingActivityReportDTO> getResultList() {
@@ -39,16 +33,6 @@ public class FilterFishingActivityReportResultDTO {
     public void setResultList(List<FishingActivityReportDTO> resultList) {
         this.resultList = resultList;
     }
-
- /*   @JsonProperty("pagination")
-    public PaginationDTO getPagination() {
-        return pagination;
-    }
-
-    @JsonProperty("pagination")
-    public void setPagination(PaginationDTO pagination) {
-        this.pagination = pagination;
-    }*/
 
     public int getTotalCountOfRecords() {
         return totalCountOfRecords;

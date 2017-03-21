@@ -13,7 +13,20 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
@@ -21,14 +34,7 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXGeographicalCoordinate;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by padhyad on 7/29/2016.
@@ -103,22 +109,6 @@ public class FluxLocationMapperTest {
                 FluxLocationMapper.INSTANCE.getFluxCharacteristicEntities(fluxCarList, fluxLocationEntity);
         assertNotNull(fluxCharacteristicEntities);
         assertTrue(fluxCharacteristicEntities.size() > 0);
-    }
-
-    @Test
-    public void testNullityConditions(){
-        assertNull(FluxLocationMapper.INSTANCE.getAltitude(null));
-        assertNull(FluxLocationMapper.INSTANCE.getLatitude(null));
-        assertNull(FluxLocationMapper.INSTANCE.getLongitude(null));
-        assertNull(FluxLocationMapper.INSTANCE.getSystemId(null));
-
-        FLUXGeographicalCoordinate fluxGeographicalCoordinate = new FLUXGeographicalCoordinate(null,null,null,null);
-
-        assertNull(FluxLocationMapper.INSTANCE.getAltitude(fluxGeographicalCoordinate));
-        assertNull(FluxLocationMapper.INSTANCE.getLatitude(fluxGeographicalCoordinate));
-        assertNull(FluxLocationMapper.INSTANCE.getLongitude(fluxGeographicalCoordinate));
-        assertNull(FluxLocationMapper.INSTANCE.getSystemId(fluxGeographicalCoordinate));
-
     }
 
     private void assertFluxLocationEntityFields(FLUXLocation fluxLocation, FluxLocationEntity fluxLocationEntity, FluxLocationCatchTypeEnum fluxLocationTypeEnum) {
