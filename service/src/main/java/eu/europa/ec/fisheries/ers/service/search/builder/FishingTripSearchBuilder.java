@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.service.search.builder;
 
 import javax.xml.datatype.DatatypeConstants;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.info("sql :" + sql);
+        LOG.info("sql :" + sql); // FIXME use the built-in formatting to construct argument
 
         return sql;
     }
@@ -79,7 +78,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         sql.append(" where ");
         createWherePartForQueryForFilters(sql, query);
 
-        LOG.debug("Generated Query After Where :" + sql);
+        LOG.debug("Generated Query After Where :" + sql); // FIXME use the built-in formatting to construct argument
         return sql;
     }
 
@@ -96,11 +95,11 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         String tresholdTrips = ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
         if (tresholdTrips != null) {
             int threshold = Integer.parseInt(tresholdTrips);
-            LOG.info("fishing trip threshold value:" + threshold);
+            LOG.info("fishing trip threshold value:" + threshold); // FIXME use the built-in formatting to construct argument
             if (uniqueTripIdWithGeometry.size() > threshold)
                 throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
 
-            LOG.info("fishing trip list size is within threshold value:" + uniqueTripIdWithGeometry.size());
+            LOG.info("fishing trip list size is within threshold value:" + uniqueTripIdWithGeometry.size()); // FIXME use the built-in formatting to construct argument
         }
 
     }
@@ -133,7 +132,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         return fishingTripIdLists;
     }    */
 
-    public void getAllFishingActivitiesForTripIdInformation(String tripId){
+    public void getAllFishingActivitiesForTripIdInformation(String tripId) {
 
     }
 
@@ -148,7 +147,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 
-            LOG.info("FishingTripEntity:" + entity + " FishingActivityEntity:" + entity.getFishingActivity());
+            LOG.info("FishingTripEntity:" + entity + " FishingActivityEntity:" + entity.getFishingActivity()); // FIXME use the built-in formatting to construct argument
             Set<FishingTripIdentifierEntity> fishingTripIdList = entity.getFishingTripIdentifiers();
             if (fishingTripIdList == null) {
                 continue;

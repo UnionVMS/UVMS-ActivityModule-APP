@@ -10,11 +10,11 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+import javax.persistence.EntityManager;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-
-import javax.persistence.EntityManager;
 
 /**
  * Created by kovian on 19/01/2017.

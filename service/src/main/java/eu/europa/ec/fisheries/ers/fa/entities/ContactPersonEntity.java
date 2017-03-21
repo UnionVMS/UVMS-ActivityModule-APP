@@ -69,9 +69,9 @@ public class ContactPersonEntity implements Serializable {
 		return this.id;
 	}
 
-	
-	public String getTitle() {
-		return this.title;
+
+    public String getTitle() {
+        return this.title;
 	}
 
 	public void setTitle(String title) {

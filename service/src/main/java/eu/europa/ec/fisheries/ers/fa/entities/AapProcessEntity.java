@@ -31,7 +31,7 @@ public class AapProcessEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_process_seq" , allocationSize = 1)
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_process_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 

@@ -11,6 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import org.mapstruct.Mapper;
@@ -25,9 +28,16 @@ public interface FishingTripIdWithGeometryMapper {
 
     @Mappings({
             @Mapping(target = "tripId", source = "dto.tripId"),
+            @Mapping(target = "firstFishingActivity", expression = "java(BaseMapper.getFirstFishingActivity(fishingTripList))"),
+            @Mapping(target = "firstFishingActivityDateTime", expression = "java(BaseMapper.getFirstFishingActivityDateTime(fishingTripList))"),
+            @Mapping(target = "lastFishingActivity", expression = "java(BaseMapper.getLastFishingActivity(fishingTripList))"),
+            @Mapping(target = "lastFishingActivityDateTime", expression = "java(BaseMapper.getLastFishingActivityDateTime(fishingTripList))"),
+            @Mapping(target = "vesselIdLists", expression = "java(BaseMapper.getVesselIdLists(fishingTripList))"),
+            @Mapping(target = "flagState", expression = "java(BaseMapper.getFlagState(fishingTripList))"),
+            @Mapping(target = "noOfCorrections", expression = "java(BaseMapper.getNumberOfCorrections(fishingTripList))"),
+            @Mapping(target = "tripDuration", expression = "java(BaseMapper.getTotalDuration(fishingTripList))"),
             @Mapping(target = "schemeId", source = "dto.schemeID"),
-            @Mapping(target = "geometry", expression = "java(geometry)")
     })
-    FishingTripIdWithGeometry mapToFishingTripIdWithGeometry(FishingTripId dto, String geometry);
+    FishingTripIdWithGeometry mapToFishingTripIdWithGeometry(FishingTripId dto, List<FishingTripEntity> fishingTripList);
 
 }

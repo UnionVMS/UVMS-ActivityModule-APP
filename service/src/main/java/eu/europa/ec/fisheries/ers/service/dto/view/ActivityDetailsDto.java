@@ -34,6 +34,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -42,13 +43,14 @@ import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
+@JsonInclude(Include.NON_NULL)
 public class ActivityDetailsDto {
 
     @JsonView(CommonView.class)
     private String type;
 
     @JsonView(CommonView.class)
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(Include.NON_EMPTY)
     private Map<String, String> characteristics;
 
     @JsonIgnore

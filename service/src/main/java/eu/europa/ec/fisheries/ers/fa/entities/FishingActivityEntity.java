@@ -73,9 +73,9 @@ public class FishingActivityEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    private int id;
+	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+	private int id;
 
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	@Column(name = "geom")
@@ -159,7 +159,7 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "calculated_start_time", length = 29)
 	private Date calculatedStartTime;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
 	private FishingActivityEntity relatedFishingActivity;
 
@@ -524,8 +524,9 @@ public class FishingActivityEntity implements Serializable {
 	public void setCalculatedStartTime(Date calculatedStartTime) {
 		this.calculatedStartTime = calculatedStartTime;
 	}
-    @PostLoad
-    private void onLoad() {
+
+	@PostLoad
+	private void onLoad() {
         if (this.geom != null) {
             this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
         }

@@ -8,32 +8,31 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.dto.facatch;
+
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
-/**
- * Created by kovian on 01/03/2017.
- */
+@JsonInclude(Include.NON_NULL)
 public class FaCatchGroupDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
+    private final ThreadLocal<Double> calculatedWeight = new ThreadLocal<>();
+    @JsonView(CommonView.class)
     private String type;
-
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String species;
-
-    @JsonView(FishingActivityView.CommonView.class)
-    private Double calculatedWeight;
-
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private FaCatchDenomLocationDto locations;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private Map<String, FaCatchGroupDetailsDto> groupingDetails;
 
     public FaCatchGroupDto() {
@@ -43,30 +42,39 @@ public class FaCatchGroupDto {
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
+
     public FaCatchDenomLocationDto getLocations() {
         return locations;
     }
+
     public void setLocations(FaCatchDenomLocationDto locations) {
         this.locations = locations;
     }
+
     public String getSpecies() {
         return species;
     }
+
     public void setSpecies(String specie) {
         this.species = specie;
     }
+
     public Double getCalculatedWeight() {
-        return calculatedWeight;
+        return calculatedWeight.get();
     }
+
     public void setCalculatedWeight(Double calculatedWeight) {
-        this.calculatedWeight = calculatedWeight;
+        this.calculatedWeight.set(calculatedWeight);
     }
+
     public Map<String, FaCatchGroupDetailsDto> getGroupingDetails() {
         return groupingDetails;
     }
+
     public void setGroupingDetails(Map<String, FaCatchGroupDetailsDto> groupingDetails) {
         this.groupingDetails = groupingDetails;
     }
