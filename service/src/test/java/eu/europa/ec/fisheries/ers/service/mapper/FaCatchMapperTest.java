@@ -13,14 +13,20 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
 /**
  * Created by padhyad on 8/1/2016.
@@ -30,8 +36,7 @@ public class FaCatchMapperTest {
     @Test
     public void testFaCatchMapper() {
         FACatch faCatch = MapperUtil.getFaCatch();
-        FaCatchEntity faCatchEntity = new FaCatchEntity();
-        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, null, faCatchEntity);
+        FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
         assertFaCatchFields(faCatch, faCatchEntity);
         assertNull(faCatchEntity.getFishingActivity());

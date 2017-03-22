@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchDenomLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchDenomLocationDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

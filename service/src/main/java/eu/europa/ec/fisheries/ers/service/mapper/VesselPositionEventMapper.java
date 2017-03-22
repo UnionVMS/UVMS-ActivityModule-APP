@@ -29,14 +29,14 @@ public abstract class VesselPositionEventMapper extends BaseMapper  {
     public static final VesselPositionEventMapper INSTANCE = Mappers.getMapper(VesselPositionEventMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(vesselPositionEvent.getTypeCode()))"),
-            @Mapping(target = "obtainedOccurrenceDateTime", expression = "java(convertToDate(vesselPositionEvent.getObtainedOccurrenceDateTime()))"),
-            @Mapping(target = "speedValueMeasure", expression = "java(getMeasure(vesselPositionEvent.getSpeedValueMeasure()))"),
-            @Mapping(target = "courseValueMeasure", expression = "java(getMeasure(vesselPositionEvent.getCourseValueMeasure()))"),
-            @Mapping(target = "latitude", expression = "java(getLatitude(vesselPositionEvent.getSpecifiedVesselGeographicalCoordinate()))"),
-            @Mapping(target = "altitude", expression = "java(getAltitude(vesselPositionEvent.getSpecifiedVesselGeographicalCoordinate()))"),
-            @Mapping(target = "longitude", expression = "java(getLongitude(vesselPositionEvent.getSpecifiedVesselGeographicalCoordinate()))"),
-            @Mapping(target = "activityTypeCode", expression = "java(getCodeType(vesselPositionEvent.getActivityTypeCode()))"),
+            @Mapping(target = "typeCode", source = "vesselPositionEvent.typeCode.value"),
+            @Mapping(target = "obtainedOccurrenceDateTime", source = "vesselPositionEvent.obtainedOccurrenceDateTime.dateTime"),
+            @Mapping(target = "speedValueMeasure", source = "vesselPositionEvent.speedValueMeasure.value"),
+            @Mapping(target = "courseValueMeasure", source = "vesselPositionEvent.courseValueMeasure.value"),
+            @Mapping(target = "latitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.latitudeMeasure.value"),
+            @Mapping(target = "altitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.altitudeMeasure.value"),
+            @Mapping(target = "longitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.longitudeMeasure.value"),
+            @Mapping(target = "activityTypeCode", source = "vesselPositionEvent.activityTypeCode.value"),
             @Mapping(target = "vesselTransportMeans", source = "vesselTransportMeansEntity")
     })
 

@@ -2,7 +2,11 @@
 <!--File created from TRA015.xml.-->
 <!--Based on ON: MLT20160630000001-->
 <!--Sample UN/CEFACT file. The contents of this FLUXFAReportMessage may differ from the contents of the related EU-ERS 3.1 message.-->
-<rsm:FLUXFAReportMessage xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd" xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<rsm:FLUXFAReportMessage xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
+                         xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20"
+                         xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd">
 	<rsm:FLUXReportDocument>
 		<ram:ID schemeID="UUID">C8471F99-FB55-4B05-9AAA-7E08738C92B2</ram:ID>
 		<ram:ReferencedID schemeID="UUID">88F9AE4F-166B-46A1-AD2F-728E26095091</ram:ReferencedID>

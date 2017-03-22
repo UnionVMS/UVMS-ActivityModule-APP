@@ -10,6 +10,19 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
@@ -41,19 +54,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 
 /**
  * Created by sanera on 29/06/2016.
@@ -72,7 +72,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     private SpatialModuleService spatialModule;
 
     @EJB
-    AssetModuleService assetsServiceBean;
+    private AssetModuleService assetsServiceBean;
 
     @PostConstruct
     public void init() {
@@ -187,10 +187,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
         Geometry geom = getRestrictedAreaGeometry(datasets);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
-        FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
-        return fishingActivityViewDTO;
+        return ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
     }
-
 
     @NotNull
     private FilterFishingActivityReportResultDTO createResultDTO(List<FishingActivityEntity> activityList, int totalCountOfRecords) {
@@ -199,7 +197,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             activityList = Collections.emptyList();
         }
         // Prepare DTO to return to Frontend
-        log.debug("Fishing Activity Report resultset size : " + ((activityList == null) ? "list is null!" : Integer.toString(activityList.size())));
+        log.debug("Fishing Activity Report resultset size : " + Integer.toString(activityList.size()));
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setTotalCountOfRecords(totalCountOfRecords);

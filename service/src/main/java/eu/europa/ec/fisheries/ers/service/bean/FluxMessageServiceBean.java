@@ -69,6 +69,10 @@ import java.util.TreeSet;
 @Slf4j
 public class FluxMessageServiceBean extends BaseActivityBean implements FluxMessageService {
 
+    private static final String PREVIOUS = "PREVIOUS";
+    private static final String NEXT = "NEXT";
+    private static final String START_DATE = "START_DATE";
+    private static final String END_DATE = "END_DATE";
     private FaReportDocumentDao faReportDocumentDao;
 
     private FluxFaReportMessageDao fluxReportMessageDao;
@@ -81,12 +85,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     @EJB
     private PropertiesBean properties;
-
-    private static final String PREVIOUS   = "PREVIOUS";
-    private static final String NEXT       = "NEXT";
-    private static final String START_DATE = "START_DATE";
-    private static final String END_DATE   = "END_DATE";
-
     private DatabaseDialect dialect;
 
     @PostConstruct
@@ -111,12 +109,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             updateGeometry(faReportDocument);
             enrichFishingActivityWithGuiID(faReportDocument);
-            log.debug("fishing activity records to be saved : " + faReportDocument.getFluxReportDocument().getId());
         }
-        log.info("Insert fishing activity records into DB");
+        log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
+
 
         fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
         updateFaReportCorrections(faReportMessage.getFAReportDocuments());
+        log.info("Insert fishing activity records into DB complete.");
     }
 
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument){

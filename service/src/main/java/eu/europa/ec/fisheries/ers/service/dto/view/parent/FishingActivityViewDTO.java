@@ -8,9 +8,13 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
@@ -18,7 +22,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.facatch.FaCatchGroupDto;
 
 import java.util.List;
 
@@ -31,12 +34,10 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
 
 /**
- * Created by kovian on 07/02/2017.
- *
  * This DTO will be returned to the requester for every request of activity views.
  * It will serialize only the properties that are configured to be present for the specific view Eg : @JsonView(FishingActivityView.Arrival.class).
- *
  */
+@JsonInclude(Include.NON_NULL)
 public class FishingActivityViewDTO {
 
     @JsonView(CommonView.class)
@@ -66,30 +67,39 @@ public class FishingActivityViewDTO {
     public List<FluxLocationDto> getLocations() {
         return locations;
     }
+
     public void setLocations(List<FluxLocationDto> locations) {
         this.locations = locations;
     }
+
     public ActivityDetailsDto getActivityDetails() {
         return activityDetails;
     }
+
     public void setActivityDetails(ActivityDetailsDto activityDetails) {
         this.activityDetails = activityDetails;
     }
+
     public List<GearDto> getGears() {
         return gears;
     }
+
     public void setGears(List<GearDto> gears) {
         this.gears = gears;
     }
+
     public ReportDocumentDto getReportDetails() {
         return reportDetails;
     }
+
     public void setReportDetails(ReportDocumentDto reportDetails) {
         this.reportDetails = reportDetails;
     }
+
     public List<FaCatchGroupDto> getCatches() {
         return catches;
     }
+
     public void setCatches(List<FaCatchGroupDto> catches) {
         this.catches = catches;
     }
@@ -101,9 +111,11 @@ public class FishingActivityViewDTO {
     public void setProcessingProducts(List<ProcessingProductsDto> processingProducts) {
         this.processingProducts = processingProducts;
     }
+
     public List<GearShotRetrievalDto> getGearShotRetrievalList() {
         return gearShotRetrievalList;
     }
+
     public void setGearShotRetrievalList(List<GearShotRetrievalDto> gearShotRetrievalList) {
         this.gearShotRetrievalList = gearShotRetrievalList;
     }

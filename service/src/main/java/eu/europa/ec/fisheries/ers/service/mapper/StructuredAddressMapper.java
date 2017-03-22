@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.Set;
@@ -32,36 +31,36 @@ public abstract class StructuredAddressMapper extends BaseMapper {
     public static final StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
 
     @Mappings({
-            @Mapping(target = "blockName", expression = "java(getTextType(structuredAddress.getBlockName()))"),
-            @Mapping(target = "buildingName", expression = "java(getTextType(structuredAddress.getBuildingName()))"),
-            @Mapping(target = "cityName", expression = "java(getTextType(structuredAddress.getCityName()))"),
-            @Mapping(target = "citySubdivisionName", expression = "java(getTextType(structuredAddress.getCitySubDivisionName()))"),
-            @Mapping(target = "country", expression = "java(getIdType(structuredAddress.getCountryID()))"),
-            @Mapping(target = "countryName", expression = "java(getTextType(structuredAddress.getCountryName()))"),
-            @Mapping(target = "countrySubdivisionName", expression = "java(getTextType(structuredAddress.getCountrySubDivisionName()))"),
-            @Mapping(target = "addressId", expression = "java(getIdType(structuredAddress.getID()))"),
-            @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
-            @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
-            @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
-            @Mapping(target = "streetName", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "blockName", source = "structuredAddress.blockName.value"),
+            @Mapping(target = "buildingName", source = "structuredAddress.buildingName.value"),
+            @Mapping(target = "cityName", source = "structuredAddress.cityName.value"),
+            @Mapping(target = "citySubdivisionName", source = "structuredAddress.citySubDivisionName.value"),
+            @Mapping(target = "country", source = "structuredAddress.countryID.value"),
+            @Mapping(target = "countryName", source = "structuredAddress.countryName.value"),
+            @Mapping(target = "countrySubdivisionName", source = "structuredAddress.countrySubDivisionName.value"),
+            @Mapping(target = "addressId", source = "structuredAddress.ID.value"),
+            @Mapping(target = "plotId", source = "structuredAddress.plotIdentification.value"),
+            @Mapping(target = "postOfficeBox", source = "structuredAddress.postOfficeBox.value"),
+            @Mapping(target = "postcode", source = "structuredAddress.postcodeCode.value"),
+            @Mapping(target = "streetName", source = "structuredAddress.streetName.value"),
             @Mapping(target = "contactParty", expression = "java(contactPartyEntity)"),
             @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
     })
     public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, StructuredAddressTypeEnum structuredAddressTypeEnum, ContactPartyEntity contactPartyEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
 
     @Mappings({
-            @Mapping(target = "blockName", expression = "java(getTextType(structuredAddress.getBlockName()))"),
-            @Mapping(target = "buildingName", expression = "java(getTextType(structuredAddress.getBuildingName()))"),
-            @Mapping(target = "cityName", expression = "java(getTextType(structuredAddress.getCityName()))"),
-            @Mapping(target = "citySubdivisionName", expression = "java(getTextType(structuredAddress.getCitySubDivisionName()))"),
-            @Mapping(target = "country", expression = "java(getIdType(structuredAddress.getCountryID()))"),
-            @Mapping(target = "countryName", expression = "java(getTextType(structuredAddress.getCountryName()))"),
-            @Mapping(target = "countrySubdivisionName", expression = "java(getTextType(structuredAddress.getCountrySubDivisionName()))"),
-            @Mapping(target = "addressId", expression = "java(getIdType(structuredAddress.getID()))"),
-            @Mapping(target = "plotId", expression = "java(getTextType(structuredAddress.getPlotIdentification()))"),
-            @Mapping(target = "postOfficeBox", expression = "java(getTextType(structuredAddress.getPostOfficeBox()))"),
-            @Mapping(target = "postcode", expression = "java(getCodeType(structuredAddress.getPostcodeCode()))"),
-            @Mapping(target = "streetName", expression = "java(getTextType(structuredAddress.getStreetName()))"),
+            @Mapping(target = "blockName", source = "structuredAddress.blockName.value"),
+            @Mapping(target = "buildingName", source = "structuredAddress.buildingName.value"),
+            @Mapping(target = "cityName", source = "structuredAddress.cityName.value"),
+            @Mapping(target = "citySubdivisionName", source = "structuredAddress.citySubDivisionName.value"),
+            @Mapping(target = "country", source = "structuredAddress.countryID.value"),
+            @Mapping(target = "countryName", source = "structuredAddress.countryName.value"),
+            @Mapping(target = "countrySubdivisionName", source = "structuredAddress.countrySubDivisionName.value"),
+            @Mapping(target = "addressId", source = "structuredAddress.ID.value"),
+            @Mapping(target = "plotId", source = "structuredAddress.plotIdentification.value"),
+            @Mapping(target = "postOfficeBox", source = "structuredAddress.postOfficeBox.value"),
+            @Mapping(target = "postcode", source = "structuredAddress.postcodeCode.value"),
+            @Mapping(target = "streetName", source = "structuredAddress.streetName.value"),
             @Mapping(target = "fluxLocation", expression = "java(fluxLocationEntity)"),
             @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
     })

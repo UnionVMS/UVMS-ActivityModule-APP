@@ -13,6 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
@@ -23,9 +26,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-
 /**
  * Created by padhyad on 7/27/2016.
  */
@@ -34,8 +34,7 @@ public class AapProductMapperTest {
     @Test
     public void testAapProductMapper() {
         AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = new AapProductEntity();
-        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
 
         assertEquals(aapProduct.getPackagingTypeCode().getValue(), aapProductEntity.getPackagingTypeCode());
         assertEquals(aapProduct.getPackagingTypeCode().getListID(), aapProductEntity.getPackagingTypeCodeListId());
@@ -72,16 +71,14 @@ public class AapProductMapperTest {
         // Prepare
         FACatch faCatch = MapperUtil.getFaCatch();
         FaCatchEntity faCatchEntity = new FaCatchEntity();
-        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch, null, faCatchEntity);
+        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
         AAPProcess aapProcess = MapperUtil.getAapProcess();
-        AapProcessEntity aapProcessEntity = new AapProcessEntity();
-        AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, null, aapProcessEntity);
+        AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
         aapProcessEntity.setFaCatch(faCatchEntity);
 
         AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = new AapProductEntity();
-        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
         aapProductEntity.setAapProcess(aapProcessEntity);
 
         // Create Input data

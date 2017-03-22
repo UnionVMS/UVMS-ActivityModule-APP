@@ -8,8 +8,12 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -20,28 +24,20 @@ import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.List;
-
-/**
- * Created by padhyad on 5/3/2016.
- */
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
-    private StringBuilder activityViewQuery;
 
     private EntityManager em;
 
     public FishingActivityDao(EntityManager em) {
         this.em = em;
     }
-
 
     @Override
     public EntityManager getEntityManager() {
@@ -68,18 +64,17 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
-           LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
-           StringBuilder sqlToGetActivityListCount =search.createSQL(query);
+        LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
+        StringBuilder sqlToGetActivityListCount = search.createSQL(query);
 
-           Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
+        Query countQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
 
         return countQuery.getResultList().size();
     }
 
-
-       /**
-        * Set typed values for Dynamically generated Query
-        */
+    /**
+     * Set typed values for Dynamically generated Query
+     */
     private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearchBuilder search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
 
@@ -87,7 +82,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return search.fillInValuesForTypedQuery(query, typedQuery);
 
     }
-
 
     /*
      Get all the Fishing Activities which match Filter criterias mentioned in the Input. Also, provide the sorted data based on what user has requested.
@@ -105,11 +99,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
-            listQuery.setFirstResult(pagination.getOffset()-1);
+            listQuery.setFirstResult(pagination.getOffset() - 1);
             listQuery.setMaxResults(pagination.getPageSize());
         }
 
-        return listQuery.getResultList();
+        List resultList = listQuery.getResultList();
+        Hibernate.initialize(resultList);
+
+        return resultList;
     }
 
     /**
@@ -120,8 +117,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @return
      */
     public FishingActivityEntity getFishingActivityById(String activityId, Geometry geom) throws ServiceException {
-        fillQueryConditions(geom);
-        Query typedQuery = getEntityManager().createQuery(activityViewQuery.toString());
+        String s = fillQueryConditions(geom);
+        Query typedQuery = getEntityManager().createQuery(s);
         typedQuery.setParameter("fishingActivityId", Integer.parseInt(activityId));
         if(geom != null){
             typedQuery.setParameter("area", geom);
@@ -133,9 +130,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return resultList.get(0);
     }
 
-    private void fillQueryConditions(Geometry geom) {
+    private String fillQueryConditions(Geometry geom) {
 
-        activityViewQuery = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
+        StringBuilder sb = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
                 .append("LEFT JOIN FETCH a.faReportDocument fa ")
                 .append("LEFT JOIN FETCH a.fluxLocations fl ")
                 .append("LEFT JOIN FETCH a.fishingGears fg ")
@@ -151,10 +148,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH fa.fluxReportDocument flux ")
                 .append("WHERE ");
         if(geom != null){
-            activityViewQuery.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
+            sb.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
         } else {
-            activityViewQuery.append("a.id=:fishingActivityId ");
+            sb.append("a.id=:fishingActivityId ");
         }
+        return sb.toString();
     }
-
 }

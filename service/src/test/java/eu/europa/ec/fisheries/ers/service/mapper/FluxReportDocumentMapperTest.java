@@ -13,14 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by padhyad on 8/1/2016.
@@ -30,8 +30,7 @@ public class FluxReportDocumentMapperTest {
     @Test
     public void testFluxReportDocumentMapper() {
         FLUXReportDocument fluxReportDocument = MapperUtil.getFluxReportDocument();
-        FluxReportDocumentEntity entity = new FluxReportDocumentEntity();
-        FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument, null, entity);
+        FluxReportDocumentEntity entity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
 
         assertEquals(fluxReportDocument.getIDS().get(0).getValue(), entity.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId());
         assertEquals(fluxReportDocument.getIDS().get(0).getSchemeID(), entity.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId());

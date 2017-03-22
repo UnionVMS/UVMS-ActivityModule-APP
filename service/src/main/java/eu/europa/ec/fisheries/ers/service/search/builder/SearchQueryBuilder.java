@@ -13,6 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
@@ -29,9 +36,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import java.util.*;
 
 /**
  * Created by sanera on 28/09/2016.
@@ -56,6 +60,15 @@ public abstract class SearchQueryBuilder {
       this.filterMap = filterMap;
     }
 
+    // Assumption for the weight is, calculated_weight_measure is in Kg.
+    // IF we get WEIGHT MEASURE as TON, we need to convert the input value to Kilograms.
+    public static Double normalizeWeightValue(String value, String weightMeasure) {
+        Double valueConverted = Double.parseDouble(value);
+        if (WeightConversion.TON.equals(weightMeasure)) {
+            valueConverted = WeightConversion.convertToKiloGram(Double.parseDouble(value), WeightConversion.TON);
+        }
+        return valueConverted;
+    }
 
     public FilterMap getFilterMap() {
         return filterMap;
@@ -161,7 +174,6 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-
     /**
      * This method makes sure that Table join is present for the Filter for which sorting has been requested.
      *
@@ -210,6 +222,7 @@ public abstract class SearchQueryBuilder {
     }
 
     private  int getFiledCase(StringBuilder sql, SearchFilter field) {
+        //      if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
         if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
             return 1;
         } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
@@ -277,7 +290,6 @@ public abstract class SearchQueryBuilder {
      */
     public abstract StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) ;
 
-
     /**
      * Create sorting part for the Query
      * @param sql
@@ -290,6 +302,7 @@ public abstract class SearchQueryBuilder {
         SortKey sort = query.getSorting();
         if (sort != null && sort.getSortBy() !=null) {
             SearchFilter field = sort.getSortBy();
+            //  if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field)) {
             if (SearchFilter.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
             }
@@ -339,16 +352,6 @@ public abstract class SearchQueryBuilder {
         sql.append(" ) ");
         sql.append(" OR dp is null ) ");
         return sql;
-    }
-
-    // Assumption for the weight is, calculated_weight_measure is in Kg.
-    // IF we get WEIGHT MEASURE as TON, we need to convert the input value to Kilograms.
-    public static Double normalizeWeightValue(String value, String weightMeasure) {
-        Double valueConverted = Double.parseDouble(value);
-        if (WeightConversion.TON.equals(weightMeasure)) {
-            valueConverted = WeightConversion.convertToKiloGram(Double.parseDouble(value), WeightConversion.TON);
-        }
-        return valueConverted;
     }
 
     public Query fillInValuesForTypedQuery(FishingActivityQuery query, Query typedQuery) throws ServiceException {

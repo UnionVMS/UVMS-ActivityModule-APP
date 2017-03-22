@@ -10,10 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,14 +28,18 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "activity_flux_location")
 public class FluxLocationEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@SequenceGenerator(name="SEQ_GEN", sequenceName="flux_loc_seq", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
+	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_loc_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
 	private int id;
 
 	@Type(type = "org.hibernate.spatial.GeometryType")

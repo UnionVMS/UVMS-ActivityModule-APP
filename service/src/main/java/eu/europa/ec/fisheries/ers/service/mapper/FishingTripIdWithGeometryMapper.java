@@ -149,16 +149,5 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         return noOfCorrections;
     }
 
-    protected boolean getCorrection(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() == null) {
-            return false;
-        }
 
-        FluxReportDocumentEntity fluxReportDocument = entity.getFaReportDocument().getFluxReportDocument();
-        if (fluxReportDocument.getReferenceId() != null && fluxReportDocument.getReferenceId().length() != 0) {
-            return true;
-
-        }
-        return false;
-    }
 }

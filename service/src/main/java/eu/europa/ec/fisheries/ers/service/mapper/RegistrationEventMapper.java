@@ -8,47 +8,26 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import java.util.List;
+@Mapper(imports = BaseMapper.class)
+public interface RegistrationEventMapper {
 
-/**
- * Created by padhyad on 5/17/2016.
- */
-@Mapper
-public abstract class RegistrationEventMapper extends BaseMapper {
-
-    public static final RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
+    RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
 
     @Mappings({
-            @Mapping(target = "description", expression = "java(getDescription(registrationEvent.getDescriptions()))"),
-            @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(registrationEvent.getDescriptions()))"),
-            @Mapping(target = "occurrenceDatetime", expression = "java(convertToDate(registrationEvent.getOccurrenceDateTime()))"),
-            @Mapping(target = "registrationLocation", expression = "java(mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))"),
-            @Mapping(target = "vesselTransportMeanses", expression = "java(vesselTransportMeansEntity)")
+            @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationEvent.getDescriptions()))"),
+            @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationEvent.getDescriptions()))"),
+            @Mapping(target = "occurrenceDatetime", source = "registrationEvent.occurrenceDateTime.dateTime"),
+            @Mapping(target = "registrationLocation", expression = "java(BaseMapper.mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))"),
     })
-    public abstract RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget RegistrationEventEntity registrationEventEntity);
-
-    protected RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
-        if (registrationLocation == null) {
-            return null;
-        }
-        return RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation, registrationEventEntity, new RegistrationLocationEntity());
-    }
-
-    protected String getDescription(List<TextType> descriptions) {
-        return (descriptions == null || descriptions.isEmpty()) ? null : descriptions.get(0).getValue();
-    }
+    RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);
 }

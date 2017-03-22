@@ -16,15 +16,19 @@ package eu.europa.ec.fisheries.ers.service.dto.fareport;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Created by padhyad on 8/5/2016.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 public class FaReportCorrectionDTO implements Serializable, Comparable {
 
     @JsonProperty("id")
@@ -34,11 +38,11 @@ public class FaReportCorrectionDTO implements Serializable, Comparable {
     private String correctionType;
 
     @JsonProperty("creationDate")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
+    @JsonFormat(shape = Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
     private Date creationDate;
 
     @JsonProperty("acceptedDate")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd\'T\'HH:mm:ss")
+    @JsonFormat(shape = Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
     private Date acceptedDate;
 
     @JsonProperty("faReportIdentifiers")

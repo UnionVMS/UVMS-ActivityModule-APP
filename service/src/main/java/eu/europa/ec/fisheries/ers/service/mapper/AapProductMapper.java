@@ -8,7 +8,11 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
@@ -16,17 +20,10 @@ import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Created by padhyad on 6/14/2016.
- */
 @Mapper
 public abstract class AapProductMapper extends BaseMapper {
 
@@ -39,29 +36,28 @@ public abstract class AapProductMapper extends BaseMapper {
     public static final String FISH_FRESHNESS = "FISH_FRESHNESS";
 
     @Mappings({
-            @Mapping(target = "packagingTypeCode", expression = "java(getCodeType(aapProduct.getPackagingTypeCode()))"),
-            @Mapping(target = "packagingTypeCodeListId", expression = "java(getCodeTypeListId(aapProduct.getPackagingTypeCode()))"),
-            @Mapping(target = "packagingUnitAvarageWeight", expression = "java(getMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
-            @Mapping(target = "packagingWeightUnitCode", expression = "java(getMeasureUnitCode(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
+            @Mapping(target = "packagingTypeCode", source = "aapProduct.packagingTypeCode.value"),
+            @Mapping(target = "packagingTypeCodeListId", source = "aapProduct.packagingTypeCode.listID"),
+            @Mapping(target = "packagingUnitAvarageWeight", source = "aapProduct.packagingUnitAverageWeightMeasure.value"),
+            @Mapping(target = "packagingWeightUnitCode", source = "aapProduct.packagingUnitAverageWeightMeasure.unitCode"),
             @Mapping(target = "calculatedPackagingWeight", expression = "java(getCalculatedMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
-            @Mapping(target = "packagingUnitCount", expression = "java(getQuantity(aapProduct.getPackagingUnitQuantity()))"),
-            @Mapping(target = "packagingUnitCountCode", expression = "java(getQuantityUnitCode(aapProduct.getPackagingUnitQuantity()))"),
+            @Mapping(target = "packagingUnitCount", source = "aapProduct.packagingUnitQuantity.value"),
+            @Mapping(target = "packagingUnitCountCode", source = "aapProduct.packagingUnitQuantity.unitCode"),
             @Mapping(target = "calculatedPackagingUnitCount", expression = "java(getCalculatedQuantity(aapProduct.getPackagingUnitQuantity()))"),
-            @Mapping(target = "speciesCode", expression = "java(getCodeType(aapProduct.getSpeciesCode()))"),
-            @Mapping(target = "speciesCodeListId", expression = "java(getCodeTypeListId(aapProduct.getSpeciesCode()))"),
-            @Mapping(target = "unitQuantity", expression = "java(getQuantity(aapProduct.getUnitQuantity()))"),
-            @Mapping(target = "unitQuantityCode", expression = "java(getQuantityUnitCode(aapProduct.getUnitQuantity()))"),
+            @Mapping(target = "speciesCode", source = "aapProduct.speciesCode.value"),
+            @Mapping(target = "speciesCodeListId", source = "aapProduct.speciesCode.listID"),
+            @Mapping(target = "unitQuantity", source = "aapProduct.unitQuantity.value"),
+            @Mapping(target = "unitQuantityCode", source = "aapProduct.unitQuantity.unitCode"),
             @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(aapProduct.getUnitQuantity()))"),
-            @Mapping(target = "weightMeasure", expression = "java(getMeasure(aapProduct.getWeightMeasure()))"),
-            @Mapping(target = "weightMeasureUnitCode", expression = "java(getMeasureUnitCode(aapProduct.getWeightMeasure()))"),
+            @Mapping(target = "weightMeasure", source = "aapProduct.weightMeasure.value"),
+            @Mapping(target = "weightMeasureUnitCode", source = "aapProduct.weightMeasure.unitCode"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(aapProduct.getWeightMeasure()))"),
-            @Mapping(target = "weighingMeansCode", expression = "java(getCodeType(aapProduct.getWeighingMeansCode()))"),
-            @Mapping(target = "weighingMeansCodeListId", expression = "java(getCodeTypeListId(aapProduct.getWeighingMeansCode()))"),
-            @Mapping(target = "usageCode", expression = "java(getCodeType(aapProduct.getUsageCode()))"),
-            @Mapping(target = "usageCodeListId", expression = "java(getCodeTypeListId(aapProduct.getUsageCode()))"),
-            @Mapping(target = "aapProcess", expression = "java(aapProcessEntity)")
+            @Mapping(target = "weighingMeansCode", source = "aapProduct.weighingMeansCode.value"),
+            @Mapping(target = "weighingMeansCodeListId", source = "aapProduct.weighingMeansCode.listID"),
+            @Mapping(target = "usageCode", source = "aapProduct.usageCode.value"),
+            @Mapping(target = "usageCodeListId", source = "aapProduct.usageCode.listID"),
     })
-    public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct, AapProcessEntity aapProcessEntity, @MappingTarget AapProductEntity aapProductEntity);
+    public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct);
 
     @Mappings({
             @Mapping(target = "type", source = "aapProcess.faCatch.typeCode"),

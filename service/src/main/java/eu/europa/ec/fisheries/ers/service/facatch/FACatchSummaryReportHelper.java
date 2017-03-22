@@ -10,6 +10,11 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
@@ -20,8 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
-import java.util.*;
-
 /**
  * Created by sanera on 06/03/2017.
  */
@@ -30,7 +33,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
 
     public FACatchSummaryReportHelper(){
         super();
-        this.faCatchSummaryCustomClassName="eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomEntity";
+        this.faCatchSummaryCustomClassName = "eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomEntity";
     }
 
     /**
@@ -40,7 +43,7 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
      * @return List<FACatchSummaryRecordDTO> Processed records having summary data
      */
     @Override
-    public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> groupedMap){
+    public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap) {
         List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
 
         for (Map.Entry<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> entry : groupedMap.entrySet()) {

@@ -9,21 +9,24 @@ details. You should have received a copy of the GNU General Public License along
 
 */
 
-
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-/**
- * Created by kovian on 09/02/2017.
- */
 @ToString
 @EqualsAndHashCode
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(Include.NON_NULL)
 public class GearDto {
 
     @JsonView(FishingActivityView.CommonView.class)

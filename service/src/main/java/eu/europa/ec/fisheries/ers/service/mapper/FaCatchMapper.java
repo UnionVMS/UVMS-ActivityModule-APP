@@ -8,45 +8,62 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * Created by padhyad on 5/17/2016.
- */
-@Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class})
+@Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class,
+        FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class})
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(faCatch.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(faCatch.getTypeCode()))"),
-            @Mapping(target = "speciesCode", expression = "java(getCodeType(faCatch.getSpeciesCode()))"),
-            @Mapping(target = "speciesCodeListid", expression = "java(getCodeTypeListId(faCatch.getSpeciesCode()))"),
-            @Mapping(target = "unitQuantity", expression = "java(getQuantity(faCatch.getUnitQuantity()))"),
-            @Mapping(target = "unitQuantityCode", expression = "java(getQuantityUnitCode(faCatch.getUnitQuantity()))"),
+            @Mapping(target = "typeCode", source = "faCatch.typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "faCatch.typeCode.listID"),
+            @Mapping(target = "speciesCode", source = "faCatch.speciesCode.value"),
+            @Mapping(target = "speciesCodeListid", source = "faCatch.speciesCode.listID"),
+            @Mapping(target = "unitQuantity", source = "faCatch.unitQuantity.value"),
+            @Mapping(target = "unitQuantityCode", source = "faCatch.unitQuantity.unitCode"),
             @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(faCatch.getUnitQuantity()))"),
-            @Mapping(target = "weightMeasure", expression = "java(getMeasure(faCatch.getWeightMeasure()))"),
-            @Mapping(target = "weightMeasureUnitCode", expression = "java(getMeasureUnitCode(faCatch.getWeightMeasure()))"),
+            @Mapping(target = "weightMeasure", source = "faCatch.weightMeasure.value"),
+            @Mapping(target = "weightMeasureUnitCode", source = "faCatch.weightMeasure.unitCode"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(faCatch.getWeightMeasure()))"),
             @Mapping(target = "usageCode", expression = "java(getCodeType(faCatch.getUsageCode()))"),
             @Mapping(target = "usageCodeListId", expression = "java(getCodeTypeListId(faCatch.getUsageCode()))"),
             @Mapping(target = "weighingMeansCode", expression = "java(getCodeType(faCatch.getWeighingMeansCode()))"),
             @Mapping(target = "weighingMeansCodeListId", expression = "java(getCodeTypeListId(faCatch.getWeighingMeansCode()))"),
-            @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)"),
             @Mapping(target = "sizeDistribution", expression = "java(getSizeDistributionEntity(faCatch.getSpecifiedSizeDistribution(), faCatchEntity))"),
             @Mapping(target = "aapProcesses", expression = "java(getAapProcessEntities(faCatch.getAppliedAAPProcesses(), faCatchEntity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))"),
@@ -55,33 +72,14 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))"),
             @Mapping(target = "fishingTrips", expression = "java(getFishingTripEntities(faCatch.getRelatedFishingTrips(), faCatchEntity))")
     })
-    public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch, FishingActivityEntity fishingActivityEntity, @MappingTarget FaCatchEntity faCatchEntity);
-
-/*    protected List<FluxLocationDetailsDTO> getSpecifiedFluxLocations(Set<FluxLocationEntity> fluxLocations) {
-        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
-        for (FluxLocationEntity fluxLocationEntity : fluxLocations) {
-            if (fluxLocationEntity.getFluxLocationType().equalsIgnoreCase(FluxLocationTypeEnum.FA_CATCH_SPECIFIED.getType())) {
-                fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
-            }
-        }
-        return fluxLocationDetailsDTOs;
-    }
-
-    protected List<FluxLocationDetailsDTO> getDestFluxLocations(Set<FluxLocationEntity> fluxLocations) {
-        List<FluxLocationDetailsDTO> fluxLocationDetailsDTOs = new ArrayList<>();
-        for (FluxLocationEntity fluxLocationEntity : fluxLocations) {
-            if (fluxLocationEntity.getFluxLocationType().equalsIgnoreCase(FluxLocationTypeEnum.FA_CATCH_DESTINATION.getType())) {
-                fluxLocationDetailsDTOs.add(FluxLocationMapper.INSTANCE.mapToFluxLocationDetailsDTO(fluxLocationEntity));
-            }
-        }
-        return fluxLocationDetailsDTOs;
-    }*/
+    public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
         if (sizeDistribution == null) {
             return null;
         }
-        SizeDistributionEntity sizeDistributionEntity =SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution, faCatchEntity, new SizeDistributionEntity());
+        SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution);
+        sizeDistributionEntity.setFaCatch(faCatchEntity);
         Set<SizeDistributionClassCodeEntity> sizeDistributionSet=sizeDistributionEntity.getSizeDistributionClassCode();
         if(CollectionUtils.isNotEmpty(sizeDistributionSet)){
             faCatchEntity.setFishClassCode(sizeDistributionSet.iterator().next().getClassCode());
@@ -107,7 +105,9 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<AapStockEntity> aapStockEntities = new HashSet<>();
         for (AAPStock aapStock : aapStocks) {
-            aapStockEntities.add(AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock, faCatchEntity, new AapStockEntity()));
+            AapStockEntity aapStockEntity = AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
+            aapStockEntity.setFaCatch(faCatchEntity);
+            aapStockEntities.add(aapStockEntity);
         }
         return aapStockEntities;
     }
@@ -146,7 +146,9 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            fishingGearEntities.add(FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, faCatchEntity, new FishingGearEntity()));
+            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            fishingGearEntity.setFaCatch(faCatchEntity);
+            fishingGearEntities.add(fishingGearEntity);
         }
         return fishingGearEntities;
     }
@@ -157,7 +159,8 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<AapProcessEntity> aapProcessEntities = new HashSet<>();
         for (AAPProcess aapProcess : aapProcesses) {
-            AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess, faCatchEntity, new AapProcessEntity());
+            AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+            aapProcessEntity.setFaCatch(faCatchEntity);
             aapProcessEntities.add(aapProcessEntity);
         }
         return aapProcessEntities;

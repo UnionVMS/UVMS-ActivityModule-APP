@@ -26,23 +26,26 @@ public class ActivityNotificationOfArrivalViewMapper extends BaseActivityViewMap
 
         FishingActivityViewDTO fishingActivityViewDTO = new FishingActivityViewDTO();
 
-        // Fishing Activity Tile
-        ActivityDetailsDto activityDetailsDto = mapActivityDetails(faEntity);
-        activityDetailsDto.setReason(faEntity.getReasonCode());
-        fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
+        if (faEntity != null) {
 
-        // Intented Port of Landing Tile
-        Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);
-        fishingActivityViewDTO.setLocations(mapFromFluxLocation(relatedFluxLocation));
+            // Fishing Activity Tile
+            ActivityDetailsDto activityDetailsDto = mapActivityDetails(faEntity);
+            activityDetailsDto.setReason(faEntity.getReasonCode());
+            fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
-        // Activity Report document tile
-        fishingActivityViewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
+            // Intented Port of Landing Tile
+            Set<FluxLocationEntity> relatedFluxLocation = getRelatedFluxLocations(faEntity);
+            fishingActivityViewDTO.setLocations(mapFromFluxLocation(relatedFluxLocation));
 
-        // Catch tile
-        fishingActivityViewDTO.setCatches(mapCatchesToGroupDto(faEntity));
+            // Activity Report document tile
+            fishingActivityViewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
 
-        // Applied AAP process Tile
-        fishingActivityViewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
+            // Catch tile
+            fishingActivityViewDTO.setCatches(mapCatchesToGroupDto(faEntity));
+
+            // Applied AAP process Tile
+            fishingActivityViewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
+        }
 
         return fishingActivityViewDTO;
     }

@@ -13,15 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * Created by padhyad on 7/28/2016.
@@ -31,9 +29,7 @@ public class DelimitedPeriodMapperTest {
     @Test
     public void testDelimitedPeriodMapperForFishingActivity() {
         DelimitedPeriod delimitedPeriod = MapperUtil.getDelimitedPeriod();
-        DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
-        FishingActivityEntity fishingActivity = null;
-        DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingActivity, delimitedPeriodEntity);
+        DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod);
 
         assertEquals(delimitedPeriod.getStartDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getStartDate());
         assertEquals(delimitedPeriod.getEndDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getEndDate());
@@ -46,9 +42,7 @@ public class DelimitedPeriodMapperTest {
     @Test
     public void testDelimitedPeriodMapperForFishingTrip() {
         DelimitedPeriod delimitedPeriod = MapperUtil.getDelimitedPeriod();
-        DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
-        FishingTripEntity fishingTrip = null;
-        DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod, fishingTrip, delimitedPeriodEntity);
+        DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod);
 
         assertEquals(delimitedPeriod.getStartDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getStartDate());
         assertEquals(delimitedPeriod.getEndDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getEndDate());

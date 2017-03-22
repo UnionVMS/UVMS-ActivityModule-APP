@@ -8,37 +8,32 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 
-/**
- * Created by padhyad on 5/17/2016.
- */
-@Mapper
-public abstract class RegistrationLocationMapper extends BaseMapper {
+@Mapper(imports = BaseMapper.class)
+public interface RegistrationLocationMapper {
 
-    public static final RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);
+    RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);
 
     @Mappings({
-            @Mapping(target = "description", expression = "java(getTextFromList(registrationLocation.getDescriptions()))"),
-            @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(registrationLocation.getDescriptions()))"),
-            @Mapping(target = "regionCode", expression = "java(getCodeType(registrationLocation.getGeopoliticalRegionCode()))"),
-            @Mapping(target = "regionCodeListId", expression = "java(getCodeTypeListId(registrationLocation.getGeopoliticalRegionCode()))"),
-            @Mapping(target = "name", expression = "java(getTextFromList(registrationLocation.getNames()))"),
-            @Mapping(target = "nameLanguageId", expression = "java(getLanguageIdFromList(registrationLocation.getNames()))"),
-            @Mapping(target = "typeCode", expression = "java(getCodeType(registrationLocation.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(registrationLocation.getTypeCode()))"),
-            @Mapping(target = "locationCountryId", expression = "java(getIdType(registrationLocation.getCountryID()))"),
-            @Mapping(target = "locationCountrySchemeId", expression = "java(getIdTypeSchemaId(registrationLocation.getCountryID()))"),
-            @Mapping(target = "registrationEvent", expression = "java(registrationEventEntity)")
+            @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationLocation.getDescriptions()))"),
+            @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getDescriptions()))"),
+            @Mapping(target = "regionCode", source = "geopoliticalRegionCode.value"),
+            @Mapping(target = "regionCodeListId", source = "geopoliticalRegionCode.listID"),
+            @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(registrationLocation.getNames()))"),
+            @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getNames()))"),
+            @Mapping(target = "typeCode", source = "typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "locationCountryId", source = "countryID.value"),
+            @Mapping(target = "locationCountrySchemeId", source = "countryID.schemeID"),
     })
-    public abstract RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity, @MappingTarget RegistrationLocationEntity registrationLocationEntity);
+    RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation);
 }

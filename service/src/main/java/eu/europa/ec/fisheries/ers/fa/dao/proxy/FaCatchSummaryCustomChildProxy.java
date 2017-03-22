@@ -20,125 +20,147 @@ public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
 
 
     @Override
-    public void setVesselTransportGuid(String vesselTransportGuid) {
+    public void setVesselTransportGuid(String vesselTransportGuid) { // FIXME sonar remove this method to simply inherit it
         super.setVesselTransportGuid(vesselTransportGuid);
     }
 
     @Override
-    public void setDay(String day) {
+    public void setDay(String day) { // FIXME sonar remove this method to simply inherit it
         super.setDay(day);
     }
 
     @Override
-    public void setMonth(String month) {
+    public void setMonth(String month) { // FIXME sonar remove this method to simply inherit it
         super.setMonth(month);
     }
 
     @Override
-    public void setYear(String year) {
+    public void setYear(String year) { // FIXME sonar remove this method to simply inherit it
         super.setYear(year);
     }
 
     @Override
-    public void setCount(double count) {
+    public void setCount(double count) { // FIXME sonar remove this method to simply inherit it
         super.setCount(count);
     }
 
     @Override
-    public void setFishClass(String fishClass) {
+    public void setFishClass(String fishClass) {  // FIXME sonar remove this method to simply inherit it
         super.setFishClass(fishClass);
     }
 
     @Override
-    public void setFlagState(String flagState) {
+    public void setFlagState(String flagState) {  // FIXME sonar remove this method to simply inherit it
         super.setFlagState(flagState);
     }
 
     @Override
-    public void setSpecies(String species) {
+    public void setSpecies(String species) { // FIXME sonar remove this method to simply inherit it
         super.setSpecies(species);
     }
 
     @Override
-    public void setGearType(String gearType) {
+    public void setGearType(String gearType) { // FIXME sonar remove this method to simply inherit it
         super.setGearType(gearType);
     }
 
     @Override
-    public void setPresentation(String presentation) {
+    public void setPresentation(String presentation) { // FIXME sonar remove this method to simply inherit it
         super.setPresentation(presentation);
     }
 
     @Override
-    public void setTerritory(String territory) {
+    public void setTerritory(String territory) { // FIXME sonar remove this method to simply inherit it
         super.setTerritory(territory);
     }
 
     @Override
-    public void setFaoArea(String faoArea) {
+    public void setFaoArea(String faoArea) { // FIXME sonar remove this method to simply inherit it
         super.setFaoArea(faoArea);
     }
 
     @Override
-    public void setIcesStatRectangle(String icesStatRectangle) {
+    public void setIcesStatRectangle(String icesStatRectangle) { // FIXME sonar remove this method to simply inherit it
         super.setIcesStatRectangle(icesStatRectangle);
     }
 
     @Override
-    public void setEffortZone(String effortZone) {
+    public void setEffortZone(String effortZone) { // FIXME sonar remove this method to simply inherit it
         super.setEffortZone(effortZone);
     }
 
     @Override
-    public void setRfmo(String rfmo) {
+    public void setRfmo(String rfmo) { // FIXME sonar remove this method to simply inherit it
         super.setRfmo(rfmo);
     }
 
     @Override
-    public void setGfcmGsa(String gfcmGsa) {
+    public void setGfcmGsa(String gfcmGsa) { // FIXME sonar remove this method to simply inherit it
         super.setGfcmGsa(gfcmGsa);
     }
 
     @Override
-    public void setGfcmStatRectangle(String gfcmStatRectangle) {
+    public void setGfcmStatRectangle(String gfcmStatRectangle) { // FIXME sonar remove this method to simply inherit it
         super.setGfcmStatRectangle(gfcmStatRectangle);
     }
 
     @Override
-    public void setTypeCode(String typeCode) {
+    public void setTypeCode(String typeCode) { // FIXME sonar remove this method to simply inherit it
         super.setTypeCode(typeCode);
     }
 
     @Override
-    public String toString() {
+    public String toString() { // FIXME sonar remove this method to simply inherit it
         return super.toString();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FaCatchSummaryCustomProxy)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FaCatchSummaryCustomProxy)) {
+            return false;
+        }
 
         FaCatchSummaryCustomProxy that = (FaCatchSummaryCustomProxy) o;
 
-        if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) return false;
-        if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;
-        if (getYear() != null ? !getYear().equals(that.getYear()) : that.getYear() != null) return false;
+        if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) {
+            return false;
+        }
+        if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) {
+            return false;
+        }
+        if (getYear() != null ? !getYear().equals(that.getYear()) : that.getYear() != null) {
+            return false;
+        }
         if (getVesselTransportGuid() != null ? !getVesselTransportGuid().equals(that.getVesselTransportGuid()) : that.getVesselTransportGuid() != null)
             return false;
-        if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null)
+        if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null) {
             return false;
-        if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null)
+        }
+        if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null) {
             return false;
-        if (getTerritory() != null ? !getTerritory().equals(that.getTerritory()) : that.getTerritory() != null)
+        }
+        if (getTerritory() != null ? !getTerritory().equals(that.getTerritory()) : that.getTerritory() != null) {
             return false;
-        if (getFaoArea() != null ? !getFaoArea().equals(that.getFaoArea()) : that.getFaoArea() != null) return false;
-        if (getIcesStatRectangle() != null ? !getIcesStatRectangle().equals(that.getIcesStatRectangle()) : that.getIcesStatRectangle() != null)
+        }
+        if (getFaoArea() != null ? !getFaoArea().equals(that.getFaoArea()) : that.getFaoArea() != null) {
             return false;
-        if (getEffortZone() != null ? !getEffortZone().equals(that.getEffortZone()) : that.getEffortZone() != null)
+        }
+        if (getIcesStatRectangle() != null ? !getIcesStatRectangle().equals(that.getIcesStatRectangle()) : that.getIcesStatRectangle() != null) {
             return false;
-        if (getRfmo() != null ? !getRfmo().equals(that.getRfmo()) : that.getRfmo() != null) return false;
-        if (getGfcmGsa() != null ? !getGfcmGsa().equals(that.getGfcmGsa()) : that.getGfcmGsa() != null) return false;
+        }
+
+        if (getEffortZone() != null ? !getEffortZone().equals(that.getEffortZone()) : that.getEffortZone() != null) {
+            return false;
+        }
+        if (getRfmo() != null ? !getRfmo().equals(that.getRfmo()) : that.getRfmo() != null) {
+            return false;
+        }
+        if (getGfcmGsa() != null ? !getGfcmGsa().equals(that.getGfcmGsa()) : that.getGfcmGsa() != null) {
+            return false;
+        }
         return getGfcmStatRectangle() != null ? getGfcmStatRectangle().equals(that.getGfcmStatRectangle()) : that.getGfcmStatRectangle() == null;
 
     }

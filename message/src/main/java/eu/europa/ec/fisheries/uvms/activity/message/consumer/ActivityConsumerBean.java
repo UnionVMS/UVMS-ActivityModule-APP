@@ -13,24 +13,18 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.consumer;
 
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+
 import eu.europa.ec.fisheries.uvms.message.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
-import javax.annotation.Resource;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.Destination;
-
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_ACTIVITY;
-
-/**
- * Created by padhyad on 10/12/2016.
- */
 @Stateless
 @Local
 public class ActivityConsumerBean extends AbstractConsumer {
 
-    public String getDestinationName(){
+    @Override
+    public String getDestinationName() {
         return MessageConstants.QUEUE_ACTIVITY;
     }
 }

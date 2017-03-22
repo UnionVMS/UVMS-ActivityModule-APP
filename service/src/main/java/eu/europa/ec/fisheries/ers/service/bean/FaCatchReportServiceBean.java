@@ -10,34 +10,32 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
-import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
-import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelperFactory;
-import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelperFactory;
+import eu.europa.ec.fisheries.ers.service.mapper.FACatchSummaryMapper;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sanera on 17/01/2017.
@@ -121,7 +119,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
     @Override
     public FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding) throws ServiceException{
         // get grouped data
-        Map<FaCatchSummaryCustomProxy,List<FaCatchSummaryCustomProxy>> groupedData = faCatchDao.getGroupedFaCatchData(query,isLanding);
+        Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = faCatchDao.getGroupedFaCatchData(query, isLanding);
 
         // post process data to create Summary table part of Catch summary Report
         FACatchSummaryHelper faCatchSummaryHelper = isLanding? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
