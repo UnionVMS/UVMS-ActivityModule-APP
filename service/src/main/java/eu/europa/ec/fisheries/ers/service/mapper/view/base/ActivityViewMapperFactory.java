@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMappe
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityNotificationOfArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.DiscardViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 /**
@@ -65,8 +66,8 @@ public class ActivityViewMapperFactory {
             case TRANSSHIPMENT:
                 mapper = null;
                 break;
-            case PRIOR_NOTIF_OR_TRANS_RELOC:
-                mapper = null;
+            case GEAR_SHOT_RETRIEVAL:
+                mapper = GearShotRetrievalTileMapper.INSTANCE;
                 break;
             default:
                 throw new ServiceException("Activity View not mapped!" + view);

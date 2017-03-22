@@ -8,11 +8,9 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
-/**
- * Created by kovian on 14/02/2017.
- */
 public enum ActivityViewEnum {
 
     DEPARTURE,
@@ -27,6 +25,7 @@ public enum ActivityViewEnum {
     LANDING,
     TRANSSHIPMENT,
     PRIOR_NOTIF_OR_TRANS_RELOC,
+    GEAR_SHOT_RETRIEVAL,
 
 }
 
