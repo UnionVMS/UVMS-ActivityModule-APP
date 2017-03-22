@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +28,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class VesselTransportMeansMapperTest {
 
-   // @Test
+    @Test
     public void testVesselTransportMeansMapper() {
         VesselTransportMeans vesselTransportMeans = MapperUtil.getVesselTransportMeans();
         VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();

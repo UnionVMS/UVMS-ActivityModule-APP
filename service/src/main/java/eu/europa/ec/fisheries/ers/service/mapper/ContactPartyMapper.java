@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetailsDTO;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,7 +44,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
             @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
             @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
     })
-    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty);
+    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty,VesselTransportMeansEntity vesselTransportMeansEntity);
 
     @Mappings({
             @Mapping(target = "roleCode", source = "value"),
