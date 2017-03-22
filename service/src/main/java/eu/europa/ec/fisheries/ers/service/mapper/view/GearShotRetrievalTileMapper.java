@@ -57,9 +57,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
         return mapEntityListToDtoList(fatherFishAct.getAllRelatedFishingActivities());
     }
 
-
     public abstract List<GearShotRetrievalDto> mapEntityListToDtoList(Set<FishingActivityEntity> entity);
-
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
@@ -73,9 +71,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
     })
     protected abstract GearShotRetrievalDto mapSingleEntityToSingleDto(FishingActivityEntity entity);
 
-
     protected abstract List<GearProblemDto> mapGearProblemsToGearsDto(Set<GearProblemEntity> gearProblems);
-
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
