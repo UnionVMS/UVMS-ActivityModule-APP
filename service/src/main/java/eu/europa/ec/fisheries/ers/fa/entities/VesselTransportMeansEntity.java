@@ -11,6 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,10 +31,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 
 @NamedQueries({
         @NamedQuery(name = VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
@@ -94,6 +94,9 @@ public class VesselTransportMeansEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<FlapDocumentEntity> flapDocuments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    private Set<VesselPositionEventEntity> vesselPositionEvents;
 
     public int getId() {
         return this.id;
@@ -195,6 +198,14 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setFishingActivity(FishingActivityEntity fishingActivity) {
         this.fishingActivity = fishingActivity;
+    }
+
+    public Set<VesselPositionEventEntity> getVesselPositionEvents() {
+        return vesselPositionEvents;
+    }
+
+    public void setVesselPositionEvents(Set<VesselPositionEventEntity> vesselPositionEvents) {
+        this.vesselPositionEvents = vesselPositionEvents;
     }
 
     @Override

@@ -11,8 +11,46 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static org.mockito.internal.util.collections.Sets.newSet;
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -29,39 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+import static org.mockito.internal.util.collections.Sets.newSet;
 
 /**
  * TODO create test
@@ -148,14 +154,6 @@ public class BaseMapper {
         return fishingTripEntity;
     }
 
-    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
-        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
-        Set<FluxLocationEntity> relatedFluxLocations = newSet();
-        if (specifiedFishingTrip != null) {
-            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
-        }
-        return relatedFluxLocations;
-    }
 
     public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity tripEntity) {
         Set<FluxLocationEntity> fluxLocations = newSet();
@@ -210,104 +208,6 @@ public class BaseMapper {
         return textTypes.get(0).getValue();
     }
 
-    protected static String getFirstFishingActivity(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList) || fishingTripList.get(0).getFishingActivity() == null) {
-            return null;
-        }
-        return fishingTripList.get(0).getFishingActivity().getTypeCode();
-
-    }
-
-    protected static XMLGregorianCalendar getFirstFishingActivityDateTime(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList) || fishingTripList.get(0).getFishingActivity() == null
-                || fishingTripList.get(0).getFishingActivity().getCalculatedStartTime() == null) {
-            return null;
-        }
-
-        return convertToXMLGregorianCalendar(fishingTripList.get(0).getFishingActivity().getCalculatedStartTime(), false);
-    }
-
-    protected static String getLastFishingActivity(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList) || fishingTripList.get(fishingTripList.size() - 1).getFishingActivity() == null) {
-            return null;
-        }
-        int totalFishTripEntityCount = fishingTripList.size();
-        return fishingTripList.get(totalFishTripEntityCount - 1).getFishingActivity().getTypeCode();
-    }
-
-    protected static XMLGregorianCalendar getLastFishingActivityDateTime(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList) || fishingTripList.get(fishingTripList.size() - 1).getFishingActivity() == null
-                || fishingTripList.get(fishingTripList.size() - 1).getFishingActivity().getCalculatedStartTime() == null) {
-            return null;
-        }
-        int totalFishTripEntityCount = fishingTripList.size();
-        return convertToXMLGregorianCalendar(fishingTripList.get(totalFishTripEntityCount - 1).getFishingActivity().getCalculatedStartTime(), false);
-    }
-
-    protected static List<VesselIdentifierType> getVesselIdLists(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList) || fishingTripList.get(fishingTripList.size() - 1).getFishingActivity() == null ||
-                fishingTripList.get(fishingTripList.size() - 1).getFishingActivity().getFaReportDocument() == null ||
-                fishingTripList.get(fishingTripList.size() - 1).getFishingActivity().getFaReportDocument().getVesselTransportMeans() == null) {
-            return Collections.emptyList();
-        }
-        int totalFishTripEntityCount = fishingTripList.size();
-        FishingTripEntity fishingTripEntity = fishingTripList.get(totalFishTripEntityCount - 1);
-        VesselTransportMeansEntity vesselTransportMeansEntity = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-        Set<VesselIdentifierEntity> vesselIdentifierEntities = vesselTransportMeansEntity.getVesselIdentifiers();
-        List<VesselIdentifierType> vesselIdentifierTypes = new ArrayList<>();
-
-        if (CollectionUtils.isNotEmpty(vesselIdentifierEntities)) {
-            for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifierEntities) {
-                VesselIdentifierType vesselIdentifierType = new VesselIdentifierType();
-                vesselIdentifierType.setKey(VesselIdentifierSchemeIdEnum.valueOf(vesselIdentifierEntity.getVesselIdentifierSchemeId()));
-                vesselIdentifierType.setValue(vesselIdentifierEntity.getVesselIdentifierId());
-                vesselIdentifierTypes.add(vesselIdentifierType);
-            }
-        }
-
-        return vesselIdentifierTypes;
-    }
-
-    protected static String getFlagState(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList) || fishingTripList.get(fishingTripList.size() - 1).getFishingActivity() == null ||
-                fishingTripList.get(fishingTripList.size() - 1).getFishingActivity().getFaReportDocument() == null ||
-                fishingTripList.get(fishingTripList.size() - 1).getFishingActivity().getFaReportDocument().getVesselTransportMeans() == null) {
-            return null;
-        }
-        int totalFishTripEntityCount = fishingTripList.size();
-        FishingTripEntity fishingTripEntity = fishingTripList.get(totalFishTripEntityCount - 1);
-        VesselTransportMeansEntity vesselTransportMeansEntity = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-        return vesselTransportMeansEntity.getCountry();
-    }
-
-    protected static Double getTotalDuration(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList)) {
-            return 0d;
-        }
-        FishingActivityEntity firstFishingActivity = fishingTripList.get(0).getFishingActivity();
-        FishingActivityEntity lastFishingActivity = fishingTripList.get(fishingTripList.size() - 1).getFishingActivity();
-
-        Double duration = 0d;
-        if (firstFishingActivity != null && firstFishingActivity.getCalculatedStartTime() != null && lastFishingActivity != null && lastFishingActivity.getCalculatedStartTime() != null) {
-            Date startDate = firstFishingActivity.getCalculatedStartTime();
-            Date endDate = lastFishingActivity.getCalculatedStartTime();
-            duration = (double) (endDate.getTime() - startDate.getTime());
-        }
-        return duration;
-    }
-
-    protected static int getNumberOfCorrections(List<FishingTripEntity> fishingTripList) {
-        if (CollectionUtils.isEmpty(fishingTripList)) {
-            return 0;
-        }
-        int noOfCorrections = 0;
-        for (FishingTripEntity fishingTripEntity : fishingTripList) {
-            if (getCorrection(fishingTripEntity.getFishingActivity())) {
-                noOfCorrections++;
-            }
-        }
-        return noOfCorrections;
-    }
 
     public static boolean getCorrection(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() == null) {
@@ -376,5 +276,90 @@ public class BaseMapper {
             recordMap.put(identifier.getFluxReportIdentifierId(), identifier.getFluxReportIdentifierSchemeId());
         }
         return recordMap;
+    }
+
+    /*protected Integer getPurposeCode(String purposeCode) {
+        try {
+            return Integer.parseInt(purposeCode);
+        } catch (NumberFormatException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }*/
+
+    public static List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles){
+        List<String> roles = new ArrayList<>();
+        for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
+            roles.add(roleEntity.getRoleCode());
+        }
+        return roles;
+    }
+
+
+
+    public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
+        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
+        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
+    }
+
+    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
+        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
+        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
+        if (specifiedFishingTrip != null){
+            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
+        }
+        return relatedFluxLocations;
+    }
+
+
+
+    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList,FishingActivityTypeEnum faTypeToExtract) {
+       if(CollectionUtils.isEmpty(fishingActivityList)){
+           return null;
+       }
+
+        for(FishingActivityEntity fishingActivityEntity:fishingActivityList){
+            if(faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())){
+                return fishingActivityEntity;
+            }
+        }
+
+        return null;
+    }
+
+
+    protected FluxLocationEntity extractFLUXPosition(Set<FluxLocationEntity> fluxLocationEntityList) {
+        if(CollectionUtils.isEmpty(fluxLocationEntityList)){
+            return null;
+        }
+
+        for(FluxLocationEntity locationEntity : fluxLocationEntityList){
+            if(FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())){
+                return locationEntity;
+            }
+        }
+        return null;
+    }
+
+    protected String extractGeometryWkt(Double longitude,Double latitude){
+        Geometry geom = GeometryUtils.createPoint(longitude, latitude);
+
+       return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
+    }
+
+    @NotNull
+    protected PositionDto extractPositionDtoFromFishingActivity(FishingActivityEntity faEntity) {
+        if(faEntity == null){
+            return null;
+        }
+        PositionDto positionDto = new PositionDto();
+        positionDto.setOccurence(faEntity.getOccurence());
+        if(CollectionUtils.isNotEmpty(faEntity.getFluxLocations())){
+            FluxLocationEntity locationEntity= extractFLUXPosition(faEntity.getFluxLocations());
+            if(locationEntity !=null) {
+                positionDto.setGeometry(extractGeometryWkt(locationEntity.getLongitude(), locationEntity.getLatitude()));
+            }
+        }
+        return positionDto;
     }
 }

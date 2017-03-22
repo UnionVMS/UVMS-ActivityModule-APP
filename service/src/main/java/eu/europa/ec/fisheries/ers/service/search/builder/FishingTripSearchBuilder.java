@@ -13,13 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import javax.xml.datatype.DatatypeConstants;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -35,6 +28,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 //import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
@@ -65,7 +60,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.info("sql :" + sql); // FIXME use the built-in formatting to construct argument
+        LOG.info("sql :" + sql);
 
         return sql;
     }
@@ -78,7 +73,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         sql.append(" where ");
         createWherePartForQueryForFilters(sql, query);
 
-        LOG.debug("Generated Query After Where :" + sql); // FIXME use the built-in formatting to construct argument
+        LOG.debug("Generated Query After Where :" + sql);
         return sql;
     }
 
@@ -95,44 +90,12 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         String tresholdTrips = ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
         if (tresholdTrips != null) {
             int threshold = Integer.parseInt(tresholdTrips);
-            LOG.info("fishing trip threshold value:" + threshold); // FIXME use the built-in formatting to construct argument
+            LOG.info("fishing trip threshold value:" + threshold);
             if (uniqueTripIdWithGeometry.size() > threshold)
                 throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
 
-            LOG.info("fishing trip list size is within threshold value:" + uniqueTripIdWithGeometry.size()); // FIXME use the built-in formatting to construct argument
+            LOG.info("fishing trip list size is within threshold value:" + uniqueTripIdWithGeometry.size());
         }
-
-    }
-
-    // Add list of fishing trip ids without geometry to master list
-  /*  public List<FishingTripIdWithGeometry> addFishingTripIdsWithoutGeomToResponseList(Set<FishingTripId> fishingTripIdsWithoutGeom) {
-        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        for (FishingTripId fishingTripId : fishingTripIdsWithoutGeom) {
-            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null));
-        }
-        return fishingTripIdLists;
-    }*/
-
-    /*
-       For Every Fishing trip, combine all geometries into one and convert it into Wkt
-
-    public List<FishingTripIdWithGeometry> mapFishingTripIdsToGeomWkt(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
-        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        Set<FishingTripId> tripIdSet = uniqueTripIdWithGeometry.keySet();
-        for (FishingTripId fishingTripId : tripIdSet) {
-            Geometry geometry = GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
-            if (geometry == null) {
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null));
-            }
-            else {
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue()));
-            }
-        }
-
-        return fishingTripIdLists;
-    }    */
-
-    public void getAllFishingActivitiesForTripIdInformation(String tripId) {
 
     }
 
@@ -147,7 +110,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 
-            LOG.info("FishingTripEntity:" + entity + " FishingActivityEntity:" + entity.getFishingActivity()); // FIXME use the built-in formatting to construct argument
+            LOG.info("FishingTripEntity:" + entity + " FishingActivityEntity:" + entity.getFishingActivity());
             Set<FishingTripIdentifierEntity> fishingTripIdList = entity.getFishingTripIdentifiers();
             if (fishingTripIdList == null) {
                 continue;
@@ -166,11 +129,8 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
             }
 
             FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
-            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId())) {
-                FishingActivitySummary summary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity());
-                summary.getAcceptedDateTime().setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId()))
                 fishingActivityLists.add(FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity()));// Collect Fishing Activity data
-            }
         }
     }
 

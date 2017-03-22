@@ -498,10 +498,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
 
             if (geometry == null) {
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, fishingTripList));
+                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null,fishingTripList));
             } else {
-                FishingTripIdWithGeometry withGeometry = FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, fishingTripList);
-                withGeometry.setGeometry(GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue());
+                FishingTripIdWithGeometry withGeometry = FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue(), fishingTripList);
                 fishingTripIdLists.add(withGeometry);
             }
         }

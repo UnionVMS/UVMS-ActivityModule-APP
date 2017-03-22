@@ -12,24 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -63,6 +45,24 @@ import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 
 @Stateless
 @Transactional
@@ -74,11 +74,15 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private static final String START_DATE = "START_DATE";
     private static final String END_DATE = "END_DATE";
     private FaReportDocumentDao faReportDocumentDao;
+
     private FluxFaReportMessageDao fluxReportMessageDao;
+
     @EJB
     private MovementModuleService movementModule;
+
     @EJB
     private AssetModuleService assetModule;
+
     @EJB
     private PropertiesBean properties;
     private DatabaseDialect dialect;
@@ -105,12 +109,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             updateGeometry(faReportDocument);
             enrichFishingActivityWithGuiID(faReportDocument);
-            log.debug("fishing activity records to be saved : " + faReportDocument.getFluxReportDocument().getId());
         }
-        log.info("Insert fishing activity records into DB");
+        log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
+
 
         fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
         updateFaReportCorrections(faReportMessage.getFAReportDocuments());
+        log.info("Insert fishing activity records into DB complete.");
     }
 
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument){

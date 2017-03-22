@@ -41,10 +41,11 @@ import org.slf4j.LoggerFactory;
  * Created by sanera on 28/09/2016.
  */
 public abstract class SearchQueryBuilder {
+    private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
     protected static final String JOIN_FETCH = " JOIN FETCH ";
     protected static final String LEFT = " LEFT ";
     protected static final String JOIN =  " JOIN ";
-    private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
+
     private Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
     private FilterMap  filterMap = FilterMap.createFilterMap();
 
@@ -124,7 +125,7 @@ public abstract class SearchQueryBuilder {
         switch (key) {
             case MASTER:
                 if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1) {  // If vesssel table is already joined, use join string accordingly
-                    joinString = FilterMap.MASTER_MAPPING; // FIXME introduce a new variable instead of reusing the parameter "joinstring"
+                    joinString = FilterMap.MASTER_MAPPING;
                 }
                 appendJoinFetchString(sql, joinString);
                 break;

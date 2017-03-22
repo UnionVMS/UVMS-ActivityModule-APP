@@ -13,17 +13,17 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport;
 
-import static com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Created by padhyad on 8/5/2016.

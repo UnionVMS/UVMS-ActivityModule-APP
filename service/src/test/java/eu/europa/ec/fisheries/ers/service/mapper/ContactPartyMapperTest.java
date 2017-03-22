@@ -13,13 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
@@ -27,6 +20,13 @@ import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
+
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -36,7 +36,7 @@ public class ContactPartyMapperTest {
     @Test
     public void testContactPartyMapper() {
         ContactParty contactParty = MapperUtil.getContactParty();
-        ContactPartyEntity contactPartyEntity = ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty);
+        ContactPartyEntity contactPartyEntity = ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty,null);
 
         ContactPartyRoleEntity entity = contactPartyEntity.getContactPartyRole().iterator().next();
         assertEquals(contactParty.getRoleCodes().get(0).getValue(), entity.getRoleCode());

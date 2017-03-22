@@ -555,6 +555,6 @@
         <module>service</module>
         <module>message</module>
         <module>deploy-wildfly</module>
-        <module>deploy-weblogic</module>
+       <module>deploy-weblogic</module>
     </modules>
 </project>

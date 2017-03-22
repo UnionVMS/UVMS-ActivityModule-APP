@@ -11,15 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetailsDTO;
 import org.apache.commons.collections.CollectionUtils;
@@ -32,6 +28,11 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class})
 public abstract class ContactPartyMapper extends BaseMapper {
 
@@ -40,9 +41,10 @@ public abstract class ContactPartyMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "contactPerson", expression = "java(getContactPersonEntity(contactParty.getSpecifiedContactPersons(), contactPartyEntity))"),
             @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntity(contactParty.getSpecifiedStructuredAddresses(), contactPartyEntity))"),
+            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
             @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
     })
-    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty);
+    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty,VesselTransportMeansEntity vesselTransportMeansEntity);
 
     @Mappings({
             @Mapping(target = "roleCode", source = "value"),

@@ -194,7 +194,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     private FilterFishingActivityReportResultDTO createResultDTO(List<FishingActivityEntity> activityList, int totalCountOfRecords) {
         if (CollectionUtils.isEmpty(activityList)) {
             log.debug("Could not find FishingActivity entities matching search criteria");
-            activityList = Collections.emptyList(); // FIXME squid:S1226 introduce a new variable instead of reusing
+            activityList = Collections.emptyList();
         }
         // Prepare DTO to return to Frontend
         log.debug("Fishing Activity Report resultset size : " + Integer.toString(activityList.size()));
