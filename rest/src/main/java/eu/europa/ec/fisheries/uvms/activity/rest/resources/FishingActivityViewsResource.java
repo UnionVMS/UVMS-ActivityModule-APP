@@ -141,11 +141,26 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityAreaEntryView(@Context HttpServletRequest request,
-                                                         @Context HttpServletResponse response,
-                                                         @HeaderParam("scopeName") String scopeName,
-                                                         @HeaderParam("roleName") String roleName,
-                                                         @PathParam("activityId") String activityId) throws ServiceException {
+                                             @Context HttpServletResponse response,
+                                             @HeaderParam("scopeName") String scopeName,
+                                             @HeaderParam("roleName") String roleName,
+                                             @PathParam("activityId") String activityId) throws ServiceException {
         return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.AREA_ENTRY);
+    }
+
+
+    @GET
+    @Path("/areaExit/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(FishingActivityView.AreaExit.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getActivityAreaExitView(@Context HttpServletRequest request,
+                                             @Context HttpServletResponse response,
+                                             @HeaderParam("scopeName") String scopeName,
+                                             @HeaderParam("roleName") String roleName,
+                                             @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.AREA_EXIT);
     }
 
     /**

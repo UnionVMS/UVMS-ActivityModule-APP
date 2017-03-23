@@ -22,9 +22,9 @@ import org.mapstruct.factory.Mappers;
  * Created by kovian on 14/02/2017.
  */
 @Mapper
-public abstract class ActivityAreaEntryViewMapper extends BaseActivityViewMapper {
+public abstract class ActivityAreaExitViewMapper extends BaseActivityViewMapper {
 
-    public static final ActivityAreaEntryViewMapper INSTANCE = Mappers.getMapper(ActivityAreaEntryViewMapper.class);
+    public static final ActivityAreaExitViewMapper INSTANCE = Mappers.getMapper(ActivityAreaExitViewMapper.class);
 
     @Override
     @Mappings({

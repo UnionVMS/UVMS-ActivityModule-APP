@@ -49,7 +49,8 @@ public class FishingActivityViewDTO {
     @JsonView({Arrival.class, Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, FishingActivityView.AreaEntry.class})
+    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, FishingActivityView.AreaEntry.class,
+            FishingActivityView.AreaExit.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)
@@ -61,7 +62,7 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private List<ProcessingProductsDto> processingProducts;
 
-    @JsonView(FishingActivityView.AreaEntry.class)
+    @JsonView({FishingActivityView.AreaEntry.class,FishingActivityView.AreaExit.class})
     private AreaDto areas;
 
     public List<FluxLocationDto> getLocations() {
@@ -126,5 +127,19 @@ public class FishingActivityViewDTO {
 
     public void setAreas(AreaDto areas) {
         this.areas = areas;
+    }
+
+    @Override
+    public String toString() {
+        return "FishingActivityViewDTO{" +
+                "activityDetails=" + activityDetails +
+                ", locations=" + locations +
+                ", gears=" + gears +
+                ", reportDetails=" + reportDetails +
+                ", catches=" + catches +
+                ", gearShotRetrievalList=" + gearShotRetrievalList +
+                ", processingProducts=" + processingProducts +
+                ", areas=" + areas +
+                '}';
     }
 }

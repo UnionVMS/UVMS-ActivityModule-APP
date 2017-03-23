@@ -10,12 +10,14 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.dto.facatch;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
 /**
  * Created by kovian on 01/03/2017.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DestinationLocationDto {
 
     @JsonView(FishingActivityView.CommonView.class)
