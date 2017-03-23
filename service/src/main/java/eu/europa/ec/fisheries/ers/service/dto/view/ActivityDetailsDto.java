@@ -39,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
@@ -55,11 +55,11 @@ public class ActivityDetailsDto {
     @JsonIgnore
     private Geometry geom;
 
-    @JsonView({Arrival.class, NotificationOfArrival.class, FishingActivityView.AreaEntry.class, Discard.class})
+    @JsonView({Arrival.class, NotificationOfArrival.class, AreaEntry.class, Discard.class})
     private String reason;
 
     @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonView({Landing.class, Departure.class, FishingActivityView.AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
+    @JsonView({Landing.class, Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
             JointFishingOperation.class, Relocation.class, NotificationOfTranshipment.class, NotificationOfRelocation.class})
     private Date occurrence;
 
@@ -78,10 +78,10 @@ public class ActivityDetailsDto {
     @JsonView(Landing.class)
     private DelimitedPeriodDTO landingTime;
 
-    @JsonView({Departure.class, FishingActivityView.AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
+    @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
     private String fisheryType;
 
-    @JsonView({Departure.class, FishingActivityView.AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
+    @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
     private String speciesTarget;
 
     @JsonView({FishingOperation.class, JointFishingOperation.class})
