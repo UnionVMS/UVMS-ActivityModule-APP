@@ -13,6 +13,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityAreaEntryViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityAreaExitViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
@@ -41,7 +42,7 @@ public class ActivityViewMapperFactory {
                 mapper = ActivityAreaEntryViewMapper.INSTANCE;
                 break;
             case AREA_EXIT:
-                mapper = null;
+                mapper = ActivityAreaExitViewMapper.INSTANCE;
                 break;
             case FISHING_OPERATION:
                 mapper = new FishingOperationViewMapper();

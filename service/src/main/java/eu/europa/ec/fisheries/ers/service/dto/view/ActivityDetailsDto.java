@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
@@ -40,6 +39,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
@@ -55,11 +55,11 @@ public class ActivityDetailsDto {
     @JsonIgnore
     private Geometry geom;
 
-    @JsonView({Arrival.class, NotificationOfArrival.class, AreaEntry.class, Discard.class})
+    @JsonView({Arrival.class, NotificationOfArrival.class, FishingActivityView.AreaEntry.class, Discard.class})
     private String reason;
 
     @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonView({Landing.class, Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
+    @JsonView({Landing.class, Departure.class, FishingActivityView.AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
             JointFishingOperation.class, Relocation.class, NotificationOfTranshipment.class, NotificationOfRelocation.class})
     private Date occurrence;
 
@@ -78,10 +78,10 @@ public class ActivityDetailsDto {
     @JsonView(Landing.class)
     private DelimitedPeriodDTO landingTime;
 
-    @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
+    @JsonView({Departure.class, FishingActivityView.AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
     private String fisheryType;
 
-    @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
+    @JsonView({Departure.class, FishingActivityView.AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
     private String speciesTarget;
 
     @JsonView({FishingOperation.class, JointFishingOperation.class})
@@ -249,6 +249,29 @@ public class ActivityDetailsDto {
 
     public void setGeom(Geometry geom) {
         this.geom = geom;
+    }
+
+    @Override
+    public String toString() {
+        return "ActivityDetailsDto{" +
+                "type='" + type + '\'' +
+                ", characteristics=" + characteristics +
+                ", geom=" + geom +
+                ", reason='" + reason + '\'' +
+                ", occurrence=" + occurrence +
+                ", arrivalTime=" + arrivalTime +
+                ", intendedLandingTime=" + intendedLandingTime +
+                ", estimatedArrivalTime=" + estimatedArrivalTime +
+                ", landingTime=" + landingTime +
+                ", fisheryType='" + fisheryType + '\'' +
+                ", speciesTarget='" + speciesTarget + '\'' +
+                ", vesselActivity='" + vesselActivity + '\'' +
+                ", nrOfOperation=" + nrOfOperation +
+                ", identifiers=" + identifiers +
+                ", authorizations=" + authorizations +
+                ", fishingTime=" + fishingTime +
+                ", transhipmentTime=" + transhipmentTime +
+                '}';
     }
 
 }
