@@ -16,6 +16,7 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
@@ -56,7 +57,7 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private List<FaCatchGroupDto> catches;
 
-    @JsonView({FishingOperation.class, JointFishingOperation.class})
+    @JsonView({FishingOperation.class, JointFishingOperation.class, GearShotAndRetrieval.class})
     private List<GearShotRetrievalDto> gearShotRetrievalList;
 
     @JsonView(CommonView.class)

@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(NON_EMPTY)
 @EqualsAndHashCode
 @AllArgsConstructor(suppressConstructorProperties = true)
 @RequiredArgsConstructor(suppressConstructorProperties = true)

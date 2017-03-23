@@ -8,49 +8,58 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
-/**
- * Created by kovian on 08/03/2017.
- */
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+
+@JsonInclude(NON_EMPTY)
 public class GearProblemDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private Integer nrOfGears;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String recoveryMeasure;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private FluxLocationDto location;
 
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
+
     public Integer getNrOfGears() {
         return nrOfGears;
     }
+
     public void setNrOfGears(Integer nrOfGears) {
         this.nrOfGears = nrOfGears;
     }
+
     public String getRecoveryMeasure() {
         return recoveryMeasure;
     }
+
     public void setRecoveryMeasure(String recoveryMeasure) {
         this.recoveryMeasure = recoveryMeasure;
     }
+
     public FluxLocationDto getLocation() {
         return location;
     }
+
     public void setLocation(FluxLocationDto location) {
         this.location = location;
     }

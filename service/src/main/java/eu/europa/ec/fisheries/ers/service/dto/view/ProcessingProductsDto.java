@@ -13,16 +13,17 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import lombok.Builder;
 
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(NON_EMPTY)
 public class ProcessingProductsDto {
 
     @JsonView(FishingActivityView.CommonView.class)

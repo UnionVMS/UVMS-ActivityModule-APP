@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearProblemDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
@@ -53,13 +54,20 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
      * @param fatherFishAct
      * @return List<GearShotRetrievalDto>
      */
-    public List<GearShotRetrievalDto> mapFromRelatedFinshingActivities(FishingActivityEntity fatherFishAct) {
+    public List<GearShotRetrievalDto> mapFromRelatedFishingActivities(FishingActivityEntity fatherFishAct) {
         return mapEntityListToDtoList(fatherFishAct.getAllRelatedFishingActivities());
     }
 
-
     public abstract List<GearShotRetrievalDto> mapEntityListToDtoList(Set<FishingActivityEntity> entity);
 
+    public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
+
+        FishingActivityViewDTO viewDTO = new FishingActivityViewDTO();
+
+        viewDTO.setGearShotRetrievalList(mapFromRelatedFishingActivities(faEntity));
+
+        return viewDTO;
+    }
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
@@ -73,9 +81,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
     })
     protected abstract GearShotRetrievalDto mapSingleEntityToSingleDto(FishingActivityEntity entity);
 
-
     protected abstract List<GearProblemDto> mapGearProblemsToGearsDto(Set<GearProblemEntity> gearProblems);
-
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
