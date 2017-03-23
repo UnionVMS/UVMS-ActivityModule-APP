@@ -39,7 +39,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
  * This DTO will be returned to the requester for every request of activity views.
  * It will serialize only the properties that are configured to be present for the specific view Eg : @JsonView(FishingActivityView.Arrival.class).
  */
-@JsonInclude(Include.NON_EMPTY)
+@JsonInclude(Include.NON_NULL)
 public class FishingActivityViewDTO {
 
     @JsonView(CommonView.class)

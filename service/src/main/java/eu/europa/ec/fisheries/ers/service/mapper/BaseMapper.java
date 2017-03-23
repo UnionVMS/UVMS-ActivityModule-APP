@@ -11,8 +11,31 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static org.mockito.internal.util.collections.Sets.newSet;
+
+import javax.validation.constraints.NotNull;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
@@ -30,6 +53,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -50,31 +75,64 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.mockito.internal.util.collections.Sets.newSet;
-
 /**
  * TODO create test
  */
 @Slf4j
 @NoArgsConstructor
 public class BaseMapper {
+
+    public static List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+        Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
+        if (locationDtos != null) {
+            return new ArrayList<>(locationDtos);
+        }
+        return Collections.emptyList();
+    }
+
+    public static List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationEnum typeCode) {
+
+        Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
+            @Override
+            public boolean apply(FluxLocationEntity p) {
+                return typeCode.name().equals(p.getTypeCode());
+            }
+        });
+
+        List<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(newHashSet(filtered.iterator()));
+        return fluxLocationDtos;
+    }
+
+    public static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
+
+        BigDecimal fishingTime = BigDecimal.ZERO;
+        Date startDate = null;
+        Date endDate = null;
+
+        for (DelimitedPeriodEntity period : periodEntities) {
+            Double calcDur = period.getCalculatedDuration();
+            Date start = period.getStartDate();
+            Date end = period.getEndDate();
+            if (startDate == null || start.before(startDate)) {
+                startDate = start;
+            }
+            if (endDate == null || end.after(endDate)) {
+                endDate = end;
+            }
+            if (calcDur != null) {
+                fishingTime = fishingTime.add(new BigDecimal(calcDur));
+            }
+        }
+
+        DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
+                .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).build();
+
+        if (BigDecimal.ZERO.doubleValue() == build.getDuration()) {
+            build.setDuration(null);
+        }
+
+        return build;
+    }
 
     public static Set<SizeDistributionClassCodeEntity> mapToSizeDistributionClassCodes(List<CodeType> codeTypes, SizeDistributionEntity sizeDistributionEntity) {
         if (codeTypes == null || codeTypes.isEmpty()) {
@@ -233,6 +291,28 @@ public class BaseMapper {
         return calendar;
     }
 
+    public static List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles) {
+        List<String> roles = new ArrayList<>();
+        for (ContactPartyRoleEntity roleEntity : contactPartyRoles) {
+            roles.add(roleEntity.getRoleCode());
+        }
+        return roles;
+    }
+
+    public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
+        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
+        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
+    }
+
+    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
+        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
+        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
+        if (specifiedFishingTrip != null) {
+            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
+        }
+        return relatedFluxLocations;
+    }
+
     protected String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
     }
@@ -248,6 +328,15 @@ public class BaseMapper {
     protected String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
     }
+
+    /*protected Integer getPurposeCode(String purposeCode) {
+        try {
+            return Integer.parseInt(purposeCode);
+        } catch (NumberFormatException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }*/
 
     protected Double getCalculatedQuantity(QuantityType quantityType) {
         if (quantityType == null) {
@@ -277,41 +366,6 @@ public class BaseMapper {
         }
         return recordMap;
     }
-
-    /*protected Integer getPurposeCode(String purposeCode) {
-        try {
-            return Integer.parseInt(purposeCode);
-        } catch (NumberFormatException e) {
-            log.error(e.getMessage(), e);
-            return null;
-        }
-    }*/
-
-    public static List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles){
-        List<String> roles = new ArrayList<>();
-        for(ContactPartyRoleEntity roleEntity : contactPartyRoles){
-            roles.add(roleEntity.getRoleCode());
-        }
-        return roles;
-    }
-
-
-
-    public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
-        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
-        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
-    }
-
-    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
-        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
-        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
-        if (specifiedFishingTrip != null){
-            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
-        }
-        return relatedFluxLocations;
-    }
-
-
 
     protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList,FishingActivityTypeEnum faTypeToExtract) {
        if(CollectionUtils.isEmpty(fishingActivityList)){

@@ -10,18 +10,17 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
-import java.util.Date;
-
-/**
- * Created by sanera on 21/03/2017.
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(NON_NULL)
 public class PositionDto {
 
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -29,7 +28,6 @@ public class PositionDto {
     private Date occurence;
 
     @JsonView(FishingActivityView.CommonView.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String geometry;
 
     public Date getOccurence() {

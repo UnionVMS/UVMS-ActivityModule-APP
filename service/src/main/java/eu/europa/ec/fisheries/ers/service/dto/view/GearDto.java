@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,7 +27,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(NON_EMPTY)
+@JsonInclude(NON_NULL)
 public class GearDto {
 
     @JsonView(CommonView.class)

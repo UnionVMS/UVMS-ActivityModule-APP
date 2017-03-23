@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
@@ -35,6 +36,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
@@ -161,6 +163,20 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                                 @HeaderParam("roleName") String roleName,
                                                 @PathParam("activityId") String activityId) throws ServiceException {
         return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
+    }
+
+    @GET
+    @Path("/fishingoperation/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(FishingOperation.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getFishingOperationView(@Context HttpServletRequest request,
+                                            @Context HttpServletResponse response,
+                                            @HeaderParam("scopeName") String scopeName,
+                                            @HeaderParam("roleName") String roleName,
+                                            @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.FISHING_OPERATION);
     }
 
     /**

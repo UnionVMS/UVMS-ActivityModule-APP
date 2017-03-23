@@ -50,7 +50,6 @@ public class ActivityDetailsDto {
     private String type;
 
     @JsonView(CommonView.class)
-    @JsonInclude(Include.NON_EMPTY)
     private Map<String, String> characteristics;
 
     @JsonIgnore
@@ -251,4 +250,5 @@ public class ActivityDetailsDto {
     public void setGeom(Geometry geom) {
         this.geom = geom;
     }
+
 }

@@ -36,6 +36,5 @@ public class FishingActivityView {
 
     public interface GearShotAndRetrieval extends CommonView {
     }
-
     public interface NoView {}
 }
