@@ -13,67 +13,51 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import java.util.Date;
 
-/**
- * Created by sanera on 04/08/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@JsonInclude(NON_NULL)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DelimitedPeriodDTO {
 
-    @JsonProperty("startDate")
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date startDate;
 
-    @JsonProperty("endDate")
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date endDate;
 
-    @JsonProperty("duration")
     private Double duration;
 
-
-    public DelimitedPeriodDTO() {
-        super();
-    }
-
-    public DelimitedPeriodDTO(Date startDate, Date endDate, Double duration) {
-        setStartDate(startDate);
-        setEndDate(endDate);
-        setDuration(duration);
-    }
-
-    @JsonProperty("startDate")
     public Date getStartDate() {
         return startDate;
     }
 
-    @JsonProperty("startDate")
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    @JsonProperty("endDate")
     public Date getEndDate() {
         return endDate;
     }
 
-    @JsonProperty("endDate")
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
-    @JsonProperty("duration")
     public Double getDuration() {
         return duration;
     }
 
-    @JsonProperty("duration")
     public void setDuration(Double duration) {
         this.duration = duration;
     }

@@ -13,7 +13,11 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
+import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxLocationDetailsDTO;
@@ -21,13 +25,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
-import java.util.Date;
-import java.util.List;
-
-/**
- * Created by sanera on 09/08/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(Include.NON_NULL)
 public class FishingActivityDTO {
 
     @JsonProperty("uniqueReportIdList")

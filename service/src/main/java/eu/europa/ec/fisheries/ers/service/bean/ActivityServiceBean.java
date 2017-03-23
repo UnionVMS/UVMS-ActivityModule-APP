@@ -10,6 +10,19 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
@@ -40,19 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -187,12 +187,12 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
         Geometry geom = getRestrictedAreaGeometry(datasets);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
-        if(activityEntity ==null)
-            throw new ServiceException("Could not find FishingActivityEntity for the given id:"+activityId);
+        if (activityEntity == null)
+            throw new ServiceException("Could not find FishingActivityEntity for the given id:" + activityId);
 
-        log.debug("FishingActivityEntity fetched from database with id:"+activityEntity.getId());
+        log.debug("FishingActivityEntity fetched from database with id:" + activityEntity.getId());
         FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
-        log.debug("fishingActivityView generated after mapping is :"+fishingActivityViewDTO);
+        log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
         return fishingActivityViewDTO;
     }
 
