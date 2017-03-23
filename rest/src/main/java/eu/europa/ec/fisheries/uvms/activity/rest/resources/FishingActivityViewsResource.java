@@ -40,8 +40,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
 
@@ -137,7 +139,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @GET
     @Path("/areaEntry/{activityId}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView(FishingActivityView.AreaEntry.class)
+    @JsonView(AreaEntry.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityAreaEntryView(@Context HttpServletRequest request,
@@ -163,6 +165,20 @@ public class FishingActivityViewsResource extends UnionVMSResource {
         return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.AREA_EXIT);
     }
 
+
+    @GET
+    @Path("/gearshot/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(GearShotAndRetrieval.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getGearShotAndRetrievalView(@Context HttpServletRequest request,
+                                                @Context HttpServletResponse response,
+                                                @HeaderParam("scopeName") String scopeName,
+                                                @HeaderParam("roleName") String roleName,
+                                                @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
+    }
     /**
      * Depending on the view creates the DTO to return to the front-end.
      *

@@ -146,6 +146,17 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH fg.fishingGearRole ")
                 .append("LEFT JOIN FETCH fg.gearCharacteristics ")
                 .append("LEFT JOIN FETCH fa.fluxReportDocument flux ")
+                .append("LEFT JOIN FETCH a.fluxCharacteristics fluxChar ")
+                .append("LEFT JOIN FETCH fCatch.fluxCharacteristics fluxCharFa ")
+                .append("LEFT JOIN FETCH fl.fluxCharacteristic fluxCharFluxLoc ")
+                .append("LEFT JOIN FETCH fl.structuredAddresses flAd ")
+                .append("LEFT JOIN FETCH a.flapDocuments flapDoc ")
+                .append("LEFT JOIN FETCH flux.fluxParty fluxParty ")
+                .append("LEFT JOIN FETCH a.fishingActivityIdentifiers faId ")
+                .append("LEFT JOIN FETCH flAd.fluxLocation flAdFluxLoc ")
+                .append("LEFT JOIN FETCH a.fishingTrips faFiTrips ")
+                .append("LEFT JOIN FETCH faFiTrips.faCatch faFiTripsFaCatch ")
+                .append("LEFT JOIN FETCH a.gearProblems gearProb ")
                 .append("WHERE ");
         if(geom != null){
             sb.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");

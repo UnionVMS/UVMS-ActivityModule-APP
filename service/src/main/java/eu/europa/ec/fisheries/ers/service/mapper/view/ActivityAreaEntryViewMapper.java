@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.mapstruct.Mapper;
@@ -36,5 +37,13 @@ public abstract class ActivityAreaEntryViewMapper extends BaseActivityViewMapper
             @Mapping(target = "areas", expression = "java(getAreas(faEntity))")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
+
+    @Override
+    protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
+        activityDetails.setReason(faEntity.getReasonCode());
+        activityDetails.setFisheryType(faEntity.getFisheryTypeCode());
+        activityDetails.setSpeciesTarget(faEntity.getSpeciesTargetCode());
+        return activityDetails;
+    }
 
 }

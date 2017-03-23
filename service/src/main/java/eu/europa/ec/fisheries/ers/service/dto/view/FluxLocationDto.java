@@ -27,7 +27,7 @@ import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(Include.NON_EMPTY)
 public class FluxLocationDto {
 
     @JsonView(CommonView.class)

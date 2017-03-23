@@ -180,9 +180,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "occurrence", source = "occurence"),
-            @Mapping(target = "reason", source = "reasonCode"),
-            @Mapping(target = "fisheryType", source = "fisheryTypeCode"),
-            @Mapping(target = "speciesTarget", source = "speciesTargetCode"),
             @Mapping(target = "characteristics", expression = "java(mapCharacteristics(entity))"),
             @Mapping(target = "identifiers", source = "fishingActivityIdentifiers")
     })
