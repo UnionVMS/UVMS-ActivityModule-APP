@@ -11,10 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -26,40 +27,40 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(NON_EMPTY)
 public class GearDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String role;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String meshSize;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String lengthWidth;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private Integer numberOfGears;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String height;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String nrOfLines;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String nrOfNets;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String nominalLengthOfNet;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String quantity;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String description;
 
     public String getType() {

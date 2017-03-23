@@ -11,86 +11,105 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
+
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
 
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(NON_EMPTY)
 public class GearShotRetrievalDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private String occurrence;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private IdentifierDto id;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private Double duration;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private GearDto gear;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private Map<String, String> characteristics;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
+    @JsonView({FishingOperation.class, JointFishingOperation.class, GearShotAndRetrieval.class})
     private List<GearProblemDto> gearProblems;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private FluxLocationDto location;
 
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
+
     public String getOccurrence() {
         return occurrence;
     }
+
     public void setOccurrence(String occurrence) {
         this.occurrence = occurrence;
     }
+
     public Double getDuration() {
         return duration;
     }
+
     public void setDuration(Double duration) {
         this.duration = duration;
     }
+
     public GearDto getGear() {
         return gear;
     }
+
     public void setGear(GearDto gear) {
         this.gear = gear;
     }
+
     public Map<String, String> getCharacteristics() {
         return characteristics;
     }
+
     public void setCharacteristics(Map<String, String> characteristics) {
         this.characteristics = characteristics;
     }
+
     public FluxLocationDto getLocation() {
         return location;
     }
+
     public void setLocation(FluxLocationDto location) {
         this.location = location;
     }
+
     public List<GearProblemDto> getGearProblems() {
         return gearProblems;
     }
+
     public void setGearProblems(List<GearProblemDto> gearProblems) {
         this.gearProblems = gearProblems;
     }
+
     public IdentifierDto getId() {
         return id;
     }
+
     public void setId(IdentifierDto id) {
         this.id = id;
     }
