@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 /**
  * Created by kovian on 03/03/2017.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FaCatchDenomLocationDto {
 
     @JsonView(FishingActivityView.CommonView.class)
