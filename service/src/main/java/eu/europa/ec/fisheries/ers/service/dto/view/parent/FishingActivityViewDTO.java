@@ -35,6 +35,7 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 
 /**
  * This DTO will be returned to the requester for every request of activity views.
@@ -46,13 +47,13 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class})
+    @JsonView({NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class})
     private List<FluxLocationDto> locations;
 
     @JsonView({Arrival.class, Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class,FishingActivityView.AreaExit.class})
+    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class,FishingActivityView.AreaExit.class, Transhipment.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)

@@ -24,7 +24,7 @@ import java.util.Set;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
@@ -35,16 +35,16 @@ public class BaseMapperTest extends BaseUnitilsTest {
     @Test
     public void testMapToAssetListCriteriaPairList() {
 
-        IdentifierDto cfr = new IdentifierDto(CFR);
-        cfr.setIdentifierId("cfrValue");
-        IdentifierDto gfmc = new IdentifierDto(GFCM);
-        IdentifierDto ext = new IdentifierDto(EXT_MARK);
-        ext.setIdentifierId("extValue");
-        IdentifierDto ircs = new IdentifierDto(IRCS);
-        ircs.setIdentifierId("ircsValue");
-        IdentifierDto uvi = new IdentifierDto(UVI);
+        AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
+        cfr.setFaIdentifierId("cfrValue");
+        AssetIdentifierDto gfmc = new AssetIdentifierDto(GFCM);
+        AssetIdentifierDto ext = new AssetIdentifierDto(EXT_MARK);
+        ext.setFaIdentifierId("extValue");
+        AssetIdentifierDto ircs = new AssetIdentifierDto(IRCS);
+        ircs.setFaIdentifierId("ircsValue");
+        AssetIdentifierDto uvi = new AssetIdentifierDto(UVI);
 
-        Set<IdentifierDto> identifierDtos = newSet(cfr, gfmc, ext, ircs, uvi);
+        Set<AssetIdentifierDto> identifierDtos = newSet(cfr, gfmc, ext, ircs, uvi);
 
         List<AssetListCriteriaPair> pairs = BaseMapper.mapToAssetListCriteriaPairList(identifierDtos);
 

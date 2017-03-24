@@ -30,7 +30,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
@@ -164,13 +164,13 @@ public class BaseMapper {
         return fluxLocations;
     }
 
-    public static List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<IdentifierDto> identifierDtoSet) {
+    public static List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
-        for (IdentifierDto identifierDto : identifierDtoSet) {
+        for (AssetIdentifierDto identifierDto : identifierDtoSet) {
             AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
             VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
             ConfigSearchField key = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
-            String identifierId = identifierDto.getIdentifierId();
+            String identifierId = identifierDto.getFaIdentifierId();
             if (key != null && identifierId != null) {
                 criteriaPair.setKey(key);
                 criteriaPair.setValue(identifierId);

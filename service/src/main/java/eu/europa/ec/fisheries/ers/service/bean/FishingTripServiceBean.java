@@ -53,6 +53,7 @@ import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
@@ -60,7 +61,6 @@ import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
@@ -255,7 +255,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
             try {
 
-                Set<IdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+                Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapToAssetListCriteriaPairList(vesselIdentifiers);
                 AssetListCriteria criteria = new AssetListCriteria();
                 criteria.getCriterias().addAll(assetListCriteriaPairs);
