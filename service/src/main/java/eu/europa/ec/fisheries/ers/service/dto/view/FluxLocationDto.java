@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import java.util.Collections;
@@ -27,7 +27,7 @@ import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@JsonInclude(Include.NON_EMPTY)
+@JsonInclude(NON_NULL)
 public class FluxLocationDto {
 
     @JsonView(CommonView.class)
@@ -38,7 +38,6 @@ public class FluxLocationDto {
     private String rfmoCode;
 
     @JsonView(CommonView.class)
-    @JsonInclude(Include.NON_NULL)
     private String geometry;
 
     @JsonIgnore
