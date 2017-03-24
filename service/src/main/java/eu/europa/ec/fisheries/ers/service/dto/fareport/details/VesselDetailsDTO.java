@@ -24,6 +24,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -54,7 +55,7 @@ public class VesselDetailsDTO {
     private Set<ContactPartyDetailsDTO> contactPartyDetailsDTOSet;
 
     @JsonProperty("vesselIds")
-    private Set<IdentifierDto> vesselIdentifiers;
+    private Set<AssetIdentifierDto> vesselIdentifiers;
 
     public String getRoleCode() {
         return roleCode;
@@ -88,11 +89,11 @@ public class VesselDetailsDTO {
         this.country = country;
     }
 
-    public Set<IdentifierDto> getVesselIdentifiers() {
+    public Set<AssetIdentifierDto> getVesselIdentifiers() {
         return vesselIdentifiers;
     }
 
-    public void setVesselIdentifiers(Set<IdentifierDto> vesselIdentifiers) {
+    public void setVesselIdentifiers(Set<AssetIdentifierDto> vesselIdentifiers) {
         this.vesselIdentifiers = vesselIdentifiers;
     }
 
@@ -108,7 +109,7 @@ public class VesselDetailsDTO {
 
         if (!CollectionUtils.isEmpty(vesselIdentifiers)) {
             for (IdentifierDto identifier : vesselIdentifiers) {
-                if (isEmpty(identifier.getIdentifierId())) {
+                if (isEmpty(identifier.getFaIdentifierId())) {
                     return true;
                 }
             }
@@ -122,9 +123,9 @@ public class VesselDetailsDTO {
         String cfr = asset.getCfr();
         String externalMarking = asset.getExternalMarking();
 
-        for (IdentifierDto identifier : vesselIdentifiers) {
+        for (AssetIdentifierDto identifier : vesselIdentifiers) {
 
-            if (isEmpty(identifier.getIdentifierId())) {
+            if (isEmpty(identifier.getFaIdentifierId())) {
 
                 VesselIdentifierSchemeIdEnum identifierSchemeId = identifier.getIdentifierSchemeId();
 
@@ -139,8 +140,8 @@ public class VesselDetailsDTO {
         }
     }
 
-    private void setIdentifier(IdentifierDto identifier, String value) {
-        identifier.setIdentifierId(value);
+    private void setIdentifier(AssetIdentifierDto identifier, String value) {
+        identifier.setFaIdentifierId(value);
         identifier.setFromAssets(true);
     }
 }

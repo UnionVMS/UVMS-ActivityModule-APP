@@ -18,6 +18,7 @@ import static org.unitils.util.CollectionUtils.asSet;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -33,10 +34,10 @@ public class VesselIdentifierMapperTest extends BaseUnitilsTest {
                 .vesselIdentifierId("schemeId")
                 .build();
 
-        Set<IdentifierDto> identifierDtos = INSTANCE.mapToIdentifierDotSet(asSet(entity));
+        Set<AssetIdentifierDto> identifierDtos = INSTANCE.mapToIdentifierDotSet(asSet(entity));
 
         assertEquals(1, identifierDtos.size());
-        assertEquals("schemeId", identifierDtos.iterator().next().getIdentifierId());
+        assertEquals("schemeId", identifierDtos.iterator().next().getFaIdentifierId());
         assertEquals(VesselIdentifierSchemeIdEnum.CFR, identifierDtos.iterator().next().getIdentifierSchemeId());
 
     }

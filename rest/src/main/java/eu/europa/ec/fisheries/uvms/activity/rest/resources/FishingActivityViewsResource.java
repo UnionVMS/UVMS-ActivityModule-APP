@@ -169,17 +169,32 @@ public class FishingActivityViewsResource extends UnionVMSResource {
 
 
     @GET
-    @Path("/gearshot/{activityId}/")
+         @Path("/gearshot/{activityId}/")
+         @Produces(MediaType.APPLICATION_JSON)
+         @JsonView(GearShotAndRetrieval.class)
+         @Interceptors(ActivityExceptionInterceptor.class)
+         @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+         public Response getGearShotAndRetrievalView(@Context HttpServletRequest request,
+                                                     @Context HttpServletResponse response,
+                                                     @HeaderParam("scopeName") String scopeName,
+                                                     @HeaderParam("roleName") String roleName,
+                                                     @PathParam("activityId") String activityId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
+    }
+
+
+    @GET
+    @Path("/transhipment/{activityId}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView(GearShotAndRetrieval.class)
+    @JsonView(FishingActivityView.Transhipment.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getGearShotAndRetrievalView(@Context HttpServletRequest request,
+    public Response getTranshipmentView(@Context HttpServletRequest request,
                                                 @Context HttpServletResponse response,
                                                 @HeaderParam("scopeName") String scopeName,
                                                 @HeaderParam("roleName") String roleName,
                                                 @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
+        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.TRANSSHIPMENT);
     }
 
     @GET
@@ -195,6 +210,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                             @PathParam("activityId") String activityId) throws ServiceException {
         return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.FISHING_OPERATION);
     }
+
 
     /**
      * Depending on the view creates the DTO to return to the front-end.

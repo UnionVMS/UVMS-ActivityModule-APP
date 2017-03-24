@@ -35,37 +35,26 @@ public class IdentifierDto {
 
     @JsonProperty("id")
     @JsonView(CommonView.class)
-    private String identifierId;
+    private String faIdentifierId;
 
     @JsonProperty("schemeId")
     @JsonView(CommonView.class)
     @NonNull
-    private VesselIdentifierSchemeIdEnum identifierSchemeId;
+    private String faIdentifierSchemeId;
 
-    private boolean fromAssets;
-
-    public String getIdentifierId() {
-        return identifierId;
+    public String getFaIdentifierId() {
+        return faIdentifierId;
     }
 
-    public void setIdentifierId(String identifierId) {
-        this.identifierId = identifierId;
+    public void setFaIdentifierId(String faIdentifierId) {
+        this.faIdentifierId = faIdentifierId;
     }
 
-    public boolean getFromAssets() {
-        return fromAssets;
+    public String getFaIdentifierSchemeId() {
+        return faIdentifierSchemeId;
     }
 
-    public void setFromAssets(boolean fromAssets) {
-        this.fromAssets = fromAssets;
+    public void setFaIdentifierSchemeId(String faIdentifierSchemeId) {
+        this.faIdentifierSchemeId = faIdentifierSchemeId;
     }
-
-    public VesselIdentifierSchemeIdEnum getIdentifierSchemeId() {
-        return identifierSchemeId;
-    }
-
-    public void setIdentifierSchemeId(VesselIdentifierSchemeIdEnum identifierSchemeId) {
-        this.identifierSchemeId = identifierSchemeId;
-    }
-
 }
