@@ -19,7 +19,9 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMappe
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityNotificationOfArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.DiscardViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 /**
@@ -44,7 +46,7 @@ public class ActivityViewMapperFactory {
                 mapper = ActivityAreaExitViewMapper.INSTANCE;
                 break;
             case FISHING_OPERATION:
-                mapper = null;
+                mapper = new FishingOperationViewMapper();
                 break;
             case JOINT_FISHING_OPERATIONS:
                 mapper = null;
@@ -65,7 +67,7 @@ public class ActivityViewMapperFactory {
                 mapper = ActivityLandingViewMapper.INSTANCE;
                 break;
             case TRANSSHIPMENT:
-                mapper = null;
+                mapper = ActivityTranshipmentViewMapper.INSTANCE;
                 break;
             case GEAR_SHOT_RETRIEVAL:
                 mapper = GearShotRetrievalTileMapper.INSTANCE;

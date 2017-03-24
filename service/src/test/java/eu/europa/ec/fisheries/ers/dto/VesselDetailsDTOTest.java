@@ -24,6 +24,7 @@ import java.util.Set;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
@@ -39,43 +40,41 @@ public class VesselDetailsDTOTest extends BaseUnitilsTest {
         Asset asset = new Asset();
         asset.setCfr("cfrValueFromAsset");
 
-        IdentifierDto cfr = new IdentifierDto(CFR);
+        AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
 
-        IdentifierDto ext = new IdentifierDto(EXT_MARK);
-        ext.setIdentifierId("extMarkingFromActivity");
+        AssetIdentifierDto ext = new AssetIdentifierDto(EXT_MARK);
+        ext.setFaIdentifierId("extMarkingFromActivity");
 
-        IdentifierDto ircs = new IdentifierDto(IRCS);
-        ircs.setIdentifierId("ircsFromActivity");
+        AssetIdentifierDto ircs = new AssetIdentifierDto(IRCS);
+        ircs.setFaIdentifierId("ircsFromActivity");
 
-        IdentifierDto iccat = new IdentifierDto(ICCAT);
-        iccat.setIdentifierId("iccat");
+        AssetIdentifierDto iccat = new AssetIdentifierDto(ICCAT);
+        iccat.setFaIdentifierId("iccat");
 
-        IdentifierDto uvi = new IdentifierDto(UVI);
+        AssetIdentifierDto uvi = new AssetIdentifierDto(UVI);
 
-        Set<IdentifierDto> identifiers = newSet(ircs, cfr, iccat, uvi, ext);
+        Set<AssetIdentifierDto> identifiers = newSet(ircs, cfr, iccat, uvi, ext);
 
         VesselDetailsDTO dto = builder().vesselIdentifiers(identifiers).build();
 
         dto.enrichIdentifiers(asset);
 
-        Set<IdentifierDto> vesselIdentifiers = dto.getVesselIdentifiers();
+        Set<AssetIdentifierDto> vesselIdentifiers = dto.getVesselIdentifiers();
 
-        ImmutableMap<VesselIdentifierSchemeIdEnum, IdentifierDto> map = Maps.uniqueIndex(vesselIdentifiers,
-                new Function<IdentifierDto, VesselIdentifierSchemeIdEnum>() {
-                    public VesselIdentifierSchemeIdEnum apply(IdentifierDto from) {
+        ImmutableMap<VesselIdentifierSchemeIdEnum, AssetIdentifierDto> map = Maps.uniqueIndex(vesselIdentifiers,
+                new Function<AssetIdentifierDto, VesselIdentifierSchemeIdEnum>() {
+                    public VesselIdentifierSchemeIdEnum apply(AssetIdentifierDto from) {
                         return from.getIdentifierSchemeId();
                     }
                 });
 
-        IdentifierDto cfr_ = map.get(CFR);
-        IdentifierDto ext_ = map.get(EXT_MARK);
-        IdentifierDto ircs_ = map.get(IRCS);
-        IdentifierDto uvi_ = map.get(UVI);
-        IdentifierDto iccat_ = map.get(ICCAT);
+        AssetIdentifierDto cfr_ = map.get(CFR);
+        AssetIdentifierDto ext_ = map.get(EXT_MARK);
+        AssetIdentifierDto ircs_ = map.get(IRCS);
+        AssetIdentifierDto uvi_ = map.get(UVI);
+        AssetIdentifierDto iccat_ = map.get(ICCAT);
 
         assertTrue(uvi.equals(uvi_));
-        assertTrue(cfr_.equals(new IdentifierDto("cfrValueFromAsset", CFR, true)));
-        assertTrue(ext_.equals(new IdentifierDto("extMarkingFromActivity", EXT_MARK, false))); // Don't override value
         assertTrue(ircs.equals(ircs_));
         assertTrue(iccat.equals(iccat_));
 

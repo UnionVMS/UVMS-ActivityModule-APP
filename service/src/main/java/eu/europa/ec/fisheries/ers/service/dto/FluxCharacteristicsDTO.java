@@ -13,17 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
-import java.util.Date;
-
-/**
- * Created by sanera on 04/08/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(NON_NULL)
 public class FluxCharacteristicsDTO {
 
     @JsonProperty("valueDateTime")

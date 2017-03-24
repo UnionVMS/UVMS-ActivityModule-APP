@@ -12,7 +12,9 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.Set;
 
+import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
@@ -35,11 +37,11 @@ public interface VesselIdentifierMapper {
 
     @Mappings({
             @Mapping(target = "identifierSchemeId", source = "vesselIdentifierSchemeId"),
-            @Mapping(target = "identifierId", source = "vesselIdentifierId")
+            @Mapping(target = "faIdentifierId", source = "vesselIdentifierId")
     })
-    IdentifierDto mapToIdentifierDto(VesselIdentifierEntity entity);
+    AssetIdentifierDto mapToIdentifierDto(VesselIdentifierEntity entity);
 
-    Set<IdentifierDto> mapToIdentifierDotSet(Set<VesselIdentifierEntity> entity);
+    Set<AssetIdentifierDto> mapToIdentifierDotSet(Set<VesselIdentifierEntity> entity);
 
     @ValueMappings({
             @ValueMapping(target = "EXT_MARK", source = "EXTERNAL_MARKING"),

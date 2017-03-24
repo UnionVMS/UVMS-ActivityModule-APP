@@ -78,11 +78,25 @@ public abstract class AapProductMapper extends BaseMapper {
 
     protected Map<String, String> getDenormalizedLocations(AapProductEntity aapProduct) {
         Map<String, String> locations = new HashMap<>();
-        locations.put("ices_stat_rectangle", aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle());
-        locations.put("fao_area", aapProduct.getAapProcess().getFaCatch().getFaoArea());
-        locations.put("gfcm_gsa", aapProduct.getAapProcess().getFaCatch().getGfcmGsa());
-        locations.put("effort_zone", aapProduct.getAapProcess().getFaCatch().getEffortZone());
-        locations.put("territory", aapProduct.getAapProcess().getFaCatch().getTerritory());
+        if (aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle() != null) {
+            locations.put("ices_stat_rectangle", aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle());
+        }
+
+        if (aapProduct.getAapProcess().getFaCatch().getFaoArea() != null) {
+            locations.put("fao_area", aapProduct.getAapProcess().getFaCatch().getFaoArea());
+        }
+
+        if (aapProduct.getAapProcess().getFaCatch().getGfcmGsa() != null) {
+            locations.put("gfcm_gsa", aapProduct.getAapProcess().getFaCatch().getGfcmGsa());
+        }
+
+        if (aapProduct.getAapProcess().getFaCatch().getEffortZone() != null) {
+            locations.put("effort_zone", aapProduct.getAapProcess().getFaCatch().getEffortZone());
+        }
+
+        if (aapProduct.getAapProcess().getFaCatch().getTerritory() != null) {
+            locations.put("territory", aapProduct.getAapProcess().getFaCatch().getTerritory());
+        }
         return locations;
     }
 

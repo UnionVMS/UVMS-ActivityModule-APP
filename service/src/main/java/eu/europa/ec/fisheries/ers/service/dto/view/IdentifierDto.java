@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@JsonInclude(NON_EMPTY)
+@JsonInclude(NON_NULL)
 @EqualsAndHashCode
 @AllArgsConstructor(suppressConstructorProperties = true)
 @RequiredArgsConstructor(suppressConstructorProperties = true)
@@ -35,37 +35,26 @@ public class IdentifierDto {
 
     @JsonProperty("id")
     @JsonView(CommonView.class)
-    private String identifierId;
+    private String faIdentifierId;
 
     @JsonProperty("schemeId")
     @JsonView(CommonView.class)
     @NonNull
-    private VesselIdentifierSchemeIdEnum identifierSchemeId;
+    private String faIdentifierSchemeId;
 
-    private boolean fromAssets;
-
-    public String getIdentifierId() {
-        return identifierId;
+    public String getFaIdentifierId() {
+        return faIdentifierId;
     }
 
-    public void setIdentifierId(String identifierId) {
-        this.identifierId = identifierId;
+    public void setFaIdentifierId(String faIdentifierId) {
+        this.faIdentifierId = faIdentifierId;
     }
 
-    public boolean getFromAssets() {
-        return fromAssets;
+    public String getFaIdentifierSchemeId() {
+        return faIdentifierSchemeId;
     }
 
-    public void setFromAssets(boolean fromAssets) {
-        this.fromAssets = fromAssets;
+    public void setFaIdentifierSchemeId(String faIdentifierSchemeId) {
+        this.faIdentifierSchemeId = faIdentifierSchemeId;
     }
-
-    public VesselIdentifierSchemeIdEnum getIdentifierSchemeId() {
-        return identifierSchemeId;
-    }
-
-    public void setIdentifierSchemeId(VesselIdentifierSchemeIdEnum identifierSchemeId) {
-        this.identifierSchemeId = identifierSchemeId;
-    }
-
 }

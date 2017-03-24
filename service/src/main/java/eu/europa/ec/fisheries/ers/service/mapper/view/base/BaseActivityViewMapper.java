@@ -10,43 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.AreaDtoMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_Q_CODE_C62;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GM;
@@ -57,6 +20,40 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NL;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NN;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_QG;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.AreaDtoMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by kovian on 14/02/2017.
@@ -168,14 +165,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
     protected ActivityDetailsDto mapActivityDetails(FishingActivityEntity faEntity){
         ActivityDetailsDto activityDetails = FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(faEntity);
         return populateActivityDetails(faEntity, activityDetails);
-    }
-
-    protected List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
-        Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
-        if (locationDtos != null) {
-            return new ArrayList<>(locationDtos);
-        }
-         return Collections.emptyList();
     }
 
     protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
