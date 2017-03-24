@@ -32,6 +32,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
@@ -73,6 +74,9 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     @EJB
     private AssetModuleService assetsServiceBean;
+
+    @EJB
+    private FishingTripService fishingTripServiceBean;
 
     @PostConstruct
     public void init() {
@@ -184,7 +188,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * @throws ServiceException
      */
     @Override
-    public FishingActivityViewDTO getFishingActivityForView(String activityId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
+    public FishingActivityViewDTO getFishingActivityForView(String activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
         Geometry geom = getRestrictedAreaGeometry(datasets);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
         if (activityEntity == null)
@@ -192,7 +196,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
         log.debug("FishingActivityEntity fetched from database with id:" + activityEntity.getId());
         FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
-        log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
+        fishingActivityViewDTO.setTripWidgetDto(fishingTripServiceBean.getTripWidgetDto(activityEntity,tripId));
+        log.debug("fishingActivityView generated after mapping is :"+fishingActivityViewDTO);
         return fishingActivityViewDTO;
     }
 

@@ -11,28 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
@@ -48,6 +26,29 @@ import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.List;
+
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
 
 /**
  * Created by kovian on 08/02/2017.
@@ -76,8 +77,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                            @Context HttpServletResponse response,
                                            @HeaderParam("scopeName") String scopeName,
                                            @HeaderParam("roleName") String roleName,
-                                           @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.ARRIVAL);
+                                           @PathParam("activityId") String activityId,
+                                           @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.ARRIVAL);
     }
 
 
@@ -91,8 +93,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                            @Context HttpServletResponse response,
                                            @HeaderParam("scopeName") String scopeName,
                                            @HeaderParam("roleName") String roleName,
-                                           @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.LANDING);
+                                           @PathParam("activityId") String activityId,
+                                           @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.LANDING);
     }
 
     @GET
@@ -105,8 +108,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                         @Context HttpServletResponse response,
                                         @HeaderParam("scopeName") String scopeName,
                                         @HeaderParam("roleName") String roleName,
-                                        @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.DISCARD_AT_SEA);
+                                        @PathParam("activityId") String activityId,
+                                        @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.DISCARD_AT_SEA);
     }
 
     @GET
@@ -119,8 +123,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                              @Context HttpServletResponse response,
                                              @HeaderParam("scopeName") String scopeName,
                                              @HeaderParam("roleName") String roleName,
-                                             @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.DEPARTURE);
+                                             @PathParam("activityId") String activityId,
+                                             @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.DEPARTURE);
     }
 
     @GET
@@ -133,8 +138,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                            @Context HttpServletResponse response,
                                            @HeaderParam("scopeName") String scopeName,
                                            @HeaderParam("roleName") String roleName,
-                                           @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.PRIOR_NOTIFICATION_OF_ARRIVAL);
+                                           @PathParam("activityId") String activityId,
+                                           @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.PRIOR_NOTIFICATION_OF_ARRIVAL);
     }
 
 
@@ -148,8 +154,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                              @Context HttpServletResponse response,
                                              @HeaderParam("scopeName") String scopeName,
                                              @HeaderParam("roleName") String roleName,
-                                             @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.AREA_ENTRY);
+                                             @PathParam("activityId") String activityId,
+                                             @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.AREA_ENTRY);
     }
 
 
@@ -160,26 +167,28 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityAreaExitView(@Context HttpServletRequest request,
-                                            @Context HttpServletResponse response,
-                                            @HeaderParam("scopeName") String scopeName,
-                                            @HeaderParam("roleName") String roleName,
-                                            @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.AREA_EXIT);
+                                             @Context HttpServletResponse response,
+                                             @HeaderParam("scopeName") String scopeName,
+                                             @HeaderParam("roleName") String roleName,
+                                             @PathParam("activityId") String activityId,
+                                             @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.AREA_EXIT);
     }
 
 
     @GET
-         @Path("/gearshot/{activityId}/")
-         @Produces(MediaType.APPLICATION_JSON)
-         @JsonView(GearShotAndRetrieval.class)
-         @Interceptors(ActivityExceptionInterceptor.class)
-         @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-         public Response getGearShotAndRetrievalView(@Context HttpServletRequest request,
-                                                     @Context HttpServletResponse response,
-                                                     @HeaderParam("scopeName") String scopeName,
-                                                     @HeaderParam("roleName") String roleName,
-                                                     @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
+    @Path("/gearshot/{activityId}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView(GearShotAndRetrieval.class)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getGearShotAndRetrievalView(@Context HttpServletRequest request,
+                                                @Context HttpServletResponse response,
+                                                @HeaderParam("scopeName") String scopeName,
+                                                @HeaderParam("roleName") String roleName,
+                                                @PathParam("activityId") String activityId,
+                                                @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
     }
 
 
@@ -193,8 +202,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                                 @Context HttpServletResponse response,
                                                 @HeaderParam("scopeName") String scopeName,
                                                 @HeaderParam("roleName") String roleName,
-                                                @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.TRANSSHIPMENT);
+                                                @PathParam("activityId") String activityId,
+                                                @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId,tripId, request, ActivityViewEnum.TRANSSHIPMENT);
     }
 
     @GET
@@ -207,8 +217,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                             @Context HttpServletResponse response,
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
-                                            @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.FISHING_OPERATION);
+                                            @PathParam("activityId") String activityId,
+                                            @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId,request, ActivityViewEnum.FISHING_OPERATION);
     }
 
 
@@ -222,9 +233,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
      * @return View DTO
      * @throws ServiceException
      */
-    private Response createActivityView(String scopeName, String roleName, String activityId, HttpServletRequest request, ActivityViewEnum view) throws ServiceException {
+    private Response createActivityView(String scopeName, String roleName, String activityId, String tripId, HttpServletRequest request, ActivityViewEnum view) throws ServiceException {
         String username        = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        return createSuccessResponse(activityService.getFishingActivityForView(activityId, datasets, view));
+        return createSuccessResponse(activityService.getFishingActivityForView(activityId,tripId, datasets, view));
     }
 }

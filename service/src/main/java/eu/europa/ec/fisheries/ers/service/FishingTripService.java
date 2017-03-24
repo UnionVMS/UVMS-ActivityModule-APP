@@ -13,19 +13,24 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -100,4 +105,10 @@ public interface FishingTripService {
      */
 
     FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException;
+
+
+    Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
+                                                                                                      Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
+
+    TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 }

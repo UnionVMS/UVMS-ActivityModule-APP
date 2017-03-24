@@ -35,6 +35,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 
 import java.util.List;
 
@@ -80,6 +81,9 @@ public class FishingActivityViewDTO {
 
     @JsonView({AreaEntry.class, AreaExit.class})
     private AreaDto areas;
+
+    @JsonView(CommonView.class)
+    private TripWidgetDto tripWidgetDto;
 
     public List<FluxLocationDto> getLocations() {
         return locations;
@@ -143,6 +147,14 @@ public class FishingActivityViewDTO {
 
     public void setAreas(AreaDto areas) {
         this.areas = areas;
+    }
+
+    public TripWidgetDto getTripWidgetDto() {
+        return tripWidgetDto;
+    }
+
+    public void setTripWidgetDto(TripWidgetDto tripWidgetDto) {
+        this.tripWidgetDto = tripWidgetDto;
     }
 
     @Override
