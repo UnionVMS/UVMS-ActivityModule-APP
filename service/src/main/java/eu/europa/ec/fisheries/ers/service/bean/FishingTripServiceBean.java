@@ -13,23 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
@@ -48,6 +31,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
@@ -61,6 +45,9 @@ import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryView
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripIdDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
@@ -88,6 +75,26 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.*;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -273,9 +280,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     @Override
     public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException {
         List<ReportDTO> reportDTOList = new ArrayList<>();
-        Map<String, FishingActivityTypeDTO> summary = new HashMap<>();
         Geometry multipolygon = getRestrictedAreaGeom(datasets);
-        populateFishingActivityReportListAndSummary(fishingTripId, reportDTOList, summary, multipolygon);
+        Map<String, FishingActivityTypeDTO>  summary = populateFishingActivityReportListAndFishingTripSummary(fishingTripId, reportDTOList, multipolygon,false);
         return populateFishingTripSummary(fishingTripId, reportDTOList, summary);
     }
 
@@ -313,42 +319,56 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return fishingTripSummaryViewDTO;
     }
 
+    /**
+     *
+     * @param fishingTripId - Fishing trip summary will be collected for this tripID
+     * @param reportDTOList - This DTO will have details about Fishing Activities.Method will process and populate data into this list     *
+     * @param multipolygon - Activities only in this area would be selected
+     * @param isOnlyTripSummary - This method you could reuse to only get Fishing trip summary as well
+     * @throws ServiceException
+     */
 
-    private void populateFishingActivityReportListAndSummary(String fishingTripId, List<ReportDTO> reportDTOList,
-                                                             Map<String, FishingActivityTypeDTO> summary,
-                                                             Geometry multipolygon) throws ServiceException {
+    @Override
+    public Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
+                                                                       Geometry multipolygon,boolean isOnlyTripSummary) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
         if (CollectionUtils.isEmpty(fishingActivityList)) {
-            return;
+            return Collections.emptyMap();
+        }
+        Map<String, FishingActivityTypeDTO> tripSummary = new HashMap<>();
+        for (FishingActivityEntity activityEntity : fishingActivityList) {
+
+            if(!isOnlyTripSummary) {
+                ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
+                reportDTOList.add(reportDTO);
+            }
+
+            if (activityEntity != null && activityEntity.getFaReportDocument() !=null && ActivityConstants.DECLARATION.equalsIgnoreCase(activityEntity.getFaReportDocument().getTypeCode())) {
+                // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
+                populateFishingTripSummary(activityEntity, tripSummary);
+            }
         }
 
-        for (FishingActivityEntity activityEntity : fishingActivityList) {
-            ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
-            if (reportDTO != null && ActivityConstants.DECLARATION.equalsIgnoreCase(reportDTO.getFaReportDocumentType())) {
-                // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
-                populateSummaryMap(reportDTO, summary);
-            }
-            reportDTOList.add(reportDTO);
-        }
+        return tripSummary;
     }
 
 
-    private void populateSummaryMap(ReportDTO reportDTO, Map<String, FishingActivityTypeDTO> summary) {
-        if (ActivityConstants.DEPARTURE.equalsIgnoreCase(reportDTO.getActivityType())
-                || ActivityConstants.ARRIVAL.equalsIgnoreCase(reportDTO.getActivityType())
-                || ActivityConstants.LANDING.equalsIgnoreCase(reportDTO.getActivityType())) {
-            Date occurrence = reportDTO.getOccurence();
-            List<String> fluxLocations = reportDTO.getLocations();
-            FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(reportDTO.getActivityType());
+    public void populateFishingTripSummary(FishingActivityEntity activityEntity, Map<String, FishingActivityTypeDTO> summary) {
+        String activityTypeCode = activityEntity.getTypeCode();
+        if (FishingActivityTypeEnum.DEPARTURE.toString().equalsIgnoreCase(activityTypeCode)
+                || FishingActivityTypeEnum.ARRIVAL.toString().equalsIgnoreCase(activityTypeCode)
+                || FishingActivityTypeEnum.LANDING.toString().equalsIgnoreCase(activityTypeCode)) {
+            Date occurrence = activityEntity.getOccurence();
+            Boolean isCorrection = BaseMapper.getCorrection(activityEntity);
+            FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
             if (fishingActivityTypeDTO == null
-                    || (reportDTO.isCorrection()
+                    || (isCorrection
                     && fishingActivityTypeDTO.getDate() != null
                     && occurrence != null
                     && occurrence.compareTo(fishingActivityTypeDTO.getDate()) > 0)) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
                 fishingActivityTypeDTO.setDate(occurrence);
-                fishingActivityTypeDTO.setLocations(fluxLocations);
-                summary.put(reportDTO.getActivityType(), fishingActivityTypeDTO);
+                summary.put(activityTypeCode, fishingActivityTypeDTO);
             }
         }
     }
@@ -394,7 +414,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             Set<FishingActivityEntity> faEntitiyList = faReport.getFishingActivities();
             if (isNotEmpty(faEntitiyList)) {
                 for (FishingActivityEntity faEntity : faEntitiyList) {
-                    if (ActivityConstants.FISHING_OPERATION.equalsIgnoreCase(faEntity.getTypeCode())) {
+                    if (FishingActivityTypeEnum.FISHING_OPERATION.toString().equalsIgnoreCase(faEntity.getTypeCode())) {
                         messagesCounter.setNoOfFishingOperations(messagesCounter.getNoOfFishingOperations() + 1);
                     }
                 }
@@ -506,5 +526,107 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         return fishingTripIdLists;
+    }
+
+    @Override
+    /**
+     *  Returns TripWidgetDto based on the tripId and activityId
+     */
+    public TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity,String tripId){
+
+        if(activityEntity ==null && tripId ==null){
+           return null;
+        }
+
+        TripWidgetDto tripWidgetDto = new TripWidgetDto();
+        try {
+            if(tripId !=null) {
+                log.debug("Trip Id found for Fishing Activity. Get TripWidget information for tripID :" + tripId);
+
+                TripOverviewDto tripOverviewDto = getTripOverviewDto(activityEntity, tripId);
+                List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
+                tripOverviewDtoList.add(tripOverviewDto);
+                tripWidgetDto.setTripOverviewDto(tripOverviewDtoList);
+                tripWidgetDto.setVesselDetails(getVesselDetailsForFishingTrip(tripId));
+                log.debug("tripWidgetDto set for tripID :" + tripId);
+            }else{
+                log.debug("TripId is not received for the screen. Try to get TripSummary information for all the tripIds specified for FishingActivity:" + activityEntity.getId());
+                return createTripWidgetDtoWithFishingActivity(activityEntity);
+
+            }
+        } catch (ServiceException e) {
+            log.error("Error while creating TripWidgetDto.",e);
+        }
+        return tripWidgetDto;
+    }
+
+    public TripWidgetDto createTripWidgetDtoWithFishingActivity(FishingActivityEntity activityEntity) throws ServiceException {
+        TripWidgetDto tripWidgetDto = new TripWidgetDto();
+        Set<FishingTripEntity> fishingTripEntities =activityEntity.getFishingTrips();
+
+        if(CollectionUtils.isEmpty(fishingTripEntities)){
+             throw new  ServiceException(" Could not find fishingTrips associated with FishingActivity id :"+activityEntity.getId());
+        }
+        List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
+        // try to find unique tripIds for the fishing Activity
+        Set<String> tripIdSet = new HashSet<>();
+        for(FishingTripEntity fishingTripEntity :fishingTripEntities ){
+            Set<FishingTripIdentifierEntity> identifierEntities =fishingTripEntity.getFishingTripIdentifiers();
+            for(FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities){
+                if(!tripIdSet.contains(tripIdentifierEntity.getTripId())){
+                    log.debug("Get Trip summary information for tripID :" + tripIdentifierEntity.getTripId());
+                    tripOverviewDtoList.add(getTripOverviewDto(activityEntity,tripIdentifierEntity.getTripId()));
+                    tripIdSet.add(tripIdentifierEntity.getTripId());
+                }
+            }
+        }
+        tripWidgetDto.setTripOverviewDto(tripOverviewDtoList);
+        if(CollectionUtils.isNotEmpty(tripIdSet)){
+            tripWidgetDto.setVesselDetails(getVesselDetailsForFishingTrip(tripIdSet.iterator().next()));
+        }
+        return tripWidgetDto;
+    }
+
+    @NotNull
+    private TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
+        Map<String, FishingActivityTypeDTO> typeDTOMap= populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
+        TripOverviewDto tripOverviewDto = new TripOverviewDto();
+        Set<FishingTripEntity> fishingTripEntities =activityEntity.getFishingTrips(); // Find out fishingTrip schemeId matching to tripId from fishingActivity object.
+        if(CollectionUtils.isNotEmpty(fishingTripEntities)){
+           for(FishingTripEntity fishingTripEntity: fishingTripEntities){
+               Set<FishingTripIdentifierEntity> identifierEntities =  fishingTripEntity.getFishingTripIdentifiers();
+               for(FishingTripIdentifierEntity tripIdentifierEntity: identifierEntities){
+                   if(tripId.equalsIgnoreCase(tripIdentifierEntity.getTripId())){
+                       TripIdDto tripIdDto = new TripIdDto();
+                       tripIdDto.setId(tripId);
+                       tripIdDto.setSchemeId(tripIdentifierEntity.getTripSchemeId());
+                       List<TripIdDto> tripIdList = new ArrayList<>();
+                       tripIdList.add(tripIdDto);
+                       tripOverviewDto.setTripId(tripIdList);
+                       break;
+                   }
+               }
+           }
+        }
+
+        populateTripOverviewDto(typeDTOMap, tripOverviewDto);
+        return tripOverviewDto;
+    }
+
+    private void populateTripOverviewDto(Map<String, FishingActivityTypeDTO> typeDTOMap, TripOverviewDto tripOverviewDto) {
+        for(Map.Entry<String, FishingActivityTypeDTO> entry:typeDTOMap.entrySet()){
+            String key= entry.getKey();
+            FishingActivityTypeDTO fishingActivityTypeDTO=  entry.getValue();
+            switch(valueOf(key)){
+                case DEPARTURE: tripOverviewDto.setDepartureTime(fishingActivityTypeDTO.getDate());
+                                                   break;
+                case ARRIVAL: tripOverviewDto.setArrivalTime(fishingActivityTypeDTO.getDate());
+                                                    break;
+               case LANDING: tripOverviewDto.setLandingTime(fishingActivityTypeDTO.getDate());
+                                              break;
+                default: log.debug("Fishing Activity type found is :" + key);
+                        break;
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
@@ -61,13 +61,13 @@ public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
 
     protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
 
-        sql.append(" and ( a.typeCode ='").append(ActivityConstants.LANDING).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
+        sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.LANDING).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
     }
 
 
 
     protected void conditionsForFACatchSummaryReport(StringBuilder sql){
-        sql.append(" and ( a.typeCode ='").append(ActivityConstants.LANDING).append("') and faCatch.typeCode NOT IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("') ");
+        sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.LANDING).append("') and faCatch.typeCode NOT IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("') ");
     }
 
 }

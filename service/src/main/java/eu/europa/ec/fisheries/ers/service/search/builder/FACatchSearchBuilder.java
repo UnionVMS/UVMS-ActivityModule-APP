@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
@@ -132,16 +132,16 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
      */
     protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
 
-        sql.append(" and ( a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
+        sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
     }
 
 
 
     protected void conditionsForFACatchSummaryReport(StringBuilder sql){
         sql.append(" and (" +
-                "(a.typeCode ='").append(ActivityConstants.FISHING_OPERATION).append("' and faCatch.typeCode IN('") .append(FaCatchTypeEnum.ONBOARD)
-                 .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(ActivityConstants.RELOCATION)
-                .append("' and a.relatedFishingActivity.typeCode='").append(ActivityConstants.JOINT_FISHING_OPERATION).append("' and a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid  ")
+                "(a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN('") .append(FaCatchTypeEnum.ONBOARD)
+                 .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(FishingActivityTypeEnum.RELOCATION.toString())
+                .append("' and a.relatedFishingActivity.typeCode='").append(FishingActivityTypeEnum.JOINED_FISHING_OPERATION.toString()).append("' and a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid  ")
                  .append(" and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.TAKEN_ON_BOARD)
                 .append("','").append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("')))");
     }
