@@ -11,10 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.List;
-
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
@@ -27,6 +23,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
 
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
@@ -155,6 +155,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH a.fishingActivityIdentifiers faId ")
                 .append("LEFT JOIN FETCH flAd.fluxLocation flAdFluxLoc ")
                 .append("LEFT JOIN FETCH a.fishingTrips faFiTrips ")
+                .append("LEFT JOIN FETCH faFiTrips.fishingTripIdentifiers tripIdentifiers ")
                 .append("LEFT JOIN FETCH faFiTrips.faCatch faFiTripsFaCatch ")
                 .append("LEFT JOIN FETCH a.gearProblems gearProb ")
                 .append("WHERE ");
