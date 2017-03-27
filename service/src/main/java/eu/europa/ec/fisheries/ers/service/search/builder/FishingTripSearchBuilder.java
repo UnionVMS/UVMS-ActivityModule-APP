@@ -110,7 +110,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 
-            LOG.info("FishingTripEntity:" + entity + " FishingActivityEntity:" + entity.getFishingActivity());
+        //    LOG.info("FishingTripEntity:" + entity + " FishingActivityEntity:" + entity.getFishingActivity());
             Set<FishingTripIdentifierEntity> fishingTripIdList = entity.getFishingTripIdentifiers();
             if (fishingTripIdList == null) {
                 continue;
