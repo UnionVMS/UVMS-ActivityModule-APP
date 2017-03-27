@@ -233,8 +233,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                             @Context HttpServletResponse response,
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
-                                            @PathParam("activityId") String activityId) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityId, request, ActivityViewEnum.RELOCATION);
+                                            @PathParam("activityId") String activityId,
+                                            @QueryParam("tripId") String tripId) throws ServiceException {
+        return createActivityView(scopeName, roleName, activityId, tripId, request, ActivityViewEnum.RELOCATION);
     }
 
 

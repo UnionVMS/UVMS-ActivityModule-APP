@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.DelimitedPeriodMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import io.jsonwebtoken.lang.Collections;
 import org.mapstruct.Mapper;
@@ -37,7 +38,7 @@ import java.util.Set;
 /**
  * Created by padhyad on 3/23/2017.
  */
-@Mapper
+@Mapper(uses = {VesselTransportMeansMapper.class})
 public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityTranshipmentViewMapper INSTANCE = Mappers.getMapper(ActivityTranshipmentViewMapper.class);
@@ -48,7 +49,8 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
-            @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))")
+            @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
+            @Mapping(target = "vesselDetails", source = "faEntity.vesselTransportMeans")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
@@ -66,7 +68,7 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             DelimitedPeriodDTO delimitedPeriodDTO = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDTO(delimitedPeriod);
             activityDetails.setTranshipmentTime(delimitedPeriodDTO);
 
-            //Override occurence date from delimited period
+            //Override occurrence date from delimited period
             activityDetails.setOccurrence(delimitedPeriod.getStartDate());
         }
 

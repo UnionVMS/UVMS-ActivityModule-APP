@@ -97,9 +97,25 @@ public class FishingActivityViewMapperTest {
     }
 
     @Test
-    @SneakyThrows
-    public void testActivityDepartureViewMapper() {
+         @SneakyThrows
+         public void testActivityDepartureViewMapper() {
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.DEPARTURE);
+        FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
+
+        Set<FaCatchEntity> faCatches = generateFaCatches(fishingActivityEntity.getFaCatchs().iterator().next());
+        fishingActivityEntity.setFaCatchs(faCatches);
+
+        FishingActivityViewDTO fishingActivityViewDTO = mapperForView.mapFaEntityToFaDto(fishingActivityEntity);
+
+        assertNotNull(fishingActivityViewDTO.getActivityDetails());
+        assertNotNull(fishingActivityViewDTO.getReportDetails());
+        assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
+    }
+
+    @Test
+    @SneakyThrows
+    public void testActivityRelocationViewMapper() {
+        BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.RELOCATION);
         FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
 
         Set<FaCatchEntity> faCatches = generateFaCatches(fishingActivityEntity.getFaCatchs().iterator().next());

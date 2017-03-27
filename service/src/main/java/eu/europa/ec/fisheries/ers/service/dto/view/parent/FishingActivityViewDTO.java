@@ -21,6 +21,7 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
@@ -39,16 +41,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 
 import java.util.List;
 
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 
 /**
@@ -61,13 +53,13 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class})
+    @JsonView({NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class, Relocation.class})
     private List<FluxLocationDto> locations;
 
     @JsonView({Arrival.class, Departure.class})
     private List<GearDto> gears;
 
-    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class,FishingActivityView.AreaExit.class, Transhipment.class})
+    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class,FishingActivityView.AreaExit.class, Transhipment.class, Relocation.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)
@@ -84,6 +76,9 @@ public class FishingActivityViewDTO {
 
     @JsonView(CommonView.class)
     private TripWidgetDto tripWidgetDto;
+
+    @JsonView({Relocation.class, Transhipment.class})
+    private VesselDetailsDTO vesselDetails;
 
     public List<FluxLocationDto> getLocations() {
         return locations;
@@ -155,6 +150,14 @@ public class FishingActivityViewDTO {
 
     public void setTripWidgetDto(TripWidgetDto tripWidgetDto) {
         this.tripWidgetDto = tripWidgetDto;
+    }
+
+    public VesselDetailsDTO getVesselDetails() {
+        return vesselDetails;
+    }
+
+    public void setVesselDetails(VesselDetailsDTO vesselDetails) {
+        this.vesselDetails = vesselDetails;
     }
 
     @Override
