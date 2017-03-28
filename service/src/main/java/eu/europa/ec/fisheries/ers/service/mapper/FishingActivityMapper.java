@@ -57,6 +57,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import java.util.ArrayList;
@@ -112,7 +113,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity))"),
             @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
-            @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))")
+            @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))"),
+            @Mapping(target = "calculatedStartTime", expression = "java(convertToDate(getCalculatedStartTime(fishingActivity)))")
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);
 
@@ -624,5 +626,20 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
 
         return getCountry(vesselTransportMeans.getRegistrationVesselCountry());
+    }
+
+    protected DateTimeType getCalculatedStartTime(FishingActivity fishingActivity){
+        if(fishingActivity == null)
+            return null;
+
+        if(fishingActivity.getOccurrenceDateTime()!=null)
+            return fishingActivity.getOccurrenceDateTime();
+
+        if(CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())){
+            List<DelimitedPeriod> delimitedPeriodEntities=  fishingActivity.getSpecifiedDelimitedPeriods();
+            return delimitedPeriodEntities.iterator().next().getStartDateTime();
+        }
+
+        return null;
     }
 }

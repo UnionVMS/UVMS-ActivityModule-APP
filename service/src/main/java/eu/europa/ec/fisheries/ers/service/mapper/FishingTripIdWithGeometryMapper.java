@@ -11,7 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -24,7 +27,11 @@ import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sanera on 02/12/2016.
@@ -34,7 +41,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
     public static final FishingTripIdWithGeometryMapper INSTANCE = Mappers.getMapper(FishingTripIdWithGeometryMapper.class);
 
     @Mappings({
-            @Mapping(target = "tripId", expression = "java(dto.getTripId())"),
+            @Mapping(target = "tripId", source = "dto.tripId"),
             @Mapping(target = "firstFishingActivity", expression = "java(getFirstFishingActivity(fishingTripList))"),
             @Mapping(target = "firstFishingActivityDateTime", expression = "java(getFirstFishingActivityDateTime(fishingTripList))"),
             @Mapping(target = "lastFishingActivity", expression = "java(getLastFishingActivity(fishingTripList))"),
@@ -43,8 +50,10 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
             @Mapping(target = "flagState", expression = "java(getFlagState(fishingTripList))"),
             @Mapping(target = "noOfCorrections", expression = "java(getNumberOfCorrections(fishingTripList))"),
             @Mapping(target = "tripDuration", expression = "java(getTotalDuration(fishingTripList))"),
-            @Mapping(target = "schemeId", expression = "java(dto.getSchemeID())"),
-            @Mapping(target = "geometry", expression = "java(geometry)")
+            @Mapping(target = "schemeId", source = "dto.schemeID"),
+            @Mapping(target = "geometry", source = "geometry"),
+            @Mapping(target = "relativeFirstFaDateTime", expression = "java(getRelativeFirstFaDateTime(fishingTripList))"),
+            @Mapping(target = "relativeLastFaDateTime", expression = "java(getRelativeLastFaDateTime(fishingTripList))")
     })
     public abstract FishingTripIdWithGeometry mapToFishingTripIdWithGeometry(FishingTripId dto, String geometry,List<FishingTripEntity> fishingTripList);
 
@@ -63,6 +72,30 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         }
 
         return convertToXMLGregorianCalendar(fishingTripList.get(0).getFishingActivity().getCalculatedStartTime(),false);
+    }
+
+
+    protected XMLGregorianCalendar getRelativeFirstFaDateTime(List<FishingTripEntity> fishingTripList){
+        if(CollectionUtils.isEmpty(fishingTripList)){
+            return null;
+        }
+        Date tripStartDate =getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.DEPARTURE.toString());
+        if(tripStartDate ==null)
+            return null;
+
+        return convertToXMLGregorianCalendar(tripStartDate,false);
+    }
+
+
+    protected XMLGregorianCalendar getRelativeLastFaDateTime(List<FishingTripEntity> fishingTripList){
+        if(CollectionUtils.isEmpty(fishingTripList)){
+            return null;
+        }
+        Date tripEndDate =getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.ARRIVAL.toString());
+        if(tripEndDate ==null)
+            return null;
+
+        return convertToXMLGregorianCalendar(tripEndDate,false);
     }
 
     protected String getLastFishingActivity(List<FishingTripEntity> fishingTripList){
@@ -122,15 +155,15 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         if(CollectionUtils.isEmpty(fishingTripList) ){
             return new Double(0);
         }
-        FishingActivityEntity firstFishingActivity =  fishingTripList.get(0).getFishingActivity();
-        FishingActivityEntity lastFishingActivity =  fishingTripList.get(fishingTripList.size()-1).getFishingActivity();
 
         Double duration=new Double(0);
-        if(firstFishingActivity!=null && firstFishingActivity.getCalculatedStartTime()!=null && lastFishingActivity !=null && lastFishingActivity.getCalculatedStartTime()!=null) {
-            Date startDate = firstFishingActivity.getCalculatedStartTime();
-            Date endDate = lastFishingActivity.getCalculatedStartTime();
+        Date startDate =getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.DEPARTURE.toString());
+        Date endDate = getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.ARRIVAL.toString());
+
+        if(startDate!=null && endDate!=null){
             duration = Double.valueOf(endDate.getTime() - startDate.getTime());
         }
+
         return duration;
     }
 
