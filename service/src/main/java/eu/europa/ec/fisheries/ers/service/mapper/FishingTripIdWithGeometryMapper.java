@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
@@ -75,43 +74,12 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         return convertToXMLGregorianCalendar(fishingTripList.get(0).getFishingActivity().getCalculatedStartTime(),false);
     }
 
-    public Date getFishingTripStartDateTime(List<FishingTripEntity> fishingTripList){
-        if(CollectionUtils.isEmpty(fishingTripList)){
-            return null;
-        }
-
-        for(FishingTripEntity fishingTripEntity : fishingTripList){
-            FishingActivityEntity fishingActivity =fishingTripEntity.getFishingActivity();
-            if(fishingActivity !=null && FishingActivityTypeEnum.DEPARTURE.toString().equals(fishingActivity.getTypeCode()) && fishingActivity.getCalculatedStartTime() !=null){
-                        return  fishingActivity.getCalculatedStartTime();
-            }
-        }
-        return null;
-    }
-
-
-    public Date getFishingTripEndDateTime(List<FishingTripEntity> fishingTripList){
-        if(CollectionUtils.isEmpty(fishingTripList)){
-            return null;
-        }
-
-        int tripListSize = 0;
-        for(FishingTripEntity fishingTripEntity : fishingTripList){
-            FishingActivityEntity fishingActivity =fishingTripEntity.getFishingActivity();
-            if(fishingActivity !=null && (FishingActivityTypeEnum.ARRIVAL.toString().equals(fishingActivity.getTypeCode()) || (tripListSize == fishingTripList.size()-1))  && fishingActivity.getCalculatedStartTime() !=null){
-                return  fishingActivity.getCalculatedStartTime();
-            }
-            tripListSize++;
-        }
-        return null;
-    }
-
 
     protected XMLGregorianCalendar getRelativeFirstFaDateTime(List<FishingTripEntity> fishingTripList){
         if(CollectionUtils.isEmpty(fishingTripList)){
             return null;
         }
-        Date tripStartDate =getFishingTripStartDateTime(fishingTripList);
+        Date tripStartDate =getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.DEPARTURE.toString());
         if(tripStartDate ==null)
             return null;
 
@@ -123,7 +91,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         if(CollectionUtils.isEmpty(fishingTripList)){
             return null;
         }
-        Date tripEndDate =getFishingTripEndDateTime(fishingTripList);
+        Date tripEndDate =getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.ARRIVAL.toString());
         if(tripEndDate ==null)
             return null;
 
@@ -189,8 +157,8 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         }
 
         Double duration=new Double(0);
-        Date startDate =getFishingTripStartDateTime(fishingTripList);
-        Date endDate = getFishingTripEndDateTime(fishingTripList);
+        Date startDate =getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.DEPARTURE.toString());
+        Date endDate = getFishingTripDateTime(fishingTripList,FishingActivityTypeEnum.ARRIVAL.toString());
 
         if(startDate!=null && endDate!=null){
             duration = Double.valueOf(endDate.getTime() - startDate.getTime());
