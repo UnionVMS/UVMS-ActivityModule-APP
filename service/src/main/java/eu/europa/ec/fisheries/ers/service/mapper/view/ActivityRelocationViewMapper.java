@@ -29,19 +29,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by padhyad on 3/23/2017.
+ * Created by padhyad on 3/27/2017.
  */
 @Mapper(uses = {VesselTransportMeansMapper.class})
-public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
+public abstract class ActivityRelocationViewMapper extends BaseActivityViewMapper {
 
-    public static final ActivityTranshipmentViewMapper INSTANCE = Mappers.getMapper(ActivityTranshipmentViewMapper.class);
+    public static final ActivityRelocationViewMapper INSTANCE = Mappers.getMapper(ActivityRelocationViewMapper.class);
 
     @Override
     @Mappings({
@@ -53,25 +52,4 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             @Mapping(target = "vesselDetails", source = "faEntity.vesselTransportMeans")
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
-
-    protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
-        Map<String, String> idMap = new HashMap<>();
-        for (FishingActivityIdentifierEntity idEntity : faEntity.getFishingActivityIdentifiers()) {
-            idMap.put(idEntity.getFaIdentifierId(), idEntity.getFaIdentifierSchemeId());
-        }
-        Set<IdentifierDto> identifierDtos = FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(faEntity.getFishingActivityIdentifiers());
-        activityDetails.setIdentifiers(identifierDtos);
-        Set<DelimitedPeriodEntity> delimitedPeriodEntitySet = faEntity.getDelimitedPeriods();
-
-        if (!Collections.isEmpty(delimitedPeriodEntitySet)) {
-            DelimitedPeriodEntity delimitedPeriod = delimitedPeriodEntitySet.iterator().next();
-            DelimitedPeriodDTO delimitedPeriodDTO = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDTO(delimitedPeriod);
-            activityDetails.setTranshipmentTime(delimitedPeriodDTO);
-
-            //Override occurrence date from delimited period
-            activityDetails.setOccurrence(delimitedPeriod.getStartDate());
-        }
-
-        return activityDetails;
-    }
 }
