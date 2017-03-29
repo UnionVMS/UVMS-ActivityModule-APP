@@ -44,7 +44,7 @@ public class GearShotRetrievalDto {
     @JsonView(CommonView.class)
     private Map<String, String> characteristics;
 
-    @JsonView({FishingOperation.class, JointFishingOperation.class, GearShotAndRetrieval.class})
+    @JsonView({FishingOperation.class, GearShotAndRetrieval.class})
     private List<GearProblemDto> gearProblems;
 
     @JsonView(CommonView.class)

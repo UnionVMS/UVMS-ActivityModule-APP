@@ -51,7 +51,7 @@ public class ActivityViewMapperFactory {
                 mapper = new FishingOperationViewMapper();
                 break;
             case JOINT_FISHING_OPERATIONS:
-                mapper = null;
+                mapper = new ActivityJointFishingOperationViewMapper();
                 break;
             case DISCARD_AT_SEA:
                 mapper = new DiscardViewMapper();

@@ -15,6 +15,9 @@ import eu.europa.ec.fisheries.ers.service.dto.facatch.FluxCharacteristicsViewDto
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by kovian on 06/03/2017.
  */
@@ -24,4 +27,6 @@ public interface FluxCharacteristicsViewDtoMapper {
     FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
 
     FluxCharacteristicsViewDto mapFluxCharacteristicsEntityListToDtoList(FluxCharacteristicEntity firstCatchEntity);
+
+    List<FluxCharacteristicsViewDto> mapFluxCharacteristicsList(Set<FluxCharacteristicEntity> fluxCharacteristicEntities);
 }
