@@ -116,10 +116,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @param geom
      * @return
      */
-    public FishingActivityEntity getFishingActivityById(String activityId, Geometry geom) throws ServiceException {
+    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) throws ServiceException {
         String s = fillQueryConditions(geom);
         Query typedQuery = getEntityManager().createQuery(s);
-        typedQuery.setParameter("fishingActivityId", Integer.parseInt(activityId));
+        typedQuery.setParameter("fishingActivityId", activityId);
         if(geom != null){
             typedQuery.setParameter("area", geom);
         }
