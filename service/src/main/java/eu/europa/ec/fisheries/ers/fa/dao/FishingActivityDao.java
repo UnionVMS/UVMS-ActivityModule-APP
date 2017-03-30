@@ -97,9 +97,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         // Apply real values to Query built
         Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
 
+        // Agreed with frontend.
+        // Page size : Number of record to be retrieved in one page
+        // offSet : The position from where the result should be picked. Starts with 0
+
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
-            listQuery.setFirstResult(pagination.getOffset() - 1);
+            listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
 
