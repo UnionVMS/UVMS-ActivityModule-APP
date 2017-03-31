@@ -13,12 +13,26 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.internal.util.collections.Sets.newSet;
+
+import java.util.List;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by padhyad on 8/1/2016.
@@ -115,10 +129,40 @@ public class FishingActivityMapperTest {
 
 
     @Test
-    public void test(){
+    public void testSpeciesCodeWithNullShouldNotBeMapped() {
 
-        FishingActivityEntity build = FishingActivityEntity.builder().build();
+        FaCatchEntity faCatchEntity = new FaCatchEntity();
+        faCatchEntity.setSpeciesCode(null);
 
-        FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(build);
+        FishingActivityEntity fa = FishingActivityEntity.builder().build();
+        fa.setFaCatchs(newSet(faCatchEntity));
+
+        List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
+
+        assertEquals(0, speciesCode.size());
+
+    }
+
+    @Test
+    public void testSpeciesCodeWithDuplicatedShouldFilterDuplicates() {
+
+        FaCatchEntity faCatchEntity = new FaCatchEntity();
+        faCatchEntity.setSpeciesCode("2222");
+
+        AapProductEntity aapProductEntity = new AapProductEntity();
+        aapProductEntity.setSpeciesCode("2222");
+
+        AapProcessEntity aapProcessEntity = new AapProcessEntity();
+        aapProcessEntity.setAapProducts(newSet(aapProductEntity));
+
+        faCatchEntity.setAapProcesses(newSet(aapProcessEntity));
+
+        FishingActivityEntity fa = FishingActivityEntity.builder().build();
+        fa.setFaCatchs(newSet(faCatchEntity));
+
+        List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
+
+        assertEquals(1, speciesCode.size());
+
     }
 }
