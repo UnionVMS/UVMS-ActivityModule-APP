@@ -11,6 +11,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.hibernate.search.util.impl.CollectionHelper.asSet;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -59,17 +70,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.hibernate.search.util.impl.CollectionHelper.asSet;
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
@@ -285,14 +285,15 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return Collections.emptyList();
         }
 
-        List<String> fromIdList = new ArrayList<>();
+        Set<String> fromIdList = new HashSet<>();
 
         Set<FluxPartyIdentifierEntity> idSet = entity.getFaReportDocument().getFluxReportDocument().getFluxParty().getFluxPartyIdentifiers();
         for (FluxPartyIdentifierEntity fluxPartyIdentifierEntity : idSet) {
             fromIdList.add(fluxPartyIdentifierEntity.getFluxPartyIdentifierId());
         }
 
-        return fromIdList;
+        fromIdList.remove(null);
+        return new ArrayList<>(fromIdList);
     }
 
     protected Map<String, String> getVesselIdType(FishingActivityEntity entity) {
@@ -340,6 +341,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             getSpeciesCodeFromAapProduct(faCatch, speciesCode);
         }
 
+        speciesCode.remove(null);
         return new ArrayList<>(speciesCode);
     }
 
@@ -361,17 +363,18 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (entity == null || entity.getFaCatchs() == null) {
             return Collections.emptyList();
         }
-        List<Double> quantity = new ArrayList<>();
+        Set<Double> quantity = new HashSet<>();
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
             quantity.add(faCatch.getWeightMeasure());
             getQuantityFromAapProduct(faCatch, quantity);
         }
-        return quantity;
+        quantity.remove(null);
+        return new ArrayList<>(quantity);
     }
 
-    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, List<Double> quantity) {
+    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, Set<Double> quantity) {
         if (faCatch.getAapProcesses() == null)
             return;
 
@@ -389,20 +392,21 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (entity == null || entity.getFishingGears() == null) {
             return Collections.emptyList();
         }
-        List<String> gears = new ArrayList<>();
+        Set<String> gears = new HashSet<>();
         Set<FishingGearEntity> gearList = entity.getFishingGears();
 
         for (FishingGearEntity gear : gearList) {
             gears.add(gear.getTypeCode());
         }
-        return gears;
+        gears.remove(null);
+        return new ArrayList<>(gears);
     }
 
     protected List<String> getFishingActivityLocationTypes(FishingActivityEntity entity, String locationType) {
         if (entity == null || entity.getFluxLocations() == null) {
             return Collections.emptyList();
         }
-        List<String> areas = new ArrayList<>();
+        Set<String> areas = new HashSet<>();
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
 
         for (FluxLocationEntity location : fluxLocations) {
@@ -410,7 +414,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
                 areas.add(location.getFluxLocationIdentifier());
             }
         }
-        return areas;
+        areas.remove(null);
+        return new ArrayList<>(areas);
     }
 
     protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
