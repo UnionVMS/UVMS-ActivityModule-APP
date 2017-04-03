@@ -13,18 +13,12 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportDocumentDTO;
 
-import java.io.Serializable;
-import java.util.List;
-
-/**
- * Created by padhyad on 8/9/2016.
- */
-public class FaReportDocumentDetailsDTO extends FaReportDocumentDTO implements Serializable {
-
-    private static final long serialVersionUID = -6463484239384168922L;
+public class FaReportDocumentDetailsDTO extends FaReportDocumentDTO {
 
     @JsonProperty("fishingActivity")
     private List<FishingActivityDetailsDTO> fishingActivityDetails;
