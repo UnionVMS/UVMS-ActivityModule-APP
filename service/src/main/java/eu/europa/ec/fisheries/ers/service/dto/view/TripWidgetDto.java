@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
@@ -19,13 +20,14 @@ import java.util.List;
 /**
  * Created by sanera on 23/03/2017.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TripWidgetDto {
 
     @JsonView(FishingActivityView.CommonView.class)
     private VesselDetailsDTO vesselDetails;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private List<TripOverviewDto> tripOverviewDto;
+    private List<TripOverviewDto> trips;
 
     public VesselDetailsDTO getVesselDetails() {
         return vesselDetails;
@@ -35,11 +37,11 @@ public class TripWidgetDto {
         this.vesselDetails = vesselDetails;
     }
 
-    public List<TripOverviewDto> getTripOverviewDto() {
-        return tripOverviewDto;
+    public List<TripOverviewDto> getTrips() {
+        return trips;
     }
 
-    public void setTripOverviewDto(List<TripOverviewDto> tripOverviewDto) {
-        this.tripOverviewDto = tripOverviewDto;
+    public void setTrips(List<TripOverviewDto> trips) {
+        this.trips = trips;
     }
 }
