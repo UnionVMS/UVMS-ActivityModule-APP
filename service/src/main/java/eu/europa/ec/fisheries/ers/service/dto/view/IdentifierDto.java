@@ -17,7 +17,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -27,8 +26,8 @@ import lombok.ToString;
 
 @JsonInclude(NON_NULL)
 @EqualsAndHashCode
-@AllArgsConstructor(suppressConstructorProperties = true)
-@RequiredArgsConstructor(suppressConstructorProperties = true)
+@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 @ToString
 public class IdentifierDto {
