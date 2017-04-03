@@ -39,9 +39,19 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.*;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.AreaDtoMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -64,7 +74,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
      */
     protected static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
         Double returnValue = null;
-        if (actualMeasureToAdd != null && actualMeasureToAdd != 0.0) {
+        if (actualMeasureToAdd != null && Math.abs(actualMeasureToAdd - 0.0) < 0.00000001) {
             if (meausureSubTotalToAddTo == null) {
                 meausureSubTotalToAddTo = 0.0;
             }
