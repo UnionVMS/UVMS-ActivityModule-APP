@@ -148,9 +148,9 @@ public abstract class SearchQueryBuilder {
             case AREAS:
                 appendRightJoinString(sql, joinString);
                 break;
-        /*    case SPECIES:
+            case SPECIES:
                 appendRightJoinString(sql, joinString);
-                break;*/
+                break;
             default:
                 appendJoinFetchString(sql, joinString);
                 break;
@@ -421,6 +421,9 @@ public abstract class SearchQueryBuilder {
             case FA_REPORT_ID:
                 typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
                 break;
+            case PORT:
+                typedQuery.setParameter(queryParameterMappings.get(key), Double.parseDouble(value));
+                break;
             case AREA_GEOM:
                 Geometry geom;
                 try {
@@ -462,14 +465,27 @@ public abstract class SearchQueryBuilder {
                 throw new ServiceException("valueList for filter " + key + " is null or empty");
             }
 
-            if(SearchFilter.MASTER.equals(key)){
-                List<String> uppperCaseValList=new ArrayList<>();
-                for(String val:valueList){
-                    uppperCaseValList.add(val.toUpperCase());
-                }
-                typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
-            } else
-                 typedQuery.setParameter(queryParameterMappings.get(key), valueList);
+            switch(key){
+
+                case PORT:
+                    List<Double> doubleValList=new ArrayList<>();
+                    for(String val:valueList){
+                        doubleValList.add(Double.parseDouble(val));
+                    }
+                    typedQuery.setParameter(queryParameterMappings.get(key), doubleValList);
+                    break;
+                case MASTER:
+                    List<String> uppperCaseValList=new ArrayList<>();
+                    for(String val:valueList){
+                        uppperCaseValList.add(val.toUpperCase());
+                    }
+                    typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
+                    break;
+                default:
+                    typedQuery.setParameter(queryParameterMappings.get(key), valueList);
+                    break;
+            }
+
 
         }
     }
