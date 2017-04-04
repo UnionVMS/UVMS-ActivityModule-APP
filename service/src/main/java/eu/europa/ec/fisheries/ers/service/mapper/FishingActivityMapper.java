@@ -369,7 +369,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
-            quantity.add(faCatch.getWeightMeasure());
+            quantity.add(faCatch.getCalculatedWeightMeasure());
             getQuantityFromAapProduct(faCatch, quantity);
         }
         quantity.remove(null);
