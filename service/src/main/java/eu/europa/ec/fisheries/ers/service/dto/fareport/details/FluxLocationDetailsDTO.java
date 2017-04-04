@@ -13,15 +13,18 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
-/**
- * Created by padhyad on 8/11/2016.
- */
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FluxLocationDetailsDTO {
 
     @JsonProperty("typeCode")
@@ -71,28 +74,6 @@ public class FluxLocationDetailsDTO {
 
     @JsonProperty("postalStructuredAddress")
     private List<AddressDetailsDTO> postalStructuredAddress;
-
-    public FluxLocationDetailsDTO() {
-    }
-
-    public FluxLocationDetailsDTO(String typeCode, String countryId, String rfmoCode, Double longitude, Double latitude, Double altitude, String fluxLocationType, String fluxLocationIdentifier, String geopoliticalRegionCode, String name, String sovereignRightsCountryCode, String jurisdictionCountryCode, String systemId, List<FluxCharacteristicsDetailsDTO> fluxCharacteristics, AddressDetailsDTO physicalStructuredAddress, List<AddressDetailsDTO> postalStructuredAddress) {
-        this.typeCode = typeCode;
-        this.countryId = countryId;
-        this.rfmoCode = rfmoCode;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.altitude = altitude;
-        this.fluxLocationType = fluxLocationType;
-        this.fluxLocationIdentifier = fluxLocationIdentifier;
-        this.geopoliticalRegionCode = geopoliticalRegionCode;
-        this.name = name;
-        this.sovereignRightsCountryCode = sovereignRightsCountryCode;
-        this.jurisdictionCountryCode = jurisdictionCountryCode;
-        this.systemId = systemId;
-        this.fluxCharacteristics = fluxCharacteristics;
-        this.physicalStructuredAddress = physicalStructuredAddress;
-        this.postalStructuredAddress = postalStructuredAddress;
-    }
 
     @JsonProperty("typeCode")
     public String getTypeCode() {

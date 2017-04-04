@@ -11,6 +11,28 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static org.mockito.internal.util.collections.Sets.newSet;
+
+import javax.validation.constraints.NotNull;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.vividsolutions.jts.geom.Geometry;
@@ -55,28 +77,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
-
-import javax.validation.constraints.NotNull;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.google.common.collect.Sets.newHashSet;
-import static org.mockito.internal.util.collections.Sets.newSet;
 
 /**
  * TODO create test
@@ -130,10 +130,9 @@ public class BaseMapper {
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
                 .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).build();
 
-        if (BigDecimal.ZERO.doubleValue() == build.getDuration()) {
+        if (Math.abs(BigDecimal.ZERO.doubleValue() - build.getDuration()) < 0.00000001) {
             build.setDuration(null);
         }
-
         return build;
     }
 
@@ -432,7 +431,7 @@ public class BaseMapper {
                 }
             }
         } catch (java.text.ParseException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return value;
     }
