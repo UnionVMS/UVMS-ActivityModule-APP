@@ -129,8 +129,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
             @Mapping(target = "FAReportType", source = "faReportDocument.typeCode"),
             @Mapping(source = "typeCode", target = "activityType"),
-            @Mapping(target = "areas", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_AREA))"),
-            @Mapping(target = "port", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_PORT))"),
+            @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))"),
+            @Mapping(target = "port", expression = "java(getPortsForFishingActivity(entity))"),
             @Mapping(target = "fishingGear", expression = "java(getFishingGears(entity))"),
             @Mapping(target = "speciesCode", expression = "java(getSpeciesCode(entity))"),
             @Mapping(target = "quantity", expression = "java(getQuantity(entity))"),
@@ -158,8 +158,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselName", source = "faReportDocument.vesselTransportMeans.name"),
             @Mapping(target = "gears", expression = "java(getFishingGearTypeCodeList(entity))"),
             @Mapping(target = "species", expression = "java(getSpeciesCode(entity))"),
-            @Mapping(target = "areas", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_AREA))"),
-            @Mapping(target = "ports", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_PORT))"),
+            @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))"),
+            @Mapping(target = "ports", expression = "java(getPortsForFishingActivity(entity))"),
             @Mapping(target = "vesselIdentifiers", expression = "java(getVesselIdentifiers(entity))")
 
     })
@@ -286,14 +286,15 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return Collections.emptyList();
         }
 
-        List<String> fromIdList = new ArrayList<>();
+        Set<String> fromIdList = new HashSet<>();
 
         Set<FluxPartyIdentifierEntity> idSet = entity.getFaReportDocument().getFluxReportDocument().getFluxParty().getFluxPartyIdentifiers();
         for (FluxPartyIdentifierEntity fluxPartyIdentifierEntity : idSet) {
             fromIdList.add(fluxPartyIdentifierEntity.getFluxPartyIdentifierId());
         }
 
-        return fromIdList;
+        fromIdList.remove(null);
+        return new ArrayList<>(fromIdList);
     }
 
     protected Map<String, String> getVesselIdType(FishingActivityEntity entity) {
@@ -334,20 +335,19 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return Collections.emptyList();
         }
 
-        List<String> speciesCode = new ArrayList<>();
+        HashSet<String> speciesCode = new HashSet<>();
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
-            if (faCatch.getSpeciesCode() != null && !speciesCode.contains(faCatch.getSpeciesCode())){
-                speciesCode.add(faCatch.getSpeciesCode());
-             }
+            speciesCode.add(faCatch.getSpeciesCode());
             getSpeciesCodeFromAapProduct(faCatch, speciesCode);
         }
 
-        return speciesCode;
+        speciesCode.remove(null);
+        return new ArrayList<>(speciesCode);
     }
 
-    protected void getSpeciesCodeFromAapProduct(FaCatchEntity faCatch, List<String> speciesCode ) {
+    protected void getSpeciesCodeFromAapProduct(FaCatchEntity faCatch, HashSet<String> speciesCode) {
         if (faCatch.getAapProcesses() == null)
             return;
 
@@ -355,9 +355,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             Set<AapProductEntity> aapProductList = aapProcessEntity.getAapProducts();
             if (aapProductList != null) {
                 for (AapProductEntity aapProduct : aapProductList) {
-                    if (aapProduct.getSpeciesCode() != null && !speciesCode.contains(aapProduct.getSpeciesCode())) {
-                        speciesCode.add(aapProduct.getSpeciesCode());
-                    }
+                    speciesCode.add(aapProduct.getSpeciesCode());
                 }
             }
         }
@@ -367,17 +365,18 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (entity == null || entity.getFaCatchs() == null) {
             return Collections.emptyList();
         }
-        List<Double> quantity = new ArrayList<>();
+        Set<Double> quantity = new HashSet<>();
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
             quantity.add(faCatch.getWeightMeasure());
             getQuantityFromAapProduct(faCatch, quantity);
         }
-        return quantity;
+        quantity.remove(null);
+        return new ArrayList<>(quantity);
     }
 
-    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, List<Double> quantity) {
+    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, Set<Double> quantity) {
         if (faCatch.getAapProcesses() == null)
             return;
 
@@ -401,25 +400,58 @@ public abstract class FishingActivityMapper extends BaseMapper {
         for (FishingGearEntity gear : gearList) {
             gears.add(gear.getTypeCode());
         }
+        gears.remove(null);
         return gears;
     }
 
-    protected List<String> getFishingActivityLocationTypes(FishingActivityEntity entity, String locationType) {
-        if (entity == null || entity.getFluxLocations() == null || locationType ==null) {
+    protected List<String> getAreasForFishingActivity(FishingActivityEntity entity) {
+        if (entity == null || entity.getFluxLocations() == null) {
             return Collections.emptyList();
         }
-        List<String> areas = new ArrayList<>();
+        Set<String> areas = new HashSet<>();
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
 
         for (FluxLocationEntity location : fluxLocations) {
-            if (locationType.equals(LOCATION_AREA) && locationType.equalsIgnoreCase(location.getTypeCode()) && location.getFluxLocationIdentifier() !=null) {
-                   areas.add(location.getFluxLocationIdentifier());
-            }else if(locationType.equals(LOCATION_PORT) && locationType.equalsIgnoreCase(location.getTypeCode()) && location.getLongitude()!=null && location.getLatitude()!=null){
-                areas.add(""+location.getLongitude());
-                areas.add(""+location.getLatitude());
+            if ( LOCATION_AREA.equalsIgnoreCase(location.getTypeCode())) {
+                areas.add(location.getFluxLocationIdentifier());
             }
         }
-        return areas;
+        areas.remove(null);
+        return new ArrayList<>(areas);
+    }
+
+    protected List<String> getPortsForFishingActivity(FishingActivityEntity entity) {
+        if (entity == null || entity.getFluxLocations() == null) {
+            return Collections.emptyList();
+        }
+        Set<String> ports = new HashSet<>();
+        Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
+
+        for (FluxLocationEntity location : fluxLocations) {
+            if (LOCATION_PORT.equalsIgnoreCase(location.getTypeCode())) {
+                ports.add(""+location.getLongitude());
+                ports.add(""+location.getLatitude());
+            }
+        }
+        ports.remove(null);
+        return new ArrayList<>(ports);
+    }
+
+
+    protected List<String> getFishingActivityLocationTypes(FishingActivityEntity entity, String locationType) {
+        if (entity == null || entity.getFluxLocations() == null) {
+            return Collections.emptyList();
+        }
+        Set<String> areas = new HashSet<>();
+        Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
+
+        for (FluxLocationEntity location : fluxLocations) {
+            if (locationType == null || locationType.equalsIgnoreCase(location.getTypeCode())) {
+                areas.add(location.getFluxLocationIdentifier());
+            }
+        }
+        areas.remove(null);
+        return new ArrayList<>(areas);
     }
 
     protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {

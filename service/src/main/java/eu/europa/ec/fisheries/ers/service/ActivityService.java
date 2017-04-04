@@ -53,5 +53,5 @@ public interface ActivityService {
 
     boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
 
-    FishingActivityViewDTO getFishingActivityForView(String activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException;
+    FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException;
 }

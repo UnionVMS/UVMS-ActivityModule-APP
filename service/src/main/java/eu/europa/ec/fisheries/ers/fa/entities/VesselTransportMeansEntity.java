@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @NamedQueries({
@@ -206,6 +209,14 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setVesselPositionEvents(Set<VesselPositionEventEntity> vesselPositionEvents) {
         this.vesselPositionEvents = vesselPositionEvents;
+    }
+
+    public Map<VesselIdentifierSchemeIdEnum, String> getVesselIdentifiersMap() {
+        Map<VesselIdentifierSchemeIdEnum, String> idMap = new HashMap<>();
+        for (VesselIdentifierEntity entity : getVesselIdentifiers()) {
+            idMap.put(Enum.valueOf(VesselIdentifierSchemeIdEnum.class, entity.getVesselIdentifierSchemeId()), entity.getVesselIdentifierId());
+        }
+        return idMap;
     }
 
     @Override

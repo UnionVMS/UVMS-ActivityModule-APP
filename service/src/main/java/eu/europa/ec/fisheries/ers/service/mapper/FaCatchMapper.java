@@ -11,40 +11,25 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FluxCharacteristicsViewDtoMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class,
-        FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class})
+        FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class,
+        FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class})
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
@@ -73,6 +58,42 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fishingTrips", expression = "java(getFishingTripEntities(faCatch.getRelatedFishingTrips(), faCatchEntity))")
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
+
+    @Mappings({
+            @Mapping(target = "roleName", source = "faCatch.fishingActivity.vesselTransportMeans.roleCode"),
+            @Mapping(target = "country", source = "faCatch.fishingActivity.vesselTransportMeans.country"),
+            @Mapping(target = "vesselIdentifiers", expression = "java(mapToAssetIdentifiers(faCatch))"),
+            @Mapping(target = "name", source = "faCatch.fishingActivity.vesselTransportMeans.name"),
+            @Mapping(target = "speciesCode", source = "faCatch.speciesCode"),
+            @Mapping(target = "type", source = "faCatch.typeCode"),
+            @Mapping(target = "weight", source = "faCatch.calculatedWeightMeasure"),
+            @Mapping(target = "unit", source = "faCatch.calculatedUnitQuantity"),
+            @Mapping(target = "characteristics", source = "faCatch.fishingActivity.fluxCharacteristics")
+    })
+    public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
+
+    public abstract List<RelocationDto> mapToRelocationDtoList(Set<FaCatchEntity> faCatches);
+
+    protected List<AssetIdentifierDto> mapToAssetIdentifiers(FaCatchEntity faCatch) {
+        List<AssetIdentifierDto> assetIdentifierDtos = new ArrayList<>();
+        if (faCatch != null && faCatch.getFishingActivity() != null && faCatch.getFishingActivity().getVesselTransportMeans() != null) {
+            VesselTransportMeansEntity vesselTransportMeans = faCatch.getFishingActivity().getVesselTransportMeans();
+            Map<VesselIdentifierSchemeIdEnum, String> vesselIdentifiers = vesselTransportMeans.getVesselIdentifiersMap();
+
+            // Set IRCS always if present
+            if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS) != null) {
+                assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.IRCS, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS)));
+            }
+
+            if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.ICCAT) != null) {
+                assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.ICCAT, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.ICCAT)));
+            } else if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.CFR) != null) {
+                assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.CFR, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.CFR)));
+            }
+        }
+        return assetIdentifierDtos;
+    }
+
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
         if (sizeDistribution == null) {

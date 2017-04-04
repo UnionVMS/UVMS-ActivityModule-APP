@@ -97,9 +97,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         // Apply real values to Query built
         Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
 
+        // Agreed with frontend.
+        // Page size : Number of record to be retrieved in one page
+        // offSet : The position from where the result should be picked. Starts with 0
+
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
-            listQuery.setFirstResult(pagination.getOffset() - 1);
+            LOG.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
+            listQuery.setFirstResult(pagination.getOffset()-1);
             listQuery.setMaxResults(pagination.getPageSize());
         }
 
@@ -116,10 +121,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @param geom
      * @return
      */
-    public FishingActivityEntity getFishingActivityById(String activityId, Geometry geom) throws ServiceException {
+    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) throws ServiceException {
         String s = fillQueryConditions(geom);
         Query typedQuery = getEntityManager().createQuery(s);
-        typedQuery.setParameter("fishingActivityId", Integer.parseInt(activityId));
+        typedQuery.setParameter("fishingActivityId", activityId);
         if(geom != null){
             typedQuery.setParameter("area", geom);
         }
@@ -139,6 +144,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH a.fluxCharacteristics fc ")
                 .append("LEFT JOIN FETCH a.faCatchs fCatch ")
                 .append("LEFT JOIN FETCH a.allRelatedFishingActivities relatedActivities ")
+                .append("LEFT JOIN FETCH relatedActivities.vesselTransportMeans relvtm ")
+                .append("LEFT JOIN FETCH relvtm.vesselIdentifiers relvid ")
+                .append("LEFT JOIN FETCH relatedActivities.faCatchs relCatch ")
                 .append("LEFT JOIN FETCH fCatch.fluxLocations ")
                 .append("LEFT JOIN FETCH fCatch.sizeDistribution ")
                 .append("LEFT JOIN FETCH fCatch.fishingGears ")

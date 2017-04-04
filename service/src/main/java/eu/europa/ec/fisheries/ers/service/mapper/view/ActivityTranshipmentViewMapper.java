@@ -29,7 +29,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +49,8 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
-            @Mapping(target = "vesselDetails", source = "faEntity.vesselTransportMeans")
+            @Mapping(target = "vesselDetails", source = "faEntity.vesselTransportMeans"),
+            @Mapping(target = "gearProblems", ignore = true)
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 

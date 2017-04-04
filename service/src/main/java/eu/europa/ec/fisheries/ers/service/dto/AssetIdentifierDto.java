@@ -32,7 +32,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 public class AssetIdentifierDto extends IdentifierDto {
 
     @JsonProperty("fromAssets")
-    private boolean fromAssets;
+    private Boolean fromAssets;
 
     @JsonProperty("schemeId")
     @JsonView(FishingActivityView.CommonView.class)
@@ -41,15 +41,20 @@ public class AssetIdentifierDto extends IdentifierDto {
     public AssetIdentifierDto() {
     }
 
+    public AssetIdentifierDto(VesselIdentifierSchemeIdEnum identifierSchemeId, String faIdentifierId) {
+        this.identifierSchemeId = identifierSchemeId;
+        this.setFaIdentifierId(faIdentifierId);
+    }
+
     public AssetIdentifierDto(VesselIdentifierSchemeIdEnum identifierSchemeId) {
         this.identifierSchemeId = identifierSchemeId;
     }
 
-    public boolean isFromAssets() {
+    public Boolean isFromAssets() {
         return fromAssets;
     }
 
-    public void setFromAssets(boolean fromAssets) {
+    public void setFromAssets(Boolean fromAssets) {
         this.fromAssets = fromAssets;
     }
 

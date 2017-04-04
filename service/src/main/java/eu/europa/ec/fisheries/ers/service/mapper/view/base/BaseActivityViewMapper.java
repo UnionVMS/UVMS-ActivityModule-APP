@@ -39,17 +39,9 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.AreaDtoMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -81,6 +73,17 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             returnValue = meausureSubTotalToAddTo;
         }
         return returnValue;
+    }
+
+    public List<RelocationDto> getRelocations(FishingActivityEntity fishingActivityEntity) {
+        List<RelocationDto> relocationDtos = new ArrayList<>();
+        Set<FishingActivityEntity> relatedActivities = fishingActivityEntity.getAllRelatedFishingActivities();
+        for (FishingActivityEntity fishingActivity : relatedActivities) {
+            if (fishingActivity.getTypeCode().toUpperCase().equalsIgnoreCase(ActivityViewEnum.RELOCATION.name())) {
+                relocationDtos.addAll(FaCatchMapper.INSTANCE.mapToRelocationDtoList(fishingActivity.getFaCatchs()));
+            }
+        }
+        return relocationDtos;
     }
 
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);

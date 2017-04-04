@@ -24,16 +24,19 @@ import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityJointFishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.SerializationUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -41,6 +44,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.*;
 
+import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.*;
 import static org.junit.Assert.*;
 
 /**
@@ -134,6 +138,27 @@ public class FishingActivityViewMapperTest {
         Set<FishingActivityEntity> fishingActivityEntity = new HashSet(Arrays.asList(getFishingActivityEntity()));
         List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntity);
         printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testActivityJointFishingOperationViewMapper() {
+        FishingActivity fishingActivity = getFishingActivity();
+        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, new FishingActivityEntity());
+        fishingActivityEntity.setTypeCode("JOINT_FISHING_OPERATION");
+        fishingActivityEntity.getAllRelatedFishingActivities().iterator().next().setTypeCode("RELOCATION");
+
+        ActivityJointFishingOperationViewMapper mapper = new ActivityJointFishingOperationViewMapper();
+        FishingActivityViewDTO dto = mapper.mapFaEntityToFaDto(fishingActivityEntity);
+        assertNotNull(dto);
+        assertNotNull(dto.getActivityDetails());
+        assertNotNull(dto.getCatches());
+        assertNotNull(dto.getGears());
+        assertNotNull(dto.getGearProblems());
+        assertNotNull(dto.getVesselDetails());
+        assertNotNull(dto.getRelocations());
+        assertNotNull(dto.getProcessingProducts());
+        assertNotNull(dto.getLocations());
     }
 
     private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
