@@ -13,17 +13,18 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
 public class FishingActivityReportDTO extends FishingActivityDTO implements Serializable  {
@@ -56,13 +57,13 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private List<String> port;
 
     @JsonProperty("fishingGear")
-    private List<String> fishingGear;
+    private Set<String> fishingGear;
 
     @JsonProperty("speciesCode")
     private List<String> speciesCode;
 
     @JsonProperty("quantity")
-    private List<Double> quantity;
+    private Double quantity;
 
     @JsonProperty("startDate")
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -138,12 +139,12 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     }
 
     @JsonProperty("fishingGear")
-    public List<String> getFishingGear() {
+    public Set<String> getFishingGear() {
         return fishingGear;
     }
 
     @JsonProperty("fishingGear")
-    public void setFishingGear(List<String> fishingGear) {
+    public void setFishingGear(Set<String> fishingGear) {
         this.fishingGear = fishingGear;
     }
 
@@ -158,12 +159,12 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     }
 
     @JsonProperty("quantity")
-    public List<Double> getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
     @JsonProperty("quantity")
-    public void setQuantity(List<Double> quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 

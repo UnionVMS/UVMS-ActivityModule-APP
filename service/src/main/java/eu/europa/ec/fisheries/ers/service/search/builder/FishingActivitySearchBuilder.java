@@ -70,4 +70,5 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
         return sql;
     }
 
+
 }

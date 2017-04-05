@@ -13,13 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
@@ -37,6 +30,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by sanera on 28/09/2016.
  */
@@ -44,6 +44,7 @@ public abstract class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
     protected static final String JOIN_FETCH = " JOIN FETCH ";
     protected static final String LEFT = " LEFT ";
+    protected static final String RIGHT = " RIGHT ";
     protected static final String JOIN =  " JOIN ";
 
     private Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
@@ -117,7 +118,7 @@ public abstract class SearchQueryBuilder {
         }
         getJoinPartForSortingOptions(sql, query);
 
-        LOG.debug("Generated SQL for JOIN Part :" + sql);
+     //   LOG.debug("Generated SQL for JOIN Part :" + sql);
         return sql;
     }
 
@@ -144,6 +145,12 @@ public abstract class SearchQueryBuilder {
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_FOR_MESSAGE);
                 appendJoinFetchString(sql, joinString);
                 break;
+            case AREAS: /* We need to do Right join here as one activity can have multiple areas and in the resultDTO we want to show all the areas for the activity*/
+                appendRightJoinString(sql, joinString);
+                break;
+            case SPECIES: /* We need to do Right join here as one activity can have multiple catches and in the resultDTO we want to show all the species for the activity*/
+                appendRightJoinString(sql, joinString);
+                break;
             default:
                 appendJoinFetchString(sql, joinString);
                 break;
@@ -157,6 +164,11 @@ public abstract class SearchQueryBuilder {
     protected void appendLeftJoinString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
+
+    protected void appendRightJoinString(StringBuilder sql, String joinString) {
+        sql.append(RIGHT).append(JOIN).append(joinString).append(StringUtils.SPACE);
+    }
+
 
     protected  void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
@@ -318,7 +330,7 @@ public abstract class SearchQueryBuilder {
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }
-        LOG.debug("Generated Query After Sort :" + sql);
+      //  LOG.debug("Generated Query After Sort :" + sql);
         return sql;
     }
 
@@ -409,6 +421,9 @@ public abstract class SearchQueryBuilder {
             case FA_REPORT_ID:
                 typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
                 break;
+            case PORT:
+                typedQuery.setParameter(queryParameterMappings.get(key), Double.parseDouble(value));
+                break;
             case AREA_GEOM:
                 Geometry geom;
                 try {
@@ -450,14 +465,27 @@ public abstract class SearchQueryBuilder {
                 throw new ServiceException("valueList for filter " + key + " is null or empty");
             }
 
-            if(SearchFilter.MASTER.equals(key)){
-                List<String> uppperCaseValList=new ArrayList<>();
-                for(String val:valueList){
-                    uppperCaseValList.add(val.toUpperCase());
-                }
-                typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
-            } else
-                 typedQuery.setParameter(queryParameterMappings.get(key), valueList);
+            switch(key){
+
+                case PORT:
+                    List<Double> doubleValList=new ArrayList<>();
+                    for(String val:valueList){
+                        doubleValList.add(Double.parseDouble(val));
+                    }
+                    typedQuery.setParameter(queryParameterMappings.get(key), doubleValList);
+                    break;
+                case MASTER:
+                    List<String> uppperCaseValList=new ArrayList<>();
+                    for(String val:valueList){
+                        uppperCaseValList.add(val.toUpperCase());
+                    }
+                    typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
+                    break;
+                default:
+                    typedQuery.setParameter(queryParameterMappings.get(key), valueList);
+                    break;
+            }
+
 
         }
     }

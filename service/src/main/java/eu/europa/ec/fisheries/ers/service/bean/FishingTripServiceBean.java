@@ -547,7 +547,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 TripOverviewDto tripOverviewDto = getTripOverviewDto(activityEntity, tripId);
                 List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
                 tripOverviewDtoList.add(tripOverviewDto);
-                tripWidgetDto.setTripOverviewDto(tripOverviewDtoList);
+                tripWidgetDto.setTrips(tripOverviewDtoList);
                 tripWidgetDto.setVesselDetails(getVesselDetailsForFishingTrip(tripId));
                 log.debug("tripWidgetDto set for tripID :" + tripId);
             } else {
@@ -581,7 +581,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 }
             }
         }
-        tripWidgetDto.setTripOverviewDto(tripOverviewDtoList);
+        tripWidgetDto.setTrips(tripOverviewDtoList);
         if (CollectionUtils.isNotEmpty(tripIdSet)) {
             tripWidgetDto.setVesselDetails(getVesselDetailsForFishingTrip(tripIdSet.iterator().next()));
         }

@@ -103,7 +103,12 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
-            listQuery.setFirstResult(pagination.getOffset());
+            LOG.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
+            int offset =pagination.getOffset();
+            if(offset !=0){
+                offset = pagination.getOffset()-1;
+            }
+            listQuery.setFirstResult(offset);
             listQuery.setMaxResults(pagination.getPageSize());
         }
 

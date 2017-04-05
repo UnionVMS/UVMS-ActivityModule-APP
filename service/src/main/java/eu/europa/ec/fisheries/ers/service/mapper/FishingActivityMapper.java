@@ -11,17 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static org.hibernate.search.util.impl.CollectionHelper.asSet;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -41,6 +30,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
@@ -71,6 +61,17 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.hibernate.search.util.impl.CollectionHelper.asSet;
+
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
         FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class
@@ -79,8 +80,8 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 public abstract class FishingActivityMapper extends BaseMapper {
 
     public static final FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
-    public static final String LOCATION_AREA = "AREA";
-    public static final String LOCATION_PORT = "LOCATION";
+    public static final String LOCATION_AREA = FluxLocationEnum.AREA.toString();
+    public static final String LOCATION_PORT = FluxLocationEnum.LOCATION.toString();
 
     @Mappings({
             @Mapping(target = "typeCode", source = "fishingActivity.typeCode.value"),
@@ -128,8 +129,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
             @Mapping(target = "FAReportType", source = "faReportDocument.typeCode"),
             @Mapping(source = "typeCode", target = "activityType"),
-            @Mapping(target = "areas", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_AREA))"),
-            @Mapping(target = "port", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_PORT))"),
+            @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))"),
+            @Mapping(target = "port", expression = "java(getPortsForFishingActivity(entity))"),
             @Mapping(target = "fishingGear", expression = "java(getFishingGears(entity))"),
             @Mapping(target = "speciesCode", expression = "java(getSpeciesCode(entity))"),
             @Mapping(target = "quantity", expression = "java(getQuantity(entity))"),
@@ -157,8 +158,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselName", source = "faReportDocument.vesselTransportMeans.name"),
             @Mapping(target = "gears", expression = "java(getFishingGearTypeCodeList(entity))"),
             @Mapping(target = "species", expression = "java(getSpeciesCode(entity))"),
-            @Mapping(target = "areas", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_AREA))"),
-            @Mapping(target = "ports", expression = "java(getFishingActivityLocationTypes(entity,LOCATION_PORT))"),
+            @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))"),
+            @Mapping(target = "ports", expression = "java(getPortsForFishingActivity(entity))"),
             @Mapping(target = "vesselIdentifiers", expression = "java(getVesselIdentifiers(entity))")
 
     })
@@ -240,10 +241,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected Date getStartDate(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
+        if (entity == null || entity.getCalculatedStartTime() == null ) {
             return null;
         }
-        return entity.getDelimitedPeriods().iterator().next().getStartDate();
+        return entity.getCalculatedStartTime();
     }
 
     protected Date getEndDate(FishingActivityEntity entity) {
@@ -328,6 +329,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return identifiers;
     }
 
+
     protected List<String> getSpeciesCode(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {
             return Collections.emptyList();
@@ -359,22 +361,30 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
     }
 
-    protected List<Double> getQuantity(FishingActivityEntity entity) {
+    /**
+     * This method will calculate sum of all the weights of FACatches
+     * @param entity
+     * @return
+     */
+    protected Double getQuantity(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {
-            return Collections.emptyList();
+            return new Double(0);
         }
-        Set<Double> quantity = new HashSet<>();
+
+        Double quantity = new Double(0);
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
-            quantity.add(faCatch.getWeightMeasure());
+            if(faCatch.getCalculatedWeightMeasure() !=null)
+                quantity = quantity+faCatch.getCalculatedWeightMeasure();
+
             getQuantityFromAapProduct(faCatch, quantity);
         }
-        quantity.remove(null);
-        return new ArrayList<>(quantity);
+
+        return quantity;
     }
 
-    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, Set<Double> quantity) {
+    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, Double quantity) {
         if (faCatch.getAapProcesses() == null)
             return;
 
@@ -382,15 +392,16 @@ public abstract class FishingActivityMapper extends BaseMapper {
             Set<AapProductEntity> aapProductList = aapProcessEntity.getAapProducts();
             if (aapProductList != null) {
                 for (AapProductEntity aapProduct : aapProductList) {
-                    quantity.add(aapProduct.getWeightMeasure());
+                    if(aapProduct.getWeightMeasure() !=null)
+                        quantity = quantity+aapProduct.getWeightMeasure();
                 }
             }
         }
     }
 
-    protected List<String> getFishingGears(FishingActivityEntity entity) {
+    protected Set<String> getFishingGears(FishingActivityEntity entity) {
         if (entity == null || entity.getFishingGears() == null) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         Set<String> gears = new HashSet<>();
         Set<FishingGearEntity> gearList = entity.getFishingGears();
@@ -399,8 +410,42 @@ public abstract class FishingActivityMapper extends BaseMapper {
             gears.add(gear.getTypeCode());
         }
         gears.remove(null);
-        return new ArrayList<>(gears);
+        return gears;
     }
+
+    protected List<String> getAreasForFishingActivity(FishingActivityEntity entity) {
+        if (entity == null || entity.getFluxLocations() == null) {
+            return Collections.emptyList();
+        }
+        Set<String> areas = new HashSet<>();
+        Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
+
+        for (FluxLocationEntity location : fluxLocations) {
+            if ( LOCATION_AREA.equalsIgnoreCase(location.getTypeCode())) {
+                areas.add(location.getFluxLocationIdentifier());
+            }
+        }
+        areas.remove(null);
+        return new ArrayList<>(areas);
+    }
+
+    protected List<String> getPortsForFishingActivity(FishingActivityEntity entity) {
+        if (entity == null || entity.getFluxLocations() == null) {
+            return Collections.emptyList();
+        }
+        Set<String> ports = new HashSet<>();
+        Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
+
+        for (FluxLocationEntity location : fluxLocations) {
+            if (LOCATION_PORT.equalsIgnoreCase(location.getTypeCode())) {
+                ports.add(""+location.getLongitude());
+                ports.add(""+location.getLatitude());
+            }
+        }
+        ports.remove(null);
+        return new ArrayList<>(ports);
+    }
+
 
     protected List<String> getFishingActivityLocationTypes(FishingActivityEntity entity, String locationType) {
         if (entity == null || entity.getFluxLocations() == null) {
