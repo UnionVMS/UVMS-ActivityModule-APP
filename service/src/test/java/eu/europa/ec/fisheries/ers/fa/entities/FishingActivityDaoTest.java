@@ -72,7 +72,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
-        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+       // searchCriteriaMap.put(SearchFilter.PORT, "GBR");
         searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
 
@@ -124,7 +124,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.SPECIES, "PLE");
         searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
         searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
-        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+     //   searchCriteriaMap.put(SearchFilter.PORT, "GBR");
         searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
         searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, "1");

@@ -63,7 +63,7 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private List<String> speciesCode;
 
     @JsonProperty("quantity")
-    private List<Double> quantity;
+    private Double quantity;
 
     @JsonProperty("startDate")
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -159,12 +159,12 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     }
 
     @JsonProperty("quantity")
-    public List<Double> getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
     @JsonProperty("quantity")
-    public void setQuantity(List<Double> quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 

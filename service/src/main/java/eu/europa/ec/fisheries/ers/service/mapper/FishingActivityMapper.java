@@ -361,22 +361,30 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
     }
 
-    protected List<Double> getQuantity(FishingActivityEntity entity) {
+    /**
+     * This method will calculate sum of all the weights of FACatches
+     * @param entity
+     * @return
+     */
+    protected Double getQuantity(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {
-            return Collections.emptyList();
+            return new Double(0);
         }
-        Set<Double> quantity = new HashSet<>();
+
+        Double quantity = new Double(0);
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
-            quantity.add(faCatch.getCalculatedWeightMeasure());
+            if(faCatch.getCalculatedWeightMeasure() !=null)
+                quantity = quantity+faCatch.getCalculatedWeightMeasure();
+
             getQuantityFromAapProduct(faCatch, quantity);
         }
-        quantity.remove(null);
-        return new ArrayList<>(quantity);
+
+        return quantity;
     }
 
-    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, Set<Double> quantity) {
+    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, Double quantity) {
         if (faCatch.getAapProcesses() == null)
             return;
 
@@ -384,7 +392,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             Set<AapProductEntity> aapProductList = aapProcessEntity.getAapProducts();
             if (aapProductList != null) {
                 for (AapProductEntity aapProduct : aapProductList) {
-                    quantity.add(aapProduct.getWeightMeasure());
+                    if(aapProduct.getWeightMeasure() !=null)
+                        quantity = quantity+aapProduct.getWeightMeasure();
                 }
             }
         }

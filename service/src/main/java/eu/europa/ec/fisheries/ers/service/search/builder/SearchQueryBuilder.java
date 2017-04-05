@@ -145,10 +145,10 @@ public abstract class SearchQueryBuilder {
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_FOR_MESSAGE);
                 appendJoinFetchString(sql, joinString);
                 break;
-            case AREAS:
+            case AREAS: /* We need to do Right join here as one activity can have multiple areas and in the resultDTO we want to show all the areas for the activity*/
                 appendRightJoinString(sql, joinString);
                 break;
-            case SPECIES:
+            case SPECIES: /* We need to do Right join here as one activity can have multiple catches and in the resultDTO we want to show all the species for the activity*/
                 appendRightJoinString(sql, joinString);
                 break;
             default:
