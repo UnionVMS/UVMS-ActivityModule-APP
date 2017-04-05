@@ -71,8 +71,4 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
     }
 
 
-   /* protected  void appendJoinFetchString(StringBuilder sql, String joinString) {
-        sql.append(LEFT).append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
-    }*/
-
 }
