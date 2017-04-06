@@ -196,7 +196,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
         log.debug("FishingActivityEntity fetched from database with id:" + activityEntity.getId());
         FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
-        fishingActivityViewDTO.setTripWidgetDto(fishingTripServiceBean.getTripWidgetDto(activityEntity,tripId));
+        fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntity,tripId));
         log.debug("fishingActivityView generated after mapping is :"+fishingActivityViewDTO);
         return fishingActivityViewDTO;
     }
