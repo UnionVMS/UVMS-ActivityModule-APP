@@ -248,8 +248,7 @@ public class FilterMap {
      * required for the criteria and Where conditions which needs to be applied for the criteria
      */
     public void populateFilterMappingsWithChangedDelimitedPeriodTable() {
-        //DELIMITED_PERIOD_TABLE_ALIAS = " ft.delimitedPeriods dp ";
-        populateFilterMappings();
+         populateFilterMappings();
     }
 
     public void populateFilterMAppingsWithChangeForFACatchReport() {
