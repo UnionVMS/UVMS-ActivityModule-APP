@@ -67,6 +67,7 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
         sql.append(" where ");
         createWherePartForQueryForFilters(sql, query);
         LOG.debug("Generated Query After Where :" + sql);
+        sql.append(" and a.relatedFishingActivity IS NULL ");
         return sql;
     }
 

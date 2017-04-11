@@ -438,8 +438,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
         for (FluxLocationEntity location : fluxLocations) {
             if (LOCATION_PORT.equalsIgnoreCase(location.getTypeCode())) {
-                ports.add(""+location.getLongitude());
-                ports.add(""+location.getLatitude());
+                if(location.getLongitude()!=null)
+                    ports.add(""+location.getLongitude());
+                if(location.getLatitude()!=null)
+                    ports.add(""+location.getLatitude());
             }
         }
         ports.remove(null);
