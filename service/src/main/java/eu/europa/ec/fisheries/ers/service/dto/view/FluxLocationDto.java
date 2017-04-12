@@ -113,25 +113,26 @@ public class FluxLocationDto {
 
     @JsonProperty("characteristics")
     public Map<String, String> getCharacteristicsMap() {
-        HashMap<String, String> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put("valueCode", fluxCharacteristic.getValueCode());
-        stringStringHashMap.put("valueIndicator", fluxCharacteristic.getValueIndicator());
-        stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
-        stringStringHashMap.put("valueMeasureUnitCode", fluxCharacteristic.getValueMeasureUnitCode());
-        stringStringHashMap.put("valueMeasure", String.valueOf(fluxCharacteristic.getValueMeasure()));
-        stringStringHashMap.put("valueQuantityCode", fluxCharacteristic.getValueQuantityCode());
-        stringStringHashMap.put("valueQuantity", String.valueOf(fluxCharacteristic.getValueQuantity()));
-        stringStringHashMap.put("calculatedValueMeasure", String.valueOf(fluxCharacteristic.getCalculatedValueMeasure()));
-        stringStringHashMap.put("calculatedValueQuantity", String.valueOf(fluxCharacteristic.getCalculatedValueQuantity()));
-        stringStringHashMap.put("description", fluxCharacteristic.getDescription());
-        stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
-        stringStringHashMap.put("typeCode", fluxCharacteristic.getTypeCode());
-        stringStringHashMap.put("typeCodeListId", fluxCharacteristic.getTypeCodeListId());
-        stringStringHashMap.put("valueDateTime", DateUtils.UI_FORMATTER.print(new DateTime((fluxCharacteristic.getValueDateTime()))));
-        stringStringHashMap.values().removeAll(Collections.singleton(null));
-        if (stringStringHashMap.isEmpty()) {
-            stringStringHashMap = null;
+        HashMap<String, String> stringStringHashMap = null;
+        if (fluxCharacteristic != null) {
+            stringStringHashMap = new HashMap<>();
+            stringStringHashMap.put("valueCode", fluxCharacteristic.getValueCode());
+            stringStringHashMap.put("valueIndicator", fluxCharacteristic.getValueIndicator());
+            stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
+            stringStringHashMap.put("valueMeasureUnitCode", fluxCharacteristic.getValueMeasureUnitCode());
+            stringStringHashMap.put("valueMeasure", String.valueOf(fluxCharacteristic.getValueMeasure()));
+            stringStringHashMap.put("valueQuantityCode", fluxCharacteristic.getValueQuantityCode());
+            stringStringHashMap.put("valueQuantity", String.valueOf(fluxCharacteristic.getValueQuantity()));
+            stringStringHashMap.put("calculatedValueMeasure", String.valueOf(fluxCharacteristic.getCalculatedValueMeasure()));
+            stringStringHashMap.put("calculatedValueQuantity", String.valueOf(fluxCharacteristic.getCalculatedValueQuantity()));
+            stringStringHashMap.put("description", fluxCharacteristic.getDescription());
+            stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
+            stringStringHashMap.put("typeCode", fluxCharacteristic.getTypeCode());
+            stringStringHashMap.put("typeCodeListId", fluxCharacteristic.getTypeCodeListId());
+            stringStringHashMap.put("valueDateTime", DateUtils.UI_FORMATTER.print(new DateTime((fluxCharacteristic.getValueDateTime()))));
+            stringStringHashMap.values().removeAll(Collections.singleton(null));
         }
+
         return stringStringHashMap;
     }
 
