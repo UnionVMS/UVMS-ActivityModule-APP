@@ -11,6 +11,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.hibernate.search.util.impl.CollectionHelper.asSet;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -34,7 +45,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
-import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
@@ -60,17 +71,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.hibernate.search.util.impl.CollectionHelper.asSet;
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
@@ -227,14 +227,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return fishingGearTypecodeList;
     }
 
-    protected List<FluxCharacteristicsDTO> getFluxCharacteristicsDTOList(FishingActivityEntity entity) {
+    protected List<FluxCharacteristicsDto> getFluxCharacteristicsDTOList(FishingActivityEntity entity) {
         if (entity == null || entity.getFluxCharacteristics() == null || entity.getFluxCharacteristics().isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<FluxCharacteristicsDTO> fluxCharacteristicsDTOList = new ArrayList<>();
+        List<FluxCharacteristicsDto> fluxCharacteristicsDTOList = new ArrayList<>();
         for (FluxCharacteristicEntity fluxCharacteristic : entity.getFluxCharacteristics()) {
-            fluxCharacteristicsDTOList.add(FluxCharacteristicsMapper.INSTANCE.mapToFluxCharacteristicsDTO(fluxCharacteristic));
+            fluxCharacteristicsDTOList.add(FluxCharacteristicsMapper.INSTANCE.mapToFluxCharacteristicsDto(fluxCharacteristic));
         }
 
         return fluxCharacteristicsDTOList;

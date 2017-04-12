@@ -54,7 +54,7 @@ public class FishingActivityDTO {
     private List<FishingGearDTO> fishingGears;
 
     @JsonProperty("fluxCharacteristics")
-    private List<FluxCharacteristicsDTO> fluxCharacteristics;
+    private List<FluxCharacteristicsDto> fluxCharacteristics;
 
     @JsonProperty("delimitedPeriod")
     private List<DelimitedPeriodDTO> delimitedPeriod;
@@ -110,12 +110,12 @@ public class FishingActivityDTO {
     }
 
     @JsonProperty("fluxCharacteristics")
-    public List<FluxCharacteristicsDTO> getFluxCharacteristics() {
+    public List<FluxCharacteristicsDto> getFluxCharacteristics() {
         return fluxCharacteristics;
     }
 
     @JsonProperty("fluxCharacteristics")
-    public void setFluxCharacteristics(List<FluxCharacteristicsDTO> fluxCharacteristics) {
+    public void setFluxCharacteristics(List<FluxCharacteristicsDto> fluxCharacteristics) {
         this.fluxCharacteristics = fluxCharacteristics;
     }
 
