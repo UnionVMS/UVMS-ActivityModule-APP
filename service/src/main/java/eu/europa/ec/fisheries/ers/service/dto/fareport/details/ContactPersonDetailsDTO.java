@@ -13,7 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
+import static org.apache.commons.lang.BooleanUtils.toStringTrueFalse;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -117,6 +124,22 @@ public class ContactPersonDetailsDTO {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    @JsonProperty("characteristics")
+    public Map<String, String> getCharacteristicsMap() {
+        HashMap<String, String> stringStringHashMap = new HashMap<>();
+        stringStringHashMap.put("isCaptain", toStringTrueFalse(this.isCaptain()));
+        stringStringHashMap.put("title", this.getTitle());
+        stringStringHashMap.put("middleName", this.getMiddleName());
+        stringStringHashMap.put("familyNamePrefix", this.getFamilyNamePrefix());
+        stringStringHashMap.put("nameSuffix", this.getNameSuffix());
+        stringStringHashMap.put("gender", this.getGender());
+        stringStringHashMap.values().removeAll(Collections.singleton(null));
+        if (stringStringHashMap.isEmpty()) {
+            stringStringHashMap = null;
+        }
+        return stringStringHashMap;
     }
 
 }
