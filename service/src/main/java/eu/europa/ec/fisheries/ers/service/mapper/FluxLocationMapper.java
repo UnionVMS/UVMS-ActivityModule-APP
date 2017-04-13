@@ -38,7 +38,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-@Mapper(uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class, IterableNonItatableUtil.class})
+@Mapper(uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class, IterableNonItatableUtil.class, FluxCharacteristicsMapper.class})
 public abstract class FluxLocationMapper extends BaseMapper {
 
     public static final FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
