@@ -246,7 +246,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     @Override
-    public VesselDetailsDTO setVesselDetailsForFishingTrip(final String fishingTripId) throws ServiceException {
+    public VesselDetailsDTO getVesselDetailsForFishingTrip(final String fishingTripId) throws ServiceException {
 
         if (fishingTripId == null) {
             throw new IllegalArgumentException("PARAMETER CANNOT BE NULL");
@@ -565,7 +565,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
                 tripOverviewDtoList.add(tripOverviewDto);
                 tripWidgetDto.setTrips(tripOverviewDtoList);
-                VesselDetailsDTO detailsDTO = setVesselDetailsForFishingTrip(tripId);
+                VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
                 setFlapDocuments(detailsDTO, activityEntity, tripWidgetDto);
 
                 log.debug("tripWidgetDto set for tripID :" + tripId);
@@ -608,7 +608,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
         tripWidgetDto.setTrips(tripOverviewDtoList);
         if (CollectionUtils.isNotEmpty(tripIdSet)) {
-            VesselDetailsDTO detailsDTO = setVesselDetailsForFishingTrip(tripIdSet.iterator().next());
+            VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripIdSet.iterator().next());
             setFlapDocuments(detailsDTO, activityEntity, tripWidgetDto);
         }
         return tripWidgetDto;

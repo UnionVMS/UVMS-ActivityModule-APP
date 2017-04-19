@@ -68,7 +68,7 @@ public interface FishingTripService {
      * @param fishingTripId
      * @return
      */
-    VesselDetailsDTO setVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException;
+    VesselDetailsDTO getVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException;
 
 
     /**
