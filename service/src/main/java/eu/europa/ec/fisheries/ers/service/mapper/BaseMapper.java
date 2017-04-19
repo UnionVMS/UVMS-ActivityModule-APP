@@ -35,6 +35,7 @@ import java.util.Set;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
@@ -85,15 +86,15 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 @NoArgsConstructor
 public class BaseMapper {
 
-    public static List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
+    public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
         if (locationDtos != null) {
-            return new ArrayList<>(locationDtos);
+            return locationDtos;
         }
-        return Collections.emptyList();
+        return Sets.newHashSet();
     }
 
-    public static List<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationEnum typeCode) {
+    public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationEnum typeCode) {
 
         Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
             @Override
@@ -102,8 +103,7 @@ public class BaseMapper {
             }
         });
 
-        List<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(newHashSet(filtered.iterator()));
-        return fluxLocationDtos;
+        return mapFromFluxLocation(newHashSet(filtered.iterator()));
     }
 
     public static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {

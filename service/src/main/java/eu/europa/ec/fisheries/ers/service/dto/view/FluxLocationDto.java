@@ -26,11 +26,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
+@EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
 public class FluxLocationDto {
 
     @JsonView(CommonView.class)

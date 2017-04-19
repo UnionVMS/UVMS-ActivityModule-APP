@@ -10,7 +10,6 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -60,7 +59,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
         viewDTO.setGearShotRetrievalList(GearShotRetrievalTileMapperImpl.INSTANCE.mapFromRelatedFishingActivities(faEntity));
 
-        List<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationEnum.LOCATION);
+        Set<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationEnum.LOCATION);
 
         viewDTO.setLocations(fluxLocationDtos);
 
