@@ -20,14 +20,11 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfRelocation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfTranshipment;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,18 +36,27 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import lombok.ToString;
+import org.mockito.internal.util.collections.Sets;
 
 @JsonInclude(Include.NON_NULL)
+@ToString
 public class ActivityDetailsDto {
 
     @JsonView(CommonView.class)
     private String type;
 
-    @JsonView(CommonView.class)
-    private Map<String, String> characteristics;
+    @JsonIgnore
+    private Set<FluxCharacteristicsDto> fluxCharacteristics;
+
+    @JsonProperty("authorizations")
+    @JsonView({CommonView.class})
+    private FlapDocumentDto flapDocument;
 
     @JsonIgnore
     private Geometry geom;
@@ -60,7 +66,7 @@ public class ActivityDetailsDto {
 
     @JsonSerialize(using = CustomDateSerializer.class)
     @JsonView({Landing.class, Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
-            JointFishingOperation.class, Relocation.class, NotificationOfTranshipment.class, NotificationOfRelocation.class})
+            JointFishingOperation.class, Relocation.class})
     private Date occurrence;
 
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -91,11 +97,8 @@ public class ActivityDetailsDto {
     private Integer nrOfOperation;
 
     @JsonView({FishingOperation.class, Discard.class, Transhipment.class, JointFishingOperation.class
-            , Relocation.class, NotificationOfTranshipment.class, NotificationOfRelocation.class})
+            , Relocation.class})
     private Set<IdentifierDto> identifiers;
-
-    @JsonView({NotificationOfTranshipment.class, NotificationOfRelocation.class})
-    private List<IdentifierDto> authorizations;
 
     @JsonView({FishingOperation.class, JointFishingOperation.class})
     private DelimitedPeriodDTO fishingTime;
@@ -103,15 +106,52 @@ public class ActivityDetailsDto {
     @JsonView(Transhipment.class)
     private DelimitedPeriodDTO transhipmentTime;
 
-    public Map<String, String> getCharacteristics() {
-        if (characteristics == null) {
-            characteristics = new HashMap<>();
+    @JsonProperty("characteristics")
+    @JsonView({CommonView.class})
+    public Map<String, Set<Object>> getCharacteristics() {
+        Map<String, Set<Object>> characMap = new HashMap<>();
+        if (fluxCharacteristics != null) {
+            for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
+
+                Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();
+                add("calculatedValueMeasure", calculatedValueMeasure, characMap);
+                Double calculatedValueQuantity = fluxCharacteristicsDto.getCalculatedValueQuantity();
+                add("calculatedValueQuantity", calculatedValueQuantity, characMap);
+                String description = fluxCharacteristicsDto.getDescription();
+                add("description", description, characMap);
+                String descriptionLanguageId = fluxCharacteristicsDto.getDescriptionLanguageId();
+                add("descriptionLanguageId", descriptionLanguageId, characMap);
+                String typeCode = fluxCharacteristicsDto.getTypeCode();
+                add("typeCode", typeCode, characMap);
+                String typeCodeListId = fluxCharacteristicsDto.getTypeCodeListId();
+                add("typeCode", typeCode, characMap);
+                Date valueDateTime = fluxCharacteristicsDto.getValueDateTime();
+                add("valueDateTime", valueDateTime, characMap);
+                String valueIndicator = fluxCharacteristicsDto.getValueIndicator();
+                add("valueIndicator", valueIndicator, characMap);
+                Double valueMeasure = fluxCharacteristicsDto.getValueMeasure();
+                add("valueMeasure", valueMeasure, characMap);
+                String valueMeasureUnitCode = fluxCharacteristicsDto.getValueMeasureUnitCode();
+                add("valueMeasureUnitCode", valueMeasureUnitCode, characMap);
+                Double valueQuantity = fluxCharacteristicsDto.getValueQuantity();
+                add("valueQuantity", valueQuantity, characMap);
+                String valueQuantityCode = fluxCharacteristicsDto.getValueQuantityCode();
+                add("valueQuantityCode", valueQuantityCode, characMap);
+                String valueLanguageId = fluxCharacteristicsDto.getValueLanguageId();
+                add("valueLanguageId", valueLanguageId, characMap);
+                String valueCode = fluxCharacteristicsDto.getValueCode();
+                add("valueCode", valueCode, characMap);
+            }
         }
-        return characteristics;
+        return characMap;
     }
 
-    public void setCharacteristics(Map<String, String> characteristics) {
-        this.characteristics = characteristics;
+    public Set<FluxCharacteristicsDto> getFluxCharacteristics() {
+        return fluxCharacteristics;
+    }
+
+    public void setFluxCharacteristics(Set<FluxCharacteristicsDto> fluxCharacteristics) {
+        this.fluxCharacteristics = fluxCharacteristics;
     }
 
     public String getType() {
@@ -210,14 +250,6 @@ public class ActivityDetailsDto {
         this.identifiers = identifiers;
     }
 
-    public List<IdentifierDto> getAuthorizations() {
-        return authorizations;
-    }
-
-    public void setAuthorizations(List<IdentifierDto> authorizations) {
-        this.authorizations = authorizations;
-    }
-
     public DelimitedPeriodDTO getFishingTime() {
         return fishingTime;
     }
@@ -251,27 +283,22 @@ public class ActivityDetailsDto {
         this.geom = geom;
     }
 
-    @Override
-    public String toString() {
-        return "ActivityDetailsDto{" +
-                "type='" + type + '\'' +
-                ", characteristics=" + characteristics +
-                ", geom=" + geom +
-                ", reason='" + reason + '\'' +
-                ", occurrence=" + occurrence +
-                ", arrivalTime=" + arrivalTime +
-                ", intendedLandingTime=" + intendedLandingTime +
-                ", estimatedArrivalTime=" + estimatedArrivalTime +
-                ", landingTime=" + landingTime +
-                ", fisheryType='" + fisheryType + '\'' +
-                ", speciesTarget='" + speciesTarget + '\'' +
-                ", vesselActivity='" + vesselActivity + '\'' +
-                ", nrOfOperation=" + nrOfOperation +
-                ", identifiers=" + identifiers +
-                ", authorizations=" + authorizations +
-                ", fishingTime=" + fishingTime +
-                ", transhipmentTime=" + transhipmentTime +
-                '}';
+    private void add(String key, Object value, Map<String, Set<Object>> map) {
+
+        Set<Object> valueSet = map.get(key);
+        if (valueSet == null) {
+            valueSet = Sets.newSet();
+        } else {
+            valueSet.add(value);
+        }
+        map.put(key, valueSet);
     }
 
+    public FlapDocumentDto getFlapDocument() {
+        return flapDocument;
+    }
+
+    public void setFlapDocument(FlapDocumentDto flapDocument) {
+        this.flapDocument = flapDocument;
+    }
 }

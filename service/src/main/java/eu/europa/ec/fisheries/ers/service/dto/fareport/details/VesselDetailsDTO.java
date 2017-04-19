@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.StorageDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -56,6 +57,9 @@ public class VesselDetailsDTO {
 
     @JsonProperty("vesselIds")
     private Set<AssetIdentifierDto> vesselIdentifiers;
+
+    @JsonProperty("storage")
+    private StorageDto storageDto;
 
     public String getRoleCode() {
         return roleCode;
@@ -103,6 +107,14 @@ public class VesselDetailsDTO {
 
     public void setContactPartyDetailsDTOSet(Set<ContactPartyDetailsDTO> contactPartyDetailsDTOSet) {
         this.contactPartyDetailsDTOSet = contactPartyDetailsDTOSet;
+    }
+
+    public StorageDto getStorageDto() {
+        return storageDto;
+    }
+
+    public void setStorageDto(StorageDto storageDto) {
+        this.storageDto = storageDto;
     }
 
     public boolean hasEmptyIdentifierValues() {

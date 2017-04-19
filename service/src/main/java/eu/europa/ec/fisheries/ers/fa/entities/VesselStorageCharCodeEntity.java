@@ -25,9 +25,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/16/2016.
- */
 @Entity
 @Table(name = "activity_vessel_storage_char_code")
 public class VesselStorageCharCodeEntity implements Serializable {

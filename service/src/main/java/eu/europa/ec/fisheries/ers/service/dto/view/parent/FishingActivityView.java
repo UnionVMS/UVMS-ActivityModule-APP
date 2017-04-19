@@ -8,11 +8,9 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
-/**
- * Created by kovian on 08/02/2017.
- */
 public class FishingActivityView {
 
     /**
@@ -26,13 +24,11 @@ public class FishingActivityView {
     public interface Discard extends CommonView {}
     public interface Landing extends CommonView {}
     public interface Transhipment extends CommonView {}
-    public interface NotificationOfTranshipment extends CommonView {}
     public interface Departure extends CommonView {}
     public interface AreaEntry extends CommonView {}
     public interface AreaExit extends CommonView {}
     public interface JointFishingOperation extends CommonView {}
     public interface Relocation extends CommonView {}
-    public interface NotificationOfRelocation extends CommonView {}
 
     public interface GearShotAndRetrieval extends CommonView {
     }

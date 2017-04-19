@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
@@ -30,10 +31,16 @@ import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "activity_flux_location")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FluxLocationEntity implements Serializable {
 
 	@Id
@@ -120,10 +127,6 @@ public class FluxLocationEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "gear_problem_id")
 	private GearProblemEntity gearProblem;
-
-	public FluxLocationEntity() {
-		super();
-	}
 
 	public int getId() {
 		return this.id;

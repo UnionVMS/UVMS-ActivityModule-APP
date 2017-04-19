@@ -11,6 +11,22 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
+
+import java.util.List;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -27,21 +43,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 
-import java.util.List;
-
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
-
 /**
  * This DTO will be returned to the requester for every request of activity views.
  * It will serialize only the properties that are configured to be present for the specific view Eg : @JsonView(FishingActivityView.Arrival.class).
@@ -53,7 +54,7 @@ public class FishingActivityViewDTO {
     private ActivityDetailsDto activityDetails;
 
     @JsonView({NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class, Relocation.class, JointFishingOperation.class})
-    private List<FluxLocationDto> locations;
+    private Set<FluxLocationDto> locations;
 
     @JsonView({Arrival.class, Departure.class, JointFishingOperation.class})
     private List<GearDto> gears;
@@ -85,11 +86,11 @@ public class FishingActivityViewDTO {
     @JsonView(JointFishingOperation.class)
     private List<RelocationDto> relocations;
 
-    public List<FluxLocationDto> getLocations() {
+    public Set<FluxLocationDto> getLocations() {
         return locations;
     }
 
-    public void setLocations(List<FluxLocationDto> locations) {
+    public void setLocations(Set<FluxLocationDto> locations) {
         this.locations = locations;
     }
 

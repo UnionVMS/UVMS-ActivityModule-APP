@@ -13,6 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -20,15 +22,9 @@ import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
-
-/**
- * Created by padhyad on 3/23/2017.
- */
 @JsonInclude(NON_EMPTY)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class AssetIdentifierDto extends IdentifierDto {
 
     @JsonProperty("fromAssets")

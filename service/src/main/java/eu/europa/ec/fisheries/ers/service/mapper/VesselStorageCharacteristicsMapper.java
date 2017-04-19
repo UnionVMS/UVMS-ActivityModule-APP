@@ -19,6 +19,7 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
+import eu.europa.ec.fisheries.ers.service.dto.StorageDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -27,7 +28,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper
+@Mapper(uses = {VesselStorageCharCodeMapper.class})
 public abstract class VesselStorageCharacteristicsMapper extends BaseMapper {
 
     public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
@@ -66,4 +67,12 @@ public abstract class VesselStorageCharacteristicsMapper extends BaseMapper {
         }
         return vesselStorageCharCodes;
     }
+
+    @Mappings({
+            @Mapping(target = "identifier.faIdentifierId", source = "vesselId"),
+            @Mapping(target = "identifier.faIdentifierSchemeId", source = "vesselSchemaId"),
+            @Mapping(target = "vesselStorageCharCodeDto", source = "firstVesselStorageCharCode"),
+    })
+    public abstract StorageDto mapToStorageDto(VesselStorageCharacteristicsEntity entity);
+
 }

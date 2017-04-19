@@ -13,6 +13,10 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
@@ -30,13 +34,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * Created by padhyad on 3/23/2017.
- */
 @Mapper(uses = {VesselTransportMeansMapper.class})
 public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
 

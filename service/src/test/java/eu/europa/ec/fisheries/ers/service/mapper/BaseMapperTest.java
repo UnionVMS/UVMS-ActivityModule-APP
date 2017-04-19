@@ -19,19 +19,20 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
-import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
@@ -40,6 +41,21 @@ import org.junit.Test;
 
 public class BaseMapperTest extends BaseUnitilsTest {
 
+    @Test
+    public void testMapFromFluxLocation() {
+
+        FluxLocationEntity locationEntity_1 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
+        FluxLocationEntity locationEntity_2 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
+
+        HashSet<FluxLocationEntity> fluxLocationEntities = Sets.newHashSet(locationEntity_1, locationEntity_2);
+
+        assertEquals(2, fluxLocationEntities.size());
+
+        Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(fluxLocationEntities);
+
+        assertEquals(1, fluxLocationDtos.size());
+
+    }
 
     @Test
     @SneakyThrows
@@ -53,10 +69,10 @@ public class BaseMapperTest extends BaseUnitilsTest {
         entity2.setTypeCode("DUMMY");
         entity2.setRfmoCode("RFMO2");
 
-        List<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(newSet(entity1, entity2), FluxLocationEnum.LOCATION);
+        Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(newSet(entity1, entity2), FluxLocationEnum.LOCATION);
 
         assertEquals(1, fluxLocationDtos.size());
-        assertEquals("RFMO1", fluxLocationDtos.get(0).getRfmoCode());
+        assertEquals("RFMO1", fluxLocationDtos.iterator().next().getRfmoCode());
     }
 
     @Test
