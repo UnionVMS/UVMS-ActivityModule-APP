@@ -27,7 +27,8 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMappe
  */
 public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
-    @Override public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
+    @Override
+    public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
 
         FishingActivityViewDTO viewDTO = new FishingActivityViewDTO();
 

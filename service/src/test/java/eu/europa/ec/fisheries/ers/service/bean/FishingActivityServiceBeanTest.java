@@ -86,7 +86,7 @@ public class FishingActivityServiceBeanTest {
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
 
         //Trigger
-        VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsDTO vesselDetailsDTO = fishingTripService.setVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
         Mockito.verify(vesselTransportMeansDao, Mockito.times(1)).findLatestVesselByTripId(Mockito.any(String.class));
         //Verify
@@ -100,7 +100,7 @@ public class FishingActivityServiceBeanTest {
 
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
 
-        VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsDTO vesselDetailsDTO = fishingTripService.setVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
         assertNotNull(vesselDetailsDTO);
     }
@@ -120,7 +120,7 @@ public class FishingActivityServiceBeanTest {
 
         when(assetModule.getAssetListResponse(Mockito.any(AssetListQuery.class))).thenReturn(listAssetResponse);
 
-        VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+        VesselDetailsDTO vesselDetailsDTO = fishingTripService.setVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
         assertNotNull(vesselDetailsDTO);
 

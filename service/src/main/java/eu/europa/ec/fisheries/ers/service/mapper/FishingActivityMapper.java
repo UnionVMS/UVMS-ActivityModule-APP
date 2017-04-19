@@ -74,7 +74,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
-        FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class
+        FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class, FlapDocumentMapper.class
 })
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
@@ -183,8 +183,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "occurrence", source = "occurence"),
-            @Mapping(target = "characteristics", expression = "java(mapCharacteristics(entity))"),
-            @Mapping(target = "identifiers", source = "fishingActivityIdentifiers")
+            @Mapping(target = "identifiers", source = "fishingActivityIdentifiers"),
+            @Mapping(target = "flapDocument", source = "firstFlapDocument"),
     })
     public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
 
@@ -658,12 +658,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
         return VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
-    }
-
-    public Map<String, String> mapCharacteristics(FishingActivityEntity entity) {
-        Map<String, String> map = FluxCharacteristicsMapper.INSTANCE.map(entity.getFluxCharacteristics());
-        map.putAll(FlapDocumentMapper.INSTANCE.map(entity.getFlapDocuments()));
-        return map;
     }
 
     protected String getFlagState(FishingActivity fishingActivity) {
