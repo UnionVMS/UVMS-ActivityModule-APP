@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxLocationDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 @JsonInclude(Include.NON_NULL)
