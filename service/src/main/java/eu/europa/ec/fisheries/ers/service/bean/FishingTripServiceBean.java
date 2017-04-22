@@ -582,7 +582,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private void setFlapDocuments(VesselDetailsDTO detailsDTO, FishingActivityEntity parent, TripWidgetDto tripWidgetDto) {
         FlapDocumentDto flapDocumentDto = FlapDocumentMapper.INSTANCE.mapToFlapDocumentDto(parent.getFirstFlapDocument());
-        tripWidgetDto.setFlapDocuments(Sets.newSet(flapDocumentDto));
+        if (flapDocumentDto != null) {
+            tripWidgetDto.setFlapDocuments(Sets.newSet(flapDocumentDto));
+        }
         tripWidgetDto.setVesselDetails(detailsDTO);
     }
 

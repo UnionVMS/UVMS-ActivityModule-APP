@@ -53,13 +53,13 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class, Relocation.class, JointFishingOperation.class})
+    @JsonView({FishingOperation.class, NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class, Relocation.class, JointFishingOperation.class})
     private Set<FluxLocationDto> locations;
 
-    @JsonView({Arrival.class, Departure.class, JointFishingOperation.class})
+    @JsonView({Arrival.class, Departure.class, JointFishingOperation.class, FishingOperation.class})
     private List<GearDto> gears;
 
-    @JsonView({NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class,FishingActivityView.AreaExit.class, Transhipment.class, Relocation.class})
+    @JsonView({FishingOperation.class, NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class, FishingActivityView.AreaExit.class, Transhipment.class, Relocation.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)

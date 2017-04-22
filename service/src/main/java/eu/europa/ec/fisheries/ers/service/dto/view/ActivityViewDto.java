@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-/**
- * Created by padhyad on 3/29/2017.
- */
 public class ActivityViewDto {
 
     private String tripId;
