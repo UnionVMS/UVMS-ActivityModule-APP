@@ -29,8 +29,6 @@ public class TripWidgetDto {
     @JsonView(CommonView.class)
     private VesselDetailsDTO vesselDetails;
 
-    @JsonView(CommonView.class)
-    @JsonProperty("authorizations")
     private Set<FlapDocumentDto> flapDocuments;
 
     @JsonView(CommonView.class)
@@ -52,6 +50,8 @@ public class TripWidgetDto {
         this.trips = trips;
     }
 
+    @JsonView(CommonView.class)
+    @JsonProperty("authorizations")
     public Set<FlapDocumentDto> getFlapDocuments() {
         return flapDocuments;
     }

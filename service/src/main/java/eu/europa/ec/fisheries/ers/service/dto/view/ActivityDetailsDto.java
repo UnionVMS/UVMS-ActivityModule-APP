@@ -23,8 +23,8 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -109,8 +109,9 @@ public class ActivityDetailsDto {
     @JsonProperty("characteristics")
     @JsonView({CommonView.class})
     public Map<String, Set<Object>> getCharacteristics() {
-        Map<String, Set<Object>> characMap = new HashMap<>();
+        Map<String, Set<Object>> characMap = null;
         if (fluxCharacteristics != null) {
+            characMap = Collections.emptyMap();
             for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
 
                 Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();

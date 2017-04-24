@@ -21,9 +21,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 
-/**
- * TODO create test
- */
 public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
     @Override
