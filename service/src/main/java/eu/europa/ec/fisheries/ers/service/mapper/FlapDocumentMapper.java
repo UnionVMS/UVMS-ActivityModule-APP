@@ -37,6 +37,10 @@ public interface FlapDocumentMapper {
     })
     FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
 
+    @Mappings({
+            @Mapping(target = "faIdentifierId", source = "flapDocumentId"),
+            @Mapping(target = "faIdentifierSchemeId", source = "flapDocumentSchemeId")
+    })
     FlapDocumentDto mapToFlapDocumentDto(FlapDocumentEntity entity);
 
 }
