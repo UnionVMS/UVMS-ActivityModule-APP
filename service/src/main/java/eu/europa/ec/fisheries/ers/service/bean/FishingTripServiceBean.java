@@ -17,52 +17,25 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
-import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.*;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.AssetModuleService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripIdDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
-import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingTripToGeoJsonMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -82,21 +55,14 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.*;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.jgroups.conf.ProtocolConfiguration.log;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -119,6 +85,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     @EJB
     private AssetModuleService assetModuleService;
 
+    @EJB
+    private MdrModuleService mdrModuleService;
+
+
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifierDao vesselIdentifierDao;
@@ -126,6 +96,12 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private FishingTripIdentifierDao fishingTripIdentifierDao;
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
+
+    private final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
+    private final String filter = "*";
+    private final List<String> columnsList = new ArrayList<String>();
+    private Integer nrOfResults=9999999;
+
 
     @PostConstruct
     public void init() {
@@ -249,7 +225,34 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
             VesselTransportMeansEntity latestVesselByTripId = vesselTransportMeansDao.findLatestVesselByTripId(fishingTripId);
             result = VesselTransportMeansMapper.INSTANCE.map(latestVesselByTripId);
-            enrichWithAssetsModuleDataIfNeeded(result);
+            if(null==result)
+                result=new VesselDetailsDTO();
+            //TODO : while committing delete these hardcoded logic
+            AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
+            cfr.setFaIdentifierId("cfrValue");
+            cfr.setFaIdentifierSchemeId("22");
+            cfr.setIdentifierSchemeId(VesselIdentifierSchemeIdEnum.CFR);
+            AssetIdentifierDto gfmc = new AssetIdentifierDto(GFCM);
+            gfmc.setFaIdentifierId("gfmcvalue");
+            gfmc.setIdentifierSchemeId(VesselIdentifierSchemeIdEnum.GFCM);
+            gfmc.setFaIdentifierSchemeId("33");
+            AssetIdentifierDto ext = new AssetIdentifierDto(EXT_MARK);
+            ext.setFaIdentifierId("extValue");
+            ext.setFaIdentifierSchemeId("11");
+            ext.setIdentifierSchemeId(VesselIdentifierSchemeIdEnum.EXT_MARK);
+            Set<AssetIdentifierDto> identifierDtos = new HashSet<>();
+            identifierDtos.add(cfr);
+            identifierDtos.add(gfmc);
+            identifierDtos.add(ext);
+            result.setVesselIdentifiers(identifierDtos);
+            result.setId(1);
+            result.setCountry("FRA");
+            result.setName("MADONNA DI POMPEI");
+            result.setRoleCode("RECEIVER");
+
+          // enrichWithAssetsModuleDataIfNeeded(result);
+
+            processMdrAssetsModuleData(result);
 
         } catch (ServiceException e) {
             throw new ServiceException(e.getMessage(), e);
@@ -257,13 +260,12 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
         return result;
     }
-
+   //TODO : Either make this as your Business Logic method  : processMdrAssetsModuleData or delete it
     private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
 
         if (vesselDetailsDTO != null && vesselDetailsDTO.hasEmptyIdentifierValues()) {
 
             try {
-
                 Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapToAssetListCriteriaPairList(vesselIdentifiers);
                 AssetListCriteria criteria = new AssetListCriteria();
@@ -278,6 +280,39 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
         }
     }
+
+
+    //To process MDR code list
+    private void processMdrAssetsModuleData(VesselDetailsDTO vesselDetailsDTO)  {
+
+        if (vesselDetailsDTO != null ) {
+
+            List<String> codeList = null;
+            try {
+                codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults);
+            } catch (ServiceException e) {
+                log.error("Service Excption from process mdrdata ",e.getMessage());
+            }
+            try {
+                Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+
+                List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers,codeList);
+                log.info("Asset Criteria Pair List size is :"+assetListCriteriaPairs.size());
+                log.info("Got code list of size from mdr:"+codeList.size());
+
+                AssetListCriteria criteria = new AssetListCriteria();
+                criteria.getCriterias().addAll(assetListCriteriaPairs);
+                AssetListQuery query = new AssetListQuery();
+                query.setAssetSearchCriteria(criteria);
+                List<Asset> assetList = assetModuleService.getAssetListResponse(query);
+                vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
+
+            } catch (ServiceException e) {
+                log.error("Error while trying to send message to Assets module.", e);
+            }
+        }
+    }
+
 
     @Override
     public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException {

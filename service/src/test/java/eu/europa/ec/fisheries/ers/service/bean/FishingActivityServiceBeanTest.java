@@ -77,6 +77,9 @@ public class FishingActivityServiceBeanTest {
     AssetModuleServiceBean assetModule;
 
     @Mock
+    MdrModuleServiceBean mdrModuleServiceBean;
+
+    @Mock
     JAXBMarshaller marshaller;
 
     @Test

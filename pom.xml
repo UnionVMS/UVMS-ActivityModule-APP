@@ -37,6 +37,8 @@
         <spatial.model.version>1.0.4</spatial.model.version>
         <exchange.model>2.0.8</exchange.model>
         <rules.model>2.0.7</rules.model>
+        <mdr.model.version>0.5.1-SNAPSHOT</mdr.model.version>
+
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -59,7 +61,7 @@
         <hibernate.version>4.3.5.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14-M1</geotools.version>
-        <uvms.commons.version>2.0.20</uvms.commons.version>
+        <uvms.commons.version>2.0.21-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.3</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
@@ -78,6 +80,14 @@
     <dependencyManagement>
 
         <dependencies>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+                <artifactId>mdr-model</artifactId>
+                <version>${mdr.model.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
