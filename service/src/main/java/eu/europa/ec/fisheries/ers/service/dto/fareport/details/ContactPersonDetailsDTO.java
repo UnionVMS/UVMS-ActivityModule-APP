@@ -13,34 +13,34 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
-import static org.apache.commons.lang.BooleanUtils.toStringTrueFalse;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContactPersonDetailsDTO {
 
-    @JsonIgnore
-    private boolean isCaptain;
 
     @JsonIgnore
     private String title;
 
+    @JsonProperty("firstName")
     private String givenName;
 
     @JsonIgnore
     private String middleName;
 
+    @JsonProperty("lastName")
     private String familyName;
 
     @JsonIgnore
@@ -54,13 +54,7 @@ public class ContactPersonDetailsDTO {
 
     private String alias;
 
-    public boolean isCaptain() {
-        return isCaptain;
-    }
 
-    public void setCaptain(boolean captain) {
-        isCaptain = captain;
-    }
 
     public String getTitle() {
         return title;
@@ -129,7 +123,6 @@ public class ContactPersonDetailsDTO {
     @JsonProperty("characteristics")
     public Map<String, String> getCharacteristicsMap() {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put("isCaptain", toStringTrueFalse(this.isCaptain()));
         stringStringHashMap.put("title", this.getTitle());
         stringStringHashMap.put("middleName", this.getMiddleName());
         stringStringHashMap.put("familyNamePrefix", this.getFamilyNamePrefix());
