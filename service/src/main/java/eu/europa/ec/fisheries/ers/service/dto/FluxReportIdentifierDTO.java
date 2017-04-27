@@ -1,6 +1,6 @@
 /*
  *
- * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+ * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries European Union, 2015-2016.
  *
  * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
@@ -11,21 +11,30 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.activity.message.producer;
+package eu.europa.ec.fisheries.ers.service.dto;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+/**
+ * Created by sanera on 20/09/2016.
+ */
+public class FluxReportIdentifierDTO {
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+    private String fluxReportId;
+    private String fluxReportSchemeId;
 
 
-@Stateless
-@LocalBean
-public class AssetProducerBean extends AbstractProducer {
+    public String getFluxReportId() {
+        return fluxReportId;
+    }
 
-    @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_ASSET_EVENT;
+    public void setFluxReportId(String fluxReportId) {
+        this.fluxReportId = fluxReportId;
+    }
+
+    public String getFluxReportSchemeId() {
+        return fluxReportSchemeId;
+    }
+
+    public void setFluxReportSchemeId(String fluxReportSchemeId) {
+        this.fluxReportSchemeId = fluxReportSchemeId;
     }
 }

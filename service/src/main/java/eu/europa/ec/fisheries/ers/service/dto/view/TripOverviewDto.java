@@ -10,18 +10,15 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
-import java.util.Date;
-import java.util.List;
-
-/**
- * Created by sanera on 23/03/2017.
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TripOverviewDto {
 

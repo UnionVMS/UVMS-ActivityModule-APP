@@ -13,44 +13,37 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.DelimitedPeriodMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import io.jsonwebtoken.lang.Collections;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * Created by padhyad on 3/27/2017.
- */
-@Mapper(uses = {VesselTransportMeansMapper.class})
-public abstract class ActivityRelocationViewMapper extends BaseActivityViewMapper {
-
-    public static final ActivityRelocationViewMapper INSTANCE = Mappers.getMapper(ActivityRelocationViewMapper.class);
+public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
 
     @Override
-    @Mappings({
-            @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
-            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
-            @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
-            @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
-            @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
-            @Mapping(target = "vesselDetails", source = "faEntity.vesselTransportMeans"),
-            @Mapping(target = "gearProblems", ignore = true)
-    })
-    public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
+    public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
+
+        FishingActivityViewDTO viewDTO = new FishingActivityViewDTO();
+
+        if (faEntity != null) {
+
+            viewDTO.setActivityDetails(mapActivityDetails(faEntity));
+            viewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));
+            viewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
+            viewDTO.setCatches(mapCatchesToGroupDto(faEntity));
+            viewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
+            viewDTO.setVesselDetails(VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans()));
+
+            VesselDetailsDTO vesselDetails = viewDTO.getVesselDetails();
+            if (vesselDetails != null) {
+                viewDTO.getVesselDetails().setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+            }
+
+        }
+
+        return viewDTO;
+    }
+
 }

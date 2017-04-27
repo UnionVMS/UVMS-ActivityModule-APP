@@ -13,29 +13,29 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
-@JsonInclude(NON_NULL)
-public class FluxCharacteristicsDTO {
+/**
+ * Created by sanera on 19/09/2016.
+ */
+public class PaginationDTO {
 
-    @JsonProperty("valueDateTime")
-    @JsonSerialize(using = CustomDateSerializer.class)
-    private Date valueDateTime;
+    @JsonProperty("totalPageCount")
+    private int totalPageCount;
 
-    @JsonProperty("valueDateTime")
-    public Date getValueDateTime() {
-        return valueDateTime;
+    public PaginationDTO(int totalPageCount) {
+        this.totalPageCount = totalPageCount;
     }
 
-    @JsonProperty("valueDateTime")
-    public void setValueDateTime(Date valueDateTime) {
-        this.valueDateTime = valueDateTime;
+    public PaginationDTO(){
+
+    }
+
+    public int getTotalPageCount() {
+        return totalPageCount;
+    }
+
+    public void setTotalPageCount(int totalPageCount) {
+        this.totalPageCount = totalPageCount;
     }
 }

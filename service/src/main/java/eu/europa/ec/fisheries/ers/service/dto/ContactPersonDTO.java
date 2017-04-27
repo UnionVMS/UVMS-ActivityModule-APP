@@ -1,6 +1,6 @@
 /*
  *
- * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+ * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries European Union, 2015-2016.
  *
  * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
@@ -11,56 +11,21 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
+package eu.europa.ec.fisheries.ers.service.dto;
 
-import static org.apache.commons.lang.BooleanUtils.toStringTrueFalse;
+/**
+ * Created by sanera on 27/07/2016.
+ */
+public class ContactPersonDTO {
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class ContactPersonDetailsDTO {
-
-    @JsonIgnore
-    private boolean isCaptain;
-
-    @JsonIgnore
     private String title;
-
     private String givenName;
-
-    @JsonIgnore
     private String middleName;
-
     private String familyName;
-
-    @JsonIgnore
     private String familyNamePrefix;
-
-    @JsonIgnore
     private String nameSuffix;
-
-    @JsonIgnore
     private String gender;
-
     private String alias;
-
-    public boolean isCaptain() {
-        return isCaptain;
-    }
-
-    public void setCaptain(boolean captain) {
-        isCaptain = captain;
-    }
 
     public String getTitle() {
         return title;
@@ -125,21 +90,4 @@ public class ContactPersonDetailsDTO {
     public void setAlias(String alias) {
         this.alias = alias;
     }
-
-    @JsonProperty("characteristics")
-    public Map<String, String> getCharacteristicsMap() {
-        HashMap<String, String> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put("isCaptain", toStringTrueFalse(this.isCaptain()));
-        stringStringHashMap.put("title", this.getTitle());
-        stringStringHashMap.put("middleName", this.getMiddleName());
-        stringStringHashMap.put("familyNamePrefix", this.getFamilyNamePrefix());
-        stringStringHashMap.put("nameSuffix", this.getNameSuffix());
-        stringStringHashMap.put("gender", this.getGender());
-        stringStringHashMap.values().removeAll(Collections.singleton(null));
-        if (stringStringHashMap.isEmpty()) {
-            stringStringHashMap = null;
-        }
-        return stringStringHashMap;
-    }
-
 }

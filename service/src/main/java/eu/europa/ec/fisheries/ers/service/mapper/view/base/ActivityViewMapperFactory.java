@@ -12,18 +12,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityAreaEntryViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityAreaExitViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityJointFishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityNotificationOfArrivalViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityRelocationViewMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityTranshipmentViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.DiscardViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 /**
@@ -57,7 +57,7 @@ public class ActivityViewMapperFactory {
                 mapper = new DiscardViewMapper();
                 break;
             case RELOCATION:
-                mapper = ActivityRelocationViewMapper.INSTANCE;
+                mapper = new ActivityRelocationViewMapper();
                 break;
             case PRIOR_NOTIFICATION_OF_ARRIVAL:
                 mapper = new ActivityNotificationOfArrivalViewMapper();

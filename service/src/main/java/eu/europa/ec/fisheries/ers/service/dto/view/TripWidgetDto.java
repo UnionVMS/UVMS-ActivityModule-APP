@@ -8,25 +8,30 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 import java.util.List;
+import java.util.Set;
 
-/**
- * Created by sanera on 23/03/2017.
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+
+@JsonInclude(NON_NULL)
 public class TripWidgetDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private VesselDetailsDTO vesselDetails;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    private Set<FlapDocumentDto> flapDocuments;
+
+    @JsonView(CommonView.class)
     private List<TripOverviewDto> trips;
 
     public VesselDetailsDTO getVesselDetails() {
@@ -43,5 +48,15 @@ public class TripWidgetDto {
 
     public void setTrips(List<TripOverviewDto> trips) {
         this.trips = trips;
+    }
+
+    @JsonView(CommonView.class)
+    @JsonProperty("authorizations")
+    public Set<FlapDocumentDto> getFlapDocuments() {
+        return flapDocuments;
+    }
+
+    public void setFlapDocuments(Set<FlapDocumentDto> flapDocuments) {
+        this.flapDocuments = flapDocuments;
     }
 }

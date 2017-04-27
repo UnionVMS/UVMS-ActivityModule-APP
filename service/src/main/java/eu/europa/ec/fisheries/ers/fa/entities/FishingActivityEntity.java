@@ -40,6 +40,7 @@ import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Type;
 
 @NamedQueries({
@@ -192,9 +193,16 @@ public class FishingActivityEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments;
-
     @Transient
     private String wkt;
+
+    public FlapDocumentEntity getFirstFlapDocument() {
+        FlapDocumentEntity flapDocument = null;
+        if (!CollectionUtils.isEmpty(flapDocuments)) {
+            flapDocument = flapDocuments.iterator().next();
+        }
+        return flapDocument;
+    }
 
 	public int getId() {
 		return this.id;
@@ -230,9 +238,8 @@ public class FishingActivityEntity implements Serializable {
 		return this.destVesselCharId;
 	}
 
-	public void setDestVesselCharId(
-			VesselStorageCharacteristicsEntity destVesselCharId) {
-		this.destVesselCharId = destVesselCharId;
+    public void setDestVesselCharId(VesselStorageCharacteristicsEntity destVesselCharId) {
+        this.destVesselCharId = destVesselCharId;
 	}
 
 	public String getTypeCode() {

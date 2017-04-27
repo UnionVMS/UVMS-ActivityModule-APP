@@ -24,6 +24,8 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+
 @Entity
 @Table(name = "activity_vessel_storage_characteristics")
 public class VesselStorageCharacteristicsEntity implements Serializable {
@@ -96,4 +98,12 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	public void setVesselStorageCharCode(Set<VesselStorageCharCodeEntity> vesselStorageCharCode) {
 		this.vesselStorageCharCode = vesselStorageCharCode;
 	}
+
+    public VesselStorageCharCodeEntity getFirstVesselStorageCharCode() {
+        VesselStorageCharCodeEntity firstElement = null;
+        if (!CollectionUtils.isEmpty(vesselStorageCharCode)) {
+            firstElement = this.vesselStorageCharCode.iterator().next();
+        }
+        return firstElement;
+    }
 }

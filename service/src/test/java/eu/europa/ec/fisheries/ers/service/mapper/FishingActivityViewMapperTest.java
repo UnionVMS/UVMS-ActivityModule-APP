@@ -36,7 +36,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityJointFishingOperationViewMapper;
@@ -82,7 +81,7 @@ public class FishingActivityViewMapperTest {
         assertTrue(fishingActivityViewDTO.getGears().size() == 1);
         assertNull(mapperForView.mapFaEntityToFaDto(null));
 
-        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Arrival.class);
+//        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Arrival.class);
     }
 
 
@@ -102,11 +101,11 @@ public class FishingActivityViewMapperTest {
         assertNotNull(fishingActivityViewDTO.getReportDetails());
         assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
 
-        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Landing.class);
+        // printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Landing.class);
     }
 
     @Test
-         @SneakyThrows
+    @SneakyThrows
          public void testActivityDepartureViewMapper() {
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.DEPARTURE);
         FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();

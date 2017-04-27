@@ -23,11 +23,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.joda.time.DateTime;
 
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
+@EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
 public class FluxLocationDto {
 
     @JsonView(CommonView.class)
@@ -42,6 +47,9 @@ public class FluxLocationDto {
 
     @JsonIgnore
     private String fluxLocationIdentifier;
+
+    @JsonIgnore
+    private FluxCharacteristicsDto fluxCharacteristic;
 
     @JsonIgnore
     private String fluxLocationIdentifierSchemeId;
@@ -95,6 +103,39 @@ public class FluxLocationDto {
 
     public void setFluxLocationIdentifierSchemeId(String fluxLocationIdentifierSchemeId) {
         this.fluxLocationIdentifierSchemeId = fluxLocationIdentifierSchemeId;
+    }
+
+    public FluxCharacteristicsDto getFluxCharacteristic() {
+        return fluxCharacteristic;
+    }
+
+    public void setFluxCharacteristic(FluxCharacteristicsDto fluxCharacteristic) {
+        this.fluxCharacteristic = fluxCharacteristic;
+    }
+
+    @JsonProperty("characteristics")
+    public Map<String, String> getCharacteristicsMap() {
+        HashMap<String, String> stringStringHashMap = null;
+        if (fluxCharacteristic != null) {
+            stringStringHashMap = new HashMap<>();
+            stringStringHashMap.put("valueCode", fluxCharacteristic.getValueCode());
+            stringStringHashMap.put("valueIndicator", fluxCharacteristic.getValueIndicator());
+            stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
+            stringStringHashMap.put("valueMeasureUnitCode", fluxCharacteristic.getValueMeasureUnitCode());
+            stringStringHashMap.put("valueMeasure", String.valueOf(fluxCharacteristic.getValueMeasure()));
+            stringStringHashMap.put("valueQuantityCode", fluxCharacteristic.getValueQuantityCode());
+            stringStringHashMap.put("valueQuantity", String.valueOf(fluxCharacteristic.getValueQuantity()));
+            stringStringHashMap.put("calculatedValueMeasure", String.valueOf(fluxCharacteristic.getCalculatedValueMeasure()));
+            stringStringHashMap.put("calculatedValueQuantity", String.valueOf(fluxCharacteristic.getCalculatedValueQuantity()));
+            stringStringHashMap.put("description", fluxCharacteristic.getDescription());
+            stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
+            stringStringHashMap.put("typeCode", fluxCharacteristic.getTypeCode());
+            stringStringHashMap.put("typeCodeListId", fluxCharacteristic.getTypeCodeListId());
+            stringStringHashMap.put("valueDateTime", DateUtils.UI_FORMATTER.print(new DateTime((fluxCharacteristic.getValueDateTime()))));
+            stringStringHashMap.values().removeAll(Collections.singleton(null));
+        }
+
+        return stringStringHashMap;
     }
 
     @JsonProperty("identifier")

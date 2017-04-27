@@ -13,13 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -27,10 +23,10 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 
-@Mapper
-public abstract class FlapDocumentMapper extends BaseMapper {
+@Mapper(uses = BaseMapper.class)
+public interface FlapDocumentMapper {
 
-    public static final FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
+    FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
 
     @Mappings({
             @Mapping(target = "flapDocumentId", source = "flapDocument.ID.value"),
@@ -39,19 +35,12 @@ public abstract class FlapDocumentMapper extends BaseMapper {
             @Mapping(target = "flapTypeCode", source = "flapDocument.typeCode.value"),
             @Mapping(target = "flapTypeCodeListId", source = "flapDocument.typeCode.listID")
     })
-    public abstract FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
+    FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
 
-    public Map<String, String> map(Set<FlapDocumentEntity> flapDocument) {
-        if (flapDocument == null) {
-            return Collections.emptyMap();
-        }
-        Map<String, String> characMap = new HashMap<>();
-        for (FlapDocumentEntity flapDocumentEntity : flapDocument) {
-            if (flapDocumentEntity.getFlapDocumentId() != null && flapDocumentEntity.getFlapTypeCode() != null) {
-                characMap.put(flapDocumentEntity.getFlapTypeCode(), flapDocumentEntity.getFlapDocumentId() + ":" +flapDocumentEntity.getFlapDocumentSchemeId());
-            }
-        }
-        return characMap;
-    }
+    @Mappings({
+            @Mapping(target = "faIdentifierId", source = "flapDocumentId"),
+            @Mapping(target = "faIdentifierSchemeId", source = "flapDocumentSchemeId")
+    })
+    FlapDocumentDto mapToFlapDocumentDto(FlapDocumentEntity entity);
 
 }

@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxLocationDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 @JsonInclude(Include.NON_NULL)
@@ -54,7 +52,7 @@ public class FishingActivityDTO {
     private List<FishingGearDTO> fishingGears;
 
     @JsonProperty("fluxCharacteristics")
-    private List<FluxCharacteristicsDTO> fluxCharacteristics;
+    private List<FluxCharacteristicsDto> fluxCharacteristics;
 
     @JsonProperty("delimitedPeriod")
     private List<DelimitedPeriodDTO> delimitedPeriod;
@@ -110,12 +108,12 @@ public class FishingActivityDTO {
     }
 
     @JsonProperty("fluxCharacteristics")
-    public List<FluxCharacteristicsDTO> getFluxCharacteristics() {
+    public List<FluxCharacteristicsDto> getFluxCharacteristics() {
         return fluxCharacteristics;
     }
 
     @JsonProperty("fluxCharacteristics")
-    public void setFluxCharacteristics(List<FluxCharacteristicsDTO> fluxCharacteristics) {
+    public void setFluxCharacteristics(List<FluxCharacteristicsDto> fluxCharacteristics) {
         this.fluxCharacteristics = fluxCharacteristics;
     }
 

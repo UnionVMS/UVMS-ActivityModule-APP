@@ -28,6 +28,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
@@ -72,7 +73,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "id", expression = "java(mapListToSingleIdentifier(entity.getFishingActivityIdentifiers()))"),
-            @Mapping(target = "occurrence", source = "occurence"),
+            @Mapping(target = "occurrence", source = "occurence", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
             @Mapping(target = "duration", expression = "java(getDurationFromActivity(entity.getDelimitedPeriods()))"),
             @Mapping(target = "gear", expression = "java(mapToFirstFishingGear(entity.getFishingGears()))"),
             @Mapping(target = "gearProblems", source = "gearProblems"),
