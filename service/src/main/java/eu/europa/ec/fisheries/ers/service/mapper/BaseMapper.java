@@ -244,12 +244,12 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
             List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
 
            for (AssetIdentifierDto identifierDto : identifierDtoSet) {
-                VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId(); // key from db hard coded object of vesselDetailsDto
+                VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
                 ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
                 if (null!=identifierSchemeId && null!=keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())){
                     String identifierId = identifierDto.getFaIdentifierId();
                     AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-                    //we need to validate identifierSchemeId presence in enum becoz criteriaPair takes an object of type ConfigSearchField type
+
                     criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
                     criteriaPair.setValue(identifierId);
                     criteriaList.add(criteriaPair);

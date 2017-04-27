@@ -293,8 +293,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return detailsDTO;
     }
 
-    /*
-       //TODO : Either make this as your Business Logic method  : processMdrAssetsModuleData or delete it
+
+       //TODO : need confirmation for removal of this method
     private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
 
         if (vesselDetailsDTO != null && vesselDetailsDTO.hasEmptyIdentifierValues()) {
@@ -316,7 +316,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
     }
 
-*/
+
     //To process MDR code list
     private void processMdrAssetsModuleData(VesselDetailsDTO vesselDetailsDTO)  {
 
