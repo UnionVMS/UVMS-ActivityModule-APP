@@ -277,7 +277,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
             FishingActivityEntity parent = latestVesselByTripId.getFishingActivity();
             detailsDTO = VesselTransportMeansMapper.INSTANCE.map(latestVesselByTripId);
-            enrichWithAssetsModuleDataIfNeeded(detailsDTO);
+
+            processMdrAssetsModuleData(detailsDTO);
             if (parent != null) {
                 VesselStorageCharacteristicsEntity sourceVesselCharId = parent.getSourceVesselCharId();
                 if (detailsDTO != null) {
@@ -291,7 +292,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
         return detailsDTO;
     }
-   //TODO : Either make this as your Business Logic method  : processMdrAssetsModuleData or delete it
+
+    /*
+       //TODO : Either make this as your Business Logic method  : processMdrAssetsModuleData or delete it
     private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
 
         if (vesselDetailsDTO != null && vesselDetailsDTO.hasEmptyIdentifierValues()) {
@@ -313,7 +316,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
     }
 
-
+*/
     //To process MDR code list
     private void processMdrAssetsModuleData(VesselDetailsDTO vesselDetailsDTO)  {
 
