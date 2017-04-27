@@ -86,8 +86,18 @@ public abstract class ContactPartyMapper extends BaseMapper {
         return structuredAddressEntities;
     }
 
+    @Mappings({
+            @Mapping(target = "role", expression = "java(getFirstRoleCode(entity))")
+    })
     public abstract ContactPartyDetailsDTO map(ContactPartyEntity entity);
 
     public abstract Set<ContactPartyDetailsDTO> map(Set<ContactPartyEntity> entities);
+
+    protected String getFirstRoleCode(ContactPartyEntity contactPartyEntity) {
+        if(contactPartyEntity ==null || CollectionUtils.isEmpty(contactPartyEntity.getContactPartyRole())) {
+            return null;
+        }
+       return contactPartyEntity.getContactPartyRole().iterator().next().getRoleCode();
+    }
 
 }
