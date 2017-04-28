@@ -85,10 +85,7 @@ import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.*;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -278,7 +275,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             FishingActivityEntity parent = latestVesselByTripId.getFishingActivity();
             detailsDTO = VesselTransportMeansMapper.INSTANCE.map(latestVesselByTripId);
 
-            processMdrAssetsModuleData(detailsDTO);
+            getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
+
             if (parent != null) {
                 VesselStorageCharacteristicsEntity sourceVesselCharId = parent.getSourceVesselCharId();
                 if (detailsDTO != null) {
@@ -304,6 +302,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapToAssetListCriteriaPairList(vesselIdentifiers);
                 AssetListCriteria criteria = new AssetListCriteria();
+
                 criteria.getCriterias().addAll(assetListCriteriaPairs);
                 AssetListQuery query = new AssetListQuery();
                 query.setAssetSearchCriteria(criteria);
@@ -317,8 +316,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
 
-    //To process MDR code list
-    private void processMdrAssetsModuleData(VesselDetailsDTO vesselDetailsDTO)  {
+    //To process MDR code list and compare with  database:vesselTransportMeansDao and then enrich with asset module
+    private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO)  {
 
         if (vesselDetailsDTO != null ) {
 
@@ -336,8 +335,13 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 log.info("Got code list of size from mdr:"+codeList.size());
 
                 AssetListCriteria criteria = new AssetListCriteria();
+                criteria.setIsDynamic(false);
                 criteria.getCriterias().addAll(assetListCriteriaPairs);
                 AssetListQuery query = new AssetListQuery();
+                AssetListPagination assetListPagination=new AssetListPagination();
+                assetListPagination.setPage(1);
+                assetListPagination.setListSize(1);
+                query.setPagination(assetListPagination);
                 query.setAssetSearchCriteria(criteria);
                 List<Asset> assetList = assetModuleService.getAssetListResponse(query);
                 vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
