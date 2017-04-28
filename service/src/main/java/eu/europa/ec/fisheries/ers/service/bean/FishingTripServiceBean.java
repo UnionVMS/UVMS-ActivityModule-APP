@@ -340,7 +340,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 AssetListQuery query = new AssetListQuery();
                 AssetListPagination assetListPagination=new AssetListPagination();
                 assetListPagination.setPage(1);
-                assetListPagination.setListSize(1);
+                assetListPagination.setListSize(1000);
                 query.setPagination(assetListPagination);
                 query.setAssetSearchCriteria(criteria);
                 List<Asset> assetList = assetModuleService.getAssetListResponse(query);
