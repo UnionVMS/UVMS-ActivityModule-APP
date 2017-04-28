@@ -292,7 +292,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
 
-       //TODO : need confirmation for removal of this method
+       // need confirmation for removal of this method
     private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
 
         if (vesselDetailsDTO != null && vesselDetailsDTO.hasEmptyIdentifierValues()) {
