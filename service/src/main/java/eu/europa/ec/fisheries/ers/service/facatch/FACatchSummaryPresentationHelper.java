@@ -10,12 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.summary.SummaryTableDTO;
@@ -27,15 +21,24 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by sanera on 06/03/2017.
+ * These classes help creating table structure for FACatch summary reports.
+ * Every class is handling specific table structure formatting requirements .
+ * If new type of table structure is required. Just extend FACatchSummaryHelper and modify methods suitable to your needs
  */
 @Slf4j
 public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
 
     public FACatchSummaryPresentationHelper(){
         super();
-        this.faCatchSummaryCustomClassName = "eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomChildEntity";
+        this.faCatchSummaryCustomClassName = "eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomChildProxy";
     }
 
 /**

@@ -16,6 +16,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * This class is used in code using Reflections. Check carefully if you change package or className
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"count", "typeCode", "species", "fishClass"})
