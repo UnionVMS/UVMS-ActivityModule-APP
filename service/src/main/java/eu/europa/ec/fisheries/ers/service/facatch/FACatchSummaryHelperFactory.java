@@ -28,9 +28,9 @@ public class FACatchSummaryHelperFactory {
     }
     public static FACatchSummaryHelper getFACatchSummaryHelper(String criteria)
     {
-        if ( criteria.equals(PRESENTATION) )
+        if ( PRESENTATION.equals(criteria) )
             return new FACatchSummaryPresentationHelper();
-        else if ( criteria.equals(STANDARD) )
+        else if ( STANDARD.equals(criteria) )
             return new FACatchSummaryReportHelper();
 
 
