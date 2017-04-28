@@ -29,7 +29,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 //import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
@@ -38,7 +42,7 @@ import java.util.*;
 public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripSearchBuilder.class);
-    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
+    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft JOIN FETCH ft.fishingTripIdentifiers ftripId LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
 
 
    public FishingTripSearchBuilder(){
@@ -71,6 +75,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         LOG.debug("Create Where part of Query");
 
         sql.append(" where ");
+        sql.append(" ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE +" and ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE+" ");
         createWherePartForQueryForFilters(sql, query);
 
         LOG.debug("Generated Query After Where :" + sql);

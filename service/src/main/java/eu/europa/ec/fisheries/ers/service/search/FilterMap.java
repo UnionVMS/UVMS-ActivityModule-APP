@@ -248,6 +248,8 @@ public class FilterMap {
      * required for the criteria and Where conditions which needs to be applied for the criteria
      */
     public void populateFilterMappingsWithChangedDelimitedPeriodTable() {
+         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", " "));
+        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", " "));
          populateFilterMappings();
     }
 
