@@ -14,18 +14,18 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,7 +44,7 @@ public class AddressDetailsDTO {
     @JsonIgnore
     private String citySubdivisionName;
 
-    @JsonIgnore
+    @JsonProperty("countryCode")
     private String country;
 
     private String countryName;

@@ -13,19 +13,17 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.DelimitedPeriodMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import io.jsonwebtoken.lang.Collections;
@@ -33,6 +31,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Mapper(uses = {VesselTransportMeansMapper.class})
 public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
@@ -46,10 +48,29 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
-            @Mapping(target = "vesselDetails", source = "faEntity.vesselTransportMeans"),
+            @Mapping(target = "vesselDetails", expression = "java(getVesselDetailsDTO(faEntity))"),
             @Mapping(target = "gearProblems", ignore = true)
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
+
+    /**
+     * Addded this method as we want to set storage information explicitely in VesselDetailsDTO.Storage informaation we can only get from activities
+     * @param faEntity
+     * @return VesselDetailsDTO
+     */
+    protected VesselDetailsDTO getVesselDetailsDTO(FishingActivityEntity faEntity){
+        if(faEntity==null || faEntity.getVesselTransportMeans() ==null)
+            return null;
+
+        VesselDetailsDTO vesselDetails= VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans());
+        if (vesselDetails != null && faEntity.getDestVesselCharId()!=null) {
+            vesselDetails.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+        }
+
+        return vesselDetails;
+    }
+
+
 
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
         Map<String, String> idMap = new HashMap<>();

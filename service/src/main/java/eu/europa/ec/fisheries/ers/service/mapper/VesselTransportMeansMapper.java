@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {FaReportDocumentMapper.class, VesselIdentifierMapper.class, ContactPartyMapper.class})
+@Mapper(uses = {FaReportDocumentMapper.class, VesselIdentifierMapper.class, ContactPartyMapper.class, FlapDocumentMapper.class,VesselStorageCharacteristicsMapper.class})
 public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public static final VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
@@ -64,6 +64,10 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
     })
     protected abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
 
+
+   @Mappings({
+           @Mapping(target = "contactPartyDetailsDTOSet", source = "contactParty")
+   })
     public abstract VesselDetailsDTO map(VesselTransportMeansEntity entity);
 
     protected Set<FlapDocumentEntity> getFlapDocumentEntities(List<FLAPDocument> flapDocuments, VesselTransportMeansEntity vesselTransportMeansEntity) {
@@ -150,4 +154,5 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         }
         return (flapDocuments.get(0).getID() == null) ? null : flapDocuments.get(0).getID().getSchemeID();
     }
+
 }

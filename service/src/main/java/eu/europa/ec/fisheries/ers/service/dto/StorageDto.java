@@ -10,20 +10,21 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
-
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 
+import java.util.Set;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
 @JsonInclude(NON_EMPTY)
 @EqualsAndHashCode
 public class StorageDto {
 
+    @JsonIgnore
     VesselStorageCharCodeDto vesselStorageCharCodeDto;
 
     @JsonIgnore
