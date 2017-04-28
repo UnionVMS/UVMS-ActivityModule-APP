@@ -335,12 +335,12 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 log.info("Got code list of size from mdr:"+codeList.size());
 
                 AssetListCriteria criteria = new AssetListCriteria();
-                criteria.setIsDynamic(false);
+                criteria.setIsDynamic(false); // need to set this
                 criteria.getCriterias().addAll(assetListCriteriaPairs);
                 AssetListQuery query = new AssetListQuery();
                 AssetListPagination assetListPagination=new AssetListPagination();
-                assetListPagination.setPage(1);
-                assetListPagination.setListSize(1000);
+                assetListPagination.setPage(1);   //need to set this
+                assetListPagination.setListSize(1000);   //need to set this
                 query.setPagination(assetListPagination);
                 query.setAssetSearchCriteria(criteria);
                 List<Asset> assetList = assetModuleService.getAssetListResponse(query);
