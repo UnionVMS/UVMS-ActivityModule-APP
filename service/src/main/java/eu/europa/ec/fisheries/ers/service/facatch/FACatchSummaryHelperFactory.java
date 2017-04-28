@@ -13,6 +13,10 @@ package eu.europa.ec.fisheries.ers.service.facatch;
 
 /**
  * Created by sanera on 06/03/2017.
+ * Data retrieved from database will be same for FACatchSummaryReports. But the way we want to present data on the frontend is different.
+ * This factory class helps creating helper classes to suit different needs.
+ * If in future different table structure is required, you need can make this factory provide that class
+ *
  */
 public class FACatchSummaryHelperFactory {
 
