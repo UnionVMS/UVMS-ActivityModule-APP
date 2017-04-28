@@ -546,6 +546,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return fishingTripIdLists;
     }
 
+
+
     @Override
     /**
      *  Returns TripWidgetDto based on the tripId and activityId
@@ -613,6 +615,15 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             tripWidgetDto.setVesselDetails(detailsDTO);
         }
         return tripWidgetDto;
+    }
+
+    public List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException {
+        if(tripId ==null){
+             throw new ServiceException("tripId is null. Please provide valid tripId");
+        }
+
+        return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
+
     }
 
     @NotNull

@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -31,6 +28,9 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -111,4 +111,12 @@ public interface FishingTripService {
                                                                                                       Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
+
+    /**
+     * Returns list of FishingActivities for provided tripId
+     * @param tripId
+     * @return List<FishingActivityEntity> list of activities for the trip
+     * @throws ServiceException
+     */
+    List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
 }
