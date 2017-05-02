@@ -67,8 +67,8 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
             }
         } catch (JMSException|MessageException | MdrModelMarshallException |ActivityModelMarshallException e) {
             log.error("MdrModelMarshallException in communication with mdr", e.getCause());
-            throw new ServiceException("Eception caught in mdrModuleServiceBean", e.getCause());
+            throw new ServiceException("Exception caught in mdrModuleServiceBean", e.getCause());
         }
-       // return codeMap;
+
     }
 }

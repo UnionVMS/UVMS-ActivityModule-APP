@@ -137,23 +137,24 @@ public class VesselDetailsDTO {
     }
 
     public void enrichIdentifiers(Asset asset) {
+        if(asset!=null) {
+            String ircs = asset.getIrcs();
+            String cfr = asset.getCfr();
+            String externalMarking = asset.getExternalMarking();
 
-        String ircs = asset.getIrcs();
-        String cfr = asset.getCfr();
-        String externalMarking = asset.getExternalMarking();
+            for (AssetIdentifierDto identifier : vesselIdentifiers) {
 
-        for (AssetIdentifierDto identifier : vesselIdentifiers) {
+                if (isEmpty(identifier.getFaIdentifierId())) {
 
-            if (isEmpty(identifier.getFaIdentifierId())) {
+                    VesselIdentifierSchemeIdEnum identifierSchemeId = identifier.getIdentifierSchemeId();
 
-                VesselIdentifierSchemeIdEnum identifierSchemeId = identifier.getIdentifierSchemeId();
-
-                if (CFR.equals(identifierSchemeId) && !isEmpty(cfr)) {
-                    setIdentifier(identifier, cfr);
-                } else if (EXT_MARK.equals(identifierSchemeId) && !isEmpty(externalMarking)) {
-                    setIdentifier(identifier, externalMarking);
-                } else if (IRCS.equals(identifierSchemeId) && !isEmpty(ircs)) {
-                    setIdentifier(identifier, ircs);
+                    if (CFR.equals(identifierSchemeId) && !isEmpty(cfr)) {
+                        setIdentifier(identifier, cfr);
+                    } else if (EXT_MARK.equals(identifierSchemeId) && !isEmpty(externalMarking)) {
+                        setIdentifier(identifier, externalMarking);
+                    } else if (IRCS.equals(identifierSchemeId) && !isEmpty(ircs)) {
+                        setIdentifier(identifier, ircs);
+                    }
                 }
             }
         }

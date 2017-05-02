@@ -323,29 +323,27 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
             List<String> codeList = null;
             try {
+
                 codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults);
-            } catch (ServiceException e) {
-                log.error("Service Excption from process mdrdata ",e.getMessage());
-            }
-            try {
                 Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
 
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers,codeList);
                 log.info("Asset Criteria Pair List size is :"+assetListCriteriaPairs.size());
                 log.info("Got code list of size from mdr:"+codeList.size());
-
-                AssetListCriteria criteria = new AssetListCriteria();
-                criteria.setIsDynamic(false); // need to set this
-                criteria.getCriterias().addAll(assetListCriteriaPairs);
-                AssetListQuery query = new AssetListQuery();
-                AssetListPagination assetListPagination=new AssetListPagination();
-                assetListPagination.setPage(1);   //need to set this
-                assetListPagination.setListSize(1000);   //need to set this
-                query.setPagination(assetListPagination);
-                query.setAssetSearchCriteria(criteria);
-                List<Asset> assetList = assetModuleService.getAssetListResponse(query);
-                vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
-
+                if(assetListCriteriaPairs!=null && !CollectionUtils.isEmpty(assetListCriteriaPairs)) {
+                    AssetListCriteria criteria = new AssetListCriteria();
+                    criteria.setIsDynamic(false); // need to set this
+                    criteria.getCriterias().addAll(assetListCriteriaPairs);
+                    AssetListQuery query = new AssetListQuery();
+                    AssetListPagination assetListPagination = new AssetListPagination();
+                    assetListPagination.setPage(1);   //need to set this
+                    assetListPagination.setListSize(1000);   //need to set this
+                    query.setPagination(assetListPagination);
+                    query.setAssetSearchCriteria(criteria);
+                    List<Asset> assetList = assetModuleService.getAssetListResponse(query);
+                    if(assetList!=null && !CollectionUtils.isEmpty(assetList))
+                    vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
+                }
             } catch (ServiceException e) {
                 log.error("Error while trying to send message to Assets module.", e);
             }
