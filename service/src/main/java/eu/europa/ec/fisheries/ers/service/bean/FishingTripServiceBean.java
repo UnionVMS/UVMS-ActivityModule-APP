@@ -13,28 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
@@ -106,6 +84,28 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.jgroups.conf.ProtocolConfiguration.log;
 import org.mockito.internal.util.collections.Sets;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -621,8 +621,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 tripOverviewDtoList.add(tripOverviewDto);
                 tripWidgetDto.setTrips(tripOverviewDtoList);
                 VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
-                setFlapDocuments(detailsDTO, activityEntity, tripWidgetDto);
-
+                tripWidgetDto.setVesselDetails(detailsDTO);
                 log.debug("tripWidgetDto set for tripID :" + tripId);
             } else {
                 log.debug("TripId is not received for the screen. Try to get TripSummary information for all the tripIds specified for FishingActivity:" + activityEntity.getId());
@@ -666,7 +665,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         tripWidgetDto.setTrips(tripOverviewDtoList);
         if (CollectionUtils.isNotEmpty(tripIdSet)) {
             VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripIdSet.iterator().next());
-            setFlapDocuments(detailsDTO, activityEntity, tripWidgetDto);
+            tripWidgetDto.setVesselDetails(detailsDTO);
         }
         return tripWidgetDto;
     }

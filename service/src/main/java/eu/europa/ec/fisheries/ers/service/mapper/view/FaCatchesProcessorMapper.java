@@ -10,25 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.DestinationLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDetailsDto;
@@ -42,6 +24,8 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMappe
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 /**
  * Created by kovian on 03/03/2017.
@@ -198,7 +182,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
                 addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
         }
-        if (weightSum > 0) {
+        if (weightSum > 0.0) {
             totalWeight = convFc * weightSum;
         }
         return totalWeight;

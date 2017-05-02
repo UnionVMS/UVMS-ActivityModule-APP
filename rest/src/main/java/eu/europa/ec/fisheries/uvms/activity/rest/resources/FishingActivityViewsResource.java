@@ -66,6 +66,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/arrival")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(Arrival.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -81,6 +82,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/landing")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(Landing.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -95,6 +97,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/discard")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(Landing.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -109,6 +112,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/departure")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(Departure.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -123,6 +127,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/notification")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(NotificationOfArrival.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -138,6 +143,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/areaEntry")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(AreaEntry.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -153,6 +159,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/areaExit")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(FishingActivityView.AreaExit.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -168,6 +175,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/gearshot")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(GearShotAndRetrieval.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -183,6 +191,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/transhipment")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(FishingActivityView.Transhipment.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -197,6 +206,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/fishingoperation")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(FishingOperation.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -212,6 +222,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/relocation")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(FishingActivityView.Relocation.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
@@ -226,6 +237,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @POST
     @Path("/jointfishingoperation")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @JsonView(FishingActivityView.JointFishingOperation.class)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
