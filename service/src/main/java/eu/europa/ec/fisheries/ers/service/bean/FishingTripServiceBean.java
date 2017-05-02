@@ -83,6 +83,7 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.jgroups.conf.ProtocolConfiguration.log;
+
 import org.mockito.internal.util.collections.Sets;
 
 import javax.annotation.PostConstruct;
@@ -139,11 +140,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private FishingTripIdentifierDao fishingTripIdentifierDao;
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
-
-    private final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
-    private final String filter = "*";
-    private final List<String> columnsList = new ArrayList<String>();
-    private Integer nrOfResults=9999999;
 
 
     @PostConstruct
@@ -292,7 +288,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
 
-       // need confirmation for removal of this method
+    // need confirmation for removal of this method
     private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
 
         if (vesselDetailsDTO != null && vesselDetailsDTO.hasEmptyIdentifierValues()) {
@@ -317,9 +313,13 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
 
     //To process MDR code list and compare with  database:vesselTransportMeansDao and then enrich with asset module
-    private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO)  {
+    private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
+        final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
+        final String filter = "*";
+        final List<String> columnsList = new ArrayList<String>();
+        Integer nrOfResults = 9999999;
 
-        if (vesselDetailsDTO != null ) {
+        if (vesselDetailsDTO != null) {
 
             List<String> codeList = null;
             try {
@@ -327,10 +327,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults);
                 Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
 
-                List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers,codeList);
-                log.info("Asset Criteria Pair List size is :"+assetListCriteriaPairs.size());
-                log.info("Got code list of size from mdr:"+codeList.size());
-                if(null!=assetListCriteriaPairs && !CollectionUtils.isEmpty(assetListCriteriaPairs)) {
+                List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers, codeList);
+                log.info("Asset Criteria Pair List size is :" + assetListCriteriaPairs.size());
+                log.info("Got code list of size from mdr:" + codeList.size());
+                if (null != assetListCriteriaPairs && !CollectionUtils.isEmpty(assetListCriteriaPairs)) {
                     AssetListCriteria criteria = new AssetListCriteria();
                     criteria.setIsDynamic(false); // need to set this
                     criteria.getCriterias().addAll(assetListCriteriaPairs);
@@ -341,8 +341,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                     query.setPagination(assetListPagination);
                     query.setAssetSearchCriteria(criteria);
                     List<Asset> assetList = assetModuleService.getAssetListResponse(query);
-                    if(null!=assetList && !CollectionUtils.isEmpty(assetList))
-                    vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
+                    if (null != assetList && !CollectionUtils.isEmpty(assetList)) {
+                        vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
+                    }
                 }
             } catch (ServiceException e) {
                 log.error("Error while trying to send message to Assets module.", e);

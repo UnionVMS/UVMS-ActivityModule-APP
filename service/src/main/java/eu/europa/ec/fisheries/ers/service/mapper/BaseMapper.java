@@ -9,7 +9,7 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-    package eu.europa.ec.fisheries.ers.service.mapper;
+package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.mockito.internal.util.collections.Sets.newSet;
@@ -79,12 +79,12 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-    /**
-     * TODO create test
-     */
-    @Slf4j
-    @NoArgsConstructor
-    public class BaseMapper {
+/**
+ * TODO create test
+ */
+@Slf4j
+@NoArgsConstructor
+public class BaseMapper {
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
@@ -205,14 +205,14 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
         return identifiers;
     }
 
-        public static FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
-            FishingTripEntity fishingTripEntity = null;
-            Set<FishingTripEntity> fishingTrips = activityEntity.getFishingTrips();
-            if (!CollectionUtils.isEmpty(fishingTrips)) {
-                fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
-            }
-            return fishingTripEntity;
+    public static FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
+        FishingTripEntity fishingTripEntity = null;
+        Set<FishingTripEntity> fishingTrips = activityEntity.getFishingTrips();
+        if (!CollectionUtils.isEmpty(fishingTrips)) {
+            fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
         }
+        return fishingTripEntity;
+    }
 
 
     public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity tripEntity) {
@@ -240,50 +240,50 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
         return criteriaList;
     }
 
-        public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet,List<String> vesselIdentifierSchemeList) {
-            List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
+    public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
+        List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
 
-           for (AssetIdentifierDto identifierDto : identifierDtoSet) {
-                VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-                ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
-                if (null!=identifierSchemeId && null!=keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())){
-                    String identifierId = identifierDto.getFaIdentifierId();
-                    AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+        for (AssetIdentifierDto identifierDto : identifierDtoSet) {
+            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
+            ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+            if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
+                String identifierId = identifierDto.getFaIdentifierId();
+                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
 
-                    criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
-                    criteriaPair.setValue(identifierId);
-                    criteriaList.add(criteriaPair);
-                }
-                }
-
-
-            return criteriaList;
-        }
-
-        public static boolean enumContains(String test) {
-
-            for (ConfigSearchField keyFromEnum  : ConfigSearchField.values()) {
-                if (keyFromEnum.name().equals(test)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static Double getCalculatedMeasure(MeasureType measureType) {
-            if (measureType == null) {
-                return null;
-            }
-            UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(measureType.getUnitCode());
-            if (unitCodeEnum != null) {
-                BigDecimal measuredValue = measureType.getValue();
-                BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
-                return result.doubleValue();
-            } else {
-                return null;
+                criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
+                criteriaPair.setValue(identifierId);
+                criteriaList.add(criteriaPair);
             }
         }
+
+
+        return criteriaList;
+    }
+
+    public static boolean enumContains(String test) {
+
+        for (ConfigSearchField keyFromEnum : ConfigSearchField.values()) {
+            if (keyFromEnum.name().equals(test)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static Double getCalculatedMeasure(MeasureType measureType) {
+        if (measureType == null) {
+            return null;
+        }
+        UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(measureType.getUnitCode());
+        if (unitCodeEnum != null) {
+            BigDecimal measuredValue = measureType.getValue();
+            BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+            return result.doubleValue();
+        } else {
+            return null;
+        }
+    }
 
     public static String getLanguageIdFromList(List<TextType> textTypes) {
         if (CollectionUtils.isEmpty(textTypes)) {
@@ -400,13 +400,13 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
         return recordMap;
     }
 
-    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList,FishingActivityTypeEnum faTypeToExtract) {
-       if(CollectionUtils.isEmpty(fishingActivityList)){
-           return null;
-       }
+    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
+        if (CollectionUtils.isEmpty(fishingActivityList)) {
+            return null;
+        }
 
-        for(FishingActivityEntity fishingActivityEntity:fishingActivityList){
-            if(faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())){
+        for (FishingActivityEntity fishingActivityEntity : fishingActivityList) {
+            if (faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())) {
                 return fishingActivityEntity;
             }
         }
@@ -416,34 +416,34 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 
     protected FluxLocationEntity extractFLUXPosition(Set<FluxLocationEntity> fluxLocationEntityList) {
-        if(CollectionUtils.isEmpty(fluxLocationEntityList)){
+        if (CollectionUtils.isEmpty(fluxLocationEntityList)) {
             return null;
         }
 
-        for(FluxLocationEntity locationEntity : fluxLocationEntityList){
-            if(FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())){
+        for (FluxLocationEntity locationEntity : fluxLocationEntityList) {
+            if (FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())) {
                 return locationEntity;
             }
         }
         return null;
     }
 
-    protected String extractGeometryWkt(Double longitude,Double latitude){
+    protected String extractGeometryWkt(Double longitude, Double latitude) {
         Geometry geom = GeometryUtils.createPoint(longitude, latitude);
 
-       return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
+        return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
     }
 
     @NotNull
     protected PositionDto extractPositionDtoFromFishingActivity(FishingActivityEntity faEntity) {
-        if(faEntity == null){
+        if (faEntity == null) {
             return null;
         }
         PositionDto positionDto = new PositionDto();
         positionDto.setOccurence(faEntity.getOccurence());
-        if(CollectionUtils.isNotEmpty(faEntity.getFluxLocations())){
-            FluxLocationEntity locationEntity= extractFLUXPosition(faEntity.getFluxLocations());
-            if(locationEntity !=null) {
+        if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
+            FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
+            if (locationEntity != null) {
                 positionDto.setGeometry(extractGeometryWkt(locationEntity.getLongitude(), locationEntity.getLatitude()));
             }
         }
@@ -470,20 +470,21 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
     /**
      * This method will return fishing trip start and end time
      * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time
-     *fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
+     * fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
+     *
      * @param fishingTripList
      * @param fishingActivityType
      * @return
      */
-    public Date getFishingTripDateTime(List<FishingTripEntity> fishingTripList,String fishingActivityType){
-        if(CollectionUtils.isEmpty(fishingTripList) || fishingActivityType ==null){
+    public Date getFishingTripDateTime(List<FishingTripEntity> fishingTripList, String fishingActivityType) {
+        if (CollectionUtils.isEmpty(fishingTripList) || fishingActivityType == null) {
             return null;
         }
 
-        for(FishingTripEntity fishingTripEntity : fishingTripList){
-            FishingActivityEntity fishingActivity =fishingTripEntity.getFishingActivity();
-            if(fishingActivity !=null && fishingActivityType.equals(fishingActivity.getTypeCode()) && fishingActivity.getCalculatedStartTime() !=null){
-                return  fishingActivity.getCalculatedStartTime();
+        for (FishingTripEntity fishingTripEntity : fishingTripList) {
+            FishingActivityEntity fishingActivity = fishingTripEntity.getFishingActivity();
+            if (fishingActivity != null && fishingActivityType.equals(fishingActivity.getTypeCode()) && fishingActivity.getCalculatedStartTime() != null) {
+                return fishingActivity.getCalculatedStartTime();
             }
         }
         return null;

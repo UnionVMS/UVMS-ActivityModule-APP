@@ -1,5 +1,7 @@
 package eu.europa.ec.fisheries.ers.service;
+
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,5 @@ public interface MdrModuleService {
      */
 
 
-
-    public List<String>  getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults) throws ServiceException;
+    public List<String> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults) throws ServiceException;
 }
