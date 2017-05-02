@@ -81,12 +81,11 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         sql.append(" where ");
         createWherePartForQueryForFilters(sql, query);
 
-        LOG.debug("Generated Query After Where :" + sql);
         return sql;
     }
 
 
-      
+
     // Check if the size of unique Fishing trips is withing threshold specified
     public void checkThresholdForFishingTripList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
 
