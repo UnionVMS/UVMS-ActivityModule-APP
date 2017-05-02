@@ -330,7 +330,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers,codeList);
                 log.info("Asset Criteria Pair List size is :"+assetListCriteriaPairs.size());
                 log.info("Got code list of size from mdr:"+codeList.size());
-                if(assetListCriteriaPairs!=null && !CollectionUtils.isEmpty(assetListCriteriaPairs)) {
+                if(null!=assetListCriteriaPairs && !CollectionUtils.isEmpty(assetListCriteriaPairs)) {
                     AssetListCriteria criteria = new AssetListCriteria();
                     criteria.setIsDynamic(false); // need to set this
                     criteria.getCriterias().addAll(assetListCriteriaPairs);
@@ -341,7 +341,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                     query.setPagination(assetListPagination);
                     query.setAssetSearchCriteria(criteria);
                     List<Asset> assetList = assetModuleService.getAssetListResponse(query);
-                    if(assetList!=null && !CollectionUtils.isEmpty(assetList))
+                    if(null!=assetList && !CollectionUtils.isEmpty(assetList))
                     vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
                 }
             } catch (ServiceException e) {
