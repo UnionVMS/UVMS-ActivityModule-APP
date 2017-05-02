@@ -45,10 +45,14 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft JOIN FETCH ft.fishingTripIdentifiers ftripId LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
 
 
+    /**
+     *For some usecases we need different database column mappings for same filters.
+     * We can call method which sets these specific mappings for certain business requirements while calling constructor     *
+     */
    public FishingTripSearchBuilder(){
         super();
         FilterMap filterMap=FilterMap.createFilterMap();
-        filterMap.populateFilterMappingsWithChangedDelimitedPeriodTable();
+        filterMap.populateFilterMappingsForFilterFishingTrips();
         setFilterMap(filterMap);
     }
 
@@ -75,7 +79,6 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         LOG.debug("Create Where part of Query");
 
         sql.append(" where ");
-        sql.append(" ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE +" and ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE+" ");
         createWherePartForQueryForFilters(sql, query);
 
         LOG.debug("Generated Query After Where :" + sql);
@@ -83,12 +86,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     }
 
 
-    /*
-       Create FishingTrip resopnse as expected by Execute report Filter Fishing trips functionality
-     */
-
-
-
+      
     // Check if the size of unique Fishing trips is withing threshold specified
     public void checkThresholdForFishingTripList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
 

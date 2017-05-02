@@ -488,6 +488,15 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
             return new FishingTripResponse();
         }
+
+        /**
+         * As per business usecase, period_start and period_end date is MUST to filter fishing trip Ids.
+         */
+        Map<SearchFilter, String> searchFilters= query.getSearchCriteriaMap();
+        if(searchFilters.get(SearchFilter.PERIOD_START) ==null || searchFilters.get(SearchFilter.PERIOD_END) !=null ){
+             throw new ServiceException("Either PERIOD_START or PERIOD_END not present. Please provide values for both.");
+        }
+
         List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
         log.debug("Fishing trips received from db:" + fishingTripList.size());
 
