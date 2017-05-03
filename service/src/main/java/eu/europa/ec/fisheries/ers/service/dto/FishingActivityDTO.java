@@ -13,15 +13,15 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+
+import java.util.Date;
+import java.util.List;
 
 @JsonInclude(Include.NON_NULL)
 public class FishingActivityDTO {
@@ -35,8 +35,23 @@ public class FishingActivityDTO {
     @JsonProperty("faReportID")
     private int faReportID;
 
+    @JsonProperty("faUniqueReportID")
+    private String faUniqueReportID;
+
+    @JsonProperty("faUniqueReportSchemeID")
+    private String faUniqueReportSchemeID;
+
+    @JsonProperty("faReferenceID")
+    private String faReferenceID;
+
+    @JsonProperty("faReferenceSchemeID")
+    private String faReferenceSchemeID;
+
     @JsonProperty("activityType")
     private String activityType;
+
+    @JsonProperty("geometry")
+    private String geometry;
 
     @JsonProperty("occurence")
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -44,6 +59,17 @@ public class FishingActivityDTO {
 
     @JsonProperty("reason")
     private String reason;
+
+    public String getPurposeCode() {
+        return purposeCode;
+    }
+
+    public void setPurposeCode(String purposeCode) {
+        this.purposeCode = purposeCode;
+    }
+
+    @JsonProperty("purposeCode")
+    private String purposeCode;
 
     @JsonProperty("fluxLocations")
     private List<FluxLocationDetailsDTO> fluxLocations;
@@ -153,5 +179,45 @@ public class FishingActivityDTO {
 
     public void setFishingActivityId(int fishingActivityId) {
         this.fishingActivityId = fishingActivityId;
+    }
+
+    public String getFaUniqueReportID() {
+        return faUniqueReportID;
+    }
+
+    public void setFaUniqueReportID(String faUniqueReportID) {
+        this.faUniqueReportID = faUniqueReportID;
+    }
+
+    public String getFaUniqueReportSchemeID() {
+        return faUniqueReportSchemeID;
+    }
+
+    public void setFaUniqueReportSchemeID(String faUniqueReportSchemeID) {
+        this.faUniqueReportSchemeID = faUniqueReportSchemeID;
+    }
+
+    public String getFaReferenceID() {
+        return faReferenceID;
+    }
+
+    public void setFaReferenceID(String faReferenceID) {
+        this.faReferenceID = faReferenceID;
+    }
+
+    public String getFaReferenceSchemeID() {
+        return faReferenceSchemeID;
+    }
+
+    public void setFaReferenceSchemeID(String faReferenceSchemeID) {
+        this.faReferenceSchemeID = faReferenceSchemeID;
+    }
+
+    public String getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(String geometry) {
+        this.geometry = geometry;
     }
 }

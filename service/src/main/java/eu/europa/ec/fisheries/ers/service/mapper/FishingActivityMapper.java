@@ -175,7 +175,13 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingActivityId", source = "id"),
             @Mapping(target = "activityType", source = "typeCode"),
             @Mapping(target = "occurence", source = "occurence"),
+            @Mapping(target = "geometry", source = "wkt"),
+            @Mapping(target = "faReferenceID", source = "faReportDocument.fluxReportDocument.referenceId"),
+            @Mapping(target = "faReferenceSchemeID", source = "faReportDocument.fluxReportDocument.referenceSchemeId"),
+            @Mapping(target = "faUniqueReportID", expression = "java(getUniqueFaReportId(entity))"),
+            @Mapping(target = "faUniqueReportSchemeID", expression = "java(getUniqueFaReportSchemeId(entity))"),
             @Mapping(target = "reason", source = "reasonCode"),
+            @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
             @Mapping(target = "faReportDocumentType", source = "faReportDocument.typeCode"),
             @Mapping(target = "faReportAcceptedDateTime", source = "faReportDocument.acceptedDatetime"),
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"),
@@ -272,6 +278,32 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         return delimitedPeriodDTOEntities;
     }
+
+    protected String getUniqueFaReportId(FishingActivityEntity entity){
+
+        List<FluxReportIdentifierDTO> fluxReportIdentifierDTOs=  getUniqueId(entity);
+        if(CollectionUtils.isEmpty(fluxReportIdentifierDTOs)){
+            return null;
+        }
+
+        // for EU implementation we are expecting only single value for the FLUXReportIdentifier per FLUXReportDocument as per implementation guide.
+        FluxReportIdentifierDTO fluxReportIdentifierDTO=  fluxReportIdentifierDTOs.get(0);
+        return fluxReportIdentifierDTO.getFluxReportId();
+    }
+
+
+    protected String getUniqueFaReportSchemeId(FishingActivityEntity entity){
+
+        List<FluxReportIdentifierDTO> fluxReportIdentifierDTOs=  getUniqueId(entity);
+        if(CollectionUtils.isEmpty(fluxReportIdentifierDTOs)){
+            return null;
+        }
+
+        // for EU implementation we are expecting only single value for the FLUXReportIdentifier per FLUXReportDocument as per implementation guide.
+        FluxReportIdentifierDTO fluxReportIdentifierDTO=  fluxReportIdentifierDTOs.get(0);
+        return fluxReportIdentifierDTO.getFluxReportSchemeId();
+    }
+
 
     protected List<FluxReportIdentifierDTO> getUniqueId(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() == null) {
