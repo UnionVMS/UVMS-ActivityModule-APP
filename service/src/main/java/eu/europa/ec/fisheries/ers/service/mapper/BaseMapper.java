@@ -240,6 +240,37 @@ public class BaseMapper {
         return criteriaList;
     }
 
+    public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
+        List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
+
+        for (AssetIdentifierDto identifierDto : identifierDtoSet) {
+            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
+            ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+            if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
+                String identifierId = identifierDto.getFaIdentifierId();
+                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+
+                criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
+                criteriaPair.setValue(identifierId);
+                criteriaList.add(criteriaPair);
+            }
+        }
+
+
+        return criteriaList;
+    }
+
+    public static boolean enumContains(String test) {
+
+        for (ConfigSearchField keyFromEnum : ConfigSearchField.values()) {
+            if (keyFromEnum.name().equals(test)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static Double getCalculatedMeasure(MeasureType measureType) {
         if (measureType == null) {
             return null;
@@ -369,13 +400,13 @@ public class BaseMapper {
         return recordMap;
     }
 
-    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList,FishingActivityTypeEnum faTypeToExtract) {
-       if(CollectionUtils.isEmpty(fishingActivityList)){
-           return null;
-       }
+    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
+        if (CollectionUtils.isEmpty(fishingActivityList)) {
+            return null;
+        }
 
-        for(FishingActivityEntity fishingActivityEntity:fishingActivityList){
-            if(faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())){
+        for (FishingActivityEntity fishingActivityEntity : fishingActivityList) {
+            if (faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())) {
                 return fishingActivityEntity;
             }
         }
@@ -385,34 +416,34 @@ public class BaseMapper {
 
 
     protected FluxLocationEntity extractFLUXPosition(Set<FluxLocationEntity> fluxLocationEntityList) {
-        if(CollectionUtils.isEmpty(fluxLocationEntityList)){
+        if (CollectionUtils.isEmpty(fluxLocationEntityList)) {
             return null;
         }
 
-        for(FluxLocationEntity locationEntity : fluxLocationEntityList){
-            if(FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())){
+        for (FluxLocationEntity locationEntity : fluxLocationEntityList) {
+            if (FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())) {
                 return locationEntity;
             }
         }
         return null;
     }
 
-    protected String extractGeometryWkt(Double longitude,Double latitude){
+    protected String extractGeometryWkt(Double longitude, Double latitude) {
         Geometry geom = GeometryUtils.createPoint(longitude, latitude);
 
-       return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
+        return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
     }
 
     @NotNull
     protected PositionDto extractPositionDtoFromFishingActivity(FishingActivityEntity faEntity) {
-        if(faEntity == null){
+        if (faEntity == null) {
             return null;
         }
         PositionDto positionDto = new PositionDto();
         positionDto.setOccurence(faEntity.getOccurence());
-        if(CollectionUtils.isNotEmpty(faEntity.getFluxLocations())){
-            FluxLocationEntity locationEntity= extractFLUXPosition(faEntity.getFluxLocations());
-            if(locationEntity !=null) {
+        if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
+            FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
+            if (locationEntity != null) {
                 positionDto.setGeometry(extractGeometryWkt(locationEntity.getLongitude(), locationEntity.getLatitude()));
             }
         }
@@ -439,20 +470,21 @@ public class BaseMapper {
     /**
      * This method will return fishing trip start and end time
      * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time
-     *fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
+     * fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
+     *
      * @param fishingTripList
      * @param fishingActivityType
      * @return
      */
-    public Date getFishingTripDateTime(List<FishingTripEntity> fishingTripList,String fishingActivityType){
-        if(CollectionUtils.isEmpty(fishingTripList) || fishingActivityType ==null){
+    public Date getFishingTripDateTime(List<FishingTripEntity> fishingTripList, String fishingActivityType) {
+        if (CollectionUtils.isEmpty(fishingTripList) || fishingActivityType == null) {
             return null;
         }
 
-        for(FishingTripEntity fishingTripEntity : fishingTripList){
-            FishingActivityEntity fishingActivity =fishingTripEntity.getFishingActivity();
-            if(fishingActivity !=null && fishingActivityType.equals(fishingActivity.getTypeCode()) && fishingActivity.getCalculatedStartTime() !=null){
-                return  fishingActivity.getCalculatedStartTime();
+        for (FishingTripEntity fishingTripEntity : fishingTripList) {
+            FishingActivityEntity fishingActivity = fishingTripEntity.getFishingActivity();
+            if (fishingActivity != null && fishingActivityType.equals(fishingActivity.getTypeCode()) && fishingActivity.getCalculatedStartTime() != null) {
+                return fishingActivity.getCalculatedStartTime();
             }
         }
         return null;

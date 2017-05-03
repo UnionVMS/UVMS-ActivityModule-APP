@@ -19,6 +19,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,6 +131,47 @@ public class BaseMapperTest extends BaseUnitilsTest {
         AssetListCriteriaPair extPair = map.get(ConfigSearchField.EXTERNAL_MARKING);
         assertEquals(ConfigSearchField.EXTERNAL_MARKING, extPair.getKey());
         assertEquals("extValue", extPair.getValue());
+
+        AssetListCriteriaPair ircsPair = map.get(ConfigSearchField.IRCS);
+        assertEquals(ConfigSearchField.IRCS, ircsPair.getKey());
+        assertEquals("ircsValue", ircsPair.getValue());
+
+    }
+
+
+    @Test
+   public void testmapMdrCodeListToAssetListCriteriaPairList(){
+
+        AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
+        cfr.setFaIdentifierId("cfrValue");
+        AssetIdentifierDto gfmc = new AssetIdentifierDto(GFCM);
+        AssetIdentifierDto ext = new AssetIdentifierDto(EXT_MARK);
+        ext.setFaIdentifierId("extValue");
+        AssetIdentifierDto ircs = new AssetIdentifierDto(IRCS);
+        ircs.setFaIdentifierId("ircsValue");
+        AssetIdentifierDto uvi = new AssetIdentifierDto(UVI);
+
+        Set<AssetIdentifierDto> identifierDtos = newSet(cfr, gfmc, ext, ircs, uvi);
+        List<String> mdrCodeList=new ArrayList<String>();
+        mdrCodeList.add("CFR");
+        mdrCodeList.add("IRCS");
+        mdrCodeList.add("EXT_MARK");
+        mdrCodeList.add("UVI");
+        mdrCodeList.add("ICCAT");
+        mdrCodeList.add("GFCM");
+        List<AssetListCriteriaPair> pairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(identifierDtos,mdrCodeList);
+
+        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs,
+                new Function<AssetListCriteriaPair, ConfigSearchField>() {
+                    public ConfigSearchField apply(AssetListCriteriaPair from) {
+                        return from.getKey();
+                    }
+                });
+
+        assertEquals(2, map.size());
+        AssetListCriteriaPair cfrPair = map.get(ConfigSearchField.CFR);
+        assertEquals(ConfigSearchField.CFR, cfrPair.getKey());
+        assertEquals("cfrValue", cfrPair.getValue());
 
         AssetListCriteriaPair ircsPair = map.get(ConfigSearchField.IRCS);
         assertEquals(ConfigSearchField.IRCS, ircsPair.getKey());
