@@ -29,7 +29,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 //import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
@@ -38,13 +42,17 @@ import java.util.*;
 public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripSearchBuilder.class);
-    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
+    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft JOIN FETCH ft.fishingTripIdentifiers ftripId LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
 
 
+    /**
+     *For some usecases we need different database column mappings for same filters.
+     * We can call method which sets these specific mappings for certain business requirements while calling constructor     *
+     */
    public FishingTripSearchBuilder(){
         super();
         FilterMap filterMap=FilterMap.createFilterMap();
-        filterMap.populateFilterMappingsWithChangedDelimitedPeriodTable();
+        filterMap.populateFilterMappingsForFilterFishingTrips();
         setFilterMap(filterMap);
     }
 
@@ -73,14 +81,8 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         sql.append(" where ");
         createWherePartForQueryForFilters(sql, query);
 
-        LOG.debug("Generated Query After Where :" + sql);
         return sql;
     }
-
-
-    /*
-       Create FishingTrip resopnse as expected by Execute report Filter Fishing trips functionality
-     */
 
 
 

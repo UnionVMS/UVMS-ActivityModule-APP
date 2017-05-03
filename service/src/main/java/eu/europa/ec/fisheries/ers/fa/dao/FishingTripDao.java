@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
@@ -57,6 +58,20 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         typedQuery.setMaxResults(1);
 
         return typedQuery.getSingleResult();
+    }
+
+    public List<FishingActivityEntity> getFishingActivitiesForFishingTripId(String fishingTripId){
+
+        log.debug("getFishingActivitiesForFishingTripId for tripId:" + fishingTripId);
+        String sql = "SELECT DISTINCT a from FishingActivityEntity a JOIN a.fishingTrips fishingTrips" +
+                "  JOIN fishingTrips.fishingTripIdentifiers fi" +
+                "  where fi.tripId =:fishingTripId order by a.calculatedStartTime ASC";
+
+        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
+        typedQuery.setParameter("fishingTripId", fishingTripId);
+
+        return typedQuery.getResultList();
+
     }
 
     /**

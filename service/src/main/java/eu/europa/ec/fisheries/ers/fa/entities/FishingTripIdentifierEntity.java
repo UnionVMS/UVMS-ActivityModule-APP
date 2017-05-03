@@ -22,7 +22,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
+import java.util.Date;
 
 @NamedQueries({
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRIP,
@@ -100,6 +103,14 @@ public class FishingTripIdentifierEntity implements Serializable {
 	@Column(name = "trip_scheme_id", nullable = false)
 	private String tripSchemeId;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "calculated_trip_start_date", length = 29)
+	private Date calculatedTripStartDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "calculated_trip_end_date", length = 29)
+	private Date calculatedTripEndDate;
+
 	public FishingTripIdentifierEntity() {
 		super();
 	}
@@ -123,6 +134,22 @@ public class FishingTripIdentifierEntity implements Serializable {
 	}
 	public void setTripSchemeId(String tripSchemeId) {
 		this.tripSchemeId = tripSchemeId;
+	}
+
+	public Date getCalculatedTripStartDate() {
+		return calculatedTripStartDate;
+	}
+
+	public void setCalculatedTripStartDate(Date calculatedTripStartDate) {
+		this.calculatedTripStartDate = calculatedTripStartDate;
+	}
+
+	public Date getCalculatedTripEndDate() {
+		return calculatedTripEndDate;
+	}
+
+	public void setCalculatedTripEndDate(Date calculatedTripEndDate) {
+		this.calculatedTripEndDate = calculatedTripEndDate;
 	}
 
 	@Override

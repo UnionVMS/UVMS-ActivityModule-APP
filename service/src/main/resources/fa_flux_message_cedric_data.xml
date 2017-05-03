@@ -39,7 +39,7 @@
 		<ram:SpecifiedFishingActivity>
 			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
 			<ram:OccurrenceDateTime>
-				<udt:DateTime>2017-01-09T11:36:00Z</udt:DateTime>
+				<udt:DateTime>2016-01-09T11:36:00Z</udt:DateTime>
 			</ram:OccurrenceDateTime>
 			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
 			<ram:SpecifiedFACatch>
@@ -124,7 +124,7 @@
 		<ram:SpecifiedFishingActivity>
 			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</ram:TypeCode>
 			<ram:OccurrenceDateTime>
-				<udt:DateTime>2017-01-09T10:42:00Z</udt:DateTime>
+				<udt:DateTime>2015-01-09T10:42:00Z</udt:DateTime>
 			</ram:OccurrenceDateTime>
 			<ram:ReasonCode listID="FA_REASON_ENTRY">FSH</ram:ReasonCode>
 			<ram:SpecifiedFACatch>
@@ -217,7 +217,7 @@
 		<ram:SpecifiedFishingActivity>
 			<ram:TypeCode listID="FLUX_FA_TYPE">ARRIVAL</ram:TypeCode>
 			<ram:OccurrenceDateTime>
-				<udt:DateTime>2017-01-09T12:32:00Z</udt:DateTime>
+				<udt:DateTime>2014-01-09T12:32:00Z</udt:DateTime>
 			</ram:OccurrenceDateTime>
 			<ram:ReasonCode listID="FA_REASON_ARRIVAL">LAN</ram:ReasonCode>
 			<ram:SpecifiedFACatch>
@@ -8946,7 +8946,7 @@
 		<ram:SpecifiedFishingActivity>
 			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</ram:TypeCode>
 			<ram:OccurrenceDateTime>
-				<udt:DateTime>2017-01-09T13:12:00Z</udt:DateTime>
+				<udt:DateTime>2016-08-09T13:12:00Z</udt:DateTime>
 			</ram:OccurrenceDateTime>
 			<ram:ReasonCode listID="FA_REASON_ENTRY">CRO</ram:ReasonCode>
 			<ram:SpeciesTargetCode listID="TAGRET_SPECIES_GROUP">DEMERSAL</ram:SpeciesTargetCode>
@@ -10911,7 +10911,7 @@
 		<ram:SpecifiedFishingActivity>
 			<ram:TypeCode listID="FLUX_FA_TYPE">DISCARD</ram:TypeCode>
 			<ram:OccurrenceDateTime>
-				<udt:DateTime>2017-01-09T10:44:00Z</udt:DateTime>
+				<udt:DateTime>2016-11-09T10:44:00Z</udt:DateTime>
 			</ram:OccurrenceDateTime>
 			<ram:SpecifiedFACatch>
 				<ram:SpeciesCode listID="FAO_SPECIES">HKE</ram:SpeciesCode>

@@ -247,8 +247,9 @@ public class FilterMap {
      * Below method stores mapping for each Filter criteria. Mapping will provide information on table joins
      * required for the criteria and Where conditions which needs to be applied for the criteria
      */
-    public void populateFilterMappingsWithChangedDelimitedPeriodTable() {
-         populateFilterMappings();
+    public void populateFilterMappingsForFilterFishingTrips() {
+         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
+         filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
     }
 
     public void populateFilterMAppingsWithChangeForFACatchReport() {

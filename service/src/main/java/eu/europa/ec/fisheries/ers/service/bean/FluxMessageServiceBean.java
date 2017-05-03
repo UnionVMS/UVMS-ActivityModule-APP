@@ -21,6 +21,8 @@ import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
@@ -30,6 +32,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
@@ -42,6 +45,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
@@ -85,6 +89,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     @EJB
     private PropertiesBean properties;
+
+    @EJB
+    private FishingTripService fishingTripService;
+
     private DatabaseDialect dialect;
 
     @PostConstruct
@@ -109,6 +117,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             updateGeometry(faReportDocument);
             enrichFishingActivityWithGuiID(faReportDocument);
+            calculateFishingTripStartAndEndDate(faReportDocument);
         }
         log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
 
@@ -118,9 +127,67 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         log.info("Insert fishing activity records into DB complete.");
     }
 
+    /**
+     * This method will traverse through all the FishingTrips mentioned in the FaReportDocument and
+     * update start and end date for the trip based on the fishing activities reported for the trip
+     * @param faReportDocument
+     */
+    public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument){
+        log.debug("start calculating  fishing trip start and end date");
+        Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
+        if(CollectionUtils.isEmpty(fishingActivities))
+            return;
+
+        for(FishingActivityEntity fishingActivityEntity:fishingActivities){
+            Set<FishingTripEntity> fishingTripEntities=fishingActivityEntity.getFishingTrips();
+
+            if(CollectionUtils.isEmpty(fishingActivities))
+                continue;
+
+            for(FishingTripEntity fishingTripEntity :fishingTripEntities){
+                setTripStartAndEndDateForFishingTrip(fishingTripEntity);
+
+            }
+
+        }
+    }
+
+    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
+        Set<FishingTripIdentifierEntity> identifierEntities= fishingTripEntity.getFishingTripIdentifiers();
+        if(CollectionUtils.isEmpty(identifierEntities))
+            return;
+        for(FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities){
+            try {
+                List<FishingActivityEntity> fishingActivityEntityList=fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
+
+                if(CollectionUtils.isNotEmpty(fishingActivityEntityList)){
+                    log.debug(fishingActivityEntityList.size()+" Fishing Activities found for tripId:"+tripIdentifierEntity.getTripId());
+                    FishingActivityEntity firstFishingActivity= fishingActivityEntityList.get(0);
+                    Date calculatedTripStartDate =firstFishingActivity.getCalculatedStartTime();
+                    tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
+                    Date calculatedTripEndDate;
+                    int totalActivities=fishingActivityEntityList.size();
+                    if(totalActivities>1){
+                        calculatedTripEndDate=fishingActivityEntityList.get(totalActivities-1).getCalculatedStartTime();
+                    }else{
+                        calculatedTripEndDate=firstFishingActivity.getCalculatedStartTime();
+                    }
+                    tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
+                    log.debug("calculatedTripStartDate :"+ DateFormatUtils.format(calculatedTripStartDate,"dd/mm/yyyy") + " calculatedTripEndDate:"+DateFormatUtils.format(calculatedTripEndDate,"dd/mm/yyyy") + " for tripId:"+tripIdentifierEntity.getTripId());
+                }
+
+            } catch (Exception e) {
+                log.error("Error while trying to calculate FishingTrip start and end Date",e);
+            }
+        }
+    }
+
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument){
         enrichWithGuidFromAssets(faReportDocument.getVesselTransportMeans());
         Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
+        if(CollectionUtils.isEmpty(fishingActivities))
+            return;
+
         for(FishingActivityEntity fishingActivityEntity:fishingActivities){
             enrichFishingActivityVesselWithGuiId(fishingActivityEntity);
             if(fishingActivityEntity.getRelatedFishingActivity() !=null)

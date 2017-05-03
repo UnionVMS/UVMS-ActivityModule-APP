@@ -488,6 +488,15 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
             return new FishingTripResponse();
         }
+
+        /**
+         * As per business usecase, period_start and period_end date is MUST to filter fishing trip Ids.
+         */
+        Map<SearchFilter, String> searchFilters= query.getSearchCriteriaMap();
+        if(searchFilters.get(SearchFilter.PERIOD_START) ==null || searchFilters.get(SearchFilter.PERIOD_END) ==null ){
+             throw new ServiceException("Either PERIOD_START or PERIOD_END not present. Please provide values for both.");
+        }
+
         List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
         log.debug("Fishing trips received from db:" + fishingTripList.size());
 
@@ -545,6 +554,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
         return fishingTripIdLists;
     }
+
+
 
     @Override
     /**
@@ -613,6 +624,15 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             tripWidgetDto.setVesselDetails(detailsDTO);
         }
         return tripWidgetDto;
+    }
+
+    public List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException {
+        if(tripId ==null){
+             throw new ServiceException("tripId is null. Please provide valid tripId");
+        }
+
+        return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
+
     }
 
     @NotNull
