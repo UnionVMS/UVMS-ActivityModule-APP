@@ -68,7 +68,7 @@ public class MessageConsumerBean implements MessageListener {
         TextMessage textMessage = null;
         try {
             textMessage = (TextMessage) message;
-            ActivityModuleRequest request = null;
+            ActivityModuleRequest request;
             request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
             LOG.debug("Message unmarshalled successfully in activity");
             if (request==null) {

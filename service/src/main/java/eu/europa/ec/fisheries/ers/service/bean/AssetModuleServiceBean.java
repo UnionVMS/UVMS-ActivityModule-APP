@@ -13,16 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.jms.TextMessage;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
@@ -36,16 +26,17 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
+import eu.europa.ec.fisheries.wsdl.asset.types.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.jms.TextMessage;
+import javax.transaction.Transactional;
+import java.util.*;
 
 @Stateless
 @Transactional
@@ -209,10 +200,14 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         AssetListCriteria assetListCriteria = new AssetListCriteria();
         for (VesselIdentifierEntity identifier : vesselIdentifiers) {
             VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(identifier.getVesselIdentifierSchemeId());
-            AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-            criteriaPair.setKey(queryEnum.getConfigSearchField());
-            criteriaPair.setValue(identifier.getVesselIdentifierId());
-            assetListCriteria.getCriterias().add(criteriaPair);
+            if(queryEnum != null){
+                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+                criteriaPair.setKey(queryEnum.getConfigSearchField());
+                criteriaPair.setValue(identifier.getVesselIdentifierId());
+                assetListCriteria.getCriterias().add(criteriaPair);
+            } else {
+                log.warn("For Identifier : '"+identifier.getVesselIdentifierSchemeId()+"' it was not found the counterpart in the VesselTypeAssetQueryEnum.");
+            }
         }
 
         assetListCriteria.setIsDynamic(false); // DO not know why
