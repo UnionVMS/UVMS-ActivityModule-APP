@@ -10,21 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFishingActivity;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationConfig;
@@ -36,6 +21,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityJointFishingOperationViewMapper;
@@ -50,6 +36,15 @@ import org.junit.Before;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.InputStream;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFishingActivity;
+import static org.junit.Assert.*;
 
 /**
  * Created by kovian on 09/02/2017.
@@ -141,7 +136,7 @@ public class FishingActivityViewMapperTest {
     public void testGearShotAndRetrieval(){
         Set<FishingActivityEntity> fishingActivityEntity = new HashSet(Arrays.asList(getFishingActivityEntity()));
         List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntity);
-        //printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
+        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
     }
 
     @Test
