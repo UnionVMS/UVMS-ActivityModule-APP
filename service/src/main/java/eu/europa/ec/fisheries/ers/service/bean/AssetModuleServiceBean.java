@@ -200,7 +200,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         AssetListCriteria assetListCriteria = new AssetListCriteria();
         for (VesselIdentifierEntity identifier : vesselIdentifiers) {
             VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(identifier.getVesselIdentifierSchemeId());
-            if(queryEnum != null && queryEnum.getConfigSearchField() != null){
+            if(queryEnum != null && queryEnum.getConfigSearchField() != null && StringUtils.isNotEmpty(identifier.getVesselIdentifierId())){
                 AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
                 criteriaPair.setKey(queryEnum.getConfigSearchField());
                 criteriaPair.setValue(identifier.getVesselIdentifierId());
