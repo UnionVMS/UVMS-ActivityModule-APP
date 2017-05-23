@@ -192,6 +192,8 @@ public abstract class FACatchSummaryHelper {
         return groupedMap;
     }
 
+
+
     /**
      * Post process data received from database to create FACatchSummaryRecordDTO. Every record will have summary calculated for it.
      *
