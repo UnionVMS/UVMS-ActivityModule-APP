@@ -17,8 +17,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
-
 /**
  * This is base class used to Group by results in Java.
  * If you want to group by results with different set of variables. Then just extend this class and override equals and hashcode method with
@@ -30,7 +28,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"count", "typeCode", "species", "fishClass"})
 @ToString
-public class FaCatchSummaryCustomProxy implements Serializable {
+public class FaCatchSummaryCustomProxy {
 
 
     private String day;
