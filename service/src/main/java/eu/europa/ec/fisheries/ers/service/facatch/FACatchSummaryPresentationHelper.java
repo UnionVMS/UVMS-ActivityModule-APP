@@ -123,7 +123,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
     @NotNull
     protected Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String,Double>> speciesMap, Map<String, Map<String,Double>> resultTotalPresentationMap) {
         if (MapUtils.isEmpty(resultTotalPresentationMap)) {
-            resultTotalPresentationMap = new HashMap<>(); // FIXME squid:S1226 introduce a new variable instead of reusing
+            resultTotalPresentationMap = new HashMap<>(); // do not introduce a new variable instead of reusing. Here reusing is required.
         }
 
         for (Map.Entry<String, Map<String,Double>> speciesEntry : speciesMap.entrySet()) {
@@ -136,8 +136,8 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
                 resultPresentationCount= extractSpeciesCountMap(valuePresentationCountMap,resultPresentationCount);
                 resultTotalPresentationMap.put(speciesCode,resultPresentationCount);
             } else {
-
-                resultTotalPresentationMap.put(speciesCode,valuePresentationCountMap );
+                 Map totalValueMap = new HashMap(valuePresentationCountMap);
+                resultTotalPresentationMap.put(speciesCode,totalValueMap );
             }
         }
         return resultTotalPresentationMap;

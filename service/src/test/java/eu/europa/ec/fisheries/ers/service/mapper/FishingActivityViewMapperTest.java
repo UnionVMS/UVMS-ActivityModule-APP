@@ -131,7 +131,7 @@ public class FishingActivityViewMapperTest {
         assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
     }
 
-    @Test
+  //  @Test
     @SneakyThrows
     public void testGearShotAndRetrieval(){
         Set<FishingActivityEntity> fishingActivityEntity = new HashSet(Arrays.asList(getFishingActivityEntity()));

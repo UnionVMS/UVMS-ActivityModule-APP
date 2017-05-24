@@ -117,8 +117,10 @@ public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
     }
 
     /**
-     * Do not use EqualsAndHashCode annotation by lombok here. If you use it, then java HashMap is not able to use the objects
+     * DO NOT USE EqualsAndHashCode annotation by lombok here. If you use it, then java HashMap is not able to use the objects
      * of this class as keys as required. It is not able to identify objects uniquely in a correct way breaking the functionality.
+     *
+     * We have modified equals method to use parent class to make it work in GroupBy
      * @param o
      * @return
      */

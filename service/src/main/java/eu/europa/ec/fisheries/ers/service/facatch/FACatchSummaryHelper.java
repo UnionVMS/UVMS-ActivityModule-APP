@@ -265,7 +265,7 @@ public abstract class FACatchSummaryHelper {
     @NotNull
     protected Map<String, Double> extractSpeciesCountMap(Map<String, Double> valueSpeciesMap, Map<String, Double> resultTotalspeciesMap) {
         if (MapUtils.isEmpty(resultTotalspeciesMap)) {
-            resultTotalspeciesMap = new HashMap<>(); // FIXME squid:S1226 introduce a new variable instead of reusing
+            resultTotalspeciesMap = new HashMap<>(); // do not introduce a new variable instead of reusing.Reusing is required here.
         }
 
         for (Map.Entry<String, Double> speciesEntry : valueSpeciesMap.entrySet()) {
@@ -274,7 +274,8 @@ public abstract class FACatchSummaryHelper {
 
             // check in the totals map if the species exist.If yes, add
             if (resultTotalspeciesMap.containsKey(speciesCode)) {
-                resultTotalspeciesMap.put(speciesCode, resultTotalspeciesMap.get(speciesCode) + speciesCount);
+                Double total = resultTotalspeciesMap.get(speciesCode) +speciesCount;
+                resultTotalspeciesMap.put(speciesCode, total);
             } else {
                 resultTotalspeciesMap.put(speciesCode, speciesCount);
             }

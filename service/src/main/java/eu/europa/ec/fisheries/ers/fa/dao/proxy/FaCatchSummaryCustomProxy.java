@@ -12,13 +12,24 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao.proxy;
 
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
 /**
+ * This is base class used to Group by results in Java.
+ * If you want to group by results with different set of variables. Then just extend this class and override equals and hashcode method with
+ * variables with which you want to GROUP BY
  * Created by sanera on 26/01/2017.
  */
-//@Entity
+
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(exclude = {"count", "typeCode", "species", "fishClass"})
+@ToString
 public class FaCatchSummaryCustomProxy implements Serializable {
 
 
@@ -40,84 +51,6 @@ public class FaCatchSummaryCustomProxy implements Serializable {
     private String species;
     private String typeCode;
     private double count;
-
-    public FaCatchSummaryCustomProxy(){
-
-    }
-
-
-    public FaCatchSummaryCustomProxy(String day, String month, String year, String vesselTransportGuid, String flagState, String gearType, String presentation, String icesStatRectangle, String territory, String faoArea, String effortZone, String rfmo, String gfcmGsa, String gfcmStatRectangle, String fishClass, String species, String typeCode, double count) {
-        this.day = day;
-        this.month = month;
-        this.year = year;
-        this.vesselTransportGuid = vesselTransportGuid;
-        this.flagState = flagState;
-        this.gearType = gearType;
-        this.presentation = presentation;
-        this.icesStatRectangle = icesStatRectangle;
-        this.territory = territory;
-        this.faoArea = faoArea;
-        this.effortZone = effortZone;
-        this.rfmo = rfmo;
-        this.gfcmGsa = gfcmGsa;
-        this.gfcmStatRectangle = gfcmStatRectangle;
-        this.fishClass = fishClass;
-        this.species = species;
-        this.typeCode = typeCode;
-        this.count = count;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FaCatchSummaryCustomProxy)) return false;
-
-        FaCatchSummaryCustomProxy that = (FaCatchSummaryCustomProxy) o;
-
-        if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) return false;
-        if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;
-        if (getYear() != null ? !getYear().equals(that.getYear()) : that.getYear() != null) return false;
-        if (getVesselTransportGuid() != null ? !getVesselTransportGuid().equals(that.getVesselTransportGuid()) : that.getVesselTransportGuid() != null)
-            return false;
-        if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null)
-            return false;
-        if (getGearType() != null ? !getGearType().equals(that.getGearType()) : that.getGearType() != null)
-            return false;
-        if (getPresentation() != null ? !getPresentation().equals(that.getPresentation()) : that.getPresentation() != null)
-            return false;
-        if (getTerritory() != null ? !getTerritory().equals(that.getTerritory()) : that.getTerritory() != null)
-            return false;
-        if (getFaoArea() != null ? !getFaoArea().equals(that.getFaoArea()) : that.getFaoArea() != null) return false;
-        if (getIcesStatRectangle() != null ? !getIcesStatRectangle().equals(that.getIcesStatRectangle()) : that.getIcesStatRectangle() != null)
-            return false;
-        if (getEffortZone() != null ? !getEffortZone().equals(that.getEffortZone()) : that.getEffortZone() != null)
-            return false;
-        if (getRfmo() != null ? !getRfmo().equals(that.getRfmo()) : that.getRfmo() != null) return false;
-        if (getGfcmGsa() != null ? !getGfcmGsa().equals(that.getGfcmGsa()) : that.getGfcmGsa() != null) return false;
-        return getGfcmStatRectangle() != null ? getGfcmStatRectangle().equals(that.getGfcmStatRectangle()) : that.getGfcmStatRectangle() == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getDay() != null ? getDay().hashCode() : 0;
-        result = 31 * result + (getMonth() != null ? getMonth().hashCode() : 0);
-        result = 31 * result + (getYear() != null ? getYear().hashCode() : 0);
-        result = 31 * result + (getVesselTransportGuid() != null ? getVesselTransportGuid().hashCode() : 0);
-        result = 31 * result + (getFlagState() != null ? getFlagState().hashCode() : 0);
-        result = 31 * result + (getGearType() != null ? getGearType().hashCode() : 0);
-        result = 31 * result + (getPresentation() != null ? getPresentation().hashCode() : 0);
-        result = 31 * result + (getTerritory() != null ? getTerritory().hashCode() : 0);
-        result = 31 * result + (getFaoArea() != null ? getFaoArea().hashCode() : 0);
-        result = 31 * result + (getIcesStatRectangle() != null ? getIcesStatRectangle().hashCode() : 0);
-        result = 31 * result + (getEffortZone() != null ? getEffortZone().hashCode() : 0);
-        result = 31 * result + (getRfmo() != null ? getRfmo().hashCode() : 0);
-        result = 31 * result + (getGfcmGsa() != null ? getGfcmGsa().hashCode() : 0);
-        result = 31 * result + (getGfcmStatRectangle() != null ? getGfcmStatRectangle().hashCode() : 0);
-        return result;
-    }
-
 
 
 
