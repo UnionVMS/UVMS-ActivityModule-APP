@@ -11,28 +11,55 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 
 /**
- * Created by sanera on 17/03/2017.
+ * @author sanera
+ * @author Gregory Rinaldi
  */
 @JsonInclude(Include.NON_NULL)
 public class AreaDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonIgnore
+    private Set<FluxLocationDto> fluxLocations;
+
+    @JsonView(CommonView.class)
     private PositionDto transmission;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private PositionDto crossing;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private PositionDto startActivity;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     private PositionDto startFishing;
+
+    @JsonView(CommonView.class)
+    @JsonAnyGetter
+    public Map<String, String> getIdentifiers() {
+
+        HashMap<String, String> stringStringHashMap = null;
+
+        if (fluxLocations != null && fluxLocations.iterator().hasNext()) {
+            stringStringHashMap = new HashMap<>();
+            stringStringHashMap.put("schemeId", fluxLocations.iterator().next().getFluxLocationIdentifierSchemeId());
+            stringStringHashMap.put("id", fluxLocations.iterator().next().getFluxLocationIdentifier());
+            stringStringHashMap.values().removeAll(Collections.singleton(null));
+        }
+
+        return stringStringHashMap;
+    }
 
     public PositionDto getTransmission() {
         return transmission;
@@ -64,5 +91,13 @@ public class AreaDto {
 
     public void setStartFishing(PositionDto startFishing) {
         this.startFishing = startFishing;
+    }
+
+    public Set<FluxLocationDto> getFluxLocations() {
+        return fluxLocations;
+    }
+
+    public void setFluxLocations(Set<FluxLocationDto> fluxLocations) {
+        this.fluxLocations = fluxLocations;
     }
 }
