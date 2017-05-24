@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
@@ -36,7 +37,7 @@ public interface FlapDocumentMapper {
             @Mapping(target = "flapTypeCode", source = "flapDocument.typeCode.value"),
             @Mapping(target = "flapTypeCodeListId", source = "flapDocument.typeCode.listID")
     })
-    FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity);
+    FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
 
     @Mappings({
             @Mapping(target = "faIdentifierId", source = "flapDocumentId"),

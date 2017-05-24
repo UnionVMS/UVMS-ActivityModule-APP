@@ -76,7 +76,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         }
         Set<FlapDocumentEntity> flapDocumentEntities = new HashSet<>();
         for (FLAPDocument flapDocument : flapDocuments) {
-            FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(flapDocument, vesselTransportMeansEntity);
+            FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(flapDocument, vesselTransportMeansEntity, new FlapDocumentEntity());
             flapDocumentEntities.add(entity);
         }
         return flapDocumentEntities;
