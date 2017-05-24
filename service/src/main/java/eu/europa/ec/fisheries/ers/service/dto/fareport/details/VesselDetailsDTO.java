@@ -13,6 +13,15 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +30,6 @@ import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.StorageDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.AllArgsConstructor;
@@ -29,14 +37,6 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
-
-import java.util.Set;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @JsonInclude(Include.NON_NULL)
 @NoArgsConstructor
@@ -64,7 +64,7 @@ public class VesselDetailsDTO {
     @JsonProperty("storage")
     private StorageDto storageDto;
 
-    @JsonView(FishingActivityView.CommonView.class)
+    @JsonView(CommonView.class)
     @JsonProperty("authorizations")
     private Set<FlapDocumentDto> flapDocuments;
 

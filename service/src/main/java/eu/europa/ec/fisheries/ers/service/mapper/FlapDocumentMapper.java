@@ -13,6 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
@@ -42,5 +44,7 @@ public interface FlapDocumentMapper {
             @Mapping(target = "faIdentifierSchemeId", source = "flapDocumentSchemeId")
     })
     FlapDocumentDto mapToFlapDocumentDto(FlapDocumentEntity entity);
+
+    Set<FlapDocumentDto> mapToFlapDocumentDto(Set<FlapDocumentEntity> entity);
 
 }
