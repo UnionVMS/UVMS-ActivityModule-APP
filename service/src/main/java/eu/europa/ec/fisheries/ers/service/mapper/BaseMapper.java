@@ -99,7 +99,7 @@ public class BaseMapper {
         Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
             @Override
             public boolean apply(FluxLocationEntity p) {
-                return typeCode.name().equals(p.getTypeCode());
+                return typeCode.name().equals(p.getFluxLocationType());
             }
         });
 
@@ -361,15 +361,6 @@ public class BaseMapper {
     protected String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
     }
-
-    /*protected Integer getPurposeCode(String purposeCode) {
-        try {
-            return Integer.parseInt(purposeCode);
-        } catch (NumberFormatException e) {
-            log.error(e.getMessage(), e);
-            return null;
-        }
-    }*/
 
     protected Double getCalculatedQuantity(QuantityType quantityType) {
         if (quantityType == null) {
