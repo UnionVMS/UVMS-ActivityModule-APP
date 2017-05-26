@@ -35,7 +35,7 @@ public class BaseActivityViewMapperTest {
         FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
         fluxLocationEntity.setFluxLocationIdentifier("id");
         fluxLocationEntity.setFluxLocationIdentifierSchemeId("schemeId");
-        fluxLocationEntity.setFluxLocationType("AREA");
+        fluxLocationEntity.setTypeCode("AREA");
 
         entity.setFluxLocations(Collections.set(fluxLocationEntity));
 

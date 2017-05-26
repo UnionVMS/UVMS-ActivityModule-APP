@@ -256,32 +256,22 @@ public class BaseMapper {
     public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
 
-        for (AssetIdentifierDto identifierDto : identifierDtoSet) {
-            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-            ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
-            if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
-                String identifierId = identifierDto.getFaIdentifierId();
-                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+        if (CollectionUtils.isNotEmpty(identifierDtoSet)) {
+            for (AssetIdentifierDto identifierDto : identifierDtoSet) {
+                VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
+                ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+                if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
+                    String identifierId = identifierDto.getFaIdentifierId();
+                    AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
 
-                criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
-                criteriaPair.setValue(identifierId);
-                criteriaList.add(criteriaPair);
+                    criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
+                    criteriaPair.setValue(identifierId);
+                    criteriaList.add(criteriaPair);
+                }
             }
         }
-
 
         return criteriaList;
-    }
-
-    public static boolean enumContains(String test) {
-
-        for (ConfigSearchField keyFromEnum : ConfigSearchField.values()) {
-            if (keyFromEnum.name().equals(test)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public static Double getCalculatedMeasure(MeasureType measureType) {
