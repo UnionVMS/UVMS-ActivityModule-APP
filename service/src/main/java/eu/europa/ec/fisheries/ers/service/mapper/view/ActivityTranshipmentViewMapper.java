@@ -13,9 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
@@ -32,11 +37,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-@Mapper(uses = {VesselTransportMeansMapper.class})
+@Mapper(uses = {VesselTransportMeansMapper.class}, imports = FluxLocationCatchTypeEnum.class)
 public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityTranshipmentViewMapper INSTANCE = Mappers.getMapper(ActivityTranshipmentViewMapper.class);
@@ -44,7 +45,7 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
     @Override
     @Mappings({
             @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
-            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
+            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationCatchTypeEnum.FA_RELATED))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),

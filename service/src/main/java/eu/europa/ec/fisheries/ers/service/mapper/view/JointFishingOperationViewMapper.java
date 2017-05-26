@@ -19,12 +19,11 @@ import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import org.mapstruct.factory.Mappers;
 
 /**
  * Created by padhyad on 3/28/2017.
  */
-public class ActivityJointFishingOperationViewMapper extends BaseActivityViewMapper {
+public class JointFishingOperationViewMapper extends BaseActivityViewMapper {
 
     @Override
     public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {

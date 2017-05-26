@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
@@ -25,7 +26,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * Created by padhyad on 3/7/2017.
  */
-@Mapper
+@Mapper(imports = FluxLocationCatchTypeEnum.class)
 public abstract class ActivityDepartureViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityDepartureViewMapper INSTANCE = Mappers.getMapper(ActivityDepartureViewMapper.class);
@@ -33,7 +34,7 @@ public abstract class ActivityDepartureViewMapper extends BaseActivityViewMapper
     @Override
     @Mappings({
             @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
-            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
+            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationCatchTypeEnum.FA_RELATED))"),
             @Mapping(target = "gears", expression = "java(getGearsFromEntity(faEntity.getFishingGears()))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
