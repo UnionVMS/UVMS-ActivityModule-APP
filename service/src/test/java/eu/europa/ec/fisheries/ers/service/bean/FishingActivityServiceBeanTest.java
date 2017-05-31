@@ -82,7 +82,7 @@ public class FishingActivityServiceBeanTest {
     @Mock
     JAXBMarshaller marshaller;
 
-    //@Test
+    @Test
     @SneakyThrows
     public void testGetVesselDetailsForFishingTrip() throws ServiceException {
 
