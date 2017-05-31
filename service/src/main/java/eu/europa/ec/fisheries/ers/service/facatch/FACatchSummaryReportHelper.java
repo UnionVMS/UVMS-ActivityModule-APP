@@ -58,6 +58,12 @@ public class FACatchSummaryReportHelper extends FACatchSummaryHelper {
                 log.error("No data for the grouping factors found :"+faCatchSummaryDTO);
                 continue;
             }
+            // If there is Group but no data for Summary table for the group, do not send it to frontend
+            if(faCatchSummaryDTO.getSummaryTable() == null || (faCatchSummaryDTO.getSummaryTable().getSummaryFaCatchType()==null &&
+                    faCatchSummaryDTO.getSummaryTable().getSummaryFishSize()==null)){
+                log.error("No data for the summary found :"+faCatchSummaryDTO);
+                continue;
+            }
             faCatchSummaryRecordDTOs.add(faCatchSummaryDTO);
         }
         return faCatchSummaryRecordDTOs;
