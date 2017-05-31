@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import lombok.SneakyThrows;
 import org.junit.Rule;
+import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -96,7 +97,7 @@ public class FishingActivityServiceBeanTest {
         assertNotNull(vesselDetailsDTO);
     }
 
- //   @Test
+    @Test
     @SneakyThrows
     public void testGetVesselDetailsAndContactPartiesForFishingTrip() {
 
@@ -107,7 +108,7 @@ public class FishingActivityServiceBeanTest {
         assertNotNull(vesselDetailsDTO);
     }
 
-   // @Test
+    @Test
     @SneakyThrows
     public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() {
 
@@ -128,7 +129,7 @@ public class FishingActivityServiceBeanTest {
 
     }
 
-   // @Test
+    @Test
     @SneakyThrows
     public void getFishingActivityReportAndRelatedDataForFishingTrip() throws ServiceException {
 
