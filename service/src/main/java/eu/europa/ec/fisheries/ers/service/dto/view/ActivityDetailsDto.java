@@ -56,7 +56,7 @@ public class ActivityDetailsDto {
 
     @JsonProperty("authorizations")
     @JsonView({CommonView.class})
-    private FlapDocumentDto flapDocument;
+    private Set<FlapDocumentDto> flapDocuments;
 
     @JsonIgnore
     private Geometry geom;
@@ -125,7 +125,7 @@ public class ActivityDetailsDto {
                 String typeCode = fluxCharacteristicsDto.getTypeCode();
                 add("typeCode", typeCode, characMap);
                 String typeCodeListId = fluxCharacteristicsDto.getTypeCodeListId();
-                add("typeCode", typeCode, characMap);
+                add("typeCodeListId", typeCodeListId, characMap);
                 Date valueDateTime = fluxCharacteristicsDto.getValueDateTime();
                 add("valueDateTime", valueDateTime, characMap);
                 String valueIndicator = fluxCharacteristicsDto.getValueIndicator();
@@ -295,11 +295,11 @@ public class ActivityDetailsDto {
         map.put(key, valueSet);
     }
 
-    public FlapDocumentDto getFlapDocument() {
-        return flapDocument;
+    public Set<FlapDocumentDto> getFlapDocuments() {
+        return flapDocuments;
     }
 
-    public void setFlapDocument(FlapDocumentDto flapDocument) {
-        this.flapDocument = flapDocument;
+    public void setFlapDocuments(Set<FlapDocumentDto> flapDocuments) {
+        this.flapDocuments = flapDocuments;
     }
 }

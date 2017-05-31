@@ -8,10 +8,15 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.mapper.view;
+
+import java.util.Date;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
@@ -22,28 +27,24 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Date;
-import java.util.Set;
-
 /**
  * Created by kovian on 09/02/2017.
  */
-@Mapper
+@Mapper(imports = FluxLocationCatchTypeEnum.class)
 public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityArrivalViewMapper INSTANCE = Mappers.getMapper(ActivityArrivalViewMapper.class);
 
     @Override
     @Mappings({
-            @Mapping(target = "activityDetails",   expression = "java(mapActivityDetails(faEntity))"),
-            @Mapping(target = "locations",     expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
-            @Mapping(target = "gears",     expression = "java(getGearsFromEntity(faEntity.getFishingGears()))"),
+            @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
+            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationCatchTypeEnum.FA_RELATED))"),
+            @Mapping(target = "gears", expression = "java(getGearsFromEntity(faEntity.getFishingGears()))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
             @Mapping(target = "gearProblems", ignore = true)
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
-
 
     @Override
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails){
@@ -52,7 +53,6 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
         activityDetails.setReason(faEntity.getReasonCode());
         return activityDetails;
     }
-
 
     private Date extractLandingTime(Set<FluxCharacteristicEntity> fluxCharacteristics) {
         if(CollectionUtils.isNotEmpty(fluxCharacteristics)){

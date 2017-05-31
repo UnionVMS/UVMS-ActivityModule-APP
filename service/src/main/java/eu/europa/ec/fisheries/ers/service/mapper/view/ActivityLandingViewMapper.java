@@ -10,8 +10,12 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import java.util.Date;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
@@ -22,13 +26,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Date;
-import java.util.Set;
-
 /**
  * Created by kovian on 14/02/2017.
  */
-@Mapper
+@Mapper(imports = FluxLocationCatchTypeEnum.class)
 public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityLandingViewMapper INSTANCE = Mappers.getMapper(ActivityLandingViewMapper.class);
@@ -36,7 +37,7 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
     @Override
     @Mappings({
             @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
-            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
+            @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationCatchTypeEnum.FA_RELATED))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),

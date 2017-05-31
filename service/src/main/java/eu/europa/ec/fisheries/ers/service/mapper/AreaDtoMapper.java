@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselPositionEventEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,7 +25,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * Created by sanera on 21/03/2017.
  */
-@Mapper
+@Mapper(imports = FluxLocationEnum.class)
 public abstract class AreaDtoMapper extends BaseMapper {
     public static final AreaDtoMapper INSTANCE = Mappers.getMapper(AreaDtoMapper.class);
 
@@ -32,12 +33,12 @@ public abstract class AreaDtoMapper extends BaseMapper {
             @Mapping(target = "transmission", expression = "java(getTransmission(faEntity))"),
             @Mapping(target = "crossing", expression = "java(extractPositionDtoFromFishingActivity(faEntity))"),
             @Mapping(target = "startActivity", expression = "java(getStartActivity(faEntity))"),
-            @Mapping(target = "startFishing", expression = "java(getStartFishing(faEntity))")
+            @Mapping(target = "startFishing", expression = "java(getStartFishing(faEntity))"),
     })
     public abstract AreaDto mapToAreaDto(FishingActivityEntity faEntity);
 
     protected PositionDto getTransmission(FishingActivityEntity faEntity) {
-        if(faEntity ==null){
+        if (faEntity == null) {
             return null;
         }
         PositionDto positionDto = new PositionDto();
@@ -54,17 +55,6 @@ public abstract class AreaDtoMapper extends BaseMapper {
 
         return positionDto;
     }
-
-
-  /*  protected PositionDto getCrossing(FishingActivityEntity faEntity) {
-        if(faEntity ==null){
-            return null;
-        }
-        return extractPositionDtoFromFishingActivity(faEntity);
-    }*/
-
-
-
 
     protected PositionDto getStartActivity(FishingActivityEntity faEntity) {
         if(faEntity ==null){

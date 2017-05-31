@@ -54,6 +54,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
@@ -92,6 +93,18 @@ public class BaseMapper {
             return locationDtos;
         }
         return Sets.newHashSet();
+    }
+
+    public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationCatchTypeEnum typeCode) {
+
+        Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
+            @Override
+            public boolean apply(FluxLocationEntity p) {
+                return typeCode.name().equals(p.getFluxLocationType());
+            }
+        });
+
+        return mapFromFluxLocation(newHashSet(filtered.iterator()));
     }
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationEnum typeCode) {
@@ -243,32 +256,22 @@ public class BaseMapper {
     public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
 
-        for (AssetIdentifierDto identifierDto : identifierDtoSet) {
-            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-            ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
-            if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
-                String identifierId = identifierDto.getFaIdentifierId();
-                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+        if (CollectionUtils.isNotEmpty(identifierDtoSet)) {
+            for (AssetIdentifierDto identifierDto : identifierDtoSet) {
+                VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
+                ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+                if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
+                    String identifierId = identifierDto.getFaIdentifierId();
+                    AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
 
-                criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
-                criteriaPair.setValue(identifierId);
-                criteriaList.add(criteriaPair);
+                    criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
+                    criteriaPair.setValue(identifierId);
+                    criteriaList.add(criteriaPair);
+                }
             }
         }
-
 
         return criteriaList;
-    }
-
-    public static boolean enumContains(String test) {
-
-        for (ConfigSearchField keyFromEnum : ConfigSearchField.values()) {
-            if (keyFromEnum.name().equals(test)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public static Double getCalculatedMeasure(MeasureType measureType) {
@@ -361,15 +364,6 @@ public class BaseMapper {
     protected String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
     }
-
-    /*protected Integer getPurposeCode(String purposeCode) {
-        try {
-            return Integer.parseInt(purposeCode);
-        } catch (NumberFormatException e) {
-            log.error(e.getMessage(), e);
-            return null;
-        }
-    }*/
 
     protected Double getCalculatedQuantity(QuantityType quantityType) {
         if (quantityType == null) {

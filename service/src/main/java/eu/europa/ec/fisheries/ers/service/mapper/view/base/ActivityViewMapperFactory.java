@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityAreaEntryViewMappe
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityAreaExitViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityJointFishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityNotificationOfArrivalViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityRelocationViewMapper;
@@ -24,6 +23,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityTranshipmentViewMa
 import eu.europa.ec.fisheries.ers.service.mapper.view.DiscardViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.JointFishingOperationViewMapper;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 /**
@@ -51,7 +51,7 @@ public class ActivityViewMapperFactory {
                 mapper = new FishingOperationViewMapper();
                 break;
             case JOINT_FISHING_OPERATIONS:
-                mapper = new ActivityJointFishingOperationViewMapper();
+                mapper = new JointFishingOperationViewMapper();
                 break;
             case DISCARD_AT_SEA:
                 mapper = new DiscardViewMapper();
