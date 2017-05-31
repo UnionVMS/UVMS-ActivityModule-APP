@@ -11,19 +11,25 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao.proxy;
 
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * This class is used in code using Reflections. Check carefully if you change package or className
+ * This is base class used to Group by results in Java.
+ * If you want to group by results with different set of variables. Then just extend this class and override equals and hashcode method with
+ * variables with which you want to GROUP BY
+ * Created by sanera on 26/01/2017.
  */
+
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"count", "typeCode", "species", "fishClass"})
 @ToString
 public class FaCatchSummaryCustomProxy {
+
 
     private String day;
     private String month;
@@ -44,6 +50,8 @@ public class FaCatchSummaryCustomProxy {
     private String typeCode;
     private double count;
 
+
+
     public String getVesselTransportGuid() {
         return vesselTransportGuid;
     }
@@ -53,6 +61,7 @@ public class FaCatchSummaryCustomProxy {
     }
 
     public String getDay() {
+
         return day;
     }
 
@@ -76,6 +85,8 @@ public class FaCatchSummaryCustomProxy {
         this.year = year;
     }
 
+
+
     public double getCount() {
         return count;
     }
@@ -83,6 +94,8 @@ public class FaCatchSummaryCustomProxy {
     public void setCount(double count) {
         this.count = count;
     }
+
+
 
     public String getFishClass() {
         return fishClass;
@@ -186,5 +199,28 @@ public class FaCatchSummaryCustomProxy {
 
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
+    }
+
+    @Override
+    public String toString() {
+        return "FaCatchSummaryCustomEntity{" +
+                "day=" + day +
+                ", month='" + month + '\'' +
+                ", year=" + year +
+                ", flagState='" + flagState + '\'' +
+                ", gearType='" + gearType + '\'' +
+                ", presentation='" + presentation + '\'' +
+                ", territory='" + territory + '\'' +
+                ", faoArea='" + faoArea + '\'' +
+                ", icesStatRectangle='" + icesStatRectangle + '\'' +
+                ", effortZone='" + effortZone + '\'' +
+                ", rfmo='" + rfmo + '\'' +
+                ", gfcmGsa='" + gfcmGsa + '\'' +
+                ", gfcmStatRectangle='" + gfcmStatRectangle + '\'' +
+                ", fishClass='" + fishClass + '\'' +
+                ", species='" + species + '\'' +
+                ", typeCode='" + typeCode + '\'' +
+                ", count=" + count +
+                '}';
     }
 }
