@@ -14,7 +14,6 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
@@ -56,7 +55,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
         viewDTO.setGearShotRetrievalList(GearShotRetrievalTileMapperImpl.INSTANCE.mapFromRelatedFishingActivities(faEntity));
 
-        Set<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationEnum.LOCATION);
+        Set<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations());
 
         viewDTO.setLocations(fluxLocationDtos);
 

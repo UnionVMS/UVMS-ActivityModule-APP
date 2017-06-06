@@ -14,7 +14,6 @@
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
@@ -36,7 +35,7 @@ public class JointFishingOperationViewMapper extends BaseActivityViewMapper {
         detailsDto.setFishingTime(calculateFishingTime(faEntity.getDelimitedPeriods()));
 
         viewDTO.setActivityDetails(detailsDto);
-        viewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationEnum.LOCATION));
+        viewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));
         viewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
         viewDTO.setGears(getGearsFromEntity(faEntity.getFishingGears()));
         viewDTO.setVesselDetails(VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans()));

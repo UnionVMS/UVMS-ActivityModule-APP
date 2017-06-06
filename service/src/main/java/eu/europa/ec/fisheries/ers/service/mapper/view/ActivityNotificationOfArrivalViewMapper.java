@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import static eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum.FA_RELATED;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
@@ -33,7 +31,7 @@ public class ActivityNotificationOfArrivalViewMapper extends BaseActivityViewMap
             fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
             // Intented ports of Landing Tile
-            fishingActivityViewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations(), FA_RELATED));
+            fishingActivityViewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));
 
             // Activity Report document tile
             fishingActivityViewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
