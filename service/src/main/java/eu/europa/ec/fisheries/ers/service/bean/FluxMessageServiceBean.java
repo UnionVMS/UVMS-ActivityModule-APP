@@ -144,7 +144,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             Set<FishingTripEntity> fishingTripEntities=fishingActivityEntity.getFishingTrips();
 
             if(CollectionUtils.isEmpty(fishingTripEntities)) {
-                log.error("Could not find FishingTripEntity for fishingActivityEntity.");
                 continue;
             }
 
