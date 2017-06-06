@@ -117,13 +117,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             updateGeometry(faReportDocument);
             enrichFishingActivityWithGuiID(faReportDocument);
-            calculateFishingTripStartAndEndDate(faReportDocument);
         }
         log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
 
 
         fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
         updateFaReportCorrections(faReportMessage.getFAReportDocuments());
+        updateFishingTripStartAndEndDate(faReportDocuments);
         log.info("Insert fishing activity records into DB complete.");
     }
 
@@ -135,14 +135,18 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument){
         log.debug("start calculating  fishing trip start and end date");
         Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
-        if(CollectionUtils.isEmpty(fishingActivities))
+        if(CollectionUtils.isEmpty(fishingActivities)) {
+            log.error("Could not find FishingActivities for faReportDocument.");
             return;
+        }
 
         for(FishingActivityEntity fishingActivityEntity:fishingActivities){
             Set<FishingTripEntity> fishingTripEntities=fishingActivityEntity.getFishingTrips();
 
-            if(CollectionUtils.isEmpty(fishingActivities))
+            if(CollectionUtils.isEmpty(fishingTripEntities)) {
+                log.error("Could not find FishingTripEntity for fishingActivityEntity.");
                 continue;
+            }
 
             for(FishingTripEntity fishingTripEntity :fishingTripEntities){
                 setTripStartAndEndDateForFishingTrip(fishingTripEntity);
@@ -159,7 +163,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         for(FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities){
             try {
                 List<FishingActivityEntity> fishingActivityEntityList=fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
-
                 if(CollectionUtils.isNotEmpty(fishingActivityEntityList)){
                     log.debug(fishingActivityEntityList.size()+" Fishing Activities found for tripId:"+tripIdentifierEntity.getTripId());
                     FishingActivityEntity firstFishingActivity= fishingActivityEntityList.get(0);
@@ -241,6 +244,19 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         faReportDocumentDao.updateAllFaData(faReportDocumentEntities); // Update all the Entities together
     }
 
+
+    private void updateFishingTripStartAndEndDate(Set<FaReportDocumentEntity> faReportDocuments) throws ServiceException {
+        log.debug("Inside updateFishingTripStartAndEndDate");
+        if(CollectionUtils.isEmpty(faReportDocuments)){
+            log.error("faReportDocuments are empty or null in updateFishingTripStartAndEndDate");
+            return;
+        }
+        for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
+            calculateFishingTripStartAndEndDate(faReportDocument);
+        }
+        faReportDocumentDao.updateAllFaData(new ArrayList<>(faReportDocuments)); // Update all the Entities together
+    }
+
     /**
      * Create Geometry for FaReportDocument and FluxLocation. In Flux location we save each reported location as a point geometry.
      * In Fa Report document, all the points are converted to Multipoint and saved as a single geometry.
@@ -288,7 +304,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             if (fishingActivity.getOccurence() != null) {
                 dates.add(fishingActivity.getOccurence());
             } else if (CollectionUtils.isNotEmpty(fishingActivity.getDelimitedPeriods())) {
-                dates.add(getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods()));
+                Date firstDate= getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+                if(firstDate!=null) {
+                    dates.add(firstDate);
+                }
             }
         }
         return ImmutableMap.<String, Date>builder().put(START_DATE, dates.first()).put(END_DATE, dates.last()).build();
@@ -297,8 +316,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private Date getFirstDateFromDelimitedPeriods(Collection<DelimitedPeriodEntity> delimitedPeriods) {
         TreeSet<Date> set = new TreeSet<>();
         for (DelimitedPeriodEntity delimitedPeriodEntity : delimitedPeriods) {
-            set.add(delimitedPeriodEntity.getStartDate());
+            if(delimitedPeriodEntity.getStartDate() !=null)
+                set.add(delimitedPeriodEntity.getStartDate());
         }
+        if(CollectionUtils.isEmpty(set))
+           return null;
         return set.first();
     }
 
