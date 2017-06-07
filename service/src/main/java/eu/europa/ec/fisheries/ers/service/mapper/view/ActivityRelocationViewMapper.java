@@ -14,7 +14,6 @@
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
@@ -31,7 +30,7 @@ public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
         if (faEntity != null) {
 
             viewDTO.setActivityDetails(mapActivityDetails(faEntity));
-            viewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationCatchTypeEnum.FA_RELATED));
+            viewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));
             viewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
             viewDTO.setCatches(mapCatchesToGroupDto(faEntity));
             viewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));

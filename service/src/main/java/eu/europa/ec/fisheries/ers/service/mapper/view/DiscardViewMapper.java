@@ -14,7 +14,6 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
@@ -32,7 +31,7 @@ public class DiscardViewMapper extends BaseActivityViewMapper {
         activityDetailsDto.setIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(fishingActivityIdentifiers));
         fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
-        fishingActivityViewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationCatchTypeEnum.FA_RELATED));
+        fishingActivityViewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));
 
         fishingActivityViewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
 
