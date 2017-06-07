@@ -245,7 +245,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
 
     private void updateFishingTripStartAndEndDate(Set<FaReportDocumentEntity> faReportDocuments) throws ServiceException {
-        log.debug("Inside updateFishingTripStartAndEndDate");
+        log.debug("Start  update of FishingTrip Start And End Date");
         if(CollectionUtils.isEmpty(faReportDocuments)){
             log.error("faReportDocuments are empty or null in updateFishingTripStartAndEndDate");
             return;
