@@ -84,7 +84,7 @@ public class FluxMessageServiceBeanTest {
     @Before
     public void setUp() {
         FAReportDocument faReportDocument2 = MapperUtil.getFaReportDocument();
-        faReportDocument2.getRelatedFLUXReportDocument().setPurposeCode(MapperUtil.getCodeType("5", "4fyrh-58fj4-5jtu-58tjr"));
+        faReportDocument2.getRelatedFLUXReportDocument().setPurposeCode(MapperUtil.getCodeType("9", "4fyrh-58fj4-5jtu-58tjr"));
         IDType id = faReportDocument2.getRelatedFLUXReportDocument().getReferencedID();
 
         FAReportDocument faReportDocument1 = MapperUtil.getFaReportDocument();
@@ -117,7 +117,7 @@ public class FluxMessageServiceBeanTest {
         //Verify
         Mockito.verify(fluxFaReportMessageDao, Mockito.times(1)).saveFluxFaReportMessage(Mockito.any(FluxFaReportMessageEntity.class));
         Mockito.verify(faReportDocumentDao, Mockito.times(2)).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).updateAllFaData(captor.capture());
+        Mockito.verify(faReportDocumentDao, Mockito.times(2)).updateAllFaData(captor.capture());
 
         //Test
         List<FaReportDocumentEntity>  faReportDocumentEntities = captor.getValue();
