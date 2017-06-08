@@ -26,7 +26,7 @@ public enum VesselTypeAssetQueryEnum {
     FLAG_STATE("FLAG_STATE", ConfigSearchField.FLAG_STATE),
     NAME("NAME", ConfigSearchField.NAME),
     ICCAT("ICCAT", null),
-    UVI("UVI", ConfigSearchField.IMO);
+    UVI("UVI", null);
 
     private String type;
 
