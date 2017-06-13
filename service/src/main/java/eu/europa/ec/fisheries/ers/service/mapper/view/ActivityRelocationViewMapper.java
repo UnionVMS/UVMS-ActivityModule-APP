@@ -14,11 +14,11 @@
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
 
@@ -36,9 +36,9 @@ public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
             viewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
             viewDTO.setVesselDetails(VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans()));
 
-            VesselDetailsDTO vesselDetails = viewDTO.getVesselDetails();
-            if (vesselDetails != null) {
-                viewDTO.getVesselDetails().setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+
+            if (CollectionUtils.isNotEmpty(viewDTO.getVesselDetails())) {
+                viewDTO.getVesselDetails().iterator().next().setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
             }
 
         }

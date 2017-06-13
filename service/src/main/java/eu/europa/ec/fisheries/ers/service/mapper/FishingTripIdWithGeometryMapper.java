@@ -123,8 +123,11 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         }
         int totalFishTripEntityCount=fishingTripList.size();
         FishingTripEntity fishingTripEntity=fishingTripList.get(totalFishTripEntityCount-1);
-        VesselTransportMeansEntity vesselTransportMeansEntity=fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-        Set<VesselIdentifierEntity> vesselIdentifierEntities= vesselTransportMeansEntity.getVesselIdentifiers();
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntity=fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        if(CollectionUtils.isEmpty(vesselTransportMeansEntity) || CollectionUtils.isEmpty(vesselTransportMeansEntity.iterator().next().getVesselIdentifiers())){
+            return Collections.emptyList();
+        }
+        Set<VesselIdentifierEntity> vesselIdentifierEntities= vesselTransportMeansEntity.iterator().next().getVesselIdentifiers();
         List<VesselIdentifierType> vesselIdentifierTypes =new ArrayList<>();
 
         if(CollectionUtils.isNotEmpty(vesselIdentifierEntities)){
@@ -147,8 +150,12 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         }
         int totalFishTripEntityCount=fishingTripList.size();
         FishingTripEntity fishingTripEntity=fishingTripList.get(totalFishTripEntityCount-1);
-        VesselTransportMeansEntity vesselTransportMeansEntity=fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-        return vesselTransportMeansEntity.getCountry();
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList=fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        if(CollectionUtils.isEmpty(vesselTransportMeansEntityList)){
+            return null;
+        }
+
+        return vesselTransportMeansEntityList.iterator().next().getCountry();
     }
 
     protected Double getTotalDuration(List<FishingTripEntity> fishingTripList){

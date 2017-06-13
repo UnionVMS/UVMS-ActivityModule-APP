@@ -60,10 +60,10 @@ public abstract class FaCatchMapper extends BaseMapper {
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
     @Mappings({
-            @Mapping(target = "roleName", source = "faCatch.fishingActivity.vesselTransportMeans.roleCode"),
-            @Mapping(target = "country", source = "faCatch.fishingActivity.vesselTransportMeans.country"),
+            @Mapping(target = "roleName", expression = "java(getVesselTransportMeansForRelocation(faCatch).getRoleCode())"),
+            @Mapping(target = "country", expression = "java(getVesselTransportMeansForRelocation(faCatch).getCountry())"),
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToAssetIdentifiers(faCatch))"),
-            @Mapping(target = "name", source = "faCatch.fishingActivity.vesselTransportMeans.name"),
+            @Mapping(target = "name", expression = "java(getVesselTransportMeansForRelocation(faCatch).getName())"),
             @Mapping(target = "speciesCode", source = "faCatch.speciesCode"),
             @Mapping(target = "type", source = "faCatch.typeCode"),
             @Mapping(target = "weight", source = "faCatch.calculatedWeightMeasure"),
@@ -72,12 +72,14 @@ public abstract class FaCatchMapper extends BaseMapper {
     })
     public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
 
+
     public abstract List<RelocationDto> mapToRelocationDtoList(Set<FaCatchEntity> faCatches);
 
     protected List<AssetIdentifierDto> mapToAssetIdentifiers(FaCatchEntity faCatch) {
         List<AssetIdentifierDto> assetIdentifierDtos = new ArrayList<>();
-        if (faCatch != null && faCatch.getFishingActivity() != null && faCatch.getFishingActivity().getVesselTransportMeans() != null) {
-            VesselTransportMeansEntity vesselTransportMeans = faCatch.getFishingActivity().getVesselTransportMeans();
+        if (faCatch != null && faCatch.getFishingActivity() != null && CollectionUtils.isNotEmpty(faCatch.getFishingActivity().getVesselTransportMeans())) {
+            VesselTransportMeansEntity vesselTransportMeans = faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
+
             Map<VesselIdentifierSchemeIdEnum, String> vesselIdentifiers = vesselTransportMeans.getVesselIdentifiersMap();
 
             // Set IRCS always if present
@@ -93,6 +95,15 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         return assetIdentifierDtos;
     }
+
+    protected VesselTransportMeansEntity getVesselTransportMeansForRelocation(FaCatchEntity faCatch) {
+        if (faCatch == null || faCatch.getFishingActivity() ==null || CollectionUtils.isEmpty(faCatch.getFishingActivity().getVesselTransportMeans()))  {
+            return null;
+        }
+
+        return faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
+    }
+
 
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {

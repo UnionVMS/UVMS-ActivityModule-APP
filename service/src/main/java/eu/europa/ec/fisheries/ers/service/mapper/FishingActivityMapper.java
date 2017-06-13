@@ -11,17 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static org.hibernate.search.util.impl.CollectionHelper.asSet;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -74,6 +63,17 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.hibernate.search.util.impl.CollectionHelper.asSet;
+
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
         FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class, FlapDocumentMapper.class
@@ -114,7 +114,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "gearProblems", expression = "java(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), fishingActivityEntity))"),
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), fishingActivityEntity))"),
             @Mapping(target = "faCatchs", expression = "java(getFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))"),
-            @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity))"),
+            @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity, fishingActivityEntity))"),
             @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
             @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))"),
             @Mapping(target = "calculatedStartTime", expression = "java(convertToDate(getCalculatedStartTime(fishingActivity)))")
@@ -127,7 +127,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faReportID", source = "faReportDocument.id"),
             @Mapping(target = "fromId", expression = "java(getFromId(entity))"),
             @Mapping(target = "fromName", source = "faReportDocument.fluxReportDocument.fluxParty.fluxPartyName"),
-            @Mapping(target = "vesselTransportMeansName", source = "faReportDocument.vesselTransportMeans.name"),
+            @Mapping(target = "vesselTransportMeansName", expression = "java(getFaReportDocVesselTransportMeans(entity).getName())"),
             @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
             @Mapping(target = "FAReportType", source = "faReportDocument.typeCode"),
             @Mapping(source = "typeCode", target = "activityType"),
@@ -158,8 +158,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "dataSource", source = "faReportDocument.source"),
             @Mapping(target = "reportType", source = "faReportDocument.typeCode"),
             @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
-            @Mapping(target = "vesselName", source = "faReportDocument.vesselTransportMeans.name"),
-            @Mapping(target = "vesselGuid", source = "faReportDocument.vesselTransportMeans.guid"),
+            @Mapping(target = "vesselName", expression = "java(getFaReportDocVesselTransportMeans(entity).getName())"),
+            @Mapping(target = "vesselGuid", expression = "java(getFaReportDocVesselTransportMeans(entity).getGuid())"),
             @Mapping(target = "gears", expression = "java(getFishingGearTypeCodeList(entity))"),
             @Mapping(target = "species", expression = "java(getSpeciesCode(entity))"),
             @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))"),
@@ -167,7 +167,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselIdentifiers", expression = "java(getVesselIdentifierTypeList(entity))"),
             @Mapping(target = "isCorrection",  expression = "java(getCorrection(entity))"),
             @Mapping(target = "tripId",  expression = "java(getFishingTripId(entity))"),
-            @Mapping(target = "flagState",  source = "vesselTransportMeans.country")
+            @Mapping(target = "flagState",  expression = "java(getFlagState(entity))")
     })
     public abstract FishingActivitySummary mapToFishingActivitySummary(FishingActivityEntity entity);
 
@@ -205,13 +205,33 @@ public abstract class FishingActivityMapper extends BaseMapper {
     })
     protected abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
 
-    protected VesselTransportMeansEntity getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
+    protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity,FishingActivityEntity fishingActivityEntity) {
 
         List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();
         if (vesselList == null || vesselList.isEmpty()) {
             return null;
         }
-        return VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselList.get(0), faReportDocumentEntity, new VesselTransportMeansEntity());
+
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntities = new HashSet<>();
+        for(VesselTransportMeans vesselTransportMeans : vesselList){
+            VesselTransportMeansEntity vesselTransportMeansEntity =VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans);
+            vesselTransportMeansEntity.setFishingActivity(fishingActivityEntity);
+            vesselTransportMeansEntity.setFaReportDocument(faReportDocumentEntity);
+            vesselTransportMeansEntities.add(vesselTransportMeansEntity);
+        }
+
+        return vesselTransportMeansEntities;
+    }
+
+
+
+    protected VesselTransportMeansEntity getFaReportDocVesselTransportMeans(FishingActivityEntity entity) {
+        if (entity == null || entity.getFaReportDocument() == null || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans())) {
+            return null;
+        }
+
+        return  entity.getFaReportDocument().getVesselTransportMeans().iterator().next();
+
     }
 
     protected List<FishingGearDTO> getFishingGearDTOList(FishingActivityEntity entity) {
@@ -337,28 +357,31 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected Map<String, String> getVesselIdType(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() == null
-                || entity.getFaReportDocument().getVesselTransportMeans().getVesselIdentifiers() == null) {
+                || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans()) || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers())) {
             return Collections.emptyMap();
         }
 
-
         Map<String, String> vesselTransportIdList = new HashMap<>();
-        Set<VesselIdentifierEntity> identifierList = entity.getFaReportDocument().getVesselTransportMeans().getVesselIdentifiers();
+        /*
+            We can assume that FaReportDocument will always have only one VesselTransportMeans.One to many relation is artificially created
+         */
+        Set<VesselIdentifierEntity> identifierList = entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers();
 
         for (VesselIdentifierEntity identity : identifierList) {
-            vesselTransportIdList.put(identity.getVesselIdentifierSchemeId(), identity.getVesselIdentifierId());
+                vesselTransportIdList.put(identity.getVesselIdentifierSchemeId(), identity.getVesselIdentifierId());
         }
+
         return vesselTransportIdList;
     }
 
     protected List<VesselIdentifierType> getVesselIdentifierTypeList(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() == null
-                || entity.getFaReportDocument().getVesselTransportMeans().getVesselIdentifiers() == null) {
+                || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans()) || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers())) {
             return Collections.emptyList();
         }
         List<VesselIdentifierType> identifiers = new ArrayList<>();
 
-        Set<VesselIdentifierEntity> identifierList = entity.getFaReportDocument().getVesselTransportMeans().getVesselIdentifiers();
+        Set<VesselIdentifierEntity> identifierList = entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers();
 
         for (VesselIdentifierEntity identity : identifierList) {
             identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf(identity.getVesselIdentifierSchemeId()),identity.getVesselIdentifierId()));
@@ -729,6 +752,15 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return getCountry(vesselTransportMeans.getRegistrationVesselCountry());
     }
 
+    protected String getFlagState(FishingActivityEntity fishingActivity) {
+
+        Set<VesselTransportMeansEntity> vesselList = fishingActivity.getVesselTransportMeans();
+        if (CollectionUtils.isEmpty(vesselList)) {
+            return null;
+        }
+
+        return vesselList.iterator().next().getCountry();
+    }
 
 
     protected DateTimeType getCalculatedStartTime(FishingActivity fishingActivity){

@@ -13,13 +13,10 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
@@ -32,10 +29,17 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMap
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import io.jsonwebtoken.lang.Collections;
+import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Mapper(uses = {VesselTransportMeansMapper.class}, imports = FluxLocationCatchTypeEnum.class)
 public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
@@ -59,16 +63,22 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
      * @param faEntity
      * @return VesselDetailsDTO
      */
-    protected VesselDetailsDTO getVesselDetailsDTO(FishingActivityEntity faEntity){
-        if(faEntity==null || faEntity.getVesselTransportMeans() ==null)
+    protected List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
+        if(faEntity==null || CollectionUtils.isEmpty(faEntity.getVesselTransportMeans()))
             return null;
 
-        VesselDetailsDTO vesselDetails= VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans());
-        if (vesselDetails != null && faEntity.getDestVesselCharId()!=null) {
-            vesselDetails.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+        List<VesselDetailsDTO> vesselDetailsDTOs = new ArrayList<>();
+        Set<VesselTransportMeansEntity> entities=  faEntity.getVesselTransportMeans();
+
+        for(VesselTransportMeansEntity vesselTransportMeansEntity : entities) {
+            VesselDetailsDTO vesselDetails = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
+            if (vesselDetails != null && faEntity.getDestVesselCharId() != null) {
+                vesselDetails.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+            }
+            vesselDetailsDTOs.add(vesselDetails);
         }
 
-        return vesselDetails;
+        return vesselDetailsDTOs;
     }
 
 

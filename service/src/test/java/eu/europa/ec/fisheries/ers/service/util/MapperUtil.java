@@ -13,23 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -93,6 +76,23 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.NumericType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -208,7 +208,7 @@ public class MapperUtil {
 
     public static FishingTripEntity getFishingTripEntityWithContactParties() {
         FishingTripEntity fishingTripEntity = getFishingTripEntity();
-        VesselTransportMeansEntity vesselTransportEntity = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        Set<VesselTransportMeansEntity> vesselTransportEntityList = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
 
         Set<ContactPartyEntity> contactParties = new HashSet<>();
 
@@ -221,8 +221,9 @@ public class MapperUtil {
         contPartEntity_2.setContactPartyRole(roleList_2);
 
         contactParties.addAll(Arrays.asList(contPartEntity_1,contPartEntity_2));
-
-        vesselTransportEntity.setContactParty(contactParties);
+        for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportEntityList) {
+            vesselTransportMeansEntity.setContactParty(contactParties);
+        }
 
         return fishingTripEntity;
     }
@@ -772,8 +773,8 @@ public class MapperUtil {
 
     public static List<VesselIdentifierEntity> getVesselIdentifiersList() {
         List<VesselIdentifierEntity> vesselIdentifiersList = new ArrayList<>();
-        VesselTransportMeansEntity vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-        Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.getVesselIdentifiers();
+        Set<VesselTransportMeansEntity> vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.iterator().next().getVesselIdentifiers();
         vesselIdentifiersList.addAll(vesselIdentifiersSet);
         return vesselIdentifiersList;
     }

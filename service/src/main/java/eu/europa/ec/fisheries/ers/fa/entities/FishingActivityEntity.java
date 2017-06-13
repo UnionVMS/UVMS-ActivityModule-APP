@@ -12,6 +12,14 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,14 +42,6 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.annotations.Type;
 
 @NamedQueries({
 		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
@@ -82,9 +82,6 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "geom")
 	private Geometry geom;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "vessel_transport_means_id")
-	private VesselTransportMeansEntity vesselTransportMeans;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_report_document_id")
@@ -193,7 +190,13 @@ public class FishingActivityEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments;
-    @Transient
+
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
+	private Set<VesselTransportMeansEntity> vesselTransportMeans;
+
+
+	@Transient
     private String wkt;
 
     public FlapDocumentEntity getFirstFlapDocument() {
@@ -464,13 +467,7 @@ public class FishingActivityEntity implements Serializable {
 		this.calculatedOperationQuantity = calculatedOperationQuantity;
 	}
 
-	public VesselTransportMeansEntity getVesselTransportMeans() {
-		return vesselTransportMeans;
-	}
 
-	public void setVesselTransportMeans(VesselTransportMeansEntity vesselTransportMeans) {
-		this.vesselTransportMeans = vesselTransportMeans;
-	}
 
 	public String getVesselTransportGuid() {
 		return vesselTransportGuid;
@@ -483,6 +480,14 @@ public class FishingActivityEntity implements Serializable {
     public String getWkt() {
         return wkt;
     }
+
+	public Set<VesselTransportMeansEntity> getVesselTransportMeans() {
+		return vesselTransportMeans;
+	}
+
+	public void setVesselTransportMeans(Set<VesselTransportMeansEntity> vesselTransportMeans) {
+		this.vesselTransportMeans = vesselTransportMeans;
+	}
 
 	@Override
 	public String toString() {

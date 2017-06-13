@@ -185,7 +185,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument){
-        enrichWithGuidFromAssets(faReportDocument.getVesselTransportMeans());
+        if(CollectionUtils.isNotEmpty(faReportDocument.getVesselTransportMeans())) {
+            for(VesselTransportMeansEntity vesselTransportMeansEntity : faReportDocument.getVesselTransportMeans()) {
+                enrichWithGuidFromAssets(vesselTransportMeansEntity);
+            }
+        }
         Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
         if(CollectionUtils.isEmpty(fishingActivities))
             return;
@@ -198,10 +202,14 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private void enrichFishingActivityVesselWithGuiId(FishingActivityEntity fishingActivityEntity) {
-        VesselTransportMeansEntity vesselTransportMeansEntity=  fishingActivityEntity.getVesselTransportMeans();
-        if(vesselTransportMeansEntity!=null) {
-            enrichWithGuidFromAssets(vesselTransportMeansEntity);
-            fishingActivityEntity.setVesselTransportGuid(vesselTransportMeansEntity.getGuid());
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList=  fishingActivityEntity.getVesselTransportMeans();
+        if(CollectionUtils.isEmpty(vesselTransportMeansEntityList)){
+           return;
+        }
+
+        for(VesselTransportMeansEntity entity : vesselTransportMeansEntityList) {
+                enrichWithGuidFromAssets(entity);
+                fishingActivityEntity.setVesselTransportGuid(entity.getGuid());
         }
     }
 
@@ -292,7 +300,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private List<MovementType> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
-        Set<VesselIdentifierEntity> vesselIdentifiers = faReportDocumentEntity.getVesselTransportMeans().getVesselIdentifiers();
+        if(CollectionUtils.isEmpty(faReportDocumentEntity.getVesselTransportMeans())){
+           return Collections.emptyList();
+        }
+        Set<VesselIdentifierEntity> vesselIdentifiers = faReportDocumentEntity.getVesselTransportMeans().iterator().next().getVesselIdentifiers();
         Map<String, Date> dateMap = findStartAndEndDate(faReportDocumentEntity);
         return getAllMovementsForDateRange(vesselIdentifiers, dateMap.get(START_DATE), dateMap.get(END_DATE));
     }

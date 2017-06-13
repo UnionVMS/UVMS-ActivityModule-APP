@@ -24,6 +24,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -65,6 +66,14 @@ public class VesselTransportMeansEntity implements Serializable {
     @JoinColumn(name = "registration_event_id")
     private RegistrationEventEntity registrationEvent;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishing_activity_id")
+    private FishingActivityEntity fishingActivity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fa_report_document_id")
+    private FaReportDocumentEntity faReportDocument;
+
     @Column(name = "role_code")
     private String roleCode;
 
@@ -83,11 +92,6 @@ public class VesselTransportMeansEntity implements Serializable {
     @Column(name = "guid")
     private String guid;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
-    private FaReportDocumentEntity faReportDocument;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
-    private FishingActivityEntity fishingActivity;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<ContactPartyEntity> contactParty;
@@ -210,6 +214,8 @@ public class VesselTransportMeansEntity implements Serializable {
     public void setVesselPositionEvents(Set<VesselPositionEventEntity> vesselPositionEvents) {
         this.vesselPositionEvents = vesselPositionEvents;
     }
+
+
 
     public Map<VesselIdentifierSchemeIdEnum, String> getVesselIdentifiersMap() {
         Map<VesselIdentifierSchemeIdEnum, String> idMap = new HashMap<>();
