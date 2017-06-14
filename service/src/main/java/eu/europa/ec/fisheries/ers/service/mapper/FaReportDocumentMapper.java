@@ -87,7 +87,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             return null;
         }
         Set<VesselTransportMeansEntity> entities = new HashSet<>();
-        entities.add( VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans));
+        entities.add( VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans,faReportDocumentEntity));
         return entities;
     }
 

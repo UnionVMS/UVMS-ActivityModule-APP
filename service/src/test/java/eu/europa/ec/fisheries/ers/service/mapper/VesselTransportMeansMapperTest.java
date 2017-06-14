@@ -32,7 +32,7 @@ public class VesselTransportMeansMapperTest {
     public void testVesselTransportMeansMapper() {
         VesselTransportMeans vesselTransportMeans = MapperUtil.getVesselTransportMeans();
 
-        VesselTransportMeansEntity vesselTransportMeansEntity =VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans);
+        VesselTransportMeansEntity vesselTransportMeansEntity =VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans,null);
 
         assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getValue(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentId());
         assertEquals(vesselTransportMeans.getGrantedFLAPDocuments().get(0).getID().getSchemeID(), vesselTransportMeansEntity.getFlapDocuments().iterator().next().getFlapDocumentSchemeId());

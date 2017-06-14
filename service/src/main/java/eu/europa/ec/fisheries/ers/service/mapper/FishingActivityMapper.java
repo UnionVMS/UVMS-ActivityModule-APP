@@ -214,9 +214,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
         Set<VesselTransportMeansEntity> vesselTransportMeansEntities = new HashSet<>();
         for(VesselTransportMeans vesselTransportMeans : vesselList){
-            VesselTransportMeansEntity vesselTransportMeansEntity =VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans);
+            VesselTransportMeansEntity vesselTransportMeansEntity =VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans,faReportDocumentEntity);
             vesselTransportMeansEntity.setFishingActivity(fishingActivityEntity);
-            vesselTransportMeansEntity.setFaReportDocument(faReportDocumentEntity);
             vesselTransportMeansEntities.add(vesselTransportMeansEntity);
         }
 
@@ -227,7 +226,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     protected VesselTransportMeansEntity getFaReportDocVesselTransportMeans(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans())) {
-            return null;
+            return new VesselTransportMeansEntity();
         }
 
         return  entity.getFaReportDocument().getVesselTransportMeans().iterator().next();
