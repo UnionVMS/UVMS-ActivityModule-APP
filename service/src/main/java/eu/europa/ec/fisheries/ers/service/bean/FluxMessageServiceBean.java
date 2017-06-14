@@ -45,7 +45,6 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
@@ -122,9 +121,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
 
         fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
+        log.debug("Save partial FluxFaReportMessage before further processing" );
         updateFaReportCorrections(faReportMessage.getFAReportDocuments());
+        log.debug("Update FaReport Corrections is complete." );
         updateFishingTripStartAndEndDate(faReportDocuments);
-        log.info("Insert fishing activity records into DB complete.");
+        log.info("FluxFaReportMessage Saved successfully.");
     }
 
     /**
@@ -133,7 +134,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * @param faReportDocument
      */
     public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument){
-        log.debug("start calculating  fishing trip start and end date");
+
         Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
         if(CollectionUtils.isEmpty(fishingActivities)) {
             log.error("Could not find FishingActivities for faReportDocument.");
@@ -163,10 +164,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             try {
                 List<FishingActivityEntity> fishingActivityEntityList=fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
                 if(CollectionUtils.isNotEmpty(fishingActivityEntityList)){
-                    log.debug(fishingActivityEntityList.size()+" Fishing Activities found for tripId:"+tripIdentifierEntity.getTripId());
+                    //Calculate trip start date
                     FishingActivityEntity firstFishingActivity= fishingActivityEntityList.get(0);
-                    Date calculatedTripStartDate =firstFishingActivity.getCalculatedStartTime();
                     tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
+
+                    // calculate trip end date
                     Date calculatedTripEndDate;
                     int totalActivities=fishingActivityEntityList.size();
                     if(totalActivities>1){
@@ -175,7 +177,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                         calculatedTripEndDate=firstFishingActivity.getCalculatedStartTime();
                     }
                     tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
-                    log.debug("calculatedTripStartDate :"+ DateFormatUtils.format(calculatedTripStartDate,"dd/mm/yyyy") + " calculatedTripEndDate:"+DateFormatUtils.format(calculatedTripEndDate,"dd/mm/yyyy") + " for tripId:"+tripIdentifierEntity.getTripId());
                 }
 
             } catch (Exception e) {
@@ -262,6 +263,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             calculateFishingTripStartAndEndDate(faReportDocument);
         }
         faReportDocumentDao.updateAllFaData(new ArrayList<>(faReportDocuments)); // Update all the Entities together
+        log.debug("Update of Start And End Date for all fishingTrips is complete");
     }
 
     /**
