@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
@@ -38,7 +39,9 @@ public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
 
 
             if (CollectionUtils.isNotEmpty(viewDTO.getVesselDetails())) {
-                viewDTO.getVesselDetails().iterator().next().setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+                for (VesselDetailsDTO detailsDTO : viewDTO.getVesselDetails()){
+                    detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+                 }
             }
 
         }

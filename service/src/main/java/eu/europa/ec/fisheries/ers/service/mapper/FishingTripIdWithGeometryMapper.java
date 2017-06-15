@@ -123,11 +123,11 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
         }
         int totalFishTripEntityCount=fishingTripList.size();
         FishingTripEntity fishingTripEntity=fishingTripList.get(totalFishTripEntityCount-1);
-        Set<VesselTransportMeansEntity> vesselTransportMeansEntity=fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-        if(CollectionUtils.isEmpty(vesselTransportMeansEntity) || CollectionUtils.isEmpty(vesselTransportMeansEntity.iterator().next().getVesselIdentifiers())){
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList=fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        if(CollectionUtils.isEmpty(vesselTransportMeansEntityList) || CollectionUtils.isEmpty(vesselTransportMeansEntityList.iterator().next().getVesselIdentifiers())){
             return Collections.emptyList();
         }
-        Set<VesselIdentifierEntity> vesselIdentifierEntities= vesselTransportMeansEntity.iterator().next().getVesselIdentifiers();
+        Set<VesselIdentifierEntity> vesselIdentifierEntities= vesselTransportMeansEntityList.iterator().next().getVesselIdentifiers();
         List<VesselIdentifierType> vesselIdentifierTypes =new ArrayList<>();
 
         if(CollectionUtils.isNotEmpty(vesselIdentifierEntities)){
