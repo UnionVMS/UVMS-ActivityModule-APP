@@ -85,15 +85,14 @@ public class FaReportDocumentMapperTest {
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity.getFluxReportDocument().getFaReportDocument());
 
         assertNotNull(faReportDocumentEntity.getVesselTransportMeans());
-        assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity.getVesselTransportMeans().getFaReportDocument());
     }
 
     @Test
     public void testFaReportDocumentMapperNullReturns(){
         Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.getFishingActivityEntities(null, new FaReportDocumentEntity());
         assertTrue(fishingActivityEntities.size() == 0);
-        VesselTransportMeansEntity vesselTransportMeansEntity = FaReportDocumentMapper.INSTANCE.getVesselTransportMeansEntity(null, new FaReportDocumentEntity());
-        assertNull(vesselTransportMeansEntity);
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = FaReportDocumentMapper.INSTANCE.getVesselTransportMeansEntity(null, new FaReportDocumentEntity());
+        assertNull(vesselTransportMeansEntityList);
         Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.getFishingActivityEntities(null, new FaReportDocumentEntity());
         assertTrue(fishingActivityEntities1.size() == 0);
         Set<FaReportIdentifierEntity> faReportIdentifierEntities = FaReportDocumentMapper.INSTANCE.mapToFAReportIdentifierEntities(null, new FaReportDocumentEntity());

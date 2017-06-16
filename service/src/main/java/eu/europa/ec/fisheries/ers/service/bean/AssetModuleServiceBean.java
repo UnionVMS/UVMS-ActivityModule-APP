@@ -174,7 +174,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         for (VesselTypeAssetQueryEnum queryEnum : VesselTypeAssetQueryEnum.values()) {
             // Little hack since in the asset module this value corrisponds to a number one,
             // if it fails to parse it than it will throw!
-            if(!queryEnum.equals(VesselTypeAssetQueryEnum.UVI)){
+            if(!queryEnum.equals(VesselTypeAssetQueryEnum.UVI) && queryEnum.getConfigSearchField() != null){
                 AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
                 criteriaPair.setKey(queryEnum.getConfigSearchField());
                 criteriaPair.setValue(vesselToSearchFor);

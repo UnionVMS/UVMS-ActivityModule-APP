@@ -80,9 +80,7 @@ public class FaReportDocumentEntity implements Serializable {
     @JoinColumn(name = "flux_fa_report_message_id")
     private FluxFaReportMessageEntity fluxFaReportMessage;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "vessel_transport_means_id")
-    private VesselTransportMeansEntity vesselTransportMeans;
+
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "flux_report_document_id", nullable = false)
@@ -116,6 +114,13 @@ public class FaReportDocumentEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<FishingActivityEntity> fishingActivities;
 
+    /**
+     * This one to many relationship is artificially created. From XML we will always receive only One VesselTreansportMeans per FaReportDocument.
+     *  This is done to avoid cyclic dependency ( Vessel->FishingActivity->FaReportDocument->Vessel )
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
+    private Set<VesselTransportMeansEntity> vesselTransportMeans;
+
     public FaReportDocumentEntity() {
         super();
     }
@@ -124,12 +129,12 @@ public class FaReportDocumentEntity implements Serializable {
         return this.id;
     }
 
-    public VesselTransportMeansEntity getVesselTransportMeans() {
-        return this.vesselTransportMeans;
+
+    public Set<VesselTransportMeansEntity> getVesselTransportMeans() {
+        return vesselTransportMeans;
     }
 
-    public void setVesselTransportMeans(
-            VesselTransportMeansEntity vesselTransportMeans) {
+    public void setVesselTransportMeans(Set<VesselTransportMeansEntity> vesselTransportMeans) {
         this.vesselTransportMeans = vesselTransportMeans;
     }
 

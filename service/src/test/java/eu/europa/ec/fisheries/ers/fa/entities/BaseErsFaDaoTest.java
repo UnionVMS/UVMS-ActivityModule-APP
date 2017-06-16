@@ -10,14 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import static com.ninja_squad.dbsetup.Operations.deleteAllFrom;
-import static com.ninja_squad.dbsetup.Operations.insertInto;
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.uvms.BaseDAOTest;
+
+import static com.ninja_squad.dbsetup.Operations.deleteAllFrom;
+import static com.ninja_squad.dbsetup.Operations.insertInto;
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 
 
 public abstract class BaseErsFaDaoTest extends BaseDAOTest {
@@ -44,16 +44,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("flux_fa_report_message_id", 1)
                     .end()
                     .build(),
-            insertInto("activity.activity_vessel_transport_means")
-                    .row()
-                    .column("id", 1)
-                    .end()
-                    .build(),
             insertInto("activity.activity_fa_report_document")
                     .row()
                     .column("id", 1)
                     .column("flux_report_document_id", 1)
-                    .column("vessel_transport_means_id", 1)
                     .column("flux_fa_report_message_id", 1)
                     .column("accepted_datetime", java.sql.Date.valueOf("2014-12-01"))
                     .end()
@@ -64,8 +58,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("type_code", "DEPARTURE")
                     .column("type_code_listid", "FLUX_LOCATION_TYPE")
                     .column("fa_report_document_id", 1)
-                    .column("vessel_transport_means_id", 1)
                     .end().build(),
+            insertInto("activity.activity_vessel_transport_means")
+                    .row()
+                    .column("id", 1)
+                    .column("fishing_activity_id", 1)
+                    .column("fa_report_document_id", 1)
+                    .end()
+                    .build(),
             insertInto("activity.activity_size_distribution")
                     .row()
                     .column("id", 1)
@@ -197,7 +197,6 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("calculated_fishing_duration", 11.20)
                     .column("fa_report_document_id", 1)
                     .column("related_fishing_activity_id", 1)
-                    .column("vessel_transport_means_id", 1)
                     .column("vessel_transport_guid", "AS1222")
                     .column("flag_state", "NLD")
                     .end().build(),
@@ -205,73 +204,73 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id",  "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id",  "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(2, "ARRIVAL", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 1,null,null,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 1,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(3, "LANDING", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2013-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,2,null,null,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,2,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(4, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2012-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 2,null,null,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 2,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(5, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,  6,null,null,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,  6,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(6, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 3,null,null,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 3,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(7, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,null,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(8, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,null,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(9, "RELOCATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,6,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,"AS1222","NLD")
                     .build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
-                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_means_id","vessel_transport_guid","flag_state")
+                            "dest_vessel_char_id", "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state")
                     .values(10, "JOINT_FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
-                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,9,7,"AS1222","NLD")
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,9,"AS1222","NLD")
                     .build()
     );
     protected static final Operation INSERT_ERS_SIZE_DISTRIBUTION_DATA = sequenceOf(
@@ -552,6 +551,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_flux_party")
                     .columns("id", "flux_party_name", "name_language_id")
                     .values(5, "OWNER_NAME5", "EN")
+                    .build(),
+            insertInto("activity.activity_flux_party")
+                    .columns("id", "flux_party_name", "name_language_id")
+                    .values(6, "OWNER_NAME5", "EN")
+                    .build(),
+            insertInto("activity.activity_flux_party")
+                    .columns("id", "flux_party_name", "name_language_id")
+                    .values(7, "OWNER_NAME5", "EN")
                     .build()
     );
     protected static final Operation INSERT_ERS_FLUX_PARTY_IDENTIFIER_DATA = sequenceOf(
@@ -609,6 +616,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_flux_report_document")
                     .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(5, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 5, 5)
+                    .build(),
+            insertInto("activity.activity_flux_report_document")
+                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
+                    .values(6, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 6, 6)
+                    .build(),
+            insertInto("activity.activity_flux_report_document")
+                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
+                    .values(7, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 7, 7)
                     .build()
 
     );
@@ -650,32 +665,32 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     //vessel_transport_means_id
     protected static final Operation INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA = sequenceOf(
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(1, "ROLE_CODE", "LIST_ID", "vessel1", null, "TERRITORY", "FRA")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
+                    .values(1, "ROLE_CODE", "LIST_ID", "vessel1", null, "TERRITORY", "FRA",1,1)
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(2, "ROLE_CODE", "LIST_ID", "vessel2", null,"TERRITORY", "FRA")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
+                    .values(2, "ROLE_CODE", "LIST_ID", "vessel2", null,"TERRITORY", "FRA",2,2)
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(3, "ROLE_CODE", "LIST_ID", "vessel3", null, "TERRITORY", "ESP")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
+                    .values(3, "ROLE_CODE", "LIST_ID", "vessel3", null, "TERRITORY", "ESP",3,3)
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(4, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "ESP")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
+                    .values(4, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "ESP",4,4)
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country")
-                    .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
+                    .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA",5,5)
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid")
-                    .values(6, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid","fishing_activity_id","fa_report_document_id")
+                    .values(6, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",6,6)
                     .build(),
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid")
-                    .values(7, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111")
+                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid","fishing_activity_id","fa_report_document_id")
+                    .values(7, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",7,7)
                     .build()
     );
     protected static final Operation INSERT_ERS_VESSEL_IDENTIFIERS_DATA = sequenceOf(
@@ -702,6 +717,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_vessel_identifier")
                     .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(6, 5, "EXT_MARK123", "EXT_MARK")
+                    .build(),
+            insertInto("activity.activity_vessel_identifier")
+                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
+                    .values(7, 6, "EXT_MARK123", "EXT_MARK")
                     .build()
 
     );
@@ -879,29 +898,39 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     );
     protected static final Operation INSERT_ERS_FA_REPORT_DOCUMENT_DATA = sequenceOf(
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status",
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
                             "source", "flux_fa_report_message_id")
-                    .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1, 1, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1,  "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status",
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
                             "source", "flux_fa_report_message_id")
-                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2, 2, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2,  "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status",
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
                             "source", "flux_fa_report_message_id")
-                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, 3, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status",
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
                             "source", "flux_fa_report_message_id")
-                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, 4, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build(),
             insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id", "vessel_transport_means_id", "fmc_marker", "fmc_marker_list_id", "status",
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
                             "source", "flux_fa_report_message_id")
-                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, 5, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .values(5, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .build(),
+            insertInto("activity.activity_fa_report_document")
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
+                            "source", "flux_fa_report_message_id")
+                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 6, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .build(),
+            insertInto("activity.activity_fa_report_document")
+                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
+                            "source", "flux_fa_report_message_id")
+                    .values(7, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 7, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build()
 
     );
@@ -925,6 +954,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_flux_fa_report_message")
                     .columns("id")
                     .values(5)
+                    .build(),
+            insertInto("activity.activity_flux_fa_report_message")
+                    .columns("id")
+                    .values(6)
+                    .build(),
+            insertInto("activity.activity_flux_fa_report_message")
+                    .columns("id")
+                    .values(7)
                     .build()
     );
     protected static final Operation INSERT_FLUX_CHARACTERISTIC = sequenceOf(
@@ -962,13 +999,13 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                 INSERT_ERS_FLUX_PARTY_IDENTIFIER_DATA,
                 INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,
                 INSERT_ERS_FLUX_REPORT_IDENTIFIER_DATA,
+                INSERT_ERS_FA_REPORT_DOCUMENT_DATA,
+                INSERT_ERS_FISHING_ACTIVITY_DATA,
                 INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,
+                INSERT_ERS_VESSEL_IDENTIFIERS_DATA,
                 INSERT_CONTACT_PERSON,
                 INSERT_CONTACT_PARTY,
                 INSERT_CONTACT_PARTY_ROLE,
-                INSERT_ERS_VESSEL_IDENTIFIERS_DATA,
-                INSERT_ERS_FA_REPORT_DOCUMENT_DATA,
-                INSERT_ERS_FISHING_ACTIVITY_DATA,
                 INSERT_ERS_SIZE_DISTRIBUTION_DATA,
                 INSERT_ERS_SIZE_DISTRIBUTION_CLASSCODE_DATA,
                 INSERT_ERS_FA_CATCH_DATA,

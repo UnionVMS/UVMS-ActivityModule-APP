@@ -62,7 +62,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
     public List<FishingActivityEntity> getFishingActivitiesForFishingTripId(String fishingTripId){
 
-        log.debug("getFishingActivitiesForFishingTripId for tripId:" + fishingTripId);
         String sql = "SELECT DISTINCT a from FishingActivityEntity a JOIN a.fishingTrips fishingTrips" +
                 "  JOIN fishingTrips.fishingTripIdentifiers fi" +
                 "  where fi.tripId =:fishingTripId order by a.calculatedStartTime ASC";
