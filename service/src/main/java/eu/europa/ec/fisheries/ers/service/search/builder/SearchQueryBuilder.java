@@ -421,9 +421,9 @@ public abstract class SearchQueryBuilder {
             case FA_REPORT_ID:
                 typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
                 break;
-            case PORT:
+          /*  case PORT:
                 typedQuery.setParameter(queryParameterMappings.get(key), Double.parseDouble(value));
-                break;
+                break;*/
             case AREA_GEOM:
                 Geometry geom;
                 try {
@@ -467,13 +467,13 @@ public abstract class SearchQueryBuilder {
 
             switch(key){
 
-                case PORT:
+          /*      case PORT:
                     List<Double> doubleValList=new ArrayList<>();
                     for(String val:valueList){
                         doubleValList.add(Double.parseDouble(val));
                     }
                     typedQuery.setParameter(queryParameterMappings.get(key), doubleValList);
-                    break;
+                    break;*/
                 case MASTER:
                     List<String> uppperCaseValList=new ArrayList<>();
                     for(String val:valueList){
