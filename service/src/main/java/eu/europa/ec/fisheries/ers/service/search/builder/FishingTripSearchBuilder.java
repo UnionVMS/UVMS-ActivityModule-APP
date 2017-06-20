@@ -17,7 +17,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.ActivityConfigurationProperties;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
@@ -86,20 +85,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
 
 
-    // Check if the size of unique Fishing trips is withing threshold specified
-    public void checkThresholdForFishingTripList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
 
-        String tresholdTrips = ActivityConfigurationProperties.getValue(ActivityConfigurationProperties.LIMIT_FISHING_TRIPS);
-        if (tresholdTrips != null) {
-            int threshold = Integer.parseInt(tresholdTrips);
-            LOG.info("fishing trip threshold value:" + threshold);
-            if (uniqueTripIdWithGeometry.size() > threshold)
-                throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
-
-            LOG.info("fishing trip list size is within threshold value:" + uniqueTripIdWithGeometry.size());
-        }
-
-    }
 
     /**
      * Process FishingTripEntities to identify Unique FishingTrips.

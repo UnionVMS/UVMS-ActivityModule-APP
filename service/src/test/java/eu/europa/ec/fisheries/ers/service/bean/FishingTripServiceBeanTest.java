@@ -17,12 +17,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.dao.ActivityConfigurationDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
@@ -84,6 +86,9 @@ public class FishingTripServiceBeanTest {
 
     @Mock
     FaCatchDao faCatchDao;
+
+    @Mock
+    ActivityConfigurationDao activityConfigurationDao;
 
     @Mock
     ActivityServiceBean activityServiceBean;
@@ -312,7 +317,9 @@ public class FishingTripServiceBeanTest {
         query.setSearchCriteriaMap(searchMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
+
         when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(query)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
+        when(activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS)).thenReturn("1000");
         //Trigger
         FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(query);
         Mockito.verify(fishingTripDao, Mockito.times(2)).getFishingTripsForMatchingFilterCriteria(Mockito.any(FishingActivityQuery.class));
