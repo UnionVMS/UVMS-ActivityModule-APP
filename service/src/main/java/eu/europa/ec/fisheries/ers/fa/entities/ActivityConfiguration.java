@@ -16,15 +16,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * Entity that will map the configuration of Activity module.
  */
+@NamedQueries({
+        @NamedQuery(name = ActivityConfiguration.GET_PROPERTY_VALUE,
+                query = "SELECT config.configValue " +
+                        "FROM ActivityConfiguration config " +
+                        "WHERE config.configName =:"+ActivityConfiguration.CONFIG_NAME)
+})
+
 @Entity
 @Table(name = "activity_configuration")
-public class ActivityConfiguration {
+public class ActivityConfiguration implements Serializable {
+
+    public static final String GET_PROPERTY_VALUE ="GetPropertyValue";
+    public static final String CONFIG_NAME = "configName";
+    public static final String LIMIT_FISHING_TRIPS ="LIMIT_FISHING_TRIPS";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
