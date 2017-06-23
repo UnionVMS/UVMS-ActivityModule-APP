@@ -32,32 +32,20 @@
         </feature>
 
         <feature>
-            <name>CONFIGURE_MDR_SCHEDULER</name>
-            <description>allows the user to view and modify the scheduler configuration</description>
-            <group>MDR</group>
-        </feature>
-
-        <feature>
-            <name>LIST_MDR_CODE_LISTS</name>
-            <description>allows the user to view all MDR code lists</description>
-            <group>MDR</group>
-        </feature>
-
-        <feature>
-            <name>UPDATE_MDR_CODE_LISTS</name>
-            <description>allows the user to update all or selected list of MDR code lists</description>
-            <group>MDR</group>
-        </feature>
-
-        <feature>
-            <name>CODE_LISTS_ENABLE_DISABLE_SCHEDULED_UPDATE</name>
-            <description>allows the user to enable/disable the code lists scheduled update</description>
-            <group>MDR</group>
-        </feature>
-
-        <feature>
             <name>MANAGE_ADMIN_CONFIGURATIONS</name>
             <description>Allows you to view/update activity configurations located under the Admin tab</description>
+            <group>${activity.name}</group>
+        </feature>
+
+        <feature>
+            <name>SHOW_DELETED_FA_REPORTS</name>
+            <description>Allows the user to make requests that show the deletes reports</description>
+            <group>${activity.name}</group>
+        </feature>
+
+        <feature>
+            <name>EXPORT_ACTIVITY_DATA</name>
+            <description>Allows you to export activity data in several formats</description>
             <group>${activity.name}</group>
         </feature>
 

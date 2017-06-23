@@ -13,16 +13,28 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by padhyad on 7/29/2016.
@@ -44,11 +56,6 @@ public class FluxLocationMapperTest {
         StructuredAddressEntity structuredAddressEntity = fluxLocationEntity.getStructuredAddresses().iterator().next();
         assertNotNull(structuredAddressEntity);
         assertFluxLocationEntityFields(fluxLocation, structuredAddressEntity.getFluxLocation(), fluxLocationTypeEnum);
-
-      //  assertNotNull(fluxLocationEntity.getFluxCharacteristics());
-    //    FluxCharacteristicEntity fluxCharacteristicEntity = fluxLocationEntity.getFluxCharacteristics().iterator().next();
-     //   assertNotNull(fluxCharacteristicEntity);
-    //    assertFluxLocationEntityFields(fluxLocation, fluxCharacteristicEntity.getFluxLocation(), fluxLocationTypeEnum);
     }
 
     @Test
@@ -66,11 +73,42 @@ public class FluxLocationMapperTest {
         StructuredAddressEntity structuredAddressEntity = fluxLocationEntity.getStructuredAddresses().iterator().next();
         assertNotNull(structuredAddressEntity);
         assertFluxLocationEntityFields(fluxLocation, structuredAddressEntity.getFluxLocation(), fluxLocationTypeEnum);
+    }
 
-     //   assertNotNull(fluxLocationEntity.getFluxCharacteristics());
-     //   FluxCharacteristicEntity fluxCharacteristicEntity = fluxLocationEntity.getFluxCharacteristics().iterator().next();
-    //    assertNotNull(fluxCharacteristicEntity);
-    //    assertFluxLocationEntityFields(fluxLocation, fluxCharacteristicEntity.getFluxLocation(), fluxLocationTypeEnum);
+    @Test
+    public void mapToFluxLocationDTOTest(){
+        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
+        FluxLocationDto locationDto = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocationEntity);
+        assertNotNull(locationDto);
+    }
+
+    @Test
+    public void getPostalAddressDetailsTest(){
+        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
+        List<AddressDetailsDTO> fluxLocationDTO = FluxLocationMapper.INSTANCE.getPostalAddressDetails(fluxLocationEntity.getStructuredAddresses());
+        assertNotNull(fluxLocationDTO);
+        assertTrue(fluxLocationDTO.size() > 0);
+    }
+
+    @Test
+    public void getPhysicalAddressDetailsTest(){
+        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
+        AddressDetailsDTO fluxLocationDTO = FluxLocationMapper.INSTANCE.getPhysicalAddressDetails(fluxLocationEntity.getStructuredAddresses());
+        assertNotNull(fluxLocationDTO);
+        assertTrue(StringUtils.isNotEmpty(fluxLocationDTO.getBlockName()));
+    }
+
+    @Test
+    public void getFluxCharacteristicEntitiesTest(){
+        List<FLUXCharacteristic> fluxCarList = new ArrayList<FLUXCharacteristic>(){{
+            add(MapperUtil.getFluxCharacteristics());
+            add(MapperUtil.getFluxCharacteristics());
+        }};
+        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
+        Set<FluxCharacteristicEntity> fluxCharacteristicEntities =
+                FluxLocationMapper.INSTANCE.getFluxCharacteristicEntities(fluxCarList, fluxLocationEntity);
+        assertNotNull(fluxCharacteristicEntities);
+        assertTrue(fluxCharacteristicEntities.size() > 0);
     }
 
     private void assertFluxLocationEntityFields(FLUXLocation fluxLocation, FluxLocationEntity fluxLocationEntity, FluxLocationCatchTypeEnum fluxLocationTypeEnum) {
@@ -91,5 +129,14 @@ public class FluxLocationMapperTest {
         assertTrue(fluxLocationEntity.getName().startsWith(fluxLocation.getNames().get(0).getValue()));
         assertEquals(fluxLocation.getSovereignRightsCountryID().getValue(), fluxLocationEntity.getSovereignRightsCountryCode());
         assertEquals(fluxLocation.getJurisdictionCountryID().getValue(), fluxLocationEntity.getJurisdictionCountryCode());
+    }
+
+    private FluxLocationEntity getFluxLocationEntityMock() {
+        FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
+        FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
+        FluxLocationCatchTypeEnum fluxLocationTypeEnum = FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED;
+        FaCatchEntity faCatchEntity = null;
+        FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, faCatchEntity, fluxLocationEntity);
+        return fluxLocationEntity;
     }
 }

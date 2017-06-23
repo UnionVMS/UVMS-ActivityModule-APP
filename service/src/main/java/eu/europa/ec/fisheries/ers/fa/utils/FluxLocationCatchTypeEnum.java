@@ -17,7 +17,8 @@ public enum FluxLocationCatchTypeEnum {
 
     FA_CATCH_SPECIFIED("fa_catch_specified"),
     FA_CATCH_DESTINATION("fa_catch_destination"),
-    FA_RELATED("fa_related");
+    FA_RELATED("fa_related"),
+    GEAR_PROBLEM("gear_problem");
 
     private String type;
 

@@ -13,14 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by padhyad on 7/28/2016.
@@ -30,8 +30,7 @@ public class RegistrationEventMapperTest {
     @Test
     public void testRegistrationEventMapper() {
         RegistrationEvent registrationEvent = MapperUtil.getRegistrationEvent();
-        RegistrationEventEntity registrationEventEntity = new RegistrationEventEntity();
-        RegistrationEventMapper.INSTANCE.mapToRegistrationEventEntity(registrationEvent, null, registrationEventEntity);
+        RegistrationEventEntity registrationEventEntity = RegistrationEventMapper.INSTANCE.mapToRegistrationEventEntity(registrationEvent);
 
         assertTrue(registrationEventEntity.getDescription().startsWith(registrationEvent.getDescriptions().get(0).getValue()));
         assertEquals(registrationEvent.getOccurrenceDateTime().getDateTime().toGregorianCalendar().getTime(), registrationEventEntity.getOccurrenceDatetime());

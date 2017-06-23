@@ -8,27 +8,53 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "activity_flux_location")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FluxLocationEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_loc_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
 	private int id;
 
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	@Column(name = "geom")
 	private Geometry geom;
+
+	@Transient
+	private String wkt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
@@ -98,9 +124,9 @@ public class FluxLocationEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxLocation", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses;
 
-	public FluxLocationEntity() {
-		super();
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "gear_problem_id")
+	private GearProblemEntity gearProblem;
 
 	public int getId() {
 		return this.id;
@@ -286,6 +312,18 @@ public class FluxLocationEntity implements Serializable {
 		this.geom = geom;
 	}
 
+	public String getWkt() {
+		return wkt;
+	}
+
+	public FluxCharacteristicEntity getFluxCharacteristic() {
+		return fluxCharacteristic;
+	}
+
+	public void setFluxCharacteristic(FluxCharacteristicEntity fluxCharacteristic) {
+		this.fluxCharacteristic = fluxCharacteristic;
+	}
+
 	@Override
 	public String toString() {
 		return "FluxLocationEntity{" +
@@ -310,5 +348,20 @@ public class FluxLocationEntity implements Serializable {
 				", altitude=" + altitude +
 				", systemId='" + systemId + '\'' +
 				'}';
+	}
+
+	@PostLoad
+	private void onLoad() {
+		if(this.geom != null){
+			this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
+		}
+	}
+
+	public GearProblemEntity getGearProblem() {
+		return gearProblem;
+	}
+
+	public void setGearProblem(GearProblemEntity gearProblem) {
+		this.gearProblem = gearProblem;
 	}
 }

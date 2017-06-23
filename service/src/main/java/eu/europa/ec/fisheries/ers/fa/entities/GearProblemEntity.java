@@ -10,7 +10,18 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,8 +31,9 @@ public class GearProblemEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "gear_prob_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_activity_id")
@@ -35,6 +47,10 @@ public class GearProblemEntity implements Serializable {
 
 	@Column(name = "affected_quantity", nullable = false)
 	private int affectedQuantity;
+
+	@Column(name = "locations")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
+	private Set<FluxLocationEntity> locations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "gearProblem", cascade = CascadeType.ALL)
 	private Set<GearProblemRecoveryEntity> gearProblemRecovery;
@@ -85,5 +101,11 @@ public class GearProblemEntity implements Serializable {
 	}
 	public void setFishingGears(Set<FishingGearEntity> fishingGears) {
 		this.fishingGears = fishingGears;
+	}
+	public Set<FluxLocationEntity> getLocations() {
+		return locations;
+	}
+	public void setLocations(Set<FluxLocationEntity> locations) {
+		this.locations = locations;
 	}
 }

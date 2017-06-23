@@ -8,13 +8,14 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxCharacteristicsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -22,27 +23,24 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-/**
- * Created by padhyad on 6/14/2016.
- */
 @Mapper
 public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
     public static final FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "valueMeasure", expression = "java(getMeasure(fluxCharacteristic.getValueMeasure()))"),
-            @Mapping(target = "valueMeasureUnitCode", expression = "java(getMeasureUnitCode(fluxCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "typeCode", source = "fluxCharacteristic.typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "fluxCharacteristic.typeCode.listID"),
+            @Mapping(target = "valueMeasure", source = "fluxCharacteristic.valueMeasure.value"),
+            @Mapping(target = "valueMeasureUnitCode", source = "fluxCharacteristic.valueMeasure.unitCode"),
             @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(fluxCharacteristic.getValueMeasure()))"),
-            @Mapping(target = "valueDateTime", expression = "java(convertToDate(fluxCharacteristic.getValueDateTime()))"),
-            @Mapping(target = "valueIndicator", expression = "java(getValueIndicator(fluxCharacteristic.getValueIndicator()))"),
-            @Mapping(target = "valueCode", expression = "java(getCodeType(fluxCharacteristic.getValueCode()))"),
+            @Mapping(target = "valueDateTime", source = "fluxCharacteristic.valueDateTime.dateTime"),
+            @Mapping(target = "valueIndicator", source = "fluxCharacteristic.valueIndicator.indicatorString.value"),
+            @Mapping(target = "valueCode", source = "fluxCharacteristic.valueCode.value"),
             @Mapping(target = "valueText", expression = "java(getTextFromList(fluxCharacteristic.getValues()))"),
             @Mapping(target = "valueLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getValues()))"),
-            @Mapping(target = "valueQuantity", expression = "java(getQuantity(fluxCharacteristic.getValueQuantity()))"),
-            @Mapping(target = "valueQuantityCode", expression = "java(getQuantityUnitCode(fluxCharacteristic.getValueQuantity()))"),
+            @Mapping(target = "valueQuantity", source = "fluxCharacteristic.valueQuantity.value"),
+            @Mapping(target = "valueQuantityCode", source = "fluxCharacteristic.valueQuantity.unitCode"),
             @Mapping(target = "calculatedValueQuantity", expression = "java(getCalculatedQuantity(fluxCharacteristic.getValueQuantity()))"),
             @Mapping(target = "description", expression = "java(getTextFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "descriptionLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
@@ -51,18 +49,18 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic, FishingActivityEntity fishingActivityEntity, @MappingTarget FluxCharacteristicEntity fluxCharacteristicEntity);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "valueMeasure", expression = "java(getMeasure(fluxCharacteristic.getValueMeasure()))"),
-            @Mapping(target = "valueMeasureUnitCode", expression = "java(getMeasureUnitCode(fluxCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "typeCode", source = "fluxCharacteristic.typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "fluxCharacteristic.typeCode.listID"),
+            @Mapping(target = "valueMeasure", source = "fluxCharacteristic.valueMeasure.value"),
+            @Mapping(target = "valueMeasureUnitCode", source = "fluxCharacteristic.valueMeasure.unitCode"),
             @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(fluxCharacteristic.getValueMeasure()))"),
-            @Mapping(target = "valueDateTime", expression = "java(convertToDate(fluxCharacteristic.getValueDateTime()))"),
-            @Mapping(target = "valueIndicator", expression = "java(getValueIndicator(fluxCharacteristic.getValueIndicator()))"),
-            @Mapping(target = "valueCode", expression = "java(getCodeType(fluxCharacteristic.getValueCode()))"),
+            @Mapping(target = "valueDateTime", source = "fluxCharacteristic.valueDateTime.dateTime"),
+            @Mapping(target = "valueIndicator", source = "fluxCharacteristic.valueIndicator.indicatorString.value"),
+            @Mapping(target = "valueCode", source = "fluxCharacteristic.valueCode.value"),
             @Mapping(target = "valueText", expression = "java(getTextFromList(fluxCharacteristic.getValues()))"),
             @Mapping(target = "valueLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getValues()))"),
-            @Mapping(target = "valueQuantity", expression = "java(getQuantity(fluxCharacteristic.getValueQuantity()))"),
-            @Mapping(target = "valueQuantityCode", expression = "java(getQuantityUnitCode(fluxCharacteristic.getValueQuantity()))"),
+            @Mapping(target = "valueQuantity", source = "fluxCharacteristic.valueQuantity.value"),
+            @Mapping(target = "valueQuantityCode", source = "fluxCharacteristic.valueQuantity.unitCode"),
             @Mapping(target = "calculatedValueQuantity", expression = "java(getCalculatedQuantity(fluxCharacteristic.getValueQuantity()))"),
             @Mapping(target = "description", expression = "java(getTextFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "descriptionLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
@@ -70,20 +68,19 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     })
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic, FaCatchEntity faCatchEntity, @MappingTarget FluxCharacteristicEntity fluxCharacteristicEntity);
 
-
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fluxCharacteristic.getTypeCode()))"),
-            @Mapping(target = "valueMeasure", expression = "java(getMeasure(fluxCharacteristic.getValueMeasure()))"),
-            @Mapping(target = "valueMeasureUnitCode", expression = "java(getMeasureUnitCode(fluxCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "typeCode", source = "fluxCharacteristic.typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "fluxCharacteristic.typeCode.listID"),
+            @Mapping(target = "valueMeasure", source = "fluxCharacteristic.valueMeasure.value"),
+            @Mapping(target = "valueMeasureUnitCode", source = "fluxCharacteristic.valueMeasure.unitCode"),
             @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(fluxCharacteristic.getValueMeasure()))"),
-            @Mapping(target = "valueDateTime", expression = "java(convertToDate(fluxCharacteristic.getValueDateTime()))"),
-            @Mapping(target = "valueIndicator", expression = "java(getValueIndicator(fluxCharacteristic.getValueIndicator()))"),
-            @Mapping(target = "valueCode", expression = "java(getCodeType(fluxCharacteristic.getValueCode()))"),
+            @Mapping(target = "valueDateTime", source = "fluxCharacteristic.valueDateTime.dateTime"),
+            @Mapping(target = "valueIndicator", source = "fluxCharacteristic.valueIndicator.indicatorString.value"),
+            @Mapping(target = "valueCode", source = "fluxCharacteristic.valueCode.value"),
             @Mapping(target = "valueText", expression = "java(getTextFromList(fluxCharacteristic.getValues()))"),
             @Mapping(target = "valueLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getValues()))"),
-            @Mapping(target = "valueQuantity", expression = "java(getQuantity(fluxCharacteristic.getValueQuantity()))"),
-            @Mapping(target = "valueQuantityCode", expression = "java(getQuantityUnitCode(fluxCharacteristic.getValueQuantity()))"),
+            @Mapping(target = "valueQuantity", source = "fluxCharacteristic.valueQuantity.value"),
+            @Mapping(target = "valueQuantityCode", source = "fluxCharacteristic.valueQuantity.unitCode"),
             @Mapping(target = "calculatedValueQuantity", expression = "java(getCalculatedQuantity(fluxCharacteristic.getValueQuantity()))"),
             @Mapping(target = "description", expression = "java(getTextFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "descriptionLanguageId", expression = "java(getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
@@ -91,9 +88,6 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     })
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic, FluxLocationEntity fluxLocationEntity, @MappingTarget FluxCharacteristicEntity fluxCharacteristicEntity);
 
+    public abstract FluxCharacteristicsDto mapToFluxCharacteristicsDto(FluxCharacteristicEntity fluxCharacteristicEntity);
 
-    @Mappings({
-            @Mapping(source = "valueDateTime",target = "valueDateTime")
-    })
-    public abstract FluxCharacteristicsDTO mapToFluxCharacteristicsDTO(FluxCharacteristicEntity fluxCharacteristicEntity);
 }

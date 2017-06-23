@@ -13,13 +13,34 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.*;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sanera on 31/08/2016.
@@ -86,7 +107,7 @@ public class ActivityDataUtil {
         faReportDocumentEntity.setTypeCodeListId(typeCodeListId);
         faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
         faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
-        faReportDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
+        faReportDocumentEntity.setVesselTransportMeans(new HashSet<>(Arrays.asList(vesselTransportMeansEntity)));
         faReportDocumentEntity.setStatus(status);
         return faReportDocumentEntity;
     }
@@ -150,6 +171,12 @@ public class ActivityDataUtil {
         fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
         fishingTripIdentifierEntity.setTripId(tripId);
         fishingTripIdentifierEntity.setTripSchemeId(tripSchemeId);
+        try {
+            fishingTripIdentifierEntity.setCalculatedTripEndDate(new SimpleDateFormat("dd/MM/yyyy").parse("12/01/2016")  );
+            fishingTripIdentifierEntity.setCalculatedTripStartDate(new SimpleDateFormat("dd/MM/yyyy").parse("12/01/2013")  );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return fishingTripIdentifierEntity;
     }
 

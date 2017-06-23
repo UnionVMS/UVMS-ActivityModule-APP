@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
 		<artifactId>activity</artifactId>
-		<version>0.5.8-SNAPSHOT</version>
+		<version>0.5.10-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -33,6 +33,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+			<artifactId>mdr-model</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
 			<artifactId>spatial-model</artifactId>
 		</dependency>
@@ -40,7 +45,8 @@
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
 			<artifactId>movement-model</artifactId>
-		</dependency>
+            <classifier>xmlgregoriancalendar</classifier>
+        </dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -49,22 +55,12 @@
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>uvms-commons</artifactId>
-		</dependency>
+            <artifactId>uvms-commons</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>activity-model</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-			<artifactId>activity-model-fa</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-			<artifactId>activity-model-mdr</artifactId>
 		</dependency>
 
 		<dependency>
@@ -166,10 +162,40 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
+			<classifier>date</classifier>
         </dependency>
-	</dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- If using JPA, add: -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+		<!-- Infinispan integration: -->
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-directory-provider</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>3.2.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<profiles>
+        <profile>
+            <id>postgres</id>
+            <properties>
+                <database.dialect>postgres</database.dialect>
+            </properties>
+        </profile>
 		<profile>
 			<id>dev</id>
 			<properties>
@@ -238,12 +264,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
-			<!-- <plugin> <groupId>com.buschmais.jqassistant.scm</groupId> <artifactId>jqassistant-maven-plugin</artifactId> 
-				<version>1.1.0</version> <executions> <execution> <goals> <goal>scan</goal> 
-				<goal>analyze</goal> </goals> <configuration> <failOnViolations>true</failOnViolations> 
-				</configuration> </execution> </executions> <dependencies> <dependency> <groupId>com.buschmais.jqassistant.plugin</groupId> 
-				<artifactId>jqassistant.plugin.javaee6</artifactId> <version>1.1.0</version> 
-				</dependency> </dependencies> </plugin> -->
+
 		</plugins>
 		<pluginManagement>
 			<plugins>

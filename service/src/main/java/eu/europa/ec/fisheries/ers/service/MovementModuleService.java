@@ -11,24 +11,21 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by padhyad on 10/11/2016.
- */
 public interface MovementModuleService {
 
     /**
      * Get Movements by Assets Ids, start date of movements and last date of movements
      *
-     * @param vesselIds vessel guids
+     * @param vesselIds vessel guid
      * @param startDate start date
      * @param endDate end date
      * @return list of Movements

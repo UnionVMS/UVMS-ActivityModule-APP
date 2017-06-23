@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import org.junit.Test;
 
 import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getSourceActivityConfigDTO;
@@ -21,7 +21,6 @@ import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getTargetActivi
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.runners.model.MultipleFailureException.assertEmpty;
 
 /**
  * Created by padhyad on 8/25/2016.

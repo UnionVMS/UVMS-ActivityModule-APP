@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-
 import javax.persistence.EntityManager;
 
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
@@ -26,7 +25,6 @@ public class SizeDistributionDao extends AbstractDAO<SizeDistributionEntity>{
 
 	@Override
 	public EntityManager getEntityManager() {
-		// TODO Auto-generated method stub
 		return em;
 	}
 

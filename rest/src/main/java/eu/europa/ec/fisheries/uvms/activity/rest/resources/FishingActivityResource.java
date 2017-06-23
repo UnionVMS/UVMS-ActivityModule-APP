@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
@@ -24,10 +25,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -42,7 +39,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -66,7 +62,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/save")
     public Response saveFaReportDocument() throws ServiceException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message_cedric_data.xml");
         JAXBContext jaxbContext;
         FLUXFAReportMessage fluxfaReportMessage;
         try {
@@ -77,36 +73,7 @@ public class FishingActivityResource extends UnionVMSResource {
             log.error("Error occured during Unmorshalling of the FLUXFAReportMessage", e);
            throw new ServiceException(e.getMessage());
         }
-
-        for (FAReportDocument faReportDocument : fluxfaReportMessage.getFAReportDocuments()) {
-            CodeType purposeCode = new CodeType();
-            purposeCode.setValue("5");
-            purposeCode.setListID("Test scheme Id");
-            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
-        }
-
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage.getFAReportDocuments(), FaReportSourceEnum.FLUX);
-
-        List<FAReportDocument> faReportDocumentList = fluxfaReportMessage.getFAReportDocuments();
-        for (FAReportDocument faReportDocument : faReportDocumentList) {
-            IDType id = faReportDocument.getRelatedFLUXReportDocument().getIDS().get(0);
-            faReportDocument.getRelatedFLUXReportDocument().setReferencedID(id);
-
-            IDType newId = new IDType();
-            newId.setValue("New Id 1");
-            newId.setSchemeID("New scheme Id 1");
-            faReportDocument.getRelatedFLUXReportDocument().setIDS(Arrays.asList(newId));
-
-            CodeType purposeCode = new CodeType();
-            purposeCode.setValue("5");
-            purposeCode.setListID("Test scheme Id");
-            faReportDocument.getRelatedFLUXReportDocument().setPurposeCode(purposeCode);
-
-            for (FishingActivity fishingActivity : faReportDocument.getSpecifiedFishingActivities()) {
-                fishingActivity.setRelatedFishingActivities(null);
-            }
-        }
-        fluxResponseMessageService.saveFishingActivityReportDocuments(faReportDocumentList, FaReportSourceEnum.FLUX);
+        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
         return createSuccessResponse();
     }
 
@@ -128,9 +95,9 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        Response responseMethod = createSuccessResponse(activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets));
-        log.info("successful");
-        return responseMethod;
+        log.info("Successful retrieved");
+        FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
+        return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }
 
     @GET
@@ -145,4 +112,5 @@ public class FishingActivityResource extends UnionVMSResource {
 
         return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
     }
+
 }

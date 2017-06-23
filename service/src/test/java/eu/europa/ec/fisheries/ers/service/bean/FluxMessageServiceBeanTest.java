@@ -11,58 +11,69 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
-import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import eu.europa.ec.fisheries.ers.service.util.PostGres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-import javax.persistence.EntityManager;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by padhyad on 8/3/2016.
- */
 public class FluxMessageServiceBeanTest {
 
     @Mock
-    EntityManager em;
+    private FaReportDocumentDao faReportDocumentDao;
 
     @Mock
-    FaReportDocumentDao faReportDocumentDao;
+    private FluxFaReportMessageDao fluxFaReportMessageDao;
 
     @Mock
-    MovementModuleServiceBean movementModule;
+    private MovementModuleServiceBean movementModule;
 
     @Mock
     private AssetModuleService assetModule;
 
     @InjectMocks
-    FluxMessageServiceBean fluxMessageService;
+    private FluxMessageServiceBean fluxMessageService;
 
-    List<FAReportDocument> faReportDocuments;
+    private List<FAReportDocument> faReportDocuments;
+
+    private FLUXFAReportMessage fluxFaReportMessage;
 
     @Captor
     ArgumentCaptor<List<FaReportDocumentEntity>> captor;
@@ -73,34 +84,40 @@ public class FluxMessageServiceBeanTest {
     @Before
     public void setUp() {
         FAReportDocument faReportDocument2 = MapperUtil.getFaReportDocument();
-        faReportDocument2.getRelatedFLUXReportDocument().setPurposeCode(MapperUtil.getCodeType("5", "4fyrh-58fj4-5jtu-58tjr"));
+        faReportDocument2.getRelatedFLUXReportDocument().setPurposeCode(MapperUtil.getCodeType("9", "4fyrh-58fj4-5jtu-58tjr"));
         IDType id = faReportDocument2.getRelatedFLUXReportDocument().getReferencedID();
 
         FAReportDocument faReportDocument1 = MapperUtil.getFaReportDocument();
         faReportDocument1.getRelatedFLUXReportDocument().setIDS(Arrays.asList(id));
         faReportDocument1.getRelatedFLUXReportDocument().setPurposeCode(MapperUtil.getCodeType("3", "4f5yrh-58f7j4-5j5tu-58tj7r"));
 
+        fluxFaReportMessage = new FLUXFAReportMessage();
         faReportDocuments = Arrays.asList(faReportDocument1, faReportDocument2);
+        fluxFaReportMessage.setFAReportDocuments(faReportDocuments);
+        fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocument());
     }
 
     @Test
     @SneakyThrows
-    public void testSaveFishingActivityReportDocuments() {
+    public void testSaveFishingActivityReportDocuments() throws ServiceException, ParseException, DatatypeConfigurationException {
 
         //Mock the APIs
         Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
         Mockito.doNothing().when(faReportDocumentDao).updateAllFaData(Mockito.any(List.class));
+        Mockito.doNothing().when(fluxFaReportMessageDao).saveFluxFaReportMessage(Mockito.any(FluxFaReportMessageEntity.class));
+
         Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
         Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Date.class), Mockito.any(Date.class));
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
-        fluxMessageService.saveFishingActivityReportDocuments(faReportDocuments, FaReportSourceEnum.FLUX);
+        fluxMessageService.setDialect(new PostGres());
+        fluxMessageService.saveFishingActivityReportDocuments(fluxFaReportMessage, FaReportSourceEnum.FLUX);
 
         //Verify
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).bulkUploadFaData(Mockito.any(List.class));
+        Mockito.verify(fluxFaReportMessageDao, Mockito.times(1)).saveFluxFaReportMessage(Mockito.any(FluxFaReportMessageEntity.class));
         Mockito.verify(faReportDocumentDao, Mockito.times(2)).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).updateAllFaData(captor.capture());
+        Mockito.verify(faReportDocumentDao, Mockito.times(2)).updateAllFaData(captor.capture());
 
         //Test
         List<FaReportDocumentEntity>  faReportDocumentEntities = captor.getValue();
@@ -141,4 +158,5 @@ public class FluxMessageServiceBeanTest {
 
         return Arrays.asList(movementType1, movementType2);
     }
+
 }

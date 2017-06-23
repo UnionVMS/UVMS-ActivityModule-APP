@@ -8,9 +8,21 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,8 +32,9 @@ public class FishingTripEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_trip_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
@@ -88,8 +101,7 @@ public class FishingTripEntity implements Serializable {
 		return this.delimitedPeriods;
 	}
 
-	public void setDelimitedPeriods(
-			Set<DelimitedPeriodEntity> delimitedPeriods) {
+	public void setDelimitedPeriods(Set<DelimitedPeriodEntity> delimitedPeriods) {
 		this.delimitedPeriods = delimitedPeriods;
 	}
 
@@ -97,9 +109,16 @@ public class FishingTripEntity implements Serializable {
 		return this.fishingTripIdentifiers;
 	}
 
-	public void setFishingTripIdentifiers(
-			Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
+	public void setFishingTripIdentifiers(Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
 		this.fishingTripIdentifiers = fishingTripIdentifiers;
 	}
 
+	@Override
+	public String toString() {
+		return "FishingTripEntity{" +
+				"id=" + id +
+				", typeCode='" + typeCode + '\'' +
+				", typeCodeListId='" + typeCodeListId + '\'' +
+				'}';
+	}
 }

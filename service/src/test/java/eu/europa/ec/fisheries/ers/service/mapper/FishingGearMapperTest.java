@@ -13,22 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.FishingGearDetailsDTO;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 
 /**
  * Created by padhyad on 7/29/2016.
@@ -38,9 +30,7 @@ public class FishingGearMapperTest {
     @Test
     public void testFishingGearMapperWithFishingActivity() {
         FishingGear fishingGear = MapperUtil.getFishingGear();
-        FishingGearEntity fishingGearEntity = new FishingGearEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, fishingActivityEntity, fishingGearEntity);
+        FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
 
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
@@ -59,9 +49,7 @@ public class FishingGearMapperTest {
     @Test
     public void testFishingGearMapperWithFaCatch() {
         FishingGear fishingGear = MapperUtil.getFishingGear();
-        FishingGearEntity fishingGearEntity = new FishingGearEntity();
-        FaCatchEntity faCatchEntity = null;
-        FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, faCatchEntity, fishingGearEntity);
+        FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
 
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());
@@ -80,9 +68,7 @@ public class FishingGearMapperTest {
     @Test
     public void testFishingGearMapperWithGearProblem() {
         FishingGear fishingGear = MapperUtil.getFishingGear();
-        FishingGearEntity fishingGearEntity = new FishingGearEntity();
-        GearProblemEntity gearProblemEntity = null;
-        FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear, gearProblemEntity, fishingGearEntity);
+        FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
 
         assertEquals(fishingGear.getTypeCode().getValue(), fishingGearEntity.getTypeCode());
         assertEquals(fishingGear.getTypeCode().getListID(), fishingGearEntity.getTypeCodeListId());

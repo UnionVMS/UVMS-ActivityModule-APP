@@ -8,33 +8,30 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
-import eu.europa.ec.fisheries.ers.service.search.*;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Created by padhyad on 5/3/2016.
- */
-
+@Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
-    private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
-    private  static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static  final String FISHING_ACTIVITY_LIST_ALL_DATA="SELECT DISTINCT a  from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa where fa.status = '"+ FaReportStatusEnum.NEW.getStatus() +"' order by fa.acceptedDatetime asc ";
+    private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
 
     private EntityManager em;
 
@@ -42,107 +39,49 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         this.em = em;
     }
 
-
     @Override
     public EntityManager getEntityManager() {
         return em;
     }
 
-    public List<FishingActivityEntity> getFishingActivityList() throws ServiceException {
-        return getFishingActivityList(null);
-    }
-
-
-
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId) throws ServiceException {
-        if(fishingTripId == null || fishingTripId.length() == 0)
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
+        if (fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
-        Query query = getEntityManager().createNamedQuery(FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP);
+
+        String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
+        if (multipolgon == null)
+            queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
+
+        Query query = getEntityManager().createNamedQuery(queryName);
 
         query.setParameter("fishingTripId", fishingTripId);
+
+        if (multipolgon != null)
+            query.setParameter("area", multipolgon);
+
         return query.getResultList();
     }
 
-    public List<FishingActivityEntity> getFishingActivityList(Pagination pagination) throws ServiceException {
-        LOG.info("There are no Filters present to filter Fishing Activity Data. so, fetch all the Fishing Activity Records");
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA, FishingActivityEntity.class);
-
-        if(pagination!=null) {
-            int listSize =pagination.getListSize();
-            int pageNumber = pagination.getPage();
-            if(listSize ==0 || pageNumber ==0)
-                  throw new ServiceException("Error is pagination list size or page number.Please enter valid values. List Size provided: "+listSize + " Page number:"+pageNumber);
-
-            typedQuery.setFirstResult(listSize * (pageNumber - 1));
-            typedQuery.setMaxResults(listSize);
-        }
-
-        return typedQuery.getResultList();
-    }
-
-    public Integer getCountForFishingActivityList()  {
-        LOG.info("Get Total Count for Fishing Activities When no filter criteria is present");
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(FISHING_ACTIVITY_LIST_ALL_DATA, FishingActivityEntity.class);
-        return typedQuery.getResultList().size();
-    }
-
-
     public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+        FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
         LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
-        StringBuilder sqlToGetActivityListCount =SearchQueryBuilder.createSQL(query);
+        StringBuilder sqlToGetActivityListCount = search.createSQL(query);
 
-        Query countQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount,query);
+        Query countQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
 
         return countQuery.getResultList().size();
     }
 
-
-    // Set typed values for Dynamically generated Query
-    public  Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query){
+    /**
+     * Set typed values for Dynamically generated Query
+     */
+    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearchBuilder search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
-        Map<Filters,String> mappings =  FilterMap.getFilterQueryParameterMappings();
+
         Query typedQuery = em.createQuery(sql.toString());
-        Map<Filters,String> searchCriteriaMap = query.getSearchCriteriaMap();
+        return search.fillInValuesForTypedQuery(query, typedQuery);
 
-        if(searchCriteriaMap ==null)
-            return typedQuery;
-        // Assign values to created SQL Query
-        for (Map.Entry<Filters,String> entry : searchCriteriaMap.entrySet()){
-
-            Filters key =  entry.getKey();
-            String value=  entry.getValue();
-            //For WeightMeasure there is no mapping present, In that case
-            if(mappings.get(key) ==null)
-                continue;
-
-            switch (key) {
-                case PERIOD_START:
-                    typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
-                    break;
-                case PERIOD_END:
-                    typedQuery.setParameter(mappings.get(key), DateUtils.parseToUTCDate(value,FORMAT));
-                    break;
-                case QUNTITY_MIN:
-                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(Filters.WEIGHT_MEASURE)));
-                    break;
-                case QUNTITY_MAX:
-                    typedQuery.setParameter(mappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(Filters.WEIGHT_MEASURE)));
-                    break;
-                case MASTER:
-                    typedQuery.setParameter(mappings.get(key), value.toUpperCase());
-                    break;
-                case FA_REPORT_ID:
-                    typedQuery.setParameter(mappings.get(key), Integer.parseInt(value));
-                    break;
-                default:
-                    typedQuery.setParameter(mappings.get(key), value);
-                    break;
-            }
-
-        }
-        return typedQuery;
     }
-
 
     /*
      Get all the Fishing Activities which match Filter criterias mentioned in the Input. Also, provide the sorted data based on what user has requested.
@@ -150,29 +89,90 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      */
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         LOG.info("Get Fishing Activity Report list by Query.");
+        FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
 
-        // Create Query dynamically based on Dilter and Sort criteria
-        StringBuilder sqlToGetActivityList =SearchQueryBuilder.createSQL(query);
+        // Create Query dynamically based on filter and Sort criteria
+        StringBuilder sqlToGetActivityList = search.createSQL(query);
 
         // Apply real values to Query built
-        Query listQuery= getTypedQueryForFishingActivityFilter(sqlToGetActivityList,query);
+        Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
 
-        Pagination pagination= query.getPagination();
-        if(pagination!=null) {
-            listQuery.setFirstResult(pagination.getListSize() * (pagination.getPage() - 1));
-            listQuery.setMaxResults(pagination.getListSize());
+        // Agreed with frontend.
+        // Page size : Number of record to be retrieved in one page
+        // offSet : The position from where the result should be picked. Starts with 0
+
+        PaginationDto pagination = query.getPagination();
+        if (pagination != null) {
+            LOG.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
+            
+            listQuery.setFirstResult(pagination.getOffset());
+            listQuery.setMaxResults(pagination.getPageSize());
         }
 
-        return listQuery.getResultList();
+        List resultList = listQuery.getResultList();
+        Hibernate.initialize(resultList);
+
+        return resultList;
     }
 
+    /**
+     * Returns a FishingActivityEntity with joined tables depending on the view (ARRIVAL, DEPARTURE, etc..).
+     *
+     * @param activityId
+     * @param geom
+     * @return
+     */
+    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) throws ServiceException {
+        String s = fillQueryConditions(geom);
+        Query typedQuery = getEntityManager().createQuery(s);
+        typedQuery.setParameter("fishingActivityId", activityId);
+        if(geom != null){
+            typedQuery.setParameter("area", geom);
+        }
+        List<FishingActivityEntity> resultList = typedQuery.getResultList();
+        if (CollectionUtils.isEmpty(resultList)) {
+            return null;
+        }
+        return resultList.get(0);
+    }
 
+    private String fillQueryConditions(Geometry geom) {
 
-
-
-
-
-
-
-
+        StringBuilder sb = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
+                .append("LEFT JOIN FETCH a.faReportDocument fa ")
+                .append("LEFT JOIN FETCH a.fluxLocations fl ")
+                .append("LEFT JOIN FETCH a.fishingGears fg ")
+                .append("LEFT JOIN FETCH a.fluxCharacteristics fc ")
+                .append("LEFT JOIN FETCH a.faCatchs fCatch ")
+                .append("LEFT JOIN FETCH a.allRelatedFishingActivities relatedActivities ")
+                .append("LEFT JOIN FETCH relatedActivities.vesselTransportMeans relvtm ")
+                .append("LEFT JOIN FETCH relvtm.vesselIdentifiers relvid ")
+                .append("LEFT JOIN FETCH relatedActivities.faCatchs relCatch ")
+                .append("LEFT JOIN FETCH fCatch.fluxLocations ")
+                .append("LEFT JOIN FETCH fCatch.sizeDistribution ")
+                .append("LEFT JOIN FETCH fCatch.fishingGears ")
+                .append("LEFT JOIN FETCH fCatch.fluxCharacteristics ")
+                .append("LEFT JOIN FETCH fg.fishingGearRole ")
+                .append("LEFT JOIN FETCH fg.gearCharacteristics ")
+                .append("LEFT JOIN FETCH fa.fluxReportDocument flux ")
+                .append("LEFT JOIN FETCH a.fluxCharacteristics fluxChar ")
+                .append("LEFT JOIN FETCH fCatch.fluxCharacteristics fluxCharFa ")
+                .append("LEFT JOIN FETCH fl.fluxCharacteristic fluxCharFluxLoc ")
+                .append("LEFT JOIN FETCH fl.structuredAddresses flAd ")
+                .append("LEFT JOIN FETCH a.flapDocuments flapDoc ")
+                .append("LEFT JOIN FETCH flux.fluxParty fluxParty ")
+                .append("LEFT JOIN FETCH a.fishingActivityIdentifiers faId ")
+                .append("LEFT JOIN FETCH flAd.fluxLocation flAdFluxLoc ")
+                .append("LEFT JOIN FETCH a.fishingTrips faFiTrips ")
+                .append("LEFT JOIN FETCH faFiTrips.fishingTripIdentifiers tripIdentifiers ")
+                .append("LEFT JOIN FETCH faFiTrips.faCatch faFiTripsFaCatch ")
+                .append("LEFT JOIN FETCH a.gearProblems gearProb ")
+                .append("WHERE ");
+        if(geom != null){
+            sb.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
+        } else {
+            sb.append("a.id=:fishingActivityId ");
+        }
+        return sb.toString();
+    }
 }

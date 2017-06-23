@@ -13,22 +13,31 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 
 /**
  * Created by sanera on 12/07/2016.
+ * <p>
  * Filter Fishing Activity Reports functionality require Query to be generated Dynamically based on Filters provided.
  * This class provides mapping information to Query Builder.
  */
 public class FilterMap {
 
-    public static final String FROM_NAME = "ownerName";
-    public static final String FROM_ID = "ownerId";
+    public static final String OWNER_ID = "ownerId";
+    public static final String FROM_ID = "fromId";
     public static final String OCCURENCE_START_DATE = "startDate";
     public static final String OCCURENCE_END_DATE = "endDate";
     public static final String VESSEL_IDENTITY_NAME = "vtName";
     public static final String VESSEL_IDENTIFIRE = "vtSchemeId";
+    public static final String VTM_GUIDS = "guids";
     public static final String PURPOSE_CODE = "purposeCode";
     public static final String REPORT_TYPE_CODE = "faReportTypeCode";
     public static final String ACTIVITY_TYPE_CODE = "activityTypecode";
@@ -36,130 +45,228 @@ public class FilterMap {
     public static final String PORT_ID = "fluxPortId";
     public static final String FISHING_GEAR = "fishingGearType";
     public static final String SPECIES_CODE = "speciesCode";
-    public static final String QUNTITY_MIN = "minWeight";
-    public static final String QUNTITY_MAX = "maxWeight";
+    public static final String QUANTITY_MIN = "minWeight";
+    public static final String QUANTITY_MAX = "maxWeight";
     public static final String CONTACT_PERSON_NAME = "agent";
+    public static final String TRIP_ID = "tripId";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
     public static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
-    public static final String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
     public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
-    public static final String MASTER_MAPPING  = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
+    public static final String GEAR_TYPE_TABLE_ALIAS = " a.fishingGears fg ";
+    public static final String FISHING_TRIP_TABLE_ALIAS = " a.fishingTrips fishingTrip ";
+    public static final String FISHING_TRIP_IDENTIFIER_TABLE_ALIAS = " fishingTrip.fishingTripIdentifiers fishingTripId ";
+    public static final String AAP_PROCESS_TABLE_ALIAS = " faCatch.aapProcesses aprocess ";
+    public static final String AAP_PRODUCT_TABLE_ALIAS = " aprocess.aapProducts aprod ";
+    public static final String MASTER_MAPPING = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE = "dataSource";
     public static final String FAREPORT_ID = "faReportId";
+    public static final String AREA_GEOM = "areaGeom";
+    public static final String FA_CATCH_TERITTORY = "faCatch.territory";
+    public static final String FA_CATCH_FAO_AREA = "faCatch.faoArea";
+    public static final String FA_CATCH_ICES_STAT_RECTANGLE = "faCatch.icesStatRectangle";
+    public static final String FA_CATCH_EFFORT_ZONE = "faCatch.effortZone";
+    public static final String FA_CATCH_RMFO = "faCatch.rfmo";
+    public static final String FA_CATCH_GFCM_GSA = "faCatch.gfcmGsa";
+    public static final String FA_CATCH_GFCM_STAT_RECTANGLE = "faCatch.gfcmStatRectangle";
+    public static final String FLUX_REP_MESSAGE_FROM_FA_REP = "fa.fluxFaReportMessage fluxMsg ";
+    public static final String FLUX_REP_DOC_FROM_MESSAGE = "fluxMsg.fluxReportDocument fluxRepDoc ";
+    public static final String FLUX_PARTY_FOR_MESSAGE = "fluxRepDoc.fluxParty fpFrom ";
+    // For Sort criteria, which expression should be used
+    private static EnumMap<SearchFilter, String> filterSortMappings = new EnumMap<>(SearchFilter.class);
+    // Query parameter mapping
+    private static EnumMap<SearchFilter, String> filterQueryParameterMappings = new EnumMap<>(SearchFilter.class);
+    // Special case for star and end date sorting
+    private static EnumMap<SearchFilter, String> filterSortWhereMappings = new EnumMap<>(SearchFilter.class);
+    // List of filters which support multiple values
+    private static Set<SearchFilter> filtersWhichSupportMultipleValues = new HashSet<>();
+    private static EnumMap<GroupCriteria, GroupCriteriaMapper> groupByMapping = new EnumMap<>(GroupCriteria.class);
 
-    private static EnumMap<Filters,FilterDetails> filterMappings = new EnumMap<>(Filters.class);// This contains Table Join and Where condition mapping for each Filter
-    private static EnumMap<Filters,String> filterSortMappings = new EnumMap<>(Filters.class); // For Sort criteria, which expression should be used
-    private static EnumMap<Filters,String> filterQueryParameterMappings = new EnumMap<>(Filters.class);  // Query parameter mapping
-    private static EnumMap<Filters,String> filterSortWhereMappings = new EnumMap<>(Filters.class); // Special case for star and end date sorting
-
-
-    private FilterMap(){}
-
-
-    static{
-        populateFilterMappings();
+    static {
+        populateFiltersWhichSupportMultipleValues();
         populateFilterQueryParameterMappings();
         populateFilterSortMappings();
         populateFilterSortWhereMappings();
+        populateGroupByMapping();
     }
 
+    public String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
+    // This contains Table Join and Where condition mapping for each Filter
+    private EnumMap<SearchFilter, FilterDetails> filterMappings = new EnumMap<>(SearchFilter.class);
 
-    /**
-         Below method stores mapping for each Filter criteria. Mapping will provide information on table joins required for the criteria and Where conditions which needs to be applied for the criteria
-     */
-    private static void populateFilterMappings(){
+    private FilterMap() {
+        super();
+        populateFilterMappings();
+    }
 
-        filterMappings.put(Filters.SOURCE,new FilterDetails(" ","fa.source =:"+DATASOURCE));
-        filterMappings.put(Filters.FROM_ID,new FilterDetails( " fp.fluxPartyIdentifiers fpi","fpi.fluxPartyIdentifierId =:"+FROM_ID+ " "));
-        filterMappings.put(Filters.FROM_NAME,new FilterDetails(FLUX_PARTY_TABLE_ALIAS,"  fp.fluxPartyName=:"+FROM_NAME+" "));
-
-        filterMappings.put(Filters.PERIOD_START,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS,"( dp.startDate >= :"+OCCURENCE_START_DATE +"  OR a.occurence  >= :"+OCCURENCE_START_DATE +" )"));
-        filterMappings.put(Filters.PERIOD_END,new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS," dp.endDate <= :"+OCCURENCE_END_DATE));
-
-        filterMappings.put(Filters.VESSEL_NAME,new FilterDetails("fa.vesselTransportMeans vt","vt.name =:"+VESSEL_IDENTITY_NAME));
-        filterMappings.put(Filters.VESSEL_IDENTIFIRE,new FilterDetails("vt.vesselIdentifiers vi","vi.vesselIdentifierId =:"+VESSEL_IDENTIFIRE));
-        filterMappings.put(Filters.PURPOSE,new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS,"flux.purposeCode =:"+PURPOSE_CODE));
-        filterMappings.put(Filters.REPORT_TYPE,new FilterDetails(" ","fa.typeCode =:"+REPORT_TYPE_CODE));
-        filterMappings.put(Filters.ACTIVITY_TYPE,new FilterDetails(" ","a.typeCode =:"+ACTIVITY_TYPE_CODE));
-        filterMappings.put(Filters.AREAS,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:"+AREA_ID+" )"));
-        filterMappings.put(Filters.PORT,new FilterDetails("a.fluxLocations fluxLoc","( fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:"+PORT_ID+" )"));
-        filterMappings.put(Filters.GEAR,new FilterDetails("a.fishingGears fg","fg.typeCode =:"+FISHING_GEAR));
-        filterMappings.put(Filters.SPECIES,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod ","faCatch.speciesCode =:"+SPECIES_CODE +" OR aprod.speciesCode =:"+SPECIES_CODE));
-        filterMappings.put(Filters.QUNTITY_MIN,new FilterDetails(FA_CATCH_TABLE_ALIAS+" LEFT JOIN FETCH faCatch.aapProcesses aprocess LEFT JOIN FETCH aprocess.aapProducts aprod "," (faCatch.calculatedWeightMeasure  BETWEEN :"+QUNTITY_MIN ));
-        filterMappings.put(Filters.QUNTITY_MAX,new FilterDetails(" ","  :"+QUNTITY_MAX+") "));
-        filterMappings.put(Filters.MASTER,new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson","(UPPER(cPerson.title) =:"+CONTACT_PERSON_NAME+" or " +
-                "UPPER(cPerson.givenName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.middleName) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.familyName) =:"+CONTACT_PERSON_NAME+" " +
-                "or UPPER(cPerson.familyNamePrefix) =:"+CONTACT_PERSON_NAME+" or UPPER(cPerson.nameSuffix) =:"+CONTACT_PERSON_NAME+ " or UPPER(cPerson.alias) =:"+CONTACT_PERSON_NAME+")"));
-        filterMappings.put(Filters.FA_REPORT_ID,new FilterDetails(" ","fa.id =:"+FAREPORT_ID));
-
+    public static FilterMap createFilterMap() {
+        return new FilterMap();
     }
 
     /**
-            For Sort by start date and End date, it needs special treatment. We need to use subQuery to make sure We pick up only first Start or End date from the list of dates.
-            Below method helps that special case
+     * For Sort by start date and End date, it needs special treatment. We need to use subQuery to make sure We pick up
+     * only first Start or End date from the list of dates.
+     * Below method helps that special case.
      */
-    private static void populateFilterSortWhereMappings(){
-        filterSortWhereMappings.put(Filters.PERIOD_START,"dp1.startDate");
-        filterSortWhereMappings.put(Filters.PERIOD_END,"dp1.endDate");
+    private static void populateFilterSortWhereMappings() {
+        filterSortWhereMappings.put(SearchFilter.PERIOD_START, "dp1.startDate");
+        filterSortWhereMappings.put(SearchFilter.PERIOD_END, "dp1.endDate");
     }
-
-
-    // below method provides mapping which shoulbe used in order by clause. This will achieve sorting for the criteria
-    private static void populateFilterSortMappings(){
-        filterSortMappings.put(Filters.PERIOD_START,"dp.startDate");
-        filterSortMappings.put(Filters.PERIOD_END,"dp.endDate");
-        filterSortMappings.put(Filters.REPORT_TYPE,"fa.typeCode");
-        filterSortMappings.put(Filters.SOURCE,"fa.source");
-        filterSortMappings.put(Filters.ACTIVITY_TYPE,"a.typeCode");
-        filterSortMappings.put(Filters.OCCURRENCE,"a.occurence");
-        filterSortMappings.put(Filters.PURPOSE,"flux.purposeCode");
-        filterSortMappings.put(Filters.FROM_NAME,"fp.fluxPartyName");
-
-    }
-
 
     /**
-     To put values in Query, Query Builder needs to know name used in query to be mapped to value.  Put that mapping here
+     * Below method provides mapping which should be used in order by clause.
+     * This will achieve sorting for the criteria.
      */
-    private static void populateFilterQueryParameterMappings(){
+    private static void populateFilterSortMappings() {
+        filterSortMappings.put(SearchFilter.PERIOD_START, "a.calculatedStartTime");
+        filterSortMappings.put(SearchFilter.PERIOD_END, "dp.endDate");
+        filterSortMappings.put(SearchFilter.REPORT_TYPE, "fa.typeCode");
+        filterSortMappings.put(SearchFilter.SOURCE, "fa.source");
+        filterSortMappings.put(SearchFilter.ACTIVITY_TYPE, "a.typeCode");
+        filterSortMappings.put(SearchFilter.OCCURRENCE, "a.occurence");
+        filterSortMappings.put(SearchFilter.PURPOSE, "flux.purposeCode");
+    }
 
-        filterQueryParameterMappings.put(Filters.SOURCE,DATASOURCE);
-        filterQueryParameterMappings.put(Filters.FROM_ID,FROM_ID);
-        filterQueryParameterMappings.put(Filters.FROM_NAME,FROM_NAME);
-        filterQueryParameterMappings.put(Filters.PERIOD_START,OCCURENCE_START_DATE );
-        filterQueryParameterMappings.put(Filters.PERIOD_END,OCCURENCE_END_DATE );
-        filterQueryParameterMappings.put(Filters.VESSEL_NAME,VESSEL_IDENTITY_NAME);
-        filterQueryParameterMappings.put(Filters.VESSEL_IDENTIFIRE,VESSEL_IDENTIFIRE);
-        filterQueryParameterMappings.put(Filters.PURPOSE,PURPOSE_CODE);
-        filterQueryParameterMappings.put(Filters.REPORT_TYPE,REPORT_TYPE_CODE);
-        filterQueryParameterMappings.put(Filters.ACTIVITY_TYPE,ACTIVITY_TYPE_CODE);
-        filterQueryParameterMappings.put(Filters.AREAS,AREA_ID);
-        filterQueryParameterMappings.put(Filters.PORT,PORT_ID);
-        filterQueryParameterMappings.put(Filters.GEAR,FISHING_GEAR);
-        filterQueryParameterMappings.put(Filters.SPECIES,SPECIES_CODE);
-        filterQueryParameterMappings.put(Filters.QUNTITY_MIN,QUNTITY_MIN);
-        filterQueryParameterMappings.put(Filters.QUNTITY_MAX,QUNTITY_MAX);
-        filterQueryParameterMappings.put(Filters.MASTER,CONTACT_PERSON_NAME);
-        filterQueryParameterMappings.put(Filters.FA_REPORT_ID,FAREPORT_ID);
+    /**
+     * To put values in Query, Query Builder needs to know name used in query to be mapped to value.
+     * Put that mapping here
+     */
+    private static void populateFilterQueryParameterMappings() {
+        filterQueryParameterMappings.put(SearchFilter.SOURCE, DATASOURCE);
+        filterQueryParameterMappings.put(SearchFilter.VESSEL_GUIDS, VTM_GUIDS);
+        filterQueryParameterMappings.put(SearchFilter.OWNER, OWNER_ID);
+        filterQueryParameterMappings.put(SearchFilter.FROM, FROM_ID);
+        filterQueryParameterMappings.put(SearchFilter.PERIOD_START, OCCURENCE_START_DATE);
+        filterQueryParameterMappings.put(SearchFilter.PERIOD_END, OCCURENCE_END_DATE);
+        filterQueryParameterMappings.put(SearchFilter.VESSEL_NAME, VESSEL_IDENTITY_NAME);
+        filterQueryParameterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, VESSEL_IDENTIFIRE);
+        filterQueryParameterMappings.put(SearchFilter.PURPOSE, PURPOSE_CODE);
+        filterQueryParameterMappings.put(SearchFilter.REPORT_TYPE, REPORT_TYPE_CODE);
+        filterQueryParameterMappings.put(SearchFilter.ACTIVITY_TYPE, ACTIVITY_TYPE_CODE);
+        filterQueryParameterMappings.put(SearchFilter.AREAS, AREA_ID);
+        filterQueryParameterMappings.put(SearchFilter.PORT, PORT_ID);
+        filterQueryParameterMappings.put(SearchFilter.GEAR, FISHING_GEAR);
+        filterQueryParameterMappings.put(SearchFilter.SPECIES, SPECIES_CODE);
+        filterQueryParameterMappings.put(SearchFilter.QUANTITY_MIN, QUANTITY_MIN);
+        filterQueryParameterMappings.put(SearchFilter.QUANTITY_MAX, QUANTITY_MAX);
+        filterQueryParameterMappings.put(SearchFilter.MASTER, CONTACT_PERSON_NAME);
+        filterQueryParameterMappings.put(SearchFilter.FA_REPORT_ID, FAREPORT_ID);
+        filterQueryParameterMappings.put(SearchFilter.AREA_GEOM, AREA_GEOM);
+        filterQueryParameterMappings.put(SearchFilter.TRIP_ID, TRIP_ID);
+    }
+
+    private static void populateFiltersWhichSupportMultipleValues() {
+        filtersWhichSupportMultipleValues.add(SearchFilter.VESSEL_NAME);
+        filtersWhichSupportMultipleValues.add(SearchFilter.VESSEL_IDENTIFIRE);
+        filtersWhichSupportMultipleValues.add(SearchFilter.REPORT_TYPE);
+        filtersWhichSupportMultipleValues.add(SearchFilter.ACTIVITY_TYPE);
+        filtersWhichSupportMultipleValues.add(SearchFilter.PORT);
+        filtersWhichSupportMultipleValues.add(SearchFilter.GEAR);
+        filtersWhichSupportMultipleValues.add(SearchFilter.SPECIES);
+        filtersWhichSupportMultipleValues.add(SearchFilter.MASTER);
+        filtersWhichSupportMultipleValues.add(SearchFilter.PURPOSE);
+    }
+
+    public static void populateGroupByMapping() {
+
+        groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.occurence", "setDay")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.occurence", "setMonth")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.occurence", "setYear")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.VESSEL, new GroupCriteriaMapper(" ", "a.vesselTransportGuid", "setVesselTransportGuid"));
+        groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(" ", "faCatch.fishClassCode", "setFishClass"));
+        groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(" ", "a.flagState", "setFlagState"));
+        groupByMapping.put(GroupCriteria.GEAR_TYPE, new GroupCriteriaMapper(" ", "faCatch.gearTypeCode", "setGearType"));
+        groupByMapping.put(GroupCriteria.PRESENTATION, new GroupCriteriaMapper(" ", "faCatch.presentation", "setPresentation"));
+        groupByMapping.put(GroupCriteria.SPECIES, new GroupCriteriaMapper(" ", "faCatch.speciesCode", "setSpecies"));
+        groupByMapping.put(GroupCriteria.CATCH_TYPE, new GroupCriteriaMapper(" ", "faCatch.typeCode", "setTypeCode"));
+        groupByMapping.put(GroupCriteria.TERRITORY, new GroupCriteriaMapper(" ", FA_CATCH_TERITTORY, "setTerritory"));
+        groupByMapping.put(GroupCriteria.FAO_AREA, new GroupCriteriaMapper(" ", FA_CATCH_FAO_AREA, "setFaoArea"));
+        groupByMapping.put(GroupCriteria.ICES_STAT_RECTANGLE, new GroupCriteriaMapper(" ", FA_CATCH_ICES_STAT_RECTANGLE, "setIcesStatRectangle"));
+        groupByMapping.put(GroupCriteria.EFFORT_ZONE, new GroupCriteriaMapper(" ", FA_CATCH_EFFORT_ZONE, "setEffortZone"));
+        groupByMapping.put(GroupCriteria.RFMO, new GroupCriteriaMapper(" ", FA_CATCH_RMFO, "setRfmo"));
+        groupByMapping.put(GroupCriteria.GFCM_GSA, new GroupCriteriaMapper(" ", FA_CATCH_GFCM_GSA, "setGfcmGsa"));
+        groupByMapping.put(GroupCriteria.GFCM_STAT_RECTANGLE, new GroupCriteriaMapper(" ", FA_CATCH_GFCM_STAT_RECTANGLE, "setGfcmStatRectangle"));
 
     }
 
-
-    public static Map<Filters, FilterDetails> getFilterMappings() {
-        return filterMappings;
-    }
-
-
-    public static Map<Filters,String> getFilterSortMappings() {
+    public static Map<SearchFilter, String> getFilterSortMappings() {
         return filterSortMappings;
     }
 
-    public static Map<Filters,String> getFilterSortWhereMappings() {
+    public static Map<SearchFilter, String> getFilterSortWhereMappings() {
         return filterSortWhereMappings;
     }
 
-    public static Map<Filters,String> getFilterQueryParameterMappings() {
+    public static Map<SearchFilter, String> getFilterQueryParameterMappings() {
         return filterQueryParameterMappings;
     }
+
+    public static Set<SearchFilter> getFiltersWhichSupportMultipleValues() {
+        return filtersWhichSupportMultipleValues;
+    }
+
+    public static Map<GroupCriteria, GroupCriteriaMapper> getGroupByMapping() {
+        return groupByMapping;
+    }
+
+    /**
+     * Below method stores mapping for each Filter criteria. Mapping will provide information on table joins
+     * required for the criteria and Where conditions which needs to be applied for the criteria
+     */
+    public void populateFilterMappings() {
+        filterMappings.put(SearchFilter.SOURCE, new FilterDetails(StringUtils.SPACE, "fa.source =:" + DATASOURCE));
+        filterMappings.put(SearchFilter.OWNER, new FilterDetails(" fp.fluxPartyIdentifiers fpi", "fpi.fluxPartyIdentifierId =:" + OWNER_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FROM, new FilterDetails(" fpFrom.fluxPartyIdentifiers fpiFrom", "fpiFrom.fluxPartyIdentifierId =:" + FROM_ID + StringUtils.SPACE));
+        // filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, "( dp.startDate >= :" + OCCURENCE_START_DATE + "  OR a.occurence  >= :" + OCCURENCE_START_DATE + " )"));
+        filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "   a.calculatedStartTime  >= :" + OCCURENCE_START_DATE + " "));
+        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, " dp.endDate <= :" + OCCURENCE_END_DATE));
+        filterMappings.put(SearchFilter.VESSEL_NAME, new FilterDetails("fa.vesselTransportMeans vt", "vt.name IN (:" + VESSEL_IDENTITY_NAME + ")"));
+        filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, new FilterDetails("vt.vesselIdentifiers vi", "vi.vesselIdentifierId IN (:" + VESSEL_IDENTIFIRE + ")"));
+        filterMappings.put(SearchFilter.VESSEL_GUIDS, new FilterDetails("fa.vesselTransportMeans vtMeans", "vtMeans.guid IN (:" + VTM_GUIDS + ")"));
+        filterMappings.put(SearchFilter.PURPOSE, new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS, "flux.purposeCode IN (:" + PURPOSE_CODE + ")"));
+        filterMappings.put(SearchFilter.REPORT_TYPE, new FilterDetails(StringUtils.SPACE, "fa.typeCode IN (:" + REPORT_TYPE_CODE + ")"));
+        filterMappings.put(SearchFilter.ACTIVITY_TYPE, new FilterDetails(StringUtils.SPACE, "a.typeCode IN (:" + ACTIVITY_TYPE_CODE + ")"));
+        filterMappings.put(SearchFilter.AREAS, new FilterDetails("a.fluxLocations fluxLoc", "( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:" + AREA_ID + " )"));
+        filterMappings.put(SearchFilter.PORT, new FilterDetails("a.fluxLocations fluxLoc", " (fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:" + PORT_ID  + " )"));
+        filterMappings.put(SearchFilter.GEAR, new FilterDetails(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode IN (:" + FISHING_GEAR + ")"));
+        filterMappings.put(SearchFilter.SPECIES, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN  " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN  " + AAP_PRODUCT_TABLE_ALIAS, "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
+        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN FETCH " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
+        filterMappings.put(SearchFilter.QUANTITY_MAX, new FilterDetails(" ", "  :" + QUANTITY_MAX + ") "));
+        filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
+                "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
+                "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
+        filterMappings.put(SearchFilter.FA_REPORT_ID, new FilterDetails(StringUtils.SPACE, "fa.id =:" + FAREPORT_ID));
+        filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(StringUtils.SPACE, "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
+
+    }
+
+    /**
+     * Same as populateFilterMappings() but woth the DELIMITED_PERIOD_TABLE_ALIAS alias changed.
+     * <p>
+     * Below method stores mapping for each Filter criteria. Mapping will provide information on table joins
+     * required for the criteria and Where conditions which needs to be applied for the criteria
+     */
+    public void populateFilterMappingsForFilterFishingTrips() {
+         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
+         filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
+    }
+
+    public void populateFilterMAppingsWithChangeForFACatchReport() {
+        DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
+        populateFilterMappings();
+        filterMappings.put(SearchFilter.SPECIES, new FilterDetails(" ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") )"));
+        filterMappings.put(SearchFilter.GEAR, new FilterDetails("faCatch.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
+        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
+        filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN vt.contactParty cparty JOIN cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
+                "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
+                "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
+
+    }
+
+    public Map<SearchFilter, FilterDetails> getFilterMappings() {
+        return filterMappings;
+    }
+
 }

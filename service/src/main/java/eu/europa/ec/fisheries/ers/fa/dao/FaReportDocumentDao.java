@@ -23,6 +23,10 @@ import java.util.List;
  */
 public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
 
+    private static final String REPORT_ID = "reportId";
+    private static final String SCHEME_ID = "schemeId";
+    private static final String TRIP_ID = "tripId";
+
     private EntityManager em;
 
     public FaReportDocumentDao(EntityManager em) {
@@ -33,10 +37,6 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
     public EntityManager getEntityManager() {
         return em;
     }
-
-    private static final String REPORT_ID = "reportId";
-    private static final String SCHEME_ID = "schemeId";
-    private static final String TRIP_ID = "tripId";
 
     /**
      * Get FaReportDocument by one or more Report identifiers
@@ -63,7 +63,12 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
     public List<FaReportDocumentEntity> getFaReportDocumentsForTrip(String tripId){
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
         query.setParameter(TRIP_ID, tripId);
-        List<FaReportDocumentEntity> entities = query.getResultList();
-        return entities;
+        return query.getResultList();
+    }
+
+    public List<FaReportDocumentEntity> getLatestFaReportDocumentsForTrip(String tripId){
+        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
+        query.setParameter(TRIP_ID, tripId);
+        return query.getResultList();
     }
 }

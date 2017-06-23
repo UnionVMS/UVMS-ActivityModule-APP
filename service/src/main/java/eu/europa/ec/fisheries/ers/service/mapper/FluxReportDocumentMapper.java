@@ -8,77 +8,46 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FluxReportIdentifierDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Mapper(imports = BaseMapper.class)
+public interface FluxReportDocumentMapper {
 
-/**
- * Created by padhyad on 5/13/2016.
- */
-@Mapper
-public abstract class FluxReportDocumentMapper extends BaseMapper {
-
-    public static final FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
+    FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
 
     @Mappings({
-            @Mapping(target = "referenceId", expression = "java(getIdType(fluxReportDocument.getReferencedID()))"),
-            @Mapping(target = "referenceSchemeId", expression = "java(getIdTypeSchemaId(fluxReportDocument.getReferencedID()))"),
-            @Mapping(target = "creationDatetime", expression = "java(convertToDate(fluxReportDocument.getCreationDateTime()))"),
-            @Mapping(target = "purposeCode", expression = "java(getCodeType(fluxReportDocument.getPurposeCode()))"),
-            @Mapping(target = "purposeCodeListId", expression = "java(getCodeTypeListId(fluxReportDocument.getPurposeCode()))"),
-            @Mapping(target = "purpose", expression = "java(getTextType(fluxReportDocument.getPurpose()))"),
-            @Mapping(target = "fluxParty", expression = "java(getFluxPartyEntity(fluxReportDocument.getOwnerFLUXParty(), fluxReportDocumentEntity))"),
-            @Mapping(target = "fluxReportIdentifiers", expression = "java(mapToFluxReportIdentifierEntities(fluxReportDocument.getIDS(), fluxReportDocumentEntity))"),
-            @Mapping(target = "faReportDocument", expression = "java(faReportDocumentEntity)")
+            @Mapping(target = "referenceId", source = "referencedID.value"),
+            @Mapping(target = "referenceSchemeId", source = "referencedID.schemeID"),
+            @Mapping(target = "creationDatetime", source = "creationDateTime.dateTime"),
+            @Mapping(target = "purposeCode", source = "purposeCode.value"),
+            @Mapping(target = "purposeCodeListId", source = "purposeCode.listID"),
+            @Mapping(target = "purpose", source = "purpose.value"),
+            @Mapping(target = "fluxParty", expression = "java(BaseMapper.getFluxPartyEntity(fluxReportDocument.getOwnerFLUXParty(), fluxReportDocumentEntity))"),
+            @Mapping(target = "fluxReportIdentifiers", expression = "java(BaseMapper.mapToFluxReportIdentifierEntities(fluxReportDocument.getIDS(), fluxReportDocumentEntity))"),
     })
-    public abstract FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FluxReportDocumentEntity fluxReportDocumentEntity);
+    FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument);
 
     @Mappings({
-            @Mapping(target = "fluxReportIdentifierId", expression = "java(getIdType(idType))"),
-            @Mapping(target = "fluxReportIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
+            @Mapping(target = "fluxReportIdentifierId", source = "value"),
+            @Mapping(target = "fluxReportIdentifierSchemeId", source = "schemeID")
     })
-    protected abstract FluxReportIdentifierEntity mapToFluxReportIdentifierEntity(IDType idType);
+    FluxReportIdentifierEntity mapToFluxReportIdentifierEntity(IDType idType);
 
     @Mappings({
             @Mapping(target = "fluxReportId", source = "fluxReportIdentifierId"),
             @Mapping(target = "fluxReportSchemeId", source = "fluxReportIdentifierSchemeId")
     })
-    public abstract FluxReportIdentifierDTO mapToFluxReportIdentifierDTO(FluxReportIdentifierEntity identifierEntity);
+    FluxReportIdentifierDTO mapToFluxReportIdentifierDTO(FluxReportIdentifierEntity identifierEntity);
 
-    protected FluxPartyEntity getFluxPartyEntity(FLUXParty fluxParty, FluxReportDocumentEntity fluxReportDocumentEntity) {
-        if (fluxParty == null) {
-            return null;
-        }
-        return FluxPartyMapper.INSTANCE.mapToFluxPartyEntity(fluxParty, fluxReportDocumentEntity, new FluxPartyEntity());
-    }
-
-    protected Set<FluxReportIdentifierEntity> mapToFluxReportIdentifierEntities(List<IDType> idTypes, FluxReportDocumentEntity fluxReportDocumentEntity) {
-        if (idTypes == null || idTypes.isEmpty()) {
-            Collections.emptySet();
-        }
-        Set<FluxReportIdentifierEntity> identifiers = new HashSet<>();
-        for (IDType idType : idTypes) {
-            FluxReportIdentifierEntity entity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportIdentifierEntity(idType);
-            entity.setFluxReportDocument(fluxReportDocumentEntity);
-            identifiers.add(entity);
-        }
-        return identifiers;
-    }
 }

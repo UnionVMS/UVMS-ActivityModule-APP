@@ -12,9 +12,7 @@ package eu.europa.ec.fisheries.ers.service;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-
-import java.util.List;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 /**
  * Created by padhyad on 5/13/2016.
@@ -27,9 +25,9 @@ public interface FluxMessageService {
      * If there is a correction (e.g. update, cancel, delete) than the original FaReportDocument is marked with the corresponding status.
      *</p>
      *
-     * @param faReportDocuments Flux Fa Report Documents
-     * @param faReportSourceEnum Report source
-     * @throws ServiceException Exception
+     * @param faReportMessage
+     * @param faReportSourceEnum
+     * @throws ServiceException
      */
-    void saveFishingActivityReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum) throws ServiceException;
+    void saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException;
 }

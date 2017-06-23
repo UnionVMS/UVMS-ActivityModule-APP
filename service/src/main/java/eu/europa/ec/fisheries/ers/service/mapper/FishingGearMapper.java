@@ -8,94 +8,41 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FishingGearDTO;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
+import eu.europa.ec.fisheries.ers.service.dto.FishingGearDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Mapper(imports = BaseMapper.class, uses = {GearCharacteristicsMapper.class})
+public interface FishingGearMapper {
 
-/**
- * Created by padhyad on 6/14/2016.
- */
-@Mapper(uses = {GearCharacteristicsMapper.class})
-public abstract class FishingGearMapper extends BaseMapper {
-
-    public static final FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
+    FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fishingGear.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingGear.getTypeCode()))"),
-            @Mapping(target = "fishingGearRole", expression = "java(mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
-            @Mapping(target = "gearCharacteristics", expression = "java(getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
-            @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)")
+            @Mapping(target = "typeCode", source = "typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "fishingGearRole", expression = "java(BaseMapper.mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
+            @Mapping(target = "gearCharacteristics", expression = "java(BaseMapper.getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
     })
-    public abstract FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear, FishingActivityEntity fishingActivityEntity, @MappingTarget FishingGearEntity fishingGearEntity);
-
-    @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fishingGear.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingGear.getTypeCode()))"),
-            @Mapping(target = "fishingGearRole", expression = "java(mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
-            @Mapping(target = "gearCharacteristics", expression = "java(getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
-            @Mapping(target = "faCatch", expression = "java(faCatchEntity)")
-    })
-    public abstract FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear, FaCatchEntity faCatchEntity, @MappingTarget FishingGearEntity fishingGearEntity);
-
-    @Mappings({
-            @Mapping(target = "typeCode", expression = "java(getCodeType(fishingGear.getTypeCode()))"),
-            @Mapping(target = "typeCodeListId", expression = "java(getCodeTypeListId(fishingGear.getTypeCode()))"),
-            @Mapping(target = "fishingGearRole", expression = "java(mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
-            @Mapping(target = "gearCharacteristics", expression = "java(getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
-            @Mapping(target = "gearProblem", expression = "java(gearProblemEntity)")
-    })
-    public abstract FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear, GearProblemEntity gearProblemEntity, @MappingTarget FishingGearEntity fishingGearEntity);
-
+    FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear);
 
     @Mappings({
             @Mapping(source = "typeCode",target = "gearTypeCode"),
-            //@Mapping(source = "roleCode",target = "gearRoleCode")
     })
-    public abstract FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
+    FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
 
     @Mappings({
-            @Mapping(target = "roleCode", expression = "java(getCodeType(codeType))"),
-            @Mapping(target = "roleCodeListId", expression = "java(getCodeTypeListId(codeType))")
+            @Mapping(target = "roleCode", source = "value"),
+            @Mapping(target = "roleCodeListId", source = "listID")
     })
-    public abstract FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
+    FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
 
-    protected Set<FishingGearRoleEntity> mapToFishingGears(List<CodeType> codeTypes, FishingGearEntity fishingGearEntity) {
-        if (codeTypes == null || codeTypes.isEmpty()) {
-            Collections.emptySet();
-        }
-        Set<FishingGearRoleEntity> fishingGearRoles = new HashSet<>();
-        for (CodeType codeType : codeTypes) {
-            FishingGearRoleEntity gearRole = FishingGearMapper.INSTANCE.mapToFishingGearRoleEntity(codeType);
-            gearRole.setFishingGear(fishingGearEntity);
-            fishingGearRoles.add(gearRole);
-        }
-        return fishingGearRoles;
-    }
-
-    protected Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
-        if (gearCharacteristics == null || gearCharacteristics.isEmpty()) {
-             return Collections.emptySet();
-        }
-        Set<GearCharacteristicEntity> gearCharacteristicEntities = new HashSet<>();
-        for (GearCharacteristic gearCharacteristic : gearCharacteristics) {
-            GearCharacteristicEntity gearCharacteristicEntity = GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(gearCharacteristic, fishingGearEntity, new GearCharacteristicEntity());
-            gearCharacteristicEntities.add(gearCharacteristicEntity);
-        }
-        return gearCharacteristicEntities;
-    }
 }

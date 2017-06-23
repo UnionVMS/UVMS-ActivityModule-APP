@@ -13,18 +13,35 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.dao.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.message.producer.bean.ActivityMessageProducerBean;
-import eu.europa.ec.fisheries.ers.service.search.Filters;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.Pagination;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.FilterFishingActivityReportResultDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,20 +51,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
-
-/**
- * Created by padhyad on 8/9/2016.
- */
 public class ActivityServiceBeanTest {
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     EntityManager em;
@@ -65,7 +73,7 @@ public class ActivityServiceBeanTest {
     FishingTripIdentifierDao fishingTripIdentifierDao;
 
     @Mock
-    VesselIdentifiersDao vesselIdentifiersDao;
+    VesselTransportMeansDao vesselIdentifiersDao;
 
     @InjectMocks
     ActivityServiceBean activityService;
@@ -74,16 +82,10 @@ public class ActivityServiceBeanTest {
     FishingTripServiceBean fishingTripService;
 
     @Mock
-    ActivityMessageProducerBean activityProducer;
-
-    @Mock
-    AssetsMessageConsumerBean activityConsumer;
-
-    @Mock
     JAXBMarshaller marshaller;
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
+    @Mock
+    private SpatialModuleService spatialModule;
 
     @Test
     @SneakyThrows
@@ -119,17 +121,25 @@ public class ActivityServiceBeanTest {
         FishingActivityQuery query = new FishingActivityQuery();
         List<ListCriteria> list = new ArrayList<ListCriteria>();
 
-        Map<Filters,String> searchCriteriaMap = new HashMap<>();
 
-        searchCriteriaMap.put(Filters.FROM_ID, "OWNER1");
-        searchCriteriaMap.put(Filters.FROM_NAME, "OWNER_NAME1");
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
-        Pagination pagination =new Pagination();
-        pagination.setListSize(4);
-        pagination.setPage(1);
-      //  query.setSearchCriteria(list);
+        searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
+        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
+        List<String> purposeCodeList= new ArrayList<>();
+        purposeCodeList.add("9");
+        searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
+
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(4);
+        pagination.setOffset(1);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
+
+        when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
 
         when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
@@ -140,8 +150,40 @@ public class ActivityServiceBeanTest {
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
         assertNotNull(filterFishingActivityReportResultDTO.getResultList());
-        assertNotNull(filterFishingActivityReportResultDTO.getPagination());
-
     }
 
+
+    @Test
+    @SneakyThrows
+    public void getFishingActivityListByQuery_emptyResultSet() throws ServiceException {
+
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
+        searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
+        List<String> purposeCodeList= new ArrayList<>();
+        purposeCodeList.add("9");
+        searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
+
+        PaginationDto pagination =new PaginationDto();
+        pagination.setPageSize(4);
+        pagination.setOffset(1);
+        query.setPagination(pagination);
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
+
+        when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
+
+        when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(new ArrayList<FishingActivityEntity>());
+
+        //Trigger
+        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, new ArrayList<Dataset>());
+
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
+        //Verify
+         assertNotNull(filterFishingActivityReportResultDTO);
+    }
 }

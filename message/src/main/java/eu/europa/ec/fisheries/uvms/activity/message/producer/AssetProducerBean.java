@@ -16,24 +16,16 @@ package eu.europa.ec.fisheries.uvms.activity.message.producer;
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
-import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.jms.Destination;
 
-/**
- * Created by padhyad on 10/12/2016.
- */
+
 @Stateless
 @LocalBean
 public class AssetProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_ASSET_EVENT)
-    private Destination destination;
-
     @Override
-    public Destination getDestination() {
-        return destination;
+    public String getDestinationName() {
+        return MessageConstants.QUEUE_ASSET_EVENT;
     }
-
 }

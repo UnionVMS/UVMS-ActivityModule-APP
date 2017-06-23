@@ -13,13 +13,27 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.dao.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.dao.ActivityConfigurationDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.message.producer.ActivityMessageProducer;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CronologyTripDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
@@ -29,14 +43,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fishingtrip.CatchSummaryListDTO;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -47,14 +63,11 @@ import static org.mockito.Mockito.when;
  */
 public class FishingTripServiceBeanTest {
 
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Mock
     EntityManager em;
-
-    @Mock
-    ActivityMessageProducer producer;
-
-    @Mock
-    AssetsMessageConsumerBean consumer;
 
     @Mock
     FaReportDocumentDao faReportDocumentDao;
@@ -63,7 +76,7 @@ public class FishingTripServiceBeanTest {
     FishingActivityDao fishingActivityDao;
 
     @Mock
-    VesselIdentifiersDao vesselIdentifiersDao;
+    VesselIdentifierDao vesselIdentifiersDao;
 
     @Mock
     FishingTripIdentifierDao fishingTripIdentifierDao;
@@ -74,11 +87,14 @@ public class FishingTripServiceBeanTest {
     @Mock
     FaCatchDao faCatchDao;
 
+    @Mock
+    ActivityConfigurationDao activityConfigurationDao;
+
+    @Mock
+    ActivityServiceBean activityServiceBean;
+
     @InjectMocks
     FishingTripServiceBean fishingTripService;
-
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Test
     @SneakyThrows
@@ -233,12 +249,12 @@ public class FishingTripServiceBeanTest {
     @SneakyThrows
     public void testGetFishingTripSummary() throws ServiceException {
         when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
-        when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingActivityEntityList());
+        when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
         //Trigger
         FishingTripSummaryViewDTO fishingTripSummaryViewDTO=fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706", null);
 
-        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class));
+        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class), Mockito.any(Geometry.class));
 
         //Verify
         assertEquals(3, fishingTripSummaryViewDTO.getSummary().size());
@@ -265,5 +281,52 @@ public class FishingTripServiceBeanTest {
         assertEquals((Double) 200.2, faCatchesMap.get("onboard").getTotal());
     }
 
+
+    @Test
+    @SneakyThrows
+    public void testGetTripMapDetailsForTripId() throws ServiceException, JsonProcessingException {
+        String expected="{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}" ;
+        when(faReportDocumentDao.getLatestFaReportDocumentsForTrip("NOR-TRP-20160517234053706")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
+        //Trigger
+        ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
+        Mockito.verify(faReportDocumentDao, Mockito.times(1)).getLatestFaReportDocumentsForTrip(Mockito.any(String.class));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        //Verify
+        assertEquals(expected,objectMapper.writeValueAsString(node));
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripIdsForFilter() throws ServiceException, JsonProcessingException {
+
+        Map<SearchFilter,String> searchMap=new HashMap<>();
+        searchMap.put(SearchFilter.REPORT_TYPE, "NOTIFICATION");
+        searchMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
+        searchMap.put(SearchFilter.PERIOD_END, "2017-05-27T07:47:31");
+
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues=new ArrayList<>();
+        activityTypeValues.add("FISHING_OPERATION");
+        activityTypeValues.add("DEPARTURE");
+        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(searchMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+
+        when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(query)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
+        when(activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS)).thenReturn("1000");
+        //Trigger
+        FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(query);
+        Mockito.verify(fishingTripDao, Mockito.times(2)).getFishingTripsForMatchingFilterCriteria(Mockito.any(FishingActivityQuery.class));
+        System.out.println("response:"+response);
+        assertNotNull(response);
+        assertNotEquals(0,response.getFishingTripIdLists().size());
+
+    }
 
 }

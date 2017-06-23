@@ -8,25 +8,71 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+@NamedQueries({
+        @NamedQuery(name = VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
+                query = "SELECT vt FROM FishingTripIdentifierEntity fti " +
+                        "INNER JOIN fti.fishingTrip ft " +
+                        "INNER JOIN ft.fishingActivity fa " +
+                        "INNER JOIN fa.faReportDocument frd " +
+                        "INNER JOIN frd.vesselTransportMeans vt " +
+                        "INNER JOIN vt.vesselIdentifiers vi " +
+                        "WHERE fti.tripId = :tripId " +
+                        "ORDER BY frd.acceptedDatetime DESC")
+})
 @Entity
 @Table(name = "activity_vessel_transport_means")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VesselTransportMeansEntity implements Serializable {
+
+    public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "vesselTransportMeansEntity.findLatestVesselByTripId";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_trp_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "registration_event_id")
     private RegistrationEventEntity registrationEvent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishing_activity_id")
+    private FishingActivityEntity fishingActivity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fa_report_document_id")
+    private FaReportDocumentEntity faReportDocument;
 
     @Column(name = "role_code")
     private String roleCode;
@@ -43,8 +89,9 @@ public class VesselTransportMeansEntity implements Serializable {
     @Column(name = "country")
     private String country;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans")
-    private FaReportDocumentEntity faReportDocument;
+    @Column(name = "guid")
+    private String guid;
+
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<ContactPartyEntity> contactParty;
@@ -55,9 +102,8 @@ public class VesselTransportMeansEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<FlapDocumentEntity> flapDocuments;
 
-    public VesselTransportMeansEntity() {
-        super();
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    private Set<VesselPositionEventEntity> vesselPositionEvents;
 
     public int getId() {
         return this.id;
@@ -143,6 +189,40 @@ public class VesselTransportMeansEntity implements Serializable {
 
     public void setFlapDocuments(Set<FlapDocumentEntity> flapDocuments) {
         this.flapDocuments = flapDocuments;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+    public FishingActivityEntity getFishingActivity() {
+        return fishingActivity;
+    }
+
+    public void setFishingActivity(FishingActivityEntity fishingActivity) {
+        this.fishingActivity = fishingActivity;
+    }
+
+    public Set<VesselPositionEventEntity> getVesselPositionEvents() {
+        return vesselPositionEvents;
+    }
+
+    public void setVesselPositionEvents(Set<VesselPositionEventEntity> vesselPositionEvents) {
+        this.vesselPositionEvents = vesselPositionEvents;
+    }
+
+
+
+    public Map<VesselIdentifierSchemeIdEnum, String> getVesselIdentifiersMap() {
+        Map<VesselIdentifierSchemeIdEnum, String> idMap = new HashMap<>();
+        for (VesselIdentifierEntity entity : getVesselIdentifiers()) {
+            idMap.put(Enum.valueOf(VesselIdentifierSchemeIdEnum.class, entity.getVesselIdentifierSchemeId()), entity.getVesselIdentifierId());
+        }
+        return idMap;
     }
 
     @Override

@@ -14,10 +14,11 @@
 package eu.europa.ec.fisheries.ers.fa.utils;
 
 /**
- * Created by padhyad on 10/11/2016.
+ * @author padhyad
+ * @author Gregory Rinaldi
  */
 public enum FluxLocationEnum {
 
     AREA,
-    LOCATION;
+    LOCATION
 }

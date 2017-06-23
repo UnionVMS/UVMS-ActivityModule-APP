@@ -13,26 +13,18 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
-import javax.annotation.Resource;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.Destination;
-
-/**
- * Created by padhyad on 10/12/2016.
- */
 @Stateless
 @Local
 public class SpatialProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_MODULE_SPATIAL)
-    private Destination destination;
-
     @Override
-    protected Destination getDestination() {
-        return destination;
+    public String getDestinationName() {
+        return MessageConstants.QUEUE_MODULE_SPATIAL;
     }
 }

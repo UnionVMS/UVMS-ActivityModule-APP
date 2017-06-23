@@ -25,7 +25,8 @@ public enum VesselTypeAssetQueryEnum {
     EXT_MARK("EXT_MARK", ConfigSearchField.EXTERNAL_MARKING),
     FLAG_STATE("FLAG_STATE", ConfigSearchField.FLAG_STATE),
     NAME("NAME", ConfigSearchField.NAME),
-    UVI("UVI", ConfigSearchField.IMO);
+    ICCAT("ICCAT", null),
+    UVI("UVI", null);
 
     private String type;
 

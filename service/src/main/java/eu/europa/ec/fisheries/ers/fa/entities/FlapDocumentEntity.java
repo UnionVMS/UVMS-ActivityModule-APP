@@ -13,7 +13,17 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -25,7 +35,8 @@ public class FlapDocumentEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flap_doc_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,6 +55,12 @@ public class FlapDocumentEntity implements Serializable {
 
     @Column(name = "flap_document_scheme_id")
     private String flapDocumentSchemeId;
+
+    @Column(name = "flap_type_code")
+    private String flapTypeCode;
+
+    @Column(name = "flap_type_code_list_id")
+    private String flapTypeCodeListId;
 
     public int getId() {
         return id;
@@ -87,5 +104,21 @@ public class FlapDocumentEntity implements Serializable {
 
     public void setFluxCharacteristic(FluxCharacteristicEntity fluxCharacteristic) {
         this.fluxCharacteristic = fluxCharacteristic;
+    }
+
+    public String getFlapTypeCode() {
+        return flapTypeCode;
+    }
+
+    public void setFlapTypeCode(String flapTypeCode) {
+        this.flapTypeCode = flapTypeCode;
+    }
+
+    public String getFlapTypeCodeListId() {
+        return flapTypeCodeListId;
+    }
+
+    public void setFlapTypeCodeListId(String flapTypeCodeListId) {
+        this.flapTypeCodeListId = flapTypeCodeListId;
     }
 }

@@ -14,13 +14,10 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources.util;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.*;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by padhyad on 8/17/2016.

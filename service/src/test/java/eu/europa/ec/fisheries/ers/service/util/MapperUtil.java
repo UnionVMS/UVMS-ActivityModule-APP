@@ -13,16 +13,69 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FishingActivityConfigDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.SummaryReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.SummaryReportDTO;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import org.mockito.stubbing.Answer;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXGeographicalCoordinate;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SalesBatch;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SalesPrice;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.AmountType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IndicatorType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.NumericType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -30,14 +83,23 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by padhyad on 7/27/2016.
  */
 public class MapperUtil {
 
-
+    private static WKTReader wktReader = new WKTReader();
     private static Answer<?> vesselIdentifiersList;
 
     public static String  getCurrentTripID(){
@@ -118,7 +180,7 @@ public class MapperUtil {
         VesselTransportMeansEntity vesselTransportMeansEntity2= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
         VesselTransportMeansEntity vesselTransportMeansEntity3= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
 
-        vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1","SCHEME_1"));
+        vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1", "CFR"));
 
         FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
                 vesselTransportMeansEntity1, "new");
@@ -146,7 +208,7 @@ public class MapperUtil {
 
     public static FishingTripEntity getFishingTripEntityWithContactParties() {
         FishingTripEntity fishingTripEntity = getFishingTripEntity();
-        VesselTransportMeansEntity vesselTransportEntity = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        Set<VesselTransportMeansEntity> vesselTransportEntityList = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
 
         Set<ContactPartyEntity> contactParties = new HashSet<>();
 
@@ -159,8 +221,9 @@ public class MapperUtil {
         contPartEntity_2.setContactPartyRole(roleList_2);
 
         contactParties.addAll(Arrays.asList(contPartEntity_1,contPartEntity_2));
-
-        vesselTransportEntity.setContactParty(contactParties);
+        for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportEntityList) {
+            vesselTransportMeansEntity.setContactParty(contactParties);
+        }
 
         return fishingTripEntity;
     }
@@ -204,11 +267,20 @@ public class MapperUtil {
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setStatus(FaReportStatusEnum.UPDATED.getStatus());
-        faReportDocumentEntity.setTypeCode("Type Code 1");
-        faReportDocumentEntity.setTypeCodeListId("57thfy-58tjd84-58thjf-58tjrj9");
+        faReportDocumentEntity.setTypeCode("FISHING_OPERATION");
+        faReportDocumentEntity.setTypeCodeListId("FLUX_FA_REPORT_TYPE");
         faReportDocumentEntity.setAcceptedDatetime(new Date());
         faReportDocumentEntity.setFmcMarker("FMC Marker");
         faReportDocumentEntity.setFmcMarkerListId("FMC Marker list Id");
+        Geometry geometry =null;
+
+        try {
+            geometry= wktReader.read("MULTIPOINT ((-10 40), (-40 30), (-20 20), (-30 10))");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        faReportDocumentEntity.setGeom(geometry);
 
         FaReportIdentifierEntity faReportIdentifierEntity = new FaReportIdentifierEntity();
         faReportIdentifierEntity.setFaReportIdentifierId("Identifier Id 1");
@@ -255,7 +327,7 @@ public class MapperUtil {
     }
 
     public static AAPProcess getAapProcess() {
-        List<CodeType> codeList = Arrays.asList(getCodeType("FISH_FRESHNESS", "FLUX_ PROCESS_TYPE"));
+        List<CodeType> codeList = Arrays.asList(getCodeType("FISH_FRESHNESS", "FLUX_PROCESS_TYPE"));
         NumericType numericType = getNumericType(123);
         AAPProcess aapProcess = new AAPProcess(codeList, numericType, null, Arrays.asList(getAapProduct()));
         return aapProcess;
@@ -487,12 +559,12 @@ public class MapperUtil {
     }
 
     public static FLUXReportDocument getFluxReportDocument() {
-        List<IDType> ids = Arrays.asList(getIdType("ID 1", "fhty58-gh586t-5tjf8-t58rjewe"));
+        List<IDType> ids = Arrays.asList(getIdType("flux_report_doc_1", "fhty58-gh586t-5tjf8-t58rjewe"));
         IDType referencedID = getIdType("Ref ID 1", "fhty58-gh586t-5tjf8-t58rjewe");
         DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
-        CodeType purposeCode = getCodeType("Purpose Code 1", "fhr596t-ght7u48-fjrudu5-tjfue8554");
-        final TextType purpose = getTextType("This is Test Text");
-        CodeType typeCode = getCodeType("Code Type 1", "fhty58-gh586t-5tjf8-t58rjewe");
+        CodeType purposeCode = getCodeType("5", "FLUX_GP_PURPOSE");
+        final TextType purpose = getTextType("Purpose Text");
+        CodeType typeCode = getCodeType("FluxReportTypeCode", "fhty58-gh586t-5tjf8-t58rjewe");
         FLUXParty ownerFLUXParty = new FLUXParty(Arrays.asList(getIdType("Owner flux party id 1", "58fjrut-tjfuri-586jte-5jfur")),
                 Arrays.asList(getTextType("This is sample text for owner flux party")));
         FLUXReportDocument fluxReportDocument = new FLUXReportDocument(ids, referencedID, creationDateTime, purposeCode, purpose, typeCode, ownerFLUXParty);
@@ -543,7 +615,7 @@ public class MapperUtil {
         DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
         CodeType purposeCode = getCodeType("9", "FLUX_GP_PURPOSE");
         CodeType typeCode = getCodeType("type Code1", "fhr574fh-thrud754-kgitjf754-gjtufe89");
-        List<IDType> ownerFluxPartyId = Arrays.asList(getIdType("Owner flux party id 1", "47rfh-5hry4-thfur75-4hf743"));
+        List<IDType> ownerFluxPartyId = Arrays.asList(getIdType("Owner_flux_party_id_1", "flux_Party_scheme_id"));
         List<TextType> names =Arrays.asList(getTextType("fluxPartyOwnerName 1"));
         FLUXParty fluxParty = new FLUXParty(ownerFluxPartyId,names);
         FLUXReportDocument fluxReportDocument = new FLUXReportDocument(ids, referenceId, creationDateTime, purposeCode, getTextType("Purpose"), typeCode, fluxParty);
@@ -554,7 +626,7 @@ public class MapperUtil {
 
 
     public static FAReportDocument getFaReportDocument() {
-        CodeType typeCode = getCodeType("DECLARATION", "fhr574fh-thrud754-kgitjf754-gjtufe89");
+        CodeType typeCode = getCodeType("DECLARATION", "FLUX_FA_REPORT_TYPE");
         CodeType fmcMarkerCode = getCodeType("Fmz marker 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
         List<IDType> relatedReportIDs = Arrays.asList(getIdType("ID 1", "47rfh-5hry4-thfur75-4hf743"));
         DateTimeType acceptanceDateTime = getDateTimeType("2016-07-01 11:15:00");
@@ -567,13 +639,13 @@ public class MapperUtil {
     }
 
     private static FishingActivity getStandardFishingActivity() {
-        List<IDType> ids = Arrays.asList(getIdType("Id 1", "fhr574fh-thrud754-kgitjf754-gjtufe89"));
+        List<IDType> ids = Arrays.asList(getIdType("Id_1", "fhr574fh-thrud754-kgitjf754-gjtufe89"));
         CodeType typeCode = getCodeType("FISHING_OPERATION", "FLUX_FA_TYPE");
         DateTimeType occurrenceDateTime = getDateTimeType("2016-07-01 11:15:00");
-        CodeType reasonCode = getCodeType("Reason code 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
+        CodeType reasonCode = getCodeType("Reason_code_1", "FA_REASON_DEPARTURE");
         CodeType vesselRelatedActivityCode = getCodeType("Vessel activity 1", "58thft-58fjd8-gt85eje-hjgute8");
-        CodeType fisheryTypeCode = getCodeType("Fishing Type code 1", "57thre-fn48320-fn39fjr-tjfow84");
-        CodeType speciesTargetCode = getCodeType("Species code 1", "47rfh-5hry4-thfur75-4hf743");
+        CodeType fisheryTypeCode = getCodeType("Fishing_Type_code 1", "FA_FISHERY");
+        CodeType speciesTargetCode = getCodeType("Species code 1", "FAO_SPECIES");
         QuantityType operationsQuantity = getQuantityType(100);
         MeasureType fishingDurationMeasure = getMeasureType(500, "C62", "4hr2yf0-t583thf-6jgttue8-6jtie844");
         List<FLAPDocument> specifiedFLAPDocument = Arrays.asList(getFlapDocument());
@@ -701,8 +773,8 @@ public class MapperUtil {
 
     public static List<VesselIdentifierEntity> getVesselIdentifiersList() {
         List<VesselIdentifierEntity> vesselIdentifiersList = new ArrayList<>();
-        VesselTransportMeansEntity vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivity().getFaReportDocument().getVesselTransportMeans();
-        Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.getVesselIdentifiers();
+        Set<VesselTransportMeansEntity> vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.iterator().next().getVesselIdentifiers();
         vesselIdentifiersList.addAll(vesselIdentifiersSet);
         return vesselIdentifiersList;
     }
@@ -733,5 +805,32 @@ public class MapperUtil {
         faCatches.addAll(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
 
         return faCatches;
+    }
+
+    public static Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> getGroupedFaCatchSummaryCustomEntityData() {
+        FaCatchSummaryCustomProxy customEntityKey = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
+        FaCatchSummaryCustomProxy customEntityValue1 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
+        FaCatchSummaryCustomProxy customEntityValue2 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "SOL", null,200);
+        FaCatchSummaryCustomProxy customEntityValue3 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "WHL",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "PLE", null,200);
+        FaCatchSummaryCustomProxy customEntityValue4 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "ROE-C",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
+        FaCatchSummaryCustomProxy customEntityValue5 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "COD", null,200);
+
+        Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = new HashMap<>();
+
+        List<FaCatchSummaryCustomProxy> valueList1 = new ArrayList<>();
+        valueList1.add(customEntityValue1);
+        valueList1.add(customEntityValue2);
+        valueList1.add(customEntityValue3);
+        valueList1.add(customEntityValue4);
+        valueList1.add(customEntityValue5);
+        groupedData.put(customEntityKey,valueList1);
+
+        return groupedData;
     }
 }

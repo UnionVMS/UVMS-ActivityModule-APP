@@ -13,176 +13,241 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import com.vividsolutions.jts.geom.Geometry;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @NamedQueries({
-		@NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
-				query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-						"INNER JOIN fareport.fluxReportDocument fluxreport " +
-						"INNER JOIN fluxreport.fluxReportIdentifiers identifier " +
-						"WHERE identifier.fluxReportIdentifierId = :reportId " +
-						"AND identifier.fluxReportIdentifierSchemeId = :schemeId"),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "INNER JOIN fareport.fluxReportDocument fluxreport " +
+                        "INNER JOIN fluxreport.fluxReportIdentifiers identifier " +
+                        "WHERE identifier.fluxReportIdentifierId = :reportId " +
+                        "AND identifier.fluxReportIdentifierSchemeId = :schemeId"),
 
-		@NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
-				query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
+        @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
+                query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
                         "JOIN FETCH fareport.fishingActivities factivity " +
                         "JOIN FETCH factivity.fishingTrips fishingtrip " +
                         "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
                         "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId")
+                        "WHERE ftidentifier.tripId  = :tripId"),
+
+        @NamedQuery(name = FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID,
+                query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
+                        "JOIN FETCH fareport.fishingActivities factivity " +
+                        "JOIN FETCH factivity.fishingTrips fishingtrip " +
+                        "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
+                        "JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "WHERE ftidentifier.tripId  = :tripId and fareport.status = 'new'")
 })
 @Entity
 @Table(name = "activity_fa_report_document")
 public class FaReportDocumentEntity implements Serializable {
 
-	public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
-	public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
+    public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
+    public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
+    public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
 
-	@Id
-	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_rep_doc_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    private int id;
 
-	@Type(type = "org.hibernate.spatial.GeometryType")
-	@Column(name = "geom")
-	private Geometry geom;
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    @Column(name = "geom")
+    private Geometry geom;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "vessel_transport_means_id")
-	private VesselTransportMeansEntity vesselTransportMeans;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flux_fa_report_message_id")
+    private FluxFaReportMessageEntity fluxFaReportMessage;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "flux_report_document_id", nullable = false)
-	private FluxReportDocumentEntity fluxReportDocument;
 
-	@Column(name = "type_code")
-	private String typeCode;
 
-	@Column(name = "type_code_list_id")
-	private String typeCodeListId;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "flux_report_document_id", nullable = false)
+    private FluxReportDocumentEntity fluxReportDocument;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "accepted_datetime", length = 29)
-	private Date acceptedDatetime;
+    @Column(name = "type_code")
+    private String typeCode;
 
-	@Column(name = "fmc_marker")
-	private String fmcMarker;
+    @Column(name = "type_code_list_id")
+    private String typeCodeListId;
 
-	@Column(name = "fmc_marker_list_id")
-	private String fmcMarkerListId;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "accepted_datetime", length = 29)
+    private Date acceptedDatetime;
 
-	@Column(name = "status")
-	private String status;
+    @Column(name = "fmc_marker")
+    private String fmcMarker;
 
-	@Column(name = "source")
-	private String source;
+    @Column(name = "fmc_marker_list_id")
+    private String fmcMarkerListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
-	private Set<FaReportIdentifierEntity> faReportIdentifiers;
+    @Column(name = "status")
+    private String status;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
-	private Set<FishingActivityEntity> fishingActivities;
+    @Column(name = "source")
+    private String source;
 
-	public FaReportDocumentEntity() {
-		super();
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
+    private Set<FaReportIdentifierEntity> faReportIdentifiers;
 
-	public int getId() {
-		return this.id;
-	}
-	public VesselTransportMeansEntity getVesselTransportMeans() {
-		return this.vesselTransportMeans;
-	}
-	public void setVesselTransportMeans(
-			VesselTransportMeansEntity vesselTransportMeans) {
-		this.vesselTransportMeans = vesselTransportMeans;
-	}
-	public FluxReportDocumentEntity getFluxReportDocument() {
-		return this.fluxReportDocument;
-	}
-	public void setFluxReportDocument(
-			FluxReportDocumentEntity fluxReportDocument) {
-		this.fluxReportDocument = fluxReportDocument;
-	}
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-	public String getTypeCodeListId() {
-		return this.typeCodeListId;
-	}
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
-	public Date getAcceptedDatetime() {
-		return this.acceptedDatetime;
-	}
-	public void setAcceptedDatetime(Date acceptedDatetime) {
-		this.acceptedDatetime = acceptedDatetime;
-	}
-	public String getFmcMarker() {
-		return this.fmcMarker;
-	}
-	public void setFmcMarker(String fmcMarker) {
-		this.fmcMarker = fmcMarker;
-	}
-	public String getFmcMarkerListId() {
-		return this.fmcMarkerListId;
-	}
-	public void setFmcMarkerListId(String fmcMarkerListId) {
-		this.fmcMarkerListId = fmcMarkerListId;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public String getSource() {
-		return source;
-	}
-	public void setSource(String source) {
-		this.source = source;
-	}
-	public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {
-		return this.faReportIdentifiers;
-	}
-	public void setFaReportIdentifiers(
-			Set<FaReportIdentifierEntity> faReportIdentifiers) {
-		this.faReportIdentifiers = faReportIdentifiers;
-	}
-	public Set<FishingActivityEntity> getFishingActivities() {
-		return this.fishingActivities;
-	}
-	public void setFishingActivities(
-			Set<FishingActivityEntity> fishingActivities) {
-		this.fishingActivities = fishingActivities;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
+    private Set<FishingActivityEntity> fishingActivities;
 
-	public Geometry getGeom() {
-		return geom;
-	}
+    /**
+     * This one to many relationship is artificially created. From XML we will always receive only One VesselTreansportMeans per FaReportDocument.
+     *  This is done to avoid cyclic dependency ( Vessel->FishingActivity->FaReportDocument->Vessel )
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
+    private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
-	public void setGeom(Geometry geom) {
-		this.geom = geom;
-	}
+    public FaReportDocumentEntity() {
+        super();
+    }
 
-	@Override
-	public String toString() {
-		return "FaReportDocumentEntity{" +
-				"id=" + id +
-				", vesselTransportMeans=" + vesselTransportMeans +
-				", fluxReportDocument=" + fluxReportDocument +
-				", typeCode='" + typeCode + '\'' +
-				", typeCodeListId='" + typeCodeListId + '\'' +
-				", acceptedDatetime=" + acceptedDatetime +
-				", fmcMarker='" + fmcMarker + '\'' +
-				", fmcMarkerListId='" + fmcMarkerListId + '\'' +
-				'}';
-	}
+    public int getId() {
+        return this.id;
+    }
+
+
+    public Set<VesselTransportMeansEntity> getVesselTransportMeans() {
+        return vesselTransportMeans;
+    }
+
+    public void setVesselTransportMeans(Set<VesselTransportMeansEntity> vesselTransportMeans) {
+        this.vesselTransportMeans = vesselTransportMeans;
+    }
+
+    public FluxReportDocumentEntity getFluxReportDocument() {
+        return this.fluxReportDocument;
+    }
+
+    public void setFluxReportDocument(
+            FluxReportDocumentEntity fluxReportDocument) {
+        this.fluxReportDocument = fluxReportDocument;
+    }
+
+    public String getTypeCode() {
+        return this.typeCode;
+    }
+
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
+    }
+
+    public String getTypeCodeListId() {
+        return this.typeCodeListId;
+    }
+
+    public void setTypeCodeListId(String typeCodeListId) {
+        this.typeCodeListId = typeCodeListId;
+    }
+
+    public Date getAcceptedDatetime() {
+        return this.acceptedDatetime;
+    }
+
+    public void setAcceptedDatetime(Date acceptedDatetime) {
+        this.acceptedDatetime = acceptedDatetime;
+    }
+
+    public String getFmcMarker() {
+        return this.fmcMarker;
+    }
+
+    public void setFmcMarker(String fmcMarker) {
+        this.fmcMarker = fmcMarker;
+    }
+
+    public String getFmcMarkerListId() {
+        return this.fmcMarkerListId;
+    }
+
+    public void setFmcMarkerListId(String fmcMarkerListId) {
+        this.fmcMarkerListId = fmcMarkerListId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {
+        return this.faReportIdentifiers;
+    }
+
+    public void setFaReportIdentifiers(
+            Set<FaReportIdentifierEntity> faReportIdentifiers) {
+        this.faReportIdentifiers = faReportIdentifiers;
+    }
+
+    public Set<FishingActivityEntity> getFishingActivities() {
+        return this.fishingActivities;
+    }
+
+    public void setFishingActivities(
+            Set<FishingActivityEntity> fishingActivities) {
+        this.fishingActivities = fishingActivities;
+    }
+
+    public FluxFaReportMessageEntity getFluxFaReportMessage() {
+        return fluxFaReportMessage;
+    }
+
+    public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
+        this.fluxFaReportMessage = fluxFaReportMessage;
+    }
+
+    public Geometry getGeom() {
+        return geom;
+    }
+
+    public void setGeom(Geometry geom) {
+        this.geom = geom;
+    }
+
+    @Override
+    public String toString() {
+        return "FaReportDocumentEntity{" +
+                "id=" + id +
+                ", vesselTransportMeans=" + vesselTransportMeans +
+                ", fluxReportDocument=" + fluxReportDocument +
+                ", typeCode='" + typeCode + '\'' +
+                ", typeCodeListId='" + typeCodeListId + '\'' +
+                ", acceptedDatetime=" + acceptedDatetime +
+                ", fmcMarker='" + fmcMarker + '\'' +
+                ", fmcMarkerListId='" + fmcMarkerListId + '\'' +
+                '}';
+    }
 }

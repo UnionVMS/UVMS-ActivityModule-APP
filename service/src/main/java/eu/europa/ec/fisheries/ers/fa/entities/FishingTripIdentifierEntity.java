@@ -10,8 +10,22 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
+import java.util.Date;
 
 @NamedQueries({
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRIP,
@@ -74,8 +88,9 @@ public class FishingTripIdentifierEntity implements Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "trip_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_trip_id")
@@ -87,6 +102,14 @@ public class FishingTripIdentifierEntity implements Serializable {
 
 	@Column(name = "trip_scheme_id", nullable = false)
 	private String tripSchemeId;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "calculated_trip_start_date", length = 29)
+	private Date calculatedTripStartDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "calculated_trip_end_date", length = 29)
+	private Date calculatedTripEndDate;
 
 	public FishingTripIdentifierEntity() {
 		super();
@@ -111,6 +134,22 @@ public class FishingTripIdentifierEntity implements Serializable {
 	}
 	public void setTripSchemeId(String tripSchemeId) {
 		this.tripSchemeId = tripSchemeId;
+	}
+
+	public Date getCalculatedTripStartDate() {
+		return calculatedTripStartDate;
+	}
+
+	public void setCalculatedTripStartDate(Date calculatedTripStartDate) {
+		this.calculatedTripStartDate = calculatedTripStartDate;
+	}
+
+	public Date getCalculatedTripEndDate() {
+		return calculatedTripEndDate;
+	}
+
+	public void setCalculatedTripEndDate(Date calculatedTripEndDate) {
+		this.calculatedTripEndDate = calculatedTripEndDate;
 	}
 
 	@Override

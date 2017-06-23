@@ -13,18 +13,18 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProductDetailsDTO;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -34,8 +34,7 @@ public class AapProductMapperTest {
     @Test
     public void testAapProductMapper() {
         AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = new AapProductEntity();
-        AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct, null, aapProductEntity);
+        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
 
         assertEquals(aapProduct.getPackagingTypeCode().getValue(), aapProductEntity.getPackagingTypeCode());
         assertEquals(aapProduct.getPackagingTypeCode().getListID(), aapProductEntity.getPackagingTypeCodeListId());
@@ -64,5 +63,37 @@ public class AapProductMapperTest {
 
         assertEquals(aapProduct.getUsageCode().getValue(), aapProductEntity.getUsageCode());
         assertEquals(aapProduct.getUsageCode().getListID(), aapProductEntity.getUsageCodeListId());
+    }
+
+    @Test
+    public void testMapToProcessingProduct() {
+
+        // Prepare
+        FACatch faCatch = MapperUtil.getFaCatch();
+        FaCatchEntity faCatchEntity = new FaCatchEntity();
+        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
+
+        AAPProcess aapProcess = MapperUtil.getAapProcess();
+        AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+        aapProcessEntity.setFaCatch(faCatchEntity);
+
+        AAPProduct aapProduct = MapperUtil.getAapProduct();
+        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
+        aapProductEntity.setAapProcess(aapProcessEntity);
+
+        // Create Input data
+        ProcessingProductsDto processingProductsDto = AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity);
+        assertEquals(processingProductsDto.getType(), faCatchEntity.getTypeCode());
+        assertEquals(processingProductsDto.getGear(), faCatchEntity.getGearTypeCode());
+        assertEquals(processingProductsDto.getSpecies(), faCatchEntity.getSpeciesCode());
+        assertNull(processingProductsDto.getPreservation());
+        assertNull(processingProductsDto.getPresentation());
+        assertNull(processingProductsDto.getFreshness());
+        assertEquals(processingProductsDto.getConversionFactor(), aapProcessEntity.getConversionFactor().doubleValue());
+        assertEquals(processingProductsDto.getWeight(), aapProductEntity.getCalculatedWeightMeasure());
+        assertEquals(processingProductsDto.getQuantity(), aapProductEntity.getUnitQuantity());
+        assertEquals(processingProductsDto.getPackageWeight(), aapProductEntity.getPackagingUnitAvarageWeight());
+        assertEquals(processingProductsDto.getPackageQuantity().doubleValue(), aapProductEntity.getPackagingUnitCount().doubleValue());
+        assertEquals(processingProductsDto.getPackagingType(), aapProductEntity.getPackagingTypeCode());
     }
 }

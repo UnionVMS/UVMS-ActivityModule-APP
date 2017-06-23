@@ -15,9 +15,9 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setMaxResults(1);
         List<FishingTripIdentifierEntity> fishingTripIdentifies = query.getResultList();
-        if (fishingTripIdentifies != null && !fishingTripIdentifies.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(fishingTripIdentifies)) {
             return fishingTripIdentifies.get(0);
         } else {
             return null;

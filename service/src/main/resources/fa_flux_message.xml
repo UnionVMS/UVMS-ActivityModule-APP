@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns3:FLUXFAReportMessage xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xmlns:ns3="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3">
+<ns3:FLUXFAReportMessage xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
+                         xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20"
+                         xmlns:ns3="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3">
     <ns3:FLUXReportDocument>
         <ID schemeID="FLUX_SCHEME_ID1">FLUX_REPORT_ID_1</ID>
         <ReferencedID schemeID="47rfh-5hry4-thfur75-4hf743">REF_ID 1</ReferencedID>
@@ -37,18 +39,20 @@
         </RelatedFLUXReportDocument>
         <SpecifiedFishingActivity>
             <ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>
-            <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+            <TypeCode listID="FLUX_FA_TYPE">JOINT_FISHING_OPERATION</TypeCode>
             <OccurrenceDateTime>
-                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                <ns2:DateTime>2016-06-08T13:53:00.000Z</ns2:DateTime>
             </OccurrenceDateTime>
             <ReasonCode listID="h49rh-fhrus33-fj84hjs82-4h84hw82">Reason code 1</ReasonCode>
-            <VesselRelatedActivityCode listID="58thft-58fjd8-gt85eje-hjgute8">Vessel activity 1</VesselRelatedActivityCode>
+            <VesselRelatedActivityCode listID="58thft-58fjd8-gt85eje-hjgute8">Vessel activity 1
+            </VesselRelatedActivityCode>
             <FisheryTypeCode listID="57thre-fn48320-fn39fjr-tjfow84">Fishing Type code 1</FisheryTypeCode>
             <SpeciesTargetCode listID="47rfh-5hry4-thfur75-4hf743">Species code 1</SpeciesTargetCode>
             <OperationsQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">100</OperationsQuantity>
-            <FishingDurationMeasure unitCode="C62" unitCodeListVersionID="4hr2yf0-t583thf-6jgttue8-6jtie844">500</FishingDurationMeasure>
+            <FishingDurationMeasure unitCode="C62" unitCodeListVersionID="4hr2yf0-t583thf-6jgttue8-6jtie844">500
+            </FishingDurationMeasure>
             <SpecifiedFACatch>
-                <SpeciesCode listID="FAO_SPECIES">ONBOARD</SpeciesCode>
+                <SpeciesCode listID="FAO_SPECIES">DAB</SpeciesCode>
                 <UnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">100</UnitQuantity>
                 <WeightMeasure unitCode="C62" unitCodeListVersionID="586jhg-5htuf95-5jfit-5jtier8">123</WeightMeasure>
                 <WeighingMeansCode listID="5854tt5-gjtdir-5j85tui-589git">Weighing means code 1</WeighingMeansCode>
@@ -64,7 +68,8 @@
                         <EndDateTime>
                             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                         </EndDateTime>
-                        <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                        <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500
+                        </DurationMeasure>
                     </SpecifiedDelimitedPeriod>
                 </RelatedFishingTrip>
                 <SpecifiedSizeDistribution>
@@ -80,14 +85,21 @@
                     <ResultAAPProduct>
                         <SpeciesCode listID="qbdcg-3fhr5-rd4kd5-er5tgd5k">Species 1</SpeciesCode>
                         <UnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</UnitQuantity>
-                        <WeightMeasure unitCode="C62" unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123</WeightMeasure>
-                        <WeighingMeansCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Weighing Means 1</WeighingMeansCode>
+                        <WeightMeasure unitCode="C62" unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123
+                        </WeightMeasure>
+                        <WeighingMeansCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Weighing Means 1
+                        </WeighingMeansCode>
                         <UsageCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Usage Code 1</UsageCode>
-                        <PackagingUnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">1234</PackagingUnitQuantity>
+                        <PackagingUnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">1234
+                        </PackagingUnitQuantity>
                         <PackagingTypeCode listID="FISH_PACKAGING">packaging type 1</PackagingTypeCode>
-                        <PackagingUnitAverageWeightMeasure unitCode="C62" unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123</PackagingUnitAverageWeightMeasure>
+                        <PackagingUnitAverageWeightMeasure unitCode="C62"
+                                                           unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123
+                        </PackagingUnitAverageWeightMeasure>
                         <TotalSalesPrice>
-                            <ChargeAmount currencyID="1" currencyCodeListVersionID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">123</ChargeAmount>
+                            <ChargeAmount currencyID="1"
+                                          currencyCodeListVersionID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">123
+                            </ChargeAmount>
                         </TotalSalesPrice>
                         <SpecifiedSizeDistribution>
                             <CategoryCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">catagory 1</CategoryCode>
@@ -99,15 +111,25 @@
                     <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                     <CountryID schemeID="TERRITORY">XEU</CountryID>
                     <ID schemeID="FAO_AREA">25.5b</ID>
-                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
+                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                    </GeopoliticalRegionCode>
                     <Name>This is sample name</Name>
-                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                    </SovereignRightsCountryID>
+                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                    </JurisdictionCountryID>
+                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                    </RegionalFisheriesManagementOrganizationCode>
                     <SpecifiedPhysicalFLUXGeographicalCoordinate>
-                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
+                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                            123
+                        </LongitudeMeasure>
+                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">
+                            234
+                        </LatitudeMeasure>
+                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                            345
+                        </AltitudeMeasure>
                         <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                     </SpecifiedPhysicalFLUXGeographicalCoordinate>
                     <PostalStructuredAddress>
@@ -155,7 +177,8 @@
                     <ApplicableGearCharacteristic>
                         <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                         <Description>This is sample text</Description>
-                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123</ValueMeasure>
+                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123
+                        </ValueMeasure>
                         <ValueDateTime>
                             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                         </ValueDateTime>
@@ -165,59 +188,71 @@
                         </ValueIndicator>
                         <ValueCode listID="4fhry5-thfyr85-67thf-5htr84">Code type 1</ValueCode>
                         <Value>This is sample Text</Value>
-                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</ValueQuantity>
+                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                        </ValueQuantity>
                         <SpecifiedFLUXLocation>
                             <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                             <CountryID schemeID="TERRITORY">XEU</CountryID>
                             <ID schemeID="FAO_AREA">25.5b</ID>
-                            <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
+                            <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                            </GeopoliticalRegionCode>
                             <Name>This is sample name</Name>
-                            <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                            <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                            <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                            <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                            </SovereignRightsCountryID>
+                            <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id
+                                1
+                            </JurisdictionCountryID>
+                            <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                            </RegionalFisheriesManagementOrganizationCode>
                             <SpecifiedPhysicalFLUXGeographicalCoordinate>
-<LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-<LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-<AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
-<SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                                <LongitudeMeasure unitCode="longitude"
+                                                  unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123
+                                </LongitudeMeasure>
+                                <LatitudeMeasure unitCode="latitude"
+                                                 unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                                </LatitudeMeasure>
+                                <AltitudeMeasure unitCode="altitude"
+                                                 unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345
+                                </AltitudeMeasure>
+                                <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                             </SpecifiedPhysicalFLUXGeographicalCoordinate>
                             <PostalStructuredAddress>
-<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-<PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-<BuildingName>Test Building</BuildingName>
-<StreetName>Test Street</StreetName>
-<CityName>Test City</CityName>
-<CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-<CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-<CountryName>Test Country</CountryName>
-<CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-<BlockName>Test Block</BlockName>
-<PlotIdentification>123</PlotIdentification>
-<PostOfficeBox>548675</PostOfficeBox>
-<BuildingNumber>12345</BuildingNumber>
-<StaircaseNumber>3456</StaircaseNumber>
-<FloorIdentification>8888</FloorIdentification>
-<RoomIdentification>555</RoomIdentification>
-<PostalArea>123</PostalArea>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
                             </PostalStructuredAddress>
                             <PhysicalStructuredAddress>
-<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-<PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-<BuildingName>Test Building</BuildingName>
-<StreetName>Test Street</StreetName>
-<CityName>Test City</CityName>
-<CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-<CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-<CountryName>Test Country</CountryName>
-<CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-<BlockName>Test Block</BlockName>
-<PlotIdentification>123</PlotIdentification>
-<PostOfficeBox>548675</PostOfficeBox>
-<BuildingNumber>12345</BuildingNumber>
-<StaircaseNumber>3456</StaircaseNumber>
-<FloorIdentification>8888</FloorIdentification>
-<RoomIdentification>555</RoomIdentification>
-<PostalArea>123</PostalArea>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
                             </PhysicalStructuredAddress>
                         </SpecifiedFLUXLocation>
                     </ApplicableGearCharacteristic>
@@ -225,7 +260,8 @@
                 <ApplicableFLUXCharacteristic>
                     <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                     <Description>This is test description</Description>
-                    <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333</ValueMeasure>
+                    <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333
+                    </ValueMeasure>
                     <ValueDateTime>
                         <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                     </ValueDateTime>
@@ -244,15 +280,315 @@
                     <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                     <CountryID schemeID="TERRITORY">XEU</CountryID>
                     <ID schemeID="FAO_AREA">25.5b</ID>
-                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
+                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                    </GeopoliticalRegionCode>
                     <Name>This is sample name</Name>
-                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                    </SovereignRightsCountryID>
+                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                    </JurisdictionCountryID>
+                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                    </RegionalFisheriesManagementOrganizationCode>
                     <SpecifiedPhysicalFLUXGeographicalCoordinate>
-                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
+                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                            123
+                        </LongitudeMeasure>
+                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">
+                            234
+                        </LatitudeMeasure>
+                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                            345
+                        </AltitudeMeasure>
+                        <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                    </SpecifiedPhysicalFLUXGeographicalCoordinate>
+                    <PostalStructuredAddress>
+                        <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                        <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                        <BuildingName>Test Building</BuildingName>
+                        <StreetName>Test Street</StreetName>
+                        <CityName>Test City</CityName>
+                        <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                        <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                        <CountryName>Test Country</CountryName>
+                        <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                        <BlockName>Test Block</BlockName>
+                        <PlotIdentification>123</PlotIdentification>
+                        <PostOfficeBox>548675</PostOfficeBox>
+                        <BuildingNumber>12345</BuildingNumber>
+                        <StaircaseNumber>3456</StaircaseNumber>
+                        <FloorIdentification>8888</FloorIdentification>
+                        <RoomIdentification>555</RoomIdentification>
+                        <PostalArea>123</PostalArea>
+                    </PostalStructuredAddress>
+                    <PhysicalStructuredAddress>
+                        <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                        <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                        <BuildingName>Test Building</BuildingName>
+                        <StreetName>Test Street</StreetName>
+                        <CityName>Test City</CityName>
+                        <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                        <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                        <CountryName>Test Country</CountryName>
+                        <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                        <BlockName>Test Block</BlockName>
+                        <PlotIdentification>123</PlotIdentification>
+                        <PostOfficeBox>548675</PostOfficeBox>
+                        <BuildingNumber>12345</BuildingNumber>
+                        <StaircaseNumber>3456</StaircaseNumber>
+                        <FloorIdentification>8888</FloorIdentification>
+                        <RoomIdentification>555</RoomIdentification>
+                        <PostalArea>123</PostalArea>
+                    </PhysicalStructuredAddress>
+                </DestinationFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">ONBOARD</SpeciesCode>
+                <UnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">100</UnitQuantity>
+                <WeightMeasure unitCode="C62" unitCodeListVersionID="586jhg-5htuf95-5jfit-5jtier8">123</WeightMeasure>
+                <WeighingMeansCode listID="5854tt5-gjtdir-5j85tui-589git">Weighing means code 1</WeighingMeansCode>
+                <UsageCode listID="58thft-58fjd8-gt85eje-hjgute8">Usage code 1</UsageCode>
+                <TypeCode listID="FA_CATCH_TYPE">Type code 1</TypeCode>
+                <RelatedFishingTrip>
+                    <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">TRIP ID 2</ID>
+                    <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>
+                    <SpecifiedDelimitedPeriod>
+                        <StartDateTime>
+                            <ns2:DateTime>2011-07-01T11:14:00Z</ns2:DateTime>
+                        </StartDateTime>
+                        <EndDateTime>
+                            <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                        </EndDateTime>
+                        <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500
+                        </DurationMeasure>
+                    </SpecifiedDelimitedPeriod>
+                </RelatedFishingTrip>
+                <SpecifiedSizeDistribution>
+                    <CategoryCode listID="FA_BFT_SIZE_CATEGORY">S6</CategoryCode>
+                    <ClassCode listID="FISH_SIZE_CLASS">BMS</ClassCode>
+                </SpecifiedSizeDistribution>
+                <RelatedAAPStock>
+                    <ID schemeID="4fjgt7-4rifi65-4rjf75-4ru85gf">Id Type1</ID>
+                </RelatedAAPStock>
+                <AppliedAAPProcess>
+                    <TypeCode listID="FLUX_ PROCESS_TYPE">FISH_FRESHNESS</TypeCode>
+                    <ConversionFactorNumeric>123</ConversionFactorNumeric>
+                    <ResultAAPProduct>
+                        <SpeciesCode listID="qbdcg-3fhr5-rd4kd5-er5tgd5k">Species 1</SpeciesCode>
+                        <UnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</UnitQuantity>
+                        <WeightMeasure unitCode="C62" unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123
+                        </WeightMeasure>
+                        <WeighingMeansCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Weighing Means 1
+                        </WeighingMeansCode>
+                        <UsageCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Usage Code 1</UsageCode>
+                        <PackagingUnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">1234
+                        </PackagingUnitQuantity>
+                        <PackagingTypeCode listID="FISH_PACKAGING">packaging type 1</PackagingTypeCode>
+                        <PackagingUnitAverageWeightMeasure unitCode="C62"
+                                                           unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123
+                        </PackagingUnitAverageWeightMeasure>
+                        <TotalSalesPrice>
+                            <ChargeAmount currencyID="1"
+                                          currencyCodeListVersionID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">123
+                            </ChargeAmount>
+                        </TotalSalesPrice>
+                        <SpecifiedSizeDistribution>
+                            <CategoryCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">catagory 1</CategoryCode>
+                            <ClassCode listID="qbd43cg-3fhr5t65-rd45674-er5tgd5k">class code1</ClassCode>
+                        </SpecifiedSizeDistribution>
+                    </ResultAAPProduct>
+                </AppliedAAPProcess>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <CountryID schemeID="TERRITORY">BEL</CountryID>
+                    <ID schemeID="FAO_AREA">25.5b</ID>
+                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                    </GeopoliticalRegionCode>
+                    <Name>This is sample name</Name>
+                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                    </SovereignRightsCountryID>
+                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                    </JurisdictionCountryID>
+                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                    </RegionalFisheriesManagementOrganizationCode>
+                    <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                            123
+                        </LongitudeMeasure>
+                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">
+                            234
+                        </LatitudeMeasure>
+                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                            345
+                        </AltitudeMeasure>
+                        <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                    </SpecifiedPhysicalFLUXGeographicalCoordinate>
+                    <PostalStructuredAddress>
+                        <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                        <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                        <BuildingName>Test Building</BuildingName>
+                        <StreetName>Test Street</StreetName>
+                        <CityName>Test City</CityName>
+                        <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                        <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                        <CountryName>Test Country</CountryName>
+                        <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                        <BlockName>Test Block</BlockName>
+                        <PlotIdentification>123</PlotIdentification>
+                        <PostOfficeBox>548675</PostOfficeBox>
+                        <BuildingNumber>12345</BuildingNumber>
+                        <StaircaseNumber>3456</StaircaseNumber>
+                        <FloorIdentification>8888</FloorIdentification>
+                        <RoomIdentification>555</RoomIdentification>
+                        <PostalArea>123</PostalArea>
+                    </PostalStructuredAddress>
+                    <PhysicalStructuredAddress>
+                        <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                        <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                        <BuildingName>Test Building</BuildingName>
+                        <StreetName>Test Street</StreetName>
+                        <CityName>Test City</CityName>
+                        <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                        <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                        <CountryName>Test Country</CountryName>
+                        <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                        <BlockName>Test Block</BlockName>
+                        <PlotIdentification>123</PlotIdentification>
+                        <PostOfficeBox>548675</PostOfficeBox>
+                        <BuildingNumber>12345</BuildingNumber>
+                        <StaircaseNumber>3456</StaircaseNumber>
+                        <FloorIdentification>8888</FloorIdentification>
+                        <RoomIdentification>555</RoomIdentification>
+                        <PostalArea>123</PostalArea>
+                    </PhysicalStructuredAddress>
+                </SpecifiedFLUXLocation>
+                <UsedFishingGear>
+                    <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>
+                    <RoleCode listID="57t3yf-g43yrf-ght56ru-ght65h">Role Code 1</RoleCode>
+                    <ApplicableGearCharacteristic>
+                        <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
+                        <Description>This is sample text</Description>
+                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123
+                        </ValueMeasure>
+                        <ValueDateTime>
+                            <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                        </ValueDateTime>
+                        <ValueIndicator>
+                            <ns2:Indicator>true</ns2:Indicator>
+                            <ns2:IndicatorString format="Test format">Test value</ns2:IndicatorString>
+                        </ValueIndicator>
+                        <ValueCode listID="4fhry5-thfyr85-67thf-5htr84">Code type 1</ValueCode>
+                        <Value>This is sample Text</Value>
+                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                        </ValueQuantity>
+                        <SpecifiedFLUXLocation>
+                            <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                            <CountryID schemeID="TERRITORY">DAN</CountryID>
+                            <ID schemeID="FAO_AREA">25.5b</ID>
+                            <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                            </GeopoliticalRegionCode>
+                            <Name>This is sample name</Name>
+                            <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                            </SovereignRightsCountryID>
+                            <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id
+                                1
+                            </JurisdictionCountryID>
+                            <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                            </RegionalFisheriesManagementOrganizationCode>
+                            <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                                <LongitudeMeasure unitCode="longitude"
+                                                  unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123
+                                </LongitudeMeasure>
+                                <LatitudeMeasure unitCode="latitude"
+                                                 unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                                </LatitudeMeasure>
+                                <AltitudeMeasure unitCode="altitude"
+                                                 unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345
+                                </AltitudeMeasure>
+                                <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                            </SpecifiedPhysicalFLUXGeographicalCoordinate>
+                            <PostalStructuredAddress>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
+                            </PostalStructuredAddress>
+                            <PhysicalStructuredAddress>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
+                            </PhysicalStructuredAddress>
+                        </SpecifiedFLUXLocation>
+                    </ApplicableGearCharacteristic>
+                </UsedFishingGear>
+                <ApplicableFLUXCharacteristic>
+                    <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
+                    <Description>This is test description</Description>
+                    <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333
+                    </ValueMeasure>
+                    <ValueDateTime>
+                        <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                    </ValueDateTime>
+                    <ValueIndicator>
+                        <ns2:Indicator>true</ns2:Indicator>
+                        <ns2:IndicatorString format="Test format">Test value</ns2:IndicatorString>
+                    </ValueIndicator>
+                    <ValueCode listID="57tr4t3yf-ght43yrf-ght56yr5u-ght75365h">Code Value 1</ValueCode>
+                    <Value>This is sample value</Value>
+                    <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</ValueQuantity>
+                    <RelatedFLAPDocument>
+                        <ID schemeID="fhtg56-5thd75-thf6t93-thfrye">ID 1</ID>
+                    </RelatedFLAPDocument>
+                </ApplicableFLUXCharacteristic>
+                <DestinationFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <CountryID schemeID="TERRITORY">XEU</CountryID>
+                    <ID schemeID="FAO_AREA">25.5b</ID>
+                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                    </GeopoliticalRegionCode>
+                    <Name>Sample Location</Name>
+                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                    </SovereignRightsCountryID>
+                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                    </JurisdictionCountryID>
+                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                    </RegionalFisheriesManagementOrganizationCode>
+                    <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                            123
+                        </LongitudeMeasure>
+                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">
+                            234
+                        </LatitudeMeasure>
+                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                            345
+                        </AltitudeMeasure>
                         <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                     </SpecifiedPhysicalFLUXGeographicalCoordinate>
                     <PostalStructuredAddress>
@@ -300,14 +636,20 @@
                 <CountryID schemeID="TERRITORY">XEU</CountryID>
                 <ID schemeID="FAO_AREA">25.5b</ID>
                 <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-                <Name>This is sample name</Name>
-                <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                <Name>Sample Location</Name>
+                <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                </SovereignRightsCountryID>
+                <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                </JurisdictionCountryID>
+                <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                </RegionalFisheriesManagementOrganizationCode>
                 <SpecifiedPhysicalFLUXGeographicalCoordinate>
-                    <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-                    <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-                    <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
+                    <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123
+                    </LongitudeMeasure>
+                    <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                    </LatitudeMeasure>
+                    <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345
+                    </AltitudeMeasure>
                     <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                 </SpecifiedPhysicalFLUXGeographicalCoordinate>
                 <PostalStructuredAddress>
@@ -359,7 +701,8 @@
                     <ApplicableGearCharacteristic>
                         <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                         <Description>This is sample text</Description>
-                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123</ValueMeasure>
+                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123
+                        </ValueMeasure>
                         <ValueDateTime>
                             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                         </ValueDateTime>
@@ -369,59 +712,71 @@
                         </ValueIndicator>
                         <ValueCode listID="4fhry5-thfyr85-67thf-5htr84">Code type 1</ValueCode>
                         <Value>This is sample Text</Value>
-                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</ValueQuantity>
+                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                        </ValueQuantity>
                         <SpecifiedFLUXLocation>
                             <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                             <CountryID schemeID="TERRITORY">XEU</CountryID>
                             <ID schemeID="FAO_AREA">25.5b</ID>
-                            <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-                            <Name>This is sample name</Name>
-                            <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                            <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                            <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                            <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                            </GeopoliticalRegionCode>
+                            <Name>Sample Location</Name>
+                            <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                            </SovereignRightsCountryID>
+                            <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id
+                                1
+                            </JurisdictionCountryID>
+                            <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                            </RegionalFisheriesManagementOrganizationCode>
                             <SpecifiedPhysicalFLUXGeographicalCoordinate>
-<LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-<LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-<AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
-<SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                                <LongitudeMeasure unitCode="longitude"
+                                                  unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123
+                                </LongitudeMeasure>
+                                <LatitudeMeasure unitCode="latitude"
+                                                 unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                                </LatitudeMeasure>
+                                <AltitudeMeasure unitCode="altitude"
+                                                 unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345
+                                </AltitudeMeasure>
+                                <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                             </SpecifiedPhysicalFLUXGeographicalCoordinate>
                             <PostalStructuredAddress>
-<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-<PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-<BuildingName>Test Building</BuildingName>
-<StreetName>Test Street</StreetName>
-<CityName>Test City</CityName>
-<CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-<CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-<CountryName>Test Country</CountryName>
-<CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-<BlockName>Test Block</BlockName>
-<PlotIdentification>123</PlotIdentification>
-<PostOfficeBox>548675</PostOfficeBox>
-<BuildingNumber>12345</BuildingNumber>
-<StaircaseNumber>3456</StaircaseNumber>
-<FloorIdentification>8888</FloorIdentification>
-<RoomIdentification>555</RoomIdentification>
-<PostalArea>123</PostalArea>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
                             </PostalStructuredAddress>
                             <PhysicalStructuredAddress>
-<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-<PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-<BuildingName>Test Building</BuildingName>
-<StreetName>Test Street</StreetName>
-<CityName>Test City</CityName>
-<CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-<CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-<CountryName>Test Country</CountryName>
-<CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-<BlockName>Test Block</BlockName>
-<PlotIdentification>123</PlotIdentification>
-<PostOfficeBox>548675</PostOfficeBox>
-<BuildingNumber>12345</BuildingNumber>
-<StaircaseNumber>3456</StaircaseNumber>
-<FloorIdentification>8888</FloorIdentification>
-<RoomIdentification>555</RoomIdentification>
-<PostalArea>123</PostalArea>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
                             </PhysicalStructuredAddress>
                         </SpecifiedFLUXLocation>
                     </ApplicableGearCharacteristic>
@@ -430,7 +785,8 @@
             <SpecifiedFLUXCharacteristic>
                 <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                 <Description>This is test description</Description>
-                <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333</ValueMeasure>
+                <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333
+                </ValueMeasure>
                 <ValueDateTime>
                     <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                 </ValueDateTime>
@@ -451,7 +807,8 @@
                 <ApplicableGearCharacteristic>
                     <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                     <Description>This is sample text</Description>
-                    <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123</ValueMeasure>
+                    <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123
+                    </ValueMeasure>
                     <ValueDateTime>
                         <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                     </ValueDateTime>
@@ -466,15 +823,25 @@
                         <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                         <CountryID schemeID="TERRITORY">XEU</CountryID>
                         <ID schemeID="FAO_AREA">25.5b</ID>
-                        <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-                        <Name>This is sample name</Name>
-                        <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                        <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                        <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                        <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                        </GeopoliticalRegionCode>
+                        <Name>Sample Location</Name>
+                        <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                        </SovereignRightsCountryID>
+                        <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                        </JurisdictionCountryID>
+                        <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                        </RegionalFisheriesManagementOrganizationCode>
                         <SpecifiedPhysicalFLUXGeographicalCoordinate>
-                            <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-                            <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-                            <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
+                            <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                                123
+                            </LongitudeMeasure>
+                            <LatitudeMeasure unitCode="latitude"
+                                             unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                            </LatitudeMeasure>
+                            <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                                345
+                            </AltitudeMeasure>
                             <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                         </SpecifiedPhysicalFLUXGeographicalCoordinate>
                         <PostalStructuredAddress>
@@ -528,34 +895,39 @@
             </DestinationVesselStorageCharacteristic>
             <RelatedFishingActivity>
                 <ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>
-                <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+                <TypeCode listID="FLUX_FA_TYPE">RELOCATION</TypeCode>
                 <OccurrenceDateTime>
                     <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                 </OccurrenceDateTime>
                 <ReasonCode listID="h49rh-fhrus33-fj84hjs82-4h84hw82">Reason code 1</ReasonCode>
-                <VesselRelatedActivityCode listID="58thft-58fjd8-gt85eje-hjgute8">Vessel activity 1</VesselRelatedActivityCode>
+                <VesselRelatedActivityCode listID="58thft-58fjd8-gt85eje-hjgute8">Vessel activity 1
+                </VesselRelatedActivityCode>
                 <FisheryTypeCode listID="57thre-fn48320-fn39fjr-tjfow84">Fishing Type code 1</FisheryTypeCode>
                 <SpeciesTargetCode listID="47rfh-5hry4-thfur75-4hf743">Species code 1</SpeciesTargetCode>
-                <OperationsQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">100</OperationsQuantity>
-                <FishingDurationMeasure unitCode="C62" unitCodeListVersionID="4hr2yf0-t583thf-6jgttue8-6jtie844">500</FishingDurationMeasure>
+                <OperationsQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">100
+                </OperationsQuantity>
+                <FishingDurationMeasure unitCode="C62" unitCodeListVersionID="4hr2yf0-t583thf-6jgttue8-6jtie844">500
+                </FishingDurationMeasure>
                 <SpecifiedFACatch>
-                    <SpeciesCode listID="FAO_SPECIES">ONBOARD</SpeciesCode>
+                    <SpeciesCode listID="FAO_SPECIES">DAB</SpeciesCode>
                     <UnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">100</UnitQuantity>
-                    <WeightMeasure unitCode="C62" unitCodeListVersionID="586jhg-5htuf95-5jfit-5jtier8">123</WeightMeasure>
+                    <WeightMeasure unitCode="C62" unitCodeListVersionID="586jhg-5htuf95-5jfit-5jtier8">123
+                    </WeightMeasure>
                     <WeighingMeansCode listID="5854tt5-gjtdir-5j85tui-589git">Weighing means code 1</WeighingMeansCode>
                     <UsageCode listID="58thft-58fjd8-gt85eje-hjgute8">Usage code 1</UsageCode>
                     <TypeCode listID="FA_CATCH_TYPE">Type code 1</TypeCode>
                     <RelatedFishingTrip>
-                        <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
+                        <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">FISHING ID 1</ID>
                         <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>
                         <SpecifiedDelimitedPeriod>
                             <StartDateTime>
-<ns2:DateTime>2011-07-01T11:14:00Z</ns2:DateTime>
+                                <ns2:DateTime>2011-07-01T11:14:00Z</ns2:DateTime>
                             </StartDateTime>
                             <EndDateTime>
-<ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                             </EndDateTime>
-                            <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                            <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500
+                            </DurationMeasure>
                         </SpecifiedDelimitedPeriod>
                     </RelatedFishingTrip>
                     <SpecifiedSizeDistribution>
@@ -570,19 +942,28 @@
                         <ConversionFactorNumeric>123</ConversionFactorNumeric>
                         <ResultAAPProduct>
                             <SpeciesCode listID="qbdcg-3fhr5-rd4kd5-er5tgd5k">Species 1</SpeciesCode>
-                            <UnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</UnitQuantity>
-                            <WeightMeasure unitCode="C62" unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123</WeightMeasure>
-                            <WeighingMeansCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Weighing Means 1</WeighingMeansCode>
+                            <UnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                            </UnitQuantity>
+                            <WeightMeasure unitCode="C62" unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123
+                            </WeightMeasure>
+                            <WeighingMeansCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Weighing Means 1
+                            </WeighingMeansCode>
                             <UsageCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">Usage Code 1</UsageCode>
-                            <PackagingUnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">1234</PackagingUnitQuantity>
+                            <PackagingUnitQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">
+                                1234
+                            </PackagingUnitQuantity>
                             <PackagingTypeCode listID="FISH_PACKAGING">packaging type 1</PackagingTypeCode>
-                            <PackagingUnitAverageWeightMeasure unitCode="C62" unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123</PackagingUnitAverageWeightMeasure>
+                            <PackagingUnitAverageWeightMeasure unitCode="C62"
+                                                               unitCodeListVersionID="qbdcg-3fhr5-rd4kd5-er5tgd5k">123
+                            </PackagingUnitAverageWeightMeasure>
                             <TotalSalesPrice>
-<ChargeAmount currencyID="1" currencyCodeListVersionID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">123</ChargeAmount>
+                                <ChargeAmount currencyID="1"
+                                              currencyCodeListVersionID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">123
+                                </ChargeAmount>
                             </TotalSalesPrice>
                             <SpecifiedSizeDistribution>
-<CategoryCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">catagory 1</CategoryCode>
-<ClassCode listID="qbd43cg-3fhr5t65-rd45674-er5tgd5k">class code1</ClassCode>
+                                <CategoryCode listID="qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k">catagory 1</CategoryCode>
+                                <ClassCode listID="qbd43cg-3fhr5t65-rd45674-er5tgd5k">class code1</ClassCode>
                             </SpecifiedSizeDistribution>
                         </ResultAAPProduct>
                     </AppliedAAPProcess>
@@ -590,15 +971,25 @@
                         <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                         <CountryID schemeID="TERRITORY">XEU</CountryID>
                         <ID schemeID="FAO_AREA">25.5b</ID>
-                        <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-                        <Name>This is sample name</Name>
-                        <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                        <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                        <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                        <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                        </GeopoliticalRegionCode>
+                        <Name>Sample Location</Name>
+                        <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                        </SovereignRightsCountryID>
+                        <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                        </JurisdictionCountryID>
+                        <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                        </RegionalFisheriesManagementOrganizationCode>
                         <SpecifiedPhysicalFLUXGeographicalCoordinate>
-                            <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-                            <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-                            <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
+                            <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                                123
+                            </LongitudeMeasure>
+                            <LatitudeMeasure unitCode="latitude"
+                                             unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                            </LatitudeMeasure>
+                            <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                                345
+                            </AltitudeMeasure>
                             <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                         </SpecifiedPhysicalFLUXGeographicalCoordinate>
                         <PostalStructuredAddress>
@@ -646,77 +1037,95 @@
                         <ApplicableGearCharacteristic>
                             <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                             <Description>This is sample text</Description>
-                            <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123</ValueMeasure>
+                            <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123
+                            </ValueMeasure>
                             <ValueDateTime>
-<ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                             </ValueDateTime>
                             <ValueIndicator>
-<ns2:Indicator>true</ns2:Indicator>
-<ns2:IndicatorString format="Test format">Test value</ns2:IndicatorString>
+                                <ns2:Indicator>true</ns2:Indicator>
+                                <ns2:IndicatorString format="Test format">Test value</ns2:IndicatorString>
                             </ValueIndicator>
                             <ValueCode listID="4fhry5-thfyr85-67thf-5htr84">Code type 1</ValueCode>
                             <Value>This is sample Text</Value>
-                            <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</ValueQuantity>
+                            <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                            </ValueQuantity>
                             <SpecifiedFLUXLocation>
-<TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
-<CountryID schemeID="TERRITORY">XEU</CountryID>
-<ID schemeID="FAO_AREA">25.5b</ID>
-<GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-<Name>This is sample name</Name>
-<SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-<JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-<RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
-<SpecifiedPhysicalFLUXGeographicalCoordinate>
-    <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-    <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-    <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
-    <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
-</SpecifiedPhysicalFLUXGeographicalCoordinate>
-<PostalStructuredAddress>
-    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-    <BuildingName>Test Building</BuildingName>
-    <StreetName>Test Street</StreetName>
-    <CityName>Test City</CityName>
-    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-    <CountryName>Test Country</CountryName>
-    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-    <BlockName>Test Block</BlockName>
-    <PlotIdentification>123</PlotIdentification>
-    <PostOfficeBox>548675</PostOfficeBox>
-    <BuildingNumber>12345</BuildingNumber>
-    <StaircaseNumber>3456</StaircaseNumber>
-    <FloorIdentification>8888</FloorIdentification>
-    <RoomIdentification>555</RoomIdentification>
-    <PostalArea>123</PostalArea>
-</PostalStructuredAddress>
-<PhysicalStructuredAddress>
-    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-    <BuildingName>Test Building</BuildingName>
-    <StreetName>Test Street</StreetName>
-    <CityName>Test City</CityName>
-    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-    <CountryName>Test Country</CountryName>
-    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-    <BlockName>Test Block</BlockName>
-    <PlotIdentification>123</PlotIdentification>
-    <PostOfficeBox>548675</PostOfficeBox>
-    <BuildingNumber>12345</BuildingNumber>
-    <StaircaseNumber>3456</StaircaseNumber>
-    <FloorIdentification>8888</FloorIdentification>
-    <RoomIdentification>555</RoomIdentification>
-    <PostalArea>123</PostalArea>
-</PhysicalStructuredAddress>
+                                <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                                <CountryID schemeID="TERRITORY">XEU</CountryID>
+                                <ID schemeID="FAO_AREA">25.5b</ID>
+                                <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                                </GeopoliticalRegionCode>
+                                <Name>Sample Location</Name>
+                                <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id
+                                    1
+                                </SovereignRightsCountryID>
+                                <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country
+                                    id 1
+                                </JurisdictionCountryID>
+                                <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">
+                                    RFMO1
+                                </RegionalFisheriesManagementOrganizationCode>
+                                <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                                    <LongitudeMeasure unitCode="longitude"
+                                                      unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123
+                                    </LongitudeMeasure>
+                                    <LatitudeMeasure unitCode="latitude"
+                                                     unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                                    </LatitudeMeasure>
+                                    <AltitudeMeasure unitCode="altitude"
+                                                     unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345
+                                    </AltitudeMeasure>
+                                    <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                                </SpecifiedPhysicalFLUXGeographicalCoordinate>
+                                <PostalStructuredAddress>
+                                    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1
+                                    </PostcodeCode>
+                                    <BuildingName>Test Building</BuildingName>
+                                    <StreetName>Test Street</StreetName>
+                                    <CityName>Test City</CityName>
+                                    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                    <CountryName>Test Country</CountryName>
+                                    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                    <BlockName>Test Block</BlockName>
+                                    <PlotIdentification>123</PlotIdentification>
+                                    <PostOfficeBox>548675</PostOfficeBox>
+                                    <BuildingNumber>12345</BuildingNumber>
+                                    <StaircaseNumber>3456</StaircaseNumber>
+                                    <FloorIdentification>8888</FloorIdentification>
+                                    <RoomIdentification>555</RoomIdentification>
+                                    <PostalArea>123</PostalArea>
+                                </PostalStructuredAddress>
+                                <PhysicalStructuredAddress>
+                                    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1
+                                    </PostcodeCode>
+                                    <BuildingName>Test Building</BuildingName>
+                                    <StreetName>Test Street</StreetName>
+                                    <CityName>Test City</CityName>
+                                    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                    <CountryName>Test Country</CountryName>
+                                    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                    <BlockName>Test Block</BlockName>
+                                    <PlotIdentification>123</PlotIdentification>
+                                    <PostOfficeBox>548675</PostOfficeBox>
+                                    <BuildingNumber>12345</BuildingNumber>
+                                    <StaircaseNumber>3456</StaircaseNumber>
+                                    <FloorIdentification>8888</FloorIdentification>
+                                    <RoomIdentification>555</RoomIdentification>
+                                    <PostalArea>123</PostalArea>
+                                </PhysicalStructuredAddress>
                             </SpecifiedFLUXLocation>
                         </ApplicableGearCharacteristic>
                     </UsedFishingGear>
                     <ApplicableFLUXCharacteristic>
                         <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                         <Description>This is test description</Description>
-                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333</ValueMeasure>
+                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333
+                        </ValueMeasure>
                         <ValueDateTime>
                             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                         </ValueDateTime>
@@ -726,7 +1135,8 @@
                         </ValueIndicator>
                         <ValueCode listID="57tr4t3yf-ght43yrf-ght56yr5u-ght75365h">Code Value 1</ValueCode>
                         <Value>This is sample value</Value>
-                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</ValueQuantity>
+                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                        </ValueQuantity>
                         <RelatedFLAPDocument>
                             <ID schemeID="fhtg56-5thd75-thf6t93-thfrye">ID 1</ID>
                         </RelatedFLAPDocument>
@@ -735,15 +1145,25 @@
                         <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                         <CountryID schemeID="TERRITORY">XEU</CountryID>
                         <ID schemeID="FAO_AREA">25.5b</ID>
-                        <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-                        <Name>This is sample name</Name>
-                        <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                        <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                        <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                        <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                        </GeopoliticalRegionCode>
+                        <Name>Sample Location</Name>
+                        <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                        </SovereignRightsCountryID>
+                        <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                        </JurisdictionCountryID>
+                        <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                        </RegionalFisheriesManagementOrganizationCode>
                         <SpecifiedPhysicalFLUXGeographicalCoordinate>
-                            <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-                            <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-                            <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
+                            <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                                123
+                            </LongitudeMeasure>
+                            <LatitudeMeasure unitCode="latitude"
+                                             unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                            </LatitudeMeasure>
+                            <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                                345
+                            </AltitudeMeasure>
                             <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                         </SpecifiedPhysicalFLUXGeographicalCoordinate>
                         <PostalStructuredAddress>
@@ -790,15 +1210,25 @@
                     <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                     <CountryID schemeID="TERRITORY">XEU</CountryID>
                     <ID schemeID="FAO_AREA">25.5b</ID>
-                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-                    <Name>This is sample name</Name>
-                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                    <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                    </GeopoliticalRegionCode>
+                    <Name>Sample Location</Name>
+                    <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                    </SovereignRightsCountryID>
+                    <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1
+                    </JurisdictionCountryID>
+                    <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                    </RegionalFisheriesManagementOrganizationCode>
                     <SpecifiedPhysicalFLUXGeographicalCoordinate>
-                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
+                        <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">
+                            123
+                        </LongitudeMeasure>
+                        <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">
+                            234
+                        </LatitudeMeasure>
+                        <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">
+                            345
+                        </AltitudeMeasure>
                         <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                     </SpecifiedPhysicalFLUXGeographicalCoordinate>
                     <PostalStructuredAddress>
@@ -842,78 +1272,97 @@
                 </RelatedFLUXLocation>
                 <SpecifiedGearProblem>
                     <TypeCode listID="fhty58-gh586t-5tjf8-t58rjewe">Code Type 1</TypeCode>
-                    <AffectedQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">222</AffectedQuantity>
-                    <RecoveryMeasureCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Quantity Code 1</RecoveryMeasureCode>
+                    <AffectedQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">222
+                    </AffectedQuantity>
+                    <RecoveryMeasureCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Quantity Code 1
+                    </RecoveryMeasureCode>
                     <RelatedFishingGear>
                         <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>
                         <RoleCode listID="57t3yf-g43yrf-ght56ru-ght65h">Role Code 1</RoleCode>
                         <ApplicableGearCharacteristic>
                             <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                             <Description>This is sample text</Description>
-                            <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123</ValueMeasure>
+                            <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123
+                            </ValueMeasure>
                             <ValueDateTime>
-<ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                             </ValueDateTime>
                             <ValueIndicator>
-<ns2:Indicator>true</ns2:Indicator>
-<ns2:IndicatorString format="Test format">Test value</ns2:IndicatorString>
+                                <ns2:Indicator>true</ns2:Indicator>
+                                <ns2:IndicatorString format="Test format">Test value</ns2:IndicatorString>
                             </ValueIndicator>
                             <ValueCode listID="4fhry5-thfyr85-67thf-5htr84">Code type 1</ValueCode>
                             <Value>This is sample Text</Value>
-                            <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</ValueQuantity>
+                            <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                            </ValueQuantity>
                             <SpecifiedFLUXLocation>
-<TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
-<CountryID schemeID="TERRITORY">XEU</CountryID>
-<ID schemeID="FAO_AREA">25.5b</ID>
-<GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-<Name>This is sample name</Name>
-<SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-<JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-<RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
-<SpecifiedPhysicalFLUXGeographicalCoordinate>
-    <LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-    <LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-    <AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
-    <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
-</SpecifiedPhysicalFLUXGeographicalCoordinate>
-<PostalStructuredAddress>
-    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-    <BuildingName>Test Building</BuildingName>
-    <StreetName>Test Street</StreetName>
-    <CityName>Test City</CityName>
-    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-    <CountryName>Test Country</CountryName>
-    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-    <BlockName>Test Block</BlockName>
-    <PlotIdentification>123</PlotIdentification>
-    <PostOfficeBox>548675</PostOfficeBox>
-    <BuildingNumber>12345</BuildingNumber>
-    <StaircaseNumber>3456</StaircaseNumber>
-    <FloorIdentification>8888</FloorIdentification>
-    <RoomIdentification>555</RoomIdentification>
-    <PostalArea>123</PostalArea>
-</PostalStructuredAddress>
-<PhysicalStructuredAddress>
-    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-    <BuildingName>Test Building</BuildingName>
-    <StreetName>Test Street</StreetName>
-    <CityName>Test City</CityName>
-    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-    <CountryName>Test Country</CountryName>
-    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-    <BlockName>Test Block</BlockName>
-    <PlotIdentification>123</PlotIdentification>
-    <PostOfficeBox>548675</PostOfficeBox>
-    <BuildingNumber>12345</BuildingNumber>
-    <StaircaseNumber>3456</StaircaseNumber>
-    <FloorIdentification>8888</FloorIdentification>
-    <RoomIdentification>555</RoomIdentification>
-    <PostalArea>123</PostalArea>
-</PhysicalStructuredAddress>
+                                <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                                <CountryID schemeID="TERRITORY">XEU</CountryID>
+                                <ID schemeID="FAO_AREA">25.5b</ID>
+                                <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                                </GeopoliticalRegionCode>
+                                <Name>Sample Location</Name>
+                                <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id
+                                    1
+                                </SovereignRightsCountryID>
+                                <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country
+                                    id 1
+                                </JurisdictionCountryID>
+                                <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">
+                                    RFMO1
+                                </RegionalFisheriesManagementOrganizationCode>
+                                <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                                    <LongitudeMeasure unitCode="longitude"
+                                                      unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123
+                                    </LongitudeMeasure>
+                                    <LatitudeMeasure unitCode="latitude"
+                                                     unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                                    </LatitudeMeasure>
+                                    <AltitudeMeasure unitCode="altitude"
+                                                     unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345
+                                    </AltitudeMeasure>
+                                    <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                                </SpecifiedPhysicalFLUXGeographicalCoordinate>
+                                <PostalStructuredAddress>
+                                    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1
+                                    </PostcodeCode>
+                                    <BuildingName>Test Building</BuildingName>
+                                    <StreetName>Test Street</StreetName>
+                                    <CityName>Test City</CityName>
+                                    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                    <CountryName>Test Country</CountryName>
+                                    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                    <BlockName>Test Block</BlockName>
+                                    <PlotIdentification>123</PlotIdentification>
+                                    <PostOfficeBox>548675</PostOfficeBox>
+                                    <BuildingNumber>12345</BuildingNumber>
+                                    <StaircaseNumber>3456</StaircaseNumber>
+                                    <FloorIdentification>8888</FloorIdentification>
+                                    <RoomIdentification>555</RoomIdentification>
+                                    <PostalArea>123</PostalArea>
+                                </PostalStructuredAddress>
+                                <PhysicalStructuredAddress>
+                                    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1
+                                    </PostcodeCode>
+                                    <BuildingName>Test Building</BuildingName>
+                                    <StreetName>Test Street</StreetName>
+                                    <CityName>Test City</CityName>
+                                    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                    <CountryName>Test Country</CountryName>
+                                    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                    <BlockName>Test Block</BlockName>
+                                    <PlotIdentification>123</PlotIdentification>
+                                    <PostOfficeBox>548675</PostOfficeBox>
+                                    <BuildingNumber>12345</BuildingNumber>
+                                    <StaircaseNumber>3456</StaircaseNumber>
+                                    <FloorIdentification>8888</FloorIdentification>
+                                    <RoomIdentification>555</RoomIdentification>
+                                    <PostalArea>123</PostalArea>
+                                </PhysicalStructuredAddress>
                             </SpecifiedFLUXLocation>
                         </ApplicableGearCharacteristic>
                     </RelatedFishingGear>
@@ -921,7 +1370,8 @@
                 <SpecifiedFLUXCharacteristic>
                     <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                     <Description>This is test description</Description>
-                    <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333</ValueMeasure>
+                    <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">333
+                    </ValueMeasure>
                     <ValueDateTime>
                         <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                     </ValueDateTime>
@@ -942,7 +1392,8 @@
                     <ApplicableGearCharacteristic>
                         <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code 1</TypeCode>
                         <Description>This is sample text</Description>
-                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123</ValueMeasure>
+                        <ValueMeasure unitCode="C62" unitCodeListVersionID="57t3yf-ght43yrf-ght56yru-ght7565h">123
+                        </ValueMeasure>
                         <ValueDateTime>
                             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                         </ValueDateTime>
@@ -952,59 +1403,71 @@
                         </ValueIndicator>
                         <ValueCode listID="4fhry5-thfyr85-67thf-5htr84">Code type 1</ValueCode>
                         <Value>This is sample Text</Value>
-                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123</ValueQuantity>
+                        <ValueQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">123
+                        </ValueQuantity>
                         <SpecifiedFLUXLocation>
                             <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
                             <CountryID schemeID="TERRITORY">XEU</CountryID>
                             <ID schemeID="FAO_AREA">25.5b</ID>
-                            <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2</GeopoliticalRegionCode>
-                            <Name>This is sample name</Name>
-                            <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1</SovereignRightsCountryID>
-                            <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id 1</JurisdictionCountryID>
-                            <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1</RegionalFisheriesManagementOrganizationCode>
+                            <GeopoliticalRegionCode listID="fhty258-g3h586t-5t4jf8-t58rjew5e">Code type 2
+                            </GeopoliticalRegionCode>
+                            <Name>Sample Location</Name>
+                            <SovereignRightsCountryID schemeID="fhty58-gh5486t-5t5jf8-t58rjewe">sovereign rights id 1
+                            </SovereignRightsCountryID>
+                            <JurisdictionCountryID schemeID="fht1y58-gh5876t-5t3jf8-t58rjewe">jurisdiction country id
+                                1
+                            </JurisdictionCountryID>
+                            <RegionalFisheriesManagementOrganizationCode listID="fhty58-gh586t-5tjf8-t58rjewe">RFMO1
+                            </RegionalFisheriesManagementOrganizationCode>
                             <SpecifiedPhysicalFLUXGeographicalCoordinate>
-<LongitudeMeasure unitCode="longitude" unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123</LongitudeMeasure>
-<LatitudeMeasure unitCode="latitude" unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234</LatitudeMeasure>
-<AltitudeMeasure unitCode="altitude" unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345</AltitudeMeasure>
-<SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
+                                <LongitudeMeasure unitCode="longitude"
+                                                  unitCodeListVersionID="fhty58-gh586t-5tjf8-t58rjewe">123
+                                </LongitudeMeasure>
+                                <LatitudeMeasure unitCode="latitude"
+                                                 unitCodeListVersionID="fhty258-g3h586t-5t4jf8-t58rjew5e">234
+                                </LatitudeMeasure>
+                                <AltitudeMeasure unitCode="altitude"
+                                                 unitCodeListVersionID="fhty58-gh5686t-5tjf8-t58rjew8e">345
+                                </AltitudeMeasure>
+                                <SystemID schemeID="fhty58-gh58666t-5tjf438-t58rjewe">System ID1</SystemID>
                             </SpecifiedPhysicalFLUXGeographicalCoordinate>
                             <PostalStructuredAddress>
-<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-<PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-<BuildingName>Test Building</BuildingName>
-<StreetName>Test Street</StreetName>
-<CityName>Test City</CityName>
-<CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-<CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-<CountryName>Test Country</CountryName>
-<CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-<BlockName>Test Block</BlockName>
-<PlotIdentification>123</PlotIdentification>
-<PostOfficeBox>548675</PostOfficeBox>
-<BuildingNumber>12345</BuildingNumber>
-<StaircaseNumber>3456</StaircaseNumber>
-<FloorIdentification>8888</FloorIdentification>
-<RoomIdentification>555</RoomIdentification>
-<PostalArea>123</PostalArea>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
                             </PostalStructuredAddress>
                             <PhysicalStructuredAddress>
-<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-<PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-<BuildingName>Test Building</BuildingName>
-<StreetName>Test Street</StreetName>
-<CityName>Test City</CityName>
-<CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-<CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-<CountryName>Test Country</CountryName>
-<CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-<BlockName>Test Block</BlockName>
-<PlotIdentification>123</PlotIdentification>
-<PostOfficeBox>548675</PostOfficeBox>
-<BuildingNumber>12345</BuildingNumber>
-<StaircaseNumber>3456</StaircaseNumber>
-<FloorIdentification>8888</FloorIdentification>
-<RoomIdentification>555</RoomIdentification>
-<PostalArea>123</PostalArea>
+                                <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
+                                <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                                <BuildingName>Test Building</BuildingName>
+                                <StreetName>Test Street</StreetName>
+                                <CityName>Test City</CityName>
+                                <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                                <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                                <CountryName>Test Country</CountryName>
+                                <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                                <BlockName>Test Block</BlockName>
+                                <PlotIdentification>123</PlotIdentification>
+                                <PostOfficeBox>548675</PostOfficeBox>
+                                <BuildingNumber>12345</BuildingNumber>
+                                <StaircaseNumber>3456</StaircaseNumber>
+                                <FloorIdentification>8888</FloorIdentification>
+                                <RoomIdentification>555</RoomIdentification>
+                                <PostalArea>123</PostalArea>
                             </PhysicalStructuredAddress>
                         </SpecifiedFLUXLocation>
                     </ApplicableGearCharacteristic>
@@ -1027,7 +1490,8 @@
                     <EndDateTime>
                         <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                     </EndDateTime>
-                    <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                    <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500
+                    </DurationMeasure>
                 </SpecifiedDelimitedPeriod>
                 <SpecifiedFishingTrip>
                     <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
@@ -1039,7 +1503,8 @@
                         <EndDateTime>
                             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                         </EndDateTime>
-                        <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                        <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500
+                        </DurationMeasure>
                     </SpecifiedDelimitedPeriod>
                 </SpecifiedFishingTrip>
                 <RelatedVesselTransportMeans>
@@ -1057,7 +1522,8 @@
                         <RelatedRegistrationLocation>
                             <CountryID schemeID="TERRITORY">XEU</CountryID>
                             <Description>This is Test Text</Description>
-                            <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1</GeopoliticalRegionCode>
+                            <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1
+                            </GeopoliticalRegionCode>
                             <ID schemeID="fhtyr8-45jrf-5784fhrt-thf75">ID 2</ID>
                             <Name>This is Test Name</Name>
                             <TypeCode listID="475rhf-587trhdy-thgy576-thfr64">Code type 1</TypeCode>
@@ -1110,7 +1576,8 @@
                 <EndDateTime>
                     <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                 </EndDateTime>
-                <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500
+                </DurationMeasure>
             </SpecifiedDelimitedPeriod>
             <SpecifiedFishingTrip>
                 <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
@@ -1122,7 +1589,8 @@
                     <EndDateTime>
                         <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                     </EndDateTime>
-                    <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                    <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500
+                    </DurationMeasure>
                 </SpecifiedDelimitedPeriod>
             </SpecifiedFishingTrip>
             <RelatedVesselTransportMeans>
@@ -1140,7 +1608,8 @@
                     <RelatedRegistrationLocation>
                         <CountryID schemeID="TERRITORY">XEU</CountryID>
                         <Description>This is Test Text</Description>
-                        <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1</GeopoliticalRegionCode>
+                        <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1
+                        </GeopoliticalRegionCode>
                         <ID schemeID="fhtyr8-45jrf-5784fhrt-thf75">ID 2</ID>
                         <Name>This is Test Name</Name>
                         <TypeCode listID="475rhf-587trhdy-thgy576-thfr64">Code type 1</TypeCode>
@@ -1198,7 +1667,8 @@
                 <RelatedRegistrationLocation>
                     <CountryID schemeID="TERRITORY">XEU</CountryID>
                     <Description>This is Test Text</Description>
-                    <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1</GeopoliticalRegionCode>
+                    <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1
+                    </GeopoliticalRegionCode>
                     <ID schemeID="fhtyr8-45jrf-5784fhrt-thf75">ID 2</ID>
                     <Name>This is Test Name</Name>
                     <TypeCode listID="475rhf-587trhdy-thgy576-thfr64">Code type 1</TypeCode>

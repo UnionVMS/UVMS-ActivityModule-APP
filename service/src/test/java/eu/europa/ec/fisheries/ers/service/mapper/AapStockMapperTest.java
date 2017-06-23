@@ -13,30 +13,20 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapProductDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.fareport.details.AapStockDetailsDTO;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- * Created by padhyad on 7/27/2016.
- */
+import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
+
 public class AapStockMapperTest {
 
     @Test
     public void testAapStockMapper() {
         AAPStock aapStock = MapperUtil.getAapStock();
-        AapStockEntity aapStockEntity = new AapStockEntity();
-        AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock, null, aapStockEntity);
+        AapStockEntity aapStockEntity = AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
 
         assertEquals(aapStock.getID().getValue(), aapStockEntity.getStockId());
         assertEquals(aapStock.getID().getSchemeID(), aapStockEntity.getStockSchemeId());

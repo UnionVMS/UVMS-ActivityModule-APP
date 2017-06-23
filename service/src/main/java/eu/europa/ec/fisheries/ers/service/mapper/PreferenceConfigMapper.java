@@ -13,8 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.ActivityConfigDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.config.FishingActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
 
 /**
  * Created by padhyad on 8/24/2016.

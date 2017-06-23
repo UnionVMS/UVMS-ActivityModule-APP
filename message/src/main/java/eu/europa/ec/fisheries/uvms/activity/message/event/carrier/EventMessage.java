@@ -10,6 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.message.event.carrier;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFault;
+
 import javax.jms.TextMessage;
 
 /**
@@ -18,6 +20,7 @@ public class EventMessage {
 
     private TextMessage jmsMessage;
     private String errorMessage;
+    private ActivityFault fault;
 
     public EventMessage(TextMessage jmsMessage) {
         this.jmsMessage = jmsMessage;
@@ -26,6 +29,11 @@ public class EventMessage {
     public EventMessage(TextMessage jmsMessage, String errorMessage) {
         this.jmsMessage = jmsMessage;
         this.errorMessage = errorMessage;
+    }
+
+    public EventMessage(TextMessage jmsMessage, ActivityFault falut) {
+        this.jmsMessage = jmsMessage;
+        this.fault = falut;
     }
 
     public String getErrorMessage() {
@@ -42,6 +50,10 @@ public class EventMessage {
 
     public void setJmsMessage(TextMessage jmsMessage) {
         this.jmsMessage = jmsMessage;
+    }
+
+    public ActivityFault getFault() {
+        return fault;
     }
 
 }

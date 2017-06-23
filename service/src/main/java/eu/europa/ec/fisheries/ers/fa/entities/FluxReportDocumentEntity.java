@@ -8,20 +8,42 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
 @Table(name = "activity_flux_report_document")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FluxReportDocumentEntity implements Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_rep_doc_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
     @Column(name = "reference_id")
@@ -43,6 +65,10 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(columnDefinition = "text", name = "purpose")
     private String purpose;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "flux_fa_report_message_id")
+    private FluxFaReportMessageEntity fluxFaReportMessage;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
 
@@ -52,19 +78,6 @@ public class FluxReportDocumentEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
     private Set<FluxReportIdentifierEntity> fluxReportIdentifiers;
-
-    public FluxReportDocumentEntity() {
-        super();
-    }
-
-    public FluxReportDocumentEntity(String referenceId, Date creationDatetime, String purposeCode, String purposeCodeListId, String purpose, FaReportDocumentEntity faReportDocument) {
-        this.referenceId = referenceId;
-        this.creationDatetime = creationDatetime;
-        this.purposeCode = purposeCode;
-        this.purposeCodeListId = purposeCodeListId;
-        this.purpose = purpose;
-        this.faReportDocument = faReportDocument;
-    }
 
     public int getId() {
         return this.id;
@@ -134,12 +147,31 @@ public class FluxReportDocumentEntity implements Serializable {
         this.fluxReportIdentifiers = fluxReportIdentifiers;
     }
 
+    public FluxFaReportMessageEntity getFluxFaReportMessage() {
+        return fluxFaReportMessage;
+    }
+
+    public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
+        this.fluxFaReportMessage = fluxFaReportMessage;
+    }
+
     public FluxPartyEntity getFluxParty() {
         return fluxParty;
     }
 
     public void setFluxParty(FluxPartyEntity fluxParty) {
         this.fluxParty = fluxParty;
+    }
+
+    public String getFluxPartyIdentifierBySchemeId(String schemeId) {
+        if (fluxParty != null) {
+            for (FluxPartyIdentifierEntity fluxPartyIdentifier : fluxParty.getFluxPartyIdentifiers()) {
+                if (fluxPartyIdentifier.getFluxPartyIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
+                    return fluxPartyIdentifier.getFluxPartyIdentifierId();
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -151,6 +183,6 @@ public class FluxReportDocumentEntity implements Serializable {
                 ", purposeCode='" + purposeCode + '\'' +
                 ", purposeCodeListId='" + purposeCodeListId + '\'' +
                 ", purpose='" + purpose + '\'' +
-               '}';
+                '}';
     }
 }

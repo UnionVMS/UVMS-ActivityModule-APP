@@ -10,9 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.destination.DataSourceDestination;
-import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
@@ -25,13 +22,10 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
@@ -114,5 +108,33 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         assertEquals(FaReportSourceEnum.MANUAL.getSourceType(), updatedEntity.getSource());
 
     }
+
+
+    @Test
+    @SneakyThrows
+    public void testGetLatestFaReportDocumentsForTrip() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        List<FaReportDocumentEntity> entities=dao.getLatestFaReportDocumentsForTrip("NOR-TRP-20160517234053706");
+        assertNotNull(entities);
+        assertEquals(2, entities.size());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testReturnNullIfEmpty() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        FaReportDocumentEntity faReportDocEntity = dao.findFaReportByIdAndScheme("TEST_NON_EXISTANT-REP-ID", "TEST_NON_EXISTANT-SCH-ID");
+        assertNull(faReportDocEntity);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetFaReportDocumentsForTrip() throws Exception {
+        dbSetupTracker.skipNextLaunch();
+        List<FaReportDocumentEntity> faReportDocumentsForTrip = dao.getFaReportDocumentsForTrip("NOR-TRP-20160517234053706");
+        assertNotNull(faReportDocumentsForTrip);
+        assertTrue(faReportDocumentsForTrip.size() > 0);
+    }
+
 
 }

@@ -8,56 +8,34 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Mapper(imports = BaseMapper.class)
+public interface SizeDistributionMapper {
 
-/**
- * Created by padhyad on 6/14/2016.
- */
-@Mapper
-public abstract class SizeDistributionMapper extends BaseMapper {
-
-    public static final SizeDistributionMapper INSTANCE = Mappers.getMapper(SizeDistributionMapper.class);
+    SizeDistributionMapper INSTANCE = Mappers.getMapper(SizeDistributionMapper.class);
 
     @Mappings({
-            @Mapping(target = "categoryCode", expression = "java(getCodeType(sizeDistribution.getCategoryCode()))"),
-            @Mapping(target = "categoryCodeListId", expression = "java(getCodeTypeListId(sizeDistribution.getCategoryCode()))"),
-            @Mapping(target = "sizeDistributionClassCode", expression = "java(mapToSizeDistributionClassCodes(sizeDistribution.getClassCodes(), sizeDistributionEntity))"),
-            @Mapping(target = "faCatch", expression = "java(faCatchEntity)")
+            @Mapping(target = "categoryCode", source = "categoryCode.value"),
+            @Mapping(target = "categoryCodeListId", source = "categoryCode.listID"),
+            @Mapping(target = "sizeDistributionClassCode", expression = "java(BaseMapper.mapToSizeDistributionClassCodes(sizeDistribution.getClassCodes(), sizeDistributionEntity))")
     })
-    public abstract SizeDistributionEntity mapToSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity, @MappingTarget SizeDistributionEntity sizeDistributionEntity);
+    SizeDistributionEntity mapToSizeDistributionEntity(SizeDistribution sizeDistribution);
 
     @Mappings({
-            @Mapping(target = "classCode", expression = "java(getCodeType(codeType))"),
-            @Mapping(target = "classCodeListId", expression = "java(getCodeTypeListId(codeType))")
+            @Mapping(target = "classCode", source = "value"),
+            @Mapping(target = "classCodeListId", source = "listID")
     })
-    public abstract SizeDistributionClassCodeEntity mapToSizeDistributionClassCodeEntity(CodeType codeType);
+    SizeDistributionClassCodeEntity mapToSizeDistributionClassCodeEntity(CodeType codeType);
 
-    protected Set<SizeDistributionClassCodeEntity> mapToSizeDistributionClassCodes(List<CodeType> codeTypes, SizeDistributionEntity sizeDistributionEntity) {
-        if (codeTypes == null || codeTypes.isEmpty()) {
-            Collections.emptySet();
-        }
-        Set<SizeDistributionClassCodeEntity> classCodes = new HashSet<>();
-        for (CodeType codeType : codeTypes) {
-            SizeDistributionClassCodeEntity entity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(codeType);
-            entity.setSizeDistribution(sizeDistributionEntity);
-            classCodes.add(entity);
-        }
-        return classCodes;
-    }
 }

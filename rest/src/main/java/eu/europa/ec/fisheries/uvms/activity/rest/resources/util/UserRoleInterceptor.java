@@ -59,6 +59,6 @@ public class UserRoleInterceptor implements Serializable {
                 return (HttpServletRequest) object;
             }
         }
-        throw new ServiceException("REQUEST_NOT_FOUND");
+        throw new ServiceException("REST_SERVICE_REQUEST_PARAM_NOT_FOUND");
     }
 }
