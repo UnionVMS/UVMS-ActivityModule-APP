@@ -28,6 +28,7 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
+		<sonar.exclusions>**/eu/europa/ec/fisheries/ers/service/facatch/FACatchSummaryHelper.java<sonar.exclusions>
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
