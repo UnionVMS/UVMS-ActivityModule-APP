@@ -66,6 +66,7 @@
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
 			<artifactId>exchange-model</artifactId>
+			<classifier>date</classifier>
 		</dependency>
 
 		<dependency>
@@ -176,11 +177,7 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
-		<!-- Infinispan integration: -->
-		<dependency>
-			<groupId>org.infinispan</groupId>
-			<artifactId>infinispan-directory-provider</artifactId>
-		</dependency>
+		
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>

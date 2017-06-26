@@ -35,7 +35,6 @@ import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultD
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -119,8 +118,6 @@ public class ActivityServiceBeanTest {
     public void getFishingActivityListByQuery() throws ServiceException {
 
         FishingActivityQuery query = new FishingActivityQuery();
-        List<ListCriteria> list = new ArrayList<ListCriteria>();
-
 
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
