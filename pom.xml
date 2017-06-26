@@ -76,6 +76,8 @@
         <geotools.version>14-M1</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
+		
+		<scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
 
     <dependencyManagement>
@@ -363,24 +365,19 @@
 
     <distributionManagement>
         <repository>
-            <id>digit-releases</id>
-            <name>DG DIGIT Repository</name>
-            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
+            <id>focus-releases</id>
+            <name>UnionVms Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>digit-snapshots</id>
-            <name>DG DIGIT Snapshot Repository</name>
-            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
+            <id>focus-snapshots</id>
+            <name>UnionVms Snapshot Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git
-        </connection>
-        <developerConnection>
-            scm:git:https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git
-        </developerConnection>
-        <url>https://emsanerac@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
+        <connection>${scm.connection}</connection>
         <tag>HEAD</tag>
     </scm>
 
@@ -554,6 +551,25 @@
             </activation>
             <properties>
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+		<profile>
+            <id>dg-mare</id>
+            <distributionManagement>
+                <repository>
+                    <id>digit-releases</id>
+                    <name>DG DIGIT Repository</name>
+                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>digit-snapshots</id>
+                    <name>DG DIGIT Snapshot Repository</name>
+                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+
+            <properties>
+                <scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</scm.connection>
             </properties>
         </profile>
     </profiles>
