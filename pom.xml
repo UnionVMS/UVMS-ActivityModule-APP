@@ -63,7 +63,7 @@
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14-M1</geotools.version>
         <uvms.commons.version>2.0.18-SNAPSHOT</uvms.commons.version>
-        <uvms.test.version>0.0.3</uvms.test.version>
+        <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
         <infinispan-directory-provider.version>8.2.4.Final</infinispan-directory-provider.version>
