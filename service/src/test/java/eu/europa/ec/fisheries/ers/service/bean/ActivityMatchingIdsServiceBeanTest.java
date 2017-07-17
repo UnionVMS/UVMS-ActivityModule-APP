@@ -103,14 +103,10 @@ public class ActivityMatchingIdsServiceBeanTest {
     public List<FluxReportIdentifierEntity> getMockedIdentifiers() {
         FluxReportIdentifierEntity ident1 = new FluxReportIdentifierEntity();
         FluxReportIdentifierEntity ident2 = new FluxReportIdentifierEntity();
-
         ident1.setFluxReportIdentifierId("46DCC44C-0AE2-434C-BC14-B85D86B29512iiiii");
         ident1.setFluxReportIdentifierSchemeId("scheme-idvv");
-
         ident1.setFluxReportIdentifierId("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb");
         ident1.setFluxReportIdentifierSchemeId("scheme-idqq");
-
-
         return Arrays.asList(ident1, ident2);
     }
 }
