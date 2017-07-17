@@ -71,6 +71,37 @@ public class ActivityMatchingIdsServiceBeanTest {
         assertNull(matchingIdsResponse);
     }
 
+    @Test
+    public void testGetMatchingIdsResponseNullMap() {
+
+        when(fluxRepIdentDao.getMatchingIdentifiers((List<ActivityIDType>) Mockito.any(Collection.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
+
+        List<ActivityUniquinessList> request = getMockedRequest();
+        GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);
+
+        assertNotNull(matchingIdsResponse);
+        assertTrue(CollectionUtils.isNotEmpty(matchingIdsResponse.getActivityUniquinessLists()));
+        assertTrue(matchingIdsResponse.getActivityUniquinessLists().size() == 2);
+    }
+
+    @Test
+    public void initProcess(){
+        matchingBean.init();
+    }
+
+
+    @Test
+    public void testGetMatchingIdsResponseMappingEmptyList() {
+
+        when(fluxRepIdentDao.getMatchingIdentifiers((List<ActivityIDType>) Mockito.any(Collection.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+
+        List<ActivityUniquinessList> request = getMockedRequest();
+        GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);
+
+        assertNotNull(matchingIdsResponse);
+        assertTrue(CollectionUtils.isNotEmpty(matchingIdsResponse.getActivityUniquinessLists()));
+        assertTrue(matchingIdsResponse.getActivityUniquinessLists().size() == 2);
+    }
 
     @SneakyThrows
     private List<ActivityUniquinessList> getMockedRequest() {
@@ -100,7 +131,7 @@ public class ActivityMatchingIdsServiceBeanTest {
     }
 
 
-    public List<FluxReportIdentifierEntity> getMockedIdentifiers() {
+    private List<FluxReportIdentifierEntity> getMockedIdentifiers() {
         FluxReportIdentifierEntity ident1 = new FluxReportIdentifierEntity();
         FluxReportIdentifierEntity ident2 = new FluxReportIdentifierEntity();
         ident1.setFluxReportIdentifierId("46DCC44C-0AE2-434C-BC14-B85D86B29512iiiii");

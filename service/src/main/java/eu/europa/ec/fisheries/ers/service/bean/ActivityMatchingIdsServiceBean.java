@@ -63,13 +63,11 @@ public class ActivityMatchingIdsServiceBean extends BaseActivityBean {
         ActivityUniquinessList respUniqList = new ActivityUniquinessList();
         respUniqList.setActivityTableType(actRequestUniqueReq.getActivityTableType());
         List<ActivityIDType> ids = actRequestUniqueReq.getIds();
-        respUniqList.setIds(mapIDsListToActivityIDTypeList(
-                fluxRepIdentDao.getMatchingIdentifiers(ids, actRequestUniqueReq.getActivityTableType()),
-                actRequestUniqueReq.getActivityTableType()));
+        respUniqList.setIds(mapIDsListToActivityIDTypeList(fluxRepIdentDao.getMatchingIdentifiers(ids, actRequestUniqueReq.getActivityTableType())));
         return respUniqList;
     }
 
-    private List<ActivityIDType> mapIDsListToActivityIDTypeList(List<FluxReportIdentifierEntity> identifiersFromDbList, ActivityTableType type) {
+    private List<ActivityIDType> mapIDsListToActivityIDTypeList(List<FluxReportIdentifierEntity> identifiersFromDbList) {
         if(CollectionUtils.isEmpty(identifiersFromDbList)){
             return Collections.emptyList();
         }
