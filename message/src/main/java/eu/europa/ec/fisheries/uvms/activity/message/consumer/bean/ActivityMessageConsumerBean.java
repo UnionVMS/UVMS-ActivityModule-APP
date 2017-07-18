@@ -12,10 +12,7 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.*;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
@@ -40,21 +37,25 @@ import javax.jms.TextMessage;
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.COMPONENT_MESSAGE_IN_QUEUE_NAME)
 })
-public class MessageConsumerBean implements MessageListener {
+public class ActivityMessageConsumerBean implements MessageListener {
 
-    final static Logger LOG = LoggerFactory.getLogger(MessageConsumerBean.class);
+    final static Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
 
     @Inject
     @GetFLUXFAReportMessageEvent
-    Event<EventMessage> getFLUXFAReportMessageEvent;
+    private Event<EventMessage> getFLUXFAReportMessageEvent;
 
     @Inject
     @GetFishingTripListEvent
-    Event<EventMessage> getFishingTripListEvent;
+    private Event<EventMessage> getFishingTripListEvent;
 
     @Inject
     @GetFACatchSummaryReportEvent
-    Event<EventMessage> getFACatchSummaryReportEvent;
+    private Event<EventMessage> getFACatchSummaryReportEvent;
+
+    @Inject
+    @GetNonUniqueIdsRequestEvent
+    private Event<EventMessage> getNonUniqueIdsRequest;
 
     @Inject
     @ActivityMessageErrorEvent
@@ -94,6 +95,9 @@ public class MessageConsumerBean implements MessageListener {
                     break;
                 case GET_FA_CATCH_SUMMARY_REPORT :
                     getFACatchSummaryReportEvent.fire(new EventMessage(textMessage));
+                    break;
+                case GET_NON_UNIQUE_IDS :
+                    getNonUniqueIdsRequest.fire(new EventMessage(textMessage));
                     break;
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());
