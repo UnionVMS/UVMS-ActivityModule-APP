@@ -37,9 +37,9 @@ import javax.jms.TextMessage;
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.COMPONENT_MESSAGE_IN_QUEUE_NAME)
 })
-public class MessageConsumerBean implements MessageListener {
+public class ActivityMessageConsumerBean implements MessageListener {
 
-    final static Logger LOG = LoggerFactory.getLogger(MessageConsumerBean.class);
+    final static Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
 
     @Inject
     @GetFLUXFAReportMessageEvent
