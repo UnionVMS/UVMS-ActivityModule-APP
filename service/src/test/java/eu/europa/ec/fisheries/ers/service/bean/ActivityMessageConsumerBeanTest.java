@@ -59,6 +59,9 @@ public class ActivityMessageConsumerBeanTest {
     Event<EventMessage> getNonUniqueIdsRequest;
 
     @Mock
+    Event<EventMessage> getFishingActivityForTrips;
+
+    @Mock
     Event<EventMessage> errorEvent;
 
 

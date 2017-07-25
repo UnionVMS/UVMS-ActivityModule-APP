@@ -39,7 +39,7 @@ import javax.jms.TextMessage;
 })
 public class ActivityMessageConsumerBean implements MessageListener {
 
-    final static Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
 
     @Inject
     @GetFLUXFAReportMessageEvent
