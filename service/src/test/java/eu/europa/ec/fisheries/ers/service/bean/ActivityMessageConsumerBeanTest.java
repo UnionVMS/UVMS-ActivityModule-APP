@@ -94,24 +94,4 @@ public class ActivityMessageConsumerBeanTest {
         verify(errorEvent,times(1)).fire(Mockito.any(EventMessage.class));
     }
 
-    private String getactivityModuleRequestStr(String activityMethod){
-        return "<ns2:GetNonUniqueIdsRequest xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
-                "    <method>GET_NON_UNIQUE_IDS</method>\n" +
-                "    <activityUniquinessList>\n" +
-                "        <activityTableType>RELATED_FLUX_REPORT_DOCUMENT_ENTITY</activityTableType>\n" +
-                "        <ids>\n" +
-                "            <value>46DCC44C-0AE2-434C-BC14-B85D86B29512</value>\n" +
-                "            <identifierSchemeId>UUID</identifierSchemeId>\n" +
-                "        </ids>\n" +
-                "    </activityUniquinessList>\n" +
-                "    <activityUniquinessList>\n" +
-                "        <activityTableType>FLUX_REPORT_DOCUMENT_ENTITY</activityTableType>\n" +
-                "        <ids>\n" +
-                "            <value>46DCC44C-0AE2-434C-BC14-B85D86B29512</value>\n" +
-                "            <identifierSchemeId>UUID</identifierSchemeId>\n" +
-                "        </ids>\n" +
-                "    </activityUniquinessList>\n" +
-                "</ns2:GetNonUniqueIdsRequest>";
-    }
-
 }
