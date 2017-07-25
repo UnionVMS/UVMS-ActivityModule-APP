@@ -13,35 +13,23 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
-
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.dao.*;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.SneakyThrows;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -49,6 +37,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import javax.persistence.EntityManager;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 
 public class ActivityServiceBeanTest {
@@ -183,4 +180,86 @@ public class ActivityServiceBeanTest {
         //Verify
          assertNotNull(filterFishingActivityReportResultDTO);
     }
+
+    @Test
+    @SneakyThrows
+    public void testGetFaAndTripIdsResponse(){
+        List<String> flRepPurpCodes = new ArrayList<String>(){{add("1"); add("9");}};
+        when(fishingActivityDao.getFishingActivityForTrip(any(String.class), any(String.class), any(String.class), any(flRepPurpCodes.getClass()))).thenReturn(mockFishActEntities());
+
+        GetFishingActivitiesForTripResponse response = activityService.getFaAndTripIdsFromTripIds(
+                Arrays.asList(new FishingActivityForTripIds("faTypeCode", "tripId", "tripSchemeId", flRepPurpCodes)));
+
+        assertNotNull(response);
+        assertTrue(CollectionUtils.isNotEmpty(response.getFaWithIdentifiers()));
+    }
+
+    private List<FishingActivityEntity> mockFishActEntities() {
+        final FishingActivityEntity fishAct = new FishingActivityEntity();
+
+        FishingActivityIdentifierEntity ident = new FishingActivityIdentifierEntity();
+        ident.setFaIdentifierId("faId");
+        ident.setFaIdentifierSchemeId("faSchemeId");
+        Set<FishingActivityIdentifierEntity> fishIdentList = new HashSet<>();
+        fishIdentList.add(ident);
+
+        Set<FishingTripEntity> fishTrips = new HashSet<>();
+        FishingTripEntity fishTrip = new FishingTripEntity();
+
+        Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<>();
+        FishingTripIdentifierEntity tripident = new FishingTripIdentifierEntity();
+        tripident.setTripId("tripId");
+        tripident.setTripSchemeId("tripSchemeId");
+        fishingTripIdentifiers.add(tripident);
+
+        fishTrips.add(fishTrip);
+
+        fishTrip.setTypeCode("someTripCode");
+        fishTrip.setFishingActivity(fishAct);
+        fishTrip.setFishingTripIdentifiers(fishingTripIdentifiers);
+
+        fishAct.setFishingActivityIdentifiers(fishIdentList);
+
+        fishAct.setTypeCode("faTypeCode");
+
+        fishAct.setFishingTrips(fishTrips);
+
+        return new ArrayList<FishingActivityEntity>(){{add(fishAct);}};
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

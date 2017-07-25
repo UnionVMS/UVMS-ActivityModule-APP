@@ -39,7 +39,7 @@ import javax.jms.TextMessage;
 })
 public class ActivityMessageConsumerBean implements MessageListener {
 
-    final static Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
 
     @Inject
     @GetFLUXFAReportMessageEvent
@@ -56,6 +56,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @Inject
     @GetNonUniqueIdsRequestEvent
     private Event<EventMessage> getNonUniqueIdsRequest;
+
+    @Inject
+    @GetFishingActivityForTripsRequestEvent
+    private Event<EventMessage> getFishingActivityForTrips;
 
     @Inject
     @ActivityMessageErrorEvent
@@ -98,6 +102,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     break;
                 case GET_NON_UNIQUE_IDS :
                     getNonUniqueIdsRequest.fire(new EventMessage(textMessage));
+                    break;
+                case GET_FISHING_ACTIVITY_FOR_TRIPS:
+                    getFishingActivityForTrips.fire(new EventMessage(textMessage));
                     break;
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());

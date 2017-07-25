@@ -14,6 +14,8 @@ import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessag
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import lombok.SneakyThrows;
 import org.apache.activemq.artemis.api.core.SimpleString;
@@ -43,39 +45,62 @@ public class ActivityEventServiceBeanTest {
     ActivityEventServiceBean activityEventBean;
 
     @Mock
+    ActivityServiceBean activityServiceBean;
+
+    @Mock
     ActivityMatchingIdsServiceBean matchingIdsService;
 
     @Mock
     ActivityMessageServiceBean producer;
 
     @Mock
-    ActiveMQTextMessage textMessage;
+    ActiveMQTextMessage nonUniqueIdsMessage;
+
+    @Mock
+    ActiveMQTextMessage faAndTripIdsFromTripIdsMessage;
 
     @Mock
     ClientSession session;
 
-    EventMessage eventMessage;
+    EventMessage nonUniqueIdsMessageEventMessage;
+    EventMessage faAndTripIdsFromTripIdsEventMessage;
 
-    GetNonUniqueIdsResponse response;
+    GetNonUniqueIdsResponse getNonUniqueIdsResponse;
+
+    GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse;
 
     @Before
     @SneakyThrows
     public void setUp() {
-        textMessage        = new ActiveMQTextMessage(session);
-        Whitebox.setInternalState(textMessage, "text", new SimpleString(getStrRequest()));
-        Whitebox.setInternalState(textMessage, "jmsCorrelationID", "SomeCorrId");
-        eventMessage= new EventMessage(textMessage);
-        response = JAXBMarshaller.unmarshallTextMessage(getResponseStr(), GetNonUniqueIdsResponse.class);
+        nonUniqueIdsMessage = new ActiveMQTextMessage(session);
+        Whitebox.setInternalState(nonUniqueIdsMessage, "text", new SimpleString(getStrRequest1()));
+        Whitebox.setInternalState(nonUniqueIdsMessage, "jmsCorrelationID", "SomeCorrId");
+        nonUniqueIdsMessageEventMessage = new EventMessage(nonUniqueIdsMessage);
+
+        faAndTripIdsFromTripIdsMessage = new ActiveMQTextMessage(session);
+        Whitebox.setInternalState(faAndTripIdsFromTripIdsMessage, "text", new SimpleString(getStrRequest2()));
+        Whitebox.setInternalState(faAndTripIdsFromTripIdsMessage, "jmsCorrelationID", "SomeCorrId");
+        faAndTripIdsFromTripIdsEventMessage = new EventMessage(faAndTripIdsFromTripIdsMessage);
+
+        getNonUniqueIdsResponse = JAXBMarshaller.unmarshallTextMessage(getResponseStr1(), GetNonUniqueIdsResponse.class);
+        getFishingActivitiesForTripResponse = JAXBMarshaller.unmarshallTextMessage(getResponseStr2(), GetFishingActivitiesForTripResponse.class);
 
     }
 
     @Test
     public void testGeNonUniqueIds(){
-        when(matchingIdsService.getMatchingIdsResponse((List<ActivityUniquinessList>) Mockito.any(Collection.class))).thenReturn(response);
-        activityEventBean.getNonUniqueIdsRequest(eventMessage);
+        when(matchingIdsService.getMatchingIdsResponse((List<ActivityUniquinessList>) Mockito.any(Collection.class))).thenReturn(getNonUniqueIdsResponse);
+        activityEventBean.getNonUniqueIdsRequest(nonUniqueIdsMessageEventMessage);
     }
 
-    private String getStrRequest(){
+    @Test
+    @SneakyThrows
+    public void testgetFishingActivityForTripsRequest(){
+        when(activityServiceBean.getFaAndTripIdsFromTripIds((List<FishingActivityForTripIds>) Mockito.any(Collection.class))).thenReturn(getFishingActivitiesForTripResponse);
+        activityEventBean.getFishingActivityForTripsRequest(faAndTripIdsFromTripIdsEventMessage);
+    }
+
+    private String getStrRequest1(){
         return "<ns2:GetNonUniqueIdsRequest xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
                 "    <method>GET_NON_UNIQUE_IDS</method>\n" +
                 "    <activityUniquinessList>\n" +
@@ -95,7 +120,7 @@ public class ActivityEventServiceBeanTest {
                 "</ns2:GetNonUniqueIdsRequest>";
     }
 
-    private String getResponseStr(){
+    private String getResponseStr1(){
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ns2:GetNonUniqueIdsResponse xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
                 "    <method>GET_NON_UNIQUE_IDS</method>\n" +
@@ -118,4 +143,20 @@ public class ActivityEventServiceBeanTest {
                 "</ns2:GetNonUniqueIdsResponse>";
     }
 
+    public String getStrRequest2() {
+        return "<ns2:GetFishingActivitiesForTripRequest xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
+                "    <method>GET_FISHING_ACTIVITY_FOR_TRIPS</method>\n" +
+                "    <faAndTripIds>\n" +
+                "        <fishActTypeCode>LANDING</fishActTypeCode>\n" +
+                "        <tripId>AUT-TRP-38778a5888837-000000</tripId>\n" +
+                "        <tripSchemeId>EU_TRIP_ID</tripSchemeId>\n" +
+                "        <fluxRepDocPurposeCodes>9</fluxRepDocPurposeCodes>\n" +
+                "    </faAndTripIds>\n" +
+                "</ns2:GetFishingActivitiesForTripRequest>";
+    }
+
+    public String getResponseStr2() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<ns2:GetFishingActivitiesForTripResponse xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\"/>\n";
+    }
 }
