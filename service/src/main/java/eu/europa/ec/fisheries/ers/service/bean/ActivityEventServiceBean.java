@@ -11,10 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.EventService;
-import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageServiceBean;
@@ -63,6 +60,9 @@ public class ActivityEventServiceBean implements EventService {
 
     @EJB
     private ActivityMatchingIdsServiceBean matchingIdsService;
+
+    @EJB
+    private ActivityService activityServiceBean;
 
     @EJB
     private ActivityMessageServiceBean producer;
@@ -131,6 +131,22 @@ public class ActivityEventServiceBean implements EventService {
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
             producer.sendModuleResponseMessage(message.getJmsMessage(), response, producer.getModuleName());
         } catch (ActivityModelMarshallException | JMSException e) {
+            sendError(message, e);
+        }
+    }
+
+
+
+    @Override
+    public void getFishingActivityForTripsRequest(@Observes @GetFishingActivityForTripsRequestEvent EventMessage message){
+        log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + " Fishing activities related to trips.");
+        try {
+            log.debug(message.getJmsMessage().getText());
+            GetFishingActivitiesForTripRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetFishingActivitiesForTripRequest.class);
+            GetFishingActivitiesForTripResponse response = activityServiceBean.getFaAndTripIdsFromTripIds(request.getFaAndTripIds());
+            String responseStr = JAXBMarshaller.marshallJaxBObjectToString(response);
+            producer.sendModuleResponseMessage(message.getJmsMessage(), responseStr, producer.getModuleName());
+        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
     }

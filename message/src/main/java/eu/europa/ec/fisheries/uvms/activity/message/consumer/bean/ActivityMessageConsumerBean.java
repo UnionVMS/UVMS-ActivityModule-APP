@@ -58,6 +58,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> getNonUniqueIdsRequest;
 
     @Inject
+    @GetFishingActivityForTripsRequestEvent
+    private Event<EventMessage> getFishingActivityForTrips;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -98,6 +102,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     break;
                 case GET_NON_UNIQUE_IDS :
                     getNonUniqueIdsRequest.fire(new EventMessage(textMessage));
+                    break;
+                case GET_FISHING_ACTIVITY_FOR_TRIPS:
+                    getFishingActivityForTrips.fire(new EventMessage(textMessage));
                     break;
                 default:
                     LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());

@@ -45,7 +45,7 @@ import java.util.Set;
 
 @NamedQueries({
 		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
-				query = "SELECT DISTINCT a  from FishingActivityEntity a " +
+				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrips ft " +
@@ -54,13 +54,23 @@ import java.util.Set;
 						"and fi.tripId =:fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime"),
 		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
-				query = "SELECT DISTINCT a  from FishingActivityEntity a " +
+				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrips ft " +
 						"JOIN FETCH ft.fishingTripIdentifiers fi " +
-						"where fi.tripId =:fishingTripId) " +
-						"order by a.typeCode,fa.acceptedDatetime")
+						"where fi.tripId =:fishingTripId " +
+						"order by a.typeCode,fa.acceptedDatetime"),
+		@NamedQuery(name = FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP,
+				query = "SELECT a from FishingActivityEntity a " +
+						"JOIN FETCH a.faReportDocument fa " +
+						"JOIN FETCH fa.fluxReportDocument flux " +
+						"JOIN FETCH a.fishingTrips ft " +
+						"JOIN FETCH ft.fishingTripIdentifiers fi " +
+						"where fi.tripId = :fishingTripId and " +
+						"fi.tripSchemeId = :tripSchemeId and " +
+						"a.typeCode = :fishActTypeCode and " +
+						"flux.purposeCode in (:flPurposeCodes)")
 })
 @Entity
 @Table(name = "activity_fishing_activity")
@@ -71,6 +81,7 @@ public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
 	public static final String FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM = "findActivityListForFishingTripsWithoutGeom";
+	public static final String FIND_FISHING_ACTIVITY_FOR_TRIP = "findFishingActivityForTrip";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

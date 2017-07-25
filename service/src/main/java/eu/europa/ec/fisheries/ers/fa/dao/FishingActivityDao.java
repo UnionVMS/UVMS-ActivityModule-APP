@@ -122,7 +122,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @param geom
      * @return
      */
-    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) throws ServiceException {
+    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) {
         String s = fillQueryConditions(geom);
         Query typedQuery = getEntityManager().createQuery(s);
         typedQuery.setParameter("fishingActivityId", activityId);
@@ -134,6 +134,15 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             return null;
         }
         return resultList.get(0);
+    }
+
+    public List<FishingActivityEntity> getFishingActivityForTrip(String tripId, String tripSchemeId, String fishActTypeCode, List<String> flPurposeCodes) {
+        Query typedQuery = getEntityManager().createNamedQuery(FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP);
+        typedQuery.setParameter("fishingTripId", tripId);
+        typedQuery.setParameter("tripSchemeId", tripSchemeId);
+        typedQuery.setParameter("fishActTypeCode", fishActTypeCode);
+        typedQuery.setParameter("flPurposeCodes", flPurposeCodes);
+        return typedQuery.getResultList();
     }
 
     private String fillQueryConditions(Geometry geom) {

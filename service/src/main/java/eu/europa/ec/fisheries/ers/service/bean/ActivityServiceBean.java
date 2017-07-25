@@ -10,25 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
@@ -44,7 +33,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -54,6 +43,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.*;
 
 
 /**
@@ -202,6 +198,46 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return fishingActivityViewDTO;
     }
 
+    @Override
+    public GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException {
+        GetFishingActivitiesForTripResponse response = new GetFishingActivitiesForTripResponse();
+        List<FaIdsListWithTripIdMap> responseList = new ArrayList<>();
+        response.setFaWithIdentifiers(responseList);
+        for(FishingActivityForTripIds faTripId : faAndTripIds){
+            List<FishingActivityEntity> fishingActivies = fishingActivityDao.getFishingActivityForTrip(faTripId.getTripId(), faTripId.getTripSchemeId(),
+                    faTripId.getFishActTypeCode(), faTripId.getFluxRepDocPurposeCodes());
+            for(FishingActivityEntity faEntity : fishingActivies){
+                addToIdsList(responseList, faEntity);
+            }
+        }
+        return response;
+    }
+
+    private void addToIdsList(List<FaIdsListWithTripIdMap> responseList, FishingActivityEntity faEntity) {
+        Set<FishingTripIdentifierEntity> fishingTripIdentifiers = faEntity.getFishingTrips().iterator().next().getFishingTripIdentifiers();
+        List<FishingActivityWithIdentifiers> faIdentifiers = mapToActivityIdsAndType(faEntity.getFishingActivityIdentifiers(), faEntity.getTypeCode());
+        for(FishingTripIdentifierEntity tripIdentifEntity : fishingTripIdentifiers){
+            FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, tripIdentifEntity.getTripId());
+            if(null != existingActWithIdentifiers){
+                existingActWithIdentifiers.getFaIdentifierLists().addAll(faIdentifiers);
+            } else {
+                responseList.add( new FaIdsListWithTripIdMap(tripIdentifEntity.getTripId(),tripIdentifEntity.getTripSchemeId(), faIdentifiers));
+            }
+        }
+    }
+
+    private FaIdsListWithTripIdMap getElementWithTripId(List<FaIdsListWithTripIdMap> responseList, String tripId) {
+        FaIdsListWithTripIdMap mapToReturn = null;
+        for(FaIdsListWithTripIdMap respMap : responseList){
+            if(tripId.equals(respMap.getTripId())){
+                mapToReturn = respMap;
+                break;
+            }
+        }
+        return mapToReturn;
+    }
+
+
     @NotNull
     private FilterFishingActivityReportResultDTO createResultDTO(List<FishingActivityEntity> activityList, int totalCountOfRecords) {
         if (CollectionUtils.isEmpty(activityList)) {
@@ -285,5 +321,14 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
     }
 
-
+    private List<FishingActivityWithIdentifiers> mapToActivityIdsAndType(Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers, String typeCode) {
+        List<FishingActivityWithIdentifiers> actIDList = new ArrayList<>();
+        if(CollectionUtils.isEmpty(fishingActivityIdentifiers)){
+            return actIDList;
+        }
+        for(FishingActivityIdentifierEntity tripIdent : fishingActivityIdentifiers){
+            actIDList.add(new FishingActivityWithIdentifiers(tripIdent.getFaIdentifierId(), tripIdent.getFaIdentifierSchemeId(), typeCode));
+        }
+        return actIDList;
+    }
 }
