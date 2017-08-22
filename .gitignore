@@ -5,3 +5,4 @@ scripts
 scripts/*
 logging.properties
 /.idea
+.DS_Store

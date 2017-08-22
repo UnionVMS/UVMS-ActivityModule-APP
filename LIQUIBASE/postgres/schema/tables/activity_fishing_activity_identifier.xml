@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-28">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="fa_id_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-11">
+        <createTable tableName="activity_fishing_activity_identifier">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="fishing_activity_identifier_pk"/>
+            </column>
+            <column name="fishing_activity_id" type="BIGINT"/>
+            <column name="fa_identifier_id" type="VARCHAR(255)"/>
+            <column name="fa_identifier_scheme_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-29" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="fa_id_seq"
+                tableName="activity_fishing_activity_identifier"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-60">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_fishing_activity_identifier" constraintName="fishing_activity_identifier_fish_activity_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+</databaseChangeLog>

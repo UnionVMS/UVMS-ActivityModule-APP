@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:spatial="http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial
+      http://lonnyj.github.com/liquibase-spatial/liquibase-spatial.xsd">
+
+    <changeSet author="padhyad" id="123456-21">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="fa_rep_doc_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462755324468-8">
+        <preConditions>
+            <spatial:spatialSupported/>
+        </preConditions>
+        <createTable tableName="activity_fa_report_document">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="fa_report_document_pk"/>
+            </column>
+            <column name="geom" type="GEOMETRY(Multipoint, 4326)"/>
+            <column name="type_code" type="VARCHAR(255)"/>            
+            <column name="type_code_list_id" type="VARCHAR(255)"/>
+            <column name="accepted_datetime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="flux_report_document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>           
+            <column name="fmc_marker" type="VARCHAR(255)"/>
+            <column name="fmc_marker_list_id" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(10)"/>
+            <column name="source" type="VARCHAR(10)"/>
+			<column name="flux_fa_report_message_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-22" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="fa_rep_doc_seq"
+                tableName="activity_fa_report_document"/>
+    </changeSet>
+
+    <changeSet id="2662787324468-54" author="padhyad">
+        <spatial:createSpatialIndex tableName="activity_fa_report_document" indexName="activity_fa_report_document_index" geometryType="Multipoint" srid="4326">
+            <column name="geom" />
+        </spatial:createSpatialIndex>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-65">
+        <addForeignKeyConstraint baseColumnNames="flux_report_document_id" baseTableName="activity_fa_report_document" constraintName="flux_report_document_frd_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_flux_report_document"/>
+    </changeSet>   
+	
+	<changeSet author="kovian (generated)" id="1484752085953-120" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="flux_fa_report_message_id" baseTableName="activity_flux_report_document" constraintName="activity_flux_report_message_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_flux_fa_report_message"/>
+    </changeSet>
+
+</databaseChangeLog>

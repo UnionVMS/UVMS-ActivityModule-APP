@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-40">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="flux_char_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-15">
+        <createTable tableName="activity_flux_characteristic">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="flux_chacteristic_pk"/>
+            </column>
+            <column name="fishing_activity_id" type="BIGINT"/>
+			<column name="specified_flap_document_id" type="BIGINT"/>
+			<column name="specified_flux_location_id" type="BIGINT"/>
+            <column name="type_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_code_list_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value_measure" type="FLOAT8"/>
+            <column name="value_measure_unit_code" type="VARCHAR(255)"/>
+            <column name="calculated_value_measure" type="FLOAT8"/>
+            <column name="value_date_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="value_indicator" type="VARCHAR(255)"/>
+            <column name="value_code" type="VARCHAR(255)"/>
+            <column name="value_text" type="TEXT"/>
+            <column name="value_language_id" type="VARCHAR(255)"/>
+            <column name="value_quantity" type="FLOAT8"/>
+            <column name="value_quantity_code" type="VARCHAR(255)"/>
+            <column name="calculated_value_quantity" type="FLOAT8"/>
+            <column name="description" type="TEXT"/>
+            <column name="description_language_id" type="VARCHAR(255)"/>
+            <column name="fa_catch_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-41" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="flux_char_seq"
+                tableName="activity_flux_characteristic"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-45">
+        <addForeignKeyConstraint baseColumnNames="fa_catch_id" baseTableName="activity_flux_characteristic" constraintName="activity_flux_characteristic_fa_catch_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fa_catch"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-59">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_flux_characteristic" constraintName="fishing_activity_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+
+	<changeSet author="sanera" id="1462787327894468-59">
+        <addForeignKeyConstraint baseColumnNames="specified_flap_document_id" baseTableName="activity_flux_characteristic" constraintName="specified_flap_document_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_flap_document"/>
+    </changeSet>
+	
+	<changeSet author="sanera" id="1111187327894468-59">
+        <addForeignKeyConstraint baseColumnNames="specified_flux_location_id" baseTableName="activity_flux_characteristic" constraintName="specified_flux_location_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_flux_location"/>
+    </changeSet>
+  
+</databaseChangeLog>

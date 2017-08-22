@@ -1,0 +1,110 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>liquibase</artifactId>
+	<name>${project.artifactId}</name>
+    <packaging>pom</packaging>
+   
+    <parent>
+        <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+        <artifactId>activity-db</artifactId>
+        <version>0.5.3-SNAPSHOT</version>
+    </parent>
+	
+	<dependencies>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.lonnyj</groupId>
+            <artifactId>liquibase-spatial</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-maven-plugin</artifactId>
+		</dependency>
+    </dependencies>
+
+
+    <profiles>
+        
+        <profile>
+            <id>postgres</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://localhost:5432/db71u</db.url>
+                <db.user>activity</db.user>
+                <db.passwd>activity</db.passwd>
+                <db.defaultSchema>activity</db.defaultSchema>
+                <db.changeLogFile>postgres/changelog/db-changelog-master.xml</db.changeLogFile>
+                <db.outputFile>postgres/changelog/generatedChangelog.xml</db.outputFile>
+				<db.diffTypes />
+            </properties>
+        </profile>
+		
+		<profile>
+			<id>exec</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.liquibase</groupId>
+						<artifactId>liquibase-maven-plugin</artifactId>
+						<configuration>
+							<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+							<changeLogFile>${db.changeLogFile}</changeLogFile>
+							<driver>${db.driver}</driver>
+							<url>${db.url}</url>
+							<username>${db.user}</username>
+							<password>${db.passwd}</password>
+							<defaultSchemaName>${db.defaultSchema}</defaultSchemaName>
+							<outputChangeLogFile>${db.outputFile}</outputChangeLogFile>
+							<diffTypes>${db.diffTypes}</diffTypes>
+						</configuration>
+						<executions>
+							<execution>
+								<id>update-schema</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>update</goal>
+									<goal>tag</goal>							
+								</goals>
+							</execution>
+						</executions> 
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>export</id>
+			<properties>
+				<db.diffTypes>data</db.diffTypes>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>testdata</id>
+			<properties>
+				<liquibase.contexts>test</liquibase.contexts>
+			</properties>
+		</profile>
+
+    </profiles>
+	
+</project>
