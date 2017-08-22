@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <!-- Fishing Activity Related Tables -->
+    <include file="\postgres\schema\tables\activity_size_distribution.xml"/>
+	<include file="\postgres\schema\tables\activity_size_distribution_classcode.xml"/>
+    <include file="\postgres\schema\tables\activity_contact_person.xml"/>
+    <include file="\postgres\schema\tables\activity_vessel_storage_characteristics.xml"/>
+	<include file="\postgres\schema\tables\activity_vessel_storage_char_code.xml"/>
+    <include file="\postgres\schema\tables\activity_registration_location.xml"/>
+    <include file="\postgres\schema\tables\activity_registration_event.xml"/>     
+	<include file="\postgres\schema\tables\activity_flux_fa_report_message.xml" />
+	<include file="\postgres\schema\tables\activity_flux_party.xml"/>
+	<include file="\postgres\schema\tables\activity_flux_party_identifier.xml"/>
+    <include file="\postgres\schema\tables\activity_flux_report_document.xml"/>
+	<include file="\postgres\schema\tables\activity_flux_report_identifier.xml"/>
+    <include file="\postgres\schema\tables\activity_fa_report_document.xml"/>
+    <include file="\postgres\schema\tables\activity_fa_report_identifier.xml"/>
+    <include file="\postgres\schema\tables\activity_fishing_activity.xml"/>
+    <include file="\postgres\schema\tables\activity_fishing_activity_identifier.xml"/>
+	<include file="\postgres\schema\tables\activity_vessel_transport_means.xml"/>	
+	<include file="\postgres\schema\tables\activity_vessel_identifier.xml"/>
+	<include file="\postgres\schema\tables\activity_flap_document.xml"/>
+    <include file="\postgres\schema\tables\activity_fa_catch.xml"/>
+    <include file="\postgres\schema\tables\activity_aap_process.xml"/>
+	<include file="\postgres\schema\tables\activity_aap_process_code.xml"/>
+    <include file="\postgres\schema\tables\activity_aap_product.xml"/>
+    <include file="\postgres\schema\tables\activity_aap_stock.xml"/>
+    <include file="\postgres\schema\tables\activity_contact_party.xml"/>
+	<include file="\postgres\schema\tables\activity_contact_party_role.xml"/>
+    <include file="\postgres\schema\tables\activity_fishing_trip.xml"/>
+    <include file="\postgres\schema\tables\activity_fishing_trip_identifier.xml"/>
+    <include file="\postgres\schema\tables\activity_delimited_period.xml"/>
+    <include file="\postgres\schema\tables\activity_gear_problem.xml"/>
+	<include file="\postgres\schema\tables\activity_flux_location.xml"/>
+	<include file="\postgres\schema\tables\activity_gear_problem_recovery.xml"/>
+    <include file="\postgres\schema\tables\activity_fishing_gear.xml"/>
+	<include file="\postgres\schema\tables\activity_fishing_gear_role.xml"/>
+    <include file="\postgres\schema\tables\activity_gear_characteristic.xml"/>
+    <include file="\postgres\schema\tables\activity_flux_characteristic.xml"/>
+    <include file="\postgres\schema\tables\activity_structured_address.xml"/>
+	<include file="\postgres\schema\tables\activity_configuration.xml" />
+
+</databaseChangeLog>

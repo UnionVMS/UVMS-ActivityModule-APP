@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-38">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="flap_doc_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1466786429264-1">
+        <createTable tableName="activity_flap_document">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="flap_document_pk"/>
+            </column>
+            <column name ="vessel_transport_means_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flap_document_id" type="VARCHAR(255)"/>
+            <column name="flap_document_scheme_id" type="VARCHAR(255)"/>
+			<column name ="fishing_activity_id" type="BIGINT"/>
+            <column name="flap_type_code" type="VARCHAR(255)"/>
+            <column name="flap_type_code_list_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-39" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="flap_doc_seq"
+                tableName="activity_flap_document"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1466787324468-55">
+        <addForeignKeyConstraint baseColumnNames="vessel_transport_means_id" baseTableName="activity_flap_document" constraintName="activity_flap_document_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_vessel_transport_means"/>
+    </changeSet>
+	
+	<changeSet author="sanera" id="1466723424468-55">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_flap_document" constraintName="related_Fishing_activity_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+
+</databaseChangeLog>

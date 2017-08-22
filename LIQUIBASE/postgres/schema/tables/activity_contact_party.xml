@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-11">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="ct_party_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-4">
+        <createTable tableName="activity_contact_party">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="contact_party_pk"/>
+            </column>
+            <column name="vessel_transport_means_id" type="BIGINT"/>
+            <column name="contact_person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-12" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="ct_party_seq"
+                tableName="activity_contact_party"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-52">
+        <addForeignKeyConstraint baseColumnNames="contact_person_id" baseTableName="activity_contact_party" constraintName="contact_party_contact_person_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_contact_person"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-71">
+        <addForeignKeyConstraint baseColumnNames="vessel_transport_means_id" baseTableName="activity_contact_party" constraintName="vessel_transport_means_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_vessel_transport_means"/>
+    </changeSet>
+
+</databaseChangeLog>

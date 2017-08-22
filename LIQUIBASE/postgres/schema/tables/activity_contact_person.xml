@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-15">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="ct_person_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-5">
+        <createTable tableName="activity_contact_person">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="contact_person_pk"/>
+            </column>
+            <column name="title" type="TEXT"/>
+            <column name="given_name" type="VARCHAR(255)"/>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="family_name" type="VARCHAR(255)"/>
+            <column name="family_name_prefix" type="VARCHAR(255)"/>
+            <column name="name_suffix" type="VARCHAR(255)"/>
+            <column name="gender" type="VARCHAR(255)"/>
+            <column name="alias" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-16" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="ct_person_seq"
+                tableName="activity_contact_person"/>
+    </changeSet>
+
+</databaseChangeLog>

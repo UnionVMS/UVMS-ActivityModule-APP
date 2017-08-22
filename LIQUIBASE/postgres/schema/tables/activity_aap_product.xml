@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-5">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="aap_product_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462786429274-2">
+        <createTable tableName="activity_aap_product">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="aap_product_pk"/>
+            </column>
+            <column name="packaging_type_code" type="VARCHAR(255)"/>
+            <column name="packaging_type_code_list_id" type="VARCHAR(255)"/>
+            <column name="packaging_unit_avarage_weight" type="FLOAT8"/>
+            <column name="packaging_weight_unit_code" type="VARCHAR(255)"/>
+            <column name="calculated_packaging_weight" type="FLOAT8"/>
+            <column name="packaging_unit_count" type="FLOAT8"/>
+            <column name="packaging_unit_count_code" type="VARCHAR(255)"/>
+            <column name="calculated_packaging_unit_count" type="FLOAT8"/>
+            <column name="aap_process_id" type="BIGINT"/>
+            <column name="unit_quantity" type="FLOAT8"/>
+            <column name="unit_quantity_code" type="VARCHAR(255)"/>
+            <column name="calculated_unit_quantity" type="FLOAT8"/>
+            <column name="weight_measure" type="FLOAT8"/>
+            <column name="weight_measure_unit_code" type="VARCHAR(255)"/>
+            <column name="calculated_weight_measure" type="FLOAT8"/>
+            <column name="species_code" type="VARCHAR(255)"/>
+            <column name="spacies_code_list_id" type="VARCHAR(255)"/>
+            <column name="weighing_means_code" type="VARCHAR(255)"/>
+            <column name="weighting_means_code_list_id" type="VARCHAR(255)"/>
+            <column name="usage_code" type="VARCHAR(255)"/>
+            <column name="usage_code_list_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-6" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="aap_product_seq"
+                tableName="activity_aap_product"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-37">
+        <addForeignKeyConstraint baseColumnNames="aap_process_id" baseTableName="activity_aap_product" constraintName="aap_process_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_aap_process"/>
+    </changeSet>
+
+</databaseChangeLog>

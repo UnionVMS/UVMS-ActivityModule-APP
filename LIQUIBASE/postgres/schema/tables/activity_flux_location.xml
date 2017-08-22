@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:spatial="http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial
+      http://lonnyj.github.com/liquibase-spatial/liquibase-spatial.xsd">
+
+    <changeSet author="padhyad" id="123456-44">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="flux_loc_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-17">
+        <preConditions>
+            <spatial:spatialSupported/>
+        </preConditions>
+        <createTable tableName="activity_flux_location">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="flux_location_pk"/>
+            </column>
+            <column name="geom" type="GEOMETRY(Point, 4326)"/>
+            <column name="fa_catch_id" type="BIGINT"/>
+            <column name="fishing_activity_id" type="BIGINT"/>
+			<column name="gear_problem_id" type="BIGINT"/>
+            <column name="type_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_code_list_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_id" type="VARCHAR(255)"/>
+            <column name="country_id_scheme_id" type="VARCHAR(255)"/>
+            <column name="rfmo_code" type="TEXT"/>
+            <column name="longitude" type="FLOAT8"/>
+            <column name="latitude" type="FLOAT8"/>
+            <column name="flux_location_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_location_identifier" type="VARCHAR(255)"/>
+            <column name="flux_location_identifier_scheme_id" type="VARCHAR(255)"/>
+            <column name="geopolitical_region_code" type="VARCHAR(255)"/>
+            <column name="geopolitical_region_code_list_id" type="VARCHAR(255)"/>
+            <column name="name" type="TEXT"/>
+            <column name="name_laguage_id" type="VARCHAR(255)"/>
+            <column name="sovereign_rights_country_code" type="VARCHAR(255)"/>
+            <column name="jurisdiction_country_code" type="VARCHAR(255)"/>
+            <column name="altitude" type="FLOAT8"/>
+            <column name="system_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-45" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="flux_loc_seq"
+                tableName="activity_flux_location"/>
+    </changeSet>
+
+    <changeSet id="2562787324468-54" author="padhyad">
+        <spatial:createSpatialIndex tableName="activity_flux_location" indexName="activity_flux_location_index" geometryType="Point" srid="4326">
+            <column name="geom" />
+        </spatial:createSpatialIndex>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-54">
+        <addForeignKeyConstraint baseColumnNames="fa_catch_id" baseTableName="activity_flux_location" constraintName="fa_catch_fl_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fa_catch"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787326468-54">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_flux_location" constraintName="fa_catch_fishing_activity_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+	
+	<changeSet author="kovian (generated)" id="1489159516971-116" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="gear_problem_id" baseTableName="activity_flux_location" constraintName="gear_problem_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_gear_problem"/>
+    </changeSet>
+	
+</databaseChangeLog>

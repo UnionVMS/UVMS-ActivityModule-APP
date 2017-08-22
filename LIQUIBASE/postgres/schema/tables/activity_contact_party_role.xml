@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-13">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="ctp_role_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1464786429274-1">
+        <createTable tableName="activity_contact_party_role">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="contact_party_role_pk"/>
+            </column>
+            <column name ="contact_party_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_code" type="VARCHAR(255)"/>
+            <column name="role_code_list_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-14" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="ctp_role_seq"
+                tableName="activity_contact_party_role"/>
+    </changeSet>
+
+
+    <changeSet author="padhyad (generated)" id="1464787324468-55">
+        <addForeignKeyConstraint baseColumnNames="contact_party_id" baseTableName="activity_contact_party_role" constraintName="activity_contact_party_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_contact_party"/>
+    </changeSet>
+
+</databaseChangeLog>

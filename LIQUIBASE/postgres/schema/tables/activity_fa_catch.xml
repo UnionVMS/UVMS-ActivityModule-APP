@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-19">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="fa_catch_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324558-9">
+        <createTable tableName="activity_fa_catch">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="fa_catch_pk"/>
+            </column>
+            <column name="fishing_activity_id" type="BIGINT"/>
+            <column name="type_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_code_list_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="species_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="species_code_listid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_quantity" type="FLOAT8"/>
+            <column name="unit_quantity_code" type="VARCHAR(255)"/>
+            <column name="calculated_unit_quantity" type="FLOAT8"/>
+            <column name="weight_measure" type="FLOAT8"/>
+            <column name="weight_measure_unit_code" type="VARCHAR(255)"/>
+            <column name="calculated_weight_measure" type="FLOAT8"/>
+            <column name="usage_code" type="VARCHAR(255)"/>
+            <column name="usage_code_list_id" type="VARCHAR(255)"/>
+            <column name="weighing_means_code" type="VARCHAR(255)"/>
+            <column name="weighing_means_code_list_id" type="VARCHAR(255)"/>
+			<column name="territory" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is TERRITORY"/>
+            <column name="fao_area" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is FAO_AREA" />
+           <column name="ices_stat_rectangle" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is ICES_STAT_RECTANGLE" />
+            <column name="effort_zone" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is EFFORT_ZONE" />
+            <column name="rfmo" type="VARCHAR(255)" remarks="same as activity_flux_location.rfmo_code " />
+            <column name="gfcm_gsa" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is GFCM_GSA"/>
+            <column name="gfcm_stat_rectangle" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is GFCM_STAT_RECTANGLE" />
+			<column name="fish_class_code" type="VARCHAR(255)" remarks="same as activity_size_distribution.activity_size_distribution_classcode.class_code . First occurence will be copied here." />
+            <column name="size_distribution_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gear_type_code" type="VARCHAR(255)" remarks="same as activity_fishing_gear.type_code"/>
+            <column name="presentation" type="VARCHAR(255)" remarks="same as activity_aap_process-> activity_aap_process_code.type_code where activity_aap_process_code.type_code_list_id is FISH_PRESENTATION"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-20" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="fa_catch_seq"
+                tableName="activity_fa_catch"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-57">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_fa_catch" constraintName="fishing_activity_fc_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-68">
+        <addForeignKeyConstraint baseColumnNames="size_distribution_id" baseTableName="activity_fa_catch" constraintName="size_distribution_fc_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_size_distribution"/>
+    </changeSet>
+</databaseChangeLog>

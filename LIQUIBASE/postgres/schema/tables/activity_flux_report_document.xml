@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-50">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="flux_rep_doc_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787355468-18">
+        <createTable tableName="activity_flux_report_document">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="flux_report_document_pk"/>
+            </column>
+            <column name="reference_id" type="VARCHAR(255)"/>
+            <column name="reference_scheme_id" type="VARCHAR(255)"/>
+            <column name="creation_datetime" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_code_list_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose" type="TEXT"/>
+            <column name="flux_party_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+			<column name="flux_fa_report_message_id" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-51" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="flux_rep_doc_seq"
+                tableName="activity_flux_report_document"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462887324568-55">
+        <addForeignKeyConstraint baseColumnNames="flux_party_id" baseTableName="activity_flux_report_document" constraintName="activity_flux_report_document_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_flux_party"/>
+    </changeSet>
+	
+	<changeSet author="kovian (generated)" id="1484752085953-120" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="flux_fa_report_message_id" baseTableName="activity_flux_report_document" constraintName="activity_flux_report_message_flfk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_flux_fa_report_message"/>
+    </changeSet>
+	
+</databaseChangeLog>
