@@ -10,7 +10,7 @@
         <artifactId>activity-db</artifactId>
         <version>0.5.3-SNAPSHOT</version>
     </parent>
-	
+
 	<dependencies>
 
         <dependency>
@@ -24,11 +24,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.lonnyj</groupId>
             <artifactId>liquibase-spatial</artifactId>
         </dependency>
@@ -37,7 +32,6 @@
 			<artifactId>liquibase-maven-plugin</artifactId>
 		</dependency>
     </dependencies>
-
 
     <profiles>
         
@@ -57,7 +51,24 @@
 				<db.diffTypes />
             </properties>
         </profile>
-		
+
+        <profile>
+            <id>oracle</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <db.url>jdbc:oracle:thin:@localhost:1521:uvms</db.url>
+                <db.driver>oracle.jdbc.driver.OracleDriver</db.driver>
+                <db.user>uvms_movement</db.user>
+                <db.passwd>uvms_movement</db.passwd>
+                <db.changeLogFile>changelog/db-changelog-master-oracle.xml</db.changeLogFile>
+                <driver.groupId>com.oracle</driver.groupId>
+                <driver.artifactId>ojdbc7</driver.artifactId>
+                <driver.version>12.1.0.2.0</driver.version>
+            </properties>
+        </profile>
+
 		<profile>
 			<id>exec</id>
 			<build>
