@@ -10,16 +10,16 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
+import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 /**
  * Created by kovian on 12/07/2017.
@@ -43,6 +43,7 @@ public class FluxReportIdentifierDao extends AbstractDAO<FluxReportIdentifierEnt
     public List<FluxReportIdentifierEntity> getMatchingIdentifiers(List<ActivityIDType> ids, ActivityTableType tableType) {
         String namedQueryToSelect = tableType == ActivityTableType.FLUX_REPORT_DOCUMENT_ENTITY ? FluxReportIdentifierEntity.FIND_MATCHING_IDENTIFIER : FluxReportIdentifierEntity.FIND_RELATED_MATCHING_IDENTIFIER;
         List<FluxReportIdentifierEntity> resultList = new ArrayList<>();
+        //FIXME avoid looping ad querying
         for(ActivityIDType idType : ids){
             TypedQuery<FluxReportIdentifierEntity> query = getEntityManager().createNamedQuery(namedQueryToSelect, FluxReportIdentifierEntity.class);
             query.setParameter(ID, idType.getValue());
