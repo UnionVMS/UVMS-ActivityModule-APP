@@ -7,10 +7,55 @@
    
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-        <artifactId>activity-db</artifactId>
-        <version>0.5.3-SNAPSHOT</version>
+        <artifactId>activity</artifactId>
+        <version>0.5.13-SNAPSHOT</version>
     </parent>
 
+  <properties>
+        <liquibase.core.version>3.5.1</liquibase.core.version>
+        <liquibase.contexts>default</liquibase.contexts>
+        <liquibase.update.phase>test</liquibase.update.phase>
+        <postgresql.version>9.4-1201-jdbc41</postgresql.version>
+        <ojdbc6.version>11.2.0.4</ojdbc6.version>
+		<liquibase.spatial.version>1.2.1</liquibase.spatial.version>
+    </properties>
+    
+        <dependencyManagement>
+
+        <dependencies>
+
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${ojdbc6.version}</version>
+            </dependency>
+			
+			<dependency>
+				<groupId>com.github.lonnyj</groupId>
+				<artifactId>liquibase-spatial</artifactId>
+				<version>${liquibase.spatial.version}</version>
+			</dependency>
+
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.5.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
 	<dependencies>
 
         <dependency>
