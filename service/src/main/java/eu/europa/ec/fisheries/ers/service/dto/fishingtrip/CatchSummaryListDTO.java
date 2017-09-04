@@ -38,8 +38,17 @@ public class CatchSummaryListDTO {
     }
 
     @JsonIgnore
-    public void addSpecieAndQuantity(String speciesCode, Double weight){
-        speciesList.add(new SpeciesQuantityDTO(speciesCode, weight));
+    public void addSpecieAndQuantity(String speciesCode, Double weight,String areaName){
+        SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO(speciesCode);
+        if(speciesList.contains(speciesQuantityDTO)){
+            int index= speciesList.indexOf(speciesQuantityDTO);
+            SpeciesQuantityDTO existingObject= speciesList.get(index);
+            existingObject.addToAreaInfo( areaName,weight );
+            speciesList.set(index,existingObject);
+        }else {
+            speciesQuantityDTO.addToAreaInfo( areaName,weight );
+            speciesList.add(speciesQuantityDTO);
+        }
         this.setTotal(total + weight);
     }
 

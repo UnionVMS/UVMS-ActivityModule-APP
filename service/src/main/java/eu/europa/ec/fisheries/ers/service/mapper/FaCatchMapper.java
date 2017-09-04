@@ -11,7 +11,16 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
@@ -23,9 +32,22 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class,
         FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class,
@@ -219,13 +241,17 @@ public abstract class FaCatchMapper extends BaseMapper {
         for(Object[] faCatch : faCatches){
             String typeCode    = ((String) faCatch[0]).toUpperCase();
             String speciesCode = (String) faCatch[1];
-            Double weight      = (Double) faCatch[2];
+            String areaName = (String) faCatch[2];
+            Double weight      = (Double) faCatch[3];
+
+
+           // Double weight      = (Double) faCatch[2];
             if("UNLOADED".equals(typeCode)){
-                landedSummary.addSpecieAndQuantity(speciesCode, weight);
+                landedSummary.addSpecieAndQuantity(speciesCode, weight,areaName);
             } else if("ONBOARD".equals(typeCode)
                     || "KEPT_IN_NET".equals(typeCode)
                     || "TAKEN_ONBOARD".equals(typeCode)){
-                onBoardSummary.addSpecieAndQuantity(speciesCode, weight);
+                onBoardSummary.addSpecieAndQuantity(speciesCode, weight,areaName);
             }
         }
 

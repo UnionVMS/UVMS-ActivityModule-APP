@@ -276,7 +276,7 @@ public class FishingTripServiceBeanTest {
         assertNotNull(faCatchesMap.get("landed"));
         assertNotNull(faCatchesMap.get("onboard"));
         assertEquals(2, faCatchesMap.get("landed").getSpeciesList().size());
-        assertEquals(2, faCatchesMap.get("onboard").getSpeciesList().size());
+        assertEquals(1, faCatchesMap.get("onboard").getSpeciesList().size());
         assertEquals((Double) 150.2, faCatchesMap.get("landed").getTotal());
         assertEquals((Double) 200.2, faCatchesMap.get("onboard").getTotal());
     }
