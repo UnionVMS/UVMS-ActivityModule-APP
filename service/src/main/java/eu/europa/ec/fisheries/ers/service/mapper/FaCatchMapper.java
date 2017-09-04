@@ -241,7 +241,6 @@ public abstract class FaCatchMapper extends BaseMapper {
         for(Object[] faCatch : faCatches){
             String typeCode    = ((String) faCatch[0]).toUpperCase();
             String speciesCode = (String) faCatch[1];
-        //    Geometry geom  =  (Geometry) faCatch[2];
             String areaName = (String) faCatch[2];
             Double weight      = (Double) faCatch[3];
 

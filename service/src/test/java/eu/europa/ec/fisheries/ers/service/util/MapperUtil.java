@@ -782,10 +782,10 @@ public class MapperUtil {
     public static List<Object[]> getFaCaches() {
         List<Object[]> faCatches = new ArrayList<>();
 
-        Object[] faCatch_1 = new Object[3];
-        Object[] faCatch_2 = new Object[3];
-        Object[] faCatch_3 = new Object[3];
-        Object[] faCatch_4 = new Object[3];
+        Object[] faCatch_1 = new Object[4];
+        Object[] faCatch_2 = new Object[4];
+        Object[] faCatch_3 = new Object[4];
+        Object[] faCatch_4 = new Object[4];
 
         faCatch_1[0] = "UNLOADED";
         faCatch_2[0] = "UNLOADED";
@@ -797,9 +797,13 @@ public class MapperUtil {
         faCatch_3[1] = "BEAGLE";
         faCatch_4[0] = "BEAGLE";
 
-        faCatch_1[2] = 50.1;
-        faCatch_2[2] = 100.1;
-        faCatch_3[2] = 100.1;
+        faCatch_1[2] = "J";
+        faCatch_2[2] = "27.7.j";
+        faCatch_3[2] = "IRL";
+
+        faCatch_1[3] = 50.1;
+        faCatch_2[3] = 100.1;
+        faCatch_3[3] = 100.1;
         faCatch_4[0] = 150.1;
 
         faCatches.addAll(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
