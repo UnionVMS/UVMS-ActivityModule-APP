@@ -31,7 +31,7 @@ import java.util.Set;
 
 @NamedQueries({
 		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
-				query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.geom, sum(faCatch.weightMeasure) " +
+				query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
 						"FROM FaCatchEntity faCatch " +
 						"JOIN faCatch.fluxLocations fluxLoc " +
 						"JOIN faCatch.fishingActivity fishAct " +
@@ -39,7 +39,7 @@ import java.util.Set;
 						"JOIN fishAct.fishingTrips fishTrip " +
 						"JOIN fishTrip.fishingTripIdentifiers fishIdent " +
 						"WHERE fishIdent.tripId =:tripId " +
-						"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.geom " +
+						"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.fluxLocationIdentifier " +
 						"ORDER BY faCatch.typeCode, faCatch.speciesCode")
 })
 @Entity

@@ -16,7 +16,6 @@ package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +38,15 @@ public class CatchSummaryListDTO {
     }
 
     @JsonIgnore
-    public void addSpecieAndQuantity(String speciesCode, Double weight,Geometry geom){
+    public void addSpecieAndQuantity(String speciesCode, Double weight,String areaName){
         SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO(speciesCode);
         if(speciesList.contains(speciesQuantityDTO)){
             int index= speciesList.indexOf(speciesQuantityDTO);
             SpeciesQuantityDTO existingObject= speciesList.get(index);
-            existingObject.addToAreaInfo( geom,weight );
+            existingObject.addToAreaInfo( areaName,weight );
             speciesList.set(index,existingObject);
         }else {
-            speciesQuantityDTO.addToAreaInfo( geom,weight );
+            speciesQuantityDTO.addToAreaInfo( areaName,weight );
             speciesList.add(speciesQuantityDTO);
         }
         this.setTotal(total + weight);

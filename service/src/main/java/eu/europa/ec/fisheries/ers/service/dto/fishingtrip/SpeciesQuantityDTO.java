@@ -42,8 +42,8 @@ public class SpeciesQuantityDTO {
 
     }
 
-    public void addToAreaInfo(Geometry geom, Double measure){
-        areaInfo.add(new SpeciesAreaDTO(geom, measure));
+    public void addToAreaInfo(String areaName, Double measure){
+        areaInfo.add(new SpeciesAreaDTO(areaName, measure));
         weight =weight+measure;
     }
 

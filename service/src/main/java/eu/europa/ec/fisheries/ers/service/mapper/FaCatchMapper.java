@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
@@ -242,17 +241,18 @@ public abstract class FaCatchMapper extends BaseMapper {
         for(Object[] faCatch : faCatches){
             String typeCode    = ((String) faCatch[0]).toUpperCase();
             String speciesCode = (String) faCatch[1];
-            Geometry geom  =  (Geometry) faCatch[2];
+        //    Geometry geom  =  (Geometry) faCatch[2];
+            String areaName = (String) faCatch[2];
             Double weight      = (Double) faCatch[3];
 
 
            // Double weight      = (Double) faCatch[2];
             if("UNLOADED".equals(typeCode)){
-                landedSummary.addSpecieAndQuantity(speciesCode, weight,geom);
+                landedSummary.addSpecieAndQuantity(speciesCode, weight,areaName);
             } else if("ONBOARD".equals(typeCode)
                     || "KEPT_IN_NET".equals(typeCode)
                     || "TAKEN_ONBOARD".equals(typeCode)){
-                onBoardSummary.addSpecieAndQuantity(speciesCode, weight,geom);
+                onBoardSummary.addSpecieAndQuantity(speciesCode, weight,areaName);
             }
         }
 

@@ -12,11 +12,8 @@
  */
 package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 
 /**
  * Created by sanera on 01/09/2017.
@@ -25,8 +22,8 @@ import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 public class SpeciesAreaDTO {
 
 
-    @JsonIgnore
-    private Geometry geom;
+    @JsonProperty("areaName")
+    private String areaName;
 
     @JsonProperty("weight")
     private Double weight;
@@ -35,18 +32,12 @@ public class SpeciesAreaDTO {
 
     }
 
-    public SpeciesAreaDTO(Geometry geom, Double weight) {
-        this.geom = geom;
+    public SpeciesAreaDTO(String areaName, Double weight) {
+        this.areaName = areaName;
         this.weight = weight;
     }
 
-    public Geometry getGeom() {
-        return geom;
-    }
 
-    public void setGeom(Geometry geom) {
-        this.geom = geom;
-    }
 
     public Double getWeight() {
         return weight;
@@ -56,12 +47,11 @@ public class SpeciesAreaDTO {
         this.weight = weight;
     }
 
-    @JsonProperty("geom")
-    public String getWkt() {
-        String wkt = null;
-        if (geom != null) {
-            wkt = GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
-        }
-        return wkt;
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
     }
 }
