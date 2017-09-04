@@ -71,6 +71,12 @@
         <dependency>
             <groupId>com.github.lonnyj</groupId>
             <artifactId>liquibase-spatial</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vividsolutions</groupId>
+                    <artifactId>jts</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
