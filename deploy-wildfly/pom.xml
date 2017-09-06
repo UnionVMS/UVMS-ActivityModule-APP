@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>0.5.13-SNAPSHOT</version>
+        <version>0.5.13</version>
     </parent> 
 
     <build>
