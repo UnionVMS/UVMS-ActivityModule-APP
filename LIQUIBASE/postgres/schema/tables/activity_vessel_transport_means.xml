@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-74">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="vsl_trp_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787325568-29">
+        <createTable tableName="activity_vessel_transport_means">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="vessel_transport_means_pk"/>
+            </column>
+            <column name="role_code" type="VARCHAR(255)"/>
+            <column name="role_code_list_id" type="VARCHAR(255)"/>
+            <column name="name" type="TEXT"/>
+            <column name="registration_event_id" type="BIGINT"/>
+            <column name="country_scheme_id" type="VARCHAR(255)"/>
+            <column name="country" type="VARCHAR(255)"/>
+			<column name="guid" type="VARCHAR(255)"/>
+			<column name="fishing_activity_id" type="BIGINT"/>
+			<column name="fa_report_document_id" type="BIGINT" remarks="Artificially created oneToMany relation to avoid cyclic dependency.In reality this is one to one relation"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-75" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="vsl_trp_seq"
+                tableName="activity_vessel_transport_means"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-51">
+        <addForeignKeyConstraint baseColumnNames="registration_event_id" baseTableName="activity_vessel_transport_means" constraintName="activity_vessel_transport_means_registration_event_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_registration_event"/>
+    </changeSet>
+	
+	<changeSet author="sanera (generated)" id="1462787324555-57">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_vessel_transport_means" constraintName="fishing_activity_fc_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+	
+	 <changeSet author="sanera (generated)" id="1462787324468-56">
+        <addForeignKeyConstraint baseColumnNames="fa_report_document_id" baseTableName="activity_vessel_transport_means" constraintName="fa_report_document_fa_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fa_report_document"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.jgroups.conf.ProtocolConfiguration.log;
 
 /**
  * Created by patilva on 06/04/2017.

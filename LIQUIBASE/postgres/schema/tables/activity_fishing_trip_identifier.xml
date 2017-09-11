@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-36">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="trip_id_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787224468-14">
+        <createTable tableName="activity_fishing_trip_identifier">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="activity_fishing_trip_identifier_pk"/>
+            </column>
+            <column name="fishing_trip_id" type="BIGINT"/>
+            <column name="trip_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trip_scheme_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>			
+			<column name="calculated_trip_start_date" type="TIMESTAMP WITHOUT TIME ZONE"  remarks="Start date of First Fishing Activity for the Trip ID" />
+			<column name="calculated_trip_end_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="End date of Last Fishing Activity for the Trip ID" />
+			
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-37" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="trip_id_seq"
+                tableName="activity_fishing_trip_identifier"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-44">
+        <addForeignKeyConstraint baseColumnNames="fishing_trip_id" baseTableName="activity_fishing_trip_identifier" constraintName="activity_fishing_trip_identifier_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_trip"/>
+    </changeSet>
+
+</databaseChangeLog>

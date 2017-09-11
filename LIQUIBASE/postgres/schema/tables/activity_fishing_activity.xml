@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:spatial="http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial
+      http://lonnyj.github.com/liquibase-spatial/liquibase-spatial.xsd">
+
+    <changeSet author="padhyad" id="123456-26">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="fa_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787335568-11">
+        <preConditions>
+            <spatial:spatialSupported/>
+        </preConditions>
+        <createTable tableName="activity_fishing_activity">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="fishing_activity_pk"/>
+            </column>
+            <column name="geom" type="GEOMETRY(Multipoint, 4326)"/>
+            <column name="type_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_code_listid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="occurence" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="reason_code" type="VARCHAR(255)"/>
+            <column name="reason_code_list_id" type="VARCHAR(255)"/>
+            <column name="vessel_activity_code" type="VARCHAR(255)"/>
+            <column name="vessel_activity_code_list_id" type="VARCHAR(255)"/>
+            <column name="fishery_type_code" type="VARCHAR(255)"/>
+            <column name="fishery_type_code_list_id" type="VARCHAR(255)"/>
+            <column name="species_target_code" type="VARCHAR(255)"/>
+            <column name="species_target_code_list_id" type="VARCHAR(255)"/>
+            <column name="operation_quantity" type="FLOAT8"/>
+            <column name="operation_quantity_code" type="VARCHAR(255)"/>
+            <column name="calculated_operation_quantity" type="FLOAT8"/>
+            <column name="fishing_duration_measure" type="FLOAT8"/>
+            <column name="fishing_duration_measure_code" type="VARCHAR(255)"/>
+            <column name="calculated_fishing_duration" type="FLOAT8"/>
+            <column name="source_vessel_char_id" type="BIGINT"/>
+            <column name="dest_vessel_char_id" type="BIGINT"/>
+            <column name="fa_report_document_id" type="BIGINT"/>
+            <column name="related_fishing_activity_id" type="BIGINT"/>			
+            <column name="vessel_transport_guid" type="VARCHAR(255)"/>
+            <column name="flag_state" type="VARCHAR(255)" remarks="same as activity_vessel_transport_means.country "/>
+			<column name="calculated_start_time" type="TIMESTAMP WITHOUT TIME ZONE" remarks="Take the value from activity_fishing_activity.occurence IF not present then activity_delimited_period.start_date will be taken "/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-27" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="fa_seq"
+                tableName="activity_fishing_activity"/>
+    </changeSet>
+
+
+    <changeSet id="2662787354468-54" author="padhyad">
+        <spatial:createSpatialIndex tableName="activity_fishing_activity" indexName="activity_fishing_activity_index" geometryType="Multipoint" srid="4326">
+            <column name="geom" />
+        </spatial:createSpatialIndex>
+    </changeSet>
+
+
+    <changeSet author="padhyad (generated)" id="1462787324468-56">
+        <addForeignKeyConstraint baseColumnNames="fa_report_document_id" baseTableName="activity_fishing_activity" constraintName="fa_report_document_fa_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fa_report_document"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-69">
+        <addForeignKeyConstraint baseColumnNames="dest_vessel_char_id" baseTableName="activity_fishing_activity" constraintName="vessel_storage_charcterstics_dest_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_vessel_storage_characteristics"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-70">
+        <addForeignKeyConstraint baseColumnNames="source_vessel_char_id" baseTableName="activity_fishing_activity" constraintName="vessel_storage_charcterstics_source_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_vessel_storage_characteristics"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462797324468-70">
+        <addForeignKeyConstraint baseColumnNames="related_fishing_activity_id" baseTableName="activity_fishing_activity" constraintName="related_fishing_activity_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+		
+	
+</databaseChangeLog>

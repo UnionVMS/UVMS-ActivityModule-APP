@@ -2,9 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>fish.focus.uvms.maven</groupId>
+        <artifactId>uvms-pom</artifactId>
+        <relativePath />
+        <version>1.9</version>
+    </parent>
+
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>0.5.11-SNAPSHOT</version>
+    <version>0.5.14-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
     <url>http://www.your.site.com/</url>
@@ -31,7 +38,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.13-SNAPSHOT</activity.model>
+        <activity.model>0.5.13</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
@@ -59,21 +66,20 @@
         </application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
         </application.logfile.boot>
-        <hibernate.version>4.3.5.Final</hibernate.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
-        <geotools.version>14-M1</geotools.version>
-        <uvms.commons.version>2.0.21</uvms.commons.version>
+        <geotools.version>14.4</geotools.version>
+        <uvms.commons.version>2.0.27</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
-        <infinispan-directory-provider.version>8.2.4.Final</infinispan-directory-provider.version>
-        <usm4uvms.version>3.0.6</usm4uvms.version>
+        <usm4uvms.version>3.0.8</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <database.dialect>oracle</database.dialect>
-        <geotools.version>14-M1</geotools.version>
+        <geotools.version>14.4</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
 		
@@ -215,32 +221,25 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.4</version>
+                <version>3.6</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.2</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </dependency>
 
             <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
                 <version>${javaee.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-spatial</artifactId>
-                <version>${hibernate-spatial.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -260,12 +259,13 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-epsg-hsql</artifactId>
                 <version>${geotools.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.16</version>
+                <version>1.16.18</version>
             </dependency>
 
             <dependency>
@@ -303,27 +303,36 @@
                 <artifactId>jts2geojson</artifactId>
                 <version>0.7.0</version>
             </dependency>
-
-            <!-- don't delete needed for org.wololo -->
-            <dependency>
-                <groupId>com.vividsolutions</groupId>
-                <artifactId>jts</artifactId>
-                <version>1.13</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!-- If using JPA, add: -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate-entitymanager.version}</version>
-            </dependency>
-            <!-- Infinispan integration: -->
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-directory-provider</artifactId>
-                <version>${infinispan-directory-provider.version}</version>
-            </dependency>
+           	<dependency>
+				<groupId>fish.focus.uvms.maven</groupId>
+				<artifactId>uvms-pom-gis-deps</artifactId>
+				<version>1.9</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>fish.focus.uvms.maven</groupId>
+				<artifactId>uvms-pom-logging-deps</artifactId>
+				<version>1.9</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>fish.focus.uvms.maven</groupId>
+				<artifactId>uvms-pom-monitoring-deps</artifactId>
+				<version>1.9</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>fish.focus.uvms.maven</groupId>
+				<artifactId>uvms-pom-test-deps</artifactId>
+				<version>1.9</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>fish.focus.uvms.maven</groupId>
+				<artifactId>uvms-pom-arquillian-deps</artifactId>
+				<version>1.9</version>
+				<type>pom</type>
+			</dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-plugin-api -->
             <dependency>
@@ -331,30 +340,16 @@
                 <artifactId>maven-plugin-api</artifactId>
                 <version>${mave.plugin.api.version}</version>
             </dependency>
-
-
         </dependencies>
 
     </dependencyManagement>
 
-    <dependencies>
-
-        <!-- LOGGING DEPENDENCIES -->
+	<dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${sl4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.core.version}</version>
-        </dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+		</dependency>
+        
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
@@ -388,26 +383,10 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
-                    <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
-                        <encoding>${project.build.sourceEncoding}</encoding>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ejb-plugin</artifactId>
-                    <version>2.3</version>
                     <configuration>
                         <ejbVersion>3.1</ejbVersion>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.9</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -444,16 +423,6 @@
 
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
@@ -510,7 +479,7 @@
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
                         <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.8.1</version>
+                        <version>1.9.5</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -572,7 +541,7 @@
     </profiles>
 
     <modules>
-        <!-- <module>model</module>-->
+        <module>LIQUIBASE</module>
         <module>rest</module>
         <module>service</module>
         <module>message</module>

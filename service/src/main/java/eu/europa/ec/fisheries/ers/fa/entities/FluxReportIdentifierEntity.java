@@ -24,15 +24,15 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        "INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        "INNER JOIN flRepDoc.fluxFaReportMessage faRepMsg " +
+                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
+                        //"INNER JOIN flRepDoc.fluxFaReportMessage faRepMsg " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId"),
 
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_RELATED_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        "INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        "INNER JOIN flRepDoc.faReportDocument faRepDoc " +
+                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
+                        //"INNER JOIN flRepDoc.faReportDocument faRepDoc " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId")
 
