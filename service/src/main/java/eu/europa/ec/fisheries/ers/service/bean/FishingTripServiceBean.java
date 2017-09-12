@@ -614,6 +614,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
 
 
+
     @Override
     /**
      *  Returns TripWidgetDto based on the tripId and activityId
