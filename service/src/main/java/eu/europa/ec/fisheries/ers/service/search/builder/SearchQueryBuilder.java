@@ -151,6 +151,9 @@ public abstract class SearchQueryBuilder {
             case SPECIES: /* We need to do Right join here as one activity can have multiple catches and in the resultDTO we want to show all the species for the activity*/
                 appendRightJoinString(sql, joinString);
                 break;
+            case PERIOD_END:
+                appendLeftJoinString(sql, joinString);
+                break;
             default:
                 appendJoinFetchString(sql, joinString);
                 break;
@@ -288,7 +291,12 @@ public abstract class SearchQueryBuilder {
             sql.append(filterMappings.get(SearchFilter.QUANTITY_MIN).getCondition()).append(" and ").append(mapping);
             sql.append(" OR (aprod.calculatedWeightMeasure BETWEEN :").append(FilterMap.QUANTITY_MIN).append(" and :").append(FilterMap.QUANTITY_MAX + ")");
             sql.append(" ) ");
-        } else {
+        } else if(SearchFilter.PERIOD_END.equals(key) && !keySet.contains(SearchFilter.PERIOD_START)){
+            sql.append(" ( ");
+            sql.append(filterMappings.get(SearchFilter.PERIOD_END).getCondition()).append(" OR ");
+            sql.append(" a.calculatedStartTime <= :").append(FilterMap.OCCURENCE_END_DATE).append(" ");
+            sql.append(" ) ");
+        }else {
             sql.append(mapping);
         }
         return true;
