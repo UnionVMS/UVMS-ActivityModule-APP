@@ -291,12 +291,7 @@ public abstract class SearchQueryBuilder {
             sql.append(filterMappings.get(SearchFilter.QUANTITY_MIN).getCondition()).append(" and ").append(mapping);
             sql.append(" OR (aprod.calculatedWeightMeasure BETWEEN :").append(FilterMap.QUANTITY_MIN).append(" and :").append(FilterMap.QUANTITY_MAX + ")");
             sql.append(" ) ");
-        } else if(SearchFilter.PERIOD_END.equals(key) && !keySet.contains(SearchFilter.PERIOD_START)){
-            sql.append(" ( ");
-            sql.append(filterMappings.get(SearchFilter.PERIOD_END).getCondition()).append(" OR ");
-            sql.append(" a.calculatedStartTime <= :").append(FilterMap.OCCURENCE_END_DATE).append(" ");
-            sql.append(" ) ");
-        }else {
+        } else {
             sql.append(mapping);
         }
         return true;
