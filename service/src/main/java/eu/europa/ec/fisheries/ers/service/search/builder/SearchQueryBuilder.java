@@ -151,6 +151,9 @@ public abstract class SearchQueryBuilder {
             case SPECIES: /* We need to do Right join here as one activity can have multiple catches and in the resultDTO we want to show all the species for the activity*/
                 appendRightJoinString(sql, joinString);
                 break;
+            case PERIOD_END:
+                appendLeftJoinString(sql, joinString);
+                break;
             default:
                 appendJoinFetchString(sql, joinString);
                 break;

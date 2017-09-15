@@ -263,21 +263,22 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             throw new IllegalArgumentException("PARAMETER CANNOT BE NULL");
         }
 
-        VesselDetailsDTO detailsDTO;
+        VesselDetailsDTO detailsDTO=null;
 
         try {
 
             VesselTransportMeansEntity latestVesselByTripId = vesselTransportMeansDao.findLatestVesselByTripId(fishingTripId);
+            if(latestVesselByTripId !=null) {
+                FishingActivityEntity parent = latestVesselByTripId.getFishingActivity();
+                detailsDTO = VesselTransportMeansMapper.INSTANCE.map(latestVesselByTripId);
 
-            FishingActivityEntity parent = latestVesselByTripId.getFishingActivity();
-            detailsDTO = VesselTransportMeansMapper.INSTANCE.map(latestVesselByTripId);
+                getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
 
-            getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
-
-            if (parent != null) {
-                VesselStorageCharacteristicsEntity sourceVesselCharId = parent.getSourceVesselCharId();
-                if (detailsDTO != null) {
-                    detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(sourceVesselCharId));
+                if (parent != null) {
+                    VesselStorageCharacteristicsEntity sourceVesselCharId = parent.getSourceVesselCharId();
+                    if (detailsDTO != null) {
+                        detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(sourceVesselCharId));
+                    }
                 }
             }
 
@@ -611,6 +612,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
         return fishingTripIdLists;
     }
+
 
 
 
