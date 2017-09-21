@@ -36,7 +36,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     public static final String LSC = "LSC";
     public static final String BMS = "BMS";
 
-    private FaCatchesProcessorMapper() {
+    public FaCatchesProcessorMapper() {
 
     }
 
