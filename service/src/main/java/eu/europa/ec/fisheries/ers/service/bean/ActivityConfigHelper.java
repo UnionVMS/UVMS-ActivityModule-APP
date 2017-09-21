@@ -16,16 +16,13 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import eu.europa.ec.fisheries.ers.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
 
 @Stateless
-public class ActivityConfigHelper implements ConfigHelper {
+public class ActivityConfigHelper extends BaseActivityBean implements ConfigHelper {
 
-    @PersistenceContext(unitName = "activityPUpostgres")
-    protected EntityManager em;
 
     @Override
     public List<String> getAllParameterKeys() {
@@ -44,7 +41,7 @@ public class ActivityConfigHelper implements ConfigHelper {
     
 	@Override
 	public EntityManager getEntityManager() {
-		return em;
+		return super.getEntityManager();
 	}
 
 }
