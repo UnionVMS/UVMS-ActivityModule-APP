@@ -32,7 +32,7 @@ public class ActivityConfigHelper extends BaseActivityBean implements ConfigHelp
 
     @Override
     public String getModuleName() {
-        return "Activity";
+        return "activity";
     }
     
 	@Override
