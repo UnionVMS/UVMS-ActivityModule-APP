@@ -20,6 +20,6 @@ import java.util.Comparator;
 public class MovementTypeComparator implements Comparator<MovementType> {
     @Override
     public int compare(MovementType mov1, MovementType mov2) {
-        return mov1.getPositionTime().compare(mov2.getPositionTime());
+        return mov1.getPositionTime().compareTo(mov2.getPositionTime());
     }
 }

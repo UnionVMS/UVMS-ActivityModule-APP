@@ -375,9 +375,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date acceptedDate) throws ServiceException { // starting point = A, end point = B, calculated point = C
         Geometry point;
 
-        Long durationAB = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
-        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
-        Long durationBC = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - acceptedDate.getTime();
+        Long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
+        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().getTime();
+        Long durationBC = nextMovement.getPositionTime().getTime() - acceptedDate.getTime();
 
         try {
 
@@ -401,12 +401,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private Map<String, MovementType> getPreviousAndNextMovement(List<MovementType> movements, Date inputDate) throws ServiceException {
-        XMLGregorianCalendar date = convertDateToXmlGregorianCalendar(inputDate);
         Map<String, MovementType> movementMap = new HashMap<>();
         for (MovementType movement : movements) {
-            if (movement.getPositionTime().compare(date) <= 0) { // Find the previous movement
+            if (movement.getPositionTime().compareTo(inputDate) <= 0) { // Find the previous movement
                 movementMap.put(PREVIOUS, movement);
-            } else if (movement.getPositionTime().compare(date) > 0) { // Find the next movement
+            } else if (movement.getPositionTime().compareTo(inputDate) > 0) { // Find the next movement
                 movementMap.put(NEXT, movement);
                 break;
             }
@@ -414,15 +413,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return movementMap;
     }
 
-    private XMLGregorianCalendar convertDateToXmlGregorianCalendar(Date inputDate) throws ServiceException {
-        try {
-            GregorianCalendar c = new GregorianCalendar();
-            c.setTime(inputDate);
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-        }  catch (DatatypeConfigurationException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
-    }
 
     public void setDialect(DatabaseDialect dialect) {
         this.dialect = dialect;
