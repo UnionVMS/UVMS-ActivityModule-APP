@@ -17,7 +17,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
-import eu.europa.ec.fisheries.ers.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
 
 @Stateless
@@ -27,9 +26,6 @@ public class ActivityConfigHelper extends BaseActivityBean implements ConfigHelp
     @Override
     public List<String> getAllParameterKeys() {
         List<String> allParameterKeys = new ArrayList<String>();
-        for (ParameterKey parameterKey : ParameterKey.values()) {
-            allParameterKeys.add(parameterKey.getKey());
-        }
 
         return allParameterKeys;
     }
