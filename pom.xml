@@ -38,7 +38,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.13</activity.model>
+        <activity.model>0.5.14-SNAPSHOT</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
@@ -559,6 +559,19 @@
 
             <properties>
                 <scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</scm.connection>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>belgium-local</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>lv-snapshots</id>
+                    <url>https://apjenp01.dg3.be/nexus/repository/maven-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <properties>
+                <focus-pom.java.version>1.8</focus-pom.java.version>
             </properties>
         </profile>
     </profiles>
