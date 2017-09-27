@@ -6,12 +6,12 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.9</version>
+        <version>1.11</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>0.5.14-SNAPSHOT</version>
+    <version>0.5.15-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
     <url>http://www.your.site.com/</url>
@@ -43,21 +43,22 @@
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.5</spatial.model.version>
-        <exchange.model>3.0.5</exchange.model>
-        <rules.model>2.0.7</rules.model>
-        <mdr.model.version>0.5.1</mdr.model.version>
+        <exchange.model>3.0.7</exchange.model>
+        <rules.model>3.0.8</rules.model>
+        <uvms.config.version>3.1.1</uvms.config.version>
+        <mdr.model.version>0.5.2</mdr.model.version>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <javaee.version>7.0</javaee.version>
-        <sl4j.version>1.7.12</sl4j.version>
-        <logback.version>1.1.2</logback.version>
+        <sl4j.version>1.7.25</sl4j.version>
+        <logback.version>1.2.3</logback.version>
         <mapstruct.version>1.1.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
-        <logback.core.version>1.1.2</logback.core.version>
-        <asset.model.version>3.0.0</asset.model.version>
-        <movement.model.version>3.0.4</movement.model.version>
+        <logback.core.version>1.2.3</logback.core.version>
+        <asset.model.version>3.0.7</asset.model.version>
+        <movement.model.version>3.0.8</movement.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
@@ -69,7 +70,7 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14.4</geotools.version>
-        <uvms.commons.version>2.0.27</uvms.commons.version>
+        <uvms.commons.version>2.0.28</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
@@ -128,7 +129,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.model.version}</version>
-                <classifier>xmlgregoriancalendar</classifier>
+                <classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -146,8 +147,24 @@
                         <groupId>eu.europa.ec.fisheries.uvms</groupId>
                         <artifactId>uvms-commons</artifactId>
                     </exclusion>
+                    <exclusion>
+                    	<groupId>commons-logging</groupId>
+                    	<artifactId>commons-logging</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
+            
+	        <dependency>
+	            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+	            <artifactId>uvms-config</artifactId>
+	            <version>${uvms.config.version}</version>
+	            <exclusions>
+	            	<exclusion>
+	            		<groupId>eu.europa.ec.fisheries.uvms</groupId>
+            			<artifactId>uvms-commons</artifactId>	            		
+	            	</exclusion>
+	            </exclusions>
+	        </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
@@ -160,6 +177,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model}</version>
+                <classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -186,6 +204,12 @@
                 <artifactId>uvms-test</artifactId>
                 <version>${uvms.test.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                	<exclusion>
+                    	<groupId>commons-logging</groupId>
+                    	<artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -271,19 +295,47 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>18.0</version>
+                <version>20.0</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxb-provider</artifactId>
                 <version>3.0.11.Final</version>
+                <exclusions>
+                	<exclusion>
+                    	<groupId>commons-logging</groupId>
+                    	<artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                    	<groupId>javax.xml.bind</groupId>
+    					<artifactId>jaxb-api</artifactId>                    	
+                    </exclusion>
+                    <exclusion>
+                    	<groupId>com.sun.xml.bind</groupId>
+    					<artifactId>jaxb-impl</artifactId>                    	
+                    </exclusion>                	                                    	
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-multipart-provider</artifactId>
                 <version>3.0.11.Final</version>
+                <exclusions>
+                	<exclusion>
+                    	<groupId>commons-logging</groupId>
+                    	<artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                    	<groupId>javax.xml.bind</groupId>
+    					<artifactId>jaxb-api</artifactId>                    	
+                    </exclusion>
+                    <exclusion>
+                    	<groupId>com.sun.xml.bind</groupId>
+    					<artifactId>jaxb-impl</artifactId>                    	
+                    </exclusion>                	
+                </exclusions>                
             </dependency>
 
             <dependency>
@@ -306,40 +358,55 @@
            	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.9</version>
+				<version>1.11</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.9</version>
+				<version>1.11</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.9</version>
+				<version>1.11</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.9</version>
+				<version>1.11</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.9</version>
+				<version>1.11</version>
 				<type>pom</type>
 			</dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-plugin-api -->
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
                 <version>${mave.plugin.api.version}</version>
             </dependency>
+            <dependency>
+    			<groupId>ch.qos.logback</groupId>
+    			<artifactId>logback-core</artifactId>
+    			<version>1.2.3</version>
+    		</dependency>
+    		<dependency>
+    			<groupId>ch.qos.logback</groupId>
+    			<artifactId>logback-classic</artifactId>
+    			<version>1.2.3</version>
+    		</dependency>
+    		<dependency>
+    		  <groupId>org.slf4j</groupId>
+  			  <artifactId>slf4j-api</artifactId>
+    		  <version>1.7.25</version>
+    		</dependency>
+            
         </dependencies>
 
     </dependencyManagement>
@@ -391,7 +458,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.0.4</version>
                     <executions>
                         <execution>
                             <!-- This id must match the -Prelease-profile id value or else sources will be "uploaded" twice, which causes Nexus to fail -->
@@ -405,7 +471,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -433,11 +498,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.0.1</version>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
@@ -445,43 +505,6 @@
                         <exclude>**/*ITest.java</exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.6.201602180812</version>
-                <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
-                    <append>true</append>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>jacoco-initialize</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>jacoco-site</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven.release.plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.9.5</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

@@ -118,7 +118,7 @@ public abstract class SearchQueryBuilder {
         }
         getJoinPartForSortingOptions(sql, query);
 
-//        LOG.debug("Generated SQL for JOIN Part :" + sql);
+     //   LOG.debug("Generated SQL for JOIN Part :" + sql);
         return sql;
     }
 
@@ -150,6 +150,9 @@ public abstract class SearchQueryBuilder {
                 break;
             case SPECIES: /* We need to do Right join here as one activity can have multiple catches and in the resultDTO we want to show all the species for the activity*/
                 appendRightJoinString(sql, joinString);
+                break;
+            case PERIOD_END:
+                appendLeftJoinString(sql, joinString);
                 break;
             case CONTACT_ROLE_CODE:
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);

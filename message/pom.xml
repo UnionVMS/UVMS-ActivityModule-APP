@@ -9,10 +9,20 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>0.5.14-SNAPSHOT</version>
+        <version>0.5.15-SNAPSHOT</version>
     </parent>
     
     <dependencies>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms</groupId>
+			<artifactId>uvms-config</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
+    		<artifactId>audit-model</artifactId>
+    		<version>3.0.5</version>		
+		</dependency>
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>

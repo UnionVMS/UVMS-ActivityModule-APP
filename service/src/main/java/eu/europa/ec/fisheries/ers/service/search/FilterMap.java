@@ -222,7 +222,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FROM, new FilterDetails(" fpFrom.fluxPartyIdentifiers fpiFrom", "fpiFrom.fluxPartyIdentifierId =:" + FROM_ID + StringUtils.SPACE));
         // filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, "( dp.startDate >= :" + OCCURENCE_START_DATE + "  OR a.occurence  >= :" + OCCURENCE_START_DATE + " )"));
         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "   a.calculatedStartTime  >= :" + OCCURENCE_START_DATE + " "));
-        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, " dp.endDate <= :" + OCCURENCE_END_DATE));
+        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, " (dp.endDate <= :" + OCCURENCE_END_DATE+" OR  a.calculatedStartTime <= :"+ OCCURENCE_END_DATE +")") );
         filterMappings.put(SearchFilter.VESSEL_NAME, new FilterDetails("fa.vesselTransportMeans vt", "vt.name IN (:" + VESSEL_IDENTITY_NAME + ")"));
         filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, new FilterDetails("vt.vesselIdentifiers vi", "vi.vesselIdentifierId IN (:" + VESSEL_IDENTIFIRE + ")"));
         filterMappings.put(SearchFilter.VESSEL_GUIDS, new FilterDetails("fa.vesselTransportMeans vtMeans", "vtMeans.guid IN (:" + VTM_GUIDS + ")"));

@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>0.5.14-SNAPSHOT</version>
+        <version>0.5.15-SNAPSHOT</version>
     </parent> 
 
     <build>
@@ -19,7 +19,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
-                <version>2.7</version>
                 <configuration>
                     <modules>
                         <ejbModule>

@@ -12,10 +12,12 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
@@ -31,7 +33,13 @@ import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -54,6 +62,10 @@ public class FishingActivityResource extends UnionVMSResource {
 
     @EJB
     private ActivityService activityService;
+
+    @EJB
+    private FishingTripService fishingTripService;
+
 
     @EJB
     private USMService usmService;
@@ -98,6 +110,28 @@ public class FishingActivityResource extends UnionVMSResource {
         log.info("Successful retrieved");
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
+    }
+
+    @POST
+    @Path("/listTrips")
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response listFishingTripsByQuery(@Context HttpServletRequest request,
+                                               @HeaderParam("scopeName") String scopeName,
+                                               @HeaderParam("roleName") String roleName,
+                                               FishingActivityQuery fishingActivityQuery) throws ServiceException {
+
+        log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        if (fishingActivityQuery == null) {
+            return createErrorResponse("Query to find list is null.");
+        }
+        String username = request.getRemoteUser();
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
+        log.info("Successful retrieved");
+        FishingTripResponse fishingTripIdsForFilter = fishingTripService.getFishingTripIdsForFilter(fishingActivityQuery);
+        return createSuccessResponse(fishingTripIdsForFilter);
     }
 
     @GET

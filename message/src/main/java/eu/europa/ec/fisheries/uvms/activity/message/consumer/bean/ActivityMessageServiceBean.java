@@ -53,7 +53,7 @@ public class ActivityMessageServiceBean extends AbstractProducer {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ActivityMessageErrorEvent EventMessage message){
         try {
-            log.info("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getJmsMessage().getJMSMessageID(),
+            log.info("Sending message back to recipient from ActivityModule with correlationId {} on queue: {}", message.getJmsMessage().getJMSMessageID(),
                     message.getJmsMessage().getJMSReplyTo());
             Session session = getSession();
             String data = JAXBMarshaller.marshallJaxBObjectToString(message.getFault());
@@ -61,8 +61,8 @@ public class ActivityMessageServiceBean extends AbstractProducer {
             response.setJMSCorrelationID(message.getJmsMessage().getJMSMessageID());
             session.createProducer(message.getJmsMessage().getJMSReplyTo()).send(response);
         } catch (ActivityModelMarshallException | JMSException e) {
-            log.error("Error when returning module spatial request", e);
-            log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace());
+            log.error("Error when returning module activity request", e);
+            log.error("[ Error when returning module activity request. ] {} {}", e.getMessage(), e.getStackTrace());
         } finally {
             disconnectQueue();
         }
