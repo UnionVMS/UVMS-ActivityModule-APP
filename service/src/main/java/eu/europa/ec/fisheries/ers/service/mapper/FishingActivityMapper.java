@@ -11,24 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
@@ -40,6 +23,7 @@ import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -159,9 +143,25 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselIdentifiers", expression = "java(getVesselIdentifierTypeList(entity))"),
             @Mapping(target = "isCorrection",  expression = "java(getCorrection(entity))"),
             @Mapping(target = "tripId",  expression = "java(getFishingTripId(entity))"),
-            @Mapping(target = "flagState",  expression = "java(getFlagState(entity))")
+            @Mapping(target = "flagState",  expression = "java(getFlagState(entity))"),
+            @Mapping(target = "occurence", source = "occurence"),
+            @Mapping(target = "landingReferencedID", expression = "java(getFluxReportIdentifierId(entity))"),
+            @Mapping(target = "landingState", expression = "java(getLandingCountryId(entity))"),
     })
     public abstract FishingActivitySummary mapToFishingActivitySummary(FishingActivityEntity entity);
+
+    @Mappings({
+            @Mapping(target = "role", expression = "java(getRole(entity))"),
+            @Mapping(target = "title", source = "contactPerson.title"),
+            @Mapping(target = "givenName", source = "contactPerson.givenName"),
+            @Mapping(target = "middleName", source = "contactPerson.middleName"),
+            @Mapping(target = "familyName", source = "contactPerson.familyName"),
+            @Mapping(target = "familyNamePrefix", source = "contactPerson.familyNamePrefix"),
+            @Mapping(target = "nameSuffix", source = "contactPerson.nameSuffix"),
+            @Mapping(target = "gender", source = "contactPerson.gender"),
+            @Mapping(target = "alias", source = "contactPerson.alias")
+    })
+    public abstract VesselContactPartyType mapToVesselContactParty(ContactPartyEntity entity);
 
     @Mappings({
             @Mapping(target = "fishingActivityId", source = "id"),
@@ -767,7 +767,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return null;
     }
 
-
     private boolean isItDupicateOrNull(String valueTocheck, List<String> listTobeCheckedAgainst){
         if(valueTocheck == null)
             return true;
@@ -776,6 +775,34 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return true;
 
         return false;
+    }
+
+    protected String getRole(ContactPartyEntity entity) {
+        if ((entity.getContactPartyRole() != null)
+                && (!entity.getContactPartyRole().isEmpty())) {
+            return entity.getContactPartyRole().iterator().next().getRoleCode();
+        }
+        return null;
+    }
+
+    protected String getFluxReportIdentifierId(FishingActivityEntity entity) {
+        if ((entity.getFaReportDocument() != null)
+                && (entity.getFaReportDocument().getFluxReportDocument() != null)
+                && (!entity.getFaReportDocument().getFluxReportDocument().getFluxReportIdentifiers().isEmpty())) {
+            return entity.getFaReportDocument().getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId();
+        }
+        return null;
+    }
+
+    protected String getLandingCountryId(FishingActivityEntity entity) {
+        if (entity.getFluxLocations() != null) {
+            for (FluxLocationEntity fluxLocation : entity.getFluxLocations()) {
+                if (FluxLocationCatchTypeEnum.FA_RELATED.getType().equals(fluxLocation.getFluxLocationType())) {
+                return fluxLocation.getCountryId();
+                }
+            }
+        }
+        return null;
     }
 
 }

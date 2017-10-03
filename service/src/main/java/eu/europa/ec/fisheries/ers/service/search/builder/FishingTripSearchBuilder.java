@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
@@ -22,17 +23,14 @@ import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 //import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
@@ -116,8 +114,16 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
             }
 
             FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
-            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId()))
-                fishingActivityLists.add(FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity()));// Collect Fishing Activity data
+            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId())) {
+                FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity());
+                ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
+                if (contactParty != null) {
+                    VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
+                    fishingActivitySummary.setVesselContactParty(vesselContactParty);
+                }
+
+                fishingActivityLists.add(fishingActivitySummary);
+            }
         }
     }
 
@@ -131,5 +137,17 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
             geomList.add(geometry);
         }
         return geomList;
+    }
+
+    private ContactPartyEntity getContactParty(FishingActivityEntity fishingActivity)
+    {
+        if ((fishingActivity.getFaReportDocument() != null)
+                && (fishingActivity.getFaReportDocument().getVesselTransportMeans() != null)
+                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().isEmpty())
+                && (fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty() != null)
+                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().isEmpty())) {
+            return fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().iterator().next();
+        }
+        return null;
     }
 }

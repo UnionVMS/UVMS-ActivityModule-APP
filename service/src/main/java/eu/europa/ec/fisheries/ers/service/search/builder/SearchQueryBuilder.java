@@ -154,6 +154,10 @@ public abstract class SearchQueryBuilder {
             case PERIOD_END:
                 appendLeftJoinString(sql, joinString);
                 break;
+            case CONTACT_ROLE_CODE:
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinFetchString(sql, joinString);
+                break;
             default:
                 appendJoinFetchString(sql, joinString);
                 break;
