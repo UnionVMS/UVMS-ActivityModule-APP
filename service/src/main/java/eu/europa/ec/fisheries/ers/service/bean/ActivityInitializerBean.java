@@ -11,15 +11,28 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.uvms.init.AbstractModuleInitializerBean;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import java.io.InputStream;
+import java.util.TimeZone;
 
 /**
  * Created by padhyad on 5/2/2016.
  */
 @Singleton
+@Startup
+@Slf4j
 public class ActivityInitializerBean extends AbstractModuleInitializerBean {
+
+    @PostConstruct
+    void init() {
+        log.info("In InitializeBean Current Default timezone is:"+ TimeZone.getDefault().getDisplayName());
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        log.info("New Default timezone set: "+  TimeZone.getDefault().getDisplayName());
+    }
 
     @Override
     protected InputStream getDeploymentDescriptorRequest() {
