@@ -29,7 +29,7 @@ public class ActivityInitializerBean extends AbstractModuleInitializerBean {
 
     @PostConstruct
     void init() {
-        log.info("In InitializeBean Current Default timezone is:"+ TimeZone.getDefault().getDisplayName());
+      
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         log.info("New Default timezone set: "+  TimeZone.getDefault().getDisplayName());
     }
