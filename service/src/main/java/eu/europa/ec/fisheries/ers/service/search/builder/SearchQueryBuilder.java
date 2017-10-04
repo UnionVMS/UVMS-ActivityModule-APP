@@ -118,16 +118,15 @@ public abstract class SearchQueryBuilder {
         }
         getJoinPartForSortingOptions(sql, query);
 
-//        LOG.debug("Generated SQL for JOIN Part :" + sql);
+     //   LOG.debug("Generated SQL for JOIN Part :" + sql);
         return sql;
     }
 
     private  void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
         switch (key) {
             case MASTER:
-                if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1) {  // If vesssel table is already joined, use join string accordingly
-                    joinString = FilterMap.MASTER_MAPPING;
-                }
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.CONTACT_PARTY_TABLE_ALIAS);
                 appendJoinFetchString(sql, joinString);
                 break;
             case VESSEL_IDENTIFIRE:
@@ -151,8 +150,12 @@ public abstract class SearchQueryBuilder {
             case SPECIES: /* We need to do Right join here as one activity can have multiple catches and in the resultDTO we want to show all the species for the activity*/
                 appendRightJoinString(sql, joinString);
                 break;
+            case PERIOD_END:
+                appendLeftJoinString(sql, joinString);
+                break;
             case CONTACT_ROLE_CODE:
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.CONTACT_PARTY_TABLE_ALIAS);
                 appendJoinFetchString(sql, joinString);
                 break;
             default:

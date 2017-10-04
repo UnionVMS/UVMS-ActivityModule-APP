@@ -13,14 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
@@ -29,6 +21,14 @@ import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -51,6 +51,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddress.getCountryID().getValue(), structuredAddressEntity.getCountry());
         assertEquals(structuredAddress.getCountryName().getValue(), structuredAddressEntity.getCountryName());
         assertEquals(structuredAddress.getCountrySubDivisionName().getValue(), structuredAddressEntity.getCountrySubdivisionName());
+        assertEquals(structuredAddress.getCountryID().getSchemeID(), structuredAddressEntity.getCountryIdSchemeId());
         assertEquals(structuredAddress.getPlotIdentification().getValue(), structuredAddressEntity.getPlotId());
         assertEquals(structuredAddress.getPostcodeCode().getValue(), structuredAddressEntity.getPostcode());
         assertEquals(structuredAddress.getPostOfficeBox().getValue(), structuredAddressEntity.getPostOfficeBox());
@@ -76,6 +77,7 @@ public class StructuredAddressMapperTest {
         assertEquals(structuredAddress.getCountryID().getValue(), structuredAddressEntity.getCountry());
         assertEquals(structuredAddress.getCountryName().getValue(), structuredAddressEntity.getCountryName());
         assertEquals(structuredAddress.getCountrySubDivisionName().getValue(), structuredAddressEntity.getCountrySubdivisionName());
+        assertEquals(structuredAddress.getCountryID().getSchemeID(), structuredAddressEntity.getCountryIdSchemeId());
         assertEquals(structuredAddress.getPlotIdentification().getValue(), structuredAddressEntity.getPlotId());
         assertEquals(structuredAddress.getPostcodeCode().getValue(), structuredAddressEntity.getPostcode());
         assertEquals(structuredAddress.getPostOfficeBox().getValue(), structuredAddressEntity.getPostOfficeBox());

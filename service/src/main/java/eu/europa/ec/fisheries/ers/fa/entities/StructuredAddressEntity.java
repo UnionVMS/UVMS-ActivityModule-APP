@@ -10,202 +10,204 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_structured_address")
 public class StructuredAddressEntity implements Serializable {
 
-	@Id
-	@Column(name = "id", unique = true, nullable = false)
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "str_add_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "contact_party_id")
-	private ContactPartyEntity contactParty;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contact_party_id")
+    private ContactPartyEntity contactParty;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "flux_location_id")
-	private FluxLocationEntity fluxLocation;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flux_location_id")
+    private FluxLocationEntity fluxLocation;
 
-	@Column(name = "block_name", length = 1000)
-	private String blockName;
+    @Column(name = "block_name", length = 1000)
+    private String blockName;
 
-	@Column(name = "building_name", length = 1000)
-	private String buildingName;
+    @Column(name = "building_name", length = 1000)
+    private String buildingName;
 
-	@Column(name = "city_name")
-	private String cityName;
+    @Column(name = "city_name")
+    private String cityName;
 
-	@Column(name = "city_subdivision_name")
-	private String citySubdivisionName;
+    @Column(name = "city_subdivision_name")
+    private String citySubdivisionName;
 
-	@Column(name = "country")
-	private String country;
+    @Column(name = "country")
+    private String country;
 
-	@Column(name = "country_name")
-	private String countryName;
+    @Column(name = "country_name")
+    private String countryName;
 
-	@Column(name = "country_subdivision_name")
-	private String countrySubdivisionName;
+    @Column(name = "country_subdivision_name")
+    private String countrySubdivisionName;
 
-	@Column(name = "address_id")
-	private String addressId;
+    @Column(name = "country_id_scheme_id")
+    private String countryIdSchemeId;
 
-	@Column(name = "plot_id", length = 1000)
-	private String plotId;
+    @Column(name = "address_id")
+    private String addressId;
 
-	@Column(name = "post_office_box")
-	private String postOfficeBox;
+    @Column(name = "plot_id", length = 1000)
+    private String plotId;
 
-	@Column(name = "postcode")
-	private String postcode;
+    @Column(name = "post_office_box")
+    private String postOfficeBox;
 
-	@Column(name = "streetname", length = 1000)
-	private String streetName;
+    @Column(name = "postcode")
+    private String postcode;
 
-	@Column(name = "structured_address_type")
-	private String structuredAddressType;
+    @Column(name = "streetname", length = 1000)
+    private String streetName;
 
-	public StructuredAddressEntity() {
-		super();
-	}
+    @Column(name = "structured_address_type")
+    private String structuredAddressType;
 
-	public int getId() {
-		return this.id;
-	}
+    public StructuredAddressEntity() {
+        super();
+    }
 
-	public ContactPartyEntity getContactParty() {
-		return this.contactParty;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setContactParty(
-			ContactPartyEntity contactParty) {
-		this.contactParty = contactParty;
-	}
+    public ContactPartyEntity getContactParty() {
+        return this.contactParty;
+    }
 
-	public FluxLocationEntity getFluxLocation() {
-		return this.fluxLocation;
-	}
+    public void setContactParty(
+            ContactPartyEntity contactParty) {
+        this.contactParty = contactParty;
+    }
 
-	public void setFluxLocation(
-			FluxLocationEntity fluxLocation) {
-		this.fluxLocation = fluxLocation;
-	}
+    public FluxLocationEntity getFluxLocation() {
+        return this.fluxLocation;
+    }
 
-	public String getBlockName() {
-		return this.blockName;
-	}
+    public void setFluxLocation(
+            FluxLocationEntity fluxLocation) {
+        this.fluxLocation = fluxLocation;
+    }
 
-	public void setBlockName(String blockName) {
-		this.blockName = blockName;
-	}
+    public String getBlockName() {
+        return this.blockName;
+    }
 
-	public String getBuildingName() {
-		return this.buildingName;
-	}
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
+    }
 
-	public void setBuildingName(String buildingName) {
-		this.buildingName = buildingName;
-	}
+    public String getBuildingName() {
+        return this.buildingName;
+    }
 
-	public String getCityName() {
-		return this.cityName;
-	}
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
+    }
 
-	public void setCityName(String cityName) {
-		this.cityName = cityName;
-	}
+    public String getCityName() {
+        return this.cityName;
+    }
 
-	public String getCitySubdivisionName() {
-		return this.citySubdivisionName;
-	}
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
 
-	public void setCitySubdivisionName(String citySubdivisionName) {
-		this.citySubdivisionName = citySubdivisionName;
-	}
+    public String getCitySubdivisionName() {
+        return this.citySubdivisionName;
+    }
 
-	public String getCountry() {
-		return this.country;
-	}
+    public void setCitySubdivisionName(String citySubdivisionName) {
+        this.citySubdivisionName = citySubdivisionName;
+    }
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
+    public String getCountry() {
+        return this.country;
+    }
 
-	public String getCountryName() {
-		return this.countryName;
-	}
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
-	}
+    public String getCountryName() {
+        return this.countryName;
+    }
 
-	public String getCountrySubdivisionName() {
-		return this.countrySubdivisionName;
-	}
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
 
-	public void setCountrySubdivisionName(String countrySubdivisionName) {
-		this.countrySubdivisionName = countrySubdivisionName;
-	}
+    public String getCountrySubdivisionName() {
+        return this.countrySubdivisionName;
+    }
 
-	public String getAddressId() {
-		return this.addressId;
-	}
+    public void setCountrySubdivisionName(String countrySubdivisionName) {
+        this.countrySubdivisionName = countrySubdivisionName;
+    }
 
-	public void setAddressId(String addressId) {
-		this.addressId = addressId;
-	}
+    public String getCountryIdSchemeId() {
+        return countryIdSchemeId;
+    }
 
-	public String getPlotId() {
-		return this.plotId;
-	}
+    public void setCountryIdSchemeId(String countryIdSchemeId) {
+        this.countryIdSchemeId = countryIdSchemeId;
+    }
 
-	public void setPlotId(String plotId) {
-		this.plotId = plotId;
-	}
+    public String getAddressId() {
+        return this.addressId;
+    }
 
-	public String getPostOfficeBox() {
-		return this.postOfficeBox;
-	}
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
+    }
 
-	public void setPostOfficeBox(String postOfficeBox) {
-		this.postOfficeBox = postOfficeBox;
-	}
+    public String getPlotId() {
+        return this.plotId;
+    }
 
-	public String getPostcode() {
-		return this.postcode;
-	}
+    public void setPlotId(String plotId) {
+        this.plotId = plotId;
+    }
 
-	public void setPostcode(String postcode) {
-		this.postcode = postcode;
-	}
+    public String getPostOfficeBox() {
+        return this.postOfficeBox;
+    }
 
-	public String getStreetName() {
-		return this.streetName;
-	}
+    public void setPostOfficeBox(String postOfficeBox) {
+        this.postOfficeBox = postOfficeBox;
+    }
 
-	public void setStreetName(String streetName) {
-		this.streetName = streetName;
-	}
+    public String getPostcode() {
+        return this.postcode;
+    }
 
-	public String getStructuredAddressType() {
-		return structuredAddressType;
-	}
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
 
-	public void setStructuredAddressType(String structuredAddressType) {
-		this.structuredAddressType = structuredAddressType;
-	}
+    public String getStreetName() {
+        return this.streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    public String getStructuredAddressType() {
+        return structuredAddressType;
+    }
+
+    public void setStructuredAddressType(String structuredAddressType) {
+        this.structuredAddressType = structuredAddressType;
+    }
 }
