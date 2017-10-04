@@ -125,9 +125,8 @@ public abstract class SearchQueryBuilder {
     private  void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
         switch (key) {
             case MASTER:
-                if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1) {  // If vesssel table is already joined, use join string accordingly
-                    joinString = FilterMap.MASTER_MAPPING;
-                }
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.CONTACT_PARTY_TABLE_ALIAS);
                 appendJoinFetchString(sql, joinString);
                 break;
             case VESSEL_IDENTIFIRE:
@@ -156,6 +155,7 @@ public abstract class SearchQueryBuilder {
                 break;
             case CONTACT_ROLE_CODE:
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.CONTACT_PARTY_TABLE_ALIAS);
                 appendJoinFetchString(sql, joinString);
                 break;
             default:
