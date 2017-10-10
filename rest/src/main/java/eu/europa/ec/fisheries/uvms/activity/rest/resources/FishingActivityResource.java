@@ -90,6 +90,15 @@ public class FishingActivityResource extends UnionVMSResource {
     }
 
 
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Path("/commChannel")
+    public Response getCommunicationChannel() throws ServiceException {
+
+        return createSuccessResponse(FaReportSourceEnum.values());
+    }
+
+
     @POST
     @Path("/list")
     @Consumes(value = {MediaType.APPLICATION_JSON})
