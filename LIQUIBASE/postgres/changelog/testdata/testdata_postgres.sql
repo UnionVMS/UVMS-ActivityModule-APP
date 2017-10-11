@@ -5390,3 +5390,5 @@ SELECT pg_catalog.setval('vsl_trp_seq', 58, true);
 -- PostgreSQL database dump complete
 --
 
+update activity.activity_fishing_activity set calculated_start_time = occurence;
+
