@@ -15,6 +15,11 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_MODULE_ACTIVITY;
 
+ import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -23,12 +28,6 @@ import javax.enterprise.event.Observes;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-
-import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -51,12 +50,12 @@ public class ActivityMessageServiceBean extends AbstractProducer {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void sendModuleErrorResponseMessage(@Observes @ActivityMessageErrorEvent EventMessage message){
+    public void sendModuleErrorResponseMessage(@Observes @ActivityMessageErrorEvent EventMessage message) {
         try {
-            log.info("Sending message back to recipient from ActivityModule with correlationId {} on queue: {}", message.getJmsMessage().getJMSMessageID(),
-                    message.getJmsMessage().getJMSReplyTo());
-            Session session = getSession();
+            log.info("Sending message back to recipient from Activity Module with correlationId {} on queue: {}", message.getJmsMessage().getJMSMessageID());
             String data = JAXBMarshaller.marshallJaxBObjectToString(message.getFault());
+            this.connectToQueue();
+            Session session = getSession();
             TextMessage response = session.createTextMessage(data);
             response.setJMSCorrelationID(message.getJmsMessage().getJMSMessageID());
             session.createProducer(message.getJmsMessage().getJMSReplyTo()).send(response);

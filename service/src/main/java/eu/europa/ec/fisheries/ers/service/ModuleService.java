@@ -34,8 +34,8 @@ public abstract class ModuleService {
             log.error("UserFault error JMS message received with text: " + userFault.getFault());
             isErrorResponse = true;
         } catch (JAXBException e) {
-            //do nothing  since it's not a UserFault
-            log.error("Unexpected exception was thrown.", e);
+            //do nothing  since it's not a UserFault. Logging this error is wrong for the purpose of its usage..
+            //log.error("Unexpected exception was thrown.", e);
         }
 
         return isErrorResponse;
