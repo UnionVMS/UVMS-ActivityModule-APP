@@ -139,7 +139,7 @@ public class FishingActivityResource extends UnionVMSResource {
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         log.info("Successful retrieved");
-        FishingTripResponse fishingTripIdsForFilter = fishingTripService.getFishingTripIdsForFilter(fishingActivityQuery);
+        FishingTripResponse fishingTripIdsForFilter = fishingTripService.getFishingTripIdsForFilter(fishingActivityQuery,false);
         return createSuccessResponse(fishingTripIdsForFilter);
     }
 

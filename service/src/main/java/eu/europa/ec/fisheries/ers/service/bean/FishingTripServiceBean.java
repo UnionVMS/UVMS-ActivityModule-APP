@@ -91,6 +91,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -540,7 +541,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     @Override
-    public FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException {
+    public FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query, boolean includeFishingActivities) throws ServiceException {
         log.info("getFishingTripResponse For Filter");
         if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
@@ -558,11 +559,16 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
         log.debug("Fishing trips received from db:" + fishingTripList.size());
 
+        Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
+        log.debug("Total count of records: {} ", totalCountOfRecords);
+        FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripList,includeFishingActivities);
+        fishingTripResponse.setTotalCountOfRecords(new BigInteger(""+totalCountOfRecords));
+
         // build Fishing trip response from FishingTripEntityList and return
-        return buildFishingTripSearchRespose(fishingTripList);
+        return fishingTripResponse;
     }
 
-    public FishingTripResponse buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList) throws ServiceException {
+    public FishingTripResponse    buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList, boolean includeFishingActivities) throws ServiceException {
         if (fishingTripList == null || fishingTripList.isEmpty()) {
             return new FishingTripResponse();
         }
@@ -574,7 +580,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry = new HashMap<>(); // Stores unique Fishing tripIds and Geometries associated with its FA Report
 
 
-        fishingTripSearchBuilder.processFishingTripsToCollectUniqueTrips(fishingTripList, uniqueTripIdWithGeometry, fishingActivityLists, fishingTripIdsWithoutGeom); // process data to find out unique FishingTrip with their Geometries
+        fishingTripSearchBuilder.processFishingTripsToCollectUniqueTrips(fishingTripList, uniqueTripIdWithGeometry, fishingActivityLists, fishingTripIdsWithoutGeom,includeFishingActivities); // process data to find out unique FishingTrip with their Geometries
         checkThresholdForFishingTripList(uniqueTripIdWithGeometry); // Check if the size of unique Fishing trips is withing threshold specified
         List<FishingTripIdWithGeometry> fishingTripIdLists = getFishingTripIdWithGeometryList(uniqueTripIdWithGeometry); // Convert list of Geometries to WKT
         // fishingTripIdLists.addAll(fishingTripSearchBuilder.addFishingTripIdsWithoutGeomToResponseList(fishingTripIdsWithoutGeom)); // There could be some fishing trips without geometries, consider those trips as well

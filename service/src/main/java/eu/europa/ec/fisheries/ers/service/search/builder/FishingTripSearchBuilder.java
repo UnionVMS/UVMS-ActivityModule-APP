@@ -92,7 +92,8 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
      *
      * This method identifies unique FishingTripIdentifiers and collect Geometries for those trips.
      */
-    public void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom) {
+    public void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry,
+                                                        List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom,boolean includeFishingActivities) {
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 
@@ -113,18 +114,27 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
                 }
             }
 
-            FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
-            if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId())) {
-                FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity());
-                ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
-                if (contactParty != null) {
-                    VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
-                    fishingActivitySummary.setVesselContactParty(vesselContactParty);
+            if(includeFishingActivities) {
+                FishingActivitySummary fishingActivitySummary =getFishingActivitySummary( uniqueFishingActivityIdList, entity);
+                if(fishingActivitySummary!=null) {
+                    fishingActivityLists.add(fishingActivitySummary);
                 }
-
-                fishingActivityLists.add(fishingActivitySummary);
             }
         }
+    }
+
+    private FishingActivitySummary getFishingActivitySummary(Set<Integer> uniqueFishingActivityIdList, FishingTripEntity entity) {
+        FishingActivitySummary fishingActivitySummary =null;
+        FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
+        if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId())) {
+            fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity());
+            ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
+            if (contactParty != null) {
+                VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
+                fishingActivitySummary.setVesselContactParty(vesselContactParty);
+            }
+        }
+        return fishingActivitySummary;
     }
 
     @NotNull
