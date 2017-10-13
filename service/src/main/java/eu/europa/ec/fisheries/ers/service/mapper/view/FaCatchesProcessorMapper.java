@@ -10,7 +10,26 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.DestinationLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDetailsDto;
@@ -24,8 +43,6 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMappe
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.*;
 
 /**
  * Created by kovian on 03/03/2017.
@@ -166,7 +183,11 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         }
         setWeightsForSubGroup(groupDto, lscGroupDetailsDto, bmsGroupDetailsDto, lscGroupTotalWeight, lscGroupTotalUnits, bmsGroupTotalWeight, bmsGroupTotalUnits);
         // Put the 2 subgroup properties in the groupingDetailsMap (property of FaCatchGroupDto).
-        groupingDetailsMap.put(LSC, lscGroupDetailsDto);
+
+        List<FluxLocationDto> lscGroupDetailsDtoSpecifiedFluxLocations = lscGroupDetailsDto.getSpecifiedFluxLocations();
+        lscGroupDetailsDto.setSpecifiedFluxLocations(new ArrayList<>(new LinkedHashSet<>(lscGroupDetailsDtoSpecifiedFluxLocations))); // remove duplicates
+        List<FluxLocationDto> bmsGroupDetailsDtoSpecifiedFluxLocations = bmsGroupDetailsDto.getSpecifiedFluxLocations();
+        bmsGroupDetailsDto.setSpecifiedFluxLocations(new ArrayList<>(new LinkedHashSet<>(bmsGroupDetailsDtoSpecifiedFluxLocations))); // remove duplicates
         groupingDetailsMap.put(BMS, bmsGroupDetailsDto);
 
     }
@@ -247,6 +268,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         }
         List<DestinationLocationDto> destLocDtoList = groupDetailsDto.getDestinationLocation();
         List<FluxLocationDto> specifiedFluxLocDto = groupDetailsDto.getSpecifiedFluxLocations();
+
         for (FluxLocationEntity actLoc : fluxLocations) {
             String fluxLocationType = actLoc.getFluxLocationType();
             if (StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType())) {
