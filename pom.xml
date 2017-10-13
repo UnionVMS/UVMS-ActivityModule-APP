@@ -11,7 +11,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>0.5.15-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
     <url>http://www.your.site.com/</url>
@@ -38,7 +38,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.14-SNAPSHOT</activity.model>
+        <activity.model>1.0.0</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
