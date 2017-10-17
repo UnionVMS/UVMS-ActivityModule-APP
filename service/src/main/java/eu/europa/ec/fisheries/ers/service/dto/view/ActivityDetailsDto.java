@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
@@ -27,7 +28,6 @@ import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.ToString;
 import org.mockito.internal.util.collections.Sets;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -111,7 +111,7 @@ public class ActivityDetailsDto {
     public Map<String, Set<Object>> getCharacteristics() {
         Map<String, Set<Object>> characMap = null;
         if (fluxCharacteristics != null) {
-            characMap = Collections.emptyMap();
+            characMap = Maps.newHashMap();
             for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
 
                 Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();
@@ -285,14 +285,15 @@ public class ActivityDetailsDto {
     }
 
     private void add(String key, Object value, Map<String, Set<Object>> map) {
-
-        Set<Object> valueSet = map.get(key);
-        if (valueSet == null) {
-            valueSet = Sets.newSet();
-        } else {
-            valueSet.add(value);
+        if(key !=null) {
+            Set<Object> valueSet = map.get(key);
+            if (valueSet == null) {
+                valueSet = Sets.newSet();
+            } else if (value != null) {
+                    valueSet.add(value);
+            }
+            map.put(key, valueSet);
         }
-        map.put(key, valueSet);
     }
 
     public Set<FlapDocumentDto> getFlapDocuments() {
