@@ -129,7 +129,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -170,21 +169,18 @@
                 <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
                 <artifactId>exchange-model</artifactId>
                 <version>${exchange.model}</version>
-				<classifier>date</classifier>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model}</version>
-                <classifier>date</classifier>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-model</artifactId>
                 <version>${asset.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
 
             <dependency>
