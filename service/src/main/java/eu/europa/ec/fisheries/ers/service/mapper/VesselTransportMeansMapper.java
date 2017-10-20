@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
@@ -19,6 +20,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselPositionEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -91,6 +93,8 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         Set<VesselPositionEventEntity> vesselPositionEventEntities = new HashSet<>();
         for (VesselPositionEvent vesselPositionEvent : specifiedVesselPositionEvents) {
             VesselPositionEventEntity entity = VesselPositionEventMapper.INSTANCE.mapToVesselPositionEventEntity(vesselPositionEvent,vesselTransportMeansEntity);
+            Geometry point = GeometryUtils.createPoint(entity.getLongitude(), entity.getLatitude());
+            entity.setGeom(point);
             vesselPositionEventEntities.add(entity);
         }
         return vesselPositionEventEntities;

@@ -25,6 +25,7 @@
 			<column name="altitude" type="FLOAT8"/>
 			<column name="longitude" type="FLOAT8"/>
             <column name="latitude" type="FLOAT8"/>
+			<column name="geom" type="GEOMETRY(Point, 4326)"/>
         </createTable>
     </changeSet>
 	
