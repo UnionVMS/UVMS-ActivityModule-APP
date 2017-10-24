@@ -6,12 +6,12 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.11</version>
+        <version>1.12</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>0.5.15-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
     <url>http://www.your.site.com/</url>
@@ -38,15 +38,15 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>0.5.14-SNAPSHOT</activity.model>
+        <activity.model>1.0.0</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.5</spatial.model.version>
-        <exchange.model>3.0.7</exchange.model>
-        <rules.model>3.0.8</rules.model>
+        <exchange.model>4.0.3</exchange.model>
+        <rules.model>3.0.11</rules.model>
         <uvms.config.version>3.1.1</uvms.config.version>
-        <mdr.model.version>0.5.2</mdr.model.version>
+        <mdr.model.version>1.0.0</mdr.model.version>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,8 +57,8 @@
         <mapstruct.version>1.1.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.2.3</logback.core.version>
-        <asset.model.version>3.0.7</asset.model.version>
-        <movement.model.version>3.0.8</movement.model.version>
+        <asset.model.version>4.0.1</asset.model.version>
+        <movement.model.version>4.0.2</movement.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
@@ -70,7 +70,7 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14.4</geotools.version>
-        <uvms.commons.version>2.0.28</uvms.commons.version>
+        <uvms.commons.version>2.0.31</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
@@ -129,7 +129,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -170,21 +169,18 @@
                 <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
                 <artifactId>exchange-model</artifactId>
                 <version>${exchange.model}</version>
-				<classifier>date</classifier>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model}</version>
-                <classifier>date</classifier>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-model</artifactId>
                 <version>${asset.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -358,31 +354,31 @@
            	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.11</version>
+				<version>1.12</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.11</version>
+				<version>1.12</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.11</version>
+				<version>1.12</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.11</version>
+				<version>1.12</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.11</version>
+				<version>1.12</version>
 				<type>pom</type>
 			</dependency>
 
@@ -441,7 +437,7 @@
 
     <scm>
         <connection>${scm.connection}</connection>
-        <tag>HEAD</tag>
+        <tag>activity-1.0.1</tag>
     </scm>
 
 

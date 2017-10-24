@@ -41,6 +41,7 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -262,6 +263,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         if(searchMap == null)
             return;
 
+        validateInputFilters(searchMapWithMultipleValues);
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
 
         Iterator<Map.Entry<SearchFilter, String>> searchMapIterator = searchMap.entrySet().iterator();
@@ -269,6 +271,9 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             Map.Entry<SearchFilter, String> e = searchMapIterator.next();
             SearchFilter key = e.getKey();
             String value = e.getValue();
+            if(value == null)
+                throw new ServiceException("Null value present for the key:"+key+" Please provide correct input.");
+
             if (filtersWhichSupportMultipleValues.contains(key)) {
                 List<String> values = new ArrayList<>();
                 values.add(value);
@@ -279,6 +284,20 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
         query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleValues);
         query.setSearchCriteriaMap(searchMap);
+    }
+
+    private void validateInputFilters(Map<SearchFilter, List<String>> searchMapWithMultipleValues) throws ServiceException {
+        if(MapUtils.isNotEmpty(searchMapWithMultipleValues)){
+            Iterator<Map.Entry<SearchFilter, List<String>>> searchMapIterator = searchMapWithMultipleValues.entrySet().iterator();
+            while (searchMapIterator.hasNext()) {
+                Map.Entry<SearchFilter, List<String>> e = searchMapIterator.next();
+                SearchFilter key = e.getKey();
+                List<String> values = e.getValue();
+                if(values.contains(null) || values.contains("")){
+                    throw new ServiceException("Null value present for the key:"+key+" Please provide correct input.");
+                }
+            }
+        }
     }
 
     /*

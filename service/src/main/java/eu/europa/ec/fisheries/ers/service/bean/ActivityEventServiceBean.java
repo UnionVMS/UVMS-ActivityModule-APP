@@ -10,22 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.*;
-import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.activity.message.event.*;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -38,6 +22,40 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
+
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.EventService;
+import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageServiceBean;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 @LocalBean
 @Stateless
@@ -86,7 +104,7 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     @Override
-    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException {
+    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "FishingTripIds:");
         try {
             log.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
@@ -100,14 +118,14 @@ public class ActivityEventServiceBean implements EventService {
 
             producer.sendModuleResponseMessage(message.getJmsMessage(), response, producer.getModuleName());
             log.debug("Response sent back.");
-        } catch (ActivityModelMarshallException | JMSException e) {
+        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
     }
 
 
     @Override
-    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException {
+    public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message)  {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "FACatchSummaryReport:");
         try {
             log.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
@@ -115,7 +133,7 @@ public class ActivityEventServiceBean implements EventService {
             FACatchSummaryReportResponse faCatchSummaryReportResponse= faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
             producer.sendModuleResponseMessage(message.getJmsMessage(), response, producer.getModuleName());
-        } catch (ActivityModelMarshallException | JMSException e) {
+        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
 

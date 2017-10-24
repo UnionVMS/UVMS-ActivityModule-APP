@@ -13,6 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import com.vividsolutions.jts.geom.Geometry;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -71,6 +74,10 @@ public class VesselPositionEventEntity implements Serializable {
 
     @Column(name = "activity_type_code")
     private String activityTypeCode;
+
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    @Column(name = "geom")
+    private Geometry geom;
 
     public int getId() {
         return id;
@@ -147,6 +154,14 @@ public class VesselPositionEventEntity implements Serializable {
 
     public String getActivityTypeCode() {
         return activityTypeCode;
+    }
+
+    public Geometry getGeom() {
+        return geom;
+    }
+
+    public void setGeom(Geometry geom) {
+        this.geom = geom;
     }
 
     public void setActivityTypeCode(String activityTypeCode) {

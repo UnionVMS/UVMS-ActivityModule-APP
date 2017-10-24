@@ -151,7 +151,7 @@ public abstract class SearchQueryBuilder {
                 appendRightJoinString(sql, joinString);
                 break;
             case PERIOD_END:
-                appendLeftJoinString(sql, joinString);
+                appendLeftJoinFetchString(sql, joinString);
                 break;
             case CONTACT_ROLE_CODE:
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
@@ -170,6 +170,10 @@ public abstract class SearchQueryBuilder {
 
     protected void appendLeftJoinString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
+    }
+
+    protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
+        sql.append(LEFT).append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }
 
     protected void appendRightJoinString(StringBuilder sql, String joinString) {
@@ -361,13 +365,13 @@ public abstract class SearchQueryBuilder {
         sql.append(FilterMap.getFilterSortMappings().get(filter));
         sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
 
-        if (searchCriteriaMap.containsKey(filter)) {
+       /* if (searchCriteriaMap.containsKey(SearchFilter.PERIOD_START)) {
             sql.append(" where ");
-            sql.append(" ( dp1.startDate >= :startDate  OR a.occurence  >= :startDate ) ");
+            sql.append("  (dp1.startDate >= :startDate  OR a.occurence  >= :startDate)  ");
             if (searchCriteriaMap.containsKey(SearchFilter.PERIOD_END)) {
                 sql.append(" and  dp1.endDate <= :endDate ");
             }
-        }
+        }*/
         sql.append(" ) ");
         sql.append(" OR dp is null ) ");
         return sql;
