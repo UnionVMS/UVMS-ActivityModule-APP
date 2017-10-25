@@ -42,6 +42,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
@@ -438,7 +439,10 @@ public class BaseMapper {
         if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
             FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
             if (locationEntity != null) {
-                positionDto.setGeometry(GeometryMapper.INSTANCE.geometryToWkt(locationEntity.getGeom()).getValue());
+                StringWrapper geometryValue= GeometryMapper.INSTANCE.geometryToWkt(locationEntity.getGeom());
+                if(geometryValue !=null) {
+                    positionDto.setGeometry(geometryValue.getValue());
+                }
             }
         }
         return positionDto;
