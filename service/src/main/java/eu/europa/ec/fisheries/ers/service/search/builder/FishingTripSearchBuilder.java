@@ -93,7 +93,7 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
      * This method identifies unique FishingTripIdentifiers and collect Geometries for those trips.
      */
     public void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry,
-                                                        List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom,boolean includeFishingActivities) {
+                                                        List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom) {
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 
@@ -114,12 +114,12 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
                 }
             }
 
-            if(includeFishingActivities) {
+
                 FishingActivitySummary fishingActivitySummary =getFishingActivitySummary( uniqueFishingActivityIdList, entity);
                 if(fishingActivitySummary!=null) {
                     fishingActivityLists.add(fishingActivitySummary);
                 }
-            }
+
         }
     }
 

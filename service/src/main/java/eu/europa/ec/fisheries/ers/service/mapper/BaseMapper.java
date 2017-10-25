@@ -484,4 +484,28 @@ public class BaseMapper {
         return null;
     }
 
+
+    /**
+     * This method will return fishing trip start and end time
+     * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time
+     * fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
+     *
+     * @param fishingActivities
+     * @param fishingActivityType
+     * @return
+     */
+    public Date getFishingTripDateTimeFromFishingActivities(List<FishingActivityEntity> fishingActivities, String fishingActivityType) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivityType == null) {
+            return null;
+        }
+
+        for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
+
+            if (fishingActivityEntity != null && fishingActivityType.equals(fishingActivityEntity.getTypeCode()) && fishingActivityEntity.getCalculatedStartTime() != null) {
+                return fishingActivityEntity.getCalculatedStartTime();
+            }
+        }
+        return null;
+    }
+
 }
