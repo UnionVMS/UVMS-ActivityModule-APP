@@ -16,6 +16,8 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripIdSearchBuilder;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
@@ -27,7 +29,10 @@ import org.hibernate.Hibernate;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sanera on 23/08/2016.
@@ -99,6 +104,47 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return resultList;
     }
 
+
+    /**
+     * Get all the Fishing Trip entities for matching Filters
+     *
+     * @param query FishingActivityQuery
+     * @return
+     * @throws ServiceException
+     */
+    public  Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
+        Query listQuery = getQueryForFilterFishingTripIds(query);
+
+        PaginationDto pagination = query.getPagination();
+        if (pagination != null) {
+            log.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
+
+            listQuery.setFirstResult(pagination.getOffset());
+            listQuery.setMaxResults(pagination.getPageSize());
+        }
+
+        List<Object[]> resultList = listQuery.getResultList();
+        Hibernate.initialize(resultList);
+
+        if (CollectionUtils.isEmpty(resultList))
+            return Collections.emptySet();
+
+        Set<FishingTripId> fishingTripIds = new HashSet<>();
+
+        for(Object[] objArr :resultList){
+            try {
+                if(objArr !=null && objArr.length ==2){
+                    fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1]) );
+                }
+
+            } catch (Exception e) {
+                log.error("Could not map sql selection to FishingTripId object", e);
+            }
+        }
+
+        return fishingTripIds;
+    }
+
     public Integer getCountOfFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
         Query listQuery = getQueryForFilterFishingTrips(query);
 
@@ -117,6 +163,15 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         log.debug("SQL:" + sqlToGetActivityList);
 
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
+        return search.fillInValuesForTypedQuery(query, typedQuery);
+    }
+
+    private Query getQueryForFilterFishingTripIds(FishingActivityQuery query) throws ServiceException {
+        FishingTripIdSearchBuilder search = new FishingTripIdSearchBuilder();
+        StringBuilder sqlToGetActivityList = search.createSQL(query); // Create SQL Dynamically based on Filters provided
+        log.debug("SQL:" + sqlToGetActivityList);
+
+        TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(),Object[].class);
         return search.fillInValuesForTypedQuery(query, typedQuery);
     }
 }

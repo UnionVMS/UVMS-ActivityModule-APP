@@ -49,6 +49,7 @@ public class FilterMap {
     public static final String QUANTITY_MAX = "maxWeight";
     public static final String CONTACT_PERSON_NAME = "agent";
     public static final String TRIP_ID = "tripId";
+    public static final String TRIP_SCHEME_ID = "tripSchemeId";
     public static final String CONTACT_ROLE_CODE = "roleCode";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
     public static final String CONTACT_PARTY_TABLE_ALIAS = "vt.contactParty cparty";
@@ -155,6 +156,7 @@ public class FilterMap {
         filterQueryParameterMappings.put(SearchFilter.AREA_GEOM, AREA_GEOM);
         filterQueryParameterMappings.put(SearchFilter.TRIP_ID, TRIP_ID);
         filterQueryParameterMappings.put(SearchFilter.CONTACT_ROLE_CODE, CONTACT_ROLE_CODE);
+        filterQueryParameterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, TRIP_SCHEME_ID);
     }
 
     private static void populateFiltersWhichSupportMultipleValues() {
@@ -241,6 +243,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FA_REPORT_ID, new FilterDetails(StringUtils.SPACE, "fa.id =:" + FAREPORT_ID));
         filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(StringUtils.SPACE, "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
         filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     /**
