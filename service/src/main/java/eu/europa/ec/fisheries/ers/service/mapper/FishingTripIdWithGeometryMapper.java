@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
@@ -19,6 +20,9 @@ import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.model.StringWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
@@ -74,9 +78,9 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
             @Mapping(target = "schemeId", source = "dto.schemeID"),
             @Mapping(target = "relativeFirstFaDateTime", expression = "java(getRelativeFirstFishingActivityDateForTrip(fishingActivities))"),
             @Mapping(target = "relativeLastFaDateTime", expression = "java(getRelativeLastFishingActivityDateForTrip(fishingActivities))"),
-            @Mapping(target = "geometry", source = "geometry")
+            @Mapping(target = "geometry", expression = "java(getGeometryMultiPointForAllFishingActivities(fishingActivities))")
     })
-    public abstract FishingTripIdWithGeometry mapToFishingTripIdWithDetails(FishingTripId dto, String geometry, List<FishingActivityEntity> fishingActivities);
+    public abstract FishingTripIdWithGeometry mapToFishingTripIdWithDetails(FishingTripId dto,List<FishingActivityEntity> fishingActivities);
 
 
    /* protected String getFirstFishingActivity(List<FishingTripEntity> fishingTripList){
@@ -86,6 +90,31 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
       return  fishingTripList.get(0).getFishingActivity().getTypeCode();
 
     }*/
+
+    protected String getGeometryMultiPointForAllFishingActivities(List<FishingActivityEntity> fishingActivities){
+        if(CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) ==null){
+            return null;
+        }
+
+        String GeometryWkt=null;
+        List<Geometry> activityGeomList = new ArrayList<>();
+        for(FishingActivityEntity fishingActivityEntity : fishingActivities){
+            if(fishingActivityEntity.getGeom() !=null){
+                activityGeomList.add(fishingActivityEntity.getGeom());
+            }
+        }
+
+        if(CollectionUtils.isNotEmpty(activityGeomList)) {
+            Geometry geometry = GeometryUtils.createMultipoint(activityGeomList);
+            StringWrapper stringWrapper=GeometryMapper.INSTANCE.geometryToWkt(geometry);
+            if(stringWrapper !=null){
+                return stringWrapper.getValue();
+            }
+        }
+
+        return  GeometryWkt;
+
+    }
 
     protected String getFirstFishingActivityType(List<FishingActivityEntity> fishingActivities){
         if(CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) ==null){

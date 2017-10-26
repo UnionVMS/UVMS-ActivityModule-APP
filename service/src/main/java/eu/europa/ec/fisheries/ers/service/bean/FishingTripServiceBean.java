@@ -26,6 +26,7 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -64,12 +65,12 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
-import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
@@ -91,6 +92,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -555,11 +557,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             throw new ServiceException("Either PERIOD_START or PERIOD_END not present. Please provide values for both.");
         }
 
-        List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
-        log.debug("Fishing trips received from db:" + fishingTripList.size());
+        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
+        log.debug("Fishing trips received from db:" + fishingTripIds.size());
 
         // build Fishing trip response from FishingTripEntityList and return
-        return buildFishingTripSearchRespose(fishingTripList);
+        return buildFishingTripSearchRespose(fishingTripIds,true);
     }
 
     @Override
@@ -574,17 +576,54 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
         log.debug("Fishing trips received from db:" + fishingTripIds.size());
 
-        //Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
-        //log.debug("Total count of records: {} ", totalCountOfRecords);
-        List<FishingTripIdWithGeometry> FishingTripIdWithDetailsList = getFishingTripIdWithGeometries(null,fishingTripIds);
+        Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
+        log.debug("Total count of records: {} ", totalCountOfRecords);
+        FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripIds,false);
        // fishingTripResponse.setTotalCountOfRecords(new BigInteger(""+totalCountOfRecords));
-        FishingTripResponse fishingTripResponse = new FishingTripResponse();
-        fishingTripResponse.setFishingTripIdLists(FishingTripIdWithDetailsList);
+     //   FishingTripResponse fishingTripResponse = new FishingTripResponse();
+       // fishingTripResponse.setFishingTripIdLists(FishingTripIdWithDetailsList);
+        fishingTripResponse.setTotalCountOfRecords(BigInteger.valueOf(totalCountOfRecords));
         // build Fishing trip response from FishingTripEntityList and return
         return fishingTripResponse;
     }
 
-    public FishingTripResponse    buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList) throws ServiceException {
+    //*****************************************************************************************************************************************
+    public FishingTripResponse    buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds,boolean collectFishingActivities) throws ServiceException {
+        if (fishingTripIds == null || fishingTripIds.isEmpty()) {
+            return new FishingTripResponse();
+        }
+        List<Integer> uniqueActivityIdList  = new ArrayList<>();
+        List<FishingActivitySummary> fishingActivitySummaries = new ArrayList<>();
+
+        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
+        for (FishingTripId fishingTripId : fishingTripIds) {
+
+            FishingActivityQuery query = new FishingActivityQuery();
+            Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
+            searchCriteriaMap.put(SearchFilter.TRIP_ID, fishingTripId.getTripId());
+            searchCriteriaMap.put(SearchFilter.FISHING_TRIP_SCHEME_ID, fishingTripId.getSchemeID());
+            query.setSearchCriteriaMap(searchCriteriaMap);
+            SortKey sortKey = new SortKey();
+            sortKey.setSortBy(SearchFilter.PERIOD_START);
+            sortKey.setReversed(false);
+            query.setSorting(sortKey);
+            List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
+            if(collectFishingActivities ){
+                fishingActivitySummaries.addAll(getFishingActivitySummaryList(fishingActivityEntityList,uniqueActivityIdList));
+            }
+
+            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId,  fishingActivityEntityList));
+        }
+
+        // populate response object
+        FishingTripResponse response = new FishingTripResponse();
+        response.setFishingActivityLists(fishingActivitySummaries);
+        response.setFishingTripIdLists(fishingTripIdLists);
+        return response;
+    }
+
+
+  /*  public FishingTripResponse    buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList) throws ServiceException {
         if (fishingTripList == null || fishingTripList.isEmpty()) {
             return new FishingTripResponse();
         }
@@ -606,22 +645,18 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         response.setFishingActivityLists(fishingActivityLists);
         response.setFishingTripIdLists(fishingTripIdLists);
         return response;
-    }
+    }*/
 
-    public List<FishingTripIdWithGeometry> getFishingTripIdWithGeometryList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
+   /* public List<FishingTripIdWithGeometry> getFishingTripIdWithGeometryList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
 
         Set<FishingTripId> tripIdSet = uniqueTripIdWithGeometry.keySet();
         return getFishingTripIdWithGeometries(uniqueTripIdWithGeometry, tripIdSet);
     }
 
     @org.jetbrains.annotations.NotNull
-    private List<FishingTripIdWithGeometry> getFishingTripIdWithGeometries(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, Set<FishingTripId> tripIdSet) throws ServiceException {
+    private List<FishingTripIdWithGeometry> getFishingTripIdWithGeometries(Map<FishingTripId, Set<FishingTripId> tripIdSet) throws ServiceException {
         List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
         for (FishingTripId fishingTripId : tripIdSet) {
-            Geometry geometry = null;
-            if(MapUtils.isNotEmpty(uniqueTripIdWithGeometry)) {
-                 geometry = GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
-            }
 
             FishingActivityQuery query = new FishingActivityQuery();
             Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
@@ -634,19 +669,56 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             query.setSorting(sortKey);
          //   List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query); // We need to get all fishingTrip entities here to calculate total fishing trip duration. We can not calculate that with Fishing Activity list
             List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
-            if (geometry == null) {
-                //fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null, fishingTripList));
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId, null, fishingActivityEntityList));
-            } else {
-             //   FishingTripIdWithGeometry withGeometry = FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue(), fishingTripList);
-                FishingTripIdWithGeometry withGeometry = FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue(), fishingActivityEntityList);
-                fishingTripIdLists.add(withGeometry);
-            }
+
+            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId,  fishingActivityEntityList));
+
         }
 
         return fishingTripIdLists;
     }
+*/
 
+
+
+    /**
+     *
+     * @param fishingActivityEntityList
+     * @return
+     */
+    public List<FishingActivitySummary> getFishingActivitySummaryList(List<FishingActivityEntity> fishingActivityEntityList, List<Integer> uniqueActivityIdList){
+        List<FishingActivitySummary> fishingActivitySummaryList = new ArrayList<>();
+        if(CollectionUtils.isEmpty(uniqueActivityIdList)){
+            uniqueActivityIdList =new ArrayList<>();
+        }
+
+        for(FishingActivityEntity fishingActivityEntity : fishingActivityEntityList){
+
+            if (fishingActivityEntity != null && uniqueActivityIdList.add(fishingActivityEntity.getId())) {
+                FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(fishingActivityEntity);
+                ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
+                if (contactParty != null) {
+                    VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
+                    fishingActivitySummary.setVesselContactParty(vesselContactParty);
+                }
+                if (fishingActivitySummary != null) {
+                    fishingActivitySummaryList.add(fishingActivitySummary);
+                }
+            }
+        }
+        return  fishingActivitySummaryList;
+    }
+
+    private ContactPartyEntity getContactParty(FishingActivityEntity fishingActivity)
+    {
+        if ((fishingActivity.getFaReportDocument() != null)
+                && (fishingActivity.getFaReportDocument().getVesselTransportMeans() != null)
+                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().isEmpty())
+                && (fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty() != null)
+                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().isEmpty())) {
+            return fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().iterator().next();
+        }
+        return null;
+    }
 
    /* @org.jetbrains.annotations.NotNull
     private List<FishingTripIdWithGeometry> getFishingTripsWithDetails(Set<FishingTripId> tripIdSet) throws ServiceException {

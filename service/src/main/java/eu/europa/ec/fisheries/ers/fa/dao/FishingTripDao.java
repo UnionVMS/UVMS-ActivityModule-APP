@@ -146,7 +146,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public Integer getCountOfFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
-        Query listQuery = getQueryForFilterFishingTrips(query);
+        Query listQuery = getQueryForFilterFishingTripIds(query);
 
         List resultList = listQuery.getResultList();
         Integer resultCount = new Integer(0);
