@@ -13,24 +13,11 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import org.apache.commons.collections.CollectionUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 //import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
 
 /**
@@ -81,83 +68,4 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
         return sql;
     }
 
-
-
-
-
-    /**
-     * Process FishingTripEntities to identify Unique FishingTrips.
-     * Every FishingTripEntity has List of FishingTripIdentifiers. Every FishingTrip can ideally have maximum 2 Identifiers in the list.
-     * Every Identifier in the list uniquely defines separate trip.
-     *
-     * This method identifies unique FishingTripIdentifiers and collect Geometries for those trips.
-     */
-    public void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry,
-                                                        List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom) {
-        Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
-        for (FishingTripEntity entity : fishingTripList) {
-
-            Set<FishingTripIdentifierEntity> fishingTripIdList = entity.getFishingTripIdentifiers();
-            if (fishingTripIdList == null) {
-                continue;
-            }
-
-            for (FishingTripIdentifierEntity id : fishingTripIdList) { // Identify unique FishingTrips and collect different geometries for that fishing trip.
-
-                FishingTripId tripIdObj = new FishingTripId(id.getTripId(), id.getTripSchemeId());
-                try {
-                    uniqueTripIdWithGeometry.put(tripIdObj, fillGeometrylist(uniqueTripIdWithGeometry,
-                            id.getFishingTrip().getFishingActivity().getFaReportDocument().getGeom(), tripIdObj));
-                } catch (Exception e) {
-                    LOG.error("Error occurred while trying to find Geometry for FishingTrip. Put tripID into separateList", e);
-                    fishingTripIdsWithoutGeom.add(tripIdObj);
-                }
-            }
-
-
-                FishingActivitySummary fishingActivitySummary =getFishingActivitySummary( uniqueFishingActivityIdList, entity);
-                if(fishingActivitySummary!=null) {
-                    fishingActivityLists.add(fishingActivitySummary);
-                }
-
-        }
-    }
-
-    private FishingActivitySummary getFishingActivitySummary(Set<Integer> uniqueFishingActivityIdList, FishingTripEntity entity) {
-        FishingActivitySummary fishingActivitySummary =null;
-        FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
-        if (fishingActivityEntity != null && uniqueFishingActivityIdList.add(fishingActivityEntity.getId())) {
-            fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(entity.getFishingActivity());
-            ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
-            if (contactParty != null) {
-                VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
-                fishingActivitySummary.setVesselContactParty(vesselContactParty);
-            }
-        }
-        return fishingActivitySummary;
-    }
-
-    @NotNull
-    private List<Geometry> fillGeometrylist(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, Geometry geometry, FishingTripId tripIdObj) {
-        List<Geometry> geomList = uniqueTripIdWithGeometry.get(tripIdObj);
-        if (CollectionUtils.isEmpty(geomList)) {
-            geomList = new ArrayList<>();
-        }
-        if (geometry != null) {
-            geomList.add(geometry);
-        }
-        return geomList;
-    }
-
-    private ContactPartyEntity getContactParty(FishingActivityEntity fishingActivity)
-    {
-        if ((fishingActivity.getFaReportDocument() != null)
-                && (fishingActivity.getFaReportDocument().getVesselTransportMeans() != null)
-                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().isEmpty())
-                && (fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty() != null)
-                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().isEmpty())) {
-            return fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().iterator().next();
-        }
-        return null;
-    }
 }

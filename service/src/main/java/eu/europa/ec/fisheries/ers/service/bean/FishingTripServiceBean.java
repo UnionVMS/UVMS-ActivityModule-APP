@@ -623,62 +623,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
 
-  /*  public FishingTripResponse    buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList) throws ServiceException {
-        if (fishingTripList == null || fishingTripList.isEmpty()) {
-            return new FishingTripResponse();
-        }
-        FishingTripSearchBuilder fishingTripSearchBuilder = new FishingTripSearchBuilder();
-        //  List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>(); // List of unique fishing trip ids with geometry
-        List<FishingActivitySummary> fishingActivityLists = new ArrayList<>(); // List of FishingActivities with details required by response
-        Set<FishingTripId> fishingTripIdsWithoutGeom = new HashSet<>();  // List of unique fishing Trip ids without geometry information
-
-        Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry = new HashMap<>(); // Stores unique Fishing tripIds and Geometries associated with its FA Report
-
-
-        fishingTripSearchBuilder.processFishingTripsToCollectUniqueTrips(fishingTripList, uniqueTripIdWithGeometry, fishingActivityLists, fishingTripIdsWithoutGeom); // process data to find out unique FishingTrip with their Geometries
-        checkThresholdForFishingTripList(uniqueTripIdWithGeometry); // Check if the size of unique Fishing trips is withing threshold specified
-        List<FishingTripIdWithGeometry> fishingTripIdLists = getFishingTripIdWithGeometryList(uniqueTripIdWithGeometry); // Convert list of Geometries to WKT
-        // fishingTripIdLists.addAll(fishingTripSearchBuilder.addFishingTripIdsWithoutGeomToResponseList(fishingTripIdsWithoutGeom)); // There could be some fishing trips without geometries, consider those trips as well
-
-        // populate response object
-        FishingTripResponse response = new FishingTripResponse();
-        response.setFishingActivityLists(fishingActivityLists);
-        response.setFishingTripIdLists(fishingTripIdLists);
-        return response;
-    }*/
-
-   /* public List<FishingTripIdWithGeometry> getFishingTripIdWithGeometryList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
-
-        Set<FishingTripId> tripIdSet = uniqueTripIdWithGeometry.keySet();
-        return getFishingTripIdWithGeometries(uniqueTripIdWithGeometry, tripIdSet);
-    }
-
-    @org.jetbrains.annotations.NotNull
-    private List<FishingTripIdWithGeometry> getFishingTripIdWithGeometries(Map<FishingTripId, Set<FishingTripId> tripIdSet) throws ServiceException {
-        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        for (FishingTripId fishingTripId : tripIdSet) {
-
-            FishingActivityQuery query = new FishingActivityQuery();
-            Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
-            searchCriteriaMap.put(SearchFilter.TRIP_ID, fishingTripId.getTripId());
-            searchCriteriaMap.put(SearchFilter.FISHING_TRIP_SCHEME_ID, fishingTripId.getSchemeID());
-            query.setSearchCriteriaMap(searchCriteriaMap);
-            SortKey sortKey = new SortKey();
-            sortKey.setSortBy(SearchFilter.PERIOD_START);
-            sortKey.setReversed(false);
-            query.setSorting(sortKey);
-         //   List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query); // We need to get all fishingTrip entities here to calculate total fishing trip duration. We can not calculate that with Fishing Activity list
-            List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
-
-            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId,  fishingActivityEntityList));
-
-        }
-
-        return fishingTripIdLists;
-    }
-*/
-
-
 
     /**
      *
@@ -720,28 +664,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return null;
     }
 
-   /* @org.jetbrains.annotations.NotNull
-    private List<FishingTripIdWithGeometry> getFishingTripsWithDetails(Set<FishingTripId> tripIdSet) throws ServiceException {
-        List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        for (FishingTripId fishingTripId : tripIdSet) {
 
-            FishingActivityQuery query = new FishingActivityQuery();
-            Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
-            searchCriteriaMap.put(SearchFilter.TRIP_ID, fishingTripId.getTripId());
-            searchCriteriaMap.put(SearchFilter.FISHING_TRIP_SCHEME_ID, fishingTripId.getSchemeID());
-            query.setSearchCriteriaMap(searchCriteriaMap);
-            SortKey sortKey = new SortKey();
-            sortKey.setSortBy(SearchFilter.PERIOD_START);
-            sortKey.setReversed(false);
-            query.setSorting(sortKey);
-            List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
-            if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId, null, fishingActivityEntityList));
-            }
-        }
-
-        return fishingTripIdLists;
-    }*/
 
     @Override
     /**
