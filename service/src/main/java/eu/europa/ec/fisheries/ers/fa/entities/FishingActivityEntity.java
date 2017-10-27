@@ -12,14 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,6 +34,15 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.annotations.Type;
 
 @NamedQueries({
 		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
@@ -554,5 +555,34 @@ public class FishingActivityEntity implements Serializable {
             this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
         }
     }
+    public Double getCalculatedDuration(){
 
+        if (CollectionUtils.isEmpty(delimitedPeriods)) {
+            return null;
+        }
+        Double durationSubTotal = null;
+        for (DelimitedPeriodEntity period : delimitedPeriods) {
+            durationSubTotal = Utils.addDoubles(period.getCalculatedDuration(), durationSubTotal);
+        }
+        return durationSubTotal;
+	}
+
+	public Double getDuration(){
+
+		if (CollectionUtils.isEmpty(delimitedPeriods)) {
+			return null;
+		}
+		Double durationSubTotal = null;
+		for (DelimitedPeriodEntity period : delimitedPeriods) {
+			durationSubTotal = Utils.addDoubles(period.getDuration(), durationSubTotal);
+		}
+		return durationSubTotal;
+	}
+
+	public String getDurationMeasure(){
+        if (CollectionUtils.isEmpty(delimitedPeriods)) {
+            return null;
+        }
+        return delimitedPeriods.iterator().next().getDurationUnitCode(); // As per rules only MIN is allowed
+    }
 }

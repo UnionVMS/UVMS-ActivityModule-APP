@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.ers.service.dto.view;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,12 @@ public class GearShotRetrievalDto {
 
     @JsonView(CommonView.class)
     private Double duration;
+
+    @JsonView(CommonView.class)
+    private Double calculatedDuration;
+
+    @JsonView(CommonView.class)
+    private String durationMeasure;
 
     @JsonView(CommonView.class)
     private GearDto gear;
@@ -112,5 +117,21 @@ public class GearShotRetrievalDto {
 
     public void setId(IdentifierDto id) {
         this.id = id;
+    }
+
+    public Double getCalculatedDuration() {
+        return calculatedDuration;
+    }
+
+    public void setCalculatedDuration(Double calculatedDuration) {
+        this.calculatedDuration = calculatedDuration;
+    }
+
+    public String getDurationMeasure() {
+        return durationMeasure;
+    }
+
+    public void setDurationMeasure(String durationMeasure) {
+        this.durationMeasure = durationMeasure;
     }
 }
