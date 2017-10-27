@@ -12,6 +12,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,12 +40,13 @@ import java.util.Date;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Type;
 
 @NamedQueries({
@@ -213,7 +218,7 @@ public class FishingActivityEntity implements Serializable {
 
     public FlapDocumentEntity getFirstFlapDocument() {
         FlapDocumentEntity flapDocument = null;
-        if (!CollectionUtils.isEmpty(flapDocuments)) {
+        if (!isEmpty(flapDocuments)) {
             flapDocument = flapDocuments.iterator().next();
         }
         return flapDocument;
@@ -557,7 +562,7 @@ public class FishingActivityEntity implements Serializable {
     }
     public Double getCalculatedDuration(){
 
-        if (CollectionUtils.isEmpty(delimitedPeriods)) {
+        if (isEmpty(delimitedPeriods)) {
             return null;
         }
         Double durationSubTotal = null;
@@ -569,7 +574,7 @@ public class FishingActivityEntity implements Serializable {
 
 	public Double getDuration(){
 
-		if (CollectionUtils.isEmpty(delimitedPeriods)) {
+		if (isEmpty(delimitedPeriods)) {
 			return null;
 		}
 		Double durationSubTotal = null;
@@ -580,9 +585,17 @@ public class FishingActivityEntity implements Serializable {
 	}
 
 	public String getDurationMeasure(){
-        if (CollectionUtils.isEmpty(delimitedPeriods)) {
+        if (isEmpty(delimitedPeriods)) {
             return null;
         }
         return delimitedPeriods.iterator().next().getDurationUnitCode(); // As per rules only MIN is allowed
+    }
+
+    public Set<FluxLocationDto> getLocations_() {
+        Set<FluxLocationDto> locationDtos = newHashSet();
+        if (isNotEmpty(fluxLocations)) {
+             locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocations);
+        }
+        return locationDtos;
     }
 }
