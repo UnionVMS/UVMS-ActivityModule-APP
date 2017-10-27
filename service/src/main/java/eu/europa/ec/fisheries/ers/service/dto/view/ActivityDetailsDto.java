@@ -11,6 +11,22 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Discard;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -28,28 +44,15 @@ import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.ToString;
 import org.mockito.internal.util.collections.Sets;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Discard;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
-
 @JsonInclude(Include.NON_NULL)
 @ToString
 public class ActivityDetailsDto {
 
     @JsonView(CommonView.class)
     private String type;
+
+    @JsonView(CommonView.class)
+    private Long id;
 
     @JsonIgnore
     private Set<FluxCharacteristicsDto> fluxCharacteristics;
@@ -302,5 +305,13 @@ public class ActivityDetailsDto {
 
     public void setFlapDocuments(Set<FlapDocumentDto> flapDocuments) {
         this.flapDocuments = flapDocuments;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
