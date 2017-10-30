@@ -14,11 +14,9 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.ers.service.dto.config.CatchThreshold;
 import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
 
-/**
- * Created by padhyad on 8/24/2016.
- */
 public class PreferenceConfigMapper {
 
     public static final PreferenceConfigMapper INSTANCE;
@@ -29,6 +27,23 @@ public class PreferenceConfigMapper {
 
     public ActivityConfigDTO mergeUserPreference(ActivityConfigDTO target, ActivityConfigDTO source) {
         target.setFishingActivityConfig(mergeFaReportConfig(target.getFishingActivityConfig(), source.getFishingActivityConfig()));
+
+        target.setCatchThreshold(mergeCatchThresholdConfig(target.getCatchThreshold(), source.getCatchThreshold()));
+        return target;
+    }
+
+    private CatchThreshold mergeCatchThresholdConfig(CatchThreshold target, CatchThreshold source) {
+        if (target == null) {
+            return source;
+        }
+
+        if (source == null) {
+            return target;
+        }
+
+        target.setCritical((source.getCritical() == null) ? target.getCritical() : source.getCritical());
+        target.setWarning((source.getWarning() == null) ? target.getWarning() : source.getWarning());
+
         return target;
     }
 
@@ -56,6 +71,7 @@ public class PreferenceConfigMapper {
         }
 
         target.setSummaryReport((source.getSummaryReport() == null) ? target.getSummaryReport() : source.getSummaryReport());
+
         return target;
     }
 }

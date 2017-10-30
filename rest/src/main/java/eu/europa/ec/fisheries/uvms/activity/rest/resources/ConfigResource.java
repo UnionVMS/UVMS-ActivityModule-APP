@@ -1,50 +1,51 @@
 /*
- *
- * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
- *
- * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
- * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
- * the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
- *
- *
+ Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+ This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+ and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.service.PreferenceConfigService;
-import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
-import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/**
- * Created by padhyad on 8/22/2016.
- */
+import eu.europa.ec.fisheries.ers.service.ActivityConfigService;
+import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
+import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import lombok.extern.slf4j.Slf4j;
+
 @Path("/config")
-public class PreferenceConfigResource extends UnionVMSResource {
+@Slf4j
+@Stateless
+public class ConfigResource extends UnionVMSResource {
 
     private static final String DEFAULT_CONFIG = "DEFAULT_CONFIG";
     private static final String USER_CONFIG = "USER_CONFIG";
 
     @EJB
     private USMService usmService;
-
     @EJB
-    private PreferenceConfigService preferenceConfigService;
+    private ActivityConfigService preferenceConfigService;
 
     @GET
     @Path("/admin")
