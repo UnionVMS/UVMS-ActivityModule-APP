@@ -13,24 +13,19 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static com.fasterxml.jackson.annotation.JsonInclude.*;
 
-/**
- * Created by padhyad on 9/14/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(Include.NON_EMPTY)
 public class FishingActivityConfigDTO {
 
-    @JsonProperty("summaryReport")
     private SummaryReportDTO summaryReport;
 
-    @JsonProperty("summaryReport")
     public SummaryReportDTO getSummaryReport() {
         return summaryReport;
     }
 
-    @JsonProperty("summaryReport")
     public void setSummaryReport(SummaryReportDTO summaryReport) {
         this.summaryReport = summaryReport;
     }
