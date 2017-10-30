@@ -260,6 +260,20 @@ public class FilterMap {
                      "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
     }
 
+
+    public void populateFilterMappingsForFilterFishingTripIds() {
+        filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
+        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
+
+        filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
+                "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
+
+        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN  " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN  " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
+
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN  " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN  " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
+    }
+
     public void populateFilterMAppingsWithChangeForFACatchReport() {
         DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
         populateFilterMappings();

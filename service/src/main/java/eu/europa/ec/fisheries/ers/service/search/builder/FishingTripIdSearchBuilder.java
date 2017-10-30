@@ -54,7 +54,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
     public FishingTripIdSearchBuilder() {
         super();
         FilterMap filterMap = FilterMap.createFilterMap();
-        filterMap.populateFilterMappingsForFilterFishingTrips();
+        filterMap.populateFilterMappingsForFilterFishingTripIds();
         setFilterMap(filterMap);
     }
 
