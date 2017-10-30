@@ -40,6 +40,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -167,14 +168,14 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             switch (fishClassCode) {
                 case LSC:
                     // Weight and Units calculation
-                    lscGroupTotalWeight = addDoubles(calculatedWeightMeasure, lscGroupTotalWeight);
-                    lscGroupTotalUnits = addDoubles(unitQuantity, lscGroupTotalUnits);
+                    lscGroupTotalWeight = Utils.addDoubles(calculatedWeightMeasure, lscGroupTotalWeight);
+                    lscGroupTotalUnits = Utils.addDoubles(unitQuantity, lscGroupTotalUnits);
                     fillDetailsForSubGroup(lscGroupDetailsDto, entity);
                     break;
                 case BMS:
                     // Weight and Units calculation
-                    bmsGroupTotalWeight = addDoubles(calculatedWeightMeasure, bmsGroupTotalWeight);
-                    bmsGroupTotalUnits = addDoubles(unitQuantity, bmsGroupTotalUnits);
+                    bmsGroupTotalWeight = Utils.addDoubles(calculatedWeightMeasure, bmsGroupTotalWeight);
+                    bmsGroupTotalUnits = Utils.addDoubles(unitQuantity, bmsGroupTotalUnits);
                     fillDetailsForSubGroup(bmsGroupDetailsDto, entity);
                     break;
                 default:
@@ -212,7 +213,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
         if (CollectionUtils.isNotEmpty(aapProducts)) {
             for (AapProductEntity aapProd : aapProducts) {
-                addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
+                Utils.addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
             }
         }
     }

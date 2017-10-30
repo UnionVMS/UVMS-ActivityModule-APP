@@ -364,4 +364,5 @@ public class FluxLocationEntity implements Serializable {
 	public void setGearProblem(GearProblemEntity gearProblem) {
 		this.gearProblem = gearProblem;
 	}
+
 }

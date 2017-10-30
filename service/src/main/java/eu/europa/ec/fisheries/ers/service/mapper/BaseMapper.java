@@ -415,7 +415,7 @@ public class BaseMapper {
         }
 
         for (FluxLocationEntity locationEntity : fluxLocationEntityList) {
-            if (FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())) {
+            if (FluxLocationEnum.POSITION.toString().equalsIgnoreCase(locationEntity.getTypeCode())) {
                 return locationEntity;
             }
         }
@@ -437,8 +437,8 @@ public class BaseMapper {
         positionDto.setOccurence(faEntity.getOccurence());
         if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
             FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
-            if (locationEntity != null) {
-                positionDto.setGeometry(extractGeometryWkt(locationEntity.getLongitude(), locationEntity.getLatitude()));
+            if (locationEntity != null && locationEntity.getGeom() != null) {
+                positionDto.setGeometry(GeometryMapper.INSTANCE.geometryToWkt(locationEntity.getGeom()).getValue());
             }
         }
         return positionDto;
