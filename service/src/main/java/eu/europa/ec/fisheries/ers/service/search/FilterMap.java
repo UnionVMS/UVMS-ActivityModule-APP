@@ -262,9 +262,7 @@ public class FilterMap {
 
 
     public void populateFilterMappingsForFilterFishingTripIds() {
-        filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
-        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
-
+     
         filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
                 "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
 
