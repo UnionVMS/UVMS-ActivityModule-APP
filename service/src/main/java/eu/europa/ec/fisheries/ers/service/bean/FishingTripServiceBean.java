@@ -541,6 +541,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return FishingTripToGeoJsonMapper.toJson(geoList);
     }
 
+    /**
+     *  This method filters fishing Trips for Reporting module
+     */
     @Override
     public FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException {
         log.info("getFishingTripResponse For Filter");
@@ -550,7 +553,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         /**
-         * As per business usecase, period_start and period_end date is MUST to filter fishing trip Ids.
+         * As per business usecase, period_start and period_end date is MUST to filter fishing trip Ids on Reporting.
          */
         Map<SearchFilter, String> searchFilters= query.getSearchCriteriaMap();
         if(searchFilters.get(SearchFilter.PERIOD_START) ==null || searchFilters.get(SearchFilter.PERIOD_END) ==null ){
@@ -564,6 +567,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return buildFishingTripSearchRespose(fishingTripIds,true);
     }
 
+
+    /**
+     *  This method filters fishing Trips for Activity tab
+     */
     @Override
     public FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException {
         log.info("getFishingTripResponse For Filter");
@@ -579,15 +586,18 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
         FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripIds,false);
-       // fishingTripResponse.setTotalCountOfRecords(new BigInteger(""+totalCountOfRecords));
-     //   FishingTripResponse fishingTripResponse = new FishingTripResponse();
-       // fishingTripResponse.setFishingTripIdLists(FishingTripIdWithDetailsList);
+
         fishingTripResponse.setTotalCountOfRecords(BigInteger.valueOf(totalCountOfRecords));
-        // build Fishing trip response from FishingTripEntityList and return
+
         return fishingTripResponse;
     }
 
-    //*****************************************************************************************************************************************
+
+    /**
+     * This method builds FishingTripSerachReponse objectc for FishingTripIds passed to the method
+     collectFishingActivities : If the value is TRUE, all fishing Activities for every fishing Trip would be sent in the response.
+                                If the value is FALSE, No fishing activities would be sent in the response.
+     */
     public FishingTripResponse    buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds,boolean collectFishingActivities) throws ServiceException {
         if (fishingTripIds == null || fishingTripIds.isEmpty()) {
             return new FishingTripResponse();
@@ -604,7 +614,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             searchCriteriaMap.put(SearchFilter.FISHING_TRIP_SCHEME_ID, fishingTripId.getSchemeID());
             query.setSearchCriteriaMap(searchCriteriaMap);
             SortKey sortKey = new SortKey();
-            sortKey.setSortBy(SearchFilter.PERIOD_START);
+            sortKey.setSortBy(SearchFilter.PERIOD_START); // this is important to find out first and last fishing activity for the Fishing Trip
             sortKey.setReversed(false);
             query.setSorting(sortKey);
             List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
@@ -625,7 +635,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
 
     /**
-     *
+     * This method creates FishingActivitySummary object from FishingActivityEntity object retrieved from database.
+     * @param uniqueActivityIdList This method helps parent function to collect FishingActivities for all the fishingTrips. In order to avoid duplicate fishing Activities, we need to maintain uniqueActivityIdList
      * @param fishingActivityEntityList
      * @return
      */
