@@ -262,7 +262,7 @@ public class FilterMap {
 
 
     public void populateFilterMappingsForFilterFishingTripIds() {
-     
+
         filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
                 "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
 

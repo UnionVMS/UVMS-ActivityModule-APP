@@ -241,6 +241,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                             "38F1",null,null,null,null,"LSC", 1,"TBB")
                     .values(11, 10, "ONBOARD", "FLUX_LOCATION_TYPE", "ANF", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","GBR",null,"38F1",null,null,
                             null,null, "LSC",1,"TBB")
+                    .values(12, 1, "DIS", "FLUX_LOCATION_TYPE", "BFT", "CODE_LIST", 12, "C62", 12.00, 10.00, "kg", 10.00, "PROD_USAGE", "PROD_USAGE_LISTID", "WM_CODE", "WEIGHT_MEASURE","IRL",null,"38F1","J",null,null,null,
+                            "LSC", 2,"TBB")
                     .build()
     );
     protected static final Operation INSERT_ERS_AAP_PROCESS_DATA = sequenceOf(
@@ -310,29 +312,11 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_flux_party")
                     .columns("id", "flux_party_name", "name_language_id")
                     .values(1, "OWNER_NAME1", "EN")
-                    .build(),
-            insertInto("activity.activity_flux_party")
-                    .columns("id", "flux_party_name", "name_language_id")
                     .values(2, "OWNER_NAME2", "EN")
-                    .build(),
-            insertInto("activity.activity_flux_party")
-                    .columns("id", "flux_party_name", "name_language_id")
                     .values(3, "OWNER_NAME3", "EN")
-                    .build(),
-            insertInto("activity.activity_flux_party")
-                    .columns("id", "flux_party_name", "name_language_id")
                     .values(4, "OWNER_NAME4", "EN")
-                    .build(),
-            insertInto("activity.activity_flux_party")
-                    .columns("id", "flux_party_name", "name_language_id")
                     .values(5, "OWNER_NAME5", "EN")
-                    .build(),
-            insertInto("activity.activity_flux_party")
-                    .columns("id", "flux_party_name", "name_language_id")
                     .values(6, "OWNER_NAME5", "EN")
-                    .build(),
-            insertInto("activity.activity_flux_party")
-                    .columns("id", "flux_party_name", "name_language_id")
                     .values(7, "OWNER_NAME5", "EN")
                     .build()
     );
@@ -340,33 +324,12 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_flux_party_identifier")
                     .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(1, 1, "OWNER1", "FLUX_PARTY_SCHEME_ID")
-                    .build(),
-            insertInto("activity.activity_flux_party_identifier")
-                    .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(2, 1, "OWNER2", "FLUX_PARTY_SCHEME_ID")
-                    .build(),
-            insertInto("activity.activity_flux_party_identifier")
-                    .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(3, 1, "OWNER3", "FLUX_PARTY_SCHEME_ID")
-                    .build(),
-            insertInto("activity.activity_flux_party_identifier")
-                    .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(4, 2, "OWNER22", "FLUX_PARTY_SCHEME_ID")
-                    .build(),
-            insertInto("activity.activity_flux_party_identifier")
-                    .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(5, 3, "OWNER33", "FLUX_PARTY_SCHEME_ID")
-                    .build(),
-            insertInto("activity.activity_flux_party_identifier")
-                    .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(6, 4, "OWNER4", "FLUX_PARTY_SCHEME_ID")
-                    .build(),
-            insertInto("activity.activity_flux_party_identifier")
-                    .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(7, 5, "OWNER5", "FLUX_PARTY_SCHEME_ID")
-                    .build(),
-            insertInto("activity.activity_flux_party_identifier")
-                    .columns("id", "flux_party_id", "flux_party_identifier_id", "flux_party_identifier_scheme_id")
                     .values(8, 5, "OWNER6", "FLUX_PARTY_SCHEME_ID")
                     .build()
     );
@@ -375,96 +338,37 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_flux_report_document")
                     .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(1, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 1, 1)
-                    .build(),
-            insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(2, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 2, 2)
-                    .build(),
-            insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(3, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 3, 3)
-                    .build(),
-            insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(4, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 4, 4)
-                    .build(),
-            insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(5, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 5, 5)
-                    .build(),
-            insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(6, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 6, 6)
-                    .build(),
-            insertInto("activity.activity_flux_report_document")
-                    .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
                     .values(7, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 7, 7)
                     .build()
-
     );
     protected static final Operation INSERT_ERS_FLUX_REPORT_IDENTIFIER_DATA = sequenceOf(
             insertInto("activity.activity_flux_report_identifier")
                     .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(1, 1, "FLUX_REPORT_ID1", "FLUX_SCHEME_ID1")
-                    .build(),
-            insertInto("activity.activity_flux_report_identifier")
-                    .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(2, 1, "FLUX_REPORT_ID2", "FLUX_SCHEME_ID1")
-                    .build(),
-            insertInto("activity.activity_flux_report_identifier")
-                    .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(3, 1, "FLUX_REPORT_ID3", "FLUX_SCHEME_ID1")
-                    .build(),
-            insertInto("activity.activity_flux_report_identifier")
-                    .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(4, 2, "FLUX_REPORT_ID4", "FLUX_SCHEME_ID1")
-                    .build(),
-            insertInto("activity.activity_flux_report_identifier")
-                    .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(5, 3, "FLUX_REPORT_ID5", "FLUX_SCHEME_ID1")
-                    .build(),
-            insertInto("activity.activity_flux_report_identifier")
-                    .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(6, 4, "FLUX_REPORT_ID6", "FLUX_SCHEME_ID1")
-                    .build(),
-            insertInto("activity.activity_flux_report_identifier")
-                    .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(7, 5, "FLUX_REPORT_ID7", "FLUX_SCHEME_ID1")
-                    .build(),
-            insertInto("activity.activity_flux_report_identifier")
-                    .columns("id", "flux_report_document_id", "flux_report_identifier_id", "flux_report_identifier_scheme_id")
                     .values(8, 5, "FLUX_REPORT_ID8", "FLUX_SCHEME_ID1")
                     .build()
-
     );
     //vessel_transport_means_id
     protected static final Operation INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA = sequenceOf(
             insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
-                    .values(1, "ROLE_CODE", "LIST_ID", "vessel1", null, "TERRITORY", "FRA",1,1)
-                    .build(),
-            insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
-                    .values(2, "ROLE_CODE", "LIST_ID", "vessel2", null,"TERRITORY", "FRA",2,2)
-                    .build(),
-            insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
-                    .values(3, "ROLE_CODE", "LIST_ID", "vessel3", null, "TERRITORY", "ESP",3,3)
-                    .build(),
-            insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
-                    .values(4, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "ESP",4,4)
-                    .build(),
-            insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","fishing_activity_id","fa_report_document_id")
-                    .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA",5,5)
-                    .build(),
-            insertInto("activity.activity_vessel_transport_means")
                     .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid","fishing_activity_id","fa_report_document_id")
+                    .values(1, "ROLE_CODE", "LIST_ID", "vessel1", null, "TERRITORY", "FRA","AC1111",1,1)
+                    .values(2, "ROLE_CODE", "LIST_ID", "vessel2", null,"TERRITORY", "FRA","AC1111",2,2)
+                    .values(3, "ROLE_CODE", "LIST_ID", "vessel3", null, "TERRITORY", "ESP","AC1111",3,3)
+                    .values(4, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "ESP","AC1111",4,4)
+                    .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",5,5)
                     .values(6, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",6,6)
-                    .build(),
-            insertInto("activity.activity_vessel_transport_means")
-                    .columns("id", "role_code", "role_code_list_id", "name", "registration_event_id", "country_scheme_id", "country","guid","fishing_activity_id","fa_report_document_id")
                     .values(7, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",7,7)
                     .build()
     );
@@ -472,32 +376,13 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_vessel_identifier")
                     .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(1, 1, "CFR123", "CFR")
-                    .build(),
-            insertInto("activity.activity_vessel_identifier")
-                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(2, 1, "IRCS123", "IRCS")
-                    .build(),
-            insertInto("activity.activity_vessel_identifier")
-                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(3, 1, "EXT_MARK123", "EXT_MARK")
-                    .build(),
-            insertInto("activity.activity_vessel_identifier")
-                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(4, 2, "CFR123", "CFR")
-                    .build(),
-            insertInto("activity.activity_vessel_identifier")
-                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(5, 2, "EXT_MARK123", "EXT_MARK")
-                    .build(),
-            insertInto("activity.activity_vessel_identifier")
-                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(6, 5, "EXT_MARK123", "EXT_MARK")
-                    .build(),
-            insertInto("activity.activity_vessel_identifier")
-                    .columns("id", "vessel_transport_mean_id", "vessel_identifier_id", "vessel_identifier_scheme_id")
                     .values(7, 6, "EXT_MARK123", "EXT_MARK")
                     .build()
-
     );
     protected static final Operation INSERT_FLUX_LOCATION = sequenceOf(
             insertInto("activity.activity_flux_location")
@@ -506,88 +391,28 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(1, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "J", "EFFORT_ZONE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(2, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "IRL", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(3, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(4, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(5, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(6, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
-                    .values(7, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
-                            "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(8, 5, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
+                    .values(7, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                            "FLUX_LOCATION_NAME", null, null, null, null)
                     .values(9, 5,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(10, 3, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(11, 3,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(12, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .build(),
-            insertInto("activity.activity_flux_location")
-                    .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
-                            "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(13, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
                     .build()
@@ -604,10 +429,6 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_contact_person")
                     .columns("id", "title", "given_name", "middle_name", "family_name", "family_name_prefix", "name_suffix", "gender", "alias")
                     .values(1, "Mr", "MARK", "DAVID", "BOSE", "ARR", "PI", "MALE", null)
-                    .build(),
-            insertInto("activity.activity_contact_person")
-                    .columns("id", "title", "given_name", "middle_name", "family_name", "family_name_prefix",
-                            "name_suffix", "gender", "alias")
                     .values(2, "Mrs", "TIA", "DAVID", "BOSE", "ARR", "PI", "FEMALE", null)
                     .build()
 
@@ -616,19 +437,14 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_contact_party")
                     .columns("id", "vessel_transport_means_id", "contact_person_id")
                     .values(1, 1, 1)
-                    .build(),
-            insertInto("activity.activity_contact_party")
-                    .columns("id", "vessel_transport_means_id", "contact_person_id")
                     .values(2, 2, 2)
                     .build()
+
     );
     protected static final Operation INSERT_CONTACT_PARTY_ROLE = sequenceOf(
             insertInto("activity.activity_contact_party_role")
                     .columns("id", "contact_party_id", "role_code", "role_code_list_id")
                     .values(1, 1, "MASTER", "FLUX_CONTACT_ROLE")
-                    .build(),
-            insertInto("activity.activity_contact_party_role")
-                    .columns("id", "contact_party_id", "role_code", "role_code_list_id")
                     .values(2, 1, "AGENT", "FLUX_CONTACT_ROLE")
                     .build()
     );
@@ -636,37 +452,13 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_delimited_period")
                     .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(1, "2010-06-27 07:47:31.711", "2013-06-27 07:47:31.711", 1, "C62", 1.00, 1, 1)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(2, "2012-05-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 1, 2)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(3, "2013-06-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 1, 3)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(4, "2009-06-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 1, 4)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(5, "2011-06-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 2, 5)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(6, "2011-06-27 07:47:31.711", "2014-06-27 07:47:31.711", 2, "C62", 1.00, 2, 5)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(7, "2012-06-27 07:47:31.711", "2014-06-27 07:47:31.711", 3, "C62", 1.00, 3, 5)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(8, "2011-06-27 07:47:31.711", "2014-06-27 07:47:31.711", 3, "C62", 1.00, 3, 5)
-                    .build(),
-            insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(9, "2010-06-27 07:47:31.711", "2014-06-27 07:47:31.711", 4, "C62", 1.00, 4, 5)
                     .build()
 
@@ -676,66 +468,23 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
                             "source", "flux_fa_report_message_id")
                     .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1,  "fmc", "fmc_list", "new", "FLUX", 1)
-                    .build(),
-            insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
-                            "source", "flux_fa_report_message_id")
                     .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2,  "fmc", "fmc_list", "new", "FLUX", 1)
-                    .build(),
-            insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
-                            "source", "flux_fa_report_message_id")
                     .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .build(),
-            insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
-                            "source", "flux_fa_report_message_id")
                     .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .build(),
-            insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
-                            "source", "flux_fa_report_message_id")
                     .values(5, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .build(),
-            insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
-                            "source", "flux_fa_report_message_id")
                     .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 6, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .build(),
-            insertInto("activity.activity_fa_report_document")
-                    .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
-                            "source", "flux_fa_report_message_id")
                     .values(7, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 7, "fmc", "fmc_list", "new", "FLUX", 1)
                     .build()
-
     );
     protected static final Operation INSERT_FLUX_FA_REPORT_MESSAGE_DATA = sequenceOf(
             insertInto("activity.activity_flux_fa_report_message")
                     .columns("id")
                     .values(1)
-                    .build(),
-            insertInto("activity.activity_flux_fa_report_message")
-                    .columns("id")
                     .values(2)
-                    .build(),
-            insertInto("activity.activity_flux_fa_report_message")
-                    .columns("id")
                     .values(3)
-                    .build(),
-            insertInto("activity.activity_flux_fa_report_message")
-                    .columns("id")
                     .values(4)
-                    .build(),
-            insertInto("activity.activity_flux_fa_report_message")
-                    .columns("id")
                     .values(5)
-                    .build(),
-            insertInto("activity.activity_flux_fa_report_message")
-                    .columns("id")
                     .values(6)
-                    .build(),
-            insertInto("activity.activity_flux_fa_report_message")
-                    .columns("id")
                     .values(7)
                     .build()
     );
