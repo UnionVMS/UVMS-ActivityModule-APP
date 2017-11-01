@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.ers.service;
 
 import eu.europa.ec.fisheries.uvms.activity.message.event.*;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 import javax.ejb.Local;
 import javax.enterprise.event.Observes;

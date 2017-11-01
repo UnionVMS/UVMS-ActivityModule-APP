@@ -45,7 +45,7 @@
         <spatial.model.version>1.0.5</spatial.model.version>
         <exchange.model>4.0.3</exchange.model>
         <rules.model>3.0.11</rules.model>
-        <uvms.config.version>3.1.1</uvms.config.version>
+        <uvms.config.version>4.0.0</uvms.config.version>
         <mdr.model.version>1.0.0</mdr.model.version>
 
 
@@ -70,11 +70,11 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14.4</geotools.version>
-        <uvms.commons.version>2.0.31</uvms.commons.version>
+        <uvms.commons.version>3.0.0</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
-        <usm4uvms.version>3.0.8</usm4uvms.version>
+        <usm4uvms.version>4.0.0</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
@@ -190,8 +190,8 @@
             </dependency>
 
             <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-commons</artifactId>
+	            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+	            <artifactId>uvms-commons-message</artifactId>
                 <version>${uvms.commons.version}</version>
             </dependency>
 

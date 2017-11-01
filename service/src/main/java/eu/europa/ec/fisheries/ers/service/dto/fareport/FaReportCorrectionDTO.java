@@ -16,7 +16,7 @@ package eu.europa.ec.fisheries.ers.service.dto.fareport;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 
 import java.io.Serializable;
 import java.util.Date;

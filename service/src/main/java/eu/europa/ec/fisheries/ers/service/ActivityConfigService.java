@@ -16,7 +16,7 @@ package eu.europa.ec.fisheries.ers.service;
 import javax.ejb.Local;
 
 import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 @Local
 public interface ActivityConfigService {

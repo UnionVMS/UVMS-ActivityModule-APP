@@ -13,14 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import eu.europa.ec.fisheries.uvms.service.QueryParameter;
+import javax.persistence.EntityManager;
+
 import org.apache.commons.collections.CollectionUtils;
+
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 public class VesselTransportMeansDao extends AbstractDAO<VesselTransportMeansEntity> {
 

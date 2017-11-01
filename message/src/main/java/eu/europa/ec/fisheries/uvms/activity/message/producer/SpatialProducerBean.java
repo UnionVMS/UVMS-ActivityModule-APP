@@ -16,8 +16,8 @@ package eu.europa.ec.fisheries.uvms.activity.message.producer;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 
 @Stateless
 @Local

@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
