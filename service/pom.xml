@@ -5,6 +5,10 @@
 	<artifactId>service</artifactId>
 	<name>${project.parent.artifactId}-service</name>
 	<packaging>ejb</packaging>
+	
+	<properties>
+		<jts.version>1.13</jts.version>
+	</properties>
 
 	<parent>
 		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -13,6 +17,12 @@
 	</parent>
 
 	<dependencies>
+	
+	  	<dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>${jts.version}</version>
+        </dependency>        
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -58,10 +68,36 @@
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
-			<scope>provided</scope>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-message</artifactId>
+			<version>${uvms.commons.version}</version>
         </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-date</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-service</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-dao</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-geometry</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-rest</artifactId>
+            <version>${uvms.commons.version}</version>
+        </dependency>
+        
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>

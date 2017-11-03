@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 
 import com.vividsolutions.jts.geom.MultiPoint;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
+
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.FeatureToGeoJsonJacksonMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import org.geotools.feature.DefaultFeatureCollection;

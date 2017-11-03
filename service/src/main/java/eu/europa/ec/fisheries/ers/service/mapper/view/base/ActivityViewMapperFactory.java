@@ -24,7 +24,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.DiscardViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.JointFishingOperationViewMapper;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 /**
  * Created by kovian on 14/02/2017.
