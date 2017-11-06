@@ -14,7 +14,7 @@
 package eu.europa.ec.fisheries.ers.service.dto.fareport;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static eu.europa.ec.fisheries.uvms.common.DateUtils.DATE_TIME_UI_FORMAT;
+import static eu.europa.ec.fisheries.uvms.commons.date.DateUtils.DATE_TIME_UI_FORMAT;
 
 import java.util.Date;
 

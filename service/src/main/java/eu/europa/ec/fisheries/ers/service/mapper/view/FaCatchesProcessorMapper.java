@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -183,7 +184,11 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         }
         setWeightsForSubGroup(groupDto, lscGroupDetailsDto, bmsGroupDetailsDto, lscGroupTotalWeight, lscGroupTotalUnits, bmsGroupTotalWeight, bmsGroupTotalUnits);
         // Put the 2 subgroup properties in the groupingDetailsMap (property of FaCatchGroupDto).
-        groupingDetailsMap.put(LSC, lscGroupDetailsDto);
+
+        List<FluxLocationDto> lscGroupDetailsDtoSpecifiedFluxLocations = lscGroupDetailsDto.getSpecifiedFluxLocations();
+        lscGroupDetailsDto.setSpecifiedFluxLocations(new ArrayList<>(new LinkedHashSet<>(lscGroupDetailsDtoSpecifiedFluxLocations))); // remove duplicates
+        List<FluxLocationDto> bmsGroupDetailsDtoSpecifiedFluxLocations = bmsGroupDetailsDto.getSpecifiedFluxLocations();
+        bmsGroupDetailsDto.setSpecifiedFluxLocations(new ArrayList<>(new LinkedHashSet<>(bmsGroupDetailsDtoSpecifiedFluxLocations))); // remove duplicates
         groupingDetailsMap.put(BMS, bmsGroupDetailsDto);
 
     }
@@ -264,6 +269,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         }
         List<DestinationLocationDto> destLocDtoList = groupDetailsDto.getDestinationLocation();
         List<FluxLocationDto> specifiedFluxLocDto = groupDetailsDto.getSpecifiedFluxLocations();
+
         for (FluxLocationEntity actLoc : fluxLocations) {
             String fluxLocationType = actLoc.getFluxLocationType();
             if (StringUtils.equals(fluxLocationType, FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType())) {

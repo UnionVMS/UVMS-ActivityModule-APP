@@ -13,22 +13,24 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.QUEUE_MODULE_ACTIVITY;
+import static eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants.QUEUE_MODULE_ACTIVITY;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 
- import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
+import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import lombok.extern.slf4j.Slf4j;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 
 /**
  * Created by padhyad on 12/9/2016.
@@ -51,11 +53,13 @@ public class ActivityMessageServiceBean extends AbstractProducer {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ActivityMessageErrorEvent EventMessage message) {
-        try {
+    	Connection connection=null;
+    	try {
+    		            
+            connection = getConnectionFactory().createConnection();
+            final Session session = JMSUtils.connectToQueue(connection);
             log.info("Sending message back to recipient from Activity Module with correlationId {} on queue: {}", message.getJmsMessage().getJMSMessageID());
             String data = JAXBMarshaller.marshallJaxBObjectToString(message.getFault());
-            this.connectToQueue();
-            Session session = getSession();
             TextMessage response = session.createTextMessage(data);
             response.setJMSCorrelationID(message.getJmsMessage().getJMSMessageID());
             session.createProducer(message.getJmsMessage().getJMSReplyTo()).send(response);
@@ -63,7 +67,7 @@ public class ActivityMessageServiceBean extends AbstractProducer {
             log.error("Error when returning module activity request", e);
             log.error("[ Error when returning module activity request. ] {} {}", e.getMessage(), e.getStackTrace());
         } finally {
-            disconnectQueue();
+        	JMSUtils.disconnectQueue(connection);
         }
     }
 }

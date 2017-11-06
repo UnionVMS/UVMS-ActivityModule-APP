@@ -13,21 +13,22 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import static junit.framework.TestCase.assertNotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
 import eu.europa.ec.fisheries.ers.service.search.builder.SearchQueryBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static junit.framework.TestCase.assertNotNull;
 
 /**
  * Created by sanera on 07/10/2016.
