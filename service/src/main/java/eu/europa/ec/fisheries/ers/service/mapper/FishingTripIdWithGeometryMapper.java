@@ -20,9 +20,9 @@ import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
-import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.model.StringWrapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
@@ -81,7 +81,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper  {
 
         if(CollectionUtils.isNotEmpty(activityGeomList)) {
             Geometry geometry = GeometryUtils.createMultipoint(activityGeomList);
-            StringWrapper stringWrapper=GeometryMapper.INSTANCE.geometryToWkt(geometry);
+            StringWrapper stringWrapper= GeometryMapper.INSTANCE.geometryToWkt(geometry);
             if(stringWrapper !=null){
                 return stringWrapper.getValue();
             }

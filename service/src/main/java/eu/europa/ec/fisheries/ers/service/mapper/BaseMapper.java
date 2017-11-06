@@ -40,9 +40,8 @@ import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.model.StringWrapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
@@ -438,11 +437,8 @@ public class BaseMapper {
         positionDto.setOccurence(faEntity.getOccurence());
         if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
             FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
-            if (locationEntity != null) {
-                StringWrapper geometryValue= GeometryMapper.INSTANCE.geometryToWkt(locationEntity.getGeom());
-                if(geometryValue !=null) {
-                    positionDto.setGeometry(geometryValue.getValue());
-                }
+            if (locationEntity != null && locationEntity.getGeom() != null) {
+                positionDto.setGeometry(GeometryMapper.INSTANCE.geometryToWkt(locationEntity.getGeom()).getValue());
             }
         }
         return positionDto;

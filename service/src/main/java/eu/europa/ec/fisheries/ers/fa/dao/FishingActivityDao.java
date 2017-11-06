@@ -11,22 +11,25 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.List;
+import com.vividsolutions.jts.geom.Geometry;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {

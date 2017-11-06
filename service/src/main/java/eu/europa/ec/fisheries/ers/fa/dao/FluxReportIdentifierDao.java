@@ -19,7 +19,7 @@ import java.util.List;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 
 /**
  * Created by kovian on 12/07/2017.

@@ -40,7 +40,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 

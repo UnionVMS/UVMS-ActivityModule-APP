@@ -11,6 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
@@ -41,7 +48,7 @@ public class GearShotRetrievalDto {
     private Double calculatedDuration;
 
     @JsonView(CommonView.class)
-    private Double unitCode;
+    private String durationMeasure;
 
     @JsonView(CommonView.class)
     private GearDto gear;
@@ -119,7 +126,6 @@ public class GearShotRetrievalDto {
         this.id = id;
     }
 
-
     public Double getCalculatedDuration() {
         return calculatedDuration;
     }
@@ -128,11 +134,11 @@ public class GearShotRetrievalDto {
         this.calculatedDuration = calculatedDuration;
     }
 
-    public Double getUnitCode() {
-        return unitCode;
+    public String getDurationMeasure() {
+        return durationMeasure;
     }
 
-    public void setUnitCode(Double unitCode) {
-        this.unitCode = unitCode;
+    public void setDurationMeasure(String durationMeasure) {
+        this.durationMeasure = durationMeasure;
     }
 }

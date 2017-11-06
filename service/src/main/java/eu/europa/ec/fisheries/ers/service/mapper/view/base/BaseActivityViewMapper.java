@@ -54,7 +54,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -64,27 +64,6 @@ import org.apache.commons.lang3.StringUtils;
  * Base Class to be extended by all the mappers related to Activity Views (LANDING, ARRIVAL, AREA_ENTRY  etc..)
  */
 public abstract class BaseActivityViewMapper extends BaseMapper {
-
-    /**
-     * Add a quantity to another quantity checking that neither of the values is null;
-     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
-     *
-     * @param actualMeasureToAdd
-     * @param meausureSubTotalToAddTo
-     * @return
-     */
-    protected static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
-        Double returnValue = null;
-        if (actualMeasureToAdd != null && !(Math.abs(actualMeasureToAdd - 0.0) < 0.00000001)) {
-            if (meausureSubTotalToAddTo == null) {
-                meausureSubTotalToAddTo = 0.0;
-            }
-            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
-        } else if (meausureSubTotalToAddTo != null) {
-            returnValue = meausureSubTotalToAddTo;
-        }
-        return returnValue;
-    }
 
     public static AreaDto getAreas(FishingActivityEntity faEntity) {
         AreaDto areaDto = AreaDtoMapper.INSTANCE.mapToAreaDto(faEntity);

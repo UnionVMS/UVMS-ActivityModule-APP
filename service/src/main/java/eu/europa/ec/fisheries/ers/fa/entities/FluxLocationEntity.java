@@ -30,7 +30,8 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -364,4 +365,5 @@ public class FluxLocationEntity implements Serializable {
 	public void setGearProblem(GearProblemEntity gearProblem) {
 		this.gearProblem = gearProblem;
 	}
+
 }

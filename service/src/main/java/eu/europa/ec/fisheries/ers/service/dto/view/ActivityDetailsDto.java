@@ -11,27 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.collect.Maps;
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
-import lombok.ToString;
-import org.mockito.internal.util.collections.Sets;
-
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
@@ -44,12 +23,36 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Maps;
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
+import lombok.ToString;
+import org.mockito.internal.util.collections.Sets;
+
 @JsonInclude(Include.NON_NULL)
 @ToString
 public class ActivityDetailsDto {
 
     @JsonView(CommonView.class)
     private String type;
+
+    @JsonView(CommonView.class)
+    private Long id;
 
     @JsonIgnore
     private Set<FluxCharacteristicsDto> fluxCharacteristics;
@@ -302,5 +305,13 @@ public class ActivityDetailsDto {
 
     public void setFlapDocuments(Set<FlapDocumentDto> flapDocuments) {
         this.flapDocuments = flapDocuments;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
