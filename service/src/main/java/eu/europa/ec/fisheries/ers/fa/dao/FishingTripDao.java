@@ -145,6 +145,13 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return fishingTripIds;
     }
 
+    /**
+     * Get total number of records for matching criteria without considering pagination
+     *
+     * @param query
+     * @return
+     * @throws ServiceException
+     */
     public Integer getCountOfFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
         Query listQuery = getQueryForFilterFishingTripIds(query);
 

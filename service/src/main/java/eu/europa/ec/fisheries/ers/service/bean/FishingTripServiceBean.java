@@ -562,10 +562,28 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
+        checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
         log.debug("Fishing trips received from db:" + fishingTripIds.size());
 
         // build Fishing trip response from FishingTripEntityList and return
         return buildFishingTripSearchRespose(fishingTripIds,true);
+    }
+
+
+    public void checkThresholdForFishingTripList(Set<FishingTripId> fishingTripIds) throws ServiceException {
+
+        if(CollectionUtils.isNotEmpty(fishingTripIds)) {
+            String tresholdTrips = activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS);
+            if (tresholdTrips != null) {
+                int threshold = Integer.parseInt(tresholdTrips);
+                log.debug("fishing trip threshold value:" + threshold);
+                if (fishingTripIds.size() > threshold)
+                    throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
+
+                log.info("fishing trip list size is within threshold value:" + fishingTripIds.size());
+            }
+        }
+
     }
 
 
@@ -753,21 +771,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
-
-    }
-
-    // Check if the size of unique Fishing trips is withing threshold specified
-    public void checkThresholdForFishingTripList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
-
-        String tresholdTrips = activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS);
-        if (tresholdTrips != null) {
-            int threshold = Integer.parseInt(tresholdTrips);
-            log.debug("fishing trip threshold value:" + threshold);
-            if (uniqueTripIdWithGeometry.size() > threshold)
-                throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
-
-            log.info("fishing trip list size is within threshold value:" + uniqueTripIdWithGeometry.size());
-        }
 
     }
 
