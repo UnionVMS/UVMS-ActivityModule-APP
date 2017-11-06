@@ -32,7 +32,7 @@ public abstract class ActivityAreaExitViewMapper extends BaseActivityViewMapper 
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
-            @Mapping(target = "areas", expression = "java(getAreas(faEntity))"),
+            @Mapping(target = "areas", expression = "java(getSortedAreas(faEntity, new eu.europa.ec.fisheries.ers.service.mapper.view.base.FluxLocationDTOSchemeIdComparator()))"),
             @Mapping(target = "gearProblems", ignore = true)
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
