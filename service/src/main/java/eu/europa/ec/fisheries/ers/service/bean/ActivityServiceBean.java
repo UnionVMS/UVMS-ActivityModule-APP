@@ -159,6 +159,10 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         Map<SearchFilter, String> searchCriteriaMap                     = query.getSearchCriteriaMap();
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
         List<String> guidsFromAssets;
+
+        if(searchCriteriaMap ==null)
+            return false;
+
         String vesselSearchStr      = searchCriteriaMap.get(SearchFilter.VESSEL);
         String vesselGroupSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL_GROUP);
         if(StringUtils.isNotEmpty(vesselSearchStr) || StringUtils.isNotEmpty(vesselGroupSearchStr)){

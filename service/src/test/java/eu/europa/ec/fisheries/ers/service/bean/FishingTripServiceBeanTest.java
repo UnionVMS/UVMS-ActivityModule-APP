@@ -24,13 +24,13 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -47,12 +47,12 @@ import org.mockito.junit.MockitoRule;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -299,7 +299,7 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testGetFishingTripIdsForFilter() throws ServiceException, JsonProcessingException {
+    public void testFilterFishingTrips() throws ServiceException, JsonProcessingException {
 
         Map<SearchFilter,String> searchMap=new HashMap<>();
         searchMap.put(SearchFilter.REPORT_TYPE, "NOTIFICATION");
@@ -318,14 +318,37 @@ public class FishingTripServiceBeanTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
 
-        when(fishingTripDao.getFishingTripsForMatchingFilterCriteria(query)).thenReturn(Arrays.asList(MapperUtil.getFishingTripEntity()));
-        when(activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS)).thenReturn("1000");
+        when(fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingTripIdSet());
+        when(fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(any(FishingActivityQuery.class))).thenReturn(new Integer(2));
+        when(fishingActivityDao.getFishingActivityListByQuery(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
-        FishingTripResponse response = fishingTripService.getFishingTripIdsForFilter(query);
-        Mockito.verify(fishingTripDao, Mockito.times(2)).getFishingTripsForMatchingFilterCriteria(Mockito.any(FishingActivityQuery.class));
-        System.out.println("response:"+response);
+        FishingTripResponse response = fishingTripService.filterFishingTrips(query);
+
         assertNotNull(response);
-        assertNotEquals(0,response.getFishingTripIdLists().size());
+
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testBuildFishingTripSearchRespose() throws ServiceException, JsonProcessingException {
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
+        searchCriteriaMap.put(SearchFilter.TRIP_ID, "NOR-TRP-20160517234053706");
+        searchCriteriaMap.put(SearchFilter.FISHING_TRIP_SCHEME_ID, "EU_TRIP_ID");
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        SortKey sortKey = new SortKey();
+        sortKey.setSortBy(SearchFilter.PERIOD_START);
+        sortKey.setReversed(false);
+        query.setSorting(sortKey);
+
+
+        when(fishingActivityDao.getFishingActivityListByQuery(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingActivityEntityList());
+        //Trigger
+        FishingTripResponse response = fishingTripService.buildFishingTripSearchRespose(MapperUtil.getFishingTripIdSet(),false);
+
+        assertNotNull(response);
 
     }
 
