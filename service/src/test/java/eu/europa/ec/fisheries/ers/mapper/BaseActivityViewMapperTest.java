@@ -10,17 +10,24 @@
 
 package eu.europa.ec.fisheries.ers.mapper;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.collect.Ordering;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.fest.util.Collections;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Gregory Rinaldi
@@ -46,5 +53,25 @@ public class BaseActivityViewMapperTest {
         stringMap.put("schemeId", "schemeId");
 
         assertEquals(stringMap, areas.getIdentifiers());
+    }
+
+    @Test
+    public void testFluxLocationDTOSchemeIdComparator() {
+        Ordering<FluxLocationSchemeId> fluxLocationSchemeIdOrdering = Ordering.explicit(FluxLocationSchemeId.TERRITORY, FluxLocationSchemeId.MANAGEMENT_AREA,
+                FluxLocationSchemeId.EFFORT_ZONE, FluxLocationSchemeId.FAO_AREA, FluxLocationSchemeId.GFCM_GSA, FluxLocationSchemeId.ICES_STAT_RECTANGLE).nullsLast();
+
+        Set<FluxLocationSchemeId> fluxLocationSchemeIds = new TreeSet<FluxLocationSchemeId>(fluxLocationSchemeIdOrdering);
+        fluxLocationSchemeIds.addAll(Arrays.asList(FluxLocationSchemeId.FAO_AREA, FluxLocationSchemeId.TERRITORY,
+                FluxLocationSchemeId.MANAGEMENT_AREA, FluxLocationSchemeId.GFCM_GSA, null, FluxLocationSchemeId.EFFORT_ZONE, FluxLocationSchemeId.ICES_STAT_RECTANGLE));
+
+        Iterator<FluxLocationSchemeId> fluxLocationSchemeIdIterator = fluxLocationSchemeIds.iterator();
+
+        assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.TERRITORY));
+        assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.MANAGEMENT_AREA));
+        assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.EFFORT_ZONE));
+        assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.FAO_AREA));
+        assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.GFCM_GSA));
+        assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.ICES_STAT_RECTANGLE));
+        assertTrue(fluxLocationSchemeIdIterator.next() == null);
     }
 }

@@ -190,6 +190,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         List<FluxLocationDto> bmsGroupDetailsDtoSpecifiedFluxLocations = bmsGroupDetailsDto.getSpecifiedFluxLocations();
         bmsGroupDetailsDto.setSpecifiedFluxLocations(new ArrayList<>(new LinkedHashSet<>(bmsGroupDetailsDtoSpecifiedFluxLocations))); // remove duplicates
         groupingDetailsMap.put(BMS, bmsGroupDetailsDto);
+        groupingDetailsMap.put(LSC, lscGroupDetailsDto);
 
     }
 

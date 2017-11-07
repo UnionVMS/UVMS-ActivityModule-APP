@@ -59,7 +59,7 @@ public class FaCatchEntity implements Serializable {
 	private FishingActivityEntity fishingActivity;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "size_distribution_id", nullable = false)
+	@JoinColumn(name = "size_distribution_id")
 	private SizeDistributionEntity sizeDistribution;
 
 	@Column(name = "type_code", nullable = false)
