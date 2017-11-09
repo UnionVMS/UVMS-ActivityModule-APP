@@ -58,4 +58,8 @@ public interface ActivityService {
     FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException;
 
     GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException;
+
+    public int getPreviousFishingActivity(int fishingActivityId);
+
+    public int getNextFishingActivity(int fishingActivityId);
 }

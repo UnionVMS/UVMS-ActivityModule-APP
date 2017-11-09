@@ -11,6 +11,26 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityHistoryDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearProblemDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
+
+import java.util.List;
+import java.util.Set;
+
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
@@ -23,25 +43,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
-
-import java.util.List;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearProblemDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 
 /**
  * This DTO will be returned to the requester for every request of activity views.
@@ -85,6 +86,9 @@ public class FishingActivityViewDTO {
 
     @JsonView(JointFishingOperation.class)
     private List<RelocationDto> relocations;
+
+    @JsonView(CommonView.class)
+    private ActivityHistoryDto history;
 
     public Set<FluxLocationDto> getLocations() {
         return locations;
@@ -180,6 +184,14 @@ public class FishingActivityViewDTO {
 
     public void setRelocations(List<RelocationDto> relocations) {
         this.relocations = relocations;
+    }
+
+    public ActivityHistoryDto getHistory() {
+        return history;
+    }
+
+    public void setHistory(ActivityHistoryDto history) {
+        this.history = history;
     }
 
     @Override

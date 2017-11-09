@@ -756,13 +756,36 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if(fishingActivity == null)
             return null;
 
+        DateTimeType dateTimeType = null;
         if(fishingActivity.getOccurrenceDateTime()!=null)
             return fishingActivity.getOccurrenceDateTime();
 
         if(CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())){
             List<DelimitedPeriod> delimitedPeriodEntities=  fishingActivity.getSpecifiedDelimitedPeriods();
-            return delimitedPeriodEntities.iterator().next().getStartDateTime();
+            dateTimeType = delimitedPeriodEntities.iterator().next().getStartDateTime();
+            if(dateTimeType!=null){
+                return dateTimeType;
+            }
+
         }
+
+        // We reached till this point of code means FishingActivity has neither occurrence date or startDate for DelimitedPeriod.
+        // In such cases, we need to check if its subactivities have date mentioned.
+        // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
+        List<FishingActivity> relatedFishingActivities=fishingActivity.getRelatedFishingActivities();
+        if(CollectionUtils.isNotEmpty(relatedFishingActivities)){
+            for(FishingActivity subFishingActivity: relatedFishingActivities){
+                if(subFishingActivity.getOccurrenceDateTime()!=null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
+                        fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime()!=null)){
+                    dateTimeType = subFishingActivity.getOccurrenceDateTime();
+                    if(dateTimeType ==null){
+                        dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
+                    }
+                    return dateTimeType;
+                }
+            }
+        }
+
 
         return null;
     }
