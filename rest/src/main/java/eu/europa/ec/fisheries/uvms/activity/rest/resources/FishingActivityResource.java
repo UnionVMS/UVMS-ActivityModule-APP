@@ -156,4 +156,39 @@ public class FishingActivityResource extends UnionVMSResource {
         return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
     }
 
+
+    @GET
+    @Path("/previous/{activityId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getPreviousFishingActivity(@Context HttpServletRequest request,
+                                      @Context HttpServletResponse response,
+                                      @PathParam("activityId") String activityId) throws ServiceException {
+        int converstedActivityId=0;
+        log.info("Received ActivityId from frontEnd as: " + activityId);
+        if(activityId !=null){
+
+            converstedActivityId=Integer.parseInt(activityId);
+        }
+        return createSuccessResponse(activityService.getPreviousFishingActivity(converstedActivityId));
+    }
+
+    @GET
+    @Path("/next/{activityId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getNextFishingActivity(@Context HttpServletRequest request,
+                                               @Context HttpServletResponse response,
+                                               @PathParam("activityId") String activityId) throws ServiceException {
+        int converstedActivityId=0;
+        log.info("Received ActivityId from frontEnd as: " + activityId);
+        if(activityId !=null){
+
+            converstedActivityId=Integer.parseInt(activityId);
+        }
+        return createSuccessResponse(activityService.getNextFishingActivity(converstedActivityId));
+    }
+
 }

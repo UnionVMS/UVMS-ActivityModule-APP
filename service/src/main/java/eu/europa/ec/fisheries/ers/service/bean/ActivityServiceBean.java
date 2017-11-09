@@ -26,6 +26,7 @@ import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityHistoryDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
@@ -34,6 +35,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFac
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -199,6 +201,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         log.debug("FishingActivityEntity fetched from database with id:" + activityEntity.getId());
         FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
         fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntity,tripId));
+        fishingActivityViewDTO.setHistory(getActivityHistoryDto(activityEntity));
         log.debug("fishingActivityView generated after mapping is :"+fishingActivityViewDTO);
         return fishingActivityViewDTO;
     }
@@ -353,5 +356,42 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             actIDList.add(new FishingActivityWithIdentifiers(tripIdent.getFaIdentifierId(), tripIdent.getFaIdentifierSchemeId(), typeCode));
         }
         return actIDList;
+    }
+
+    /**
+     * Find out previous and next fishing Activity for the activityEntity passed to the method
+     * @param activityEntity
+     * @return ActivityHistoryDto
+     */
+    public ActivityHistoryDto getActivityHistoryDto(FishingActivityEntity activityEntity){
+        ActivityHistoryDto activityHistoryDto = new ActivityHistoryDto();
+        int fishingActivityId = activityEntity.getId();
+        String fishingActivityType= activityEntity.getTypeCode();
+        Date fishingActivityTime= activityEntity.getCalculatedStartTime();
+         if(fishingActivityType ==null || fishingActivityTime ==null){
+             log.error("fishingActivityType or fishingActivityTime ");
+             return activityHistoryDto;
+         }
+        log.info(" Activity for which history to be found:"+fishingActivityId +" fishingActivityType:"+fishingActivityType +" fishingActivityTime:"+DateUtils.parseUTCDateToString(fishingActivityTime));
+
+        activityHistoryDto.setPreviousId(fishingActivityDao.getPreviousFishingActivityId(fishingActivityId,fishingActivityType,fishingActivityTime));
+        activityHistoryDto.setNextId(fishingActivityDao.getNextFishingActivityId(fishingActivityId,fishingActivityType,fishingActivityTime));
+
+        return activityHistoryDto;
+    }
+
+    public int getPreviousFishingActivity(int fishingActivityId){
+        log.info(" Retrieve fishing activity from db:"+fishingActivityId);
+        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId,null);
+        log.info(" activityEntity received from db Id:"+activityEntity.getId()+ " typeCode: "+activityEntity.getTypeCode()+" Date:"+ DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getPreviousFishingActivityId(activityEntity.getId(),activityEntity.getTypeCode(),activityEntity.getCalculatedStartTime());
+    }
+
+
+    public int getNextFishingActivity(int fishingActivityId){
+        log.info(" Retrieve fishing activity from db:"+fishingActivityId);
+        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId,null);
+        log.info(" activityEntity received from db Id:"+activityEntity.getId()+ " typeCode: "+activityEntity.getTypeCode()+" Date:"+ DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getNextFishingActivityId(activityEntity.getId(),activityEntity.getTypeCode(),activityEntity.getCalculatedStartTime());
     }
 }
