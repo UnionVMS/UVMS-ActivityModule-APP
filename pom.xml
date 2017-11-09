@@ -46,7 +46,7 @@
         <exchange.model>4.0.3</exchange.model>
         <rules.model>3.0.11</rules.model>
         <uvms.config.version>4.0.0</uvms.config.version>
-        <mdr.model.version>1.0.0</mdr.model.version>
+        <mdr.model.version>1.0.1-SNAPSHOT</mdr.model.version>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

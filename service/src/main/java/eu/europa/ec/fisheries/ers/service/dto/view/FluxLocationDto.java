@@ -57,6 +57,12 @@ public class FluxLocationDto {
     @JsonView(CommonView.class)
     private Set<AddressDetailsDTO> structuredAddresses;
 
+    @JsonIgnore
+    private String typeCode;
+
+    @JsonView(CommonView.class)
+    private String portDescription;
+
     public String getGeometry() {
         return geometry;
     }
@@ -111,6 +117,22 @@ public class FluxLocationDto {
 
     public void setFluxCharacteristic(FluxCharacteristicsDto fluxCharacteristic) {
         this.fluxCharacteristic = fluxCharacteristic;
+    }
+
+    public String getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
+    }
+
+    public String getPortDescription() {
+        return portDescription;
+    }
+
+    public void setPortDescription(String portDescription) {
+        this.portDescription = portDescription;
     }
 
     @JsonProperty("characteristics")
