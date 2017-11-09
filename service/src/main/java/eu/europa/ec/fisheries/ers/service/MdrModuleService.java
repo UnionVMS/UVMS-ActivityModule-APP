@@ -19,5 +19,5 @@ public interface MdrModuleService {
      */
 
 
-    public List<String> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults) throws ServiceException;
+    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults, String... returnColumns) throws ServiceException;
 }
