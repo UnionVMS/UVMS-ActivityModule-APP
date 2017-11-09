@@ -36,6 +36,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.SummaryReportDTO;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.mockito.stubbing.Answer;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -163,6 +164,12 @@ public class MapperUtil {
           return new FishingActivityEntity();
     }
 
+    public static Set<FishingTripId> getFishingTripIdSet(){
+        Set<FishingTripId> fishingTripIdSet = new HashSet<>();
+        fishingTripIdSet.add(new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID"));
+        fishingTripIdSet.add(new FishingTripId("NOR-ABC-20160517234053706","EU_TRIP_ID"));
+        return fishingTripIdSet;
+    }
 
     public static FishingTripEntity getFishingTripEntity(){
         FishingTripEntity entity = new FishingTripEntity();

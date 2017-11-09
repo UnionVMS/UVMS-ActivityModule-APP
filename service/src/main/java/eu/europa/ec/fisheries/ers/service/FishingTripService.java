@@ -104,7 +104,7 @@ public interface FishingTripService {
      * @throws ServiceException
      */
 
-    FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException;
+    FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException;
 
 
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
@@ -119,4 +119,7 @@ public interface FishingTripService {
      * @throws ServiceException
      */
     List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
+
+
+     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 }

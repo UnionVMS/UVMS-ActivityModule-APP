@@ -22,6 +22,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
 
+import java.util.List;
+import java.util.Map;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+
 @JsonInclude(NON_NULL)
 public class GearShotRetrievalDto {
 

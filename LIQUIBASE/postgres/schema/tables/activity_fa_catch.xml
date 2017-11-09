@@ -45,8 +45,7 @@
             <column name="gfcm_gsa" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is GFCM_GSA"/>
             <column name="gfcm_stat_rectangle" type="VARCHAR(255)" remarks="same as activity_flux_location.flux_location_identifier where flux_location_identifier_scheme_id is GFCM_STAT_RECTANGLE" />
 			<column name="fish_class_code" type="VARCHAR(255)" remarks="same as activity_size_distribution.activity_size_distribution_classcode.class_code . First occurence will be copied here." />
-            <column name="size_distribution_id" type="BIGINT">
-                <constraints nullable="false"/>
+            <column name="size_distribution_id" type="BIGINT">                
             </column>
             <column name="gear_type_code" type="VARCHAR(255)" remarks="same as activity_fishing_gear.type_code"/>
             <column name="presentation" type="VARCHAR(255)" remarks="same as activity_aap_process-> activity_aap_process_code.type_code where activity_aap_process_code.type_code_list_id is FISH_PRESENTATION"/>

@@ -39,6 +39,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
@@ -63,7 +64,6 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
-import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
@@ -128,7 +128,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private AssetModuleService assetModuleService;
 
     @EJB
-    private MdrModuleServiceBean mdrModuleService;
+    private MdrModuleService mdrModuleService;
 
 
     private FaReportDocumentDao faReportDocumentDao;
@@ -538,8 +538,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return FishingTripToGeoJsonMapper.toJson(geoList);
     }
 
+    /**
+     *  This method filters fishing Trips for Reporting module
+     */
     @Override
-    public FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException {
+    public FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException {
         log.info("getFishingTripResponse For Filter");
         if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
@@ -547,71 +550,145 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         /**
-         * As per business usecase, period_start and period_end date is MUST to filter fishing trip Ids.
+         * As per business usecase, period_start and period_end date is MUST to filter fishing trip Ids on Reporting.
          */
-        Map<SearchFilter, String> searchFilters = query.getSearchCriteriaMap();
-        if (searchFilters.get(SearchFilter.PERIOD_START) == null || searchFilters.get(SearchFilter.PERIOD_END) == null) {
+        Map<SearchFilter, String> searchFilters= query.getSearchCriteriaMap();
+        if(searchFilters.get(SearchFilter.PERIOD_START) ==null || searchFilters.get(SearchFilter.PERIOD_END) ==null ){
             throw new ServiceException("Either PERIOD_START or PERIOD_END not present. Please provide values for both.");
         }
 
-        List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
-        log.debug("Fishing trips received from db:" + fishingTripList.size());
+        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
+        checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
+        log.debug("Fishing trips received from db:" + fishingTripIds.size());
 
         // build Fishing trip response from FishingTripEntityList and return
-        return buildFishingTripSearchRespose(fishingTripList);
+        return buildFishingTripSearchRespose(fishingTripIds,true);
     }
 
-    public FishingTripResponse buildFishingTripSearchRespose(List<FishingTripEntity> fishingTripList) throws ServiceException {
-        if (fishingTripList == null || fishingTripList.isEmpty()) {
+
+    public void checkThresholdForFishingTripList(Set<FishingTripId> fishingTripIds) throws ServiceException {
+
+        if(CollectionUtils.isNotEmpty(fishingTripIds)) {
+            String tresholdTrips = activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS);
+            if (tresholdTrips != null) {
+                int threshold = Integer.parseInt(tresholdTrips);
+                log.debug("fishing trip threshold value:" + threshold);
+                if (fishingTripIds.size() > threshold)
+                    throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
+
+                log.info("fishing trip list size is within threshold value:" + fishingTripIds.size());
+            }
+        }
+
+    }
+
+
+    /**
+     *  This method filters fishing Trips for Activity tab
+     */
+    @Override
+    public FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException {
+        log.info("getFishingTripResponse For Filter");
+        if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
+                || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
             return new FishingTripResponse();
         }
-        FishingTripSearchBuilder fishingTripSearchBuilder = new FishingTripSearchBuilder();
-        //  List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>(); // List of unique fishing trip ids with geometry
-        List<FishingActivitySummary> fishingActivityLists = new ArrayList<>(); // List of FishingActivities with details required by response
-        Set<FishingTripId> fishingTripIdsWithoutGeom = new HashSet<>();  // List of unique fishing Trip ids without geometry information
-
-        Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry = new HashMap<>(); // Stores unique Fishing tripIds and Geometries associated with its FA Report
 
 
-        fishingTripSearchBuilder.processFishingTripsToCollectUniqueTrips(fishingTripList, uniqueTripIdWithGeometry, fishingActivityLists, fishingTripIdsWithoutGeom); // process data to find out unique FishingTrip with their Geometries
-        checkThresholdForFishingTripList(uniqueTripIdWithGeometry); // Check if the size of unique Fishing trips is withing threshold specified
-        List<FishingTripIdWithGeometry> fishingTripIdLists = getFishingTripIdWithGeometryList(uniqueTripIdWithGeometry); // Convert list of Geometries to WKT
-        // fishingTripIdLists.addAll(fishingTripSearchBuilder.addFishingTripIdsWithoutGeomToResponseList(fishingTripIdsWithoutGeom)); // There could be some fishing trips without geometries, consider those trips as well
+        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
+        log.debug("Fishing trips received from db:" + fishingTripIds.size());
 
-        // populate response object
-        FishingTripResponse response = new FishingTripResponse();
-        response.setFishingActivityLists(fishingActivityLists);
-        response.setFishingTripIdLists(fishingTripIdLists);
-        return response;
+        Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
+        log.debug("Total count of records: {} ", totalCountOfRecords);
+        FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripIds,false);
+
+        fishingTripResponse.setTotalCountOfRecords(BigInteger.valueOf(totalCountOfRecords));
+
+        return fishingTripResponse;
     }
 
-    public List<FishingTripIdWithGeometry> getFishingTripIdWithGeometryList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
+
+    /**
+     * This method builds FishingTripSerachReponse objectc for FishingTripIds passed to the method
+     collectFishingActivities : If the value is TRUE, all fishing Activities for every fishing Trip would be sent in the response.
+                                If the value is FALSE, No fishing activities would be sent in the response.
+     */
+    public FishingTripResponse    buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds,boolean collectFishingActivities) throws ServiceException {
+        if (fishingTripIds == null || fishingTripIds.isEmpty()) {
+            return new FishingTripResponse();
+        }
+        List<Integer> uniqueActivityIdList  = new ArrayList<>();
+        List<FishingActivitySummary> fishingActivitySummaries = new ArrayList<>();
+
         List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        Set<FishingTripId> tripIdSet = uniqueTripIdWithGeometry.keySet();
-        for (FishingTripId fishingTripId : tripIdSet) {
-            Geometry geometry = GeometryUtils.createMultipoint(uniqueTripIdWithGeometry.get(fishingTripId));
+        for (FishingTripId fishingTripId : fishingTripIds) {
 
             FishingActivityQuery query = new FishingActivityQuery();
             Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
             searchCriteriaMap.put(SearchFilter.TRIP_ID, fishingTripId.getTripId());
+            searchCriteriaMap.put(SearchFilter.FISHING_TRIP_SCHEME_ID, fishingTripId.getSchemeID());
             query.setSearchCriteriaMap(searchCriteriaMap);
             SortKey sortKey = new SortKey();
-            sortKey.setSortBy(SearchFilter.PERIOD_START);
+            sortKey.setSortBy(SearchFilter.PERIOD_START); // this is important to find out first and last fishing activity for the Fishing Trip
             sortKey.setReversed(false);
             query.setSorting(sortKey);
-            List<FishingTripEntity> fishingTripList = fishingTripDao.getFishingTripsForMatchingFilterCriteria(query);
-
-            if (geometry == null) {
-                fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, null, fishingTripList));
-            } else {
-                FishingTripIdWithGeometry withGeometry = FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithGeometry(fishingTripId, GeometryMapper.INSTANCE.geometryToWkt(geometry).getValue(), fishingTripList);
-                fishingTripIdLists.add(withGeometry);
+            List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
+            if(collectFishingActivities ){
+                fishingActivitySummaries.addAll(getFishingActivitySummaryList(fishingActivityEntityList,uniqueActivityIdList));
             }
+
+            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId,  fishingActivityEntityList));
         }
 
-        return fishingTripIdLists;
+        // populate response object
+        FishingTripResponse response = new FishingTripResponse();
+        response.setFishingActivityLists(fishingActivitySummaries);
+        response.setFishingTripIdLists(fishingTripIdLists);
+        return response;
     }
 
+
+
+    /**
+     * This method creates FishingActivitySummary object from FishingActivityEntity object retrieved from database.
+     * @param uniqueActivityIdList This method helps parent function to collect FishingActivities for all the fishingTrips. In order to avoid duplicate fishing Activities, we need to maintain uniqueActivityIdList
+     * @param fishingActivityEntityList
+     * @return
+     */
+    public List<FishingActivitySummary> getFishingActivitySummaryList(List<FishingActivityEntity> fishingActivityEntityList, List<Integer> uniqueActivityIdList){
+        List<FishingActivitySummary> fishingActivitySummaryList = new ArrayList<>();
+        if(CollectionUtils.isEmpty(uniqueActivityIdList)){
+            uniqueActivityIdList =new ArrayList<>();
+        }
+
+        for(FishingActivityEntity fishingActivityEntity : fishingActivityEntityList){
+
+            if (fishingActivityEntity != null && uniqueActivityIdList.add(fishingActivityEntity.getId())) {
+                FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(fishingActivityEntity);
+                ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
+                if (contactParty != null) {
+                    VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
+                    fishingActivitySummary.setVesselContactParty(vesselContactParty);
+                }
+                if (fishingActivitySummary != null) {
+                    fishingActivitySummaryList.add(fishingActivitySummary);
+                }
+            }
+        }
+        return  fishingActivitySummaryList;
+    }
+
+    private ContactPartyEntity getContactParty(FishingActivityEntity fishingActivity)
+    {
+        if ((fishingActivity.getFaReportDocument() != null)
+                && (fishingActivity.getFaReportDocument().getVesselTransportMeans() != null)
+                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().isEmpty())
+                && (fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty() != null)
+                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().isEmpty())) {
+            return fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().iterator().next();
+        }
+        return null;
+    }
 
     @Override
     /**
@@ -688,21 +765,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
-
-    }
-
-    // Check if the size of unique Fishing trips is withing threshold specified
-    public void checkThresholdForFishingTripList(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry) throws ServiceException {
-
-        String tresholdTrips = activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS);
-        if (tresholdTrips != null) {
-            int threshold = Integer.parseInt(tresholdTrips);
-            log.debug("fishing trip threshold value:" + threshold);
-            if (uniqueTripIdWithGeometry.size() > threshold)
-                throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
-
-            log.info("fishing trip list size is within threshold value:" + uniqueTripIdWithGeometry.size());
-        }
 
     }
 

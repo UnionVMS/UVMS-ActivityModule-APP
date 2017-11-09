@@ -110,8 +110,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
-            updateGeometry(faReportDocument);
-            enrichFishingActivityWithGuiID(faReportDocument);
+            try {
+                updateGeometry(faReportDocument);
+                enrichFishingActivityWithGuiID(faReportDocument);
+            }catch (Exception e){
+                log.error("Could not update Geometry OR enrichActivities for faReportDocument:"+faReportDocument.getId());
+            }
         }
         log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
 
