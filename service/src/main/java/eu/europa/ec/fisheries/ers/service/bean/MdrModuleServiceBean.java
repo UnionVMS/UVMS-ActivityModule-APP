@@ -5,13 +5,12 @@ import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MdrProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mdr.model.exception.MdrModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListResponse;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
@@ -43,23 +42,26 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
     private ActivityConsumerBean activityConsumer;
 
     @Override
-    public List<String> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults) throws ServiceException {
-        List<String> codeMap = new ArrayList<>();
+    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> filterColumns, Integer nrOfResults, String... returnColumns) throws ServiceException {
+        Map<String, List<String>> columnNameValuesMap = prepareColumnNameValuesMap(returnColumns);
         try {
-            String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym, filter, columns, nrOfResults);
+            String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym, filter, filterColumns, nrOfResults);
             String correlationId = mdrProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage message = activityConsumer.getMessage(correlationId, TextMessage.class);
+
             if (null != message) {
                 String messageStr = message.getText();
                 MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(messageStr, MdrGetCodeListResponse.class);
+
                 for (ObjectRepresentation objectRep : response.getDataSets()) {
                     for (ColumnDataType nameVal : objectRep.getFields()) {
-                        if (StringUtils.equals(nameVal.getColumnName(), "code")) {
-                            codeMap.add(nameVal.getColumnValue());
+                        if (columnNameValuesMap.containsKey(nameVal.getColumnName())) {
+                            columnNameValuesMap.get(nameVal.getColumnName()).add(nameVal.getColumnValue());
                         }
                     }
                 }
-                return codeMap;
+
+                return columnNameValuesMap;
             } else {
                 throw new ServiceException("Unable to get data from MDR Module");
             }
@@ -67,6 +69,15 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
             log.error("MdrModelMarshallException in communication with mdr", e.getCause());
             throw new ServiceException("Exception caught in mdrModuleServiceBean", e.getCause());
         }
+    }
 
+    private Map<String, List<String>> prepareColumnNameValuesMap(String[] returnColumns) {
+        Map<String, List<String>> columnNameValuesMap = new HashMap<>(returnColumns.length);
+
+        for (String columnName : returnColumns) {
+            columnNameValuesMap.put(columnName, new ArrayList<String>());
+        }
+
+        return columnNameValuesMap;
     }
 }
