@@ -6,7 +6,7 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.13</version>
+        <version>1.14</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -43,7 +43,7 @@
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.5</spatial.model.version>
-        <exchange.model>4.0.3</exchange.model>
+        <exchange.model>4.0.4</exchange.model>
         <rules.model>3.0.11</rules.model>
         <uvms.config.version>4.0.0</uvms.config.version>
         <mdr.model.version>1.0.1-SNAPSHOT</mdr.model.version>
@@ -102,21 +102,18 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -137,21 +134,32 @@
                 <version>${activity.model}</version>
             </dependency>
 
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>usm4uvms</artifactId>
-                <version>${usm4uvms.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                        <artifactId>uvms-commons</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>commons-logging</groupId>
-                    	<artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+			<dependency>
+				<groupId>eu.europa.ec.fisheries.uvms</groupId>
+				<artifactId>usm4uvms</artifactId>
+				<version>${usm4uvms.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.jboss.resteasy</groupId>
+						<artifactId>resteasy-jaxrs</artifactId>
+					</exclusion>
+					<exclusion>
+					    <groupId>net.sf.ehcache</groupId>
+	  					<artifactId>ehcache</artifactId>				
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+			    <groupId>net.sf.ehcache.internal</groupId>
+			    <artifactId>ehcache-core</artifactId>
+	            <version>2.10.4</version>
+	            <exclusions>
+	            	<exclusion>
+	            		 <groupId>org.slf4j</groupId>
+	    				 <artifactId>slf4j-api</artifactId>
+	            	</exclusion>
+	            </exclusions>
+	        </dependency>		
             
 	        <dependency>
 	            <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -241,7 +249,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.6</version>
+                <version>3.7</version>
             </dependency>
 
             <dependency>
@@ -253,7 +261,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
             </dependency>
 
             <dependency>
@@ -338,6 +346,7 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>jaxrs-api</artifactId>
                 <version>3.0.11.Final</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -354,31 +363,31 @@
            	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.13</version>
+				<version>1.14</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.13</version>
+				<version>1.14</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.13</version>
+				<version>1.14</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.13</version>
+				<version>1.14</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.13</version>
+				<version>1.14</version>
 				<type>pom</type>
 			</dependency>
 
