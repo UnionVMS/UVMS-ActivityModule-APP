@@ -10,20 +10,6 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.internal.util.collections.Sets.newSet;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -31,6 +17,7 @@ import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
@@ -39,6 +26,20 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
 import org.junit.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.internal.util.collections.Sets.newSet;
 
 public class BaseMapperTest extends BaseUnitilsTest {
 
@@ -86,18 +87,20 @@ public class BaseMapperTest extends BaseUnitilsTest {
         period1.setStartDate(sdf.parse("21/12/2011"));
         period1.setEndDate(sdf.parse("21/12/2013"));
         period1.setCalculatedDuration(22.22d);
+        period1.setDurationUnitCode("MIN");
 
         DelimitedPeriodEntity period2 = new DelimitedPeriodEntity();
         period2.setStartDate(sdf.parse("21/11/2010"));
         period2.setEndDate(sdf.parse("21/11/2012"));
         period2.setCalculatedDuration(2.24d);
+        period2.setDurationUnitCode("HOU");
 
         DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
 
         assertEquals(24.46d, periodDTO.getDuration());
         assertEquals(period2.getStartDate(), periodDTO.getStartDate());
         assertEquals(period1.getEndDate(), periodDTO.getEndDate());
-
+        assertEquals(UnitCodeEnum.MIN.getUnit(), periodDTO.getUnitCode());
     }
 
     @Test
