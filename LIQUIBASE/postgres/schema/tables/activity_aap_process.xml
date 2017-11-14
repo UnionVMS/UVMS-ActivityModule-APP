@@ -15,7 +15,7 @@
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="aap_process_pk"/>
             </column>
-            <column name="conversion_factor" type="INT4"/>
+            <column name="conversion_factor" type="FLOAT8"/>
             <column name="fa_catch_id" type="BIGINT"/>
         </createTable>
     </changeSet>
