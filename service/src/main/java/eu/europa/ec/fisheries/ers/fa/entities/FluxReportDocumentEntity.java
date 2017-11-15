@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -164,10 +165,10 @@ public class FluxReportDocumentEntity implements Serializable {
     }
 
     public String getFluxPartyIdentifierBySchemeId(String schemeId) {
-        if (fluxParty != null) {
-            for (FluxPartyIdentifierEntity fluxPartyIdentifier : fluxParty.getFluxPartyIdentifiers()) {
-                if (fluxPartyIdentifier.getFluxPartyIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
-                    return fluxPartyIdentifier.getFluxPartyIdentifierId();
+        if (CollectionUtils.isNotEmpty(fluxReportIdentifiers)) {
+            for (FluxReportIdentifierEntity fluxReportIdentifierEntity : fluxReportIdentifiers) {
+                if (fluxReportIdentifierEntity.getFluxReportIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
+                    return fluxReportIdentifierEntity.getFluxReportIdentifierId();
                 }
             }
         }
