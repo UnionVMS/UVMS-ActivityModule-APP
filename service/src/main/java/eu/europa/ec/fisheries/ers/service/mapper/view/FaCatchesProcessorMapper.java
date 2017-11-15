@@ -10,15 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
@@ -44,6 +35,15 @@ import eu.europa.ec.fisheries.ers.service.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by kovian on 03/03/2017.
@@ -196,11 +196,11 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
 
     private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
-        Integer convFc = 1;
+        Double convFc = 1d;
         Double weightSum = 0.0;
         if (CollectionUtils.isNotEmpty(aapProcesses)) {
             for (AapProcessEntity aapProc : aapProcesses) {
-                Integer actConvFac = aapProc.getConversionFactor();
+                Double actConvFac = aapProc.getConversionFactor();
                 convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
                 addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }

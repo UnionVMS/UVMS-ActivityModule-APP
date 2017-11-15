@@ -40,7 +40,7 @@ public class AapProcessEntity implements Serializable {
 	private FaCatchEntity faCatch;
 	
 	@Column(name = "conversion_factor")
-	private Integer conversionFactor;
+	private Double conversionFactor;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess", cascade = CascadeType.ALL)
 	private Set<AapProductEntity> aapProducts;
@@ -65,15 +65,14 @@ public class AapProcessEntity implements Serializable {
 		this.faCatch = faCatch;
 	}
 
-	public Integer getConversionFactor() {
-		return this.conversionFactor;
+	public Double getConversionFactor() {
+		return conversionFactor;
 	}
 
-	public void setConversionFactor(Integer conversionFactor) {
+	public void setConversionFactor(Double conversionFactor) {
 		this.conversionFactor = conversionFactor;
 	}
 
-	
 	public Set<AapProductEntity> getAapProducts() {
 		return this.aapProducts;
 	}
