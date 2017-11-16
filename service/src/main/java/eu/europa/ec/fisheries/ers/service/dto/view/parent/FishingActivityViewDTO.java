@@ -78,7 +78,7 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private TripWidgetDto tripDetails;
 
-    @JsonView({Relocation.class, Transhipment.class, JointFishingOperation.class})
+    @JsonView({Relocation.class, Transhipment.class, JointFishingOperation.class,FishingOperation.class})
     private List<VesselDetailsDTO> vesselDetails;
 
     @JsonView(JointFishingOperation.class)

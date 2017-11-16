@@ -14,10 +14,19 @@
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import org.apache.commons.collections.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by padhyad on 3/28/2017.
@@ -38,11 +47,43 @@ public class JointFishingOperationViewMapper extends BaseActivityViewMapper {
         viewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));
         viewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
         viewDTO.setGears(getGearsFromEntity(faEntity.getFishingGears()));
-        viewDTO.setVesselDetails(VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans()));
+        viewDTO.setVesselDetails(getVesselDetailsDTO(faEntity));
         viewDTO.setCatches(mapCatchesToGroupDto(faEntity));
         viewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
         viewDTO.setGearProblems(GearShotRetrievalTileMapper.INSTANCE.mapGearProblemsToGearsDto(faEntity.getGearProblems()));
         viewDTO.setRelocations(getRelocations(faEntity));
         return viewDTO;
+    }
+
+    /**
+     * Addded this method as we want to set storage information explicitely in VesselDetailsDTO.Storage informaation we can only get from activities
+     * @param faEntity
+     * @return VesselDetailsDTO
+     */
+    protected List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
+        if(faEntity==null)
+            return null;
+
+        List<VesselDetailsDTO> vesselDetailsDTOs = new ArrayList<>();
+        Set<VesselTransportMeansEntity> entities=  faEntity.getVesselTransportMeans();
+        if(CollectionUtils.isEmpty(entities)){
+            entities = new HashSet<>();
+        }
+
+        if(CollectionUtils.isNotEmpty(faEntity.getAllRelatedFishingActivities())){
+            for(FishingActivityEntity fishingActivityEntity : faEntity.getAllRelatedFishingActivities()){
+                entities.addAll(fishingActivityEntity.getVesselTransportMeans());
+            }
+        }
+
+        for(VesselTransportMeansEntity vesselTransportMeansEntity : entities) {
+            VesselDetailsDTO vesselDetails = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
+            if (vesselDetails != null && faEntity.getDestVesselCharId() != null) {
+                vesselDetails.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+            }
+            vesselDetailsDTOs.add(vesselDetails);
+        }
+
+        return vesselDetailsDTOs;
     }
 }
