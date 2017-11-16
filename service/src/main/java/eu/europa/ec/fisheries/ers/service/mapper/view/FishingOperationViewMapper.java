@@ -10,15 +10,22 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import org.apache.commons.collections.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
@@ -58,7 +65,31 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
         Set<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations());
 
         viewDTO.setLocations(fluxLocationDtos);
+        viewDTO.setVesselDetails( getVesselDetailsDTO(faEntity) );
 
         return viewDTO;
+    }
+
+    /**
+     * Addded this method as we want to set storage information explicitely in VesselDetailsDTO.Storage informaation we can only get from activities
+     * @param faEntity
+     * @return VesselDetailsDTO
+     */
+    protected List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
+        if(faEntity==null || CollectionUtils.isEmpty(faEntity.getVesselTransportMeans()))
+            return null;
+
+        List<VesselDetailsDTO> vesselDetailsDTOs = new ArrayList<>();
+        Set<VesselTransportMeansEntity> entities=  faEntity.getVesselTransportMeans();
+
+        for(VesselTransportMeansEntity vesselTransportMeansEntity : entities) {
+            VesselDetailsDTO vesselDetails = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
+            if (vesselDetails != null && faEntity.getDestVesselCharId() != null) {
+                vesselDetails.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+            }
+            vesselDetailsDTOs.add(vesselDetails);
+        }
+
+        return vesselDetailsDTOs;
     }
 }
