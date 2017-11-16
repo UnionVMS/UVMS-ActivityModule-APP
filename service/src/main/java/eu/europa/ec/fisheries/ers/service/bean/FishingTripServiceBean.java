@@ -772,9 +772,16 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
         }
         tripWidgetDto.setTrips(tripOverviewDtoList);
-        if (CollectionUtils.isNotEmpty(tripIdSet)) {
-            VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripIdSet.iterator().next());
-            tripWidgetDto.setVesselDetails(detailsDTO);
+        //As per new requirement, vessel should always be the one associated with fishing Activity in the trip widget
+        if(activityEntity !=null && activityEntity.getFaReportDocument() !=null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())){
+            Set<VesselTransportMeansEntity> vesselTransportMeansEntities = activityEntity.getFaReportDocument().getVesselTransportMeans();
+            for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities){
+                if(vesselTransportMeansEntity.getFishingActivity() ==null){
+                    tripWidgetDto.setVesselDetails( getVesselDetailsDTO(vesselTransportMeansEntity, activityEntity));
+                    break;
+                }
+            }
+
         }
         return tripWidgetDto;
     }
