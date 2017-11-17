@@ -47,7 +47,7 @@ public class AapProcessEntity implements Serializable {
 	private FaCatchEntity faCatch;
 	
 	@Column(name = "conversion_factor")
-	private Integer conversionFactor;
+	private Double conversionFactor;
 	
 	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL)
 	private Set<AapProductEntity> aapProducts;

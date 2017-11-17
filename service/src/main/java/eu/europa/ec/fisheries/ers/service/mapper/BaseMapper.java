@@ -120,10 +120,10 @@ public class BaseMapper {
     }
 
     public static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
-
         BigDecimal fishingTime = BigDecimal.ZERO;
         Date startDate = null;
         Date endDate = null;
+        String unitCode = null;
 
         for (DelimitedPeriodEntity period : periodEntities) {
             Double calcDur = period.getCalculatedDuration();
@@ -138,14 +138,17 @@ public class BaseMapper {
             if (calcDur != null) {
                 fishingTime = fishingTime.add(new BigDecimal(calcDur));
             }
+
+            unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationUnitCode() : unitCode;
         }
 
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
-                .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).build();
+                .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).unitCode(unitCode).build();
 
         if (Math.abs(BigDecimal.ZERO.doubleValue() - build.getDuration()) < 0.00000001) {
             build.setDuration(null);
         }
+
         return build;
     }
 

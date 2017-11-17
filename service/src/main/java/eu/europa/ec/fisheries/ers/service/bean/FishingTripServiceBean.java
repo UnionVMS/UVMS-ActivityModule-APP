@@ -84,6 +84,7 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.jetbrains.annotations.Nullable;
 import org.mockito.internal.util.collections.Sets;
 
 import javax.annotation.PostConstruct;
@@ -272,22 +273,29 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             VesselTransportMeansEntity latestVesselByTripId = vesselTransportMeansDao.findLatestVesselByTripId(fishingTripId);
             if (latestVesselByTripId != null) {
                 FishingActivityEntity parent = latestVesselByTripId.getFishingActivity();
-                detailsDTO = VesselTransportMeansMapper.INSTANCE.map(latestVesselByTripId);
-
-                getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
-
-                if (parent != null) {
-                    VesselStorageCharacteristicsEntity sourceVesselCharId = parent.getSourceVesselCharId();
-                    if (detailsDTO != null) {
-                        detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(sourceVesselCharId));
-                    }
-                }
+                detailsDTO = getVesselDetailsDTO(latestVesselByTripId, parent);
             }
 
         } catch (ServiceException e) {
             throw new ServiceException(e.getMessage(), e);
         }
 
+        return detailsDTO;
+    }
+
+    @Nullable
+    private VesselDetailsDTO getVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity fishingActivityEntity) {
+        VesselDetailsDTO detailsDTO;
+        detailsDTO = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
+
+        getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
+
+        if (fishingActivityEntity != null) {
+            VesselStorageCharacteristicsEntity sourceVesselCharId = fishingActivityEntity.getSourceVesselCharId();
+            if (detailsDTO != null) {
+                detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(sourceVesselCharId));
+            }
+        }
         return detailsDTO;
     }
 
@@ -711,8 +719,18 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
                 tripOverviewDtoList.add(tripOverviewDto);
                 tripWidgetDto.setTrips(tripOverviewDtoList);
-                VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
-                tripWidgetDto.setVesselDetails(detailsDTO);
+                if(activityEntity !=null && activityEntity.getFaReportDocument() !=null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())){
+                    Set<VesselTransportMeansEntity> vesselTransportMeansEntities = activityEntity.getFaReportDocument().getVesselTransportMeans();
+                    for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities){
+                        if(vesselTransportMeansEntity.getFishingActivity() ==null){
+                            tripWidgetDto.setVesselDetails( getVesselDetailsDTO(vesselTransportMeansEntity, activityEntity));
+                            break;
+                        }
+                    }
+
+                }
+               // VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
+               // tripWidgetDto.setVesselDetails(detailsDTO);
                 log.debug("tripWidgetDto set for tripID :" + tripId);
             } else {
                 log.debug("TripId is not received for the screen. Try to get TripSummary information for all the tripIds specified for FishingActivity:" + activityEntity.getId());
@@ -754,9 +772,16 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
         }
         tripWidgetDto.setTrips(tripOverviewDtoList);
-        if (CollectionUtils.isNotEmpty(tripIdSet)) {
-            VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripIdSet.iterator().next());
-            tripWidgetDto.setVesselDetails(detailsDTO);
+        //As per new requirement, vessel should always be the one associated with fishing Activity in the trip widget
+        if(activityEntity !=null && activityEntity.getFaReportDocument() !=null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())){
+            Set<VesselTransportMeansEntity> vesselTransportMeansEntities = activityEntity.getFaReportDocument().getVesselTransportMeans();
+            for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities){
+                if(vesselTransportMeansEntity.getFishingActivity() ==null){
+                    tripWidgetDto.setVesselDetails( getVesselDetailsDTO(vesselTransportMeansEntity, activityEntity));
+                    break;
+                }
+            }
+
         }
         return tripWidgetDto;
     }
