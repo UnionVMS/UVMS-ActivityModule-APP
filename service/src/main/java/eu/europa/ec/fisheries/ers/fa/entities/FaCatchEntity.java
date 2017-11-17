@@ -29,6 +29,8 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
+import lombok.NoArgsConstructor;
+
 @NamedQueries({
 		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
 				query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
@@ -44,6 +46,7 @@ import java.util.Set;
 })
 @Entity
 @Table(name = "activity_fa_catch")
+@NoArgsConstructor
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
@@ -151,10 +154,6 @@ public class FaCatchEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FishingTripEntity> fishingTrips;
-
-	public FaCatchEntity() {
-		super();
-	}
 
 	public int getId() {
 		return this.id;

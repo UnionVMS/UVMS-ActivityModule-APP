@@ -27,6 +27,7 @@ import java.util.Set;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
@@ -34,6 +35,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(exclude = {"aapProducts", "aapProcessCode"})
 @ToString(exclude = {"aapProducts", "aapProcessCode"})
+@NoArgsConstructor
 public class AapProcessEntity implements Serializable {
 
 	@Id
