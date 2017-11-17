@@ -8,11 +8,11 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,20 +21,23 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
 @Table(name = "activity_contact_person")
-@ToString
+@Data
+@ToString(exclude = "contactParty")
+@EqualsAndHashCode(exclude = "contactParty")
 public class ContactPersonEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ct_person_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @Column(name = "title")
 	private String title;
 	
 	@Column(name = "given_name")
@@ -52,101 +55,10 @@ public class ContactPersonEntity implements Serializable {
 	@Column(name = "name_suffix")
 	private String nameSuffix;
 	
-	@Column(name = "gender")
 	private String gender;
 	
-	@Column(name = "alias")
 	private String alias;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "contactPerson")
+	@OneToOne(mappedBy = "contactPerson")
 	private ContactPartyEntity contactParty;
-
-	public ContactPersonEntity() {
-		super();
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-
-    public String getTitle() {
-        return this.title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-
-	public String getGivenName() {
-		return this.givenName;
-	}
-
-	public void setGivenName(String givenName) {
-		this.givenName = givenName;
-	}
-
-	
-	public String getMiddleName() {
-		return this.middleName;
-	}
-
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
-
-	
-	public String getFamilyName() {
-		return this.familyName;
-	}
-
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
-	}
-
-	
-	public String getFamilyNamePrefix() {
-		return this.familyNamePrefix;
-	}
-
-	public void setFamilyNamePrefix(String familyNamePrefix) {
-		this.familyNamePrefix = familyNamePrefix;
-	}
-
-	
-	public String getNameSuffix() {
-		return this.nameSuffix;
-	}
-
-	public void setNameSuffix(String nameSuffix) {
-		this.nameSuffix = nameSuffix;
-	}
-
-	
-	public String getGender() {
-		return this.gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	
-	public String getAlias() {
-		return this.alias;
-	}
-
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
-
-	public ContactPartyEntity getContactParty() {
-		return contactParty;
-	}
-
-	public void setContactParty(ContactPartyEntity contactParty) {
-		this.contactParty = contactParty;
-	}
-
 }

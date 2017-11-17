@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,20 +24,20 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/15/2016.
- */
+import lombok.Data;
+
 @Entity
 @Table(name = "activity_aap_process_code")
+@Data
 public class AapProcessCodeEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_procode_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "aap_process_id")
     private AapProcessEntity aapProcess;
 
@@ -47,32 +46,4 @@ public class AapProcessCodeEntity implements Serializable {
 
     @Column(name = "type_code_list_id", nullable = false)
     private String typeCodeListId;
-
-    public int getId() {
-        return id;
-    }
-
-    public AapProcessEntity getAapProcess() {
-        return aapProcess;
-    }
-
-    public void setAapProcess(AapProcessEntity aapProcess) {
-        this.aapProcess = aapProcess;
-    }
-
-    public String getTypeCode() {
-        return typeCode;
-    }
-
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
-    }
-
-    public String getTypeCodeListId() {
-        return typeCodeListId;
-    }
-
-    public void setTypeCodeListId(String typeCodeListId) {
-        this.typeCodeListId = typeCodeListId;
-    }
 }
