@@ -23,10 +23,12 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_aap_product")
 @Data
+@NoArgsConstructor
 public class AapProductEntity implements Serializable {
 
 	@Id

@@ -23,6 +23,7 @@ import java.io.Serializable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
@@ -30,6 +31,7 @@ import lombok.ToString;
 @Data
 @ToString(exclude = "contactParty")
 @EqualsAndHashCode(exclude = "contactParty")
+@NoArgsConstructor
 public class ContactPersonEntity implements Serializable {
 
 	@Id

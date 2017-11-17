@@ -16,11 +16,13 @@ import java.io.Serializable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_structured_address")
 @EqualsAndHashCode(exclude = {"contactParty"})
 @Data
+@NoArgsConstructor
 public class StructuredAddressEntity implements Serializable {
 
     @Id

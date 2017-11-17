@@ -25,6 +25,7 @@ import java.util.Set;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -33,6 +34,7 @@ import org.apache.commons.collections.CollectionUtils;
 @Data
 @EqualsAndHashCode(exclude = {"fishingActivitiesForDestVesselCharId", "fishingActivitiesForSourceVesselCharId", "vesselStorageCharCode"})
 @ToString(exclude = {"fishingActivitiesForDestVesselCharId", "fishingActivitiesForSourceVesselCharId", "vesselStorageCharCode"})
+@NoArgsConstructor
 public class VesselStorageCharacteristicsEntity implements Serializable {
 
 	@Id

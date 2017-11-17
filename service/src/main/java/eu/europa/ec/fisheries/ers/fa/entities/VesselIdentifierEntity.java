@@ -27,6 +27,7 @@ import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NamedQueries({
@@ -40,18 +41,18 @@ import lombok.NoArgsConstructor;
 						"WHERE fti.tripId = :tripId " +
 						"ORDER BY frd.acceptedDatetime DESC")
 })
-
 @Entity
 @Table(name = "activity_vessel_identifier")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class VesselIdentifierEntity implements Serializable {
 
 	public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "findLatestVesselByTripId";
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
@@ -65,34 +66,5 @@ public class VesselIdentifierEntity implements Serializable {
 
 	@Column(name = "vessel_identifier_scheme_id")
 	private String vesselIdentifierSchemeId;
-
-	public int getId() {
-		return this.id;
-	}
-
-	public VesselTransportMeansEntity getVesselTransportMeans() {
-		return this.vesselTransportMeans;
-	}
-
-	public void setVesselTransportMeans(
-			VesselTransportMeansEntity vesselTransportMeans) {
-		this.vesselTransportMeans = vesselTransportMeans;
-	}
-
-	public String getVesselIdentifierId() {
-		return this.vesselIdentifierId;
-	}
-
-	public void setVesselIdentifierId(String vesselIdentifierId) {
-		this.vesselIdentifierId = vesselIdentifierId;
-	}
-
-	public String getVesselIdentifierSchemeId() {
-		return this.vesselIdentifierSchemeId;
-	}
-
-	public void setVesselIdentifierSchemeId(String vesselIdentifierSchemeId) {
-		this.vesselIdentifierSchemeId = vesselIdentifierSchemeId;
-	}
 
 }

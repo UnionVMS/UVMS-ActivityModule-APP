@@ -25,10 +25,12 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_vessel_storage_char_code")
 @Data
+@NoArgsConstructor
 public class VesselStorageCharCodeEntity implements Serializable {
 
     @Id
