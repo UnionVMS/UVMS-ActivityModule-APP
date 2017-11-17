@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,20 +24,24 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/15/2016.
- */
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 @Entity
 @Table(name = "activity_contact_party_role")
+@Data
+@EqualsAndHashCode(exclude = "contactParty")
+@ToString(exclude = "contactParty")
 public class ContactPartyRoleEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ctp_role_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "contact_party_id")
     private ContactPartyEntity contactParty;
 
@@ -48,31 +51,4 @@ public class ContactPartyRoleEntity implements Serializable {
     @Column(name = "role_code_list_id", nullable = false)
     private String roleCodeListId;
 
-    public int getId() {
-        return id;
-    }
-
-    public ContactPartyEntity getContactParty() {
-        return contactParty;
-    }
-
-    public void setContactParty(ContactPartyEntity contactParty) {
-        this.contactParty = contactParty;
-    }
-
-    public String getRoleCode() {
-        return roleCode;
-    }
-
-    public void setRoleCode(String roleCode) {
-        this.roleCode = roleCode;
-    }
-
-    public String getRoleCodeListId() {
-        return roleCodeListId;
-    }
-
-    public void setRoleCodeListId(String roleCodeListId) {
-        this.roleCodeListId = roleCodeListId;
-    }
 }

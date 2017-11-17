@@ -11,15 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,6 +29,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NamedQueries({
         @NamedQuery(name = VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
@@ -52,25 +54,28 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@EqualsAndHashCode(exclude = {"contactParty", "vesselIdentifiers", "flapDocuments", "vesselPositionEvents"})
+@ToString(exclude = {"contactParty", "vesselIdentifiers", "flapDocuments", "vesselPositionEvents"})
 public class VesselTransportMeansEntity implements Serializable {
 
     public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "vesselTransportMeansEntity.findLatestVesselByTripId";
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_trp_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "registration_event_id")
     private RegistrationEventEntity registrationEvent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "fishing_activity_id")
     private FishingActivityEntity fishingActivity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "fa_report_document_id")
     private FaReportDocumentEntity faReportDocument;
 
@@ -80,159 +85,33 @@ public class VesselTransportMeansEntity implements Serializable {
     @Column(name = "role_code_list_id")
     private String roleCodeListId;
 
-    @Column(columnDefinition = "text", name = "name")
+    @Column(columnDefinition = "text")
     private String name;
 
     @Column(name = "country_scheme_id")
     private String countrySchemeId;
 
-    @Column(name = "country")
     private String country;
 
-    @Column(name = "guid")
     private String guid;
 
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<ContactPartyEntity> contactParty;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<VesselIdentifierEntity> vesselIdentifiers;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<FlapDocumentEntity> flapDocuments;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<VesselPositionEventEntity> vesselPositionEvents;
-
-    public int getId() {
-        return this.id;
-    }
-
-    public RegistrationEventEntity getRegistrationEvent() {
-        return this.registrationEvent;
-    }
-
-    public void setRegistrationEvent(
-            RegistrationEventEntity registrationEvent) {
-        this.registrationEvent = registrationEvent;
-    }
-
-    public String getRoleCode() {
-        return this.roleCode;
-    }
-
-    public void setRoleCode(String roleCode) {
-        this.roleCode = roleCode;
-    }
-
-    public String getRoleCodeListId() {
-        return this.roleCodeListId;
-    }
-
-    public void setRoleCodeListId(String roleCodeListId) {
-        this.roleCodeListId = roleCodeListId;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<VesselIdentifierEntity> getVesselIdentifiers() {
-        return this.vesselIdentifiers;
-    }
-
-    public void setVesselIdentifiers(
-            Set<VesselIdentifierEntity> vesselIdentifiers) {
-        this.vesselIdentifiers = vesselIdentifiers;
-    }
-
-    public FaReportDocumentEntity getFaReportDocument() {
-        return faReportDocument;
-    }
-
-    public void setFaReportDocument(FaReportDocumentEntity faReportDocument) {
-        this.faReportDocument = faReportDocument;
-    }
-
-    public Set<ContactPartyEntity> getContactParty() {
-        return contactParty;
-    }
-
-    public void setContactParty(Set<ContactPartyEntity> contactParty) {
-        this.contactParty = contactParty;
-    }
-
-    public String getCountrySchemeId() {
-        return countrySchemeId;
-    }
-
-    public void setCountrySchemeId(String countrySchemeId) {
-        this.countrySchemeId = countrySchemeId;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public Set<FlapDocumentEntity> getFlapDocuments() {
-        return flapDocuments;
-    }
-
-    public void setFlapDocuments(Set<FlapDocumentEntity> flapDocuments) {
-        this.flapDocuments = flapDocuments;
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
-
-    public FishingActivityEntity getFishingActivity() {
-        return fishingActivity;
-    }
-
-    public void setFishingActivity(FishingActivityEntity fishingActivity) {
-        this.fishingActivity = fishingActivity;
-    }
-
-    public Set<VesselPositionEventEntity> getVesselPositionEvents() {
-        return vesselPositionEvents;
-    }
-
-    public void setVesselPositionEvents(Set<VesselPositionEventEntity> vesselPositionEvents) {
-        this.vesselPositionEvents = vesselPositionEvents;
-    }
-
-
 
     public Map<VesselIdentifierSchemeIdEnum, String> getVesselIdentifiersMap() {
         Map<VesselIdentifierSchemeIdEnum, String> idMap = new HashMap<>();
-        for (VesselIdentifierEntity entity : getVesselIdentifiers()) {
+        for (VesselIdentifierEntity entity :vesselIdentifiers) {
             idMap.put(Enum.valueOf(VesselIdentifierSchemeIdEnum.class, entity.getVesselIdentifierSchemeId()), entity.getVesselIdentifierId());
         }
         return idMap;
-    }
-
-    @Override
-    public String toString() {
-        return "VesselTransportMeansEntity{" +
-                "id=" + id +
-                ", registrationEvent=" + registrationEvent +
-                ", roleCode='" + roleCode + '\'' +
-                ", roleCodeListId='" + roleCodeListId + '\'' +
-                ", name='" + name + '\'' +
-                '}';
     }
 }
