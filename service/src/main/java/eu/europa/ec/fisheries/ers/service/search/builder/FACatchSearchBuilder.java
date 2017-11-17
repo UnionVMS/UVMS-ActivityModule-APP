@@ -160,6 +160,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
+   
     @Override
     protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
@@ -170,6 +171,10 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN).append(valueToFindAndApply);
         }
+    }
+
+    protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
+        sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
 
