@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="padhyad" id="123456-66">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="str_add_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-25">
+        <createTable tableName="activity_structured_address">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="structured_address_pk"/>
+            </column>
+            <column name="block_name" type="VARCHAR(1000)"/>
+            <column name="building_name" type="VARCHAR(1000)"/>
+            <column name="city_name" type="VARCHAR(255)"/>
+            <column name="city_subdivision_name" type="VARCHAR(255)"/>
+            <column name="country" type="VARCHAR(255)"/>
+            <column name="country_name" type="VARCHAR(255)"/>
+            <column name="country_subdivision_name" type="VARCHAR(255)"/>
+            <column name="country_id_scheme_id" type="VARCHAR(255)"/>
+            <column name="address_id" type="VARCHAR(255)"/>
+            <column name="plot_id" type="VARCHAR(1000)"/>
+            <column name="post_office_box" type="VARCHAR(255)"/>
+            <column name="postcode" type="VARCHAR(255)"/>
+            <column name="streetname" type="VARCHAR(1000)"/>
+            <column name="flux_location_id" type="BIGINT"/>
+            <column name="contact_party_id" type="BIGINT"/>
+            <column name="structured_address_type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-67" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="str_add_seq"
+                tableName="activity_structured_address"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-49">
+        <addForeignKeyConstraint baseColumnNames="contact_party_id" baseTableName="activity_structured_address"
+                                 constraintName="activity_structured_address_contact_party_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="activity_contact_party"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462787324468-50">
+        <addForeignKeyConstraint baseColumnNames="flux_location_id" baseTableName="activity_structured_address"
+                                 constraintName="activity_structured_address_flux_location_fk" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="activity_flux_location"/>
+    </changeSet>
+</databaseChangeLog>

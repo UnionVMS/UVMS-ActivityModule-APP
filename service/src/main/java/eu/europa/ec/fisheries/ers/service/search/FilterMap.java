@@ -49,7 +49,10 @@ public class FilterMap {
     public static final String QUANTITY_MAX = "maxWeight";
     public static final String CONTACT_PERSON_NAME = "agent";
     public static final String TRIP_ID = "tripId";
+    public static final String TRIP_SCHEME_ID = "tripSchemeId";
+    public static final String CONTACT_ROLE_CODE = "roleCode";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
+    public static final String CONTACT_PARTY_TABLE_ALIAS = "vt.contactParty cparty";
     public static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
     public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
@@ -58,7 +61,6 @@ public class FilterMap {
     public static final String FISHING_TRIP_IDENTIFIER_TABLE_ALIAS = " fishingTrip.fishingTripIdentifiers fishingTripId ";
     public static final String AAP_PROCESS_TABLE_ALIAS = " faCatch.aapProcesses aprocess ";
     public static final String AAP_PRODUCT_TABLE_ALIAS = " aprocess.aapProducts aprod ";
-    public static final String MASTER_MAPPING = " vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson ";
     public static final String DATASOURCE = "dataSource";
     public static final String FAREPORT_ID = "faReportId";
     public static final String AREA_GEOM = "areaGeom";
@@ -153,6 +155,8 @@ public class FilterMap {
         filterQueryParameterMappings.put(SearchFilter.FA_REPORT_ID, FAREPORT_ID);
         filterQueryParameterMappings.put(SearchFilter.AREA_GEOM, AREA_GEOM);
         filterQueryParameterMappings.put(SearchFilter.TRIP_ID, TRIP_ID);
+        filterQueryParameterMappings.put(SearchFilter.CONTACT_ROLE_CODE, CONTACT_ROLE_CODE);
+        filterQueryParameterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, TRIP_SCHEME_ID);
     }
 
     private static void populateFiltersWhichSupportMultipleValues() {
@@ -165,6 +169,7 @@ public class FilterMap {
         filtersWhichSupportMultipleValues.add(SearchFilter.SPECIES);
         filtersWhichSupportMultipleValues.add(SearchFilter.MASTER);
         filtersWhichSupportMultipleValues.add(SearchFilter.PURPOSE);
+        filtersWhichSupportMultipleValues.add(SearchFilter.CONTACT_ROLE_CODE);
     }
 
     public static void populateGroupByMapping() {
@@ -219,7 +224,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FROM, new FilterDetails(" fpFrom.fluxPartyIdentifiers fpiFrom", "fpiFrom.fluxPartyIdentifierId =:" + FROM_ID + StringUtils.SPACE));
         // filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, "( dp.startDate >= :" + OCCURENCE_START_DATE + "  OR a.occurence  >= :" + OCCURENCE_START_DATE + " )"));
         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "   a.calculatedStartTime  >= :" + OCCURENCE_START_DATE + " "));
-        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, " dp.endDate <= :" + OCCURENCE_END_DATE));
+        filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, " (dp.endDate <= :" + OCCURENCE_END_DATE+" OR  a.calculatedStartTime <= :"+ OCCURENCE_END_DATE +")") );
         filterMappings.put(SearchFilter.VESSEL_NAME, new FilterDetails("fa.vesselTransportMeans vt", "vt.name IN (:" + VESSEL_IDENTITY_NAME + ")"));
         filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, new FilterDetails("vt.vesselIdentifiers vi", "vi.vesselIdentifierId IN (:" + VESSEL_IDENTIFIRE + ")"));
         filterMappings.put(SearchFilter.VESSEL_GUIDS, new FilterDetails("fa.vesselTransportMeans vtMeans", "vtMeans.guid IN (:" + VTM_GUIDS + ")"));
@@ -232,13 +237,13 @@ public class FilterMap {
         filterMappings.put(SearchFilter.SPECIES, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN  " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN  " + AAP_PRODUCT_TABLE_ALIAS, "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN FETCH " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN FETCH " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
         filterMappings.put(SearchFilter.QUANTITY_MAX, new FilterDetails(" ", "  :" + QUANTITY_MAX + ") "));
-        filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN FETCH vt.contactParty cparty JOIN FETCH cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
+        filterMappings.put(SearchFilter.MASTER, new FilterDetails(" cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
                 "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
         filterMappings.put(SearchFilter.FA_REPORT_ID, new FilterDetails(StringUtils.SPACE, "fa.id =:" + FAREPORT_ID));
         filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(StringUtils.SPACE, "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
         filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
-
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     /**
@@ -250,6 +255,21 @@ public class FilterMap {
     public void populateFilterMappingsForFilterFishingTrips() {
          filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
          filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
+
+         filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
+                     "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
+    }
+
+
+    public void populateFilterMappingsForFilterFishingTripIds() {
+
+        filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
+                "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
+
+        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN  " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN  " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
+
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN  " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN  " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     public void populateFilterMAppingsWithChangeForFACatchReport() {
@@ -258,7 +278,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.SPECIES, new FilterDetails(" ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") )"));
         filterMappings.put(SearchFilter.GEAR, new FilterDetails("faCatch.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
-        filterMappings.put(SearchFilter.MASTER, new FilterDetails(" fa.vesselTransportMeans vt JOIN vt.contactParty cparty JOIN cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
+        filterMappings.put(SearchFilter.MASTER, new FilterDetails(" cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
                 "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
         filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));

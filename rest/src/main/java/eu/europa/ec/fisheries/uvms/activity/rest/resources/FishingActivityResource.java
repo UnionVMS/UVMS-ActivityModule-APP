@@ -12,14 +12,16 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -31,7 +33,13 @@ import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -56,6 +64,10 @@ public class FishingActivityResource extends UnionVMSResource {
     private ActivityService activityService;
 
     @EJB
+    private FishingTripService fishingTripService;
+
+
+    @EJB
     private USMService usmService;
 
     @GET
@@ -75,6 +87,15 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
         return createSuccessResponse();
+    }
+
+
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Path("/commChannel")
+    public Response getCommunicationChannel() throws ServiceException {
+
+        return createSuccessResponse(FaReportSourceEnum.values());
     }
 
 
@@ -100,6 +121,28 @@ public class FishingActivityResource extends UnionVMSResource {
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }
 
+    @POST
+    @Path("/listTrips")
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response listFishingTripsByQuery(@Context HttpServletRequest request,
+                                               @HeaderParam("scopeName") String scopeName,
+                                               @HeaderParam("roleName") String roleName,
+                                               FishingActivityQuery fishingActivityQuery) throws ServiceException {
+
+        log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        if (fishingActivityQuery == null) {
+            return createErrorResponse("Query to find list is null.");
+        }
+        String username = request.getRemoteUser();
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
+        log.info("Successful retrieved");
+        FishingTripResponse fishingTripIdsForFilter = fishingTripService.filterFishingTrips(fishingActivityQuery);
+        return createSuccessResponse(fishingTripIdsForFilter);
+    }
+
     @GET
     @Path("/history/{referenceId}/{schemeId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -111,6 +154,41 @@ public class FishingActivityResource extends UnionVMSResource {
                                       @PathParam("schemeId") String schemeId) throws ServiceException {
 
         return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
+    }
+
+
+    @GET
+    @Path("/previous/{activityId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getPreviousFishingActivity(@Context HttpServletRequest request,
+                                      @Context HttpServletResponse response,
+                                      @PathParam("activityId") String activityId) throws ServiceException {
+        int converstedActivityId=0;
+        log.info("Received ActivityId from frontEnd as: " + activityId);
+        if(activityId !=null){
+
+            converstedActivityId=Integer.parseInt(activityId);
+        }
+        return createSuccessResponse(activityService.getPreviousFishingActivity(converstedActivityId));
+    }
+
+    @GET
+    @Path("/next/{activityId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getNextFishingActivity(@Context HttpServletRequest request,
+                                               @Context HttpServletResponse response,
+                                               @PathParam("activityId") String activityId) throws ServiceException {
+        int converstedActivityId=0;
+        log.info("Received ActivityId from frontEnd as: " + activityId);
+        if(activityId !=null){
+
+            converstedActivityId=Integer.parseInt(activityId);
+        }
+        return createSuccessResponse(activityService.getNextFishingActivity(converstedActivityId));
     }
 
 }

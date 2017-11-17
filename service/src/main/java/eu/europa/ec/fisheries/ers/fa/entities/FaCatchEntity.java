@@ -31,14 +31,15 @@ import java.util.Set;
 
 @NamedQueries({
 		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
-				query = "SELECT faCatch.typeCode, faCatch.speciesCode, sum(faCatch.weightMeasure) " +
+				query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
 						"FROM FaCatchEntity faCatch " +
+						"JOIN faCatch.fluxLocations fluxLoc " +
 						"JOIN faCatch.fishingActivity fishAct " +
 						"JOIN fishAct.faReportDocument fa " +
 						"JOIN fishAct.fishingTrips fishTrip " +
 						"JOIN fishTrip.fishingTripIdentifiers fishIdent " +
-						"WHERE fishIdent.tripId =:tripId " +
-						"GROUP BY faCatch.speciesCode, faCatch.typeCode " +
+						"WHERE fishIdent.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
+						"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.fluxLocationIdentifier " +
 						"ORDER BY faCatch.typeCode, faCatch.speciesCode")
 })
 @Entity
@@ -58,7 +59,7 @@ public class FaCatchEntity implements Serializable {
 	private FishingActivityEntity fishingActivity;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "size_distribution_id", nullable = false)
+	@JoinColumn(name = "size_distribution_id")
 	private SizeDistributionEntity sizeDistribution;
 
 	@Column(name = "type_code", nullable = false)

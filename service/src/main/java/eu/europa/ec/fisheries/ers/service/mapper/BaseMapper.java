@@ -11,28 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static com.google.common.collect.Sets.newHashSet;
-import static org.mockito.internal.util.collections.Sets.newSet;
-
-import javax.validation.constraints.NotNull;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -62,8 +40,8 @@ import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
@@ -79,6 +57,28 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+
+import javax.validation.constraints.NotNull;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.google.common.collect.Sets.newHashSet;
+import static org.mockito.internal.util.collections.Sets.newSet;
 
 /**
  * TODO create test
@@ -120,10 +120,10 @@ public class BaseMapper {
     }
 
     public static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
-
         BigDecimal fishingTime = BigDecimal.ZERO;
         Date startDate = null;
         Date endDate = null;
+        String unitCode = null;
 
         for (DelimitedPeriodEntity period : periodEntities) {
             Double calcDur = period.getCalculatedDuration();
@@ -138,14 +138,17 @@ public class BaseMapper {
             if (calcDur != null) {
                 fishingTime = fishingTime.add(new BigDecimal(calcDur));
             }
+
+            unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationUnitCode() : unitCode;
         }
 
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
-                .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).build();
+                .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).unitCode(unitCode).build();
 
         if (Math.abs(BigDecimal.ZERO.doubleValue() - build.getDuration()) < 0.00000001) {
             build.setDuration(null);
         }
+
         return build;
     }
 
@@ -415,7 +418,7 @@ public class BaseMapper {
         }
 
         for (FluxLocationEntity locationEntity : fluxLocationEntityList) {
-            if (FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(locationEntity.getTypeCode())) {
+            if (FluxLocationEnum.POSITION.toString().equalsIgnoreCase(locationEntity.getTypeCode())) {
                 return locationEntity;
             }
         }
@@ -437,8 +440,8 @@ public class BaseMapper {
         positionDto.setOccurence(faEntity.getOccurence());
         if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
             FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
-            if (locationEntity != null) {
-                positionDto.setGeometry(extractGeometryWkt(locationEntity.getLongitude(), locationEntity.getLatitude()));
+            if (locationEntity != null && locationEntity.getGeom() != null) {
+                positionDto.setGeometry(GeometryMapper.INSTANCE.geometryToWkt(locationEntity.getGeom()).getValue());
             }
         }
         return positionDto;
@@ -479,6 +482,30 @@ public class BaseMapper {
             FishingActivityEntity fishingActivity = fishingTripEntity.getFishingActivity();
             if (fishingActivity != null && fishingActivityType.equals(fishingActivity.getTypeCode()) && fishingActivity.getCalculatedStartTime() != null) {
                 return fishingActivity.getCalculatedStartTime();
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * This method will return fishing trip start and end time
+     * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time
+     * fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
+     *
+     * @param fishingActivities
+     * @param fishingActivityType
+     * @return
+     */
+    public Date getFishingTripDateTimeFromFishingActivities(List<FishingActivityEntity> fishingActivities, String fishingActivityType) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivityType == null) {
+            return null;
+        }
+
+        for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
+
+            if (fishingActivityEntity != null && fishingActivityType.equals(fishingActivityEntity.getTypeCode()) && fishingActivityEntity.getCalculatedStartTime() != null) {
+                return fishingActivityEntity.getCalculatedStartTime();
             }
         }
         return null;

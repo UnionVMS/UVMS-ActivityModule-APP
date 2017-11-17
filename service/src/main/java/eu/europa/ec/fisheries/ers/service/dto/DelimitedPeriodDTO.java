@@ -13,16 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
 @AllArgsConstructor
@@ -37,6 +37,8 @@ public class DelimitedPeriodDTO {
     private Date endDate;
 
     private Double duration;
+
+    private String unitCode;
 
     public Date getStartDate() {
         return startDate;
@@ -60,5 +62,13 @@ public class DelimitedPeriodDTO {
 
     public void setDuration(Double duration) {
         this.duration = duration;
+    }
+
+    public String getUnitCode() {
+        return unitCode;
+    }
+
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
     }
 }

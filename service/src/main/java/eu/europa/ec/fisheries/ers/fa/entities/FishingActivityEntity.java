@@ -12,13 +12,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.annotations.Type;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,9 +39,19 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+
 @NamedQueries({
 		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
-				query = "SELECT DISTINCT a  from FishingActivityEntity a " +
+				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrips ft " +
@@ -54,13 +60,23 @@ import java.util.Set;
 						"and fi.tripId =:fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime"),
 		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
-				query = "SELECT DISTINCT a  from FishingActivityEntity a " +
+				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrips ft " +
 						"JOIN FETCH ft.fishingTripIdentifiers fi " +
-						"where fi.tripId =:fishingTripId) " +
-						"order by a.typeCode,fa.acceptedDatetime")
+						"where fi.tripId =:fishingTripId " +
+						"order by a.typeCode,fa.acceptedDatetime"),
+		@NamedQuery(name = FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP,
+				query = "SELECT a from FishingActivityEntity a " +
+						"JOIN FETCH a.faReportDocument fa " +
+						"JOIN FETCH fa.fluxReportDocument flux " +
+						"JOIN FETCH a.fishingTrips ft " +
+						"JOIN FETCH ft.fishingTripIdentifiers fi " +
+						"where fi.tripId = :fishingTripId and " +
+						"fi.tripSchemeId = :tripSchemeId and " +
+						"a.typeCode = :fishActTypeCode and " +
+						"flux.purposeCode in (:flPurposeCodes)")
 })
 @Entity
 @Table(name = "activity_fishing_activity")
@@ -71,6 +87,7 @@ public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
 	public static final String FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM = "findActivityListForFishingTripsWithoutGeom";
+	public static final String FIND_FISHING_ACTIVITY_FOR_TRIP = "findFishingActivityForTrip";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
@@ -201,7 +218,7 @@ public class FishingActivityEntity implements Serializable {
 
     public FlapDocumentEntity getFirstFlapDocument() {
         FlapDocumentEntity flapDocument = null;
-        if (!CollectionUtils.isEmpty(flapDocuments)) {
+        if (!isEmpty(flapDocuments)) {
             flapDocument = flapDocuments.iterator().next();
         }
         return flapDocument;
@@ -543,5 +560,42 @@ public class FishingActivityEntity implements Serializable {
             this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
         }
     }
+    public Double getCalculatedDuration(){
 
+        if (isEmpty(delimitedPeriods)) {
+            return null;
+        }
+        Double durationSubTotal = null;
+        for (DelimitedPeriodEntity period : delimitedPeriods) {
+            durationSubTotal = Utils.addDoubles(period.getCalculatedDuration(), durationSubTotal);
+        }
+        return durationSubTotal;
+	}
+
+	public Double getDuration(){
+
+		if (isEmpty(delimitedPeriods)) {
+			return null;
+		}
+		Double durationSubTotal = null;
+		for (DelimitedPeriodEntity period : delimitedPeriods) {
+			durationSubTotal = Utils.addDoubles(period.getDuration(), durationSubTotal);
+		}
+		return durationSubTotal;
+	}
+
+	public String getDurationMeasure(){
+        if (isEmpty(delimitedPeriods)) {
+            return null;
+        }
+        return delimitedPeriods.iterator().next().getDurationUnitCode(); // As per rules only MIN is allowed
+    }
+
+    public Set<FluxLocationDto> getLocations_() {
+        Set<FluxLocationDto> locationDtos = newHashSet();
+        if (isNotEmpty(fluxLocations)) {
+             locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocations);
+        }
+        return locationDtos;
+    }
 }

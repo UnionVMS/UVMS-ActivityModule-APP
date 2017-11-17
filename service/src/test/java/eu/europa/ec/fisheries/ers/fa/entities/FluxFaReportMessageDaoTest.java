@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.xml.bind.JAXBContext;
@@ -48,6 +49,7 @@ public class FluxFaReportMessageDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
+	@Ignore
     public void testSaveFluxFaReportMessage(){
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);

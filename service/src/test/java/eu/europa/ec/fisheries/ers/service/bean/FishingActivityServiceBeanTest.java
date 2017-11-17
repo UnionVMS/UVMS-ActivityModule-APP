@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import lombok.SneakyThrows;
@@ -30,9 +30,13 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class FishingActivityServiceBeanTest {
@@ -85,9 +89,10 @@ public class FishingActivityServiceBeanTest {
     @Test
     @SneakyThrows
     public void testGetVesselDetailsForFishingTrip() throws ServiceException {
-
+        Map<String, List<String>> returnMap = new HashMap<>();
+        returnMap.put("code", new ArrayList<String>());
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
-
+        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<String>(), 9999999, "code")).thenReturn(returnMap);
         //Trigger
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
@@ -100,8 +105,10 @@ public class FishingActivityServiceBeanTest {
     @Test
     @SneakyThrows
     public void testGetVesselDetailsAndContactPartiesForFishingTrip() {
-
+        Map<String, List<String>> returnMap = new HashMap<>();
+        returnMap.put("code", new ArrayList<String>());
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
+        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<String>(), 9999999, "code")).thenReturn(returnMap);
 
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
@@ -111,8 +118,10 @@ public class FishingActivityServiceBeanTest {
     @Test
     @SneakyThrows
     public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() {
-
+        Map<String, List<String>> returnMap = new HashMap<>();
+        returnMap.put("code", new ArrayList<String>());
         when(vesselTransportMeansDao.findLatestVesselByTripId(Mockito.anyString())).thenReturn(new VesselTransportMeansEntity());
+        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<String>(), 9999999, "code")).thenReturn(returnMap);
         List<Asset> listAssetResponse = new ArrayList<>();
         Asset asset = new Asset();
         asset.setCfr("UPDATED_CFR");
@@ -148,6 +157,21 @@ public class FishingActivityServiceBeanTest {
         assertEquals(3, summary.size());
         assertEquals(3, reportDTOList.size()); */
 
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetAcronymFromMdrCodeDescription() {
+        String portDescription = "PORT VICTORIA";
+        Map<String, List<String>> returnMap = new HashMap<>();
+        returnMap.put("description", new ArrayList<String>(Arrays.asList(portDescription)));
+        when(mdrModuleServiceBean.getAcronymFromMdr("LOCATION", "SCPOV", new ArrayList<String>(Arrays.asList("code")), 1, "description")).thenReturn(returnMap);
+
+        List<String> portDescriptionList = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", "SCPOV",
+                new ArrayList<String>(Arrays.asList("code")), 1, "description").get("description");
+
+        assertTrue(portDescriptionList.size() == 1);
+        assertTrue(portDescriptionList.get(0).equals(portDescription));
     }
 
 

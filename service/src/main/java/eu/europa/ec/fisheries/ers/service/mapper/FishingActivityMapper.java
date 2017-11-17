@@ -11,24 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
@@ -40,9 +23,10 @@ import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
@@ -63,16 +47,8 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static org.hibernate.search.util.impl.CollectionHelper.asSet;
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
@@ -167,9 +143,25 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselIdentifiers", expression = "java(getVesselIdentifierTypeList(entity))"),
             @Mapping(target = "isCorrection",  expression = "java(getCorrection(entity))"),
             @Mapping(target = "tripId",  expression = "java(getFishingTripId(entity))"),
-            @Mapping(target = "flagState",  expression = "java(getFlagState(entity))")
+            @Mapping(target = "flagState",  expression = "java(getFlagState(entity))"),
+            @Mapping(target = "occurence", source = "occurence"),
+            @Mapping(target = "landingReferencedID", expression = "java(getFluxReportIdentifierId(entity))"),
+            @Mapping(target = "landingState", expression = "java(getLandingCountryId(entity))"),
     })
     public abstract FishingActivitySummary mapToFishingActivitySummary(FishingActivityEntity entity);
+
+    @Mappings({
+            @Mapping(target = "role", expression = "java(getRole(entity))"),
+            @Mapping(target = "title", source = "contactPerson.title"),
+            @Mapping(target = "givenName", source = "contactPerson.givenName"),
+            @Mapping(target = "middleName", source = "contactPerson.middleName"),
+            @Mapping(target = "familyName", source = "contactPerson.familyName"),
+            @Mapping(target = "familyNamePrefix", source = "contactPerson.familyNamePrefix"),
+            @Mapping(target = "nameSuffix", source = "contactPerson.nameSuffix"),
+            @Mapping(target = "gender", source = "contactPerson.gender"),
+            @Mapping(target = "alias", source = "contactPerson.alias")
+    })
+    public abstract VesselContactPartyType mapToVesselContactParty(ContactPartyEntity entity);
 
     @Mappings({
             @Mapping(target = "fishingActivityId", source = "id"),
@@ -691,7 +683,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingTrip == null) {
             return Collections.emptySet();
         }
-        return asSet(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity()));
+        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity());
+        return new HashSet<FishingTripEntity>(Arrays.asList(fishingTripEntity));
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
@@ -763,17 +756,39 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if(fishingActivity == null)
             return null;
 
+        DateTimeType dateTimeType = null;
         if(fishingActivity.getOccurrenceDateTime()!=null)
             return fishingActivity.getOccurrenceDateTime();
 
         if(CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())){
             List<DelimitedPeriod> delimitedPeriodEntities=  fishingActivity.getSpecifiedDelimitedPeriods();
-            return delimitedPeriodEntities.iterator().next().getStartDateTime();
+            dateTimeType = delimitedPeriodEntities.iterator().next().getStartDateTime();
+            if(dateTimeType!=null){
+                return dateTimeType;
+            }
+
         }
+
+        // We reached till this point of code means FishingActivity has neither occurrence date or startDate for DelimitedPeriod.
+        // In such cases, we need to check if its subactivities have date mentioned.
+        // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
+        List<FishingActivity> relatedFishingActivities=fishingActivity.getRelatedFishingActivities();
+        if(CollectionUtils.isNotEmpty(relatedFishingActivities)){
+            for(FishingActivity subFishingActivity: relatedFishingActivities){
+                if(subFishingActivity.getOccurrenceDateTime()!=null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
+                        fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime()!=null)){
+                    dateTimeType = subFishingActivity.getOccurrenceDateTime();
+                    if(dateTimeType ==null){
+                        dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
+                    }
+                    return dateTimeType;
+                }
+            }
+        }
+
 
         return null;
     }
-
 
     private boolean isItDupicateOrNull(String valueTocheck, List<String> listTobeCheckedAgainst){
         if(valueTocheck == null)
@@ -783,6 +798,34 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return true;
 
         return false;
+    }
+
+    protected String getRole(ContactPartyEntity entity) {
+        if ((entity.getContactPartyRole() != null)
+                && (!entity.getContactPartyRole().isEmpty())) {
+            return entity.getContactPartyRole().iterator().next().getRoleCode();
+        }
+        return null;
+    }
+
+    protected String getFluxReportIdentifierId(FishingActivityEntity entity) {
+        if ((entity.getFaReportDocument() != null)
+                && (entity.getFaReportDocument().getFluxReportDocument() != null)
+                && (!entity.getFaReportDocument().getFluxReportDocument().getFluxReportIdentifiers().isEmpty())) {
+            return entity.getFaReportDocument().getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId();
+        }
+        return null;
+    }
+
+    protected String getLandingCountryId(FishingActivityEntity entity) {
+        if (entity.getFluxLocations() != null) {
+            for (FluxLocationEntity fluxLocation : entity.getFluxLocations()) {
+                if (FluxLocationCatchTypeEnum.FA_RELATED.getType().equals(fluxLocation.getFluxLocationType())) {
+                return fluxLocation.getCountryId();
+                }
+            }
+        }
+        return null;
     }
 
 }

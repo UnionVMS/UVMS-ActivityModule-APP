@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -160,6 +160,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
+   
     @Override
     protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
@@ -170,6 +171,10 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN).append(valueToFindAndApply);
         }
+    }
+
+    protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
+        sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
 

@@ -36,7 +36,8 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
 import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.SummaryReportDTO;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.mockito.stubbing.Answer;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
@@ -163,6 +164,12 @@ public class MapperUtil {
           return new FishingActivityEntity();
     }
 
+    public static Set<FishingTripId> getFishingTripIdSet(){
+        Set<FishingTripId> fishingTripIdSet = new HashSet<>();
+        fishingTripIdSet.add(new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID"));
+        fishingTripIdSet.add(new FishingTripId("NOR-ABC-20160517234053706","EU_TRIP_ID"));
+        return fishingTripIdSet;
+    }
 
     public static FishingTripEntity getFishingTripEntity(){
         FishingTripEntity entity = new FishingTripEntity();
@@ -782,10 +789,10 @@ public class MapperUtil {
     public static List<Object[]> getFaCaches() {
         List<Object[]> faCatches = new ArrayList<>();
 
-        Object[] faCatch_1 = new Object[3];
-        Object[] faCatch_2 = new Object[3];
-        Object[] faCatch_3 = new Object[3];
-        Object[] faCatch_4 = new Object[3];
+        Object[] faCatch_1 = new Object[4];
+        Object[] faCatch_2 = new Object[4];
+        Object[] faCatch_3 = new Object[4];
+        Object[] faCatch_4 = new Object[4];
 
         faCatch_1[0] = "UNLOADED";
         faCatch_2[0] = "UNLOADED";
@@ -797,9 +804,13 @@ public class MapperUtil {
         faCatch_3[1] = "BEAGLE";
         faCatch_4[0] = "BEAGLE";
 
-        faCatch_1[2] = 50.1;
-        faCatch_2[2] = 100.1;
-        faCatch_3[2] = 100.1;
+        faCatch_1[2] = "J";
+        faCatch_2[2] = "27.7.j";
+        faCatch_3[2] = "IRL";
+
+        faCatch_1[3] = 50.1;
+        faCatch_2[3] = 100.1;
+        faCatch_3[3] = 100.1;
         faCatch_4[0] = 150.1;
 
         faCatches.addAll(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));

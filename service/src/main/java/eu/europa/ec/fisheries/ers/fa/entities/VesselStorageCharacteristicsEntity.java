@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,14 +23,20 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 
 @Entity
 @Table(name = "activity_vessel_storage_characteristics")
+@Data
+@EqualsAndHashCode(exclude = {"fishingActivitiesForDestVesselCharId", "fishingActivitiesForSourceVesselCharId", "vesselStorageCharCode"})
+@ToString(exclude = {"fishingActivitiesForDestVesselCharId", "fishingActivitiesForSourceVesselCharId", "vesselStorageCharCode"})
 public class VesselStorageCharacteristicsEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "str_char_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
@@ -42,62 +47,14 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	@Column(name = "vessel_scheme_id")
 	private String vesselSchemaId;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "destVesselCharId")
+	@OneToOne(mappedBy = "destVesselCharId")
 	private FishingActivityEntity fishingActivitiesForDestVesselCharId;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "sourceVesselCharId")
+	@OneToOne(mappedBy = "sourceVesselCharId")
 	private FishingActivityEntity fishingActivitiesForSourceVesselCharId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselStorageCharacteristics", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "vesselStorageCharacteristics", cascade = CascadeType.ALL)
 	private Set<VesselStorageCharCodeEntity> vesselStorageCharCode;
-
-	public VesselStorageCharacteristicsEntity() {
-		super();
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public String getVesselId() {
-		return this.vesselId;
-	}
-
-	public void setVesselId(String vesselId) {
-		this.vesselId = vesselId;
-	}
-
-	public String getVesselSchemaId() {
-		return this.vesselSchemaId;
-	}
-
-	public void setVesselSchemaId(String vesselSchemaId) {
-		this.vesselSchemaId = vesselSchemaId;
-	}
-
-	public FishingActivityEntity getFishingActivitiesForDestVesselCharId() {
-		return fishingActivitiesForDestVesselCharId;
-	}
-
-	public void setFishingActivitiesForDestVesselCharId(FishingActivityEntity fishingActivitiesForDestVesselCharId) {
-		this.fishingActivitiesForDestVesselCharId = fishingActivitiesForDestVesselCharId;
-	}
-
-	public FishingActivityEntity getFishingActivitiesForSourceVesselCharId() {
-		return fishingActivitiesForSourceVesselCharId;
-	}
-
-	public void setFishingActivitiesForSourceVesselCharId(FishingActivityEntity fishingActivitiesForSourceVesselCharId) {
-		this.fishingActivitiesForSourceVesselCharId = fishingActivitiesForSourceVesselCharId;
-	}
-
-	public Set<VesselStorageCharCodeEntity> getVesselStorageCharCode() {
-		return vesselStorageCharCode;
-	}
-
-	public void setVesselStorageCharCode(Set<VesselStorageCharCodeEntity> vesselStorageCharCode) {
-		this.vesselStorageCharCode = vesselStorageCharCode;
-	}
 
     public VesselStorageCharCodeEntity getFirstVesselStorageCharCode() {
         VesselStorageCharCodeEntity firstElement = null;

@@ -25,7 +25,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.ers.service.util.PostGres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,14 +42,11 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -142,19 +139,13 @@ public class FluxMessageServiceBeanTest {
         movementType1.setCalculatedCourse(1.0);
         movementType1.setCalculatedSpeed(1.0);
         movementType1.setWkt("MULTIPOINT(11.09245 58.8386666666667,675 859)");
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 09:15:00"));
-        XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar( cal);
-        movementType1.setPositionTime(calendar);
+        movementType1.setPositionTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 09:15:00"));
 
         MovementType movementType2 = new MovementType();
         movementType2.setCalculatedCourse(1.0);
         movementType2.setCalculatedSpeed(1.0);
         movementType2.setWkt("MULTIPOINT(11.09245 58.8386666666667,675 859)");
-        GregorianCalendar cal1 = new GregorianCalendar();
-        cal1.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 12:15:00"));
-        XMLGregorianCalendar calendar1 = DatatypeFactory.newInstance().newXMLGregorianCalendar( cal1);
-        movementType2.setPositionTime(calendar1);
+        movementType2.setPositionTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 12:15:00"));
 
         return Arrays.asList(movementType1, movementType2);
     }

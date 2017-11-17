@@ -44,15 +44,13 @@
         </filter>
     </appender>
 
-    <logger name="org.hibernate.type" level="ALL" />
-    <logger name="org.hibernate" level="DEBUG" />
-    <logger name="eu.europa.ec.fisheries.uvms.activity.eu.europa.ec.fisheries.uvms.activityropa.ec.fisheries.uvms.activity.service.bean" level="DEBUG"/>
-
-    <!-- CONSOLE APPENDER -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) %cyan(%logger{0}.%M\(%line\)) %X{userId}- %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{40} %X{userId}- %msg%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
     </appender>
 
     <root level="DEBUG">

@@ -8,12 +8,12 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,70 +26,35 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 @Entity
 @Table(name = "activity_contact_party")
+@Data
+@EqualsAndHashCode(exclude = {"contactPartyRole", "structuredAddresses", "contactPerson"})
+@ToString(exclude = {"contactPartyRole", "structuredAddresses", "contactPerson"})
 public class ContactPartyEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ct_party_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "contact_person_id", nullable = false)
 	private ContactPersonEntity contactPerson;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "vessel_transport_means_id")
 	private VesselTransportMeansEntity vesselTransportMeans;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "contactParty", cascade = CascadeType.ALL)
 	private Set<ContactPartyRoleEntity> contactPartyRole;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "contactParty", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses;
 
-	public ContactPartyEntity() {
-		super();
-	}
-
-	public int getId() {
-		return this.id;
-	}
-	
-	public ContactPersonEntity getContactPerson() {
-		return this.contactPerson;
-	}
-
-	public void setContactPerson(
-			ContactPersonEntity contactPerson) {
-		this.contactPerson = contactPerson;
-	}
-
-	public VesselTransportMeansEntity getVesselTransportMeans() {
-		return this.vesselTransportMeans;
-	}
-
-	public void setVesselTransportMeans(
-			VesselTransportMeansEntity vesselTransportMeans) {
-		this.vesselTransportMeans = vesselTransportMeans;
-	}
-
-	public Set<StructuredAddressEntity> getStructuredAddresses() {
-		return this.structuredAddresses;
-	}
-
-	public void setStructuredAddresses(
-			Set<StructuredAddressEntity> structuredAddresses) {
-		this.structuredAddresses = structuredAddresses;
-	}
-
-	public Set<ContactPartyRoleEntity> getContactPartyRole() {
-		return contactPartyRole;
-	}
-
-	public void setContactPartyRole(Set<ContactPartyRoleEntity> contactPartyRole) {
-		this.contactPartyRole = contactPartyRole;
-	}
 }

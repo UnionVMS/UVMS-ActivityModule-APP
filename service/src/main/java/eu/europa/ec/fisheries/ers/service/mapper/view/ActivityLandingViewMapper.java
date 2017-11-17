@@ -10,9 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.Date;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -25,6 +22,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+
+import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by kovian on 14/02/2017.
@@ -56,13 +56,15 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
         Date startDate = null;
         Date endDate = null;
         Double duration = null;
+        String unitCode = null;
         if (CollectionUtils.isNotEmpty(delimitedPeriods)) {
             DelimitedPeriodEntity delimPeriod = delimitedPeriods.iterator().next();
             startDate = delimPeriod.getStartDate();
             endDate = delimPeriod.getEndDate();
             duration = delimPeriod.getDuration();
+            unitCode = delimPeriod.getDurationUnitCode();
         }
-        return new DelimitedPeriodDTO(startDate, endDate, duration);
+        return new DelimitedPeriodDTO(startDate, endDate, duration, unitCode);
     }
 
 }

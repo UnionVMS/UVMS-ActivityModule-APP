@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
@@ -24,6 +22,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
+
+import java.util.Set;
 
 @Mapper
 public abstract class StructuredAddressMapper extends BaseMapper {
@@ -38,6 +38,7 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "country", source = "structuredAddress.countryID.value"),
             @Mapping(target = "countryName", source = "structuredAddress.countryName.value"),
             @Mapping(target = "countrySubdivisionName", source = "structuredAddress.countrySubDivisionName.value"),
+            @Mapping(target = "countryIdSchemeId", source = "structuredAddress.countryID.schemeID"),
             @Mapping(target = "addressId", source = "structuredAddress.ID.value"),
             @Mapping(target = "plotId", source = "structuredAddress.plotIdentification.value"),
             @Mapping(target = "postOfficeBox", source = "structuredAddress.postOfficeBox.value"),
@@ -56,6 +57,7 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "country", source = "structuredAddress.countryID.value"),
             @Mapping(target = "countryName", source = "structuredAddress.countryName.value"),
             @Mapping(target = "countrySubdivisionName", source = "structuredAddress.countrySubDivisionName.value"),
+            @Mapping(target = "countryIdSchemeId", source = "structuredAddress.countryID.schemeID"),
             @Mapping(target = "addressId", source = "structuredAddress.ID.value"),
             @Mapping(target = "plotId", source = "structuredAddress.plotIdentification.value"),
             @Mapping(target = "postOfficeBox", source = "structuredAddress.postOfficeBox.value"),

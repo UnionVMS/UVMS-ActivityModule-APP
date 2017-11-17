@@ -26,7 +26,7 @@ import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 import java.util.List;
@@ -104,7 +104,7 @@ public interface FishingTripService {
      * @throws ServiceException
      */
 
-    FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException;
+    FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException;
 
 
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
@@ -119,4 +119,7 @@ public interface FishingTripService {
      * @throws ServiceException
      */
     List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
+
+
+     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 }

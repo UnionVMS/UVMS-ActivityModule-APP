@@ -13,16 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -30,7 +21,26 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "activity_flux_report_identifier")
+@NamedQueries({
+        @NamedQuery(name = FluxReportIdentifierEntity.FIND_MATCHING_IDENTIFIER,
+                query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
+                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
+                        //"INNER JOIN flRepDoc.fluxFaReportMessage faRepMsg " +
+                        "WHERE fRepIdent.fluxReportIdentifierId = :id " +
+                        "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId"),
+
+        @NamedQuery(name = FluxReportIdentifierEntity.FIND_RELATED_MATCHING_IDENTIFIER,
+                query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
+                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
+                        //"INNER JOIN flRepDoc.faReportDocument faRepDoc " +
+                        "WHERE fRepIdent.fluxReportIdentifierId = :id " +
+                        "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId")
+
+})
 public class FluxReportIdentifierEntity implements Serializable {
+
+    public static final String FIND_MATCHING_IDENTIFIER = "findMatchingIdentifier";
+    public static final String FIND_RELATED_MATCHING_IDENTIFIER = "findRelatedMatchingIdentifier";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

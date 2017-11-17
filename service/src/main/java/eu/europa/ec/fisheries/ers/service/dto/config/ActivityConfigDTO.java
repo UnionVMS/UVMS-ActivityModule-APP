@@ -13,25 +13,33 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.config;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.*;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by padhyad on 8/23/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 public class ActivityConfigDTO {
 
-    @JsonProperty("fishingActivityConfig")
     private FishingActivityConfigDTO fishingActivityConfig;
 
-    @JsonProperty("fishingActivityConfig")
+    @JsonProperty("catchThresholds")
+    private CatchThreshold catchThreshold = new CatchThreshold();
+
     public FishingActivityConfigDTO getFishingActivityConfig() {
         return fishingActivityConfig;
     }
 
-    @JsonProperty("fishingActivityConfig")
     public void setFishingActivityConfig(FishingActivityConfigDTO fishingActivityConfig) {
         this.fishingActivityConfig = fishingActivityConfig;
     }
+
+    public CatchThreshold getCatchThreshold() {
+        return catchThreshold;
+    }
+
+    public void setCatchThreshold(CatchThreshold catchThreshold) {
+        this.catchThreshold = catchThreshold;
+    }
+
 }

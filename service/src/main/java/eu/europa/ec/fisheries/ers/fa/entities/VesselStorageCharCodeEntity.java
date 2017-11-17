@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,17 +24,20 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import lombok.Data;
+
 @Entity
 @Table(name = "activity_vessel_storage_char_code")
+@Data
 public class VesselStorageCharCodeEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "str_char_code_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "vessel_storage_char_id")
     private VesselStorageCharacteristicsEntity vesselStorageCharacteristics;
 
@@ -44,32 +46,4 @@ public class VesselStorageCharCodeEntity implements Serializable {
 
     @Column(name = "vessel_type_code_list_id")
     private String vesselTypeCodeListId;
-
-    public int getId() {
-        return id;
-    }
-
-    public VesselStorageCharacteristicsEntity getVesselStorageCharacteristics() {
-        return vesselStorageCharacteristics;
-    }
-
-    public void setVesselStorageCharacteristics(VesselStorageCharacteristicsEntity vesselStorageCharacteristics) {
-        this.vesselStorageCharacteristics = vesselStorageCharacteristics;
-    }
-
-    public String getVesselTypeCode() {
-        return vesselTypeCode;
-    }
-
-    public void setVesselTypeCode(String vesselTypeCode) {
-        this.vesselTypeCode = vesselTypeCode;
-    }
-
-    public String getVesselTypeCodeListId() {
-        return vesselTypeCodeListId;
-    }
-
-    public void setVesselTypeCodeListId(String vesselTypeCodeListId) {
-        this.vesselTypeCodeListId = vesselTypeCodeListId;
-    }
 }

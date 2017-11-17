@@ -15,9 +15,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Hibernate;
@@ -25,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -42,6 +44,108 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     @Override
     public EntityManager getEntityManager() {
         return em;
+    }
+
+    /**
+     * To find out previous Activity date-->
+     * Use referenceId to find our previous FishingActivityReportDocument.
+     * Then choose all the fishingActivities from that document with same FishingActivity Type and having date less than or equal to current fishingActivity
+     */
+    public int getPreviousFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
+        int previousActivityId = 0;
+        if (activityTypeCode == null || activityCalculatedStartTime == null) {
+            LOG.error("activityTypeCode OR  activityCalculatedStartTime is null.");
+            return previousActivityId;
+        }
+
+        String query = "SELECT a.id from FishingActivityEntity a " +
+                "JOIN a.faReportDocument fa " +
+                "JOIN fa.fluxReportDocument flux " +
+                "JOIN flux.fluxReportIdentifiers fluxIds " +
+                "where fluxIds.fluxReportIdentifierId IN " +
+                "( select frd.referenceId from " +
+                "   FluxReportDocumentEntity frd " +
+                "   JOIN frd.faReportDocument fa " +
+                "   JOIN  fa.fishingActivities fishingActivities where " +
+                "   fishingActivities.id = :fishingActivityId and " +
+                "   fishingActivities.typeCode = :activityTypeCode" +
+                ") AND " +
+                "a.calculatedStartTime <= :activityStartTime " +
+                "ORDER BY a.calculatedStartTime desc";
+
+        Query typedQuery = getEntityManager().createQuery(query);
+        typedQuery.setParameter("fishingActivityId", fishingActivityId);
+        typedQuery.setParameter("activityTypeCode", activityTypeCode);
+        typedQuery.setParameter("activityStartTime", activityCalculatedStartTime);
+
+        typedQuery.setMaxResults(1); // There could be multiple fishing Activities matching the condition, but we need just one.
+
+        Object result = null;
+        try {
+            result = typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            LOG.error("No next FishingActivity present for : " + fishingActivityId);
+        }
+
+        LOG.info("Previous Fishing Activity : " + result);
+        if (result != null) {
+            previousActivityId = (int) result;
+        }
+
+        return previousActivityId;
+    }
+
+
+    /**
+     *  To find out next fishingActivityId -->
+     *  Take fluxIdentifierId of current fishingActivity. Find  which other faReportDocument referenceId has fluxIdentifierId of current fishingActivity.
+     *  Take that faReportDocument , and all the fishingActivities from that document with same FishingActivity Type and having date greater than or equal to current fishingActivity
+     *
+     * @param fishingActivityId
+     * @param activityTypeCode
+     * @param activityCalculatedStartTime
+     * @return
+     */
+    public int getNextFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
+        int nextFishingActivity = 0;
+        if (activityTypeCode == null || activityCalculatedStartTime == null) {
+            LOG.error("activityTypeCode OR  activityCalculatedStartTime is null.");
+            return nextFishingActivity;
+        }
+        String query = "SELECT a.id from FishingActivityEntity a " +
+                "JOIN a.faReportDocument fa " +
+                "JOIN fa.fluxReportDocument flux " +
+                "where flux.referenceId IN " +
+                "( select fri.fluxReportIdentifierId from " +
+                "   FluxReportIdentifierEntity fri JOIN " +
+                "   fri.fluxReportDocument frd JOIN" +
+                "   frd.faReportDocument fa JOIN  " +
+                "   fa.fishingActivities fishingActivities " +
+                "   where fishingActivities.id = :fishingActivityId and " +
+                "         fishingActivities.typeCode = :activityTypeCode" +
+                ") AND " +
+                "a.calculatedStartTime >= :activityStartTime " +
+                "ORDER BY a.calculatedStartTime asc";
+        
+        Query typedQuery = getEntityManager().createQuery(query);
+        typedQuery.setParameter("fishingActivityId", fishingActivityId);
+        typedQuery.setParameter("activityTypeCode", activityTypeCode);
+        typedQuery.setParameter("activityStartTime", activityCalculatedStartTime);
+
+        typedQuery.setMaxResults(1);
+
+        Object result = null;
+        try {
+            result = typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            LOG.error("No next FishingActivity present for : " + fishingActivityId);
+        }
+
+        LOG.info("Next Fishing Activity : " + result);
+        if (result != null) {
+            nextFishingActivity = (int) result;
+        }
+        return nextFishingActivity;
     }
 
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
@@ -103,8 +207,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
-            LOG.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
-            
+            LOG.debug("Pagination information getting applied to Query is: Offset :" + pagination.getOffset() + " PageSize:" + pagination.getPageSize());
+
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
@@ -122,11 +226,11 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @param geom
      * @return
      */
-    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) throws ServiceException {
+    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) {
         String s = fillQueryConditions(geom);
         Query typedQuery = getEntityManager().createQuery(s);
         typedQuery.setParameter("fishingActivityId", activityId);
-        if(geom != null){
+        if (geom != null) {
             typedQuery.setParameter("area", geom);
         }
         List<FishingActivityEntity> resultList = typedQuery.getResultList();
@@ -134,6 +238,15 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             return null;
         }
         return resultList.get(0);
+    }
+
+    public List<FishingActivityEntity> getFishingActivityForTrip(String tripId, String tripSchemeId, String fishActTypeCode, List<String> flPurposeCodes) {
+        Query typedQuery = getEntityManager().createNamedQuery(FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP);
+        typedQuery.setParameter("fishingTripId", tripId);
+        typedQuery.setParameter("tripSchemeId", tripSchemeId);
+        typedQuery.setParameter("fishActTypeCode", fishActTypeCode);
+        typedQuery.setParameter("flPurposeCodes", flPurposeCodes);
+        return typedQuery.getResultList();
     }
 
     private String fillQueryConditions(Geometry geom) {
@@ -168,7 +281,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH faFiTrips.faCatch faFiTripsFaCatch ")
                 .append("LEFT JOIN FETCH a.gearProblems gearProb ")
                 .append("WHERE ");
-        if(geom != null){
+        if (geom != null) {
             sb.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
         } else {
             sb.append("a.id=:fishingActivityId ");

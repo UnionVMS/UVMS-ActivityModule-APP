@@ -21,10 +21,10 @@ import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -125,9 +125,8 @@ public abstract class SearchQueryBuilder {
     private  void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
         switch (key) {
             case MASTER:
-                if (sql.indexOf(FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS) != -1) {  // If vesssel table is already joined, use join string accordingly
-                    joinString = FilterMap.MASTER_MAPPING;
-                }
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.CONTACT_PARTY_TABLE_ALIAS);
                 appendJoinFetchString(sql, joinString);
                 break;
             case VESSEL_IDENTIFIRE:
@@ -151,6 +150,14 @@ public abstract class SearchQueryBuilder {
             case SPECIES: /* We need to do Right join here as one activity can have multiple catches and in the resultDTO we want to show all the species for the activity*/
                 appendRightJoinString(sql, joinString);
                 break;
+            case PERIOD_END:
+                appendLeftJoinFetchString(sql, joinString);
+                break;
+            case CONTACT_ROLE_CODE:
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.CONTACT_PARTY_TABLE_ALIAS);
+                appendJoinFetchString(sql, joinString);
+                break;
             default:
                 appendJoinFetchString(sql, joinString);
                 break;
@@ -163,6 +170,10 @@ public abstract class SearchQueryBuilder {
 
     protected void appendLeftJoinString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
+    }
+
+    protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
+        sql.append(LEFT).append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }
 
     protected void appendRightJoinString(StringBuilder sql, String joinString) {
@@ -354,13 +365,13 @@ public abstract class SearchQueryBuilder {
         sql.append(FilterMap.getFilterSortMappings().get(filter));
         sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
 
-        if (searchCriteriaMap.containsKey(filter)) {
+       /* if (searchCriteriaMap.containsKey(SearchFilter.PERIOD_START)) {
             sql.append(" where ");
-            sql.append(" ( dp1.startDate >= :startDate  OR a.occurence  >= :startDate ) ");
+            sql.append("  (dp1.startDate >= :startDate  OR a.occurence  >= :startDate)  ");
             if (searchCriteriaMap.containsKey(SearchFilter.PERIOD_END)) {
                 sql.append(" and  dp1.endDate <= :endDate ");
             }
-        }
+        }*/
         sql.append(" ) ");
         sql.append(" OR dp is null ) ");
         return sql;

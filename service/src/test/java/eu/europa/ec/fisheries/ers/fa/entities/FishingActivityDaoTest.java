@@ -10,22 +10,25 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
-import lombok.SneakyThrows;
-import org.junit.Before;
-import org.junit.Test;
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertNotEquals;
+import org.junit.Before;
+import org.junit.Test;
+
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
+import lombok.SneakyThrows;
 
 public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
@@ -44,7 +47,24 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         dbSetupTracker.skipNextLaunch();
         FishingActivityEntity entity = dao.findEntityById(FishingActivityEntity.class, 1);
         assertNotNull(entity);
+    }
 
+    @Test
+    @SneakyThrows
+    public void testGetFishingActivityForTrip(){
+        dbSetupTracker.skipNextLaunch();
+
+        String tripId = "NOR-TRP-20160517234053706";
+        String tripSchemeId = "EU_TRIP_ID";
+        String activityTypeCode = "DEPARTURE";
+        List<String> purposes = Arrays.asList("1", "3", "5", "9");
+
+        List<FishingActivityEntity> fishingActivityForTrip = dao.getFishingActivityForTrip(tripId, tripSchemeId,
+                activityTypeCode, purposes);
+
+        assertNotNull(fishingActivityForTrip);
+        assertTrue(!fishingActivityForTrip.isEmpty());
+        assertTrue(fishingActivityForTrip.size() == 1);
     }
 
     @Test

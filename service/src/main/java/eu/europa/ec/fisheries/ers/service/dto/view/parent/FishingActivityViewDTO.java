@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityHistoryDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
@@ -53,13 +54,13 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private ActivityDetailsDto activityDetails;
 
-    @JsonView({FishingOperation.class, NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class, Relocation.class, JointFishingOperation.class})
+    @JsonView({FishingOperation.class, NotificationOfArrival.class, Departure.class, Landing.class, Arrival.class, Transhipment.class, Relocation.class, JointFishingOperation.class, AreaEntry.class,  AreaExit.class, })
     private Set<FluxLocationDto> locations;
 
     @JsonView({Arrival.class, Departure.class, JointFishingOperation.class, FishingOperation.class})
     private List<GearDto> gears;
 
-    @JsonView({FishingOperation.class, NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class, FishingActivityView.AreaExit.class, Transhipment.class, Relocation.class})
+    @JsonView({FishingOperation.class, NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class, AreaExit.class, Transhipment.class, Relocation.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)
@@ -77,7 +78,7 @@ public class FishingActivityViewDTO {
     @JsonView(CommonView.class)
     private TripWidgetDto tripDetails;
 
-    @JsonView({Relocation.class, Transhipment.class, JointFishingOperation.class})
+    @JsonView({Relocation.class, Transhipment.class, JointFishingOperation.class,FishingOperation.class})
     private List<VesselDetailsDTO> vesselDetails;
 
     @JsonView(JointFishingOperation.class)
@@ -85,6 +86,9 @@ public class FishingActivityViewDTO {
 
     @JsonView(JointFishingOperation.class)
     private List<RelocationDto> relocations;
+
+    @JsonView(CommonView.class)
+    private ActivityHistoryDto history;
 
     public Set<FluxLocationDto> getLocations() {
         return locations;
@@ -180,6 +184,14 @@ public class FishingActivityViewDTO {
 
     public void setRelocations(List<RelocationDto> relocations) {
         this.relocations = relocations;
+    }
+
+    public ActivityHistoryDto getHistory() {
+        return history;
+    }
+
+    public void setHistory(ActivityHistoryDto history) {
+        this.history = history;
     }
 
     @Override

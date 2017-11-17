@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+    <changeSet author="padhyad" id="123456-3">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="aap_process_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="padhyad (generated)" id="1462786429274-1">
+        <createTable tableName="activity_aap_process">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="aap_process_pk"/>
+            </column>
+            <column name="conversion_factor" type="FLOAT8"/>
+            <column name="fa_catch_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="padhyad" id="123456-4" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="aap_process_seq"
+                tableName="activity_aap_process"/>
+    </changeSet>
+
+
+    <changeSet author="padhyad (generated)" id="1462787324468-55">
+        <addForeignKeyConstraint baseColumnNames="fa_catch_id" baseTableName="activity_aap_process" constraintName="fa_catch_process_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fa_catch"/>
+    </changeSet>
+
+</databaseChangeLog>

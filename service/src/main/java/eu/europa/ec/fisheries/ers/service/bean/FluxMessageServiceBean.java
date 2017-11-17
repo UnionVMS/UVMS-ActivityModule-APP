@@ -40,9 +40,9 @@ import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
 import eu.europa.ec.fisheries.ers.service.util.PostGres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -52,14 +52,10 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,8 +110,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
-            updateGeometry(faReportDocument);
-            enrichFishingActivityWithGuiID(faReportDocument);
+            try {
+                updateGeometry(faReportDocument);
+                enrichFishingActivityWithGuiID(faReportDocument);
+            }catch (Exception e){
+                log.error("Could not update Geometry OR enrichActivities for faReportDocument:"+faReportDocument.getId());
+            }
         }
         log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
 
@@ -276,29 +276,42 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
 
         List<MovementType> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
-        List<Geometry> multiPointForFaReport = new ArrayList<>();
-        for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
-            List<Geometry> multiPointForFa = new ArrayList<>();
-            Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
-            Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
-            for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
-                Geometry point = null;
-                String fluxLocationStr = fluxLocation.getTypeCode();
-                if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) { // Interpolate Geometry from movements
-                    point = interpolatedPoint;
-                    fluxLocation.setGeom(point);
-                } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
-                    point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
-                    fluxLocation.setGeom(point);
-                }
-                if (point != null) { // Add to the list of Geometry. This will be converted to Multipoint and saved in FaReportDocument
-                    multiPointForFa.add(point);
-                    multiPointForFaReport.add(point);
-                }
-            }
-            fishingActivity.setGeom(GeometryUtils.createMultipoint(multiPointForFa)); // Add the Multipoint to Fishing Activity
-        }
+
+        Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
+
+        List<Geometry> multiPointForFaReport =populateGeometriesForFishingActivities(movements,  fishingActivityEntities);
         faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport)); // Add the Multipoint to FA Report
+    }
+
+    private List<Geometry> populateGeometriesForFishingActivities(List<MovementType> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
+        List<Geometry> multiPointForFaReport = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(fishingActivityEntities)) {
+            for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
+                List<Geometry> multiPointForFa = new ArrayList<>();
+                Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+                Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
+                for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
+                    Geometry point = null;
+                    String fluxLocationStr = fluxLocation.getTypeCode();
+                    if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) { // Interpolate Geometry from movements
+                        point = interpolatedPoint;
+                        fluxLocation.setGeom(point);
+                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
+                        point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                        fluxLocation.setGeom(point);
+                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) { // Create Geometry directly from long/lat
+                        point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                        fluxLocation.setGeom(point);
+                    }
+                    if (point != null) { // Add to the list of Geometry. This will be converted to Multipoint and saved in FaReportDocument
+                        multiPointForFa.add(point);
+                        multiPointForFaReport.add(point);
+                    }
+                }
+                fishingActivity.setGeom(GeometryUtils.createMultipoint(multiPointForFa)); // Add the Multipoint to Fishing Activity
+            }
+        }
+        return multiPointForFaReport;
     }
 
     private List<MovementType> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
@@ -375,9 +388,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date acceptedDate) throws ServiceException { // starting point = A, end point = B, calculated point = C
         Geometry point;
 
-        Long durationAB = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
-        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().toGregorianCalendar().getTimeInMillis();
-        Long durationBC = nextMovement.getPositionTime().toGregorianCalendar().getTimeInMillis() - acceptedDate.getTime();
+        Long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
+        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().getTime();
+        Long durationBC = nextMovement.getPositionTime().getTime() - acceptedDate.getTime();
 
         try {
 
@@ -401,12 +414,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private Map<String, MovementType> getPreviousAndNextMovement(List<MovementType> movements, Date inputDate) throws ServiceException {
-        XMLGregorianCalendar date = convertDateToXmlGregorianCalendar(inputDate);
         Map<String, MovementType> movementMap = new HashMap<>();
         for (MovementType movement : movements) {
-            if (movement.getPositionTime().compare(date) <= 0) { // Find the previous movement
+            if (movement.getPositionTime().compareTo(inputDate) <= 0) { // Find the previous movement
                 movementMap.put(PREVIOUS, movement);
-            } else if (movement.getPositionTime().compare(date) > 0) { // Find the next movement
+            } else if (movement.getPositionTime().compareTo(inputDate) > 0) { // Find the next movement
                 movementMap.put(NEXT, movement);
                 break;
             }
@@ -414,15 +426,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return movementMap;
     }
 
-    private XMLGregorianCalendar convertDateToXmlGregorianCalendar(Date inputDate) throws ServiceException {
-        try {
-            GregorianCalendar c = new GregorianCalendar();
-            c.setTime(inputDate);
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-        }  catch (DatatypeConfigurationException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
-    }
 
     public void setDialect(DatabaseDialect dialect) {
         this.dialect = dialect;
