@@ -32,7 +32,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
-@EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
 public class FluxLocationDto {
 
     @JsonView(CommonView.class)
