@@ -13,6 +13,29 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
@@ -86,29 +109,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mockito.internal.util.collections.Sets;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -632,7 +632,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         List<FishingActivitySummary> fishingActivitySummaries = new ArrayList<>();
 
         List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        for (FishingTripId fishingTripId : fishingTripIds) {
+        for (FishingTripId fishingTripId : fishingTripIds) { // FIXME find a way to remove execution of queries inside loop
 
             FishingActivityQuery query = new FishingActivityQuery();
             Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);

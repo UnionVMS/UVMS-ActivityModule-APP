@@ -19,7 +19,6 @@ package eu.europa.ec.fisheries.ers.fa.dao.proxy;
  */
 public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
 
-
     // Override these methods as reflection code will fail if not explicitely specified
     @Override
     public void setVesselTransportGuid(String vesselTransportGuid) {
