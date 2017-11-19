@@ -11,15 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.apache.commons.collections.CollectionUtils;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +28,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
+
 @Entity
 @Table(name = "activity_flux_report_document")
 @Builder
@@ -42,7 +41,7 @@ import java.util.Set;
 public class FluxReportDocumentEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_rep_doc_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
@@ -66,18 +65,18 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(columnDefinition = "text", name = "purpose")
     private String purpose;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "flux_fa_report_message_id")
     private FluxFaReportMessageEntity fluxFaReportMessage;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")
+    @OneToOne(mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "flux_party_id")
     private FluxPartyEntity fluxParty;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
     private Set<FluxReportIdentifierEntity> fluxReportIdentifiers;
 
     public int getId() {

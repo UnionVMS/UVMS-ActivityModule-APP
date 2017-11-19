@@ -12,6 +12,12 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
@@ -24,12 +30,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by padhyad on 5/3/2016.
@@ -92,7 +92,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
     private List<FaCatchSummaryCustomProxy> getRecordsForFishClassOrFACatchType(FishingActivityQuery query, boolean isLanding) throws ServiceException {
 
          // create Query to get grouped data from FACatch table, also combine query to filter records as per filters provided by users
-         FACatchSearchBuilder faCatchSearchBuilder = createCorrectBuilderForFACatch(isLanding);
+         FACatchSearchBuilder faCatchSearchBuilder = createBuilderForFACatch(isLanding);
          StringBuilder sql= faCatchSearchBuilder.createSQL(query);
          TypedQuery<Object[]> typedQuery = em.createQuery(sql.toString(), Object[].class);
          typedQuery = (TypedQuery<Object[]>) faCatchSearchBuilder.fillInValuesForTypedQuery(query,typedQuery);
@@ -115,7 +115,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
          return customEntities;
      }
 
-    private FACatchSearchBuilder createCorrectBuilderForFACatch(boolean isLanding){
+    private FACatchSearchBuilder createBuilderForFACatch(boolean isLanding){
         if(isLanding){
             return new FACatchSearchBuilder_Landing();
         }else{
