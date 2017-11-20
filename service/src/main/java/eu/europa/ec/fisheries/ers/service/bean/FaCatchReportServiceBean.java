@@ -10,15 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
@@ -36,6 +27,15 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sanera on 17/01/2017.
@@ -136,6 +136,14 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         return faCatchSummaryDTO;
     }
 
+    /**
+     * This method is used to create Catch Details page from Run Report.
+     * So, To display summary  of catches, we need to consider all fishing Activity filters as well as aggregation factors specified by user .
+     * Aggregation factors could be dynamically selected by user like veesel,period,area etc.
+     * @param query
+     * @return
+     * @throws ServiceException
+     */
     @Override
     public FACatchSummaryReportResponse getFACatchSummaryReportResponse(FishingActivityQuery query) throws ServiceException {
         log.debug("FACatchSummaryReportResponse creation starts");
@@ -147,7 +155,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         // We can not transfter DTO as it is over JMS because of JAVA maps.so, Map DTO to the type transferrable over JMS
         FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
 
-        // Create response object
+        // Create response object for JMS
         FACatchSummaryReportResponse faCatchSummaryReportResponse =new FACatchSummaryReportResponse();
         faCatchSummaryReportResponse.setSummaryRecords(faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs()));
         faCatchSummaryReportResponse.setTotal(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal()));
