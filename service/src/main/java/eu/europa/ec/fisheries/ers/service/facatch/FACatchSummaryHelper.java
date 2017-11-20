@@ -94,6 +94,9 @@ public abstract class FACatchSummaryHelper {
         for (int i = 0; i < objectArrSize; i++) {
             GroupCriteria criteria = groupList.get(i);
             Object value = catchSummaryArr[i];
+            if(value ==null){
+                continue;
+            }
 
             if (GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
                     GroupCriteria.DATE_YEAR.equals(criteria)) {
@@ -113,9 +116,9 @@ public abstract class FACatchSummaryHelper {
         else
             return (FaCatchSummaryCustomProxy) faCatchSummaryCustomEntityObj;
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            log.debug("Error while trying to map FaCatchSummaryCustomEntity. ",e);
+            log.debug("Error while trying to map FaCatchSummaryCustomProxy. ",e);
         }
-        return new FaCatchSummaryCustomProxy();
+        return null;
     }
 
     // This method parses the date to extract either day, month or year
