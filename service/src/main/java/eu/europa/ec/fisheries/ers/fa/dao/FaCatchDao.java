@@ -12,12 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
@@ -30,6 +24,12 @@ import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by padhyad on 5/3/2016.
@@ -106,9 +106,11 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
          for(Object[] objArr :list){
              try {
                  FaCatchSummaryCustomProxy entity = faCatchSummaryHelper.mapObjectArrayToFaCatchSummaryCustomEntity(objArr, groupCriterias, isLanding);
-                 customEntities.add(entity);
+                 if(entity!=null) {
+                     customEntities.add(entity);
+                 }
              } catch (Exception e) {
-                 log.error("Could not map sql selection to FaCatchSummaryCustomEntity object", e);
+                 log.error("Could not map sql selection to FaCatchSummaryCustomProxy object", e);
              }
          }
 
