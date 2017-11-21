@@ -31,6 +31,11 @@ public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
     }
 
     @Override
+    public void setDate(String date) {
+        super.setDate(date);
+    }
+
+    @Override
     public void setMonth(String month) {
         super.setMonth(month);
     }

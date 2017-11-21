@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * This class acts as helper class for FAcatchSummary Report functionality.
@@ -99,9 +100,12 @@ public abstract class FACatchSummaryHelper {
             }
 
             if (GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
-                    GroupCriteria.DATE_YEAR.equals(criteria)) {
+                    GroupCriteria.DATE_YEAR.equals(criteria) || GroupCriteria.DATE.equals(criteria)) {
+
                 value = extractValueFromDate((Date) value, criteria);
             }
+
+
 
             GroupCriteriaMapper mapper = groupMappings.get(criteria);
             Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
@@ -123,7 +127,7 @@ public abstract class FACatchSummaryHelper {
 
     // This method parses the date to extract either day, month or year
     private Object extractValueFromDate(Date date, GroupCriteria criteria) {
-
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         if (GroupCriteria.DATE_DAY.equals(criteria)) {
             SimpleDateFormat day = new SimpleDateFormat("dd");
             return day.format(date);
@@ -133,6 +137,8 @@ public abstract class FACatchSummaryHelper {
         } else if (GroupCriteria.DATE_YEAR.equals(criteria)) {
             SimpleDateFormat day = new SimpleDateFormat("YYYY");
             return day.format(date);
+        }else if(GroupCriteria.DATE.equals(criteria)){
+            return (new SimpleDateFormat("yyyy-MM-dd")).format(date);
         }
         SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
         return sdf.format(date);

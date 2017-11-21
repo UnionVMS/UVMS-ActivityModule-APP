@@ -72,7 +72,8 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
    }
 
     /**
-     * This method gets you table structure for Catch details summary
+     *
+     * This method gets you table structure for Catch details summary on TRIP SUMMARY VIEW
      * @param tripId data will be returned for this tripId
      * @param isLanding If landing then summary structure will include PRESENTATION information otherwise only species information will be included
      * @return
@@ -86,13 +87,13 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
         searchCriteriaMap.put(SearchFilter.TRIP_ID,tripId);
         query.setSearchCriteriaMap(searchCriteriaMap);
-        return getCatchSummaryReport(query,isLanding);
+        return getCatchSummaryReport(query,isLanding,false);
     }
 
     @NotNull
     private List<GroupCriteria> getGroupByFields(boolean isLanding) {
         List<GroupCriteria> groupByFields = new ArrayList<>();
-        groupByFields.add(GroupCriteria.DATE_DAY);
+        groupByFields.add(GroupCriteria.DATE);
         groupByFields.add(GroupCriteria.FAO_AREA);
         groupByFields.add(GroupCriteria.TERRITORY);
         groupByFields.add(GroupCriteria.EFFORT_ZONE);
@@ -112,12 +113,14 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
     /**
      *  This method groups FACatch Data, performs business logic to create summary report
      *  and creates FacatchSummaryDTO object as expected by web interface.
+     *  isReporting : TRUE indicates that the method should be used to generate result for REPORTING module
+     *                FALSE indicates that the method should be used to generate result from TRIP SUMMARY VIEW
      * @param query
      * @return
      * @throws ServiceException
      */
     @Override
-    public FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding) throws ServiceException{
+    public FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding, boolean isReporting) throws ServiceException{
         // get grouped data
         Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = faCatchDao.getGroupedFaCatchData(query, isLanding);
 
@@ -149,7 +152,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         log.debug("FACatchSummaryReportResponse creation starts");
 
         //get processed information in the form of DTO
-        FACatchSummaryDTO faCatchSummaryDTO= getCatchSummaryReport(query,false);
+        FACatchSummaryDTO faCatchSummaryDTO= getCatchSummaryReport(query,false,true);
         log.debug("FACatchSummaryDTO created");
 
         // We can not transfter DTO as it is over JMS because of JAVA maps.so, Map DTO to the type transferrable over JMS
