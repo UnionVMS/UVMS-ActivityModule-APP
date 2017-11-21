@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"count", "typeCode", "species", "fishClass", "date"})
+@EqualsAndHashCode(exclude = {"count", "typeCode", "species", "fishClass"})
 @Data
 public class FaCatchSummaryCustomProxy {
 

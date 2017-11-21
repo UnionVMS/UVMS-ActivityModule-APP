@@ -87,7 +87,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
         searchCriteriaMap.put(SearchFilter.TRIP_ID,tripId);
         query.setSearchCriteriaMap(searchCriteriaMap);
-        return getCatchSummaryReport(query,isLanding,false);
+        return getCatchSummaryReport(query,isLanding);
     }
 
     @NotNull
@@ -120,7 +120,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
      * @throws ServiceException
      */
     @Override
-    public FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding, boolean isReporting) throws ServiceException{
+    public FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding) throws ServiceException{
         // get grouped data
         Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = faCatchDao.getGroupedFaCatchData(query, isLanding);
 
@@ -152,7 +152,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         log.debug("FACatchSummaryReportResponse creation starts");
 
         //get processed information in the form of DTO
-        FACatchSummaryDTO faCatchSummaryDTO= getCatchSummaryReport(query,false,true);
+        FACatchSummaryDTO faCatchSummaryDTO= getCatchSummaryReport(query,false);
         log.debug("FACatchSummaryDTO created");
 
         // We can not transfter DTO as it is over JMS because of JAVA maps.so, Map DTO to the type transferrable over JMS

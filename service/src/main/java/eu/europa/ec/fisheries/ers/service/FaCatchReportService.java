@@ -23,7 +23,7 @@ public interface FaCatchReportService {
 
 
 
-   FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding, boolean isReporting) throws ServiceException;
+   FACatchSummaryDTO getCatchSummaryReport(FishingActivityQuery query, boolean isLanding) throws ServiceException;
 
    FACatchSummaryReportResponse getFACatchSummaryReportResponse(FishingActivityQuery query) throws ServiceException;
 
