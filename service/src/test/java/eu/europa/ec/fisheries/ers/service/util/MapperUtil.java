@@ -819,17 +819,17 @@ public class MapperUtil {
     }
 
     public static Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> getGroupedFaCatchSummaryCustomEntityData() {
-        FaCatchSummaryCustomProxy customEntityKey = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+        FaCatchSummaryCustomProxy customEntityKey = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "GUT",
                 "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue1 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+        FaCatchSummaryCustomProxy customEntityValue1 = new FaCatchSummaryCustomProxy("15", null, null, null, null,null, null, "GUT",
                 "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue2 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+        FaCatchSummaryCustomProxy customEntityValue2 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "GUT",
                 "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "SOL", null,200);
-        FaCatchSummaryCustomProxy customEntityValue3 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "WHL",
+        FaCatchSummaryCustomProxy customEntityValue3 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "WHL",
                 "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue4 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "ROE-C",
+        FaCatchSummaryCustomProxy customEntityValue4 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "ROE-C",
                 "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue5 = new FaCatchSummaryCustomProxy("15", null, null, null, null, null, "GUT",
+        FaCatchSummaryCustomProxy customEntityValue5 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "GUT",
                 "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "COD", null,200);
 
         Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = new HashMap<>();
