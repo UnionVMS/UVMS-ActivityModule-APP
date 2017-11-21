@@ -80,6 +80,10 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
             return groups;
         }
 
+        if(StringUtils.isNotEmpty(customEntity.getDate() ) ){
+            groups.add( new GroupCriteriaWithValue(GroupCriteria.DATE,customEntity.getDate()));
+        }
+
         if(StringUtils.isNotEmpty(customEntity.getDay() ) ){
             groups.add( new GroupCriteriaWithValue(GroupCriteria.DATE_DAY,customEntity.getDay()));
         }

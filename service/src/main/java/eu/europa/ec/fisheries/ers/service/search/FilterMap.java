@@ -177,6 +177,7 @@ public class FilterMap {
         groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setDay")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setMonth")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setYear")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.VESSEL, new GroupCriteriaMapper(" ", "a.vesselTransportGuid", "setVesselTransportGuid"));
         groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(" ", "faCatch.fishClassCode", "setFishClass"));
         groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(" ", "a.flagState", "setFlagState"));

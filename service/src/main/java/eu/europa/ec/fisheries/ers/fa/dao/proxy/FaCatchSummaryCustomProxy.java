@@ -32,6 +32,7 @@ public class FaCatchSummaryCustomProxy {
     private String day;
     private String month;
     private String year;
+    private String date;
     private String vesselTransportGuid;
     private String flagState;
     private String gearType;
