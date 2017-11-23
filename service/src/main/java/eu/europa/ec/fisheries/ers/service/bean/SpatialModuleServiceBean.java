@@ -17,8 +17,8 @@ import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SpatialProducerBean;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
@@ -71,7 +71,7 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
 
     @Override
     public String getGeometryForPortCode(String portCode) throws ServiceException {
-        try {
+       try {
             String request = SpatialModuleRequestMapper.mapToGeometryByPortCodeRequest(portCode);
             String correlationId = spatialProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage message = activityConsumer.getMessage(correlationId, TextMessage.class);
@@ -85,5 +85,6 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
             log.error("Exception in communication with spatial while retrieving GEOMETRY", e);
             throw new ServiceException(e.getMessage(), e);
         }
+
     }
 }
