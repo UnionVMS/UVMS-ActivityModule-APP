@@ -80,6 +80,7 @@ import java.util.Set;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
+
 /**
  * TODO create test
  */
@@ -186,6 +187,8 @@ public class BaseMapper {
         }
         return fishingGearRoles;
     }
+
+
 
     public static Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
         if (CollectionUtils.isEmpty(gearCharacteristics)) {

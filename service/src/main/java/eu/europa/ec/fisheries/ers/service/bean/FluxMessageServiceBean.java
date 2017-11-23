@@ -34,6 +34,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
@@ -53,6 +54,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -87,6 +89,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     @EJB
     private FishingTripService fishingTripService;
+
+    @EJB
+    private MdrModuleService mdrModuleServiceBean;
 
     private DatabaseDialect dialect;
 
@@ -298,6 +303,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
                         point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                        getGeometryFromMdr(fluxLocation.getFluxLocationIdentifier());
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) { // Create Geometry directly from long/lat
                         point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
@@ -312,6 +318,33 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             }
         }
         return multiPointForFaReport;
+    }
+
+    private Geometry getGeometryFromMdr(String fluxLocationIdentifier){
+        log.info("Get Geometry from MDR for:"+fluxLocationIdentifier);
+        Geometry geometry=null;
+        final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
+
+        try {
+            Map<String, List<String>> portValuesFromMdr= mdrModuleServiceBean.getAcronymFromMdr("LOCATION",fluxLocationIdentifier,columnsList,1,"latitude","longitude");
+            List<String> latitudeValues = portValuesFromMdr.get("latitude");
+            List<String> longitudeValues = portValuesFromMdr.get("longitude");
+            String latitude=null;
+            String longitude=null;
+            if(CollectionUtils.isNotEmpty(latitudeValues)){
+                latitude = latitudeValues.get(0);
+            }
+
+            if(CollectionUtils.isNotEmpty(longitudeValues)){
+                longitude = longitudeValues.get(0);
+            }
+            log.info("Geometry retrived from MDR. latitude:"+latitude+"  longitude:"+longitude);
+        } catch (ServiceException e) {
+            log.error("Error while retriving values from MDR.",e);
+        }
+
+        return geometry;
+
     }
 
     private List<MovementType> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
