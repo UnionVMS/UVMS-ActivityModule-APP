@@ -71,6 +71,7 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
 
     @Override
     public String getGeometryForPortCode(String portCode) throws ServiceException {
+        log.info("Inside getGeometryForPortCode :"+portCode);
        try {
             String request = SpatialModuleRequestMapper.mapToGeometryByPortCodeRequest(portCode);
             String correlationId = spatialProducer.sendModuleMessage(request, activityConsumer.getDestination());

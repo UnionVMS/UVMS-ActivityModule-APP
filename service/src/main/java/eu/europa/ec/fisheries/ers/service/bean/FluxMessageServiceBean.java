@@ -36,6 +36,7 @@ import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
@@ -92,6 +93,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     @EJB
     private MdrModuleService mdrModuleServiceBean;
+
+    @EJB
+    private SpatialModuleService spatialModuleService;
 
     private DatabaseDialect dialect;
 
@@ -301,9 +305,17 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) { // Interpolate Geometry from movements
                         point = interpolatedPoint;
                         fluxLocation.setGeom(point);
-                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
-                        point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
-                        getGeometryFromMdr(fluxLocation.getFluxLocationIdentifier());
+                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/latitude
+
+                        if(fluxLocation.getLongitude()!=null && fluxLocation.getLatitude()!=null){
+                            point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                        }else{
+                            point= getGeometryFromMdr(fluxLocation.getFluxLocationIdentifier());
+                            if(point ==null){
+                                point= getGeometryFromSpatial(fluxLocation.getFluxLocationIdentifier());
+                            }
+                        }
+                        log.info("Geometry found for location is:"+point);
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) { // Create Geometry directly from long/lat
                         point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
@@ -322,6 +334,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private Geometry getGeometryFromMdr(String fluxLocationIdentifier){
         log.info("Get Geometry from MDR for:"+fluxLocationIdentifier);
+        if(fluxLocationIdentifier ==null){
+            return null;
+        }
         Geometry geometry=null;
         final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
 
@@ -329,20 +344,47 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             Map<String, List<String>> portValuesFromMdr= mdrModuleServiceBean.getAcronymFromMdr("LOCATION",fluxLocationIdentifier,columnsList,1,"latitude","longitude");
             List<String> latitudeValues = portValuesFromMdr.get("latitude");
             List<String> longitudeValues = portValuesFromMdr.get("longitude");
-            String latitude=null;
-            String longitude=null;
+            Double latitude=null;
+            Double longitude=null;
             if(CollectionUtils.isNotEmpty(latitudeValues)){
-                latitude = latitudeValues.get(0);
+                String latitudeStr = latitudeValues.get(0);
+                if(latitudeStr!=null){
+                    latitude= Double.parseDouble(latitudeStr);
+                }
+
             }
 
             if(CollectionUtils.isNotEmpty(longitudeValues)){
-                longitude = longitudeValues.get(0);
+                String longitudeStr = longitudeValues.get(0);
+                if(longitudeStr!=null){
+                    longitude= Double.parseDouble(longitudeStr);
+                }
             }
             log.info("Geometry retrived from MDR. latitude:"+latitude+"  longitude:"+longitude);
+            geometry =GeometryUtils.createPoint(longitude, latitude);
         } catch (ServiceException e) {
             log.error("Error while retriving values from MDR.",e);
         }
 
+        return geometry;
+
+    }
+
+    private Geometry getGeometryFromSpatial(String fluxLocationIdentifier){
+        log.info("Get Geometry from Spatial for:"+fluxLocationIdentifier);
+        if(fluxLocationIdentifier ==null){
+            return null;
+        }
+        Geometry geometry=null;
+        try {
+           String geometryWkt= spatialModuleService.getGeometryForPortCode(fluxLocationIdentifier);
+            geometry =GeometryMapper.INSTANCE.wktToGeometry(geometryWkt).getValue();
+            log.info(" Geometry received from Spatial for:"+fluxLocationIdentifier+"  :"+geometryWkt);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return geometry;
 
     }
