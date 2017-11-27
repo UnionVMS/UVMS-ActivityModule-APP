@@ -92,8 +92,6 @@
 
         <dependencies>
 
-
-
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
                 <artifactId>mdr-model</artifactId>
