@@ -34,7 +34,9 @@ import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
@@ -45,6 +47,7 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.Nullable;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
@@ -53,6 +56,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -87,6 +91,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     @EJB
     private FishingTripService fishingTripService;
+
+    @EJB
+    private MdrModuleService mdrModuleServiceBean;
+
+    @EJB
+    private SpatialModuleService spatialModuleService;
 
     private DatabaseDialect dialect;
 
@@ -296,8 +306,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) { // Interpolate Geometry from movements
                         point = interpolatedPoint;
                         fluxLocation.setGeom(point);
-                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/lat
-                        point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) { // Create Geometry directly from long/latitude
+                        point = getGeometryForLocation(fluxLocation);
+                        log.debug("Geometry calculated for location is:"+point);
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) { // Create Geometry directly from long/lat
                         point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
@@ -312,6 +323,85 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             }
         }
         return multiPointForFaReport;
+    }
+
+    @Nullable
+    private Geometry getGeometryForLocation(FluxLocationEntity fluxLocation) {
+        Geometry point;
+        if(fluxLocation.getLongitude()!=null && fluxLocation.getLatitude()!=null){
+            point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+        }else{
+            point= getGeometryFromMdr(fluxLocation.getFluxLocationIdentifier()); // If point information is not present in Message, check in MDR
+            if(point ==null){
+                point= getGeometryFromSpatial(fluxLocation.getFluxLocationIdentifier());// If couldnt get geometry from MDR, then contact spatial
+            }
+        }
+        return point;
+    }
+
+    /**
+     * Find geometry for fluxLocation code in MDR
+     * @param fluxLocationIdentifier
+     * @return
+     */
+    private Geometry getGeometryFromMdr(String fluxLocationIdentifier){
+        log.debug("Get Geometry from MDR for:"+fluxLocationIdentifier);
+        if(fluxLocationIdentifier ==null){
+            return null;
+        }
+        Geometry geometry=null;
+        final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
+
+        try {
+            Map<String, List<String>> portValuesFromMdr= mdrModuleServiceBean.getAcronymFromMdr("LOCATION",fluxLocationIdentifier,columnsList,1,"latitude","longitude");
+            List<String> latitudeValues = portValuesFromMdr.get("latitude");
+            List<String> longitudeValues = portValuesFromMdr.get("longitude");
+            Double latitude=null;
+            Double longitude=null;
+            if(CollectionUtils.isNotEmpty(latitudeValues)){
+                String latitudeStr = latitudeValues.get(0);
+                if(latitudeStr!=null){
+                    latitude= Double.parseDouble(latitudeStr);
+                }
+            }
+
+            if(CollectionUtils.isNotEmpty(longitudeValues)){
+                String longitudeStr = longitudeValues.get(0);
+                if(longitudeStr!=null){
+                    longitude= Double.parseDouble(longitudeStr);
+                }
+            }
+
+            geometry =GeometryUtils.createPoint(longitude, latitude);
+        } catch (ServiceException e) {
+            log.error("Error while retriving values from MDR.",e);
+        }
+        return geometry;
+
+    }
+
+    /**
+     * Get Geometry information from spatial for FLUXLocation code
+     * @param fluxLocationIdentifier
+     * @return
+     */
+    private Geometry getGeometryFromSpatial(String fluxLocationIdentifier){
+        log.info("Get Geometry from Spatial for:"+fluxLocationIdentifier);
+        if(fluxLocationIdentifier ==null){
+            return null;
+        }
+        Geometry geometry=null;
+        try {
+           String geometryWkt= spatialModuleService.getGeometryForPortCode(fluxLocationIdentifier);
+            if(geometryWkt !=null){
+                geometry =GeometryMapper.INSTANCE.wktToGeometry(geometryWkt).getValue();
+            }
+
+            log.debug(" Geometry received from Spatial for:"+fluxLocationIdentifier+"  :"+geometryWkt);
+        } catch (ServiceException  |ParseException e) {
+            log.error("Exception while trying to get geometry from spatial",e);
+        }
+        return geometry;
     }
 
     private List<MovementType> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
