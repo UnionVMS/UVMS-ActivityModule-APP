@@ -38,11 +38,11 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>1.0.2-SNAPSHOT</activity.model>
+        <activity.model>1.0.2</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
-        <spatial.model.version>1.0.8-SNAPSHOT</spatial.model.version>
+        <spatial.model.version>1.0.9</spatial.model.version>
         <exchange.model>4.0.4</exchange.model>
         <rules.model>3.0.11</rules.model>
         <uvms.config.version>4.0.0</uvms.config.version>
