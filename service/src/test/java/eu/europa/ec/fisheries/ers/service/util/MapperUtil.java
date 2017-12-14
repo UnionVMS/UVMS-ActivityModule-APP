@@ -13,6 +13,23 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -77,23 +94,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.NumericType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
-
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -531,7 +531,7 @@ public class MapperUtil {
         QuantityType affectedQuantity = getQuantityType(222);
         List<CodeType> recoveryMeasureCodes = Arrays.asList(getCodeType("Quantity Code 1", "57t3yf-ght43yrf-ght56yru-ght7565h"));
         List<FishingGear> relatedFishingGears = Arrays.asList(getFishingGear());
-        GearProblem gearProblem = new GearProblem(typeCode, affectedQuantity, recoveryMeasureCodes, null, relatedFishingGears);
+        GearProblem gearProblem = new GearProblem(typeCode, affectedQuantity, recoveryMeasureCodes, Arrays.asList(getFluxLocation()), relatedFishingGears);
         return gearProblem;
     }
 

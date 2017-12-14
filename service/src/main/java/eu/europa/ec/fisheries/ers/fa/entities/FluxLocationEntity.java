@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -29,13 +30,16 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.geotools.geometry.jts.GeometryBuilder;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -131,6 +135,15 @@ public class FluxLocationEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "gear_problem_id")
 	private GearProblemEntity gearProblem;
+
+	@PrePersist
+	public void onPrePersist() {
+	    if(longitude != null && latitude != null){
+            Point point = new GeometryBuilder().point(longitude, latitude);
+            point.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
+            this.geom = point;
+        }
+	}
 
 	@PostLoad
 	private void onLoad() {
