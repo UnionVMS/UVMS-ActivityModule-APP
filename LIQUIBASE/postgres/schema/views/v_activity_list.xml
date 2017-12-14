@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+    <changeSet author="dkdjdkjd" id="123226-2">
+       <sql>
+
+           CREATE MATERIALIZED VIEW v_activity_list
+           AS
+           SELECT rep.source AS communication_channel, rep.type_code AS report_type, fa.type_code AS activity_type,
+           fluxreport.purpose_code, fa.calculated_start_time as start_date, delperiod.end_date, cperson.title, cperson.given_name,
+           cperson.middle_name,cperson.family_name,cperson.family_name_prefix,
+           cperson.name_suffix, cperson.alias
+           FROM activity.activity_fishing_activity fa
+           left join activity.activity_fa_report_document rep on rep.id = fa.fa_report_document_id
+           left join activity.activity_flux_report_document fluxreport on fluxreport.id = rep.flux_report_document_id
+           left join activity.activity_delimited_period delperiod on delperiod.fishing_activity_id = fa.id
+           left join activity.activity_vessel_transport_means vtm on vtm.fishing_activity_id = fa.id
+           left join activity.activity_contact_party cparty on cparty.vessel_transport_means_id = vtm.id
+           left join activity.activity_contact_person cperson on cparty.contact_person_id = vtm.id;
+
+       </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

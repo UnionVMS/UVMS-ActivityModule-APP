@@ -63,7 +63,7 @@ public abstract class GearProblemMapper extends BaseMapper {
         for(FLUXLocation flLocAct : flLocList){
             entitiesSet.add(FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct, FluxLocationCatchTypeEnum.GEAR_PROBLEM, gearProbEntity, new FluxLocationEntity()));
         }
-        return null;
+        return entitiesSet;
     }
 
     protected Set<GearProblemRecoveryEntity> mapToGearProblemRecoveries(List<CodeType> codeTypes, GearProblemEntity gearProblemEntity) {
