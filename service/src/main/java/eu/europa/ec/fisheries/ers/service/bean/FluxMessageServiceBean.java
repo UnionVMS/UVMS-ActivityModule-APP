@@ -12,7 +12,23 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.google.common.collect.ImmutableMap;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
@@ -50,21 +66,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.Nullable;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 
 @Stateless
@@ -390,11 +391,18 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         if(fluxLocationIdentifier ==null){
             return null;
         }
-        Geometry geometry=null;
+        Geometry geometry = null;
         try {
            String geometryWkt= spatialModuleService.getGeometryForPortCode(fluxLocationIdentifier);
             if(geometryWkt !=null){
-                geometry =GeometryMapper.INSTANCE.wktToGeometry(geometryWkt).getValue();
+                Geometry value = GeometryMapper.INSTANCE.wktToGeometry(geometryWkt).getValue();
+                Coordinate[] coordinates = value.getCoordinates();
+                if (coordinates.length > 0){
+                    Coordinate coordinate = coordinates[0];
+                    double x = coordinate.x;
+                    double y = coordinate.y;
+                    geometry =  GeometryUtils.createPoint(x, y);
+                }
             }
 
             log.debug(" Geometry received from Spatial for:"+fluxLocationIdentifier+"  :"+geometryWkt);
