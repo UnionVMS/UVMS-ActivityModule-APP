@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
@@ -122,4 +123,6 @@ public interface FishingTripService {
 
 
      FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
+
+    CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
 }

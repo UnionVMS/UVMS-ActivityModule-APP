@@ -13,29 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
@@ -50,6 +27,7 @@ import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -68,12 +46,15 @@ import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionProgressDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.SpeciesQuantityDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripIdDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
@@ -109,6 +90,30 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mockito.internal.util.collections.Sets;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -719,18 +724,18 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
                 tripOverviewDtoList.add(tripOverviewDto);
                 tripWidgetDto.setTrips(tripOverviewDtoList);
-                if(activityEntity !=null && activityEntity.getFaReportDocument() !=null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())){
+                if (activityEntity != null && activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
                     Set<VesselTransportMeansEntity> vesselTransportMeansEntities = activityEntity.getFaReportDocument().getVesselTransportMeans();
-                    for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities){
-                        if(vesselTransportMeansEntity.getFishingActivity() ==null){
-                            tripWidgetDto.setVesselDetails( getVesselDetailsDTO(vesselTransportMeansEntity, activityEntity));
+                    for (VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities) {
+                        if (vesselTransportMeansEntity.getFishingActivity() == null) {
+                            tripWidgetDto.setVesselDetails(getVesselDetailsDTO(vesselTransportMeansEntity, activityEntity));
                             break;
                         }
                     }
 
                 }
-               // VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
-               // tripWidgetDto.setVesselDetails(detailsDTO);
+                // VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
+                // tripWidgetDto.setVesselDetails(detailsDTO);
                 log.debug("tripWidgetDto set for tripID :" + tripId);
             } else {
                 log.debug("TripId is not received for the screen. Try to get TripSummary information for all the tripIds specified for FishingActivity:" + activityEntity.getId());
@@ -741,6 +746,62 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             log.error("Error while creating TripWidgetDto.", e);
         }
         return tripWidgetDto;
+    }
+
+    @Override
+    public CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException {
+        CatchEvolutionDTO catchEvolution = new CatchEvolutionDTO();
+        List<FishingActivityEntity> fishingActivities = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
+        List<Object[]> faCatches = faCatchDao.findFaCatchesByFishingTrip(fishingTripId);
+        catchEvolution.setTripDetails(getTripWidgetDto(fishingActivities.get(0), fishingTripId));
+        catchEvolution.setFinalCatchEvolutionSummary(FaCatchMapper.INSTANCE.mapCatchesToEvolutionSummaryDTO(faCatches));
+        catchEvolution.setCatchEvolutionProgress(prepareCatchEvolutionProgress(faCatches, fishingActivities, fishingTripId));
+
+        return catchEvolution;
+    }
+
+    private List<CatchEvolutionProgressDTO> prepareCatchEvolutionProgress(List<Object[]> faCatches, List<FishingActivityEntity> fishingActivities, String fishingTripId) throws ServiceException {
+        List<CatchEvolutionProgressDTO> catchEvolutionProgress = new ArrayList<>();
+
+        for (FishingActivityEntity fishingActivity : fishingActivities) {
+            if (FishingActivityTypeEnum.FISHING_OPERATION.toString().equalsIgnoreCase(fishingActivity.getTypeCode()) ||
+                    FishingActivityTypeEnum.JOINED_FISHING_OPERATION.toString().equalsIgnoreCase(fishingActivity.getTypeCode()) ||
+                    FishingActivityTypeEnum.DISCARD.toString().equalsIgnoreCase(fishingActivity.getTypeCode()) ||
+                    FishingActivityTypeEnum.LANDING.toString().equalsIgnoreCase(fishingActivity.getTypeCode())) {
+                double total = 0.0;
+                CatchSummaryListDTO onboard = new CatchSummaryListDTO();
+                Map<String, CatchSummaryListDTO> catchEvolution = new TreeMap<>();
+                catchEvolution.put("onboard", onboard);
+                CatchEvolutionProgressDTO catchEvolutionProgressDTO = new CatchEvolutionProgressDTO();
+                catchEvolutionProgressDTO.setActivityType(fishingActivity.getTypeCode());
+                catchEvolutionProgressDTO.setCatchEvolution(catchEvolution);
+
+                for (FaCatchEntity faCatch : fishingActivity.getFaCatchs()) {
+                    String speciesCode = faCatch.getSpeciesCode();
+                    boolean exists = false;
+                    onboard.setTotal(onboard.getTotal() + faCatch.getCalculatedWeightMeasure());
+
+                    for (SpeciesQuantityDTO speciesQuantityDTO : onboard.getSpeciesList()) {
+                        if (speciesQuantityDTO.getSpeciesCode().equalsIgnoreCase(speciesCode)) {
+                            speciesQuantityDTO.setWeight(speciesQuantityDTO.getWeight() + faCatch.getCalculatedWeightMeasure());
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists) {
+                        SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO();
+                        speciesQuantityDTO.setSpeciesCode(speciesCode);
+                        speciesQuantityDTO.setWeight(faCatch.getCalculatedWeightMeasure());
+                        onboard.getSpeciesList().add(speciesQuantityDTO);
+                    }
+                }
+
+                catchEvolutionProgress.add(catchEvolutionProgressDTO);
+            }
+        }
+
+        return catchEvolutionProgress;
     }
 
     private void setFlapDocuments(VesselDetailsDTO detailsDTO, FishingActivityEntity parent, TripWidgetDto tripWidgetDto) {
@@ -773,11 +834,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
         tripWidgetDto.setTrips(tripOverviewDtoList);
         //As per new requirement, vessel should always be the one associated with fishing Activity in the trip widget
-        if(activityEntity !=null && activityEntity.getFaReportDocument() !=null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())){
+        if (activityEntity != null && activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
             Set<VesselTransportMeansEntity> vesselTransportMeansEntities = activityEntity.getFaReportDocument().getVesselTransportMeans();
-            for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities){
-                if(vesselTransportMeansEntity.getFishingActivity() ==null){
-                    tripWidgetDto.setVesselDetails( getVesselDetailsDTO(vesselTransportMeansEntity, activityEntity));
+            for (VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities) {
+                if (vesselTransportMeansEntity.getFishingActivity() == null) {
+                    tripWidgetDto.setVesselDetails(getVesselDetailsDTO(vesselTransportMeansEntity, activityEntity));
                     break;
                 }
             }

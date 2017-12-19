@@ -23,6 +23,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FluxCharacteristicsViewDtoMapper;
@@ -256,5 +257,28 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
 
         return catchSummary;
+    }
+
+    public Map<String, CatchEvolutionSummaryListDTO> mapCatchesToEvolutionSummaryDTO(List<Object[]> faCatches) {
+        Map<String, CatchEvolutionSummaryListDTO> catchEvolutionSummary = new HashMap<>();
+        CatchEvolutionSummaryListDTO landedSummary = new CatchEvolutionSummaryListDTO();
+        catchEvolutionSummary.put("landed", landedSummary);
+
+        if (CollectionUtils.isEmpty(faCatches)) {
+            return catchEvolutionSummary;
+        }
+
+        for (Object[] faCatch : faCatches) {
+            String typeCode = ((String) faCatch[0]).toUpperCase();
+            String speciesCode = (String) faCatch[1];
+            String areaName = (String) faCatch[2];
+            Double weight = (Double) faCatch[3];
+
+            if ("UNLOADED".equals(typeCode)) {
+                landedSummary.addSpecieAndQuantity(speciesCode, weight, areaName);
+            }
+        }
+
+        return catchEvolutionSummary;
     }
 }
