@@ -10,6 +10,20 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.internal.util.collections.Sets.newSet;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -27,20 +41,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.internal.util.collections.Sets.newSet;
-
 public class BaseMapperTest extends BaseUnitilsTest {
 
     @Test
@@ -51,7 +51,7 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
         HashSet<FluxLocationEntity> fluxLocationEntities = Sets.newHashSet(locationEntity_1, locationEntity_2);
 
-        assertEquals(2, fluxLocationEntities.size());
+        assertEquals(1, fluxLocationEntities.size());
 
         Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(fluxLocationEntities);
 

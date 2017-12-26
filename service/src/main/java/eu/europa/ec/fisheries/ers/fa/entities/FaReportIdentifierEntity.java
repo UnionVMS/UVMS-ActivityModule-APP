@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
@@ -22,12 +23,17 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_fa_report_identifier")
+@Data
+@NoArgsConstructor
 public class FaReportIdentifierEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "rep_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
@@ -41,38 +47,5 @@ public class FaReportIdentifierEntity implements Serializable {
 
 	@Column(name = "fa_report_identifier_scheme_id")
 	private String faReportIdentifierSchemeId;
-
-	public FaReportIdentifierEntity() {
-		super();
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public FaReportDocumentEntity getFaReportDocument() {
-		return this.faReportDocument;
-	}
-
-	public void setFaReportDocument(
-			FaReportDocumentEntity faReportDocument) {
-		this.faReportDocument = faReportDocument;
-	}
-
-	public String getFaReportIdentifierId() {
-		return this.faReportIdentifierId;
-	}
-
-	public void setFaReportIdentifierId(String faReportIdentifierId) {
-		this.faReportIdentifierId = faReportIdentifierId;
-	}
-
-	public String getFaReportIdentifierSchemeId() {
-		return this.faReportIdentifierSchemeId;
-	}
-
-	public void setFaReportIdentifierSchemeId(String faReportIdentifierSchemeId) {
-		this.faReportIdentifierSchemeId = faReportIdentifierSchemeId;
-	}
 
 }

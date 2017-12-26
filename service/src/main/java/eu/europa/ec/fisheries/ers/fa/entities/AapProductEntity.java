@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,10 +24,12 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_aap_product")
 @Data
+@NoArgsConstructor
 public class AapProductEntity implements Serializable {
 
 	@Id
@@ -35,7 +38,7 @@ public class AapProductEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "aap_process_id")
 	private AapProcessEntity aapProcess;
 	

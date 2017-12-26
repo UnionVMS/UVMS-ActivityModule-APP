@@ -46,6 +46,9 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
 
     @Override
+    /**
+     * Remember that not all the catches should be considered for the catchSummary. There are specific conditions mentioned in the requirement. Only those catches should be selected for the summary which match the criteria.
+     */
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         StringBuilder sql = new StringBuilder();
      //   FilterMap.populateFilterMAppingsWithChangeForFACatchReport();

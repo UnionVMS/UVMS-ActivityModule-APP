@@ -31,4 +31,6 @@ public interface SpatialModuleService {
      * @throws ServiceException
      */
     String getFilteredAreaGeom(Collection<AreaIdentifierType> areaIdentifiers) throws ServiceException;
+
+    String getGeometryForPortCode(String portCode) throws ServiceException;
 }

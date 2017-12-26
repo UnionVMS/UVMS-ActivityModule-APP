@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,17 +20,22 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_registration_location")
+@Data
+@NoArgsConstructor
 public class RegistrationLocationEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "reg_loc_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@Column(columnDefinition = "text", name = "description")
+	@Column(columnDefinition = "text")
 	private String description;
 
 	@Column(name = "desc_language_id")
@@ -43,7 +47,7 @@ public class RegistrationLocationEntity implements Serializable {
 	@Column(name = "region_code_list_id")
 	private String regionCodeListId;
 
-	@Column(columnDefinition = "text", name = "name")
+	@Column(columnDefinition = "text")
 	private String name;
 
 	@Column(name = "name_language_id")
@@ -61,117 +65,7 @@ public class RegistrationLocationEntity implements Serializable {
 	@Column(name = "location_country_scheme_id")
 	private String locationCountrySchemeId;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "registrationLocation")
+	@OneToOne(mappedBy = "registrationLocation")
 	private RegistrationEventEntity registrationEvent;
 
-	public RegistrationLocationEntity() {
-		super();
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getRegionCode() {
-		return this.regionCode;
-	}
-
-	public void setRegionCode(String regionCode) {
-		this.regionCode = regionCode;
-	}
-
-	public String getRegionCodeListId() {
-		return this.regionCodeListId;
-	}
-
-	public void setRegionCodeListId(String regionCodeListId) {
-		this.regionCodeListId = regionCodeListId;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	public String getTypeCodeListId() {
-		return this.typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public RegistrationEventEntity getRegistrationEvent() {
-		return registrationEvent;
-	}
-
-	public void setRegistrationEvent(RegistrationEventEntity registrationEvent) {
-		this.registrationEvent = registrationEvent;
-	}
-
-	public String getLocationCountryId() {
-		return locationCountryId;
-	}
-
-	public void setLocationCountryId(String locationCountryId) {
-		this.locationCountryId = locationCountryId;
-	}
-
-	public String getLocationCountrySchemeId() {
-		return locationCountrySchemeId;
-	}
-
-	public void setLocationCountrySchemeId(String locationCountrySchemeId) {
-		this.locationCountrySchemeId = locationCountrySchemeId;
-	}
-
-	public String getDescLanguageId() {
-		return descLanguageId;
-	}
-
-	public void setDescLanguageId(String descLanguageId) {
-		this.descLanguageId = descLanguageId;
-	}
-
-	public String getNameLanguageId() {
-		return nameLanguageId;
-	}
-
-	public void setNameLanguageId(String nameLanguageId) {
-		this.nameLanguageId = nameLanguageId;
-	}
-
-	@Override
-	public String toString() {
-		return "RegistrationLocationEntity{" +
-				"id=" + id +
-				", description='" + description + '\'' +
-				", regionCode='" + regionCode + '\'' +
-				", regionCodeListId='" + regionCodeListId + '\'' +
-				", name='" + name + '\'' +
-				", typeCode='" + typeCode + '\'' +
-				", typeCodeListId='" + typeCodeListId + '\'' +
-				", locationCountryId='" + locationCountryId + '\'' +
-				", locationCountrySchemeId='" + locationCountrySchemeId + '\'' +
-				'}';
-	}
 }

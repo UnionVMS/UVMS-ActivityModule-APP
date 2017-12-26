@@ -147,4 +147,15 @@ public class FishingTripResource extends UnionVMSResource {
         return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId));
     }
 
+    @GET
+    @Path("/catchevolution/{fishingTripId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
+    public Response getFishingTripCatchEvolution(@Context HttpServletRequest request,
+                                                 @Context HttpServletResponse response,
+                                                 @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+        LOG.info("Catch evolution for fishing trip : " + fishingTripId);
+        return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId));
+    }
 }

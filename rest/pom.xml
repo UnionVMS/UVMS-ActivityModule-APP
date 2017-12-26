@@ -8,7 +8,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
+        <version>1.0.7-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -219,7 +219,7 @@
                                     <docletArtifact>
                                         <groupId>com.carma</groupId>
                                         <artifactId>swagger-doclet</artifactId>
-                                        <version>1.0.4.1</version>
+                                        <version>1.1.2</version>
                                     </docletArtifact>
                                     <reportOutputDirectory>src/main/webapp</reportOutputDirectory>
                                     <useStandardDocletOptions>false</useStandardDocletOptions>
