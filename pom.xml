@@ -44,6 +44,8 @@
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.9</spatial.model.version>
         <exchange.model>4.0.4</exchange.model>
+        <subscription.model>4.0.5-SNAPSHOT</subscription.model>
+
         <rules.model>3.0.11</rules.model>
         <uvms.config.version>4.0.0</uvms.config.version>
         <mdr.model.version>1.0.1</mdr.model.version>
@@ -71,7 +73,7 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <geotools.version>14.4</geotools.version>
-        <uvms.commons.version>3.0.7</uvms.commons.version>
+        <uvms.commons.version>3.0.8-SNAPSHOT</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
@@ -121,6 +123,12 @@
                 <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
                 <artifactId>spatial-model</artifactId>
                 <version>${spatial.model.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+                <artifactId>subscription-model</artifactId>
+                <version>${subscription.model}</version>
             </dependency>
 
             <dependency>

@@ -8,13 +8,22 @@
  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.fisheries.ers.service.mapper.subscription.mapper;
+package eu.europa.ec.fisheries.ers.service.mapper.subscription;
 
-import javax.xml.bind.JAXBException;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.SENDER;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VALIDITY_PERIOD;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VESSEL;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.END_DATE_TIME;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.ORGANISATION;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.START_DATE_TIME;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.SCHEME_ID;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
+import eu.europa.ec.fisheries.wsdl.subscription.module.MessageType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataQuery;
@@ -26,15 +35,27 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-/**
- * TODO create test
- */
 public class SubscriptionMapper {
 
-    private List<SubscriptionDataCriteria> mapPartyToSender(FLUXParty party){
+    private SubscriptionMapper(){
+
+    }
+
+    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FAQuery faQuery) {
+        SubscriptionDataRequest request = new SubscriptionDataRequest();
+        request.setMethod(SubscriptionMethod.SUBSCRIPTION_DATA);
+        SubscriptionDataQuery query = new SubscriptionDataQuery();
+        query.setMessageType(MessageType.FLUX_FA_QUERY_MESSAGE);
+        query.getCriteria().addAll(mapFluxPartyToSenderSubscriptionCriteria(faQuery.getSubmitterFLUXParty()));
+        query.getCriteria().addAll(mapFAQueryParametersToSubscriptionCriteria(faQuery.getSimpleFAQueryParameters()));
+        query.getCriteria().addAll(mapDelimitedPeriodToFaQuerySubscriptionCriteria(faQuery.getSpecifiedDelimitedPeriod()));
+        request.setQuery(query);
+        return request;
+    }
+
+    private static List<SubscriptionDataCriteria> mapFluxPartyToSenderSubscriptionCriteria(FLUXParty party){
 
         List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
 
@@ -42,55 +63,70 @@ public class SubscriptionMapper {
 
         for (IDType organisationId: organisationIds){
 
-            String value = organisationId.getValue();
-            SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
-            criteria.setSubCriteria(SubCriteriaType.ORGANISATION);
-            criteria.setValueType(ValueType.SCHEME_ID);
-            criteria.setValue(value);
-            dataCriteriaList.add(criteria);
+            if ("FLUX_GP_PARTY".equals(organisationId.getSchemeID())){
+                String value = organisationId.getValue();
+                dataCriteriaList.add(createCriteria(SENDER, ORGANISATION, SCHEME_ID, value));
+            }
         }
 
         return dataCriteriaList;
     }
 
-    public static String mapToGetSubscriptionDataRequest(FAQuery faQuery) throws JAXBException {
+    private static List<SubscriptionDataCriteria> mapDelimitedPeriodToFaQuerySubscriptionCriteria(DelimitedPeriod period){
 
-        DelimitedPeriod specifiedDelimitedPeriod = faQuery.getSpecifiedDelimitedPeriod();
-        IDType id = faQuery.getID();
-        List<FAQueryParameter> simpleFAQueryParameters = faQuery.getSimpleFAQueryParameters();
-        DateTimeType submittedDateTime = faQuery.getSubmittedDateTime();
-        FLUXParty submitterFLUXParty = faQuery.getSubmitterFLUXParty();
-        CodeType typeCode = faQuery.getTypeCode();
+        List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
 
+        SubscriptionDataCriteria startDateTimeCriteria =
+                createCriteria(VALIDITY_PERIOD, START_DATE_TIME, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getStartDateTime().getDateTime().toString());
+        dataCriteriaList.add(startDateTimeCriteria);
 
+        SubscriptionDataCriteria endDateTimeCriteria =
+                createCriteria(VALIDITY_PERIOD, END_DATE_TIME, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getEndDateTime().getDateTime().toString());
+        dataCriteriaList.add(endDateTimeCriteria);
 
-
-        //    SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
-        //    criteria.setCriteria(CriteriaType.FLUX_FA_QUERY_MESSAGE);
-        //    criteria.setSubCriteria(SubCriteriaType.SPECIFIED_DELIMITED_PERIOD);
-        // Object from = parameters.get("from");
-        //   criteria.setValueType(ValueType.YYYY_MM_DDTHH_MM_SS);
-        //criteria.setValue(from);
-        //criteria.
-        // query.getCriteria().addAll();
-
-        //equest.setQuery();
-
-
-
-        SubscriptionDataRequest request = new SubscriptionDataRequest();
-
-        request.setMethod(SubscriptionMethod.SUBSCRIPTION_DATA);
-
-         SubscriptionDataQuery query = new SubscriptionDataQuery();
-
-
-        List<SubscriptionDataCriteria> criteriaList = new ArrayList<>();
-
-
-
-
-
-        return JAXBUtils.marshallJaxBObjectToString(request);
+        return dataCriteriaList;
     }
+
+    private static SubscriptionDataCriteria createCriteria(CriteriaType criteriaType, SubCriteriaType subCriteriaType, ValueType valueType, String value){
+
+        SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
+        criteria.setCriteria(criteriaType);
+        criteria.setSubCriteria(subCriteriaType);
+        criteria.setValueType(valueType);
+        criteria.setValue(value);
+        return criteria;
+    }
+
+    private static List<SubscriptionDataCriteria> mapFAQueryParametersToSubscriptionCriteria(List<FAQueryParameter> faQueryParameters){
+
+        List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
+
+        for (FAQueryParameter faQueryParameter : faQueryParameters){
+
+            SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
+
+            criteria.setCriteria(VESSEL);
+
+            CodeType faQueryParameterTypeCode = faQueryParameter.getTypeCode();
+
+            criteria.setSubCriteria(SubCriteriaType.valueOf(faQueryParameterTypeCode.getValue()));
+
+            IDType valueID = faQueryParameter.getValueID();
+            if (valueID != null){
+                criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueID().getSchemeID()));
+                criteria.setValue(faQueryParameter.getValueID().getValue());
+
+            }
+
+            CodeType valueCode = faQueryParameter.getValueCode();
+            if (valueCode != null){
+                criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueCode().getListID()));
+                criteria.setValue(faQueryParameter.getValueCode().getValue());
+
+            }
+            dataCriteriaList.add(criteria);
+        }
+        return dataCriteriaList;
+    }
+
 }
