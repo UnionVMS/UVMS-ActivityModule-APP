@@ -50,7 +50,7 @@ public class ActivityMessageConsumerBeanTest {
     Event<EventMessage> mapToSubscriptionRequest;
 
     @Mock
-    Event<EventMessage> getFLUXFAReportMessageEvent;
+    Event<EventMessage> receiveFishingActivityEvent;
 
     @Mock
     Event<EventMessage> getFishingTripListEvent;
@@ -79,7 +79,7 @@ public class ActivityMessageConsumerBeanTest {
             Whitebox.setInternalState(textMessage, "text", new SimpleString(strReq));
             consumer.onMessage(textMessage);
         }
-        verify(getFLUXFAReportMessageEvent,times(1)).fire(Mockito.any(EventMessage.class));
+        verify(receiveFishingActivityEvent,times(2)).fire(Mockito.any(EventMessage.class));
         verify(getFishingTripListEvent,times(1)).fire(Mockito.any(EventMessage.class));
         verify(getFACatchSummaryReportEvent,times(1)).fire(Mockito.any(EventMessage.class));
         verify(getNonUniqueIdsRequest,times(1)).fire(Mockito.any(EventMessage.class));

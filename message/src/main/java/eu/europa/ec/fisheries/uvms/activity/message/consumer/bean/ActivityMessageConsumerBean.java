@@ -11,6 +11,21 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
+import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -20,21 +35,6 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +50,8 @@ public class ActivityMessageConsumerBean implements MessageListener {
     static final Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
 
     @Inject
-    @GetFLUXFAReportMessageEvent
-    private Event<EventMessage> getFLUXFAReportMessageEvent;
+    @ReceiveFishingActivityRequestEvent
+    private Event<EventMessage> receiveFishingActivityEvent;
 
     @Inject
     @MapToSubscriptionRequestEvent
@@ -92,22 +92,18 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 LOG.error("[ Request is null ]");
                 return;
             }
-            if (request.getMethod() == null) {
+            ActivityModuleMethod method = request.getMethod();
+            if (method == null) {
                 LOG.error("[ Request method is null ]");
                 return;
             }
-            if(getFLUXFAReportMessageEvent==null){
-                LOG.error("[ getFLUXFAReportMessageEvent is null ]");
-                return;
-            }
-
-            switch (request.getMethod()) {
-
+            switch (method) {
+                case GET_FLUX_FA_REPORT :
+                case GET_FLUX_FA_QUERY  :
+                    receiveFishingActivityEvent.fire(new EventMessage(textMessage, method));
+                    break;
                 case MAP_TO_SUBSCRIPTION_REQUEST:
                     mapToSubscriptionRequest.fire(new EventMessage(textMessage));
-                    break;
-                case GET_FLUX_FA_REPORT:
-                    getFLUXFAReportMessageEvent.fire(new EventMessage(textMessage));
                     break;
                 case GET_FISHING_TRIPS :
                     getFishingTripListEvent.fire(new EventMessage(textMessage));
@@ -122,8 +118,8 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     getFishingActivityForTrips.fire(new EventMessage(textMessage));
                     break;
                 default:
-                    LOG.error("[ Request method {} is not implemented ]", request.getMethod().name());
-                    errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + request.getMethod().name() + "  is not implemented ]")));
+                    LOG.error("[ Request method {} is not implemented ]", method.name());
+                    errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));
             }
 
         } catch ( ActivityModelMarshallException | ClassCastException e) {
