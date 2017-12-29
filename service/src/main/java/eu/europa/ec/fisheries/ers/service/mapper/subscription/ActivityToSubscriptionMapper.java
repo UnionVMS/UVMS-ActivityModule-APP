@@ -38,9 +38,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-public class SubscriptionMapper {
+public class ActivityToSubscriptionMapper {
 
-    private SubscriptionMapper(){}
+    private ActivityToSubscriptionMapper(){}
 
     public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();

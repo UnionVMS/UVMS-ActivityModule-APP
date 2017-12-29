@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import eu.europa.ec.fisheries.ers.service.mapper.subscription.SubscriptionMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.subscription.ActivityToSubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
@@ -38,7 +38,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-public class SubscriptionMapperTest {
+public class ActivityToSubscriptionMapperTest {
 
     private FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage();
 
@@ -125,7 +125,7 @@ public class SubscriptionMapperTest {
     @Test
     public void testMapToSubscriptionDataRequest(){
 
-        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage);
+        SubscriptionDataRequest request = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage);
 
         assertEquals(CriteriaType.SENDER, request.getQuery().getCriteria().get(0).getCriteria());
         assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(1).getCriteria());
