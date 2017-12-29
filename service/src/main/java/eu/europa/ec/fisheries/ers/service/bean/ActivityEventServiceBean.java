@@ -17,7 +17,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.JMSException;
-import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -44,7 +43,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEven
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
@@ -58,7 +57,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesFo
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.MessageType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
@@ -97,7 +95,7 @@ public class ActivityEventServiceBean implements EventService {
     private ActivityMessageServiceBean producer;
 
     @EJB
-    private SubscriptionProducerBean subscriptionProducer;
+    private ActivityProducerBean producerBean;
 
     @EJB
     private ActivityConsumerBean activityConsumerBean;
@@ -105,28 +103,29 @@ public class ActivityEventServiceBean implements EventService {
     @Override
     public void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message) {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "MapToSubscriptionRequestEvent");
-        try{
-            MapToSubscriptionRequest baseRequest = JAXBUtils.unMarshallMessage(((TextMessage) message).getText(), MapToSubscriptionRequest.class);
-            MessageType messageType = baseRequest.getMessageType();
-
-            switch (messageType){
+        try {
+            TextMessage jmsMessage = message.getJmsMessage();
+            String jmsCorrelationID = jmsMessage.getJMSCorrelationID();
+            String messageReceived = jmsMessage.getText();
+            SubscriptionDataRequest subscriptionDataRequest;
+            MapToSubscriptionRequest baseRequest = JAXBUtils.unMarshallMessage(messageReceived, MapToSubscriptionRequest.class);
+            switch (baseRequest.getMessageType()){
                 case FLUX_FA_QUERY_MESSAGE:
-                    FLUXFAQueryMessage FLUXFAQueryMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAQueryMessage.class);
-                    SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(FLUXFAQueryMessage.getFAQuery());
-                    subscriptionProducer.sendMessage(subscriptionProducer.getSubscriptionEvenetQueue(), (Queue) activityConsumerBean.getDestination(), JAXBUtils.marshallJaxBObjectToString(request));
+                    FLUXFAQueryMessage fluxfaQueryMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAQueryMessage.class);
+                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage);
+                    producerBean.sendMessage(null, jmsCorrelationID, producerBean.getSubscriptionEventQueue(), null, JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest));
                     break;
                 case FLUX_FA_REPORT_MESSAGE:
-                    FLUXFAReportMessage FLUXFAReportMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAReportMessage.class);
-                    // Todo
+                    FLUXFAReportMessage fluxFAReportMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAReportMessage.class);
+                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxFAReportMessage);
+                    producerBean.sendMessage(null, jmsCorrelationID, producerBean.getSubscriptionEventQueue(), null, JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest));
                     break;
                     default:
+                        sendError(message, new IllegalArgumentException("VERBODEN VRUCHT"));
 
             }
-
-            FLUXFAReportMessage fluxFAReportMessage = extractFLUXFAReportMessage(baseRequest.getRequest());
-            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(baseRequest.getPluginType()));
         }
-        catch (ActivityModelMarshallException | ServiceException | JAXBException | JMSException e) {
+        catch ( JAXBException | JMSException e) {
             sendError(message, e);
         }
     }

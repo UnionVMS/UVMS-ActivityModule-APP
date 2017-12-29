@@ -28,8 +28,10 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataQuery;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionMethod;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
+import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
@@ -43,11 +45,21 @@ public class SubscriptionMapper {
 
     }
 
-    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FAQuery faQuery) {
+    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
-        request.setMethod(SubscriptionMethod.SUBSCRIPTION_DATA);
+        request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
+        SubscriptionDataQuery query = new SubscriptionDataQuery();
+        query.setMessageType(MessageType.FLUX_FA_REPORT_MESSAGE);
+        // TODO implement mapping
+        request.setQuery(query);
+        return request;
+    }
+    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAQueryMessage fluxfaQueryMessage) {
+        SubscriptionDataRequest request = new SubscriptionDataRequest();
+        request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
         SubscriptionDataQuery query = new SubscriptionDataQuery();
         query.setMessageType(MessageType.FLUX_FA_QUERY_MESSAGE);
+        FAQuery faQuery = fluxfaQueryMessage.getFAQuery();
         query.getCriteria().addAll(mapFluxPartyToSenderSubscriptionCriteria(faQuery.getSubmitterFLUXParty()));
         query.getCriteria().addAll(mapFAQueryParametersToSubscriptionCriteria(faQuery.getSimpleFAQueryParameters()));
         query.getCriteria().addAll(mapDelimitedPeriodToFaQuerySubscriptionCriteria(faQuery.getSpecifiedDelimitedPeriod()));
@@ -56,19 +68,14 @@ public class SubscriptionMapper {
     }
 
     private static List<SubscriptionDataCriteria> mapFluxPartyToSenderSubscriptionCriteria(FLUXParty party){
-
         List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
-
         List<IDType> organisationIds = party.getIDS();
-
         for (IDType organisationId: organisationIds){
-
             if ("FLUX_GP_PARTY".equals(organisationId.getSchemeID())){
                 String value = organisationId.getValue();
                 dataCriteriaList.add(createCriteria(SENDER, ORGANISATION, SCHEME_ID, value));
             }
         }
-
         return dataCriteriaList;
     }
 

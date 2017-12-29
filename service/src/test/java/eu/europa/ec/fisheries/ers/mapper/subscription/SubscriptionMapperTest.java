@@ -29,6 +29,7 @@ import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
@@ -39,7 +40,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 public class SubscriptionMapperTest {
 
-    private FAQuery faQuery = new FAQuery();
+    private FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage();
 
     @Before
     @SneakyThrows
@@ -113,15 +114,18 @@ public class SubscriptionMapperTest {
         faQueryParameters.add(faQueryParameter3);
         faQueryParameters.add(faQueryParameter4);
 
+        FAQuery faQuery = new FAQuery();
         faQuery.setSpecifiedDelimitedPeriod(delimitedPeriod);
         faQuery.setSimpleFAQueryParameters(faQueryParameters);
         faQuery.setSubmitterFLUXParty(fluxParty);
+
+        fluxfaQueryMessage.setFAQuery(faQuery);
     }
 
     @Test
     public void testMapToSubscriptionDataRequest(){
 
-        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(faQuery);
+        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage);
 
         assertEquals(CriteriaType.SENDER, request.getQuery().getCriteria().get(0).getCriteria());
         assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(1).getCriteria());
