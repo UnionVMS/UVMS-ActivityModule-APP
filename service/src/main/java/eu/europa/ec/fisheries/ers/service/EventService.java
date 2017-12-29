@@ -23,7 +23,7 @@ import javax.enterprise.event.Observes;
 @Local
 public interface EventService {
 
-    void getFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message);
+    void getFLUXFAReportMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage message);
 
     void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException;
 

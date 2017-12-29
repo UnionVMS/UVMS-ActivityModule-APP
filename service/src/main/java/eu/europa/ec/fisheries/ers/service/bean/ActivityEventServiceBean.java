@@ -21,7 +21,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
@@ -86,20 +86,26 @@ public class ActivityEventServiceBean implements EventService {
     private ActivityMessageServiceBean producer;
 
     @Override
-    public void getFLUXFAReportMessage(@Observes @GetFLUXFAReportMessageEvent EventMessage message) {
+    public void getFLUXFAReportMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "GetFLUXFAReportMessage");
         try {
-            SetFLUXFAReportMessageRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), SetFLUXFAReportMessageRequest.class);
+            SetFLUXFAReportMessageRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(eventMessage.getJmsMessage(), SetFLUXFAReportMessageRequest.class);
             log.info("ActivityModuleRequest unmarshalled");
             if(baseRequest==null){
                 log.error("Unmarshalled SetFLUXFAReportMessageRequest is null. Something went wrong");
                 return;
             }
-            FLUXFAReportMessage fluxFAReportMessage = extractFLUXFAReportMessage(baseRequest.getRequest());
-            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(baseRequest.getPluginType()));
-
+            switch (eventMessage.getMethod()) {
+                case GET_FLUX_FA_REPORT :
+                    FLUXFAReportMessage fluxFAReportMessage = extractFLUXFAReportMessage(baseRequest.getRequest());
+                    fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(baseRequest.getPluginType()));
+                    break;
+                case GET_FLUX_FA_QUERY:
+                    // TODO : Implement me... Generate FaReport and send it to rules...
+                    log.error("TODO : NOT implemented yet....");
+            }
         } catch (ActivityModelMarshallException | ServiceException e) {
-            sendError(message, e);
+            sendError(eventMessage, e);
         }
     }
 

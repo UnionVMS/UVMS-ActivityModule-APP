@@ -11,6 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod.GET_FLUX_FA_QUERY;
+
 import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.activity.message.event.*;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -42,8 +44,8 @@ public class ActivityMessageConsumerBean implements MessageListener {
     static final Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
 
     @Inject
-    @GetFLUXFAReportMessageEvent
-    private Event<EventMessage> getFLUXFAReportMessageEvent;
+    @ReceiveFishingActivityRequestEvent
+    private Event<EventMessage> receiveFishingActivityEvent;
 
     @Inject
     @GetFishingTripListEvent
@@ -84,15 +86,11 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 LOG.error("[ Request method is null ]");
                 return;
             }
-            if(getFLUXFAReportMessageEvent==null){
-                LOG.error("[ getFLUXFAReportMessageEvent is null ]");
-                return;
-            }
-
             switch (request.getMethod()) {
 
-                case GET_FLUX_FA_REPORT:
-                    getFLUXFAReportMessageEvent.fire(new EventMessage(textMessage));
+                case GET_FLUX_FA_REPORT :
+                case GET_FLUX_FA_QUERY  :
+                    receiveFishingActivityEvent.fire(new EventMessage(textMessage, GET_FLUX_FA_QUERY));
                     break;
                 case GET_FISHING_TRIPS :
                     getFishingTripListEvent.fire(new EventMessage(textMessage));
