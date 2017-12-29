@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.service.mapper.subscription;
 
 import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.SENDER;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VALIDITY_PERIOD;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VESSEL;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.END_DATE;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.ORGANISATION;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.START_DATE;
@@ -112,7 +111,7 @@ public class SubscriptionMapper {
 
             SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
 
-            criteria.setCriteria(VESSEL);
+            criteria.setCriteria(CriteriaType.VESSEL);
 
             CodeType faQueryParameterTypeCode = faQueryParameter.getTypeCode();
 
