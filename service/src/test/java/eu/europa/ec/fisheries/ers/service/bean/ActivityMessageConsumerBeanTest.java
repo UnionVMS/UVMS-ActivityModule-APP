@@ -10,6 +10,11 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import javax.enterprise.event.Event;
+
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageConsumerBean;
@@ -29,11 +34,6 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.enterprise.event.Event;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 /**
  * Created by kovian on 17/07/2017.
  */
@@ -45,6 +45,9 @@ public class ActivityMessageConsumerBeanTest {
 
     @Mock
     ClientSession session;
+
+    @Mock
+    Event<EventMessage> mapToSubscriptionRequest;
 
     @Mock
     Event<EventMessage> getFLUXFAReportMessageEvent;
