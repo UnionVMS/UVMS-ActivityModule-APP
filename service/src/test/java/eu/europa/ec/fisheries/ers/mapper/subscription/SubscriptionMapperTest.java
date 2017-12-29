@@ -136,12 +136,12 @@ public class SubscriptionMapperTest {
         assertEquals(CriteriaType.VALIDITY_PERIOD, request.getQuery().getCriteria().get(6).getCriteria());
 
         assertEquals(SubCriteriaType.ORGANISATION, request.getQuery().getCriteria().get(0).getSubCriteria());
-        assertEquals(SubCriteriaType.VESSELID, request.getQuery().getCriteria().get(1).getSubCriteria());
-        assertEquals(SubCriteriaType.VESSELID, request.getQuery().getCriteria().get(2).getSubCriteria());
-        assertEquals(SubCriteriaType.TRIPID, request.getQuery().getCriteria().get(3).getSubCriteria());
+        assertEquals(SubCriteriaType.VESSEL_ID, request.getQuery().getCriteria().get(1).getSubCriteria());
+        assertEquals(SubCriteriaType.VESSEL_ID, request.getQuery().getCriteria().get(2).getSubCriteria());
+        assertEquals(SubCriteriaType.TRIP_ID, request.getQuery().getCriteria().get(3).getSubCriteria());
         assertEquals(SubCriteriaType.CONSOLIDATED, request.getQuery().getCriteria().get(4).getSubCriteria());
-        assertEquals(SubCriteriaType.START_DATE_TIME, request.getQuery().getCriteria().get(5).getSubCriteria());
-        assertEquals(SubCriteriaType.END_DATE_TIME, request.getQuery().getCriteria().get(6).getSubCriteria());
+        assertEquals(SubCriteriaType.START_DATE, request.getQuery().getCriteria().get(5).getSubCriteria());
+        assertEquals(SubCriteriaType.END_DATE, request.getQuery().getCriteria().get(6).getSubCriteria());
 
         assertEquals(ValueType.SCHEME_ID, request.getQuery().getCriteria().get(0).getValueType());
         assertEquals(ValueType.IRCS, request.getQuery().getCriteria().get(1).getValueType());
