@@ -11,17 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
-import eu.europa.ec.fisheries.uvms.activity.message.event.*;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -32,11 +21,30 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFLUXFAReportMessageEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @MessageDriven(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE, activationConfig = {
         @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.COMPONENT_MESSAGE_IN_QUEUE_NAME)
 })
+@Slf4j
 public class ActivityMessageConsumerBean implements MessageListener {
 
     static final Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
@@ -44,6 +52,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @Inject
     @GetFLUXFAReportMessageEvent
     private Event<EventMessage> getFLUXFAReportMessageEvent;
+
+    @Inject
+    @MapToSubscriptionRequestEvent
+    private Event<EventMessage> mapToSubscriptionRequest;
 
     @Inject
     @GetFishingTripListEvent
@@ -91,6 +103,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
 
             switch (request.getMethod()) {
 
+                case MAP_TO_SUBSCRIPTION_REQUEST:
+                    mapToSubscriptionRequest.fire(new EventMessage(textMessage));
+                    break;
                 case GET_FLUX_FA_REPORT:
                     getFLUXFAReportMessageEvent.fire(new EventMessage(textMessage));
                     break;

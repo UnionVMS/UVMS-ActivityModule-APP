@@ -62,6 +62,11 @@
         </dependency>
 
 		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+			<artifactId>subscription-model</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
 			<artifactId>usm4uvms</artifactId>
 		</dependency>
