@@ -73,7 +73,7 @@ public class SubscriptionMapperTest {
 
         FAQueryParameter faQueryParameter = new FAQueryParameter();
         CodeType codeType = new CodeType();
-        codeType.setValue("VESSELID");
+        codeType.setValue("VESSEL_ID");
         faQueryParameter.setTypeCode(codeType);
         IDType idType0 = new IDType();
         idType0.setValue("PD2438");
@@ -82,7 +82,7 @@ public class SubscriptionMapperTest {
 
         FAQueryParameter faQueryParameter2 = new FAQueryParameter();
         CodeType codeType2 = new CodeType();
-        codeType2.setValue("VESSELID");
+        codeType2.setValue("VESSEL_ID");
         faQueryParameter2.setTypeCode(codeType2);
         IDType idType2 = new IDType();
         idType2.setValue("SVN123456789");
@@ -91,7 +91,7 @@ public class SubscriptionMapperTest {
 
         FAQueryParameter faQueryParameter3 = new FAQueryParameter();
         CodeType codeType3 = new CodeType();
-        codeType3.setValue("TRIPID");
+        codeType3.setValue("TRIP_ID");
         faQueryParameter3.setTypeCode(codeType3);
         IDType idType3 = new IDType();
         idType3.setValue("FRA-TRP-2016122102030");
