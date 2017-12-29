@@ -13,9 +13,9 @@ package eu.europa.ec.fisheries.ers.service.mapper.subscription;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.SENDER;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VALIDITY_PERIOD;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VESSEL;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.END_DATE_TIME;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.END_DATE;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.ORGANISATION;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.START_DATE_TIME;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.START_DATE;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.SCHEME_ID;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ;
 
@@ -84,11 +84,11 @@ public class SubscriptionMapper {
         List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
 
         SubscriptionDataCriteria startDateTimeCriteria =
-                createCriteria(VALIDITY_PERIOD, START_DATE_TIME, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getStartDateTime().getDateTime().toString());
+                createCriteria(VALIDITY_PERIOD, START_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getStartDateTime().getDateTime().toString());
         dataCriteriaList.add(startDateTimeCriteria);
 
         SubscriptionDataCriteria endDateTimeCriteria =
-                createCriteria(VALIDITY_PERIOD, END_DATE_TIME, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getEndDateTime().getDateTime().toString());
+                createCriteria(VALIDITY_PERIOD, END_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getEndDateTime().getDateTime().toString());
         dataCriteriaList.add(endDateTimeCriteria);
 
         return dataCriteriaList;
