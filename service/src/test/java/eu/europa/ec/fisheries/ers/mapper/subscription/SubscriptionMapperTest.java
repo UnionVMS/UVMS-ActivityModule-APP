@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.subscription.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
@@ -73,7 +75,7 @@ public class SubscriptionMapperTest {
 
         FAQueryParameter faQueryParameter = new FAQueryParameter();
         CodeType codeType = new CodeType();
-        codeType.setValue("VESSEL_ID");
+        codeType.setValue(SubCriteriaType.VESSELID.value());
         faQueryParameter.setTypeCode(codeType);
         IDType idType0 = new IDType();
         idType0.setValue("PD2438");
@@ -82,7 +84,7 @@ public class SubscriptionMapperTest {
 
         FAQueryParameter faQueryParameter2 = new FAQueryParameter();
         CodeType codeType2 = new CodeType();
-        codeType2.setValue("VESSEL_ID");
+        codeType2.setValue(SubCriteriaType.VESSELID.value());
         faQueryParameter2.setTypeCode(codeType2);
         IDType idType2 = new IDType();
         idType2.setValue("SVN123456789");
@@ -91,7 +93,7 @@ public class SubscriptionMapperTest {
 
         FAQueryParameter faQueryParameter3 = new FAQueryParameter();
         CodeType codeType3 = new CodeType();
-        codeType3.setValue("TRIP_ID");
+        codeType3.setValue(SubCriteriaType.TRIPID.value());
         faQueryParameter3.setTypeCode(codeType3);
         IDType idType3 = new IDType();
         idType3.setValue("FRA-TRP-2016122102030");
@@ -136,9 +138,9 @@ public class SubscriptionMapperTest {
         assertEquals(CriteriaType.VALIDITY_PERIOD, request.getQuery().getCriteria().get(6).getCriteria());
 
         assertEquals(SubCriteriaType.ORGANISATION, request.getQuery().getCriteria().get(0).getSubCriteria());
-        assertEquals(SubCriteriaType.VESSEL_ID, request.getQuery().getCriteria().get(1).getSubCriteria());
-        assertEquals(SubCriteriaType.VESSEL_ID, request.getQuery().getCriteria().get(2).getSubCriteria());
-        assertEquals(SubCriteriaType.TRIP_ID, request.getQuery().getCriteria().get(3).getSubCriteria());
+        assertEquals(SubCriteriaType.VESSELID, request.getQuery().getCriteria().get(1).getSubCriteria());
+        assertEquals(SubCriteriaType.VESSELID, request.getQuery().getCriteria().get(2).getSubCriteria());
+        assertEquals(SubCriteriaType.TRIPID, request.getQuery().getCriteria().get(3).getSubCriteria());
         assertEquals(SubCriteriaType.CONSOLIDATED, request.getQuery().getCriteria().get(4).getSubCriteria());
         assertEquals(SubCriteriaType.START_DATE, request.getQuery().getCriteria().get(5).getSubCriteria());
         assertEquals(SubCriteriaType.END_DATE, request.getQuery().getCriteria().get(6).getSubCriteria());
@@ -161,6 +163,21 @@ public class SubscriptionMapperTest {
 
         DateUtils.parseToUTCDate("2016-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(5).getValueType().value());
         DateUtils.parseToUTCDate("2017-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(6).getValueType().value());
+
+    }
+
+    @Test
+    public void test(){
+        ObjectMapper oMapper = new ObjectMapper();
+
+        Map<String, Object> map = oMapper.convertValue(fluxfaQueryMessage, Map.class);
+
+        System.out.println(map);
+
+        FLUXFAQueryMessage fluxfaQueryMessage = oMapper.convertValue(map, FLUXFAQueryMessage.class);
+
+        System.out.println(fluxfaQueryMessage);
+
 
     }
 }
