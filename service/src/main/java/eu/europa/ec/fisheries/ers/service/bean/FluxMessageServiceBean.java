@@ -129,8 +129,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             }
         }
         log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
-
-
         fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
         log.debug("Save partial FluxFaReportMessage before further processing" );
         updateFaReportCorrections(faReportMessage.getFAReportDocuments());

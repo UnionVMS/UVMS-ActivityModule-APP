@@ -38,11 +38,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-public class SubscriptionMapper {
+public class ActivityToSubscriptionMapper {
 
-    private SubscriptionMapper(){
-
-    }
+    private ActivityToSubscriptionMapper(){}
 
     public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
@@ -79,22 +77,17 @@ public class SubscriptionMapper {
     }
 
     private static List<SubscriptionDataCriteria> mapDelimitedPeriodToFaQuerySubscriptionCriteria(DelimitedPeriod period){
-
         List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
-
         SubscriptionDataCriteria startDateTimeCriteria =
                 createCriteria(VALIDITY_PERIOD, START_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getStartDateTime().getDateTime().toString());
         dataCriteriaList.add(startDateTimeCriteria);
-
         SubscriptionDataCriteria endDateTimeCriteria =
                 createCriteria(VALIDITY_PERIOD, END_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getEndDateTime().getDateTime().toString());
         dataCriteriaList.add(endDateTimeCriteria);
-
         return dataCriteriaList;
     }
 
     private static SubscriptionDataCriteria createCriteria(CriteriaType criteriaType, SubCriteriaType subCriteriaType, ValueType valueType, String value){
-
         SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
         criteria.setCriteria(criteriaType);
         criteria.setSubCriteria(subCriteriaType);
@@ -104,26 +97,18 @@ public class SubscriptionMapper {
     }
 
     private static List<SubscriptionDataCriteria> mapFAQueryParametersToSubscriptionCriteria(List<FAQueryParameter> faQueryParameters){
-
         List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
-
         for (FAQueryParameter faQueryParameter : faQueryParameters){
-
             SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
-
             criteria.setCriteria(CriteriaType.VESSEL);
-
             CodeType faQueryParameterTypeCode = faQueryParameter.getTypeCode();
-
             criteria.setSubCriteria(SubCriteriaType.valueOf(faQueryParameterTypeCode.getValue()));
-
             IDType valueID = faQueryParameter.getValueID();
             if (valueID != null){
                 criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueID().getSchemeID()));
                 criteria.setValue(faQueryParameter.getValueID().getValue());
 
             }
-
             CodeType valueCode = faQueryParameter.getValueCode();
             if (valueCode != null){
                 criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueCode().getListID()));

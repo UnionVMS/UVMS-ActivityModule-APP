@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.subscription.SubscriptionMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.subscription.ActivityToSubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
@@ -40,7 +40,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-public class SubscriptionMapperTest {
+public class ActivityToSubscriptionMapperTest {
 
     private FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage();
 
@@ -127,7 +127,7 @@ public class SubscriptionMapperTest {
     @Test
     public void testMapToSubscriptionDataRequest(){
 
-        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage);
+        SubscriptionDataRequest request = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage);
 
         assertEquals(CriteriaType.SENDER, request.getQuery().getCriteria().get(0).getCriteria());
         assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(1).getCriteria());
@@ -163,21 +163,6 @@ public class SubscriptionMapperTest {
 
         DateUtils.parseToUTCDate("2016-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(5).getValueType().value());
         DateUtils.parseToUTCDate("2017-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(6).getValueType().value());
-
-    }
-
-    @Test
-    public void test(){
-        ObjectMapper oMapper = new ObjectMapper();
-
-        Map<String, Object> map = oMapper.convertValue(fluxfaQueryMessage, Map.class);
-
-        System.out.println(map);
-
-        FLUXFAQueryMessage fluxfaQueryMessage = oMapper.convertValue(map, FLUXFAQueryMessage.class);
-
-        System.out.println(fluxfaQueryMessage);
-
 
     }
 }
