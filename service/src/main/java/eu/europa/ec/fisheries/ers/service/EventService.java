@@ -28,7 +28,7 @@ import javax.enterprise.event.Observes;
 @Local
 public interface EventService {
 
-    void getFLUXFAReportMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage message);
+    void getFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage message);
 
     void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message);
 

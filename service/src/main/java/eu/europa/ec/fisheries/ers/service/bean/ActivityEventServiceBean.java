@@ -43,7 +43,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportMessageRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
@@ -100,7 +100,7 @@ public class ActivityEventServiceBean implements EventService {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "MapToSubscriptionRequestEvent");
         try {
             TextMessage jmsMessage = message.getJmsMessage();
-            String jmsCorrelationID = jmsMessage.getJMSCorrelationID();
+            String jmsCorrelationID = jmsMessage.getJMSMessageID();
             String messageReceived = jmsMessage.getText();
             SubscriptionDataRequest subscriptionDataRequest;
             MapToSubscriptionRequest baseRequest = JAXBUtils.unMarshallMessage(messageReceived, MapToSubscriptionRequest.class);
@@ -126,23 +126,26 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     @Override
-    public void getFLUXFAReportMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
-        log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "GetFLUXFAReportMessage");
+    public void getFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
+        log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "SetFLUXFAReportOrQueryMessageRequest");
         try {
-            SetFLUXFAReportMessageRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(eventMessage.getJmsMessage(), SetFLUXFAReportMessageRequest.class);
-            log.info("ActivityModuleRequest unmarshalled");
-            if(baseRequest==null){
-                log.error("Unmarshalled SetFLUXFAReportMessageRequest is null. Something went wrong");
+            TextMessage jmsMessage = eventMessage.getJmsMessage();
+            SetFLUXFAReportOrQueryMessageRequest request = JAXBMarshaller.unmarshallTextMessage(jmsMessage, SetFLUXFAReportOrQueryMessageRequest.class);
+            log.info("SetFLUXFAReportOrQueryMessageRequest unmarshalled");
+            if(request==null){
+                log.error("Unmarshalled SetFLUXFAReportOrQueryMessageRequest is null. Something went wrong during jms comm?!");
                 return;
             }
             switch (eventMessage.getMethod()) {
                 case GET_FLUX_FA_REPORT :
-                    FLUXFAReportMessage fluxFAReportMessage = extractFLUXFAReportMessage(baseRequest.getRequest());
-                    fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(baseRequest.getPluginType()));
+                    FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
+                    fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
                     break;
                 case GET_FLUX_FA_QUERY:
-                    // TODO : Implement me... Generate FaReport and send it to rules...
-                    log.error("TODO : NOT implemented yet....");
+                    FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
+                    // TODO : Implement me... Map tp real HQl/SQL query and run the query and map the results to FLUXFAReportMessage and send it to rules...
+                    log.error("TODO : FAQUERY mappers NOT implemented yet....");
+                    break;
             }
         } catch (ActivityModelMarshallException | ServiceException e) {
             sendError(eventMessage, e);
@@ -231,7 +234,7 @@ public class ActivityEventServiceBean implements EventService {
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             StringReader sr = new StringReader(request);
             StreamSource source = new StreamSource(sr);
-             fluxFAReportMessage = (FLUXFAReportMessage) unmarshaller.unmarshal(source);
+            fluxFAReportMessage = (FLUXFAReportMessage) unmarshaller.unmarshal(source);
         } catch (JAXBException | NullPointerException e) {
             throw new ActivityModelMarshallException("[Exception while trying to unmarshall FLUXFAReportMessage in Activity ]", e);
         }
