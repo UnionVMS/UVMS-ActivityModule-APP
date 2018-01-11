@@ -27,7 +27,6 @@ import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -54,10 +53,21 @@ import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.SpeciesQuantityDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripIdDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.ARRCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchEvolutionProgressProcessor;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchEvolutionProgressRegistry;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.DEPCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.DISCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.ENTRYCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.EXITCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.FOPCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.JFOPCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.LANCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.RLCCatchEvolutionProgressHandler;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.TRACatchEvolutionProgressHandler;
 import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
@@ -108,7 +118,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
@@ -139,7 +148,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     @EJB
     private MdrModuleService mdrModuleService;
 
-
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifierDao vesselIdentifierDao;
@@ -149,6 +157,23 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private FaCatchDao faCatchDao;
     private ActivityConfigurationDao activityConfigurationDao;
 
+    private static CatchEvolutionProgressProcessor catchEvolutionProgressProcessor;
+
+    static {
+        CatchEvolutionProgressRegistry catchEvolutionProgressRegistry = new CatchEvolutionProgressRegistry();
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.DEPARTURE, new DEPCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.AREA_ENTRY, new ENTRYCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.AREA_EXIT, new EXITCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.FISHING_OPERATION, new FOPCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.JOINED_FISHING_OPERATION, new JFOPCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.DISCARD, new DISCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.RELOCATION, new RLCCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.ARRIVAL, new ARRCatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.TRANSHIPMENT, new TRACatchEvolutionProgressHandler());
+        catchEvolutionProgressRegistry.addToRegistry(FishingActivityTypeEnum.LANDING, new LANCatchEvolutionProgressHandler());
+
+        catchEvolutionProgressProcessor = new CatchEvolutionProgressProcessor(catchEvolutionProgressRegistry);
+    }
 
     @PostConstruct
     public void init() {
@@ -604,6 +629,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException {
+
+
         log.info("getFishingTripResponse For Filter");
         if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
@@ -754,51 +781,16 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         List<FishingActivityEntity> fishingActivities = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
         List<Object[]> faCatches = faCatchDao.findFaCatchesByFishingTrip(fishingTripId);
         catchEvolution.setTripDetails(getTripWidgetDto(fishingActivities.get(0), fishingTripId));
-        catchEvolution.setFinalCatchEvolutionSummary(FaCatchMapper.INSTANCE.mapCatchesToEvolutionSummaryDTO(faCatches));
-        catchEvolution.setCatchEvolutionProgress(prepareCatchEvolutionProgress(faCatches, fishingActivities, fishingTripId));
+        catchEvolution.setCatchEvolutionProgress(prepareCatchEvolutionProgress(fishingActivities));
 
         return catchEvolution;
     }
 
-    private List<CatchEvolutionProgressDTO> prepareCatchEvolutionProgress(List<Object[]> faCatches, List<FishingActivityEntity> fishingActivities, String fishingTripId) throws ServiceException {
+    private List<CatchEvolutionProgressDTO> prepareCatchEvolutionProgress(List<FishingActivityEntity> fishingActivities) {
         List<CatchEvolutionProgressDTO> catchEvolutionProgress = new ArrayList<>();
 
-        for (FishingActivityEntity fishingActivity : fishingActivities) {
-            if (FishingActivityTypeEnum.FISHING_OPERATION.toString().equalsIgnoreCase(fishingActivity.getTypeCode()) ||
-                    FishingActivityTypeEnum.JOINED_FISHING_OPERATION.toString().equalsIgnoreCase(fishingActivity.getTypeCode()) ||
-                    FishingActivityTypeEnum.DISCARD.toString().equalsIgnoreCase(fishingActivity.getTypeCode()) ||
-                    FishingActivityTypeEnum.LANDING.toString().equalsIgnoreCase(fishingActivity.getTypeCode())) {
-                double total = 0.0;
-                CatchSummaryListDTO onboard = new CatchSummaryListDTO();
-                Map<String, CatchSummaryListDTO> catchEvolution = new TreeMap<>();
-                catchEvolution.put("onboard", onboard);
-                CatchEvolutionProgressDTO catchEvolutionProgressDTO = new CatchEvolutionProgressDTO();
-                catchEvolutionProgressDTO.setActivityType(fishingActivity.getTypeCode());
-                catchEvolutionProgressDTO.setCatchEvolution(catchEvolution);
-
-                for (FaCatchEntity faCatch : fishingActivity.getFaCatchs()) {
-                    String speciesCode = faCatch.getSpeciesCode();
-                    boolean exists = false;
-                    onboard.setTotal(onboard.getTotal() + faCatch.getCalculatedWeightMeasure());
-
-                    for (SpeciesQuantityDTO speciesQuantityDTO : onboard.getSpeciesList()) {
-                        if (speciesQuantityDTO.getSpeciesCode().equalsIgnoreCase(speciesCode)) {
-                            speciesQuantityDTO.setWeight(speciesQuantityDTO.getWeight() + faCatch.getCalculatedWeightMeasure());
-                            exists = true;
-                            break;
-                        }
-                    }
-
-                    if (!exists) {
-                        SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO();
-                        speciesQuantityDTO.setSpeciesCode(speciesCode);
-                        speciesQuantityDTO.setWeight(faCatch.getCalculatedWeightMeasure());
-                        onboard.getSpeciesList().add(speciesQuantityDTO);
-                    }
-                }
-
-                catchEvolutionProgress.add(catchEvolutionProgressDTO);
-            }
+        if (CollectionUtils.isNotEmpty(fishingActivities)) {
+            catchEvolutionProgress = catchEvolutionProgressProcessor.process(fishingActivities);
         }
 
         return catchEvolutionProgress;

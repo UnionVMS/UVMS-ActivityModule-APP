@@ -13,6 +13,20 @@
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -28,20 +42,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
-
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
-import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by sanera on 04/08/2016.
@@ -94,7 +94,7 @@ public class FishingTripResource extends UnionVMSResource {
                                      @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
         LOG.info("Getting Vessels details for trip : " + fishingTripId);
-        return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));
+        return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId)/* fishingTripService.getVesselDetailsForFishingTrip(fishingTripId)*/);
     }
 
     @GET

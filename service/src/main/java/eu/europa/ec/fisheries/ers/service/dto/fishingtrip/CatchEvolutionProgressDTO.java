@@ -10,6 +10,10 @@ public class CatchEvolutionProgressDTO {
     private Map<String, CatchSummaryListDTO> catchEvolution;
     @JsonProperty("activityType")
     private String activityType;
+    @JsonProperty
+    private String reportType;
+    @JsonProperty
+    private int orderId;
 
     public Map<String, CatchSummaryListDTO> getCatchEvolution() {
         return catchEvolution;
@@ -25,5 +29,21 @@ public class CatchEvolutionProgressDTO {
 
     public void setActivityType(String activityType) {
         this.activityType = activityType;
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 }
