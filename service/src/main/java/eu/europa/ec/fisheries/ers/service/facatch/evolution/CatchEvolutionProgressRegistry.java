@@ -6,7 +6,7 @@ import org.apache.commons.collections.MapUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CatchEvolutionProgressRegistry {
+public abstract class CatchEvolutionProgressRegistry {
     private Map<FishingActivityTypeEnum, CatchEvolutionProgressHandler> registry = new HashMap<>(FishingActivityTypeEnum.values().length);
 
     public void addToRegistry(FishingActivityTypeEnum fishingActivityType, CatchEvolutionProgressHandler catchEvolutionProgressHandler) {
@@ -28,4 +28,6 @@ public class CatchEvolutionProgressRegistry {
 
         return MapUtils.getObject(registry, fishingActivityType) != null;
     }
+
+    public abstract void initRegistry();
 }
