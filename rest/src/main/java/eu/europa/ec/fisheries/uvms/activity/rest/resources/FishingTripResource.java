@@ -94,7 +94,7 @@ public class FishingTripResource extends UnionVMSResource {
                                      @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
         LOG.info("Getting Vessels details for trip : " + fishingTripId);
-        return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId)/* fishingTripService.getVesselDetailsForFishingTrip(fishingTripId)*/);
+        return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));
     }
 
     @GET
