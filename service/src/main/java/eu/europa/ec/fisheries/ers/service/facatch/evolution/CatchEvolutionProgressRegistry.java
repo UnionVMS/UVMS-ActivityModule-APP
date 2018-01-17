@@ -9,6 +9,10 @@ import java.util.Map;
 public abstract class CatchEvolutionProgressRegistry {
     private Map<FishingActivityTypeEnum, CatchEvolutionProgressHandler> registry = new HashMap<>(FishingActivityTypeEnum.values().length);
 
+    public CatchEvolutionProgressRegistry(){
+        initRegistry();
+    }
+
     public void addToRegistry(FishingActivityTypeEnum fishingActivityType, CatchEvolutionProgressHandler catchEvolutionProgressHandler) {
         if (fishingActivityType == null || catchEvolutionProgressHandler == null) {
             throw new IllegalArgumentException("Neither parameter can be null!");
