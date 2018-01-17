@@ -118,6 +118,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
     public void saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
+        log.info("[INFO] Going to save [ "+faReportMessage.getFAReportDocuments().size()+" ] FaReportDocuments..");
         FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
@@ -265,7 +266,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private void updateFishingTripStartAndEndDate(Set<FaReportDocumentEntity> faReportDocuments) throws ServiceException {
         log.debug("Start  update of FishingTrip Start And End Date");
         if(CollectionUtils.isEmpty(faReportDocuments)){
-            log.error("faReportDocuments are empty or null in updateFishingTripStartAndEndDate");
+            log.error("FaReportDocuments List is EMPTY or NULL in updateFishingTripStartAndEndDate");
             return;
         }
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
