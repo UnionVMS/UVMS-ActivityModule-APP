@@ -79,7 +79,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
     })
     protected abstract GearShotRetrievalDto mapSingleEntityToSingleDto(FishingActivityEntity entity);
 
-    protected abstract List<GearProblemDto> mapGearProblemsToGearsDto(Set<GearProblemEntity> gearProblems);
+    public abstract List<GearProblemDto> mapGearProblemsToGearsDto(Set<GearProblemEntity> gearProblems);
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),

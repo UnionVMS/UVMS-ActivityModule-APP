@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,6 +28,7 @@ import java.util.Set;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
@@ -34,6 +36,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(exclude = {"aapProducts", "aapProcessCode"})
 @ToString(exclude = {"aapProducts", "aapProcessCode"})
+@NoArgsConstructor
 public class AapProcessEntity implements Serializable {
 
 	@Id
@@ -42,17 +45,17 @@ public class AapProcessEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 	
 	@Column(name = "conversion_factor")
 	private Double conversionFactor;
 	
-	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<AapProductEntity> aapProducts;
 
-	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<AapProcessCodeEntity> aapProcessCode;
 
 }

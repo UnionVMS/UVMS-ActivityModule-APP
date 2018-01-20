@@ -26,6 +26,7 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
@@ -95,6 +96,9 @@ public class FishingTripServiceBeanTest {
 
     @InjectMocks
     FishingTripServiceBean fishingTripService;
+
+    @Mock
+    MdrModuleService mdrModuleService;
 
     @Test
     @SneakyThrows
@@ -224,7 +228,7 @@ public class FishingTripServiceBeanTest {
 
     public List<FishingTripIdentifierEntity> getPreviousTrips(int numberOfRecord) {
         List<FishingTripIdentifierEntity> previousTrips = new ArrayList<>();
-        for (int i = 1 ; i <= numberOfRecord ; i++) {
+        for (int i = 1; i <= numberOfRecord; i++) {
             FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
             identifier.setTripId("Previous Trip " + i);
             identifier.setTripSchemeId("Previous Scheme " + i);
@@ -235,7 +239,7 @@ public class FishingTripServiceBeanTest {
 
     public List<FishingTripIdentifierEntity> getNextTrips(int numberOfRecord) {
         List<FishingTripIdentifierEntity> nextTrips = new ArrayList<>();
-        for (int i = 1 ; i <= numberOfRecord ; i++) {
+        for (int i = 1; i <= numberOfRecord; i++) {
             FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
             identifier.setTripId("Next Trip " + i);
             identifier.setTripSchemeId("Next Scheme " + i);
@@ -252,7 +256,7 @@ public class FishingTripServiceBeanTest {
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
         //Trigger
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO=fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706", null);
+        FishingTripSummaryViewDTO fishingTripSummaryViewDTO = fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706", null);
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class), Mockito.any(Geometry.class));
 
@@ -269,7 +273,7 @@ public class FishingTripServiceBeanTest {
 
         when(faCatchDao.findFaCatchesByFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFaCaches());
         //Trigger
-        Map<String, CatchSummaryListDTO> faCatchesMap =fishingTripService.retrieveFaCatchesForFishingTrip("NOR-TRP-20160517234053706");
+        Map<String, CatchSummaryListDTO> faCatchesMap = fishingTripService.retrieveFaCatchesForFishingTrip("NOR-TRP-20160517234053706");
         //Verify
         Mockito.verify(faCatchDao, Mockito.times(1)).findFaCatchesByFishingTrip(Mockito.any(String.class));
 
@@ -285,7 +289,7 @@ public class FishingTripServiceBeanTest {
     @Test
     @SneakyThrows
     public void testGetTripMapDetailsForTripId() throws ServiceException, JsonProcessingException {
-        String expected="{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}" ;
+        String expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}";
         when(faReportDocumentDao.getLatestFaReportDocumentsForTrip("NOR-TRP-20160517234053706")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
         //Trigger
         ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
@@ -293,7 +297,7 @@ public class FishingTripServiceBeanTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify
-        assertEquals(expected,objectMapper.writeValueAsString(node));
+        assertEquals(expected, objectMapper.writeValueAsString(node));
 
     }
 
@@ -301,14 +305,14 @@ public class FishingTripServiceBeanTest {
     @SneakyThrows
     public void testFilterFishingTrips() throws ServiceException, JsonProcessingException {
 
-        Map<SearchFilter,String> searchMap=new HashMap<>();
+        Map<SearchFilter, String> searchMap = new HashMap<>();
         searchMap.put(SearchFilter.REPORT_TYPE, "NOTIFICATION");
         searchMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
         searchMap.put(SearchFilter.PERIOD_END, "2017-05-27T07:47:31");
 
 
-        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        List<String> activityTypeValues=new ArrayList<>();
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues = new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
@@ -346,10 +350,9 @@ public class FishingTripServiceBeanTest {
 
         when(fishingActivityDao.getFishingActivityListByQuery(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
-        FishingTripResponse response = fishingTripService.buildFishingTripSearchRespose(MapperUtil.getFishingTripIdSet(),false);
+        FishingTripResponse response = fishingTripService.buildFishingTripSearchRespose(MapperUtil.getFishingTripIdSet(), false);
 
         assertNotNull(response);
 
     }
-
 }

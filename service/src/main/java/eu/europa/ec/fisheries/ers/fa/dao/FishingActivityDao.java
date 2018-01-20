@@ -148,6 +148,14 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return nextFishingActivity;
     }
 
+    /**
+     * This method will retrieve all the fishingActivities received for the trip order by Activity type and then by FAReport accepted date.
+     * so that we know which are corrected activities received.
+     * @param fishingTripId
+     * @param multipolgon
+     * @return
+     * @throws ServiceException
+     */
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
         if (fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");

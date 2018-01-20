@@ -10,7 +10,7 @@
         <jta-data-source>java:jboss/datasources/uvms_activity</jta-data-source>
 
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
+            <property name="hibernate.dialect" value="${hibernate.spatial.dialect}"/>
             <property name="hibernate.event.merge.entity_copy_observer" value="allow"/>
             <property name="hibernate.default_schema" value="activity"/>
             <property name="show_sql" value="false"/>

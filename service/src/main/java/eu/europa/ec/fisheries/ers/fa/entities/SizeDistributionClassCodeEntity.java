@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,20 +24,22 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/16/2016.
- */
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_size_distribution_classcode")
+@Data
+@NoArgsConstructor
 public class SizeDistributionClassCodeEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "dist_code_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "size_distribution_id")
     private SizeDistributionEntity sizeDistribution;
 
@@ -48,31 +49,4 @@ public class SizeDistributionClassCodeEntity implements Serializable {
     @Column(name = "class_code_list_id", nullable = false)
     private String classCodeListId;
 
-    public int getId() {
-        return id;
-    }
-
-    public SizeDistributionEntity getSizeDistribution() {
-        return sizeDistribution;
-    }
-
-    public void setSizeDistribution(SizeDistributionEntity sizeDistribution) {
-        this.sizeDistribution = sizeDistribution;
-    }
-
-    public String getClassCode() {
-        return classCode;
-    }
-
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
-    }
-
-    public String getClassCodeListId() {
-        return classCodeListId;
-    }
-
-    public void setClassCodeListId(String classCodeListId) {
-        this.classCodeListId = classCodeListId;
-    }
 }

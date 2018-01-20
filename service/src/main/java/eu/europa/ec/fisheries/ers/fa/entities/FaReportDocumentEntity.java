@@ -10,9 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +30,9 @@ import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+
+import com.vividsolutions.jts.geom.Geometry;
+import org.hibernate.annotations.Type;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
@@ -79,8 +79,6 @@ public class FaReportDocumentEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flux_fa_report_message_id")
     private FluxFaReportMessageEntity fluxFaReportMessage;
-
-
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "flux_report_document_id", nullable = false)

@@ -10,6 +10,10 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
@@ -22,10 +26,6 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMap
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.apache.commons.collections.CollectionUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
@@ -59,6 +59,8 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
         viewDTO.setCatches(this.mapCatchesToGroupDto(faEntity));
 
         viewDTO.setProcessingProducts(this.getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
+
+        viewDTO.setGearProblems(GearShotRetrievalTileMapper.INSTANCE.mapGearProblemsToGearsDto(faEntity.getGearProblems()));
 
         viewDTO.setGearShotRetrievalList(GearShotRetrievalTileMapperImpl.INSTANCE.mapFromRelatedFishingActivities(faEntity));
 
