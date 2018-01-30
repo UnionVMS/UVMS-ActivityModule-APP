@@ -10,13 +10,17 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageServiceBean;
+import static org.mockito.Mockito.when;
+
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
+import java.util.Collection;
+import java.util.List;
 import lombok.SneakyThrows;
 import org.apache.activemq.artemis.api.core.SimpleString;
 import org.apache.activemq.artemis.api.core.client.ClientSession;
@@ -29,11 +33,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Collection;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 
 /**
  * Created by kovian on 17/07/2017.
@@ -51,7 +50,7 @@ public class ActivityEventServiceBeanTest {
     ActivityMatchingIdsServiceBean matchingIdsService;
 
     @Mock
-    ActivityMessageServiceBean producer;
+    ActivityErrorMessageServiceBean producer;
 
     @Mock
     ActiveMQTextMessage nonUniqueIdsMessage;

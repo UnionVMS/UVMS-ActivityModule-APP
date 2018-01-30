@@ -12,21 +12,18 @@ package eu.europa.ec.fisheries.ers.mapper.subscription;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.subscription.ActivityToSubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.List;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -127,7 +124,7 @@ public class ActivityToSubscriptionMapperTest {
     @Test
     public void testMapToSubscriptionDataRequest(){
 
-        SubscriptionDataRequest request = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage);
+        SubscriptionDataRequest request = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
 
         assertEquals(CriteriaType.SENDER, request.getQuery().getCriteria().get(0).getCriteria());
         assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(1).getCriteria());
