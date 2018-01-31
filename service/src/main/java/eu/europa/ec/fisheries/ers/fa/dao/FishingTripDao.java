@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripIdSearchBuilder;
@@ -22,23 +23,24 @@ import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilde
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.Hibernate;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 
 /**
  * Created by sanera on 23/08/2016.
  */
 @Slf4j
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
+
     private EntityManager em;
 
     public FishingTripDao(EntityManager em) {
@@ -50,7 +52,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return em;
     }
 
-
     public FishingTripEntity fetchVesselTransportDetailsForFishingTrip(String fishingTripId) {
         String sql = "SELECT DISTINCT ft from FishingTripEntity ft JOIN FETCH ft.fishingActivity a" +
                 "  JOIN FETCH a.faReportDocument fa" +
@@ -60,25 +61,26 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
                 "  JOIN FETCH cparty.contactPerson cPerson " +
                 "  JOIN FETCH ft.fishingTripIdentifiers fi " +
                 "  where fi.tripId =:fishingTripId and a is not null";
-
         TypedQuery<FishingTripEntity> typedQuery = em.createQuery(sql, FishingTripEntity.class);
         typedQuery.setParameter("fishingTripId", fishingTripId);
         typedQuery.setMaxResults(1);
-
         return typedQuery.getSingleResult();
     }
 
     public List<FishingActivityEntity> getFishingActivitiesForFishingTripId(String fishingTripId){
-
         String sql = "SELECT DISTINCT a from FishingActivityEntity a JOIN a.fishingTrips fishingTrips" +
                 "  JOIN fishingTrips.fishingTripIdentifiers fi" +
                 "  where fi.tripId =:fishingTripId order by a.calculatedStartTime ASC";
-
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
         typedQuery.setParameter("fishingTripId", fishingTripId);
-
         return typedQuery.getResultList();
+    }
 
+    public String getOwnerFluxPartyFromTripId(String fishingTripId){
+        TypedQuery query = getEntityManager().createNamedQuery(FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID, FluxPartyIdentifierEntity.class);
+        query.setParameter("fishingTripId", fishingTripId).setMaxResults(1).getResultList();
+        List<FluxPartyIdentifierEntity> resultList = query.getResultList();
+        return CollectionUtils.isNotEmpty(resultList) ? resultList.get(0).getFluxPartyIdentifierId() : StringUtils.EMPTY;
     }
 
     /**
@@ -114,34 +116,26 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      */
     public Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
         Query listQuery = getQueryForFilterFishingTripIds(query);
-
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
             log.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
-
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
-
         List<Object[]> resultList = listQuery.getResultList();
         Hibernate.initialize(resultList);
-
         if (CollectionUtils.isEmpty(resultList))
             return Collections.emptySet();
-
         Set<FishingTripId> fishingTripIds = new HashSet<>();
-
         for(Object[] objArr :resultList){
             try {
                 if(objArr !=null && objArr.length ==2){
                     fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1]) );
                 }
-
             } catch (Exception e) {
                 log.error("Could not map sql selection to FishingTripId object", e);
             }
         }
-
         return fishingTripIds;
     }
 
