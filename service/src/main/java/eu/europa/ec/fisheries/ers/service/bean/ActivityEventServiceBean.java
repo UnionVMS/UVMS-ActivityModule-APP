@@ -49,6 +49,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionReque
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -131,7 +132,7 @@ public class ActivityEventServiceBean implements EventService {
             }
             subscriptionProducer.sendMessageWithSpecificIds(JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest),
                     subscriptionProducer.getDestination(), JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES),null, jmsCorrelationID);
-        } catch ( JAXBException | JMSException e) {
+        } catch ( JAXBException | MessageException | JMSException e) {
             sendError(message, e);
         }
     }
