@@ -19,7 +19,6 @@ package eu.europa.ec.fisheries.ers.fa.dao.proxy;
  */
 public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
 
-
     // Override these methods as reflection code will fail if not explicitely specified
     @Override
     public void setVesselTransportGuid(String vesselTransportGuid) {
@@ -29,6 +28,11 @@ public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
     @Override
     public void setDay(String day) {
         super.setDay(day);
+    }
+
+    @Override
+    public void setDate(String date) {
+        super.setDate(date);
     }
 
     @Override
@@ -135,6 +139,7 @@ public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
         if (getDay() != null ? !getDay().equals(that.getDay()) : that.getDay() != null) return false;
         if (getMonth() != null ? !getMonth().equals(that.getMonth()) : that.getMonth() != null) return false;
         if (getYear() != null ? !getYear().equals(that.getYear()) : that.getYear() != null) return false;
+        if (getDate() != null ? !getDate().equals(that.getDate()) : that.getDate() != null) return false;
         if (getVesselTransportGuid() != null ? !getVesselTransportGuid().equals(that.getVesselTransportGuid()) : that.getVesselTransportGuid() != null)
             return false;
         if (getFlagState() != null ? !getFlagState().equals(that.getFlagState()) : that.getFlagState() != null)
@@ -160,6 +165,7 @@ public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
         int result = getDay() != null ? getDay().hashCode() : 0;
         result = 31 * result + (getMonth() != null ? getMonth().hashCode() : 0);
         result = 31 * result + (getYear() != null ? getYear().hashCode() : 0);
+        result = 31 * result + (getDate() != null ? getDate().hashCode() : 0);
         result = 31 * result + (getVesselTransportGuid() != null ? getVesselTransportGuid().hashCode() : 0);
         result = 31 * result + (getFlagState() != null ? getFlagState().hashCode() : 0);
         result = 31 * result + (getGearType() != null ? getGearType().hashCode() : 0);

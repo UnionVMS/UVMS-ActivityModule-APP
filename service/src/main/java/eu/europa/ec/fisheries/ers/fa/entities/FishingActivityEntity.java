@@ -212,7 +212,6 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
-
 	@Transient
     private String wkt;
 

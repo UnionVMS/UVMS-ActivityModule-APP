@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.uvms.activity.message.event.carrier;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFault;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import javax.jms.TextMessage;
 
 /**
@@ -21,9 +22,15 @@ public class EventMessage {
     private TextMessage jmsMessage;
     private String errorMessage;
     private ActivityFault fault;
+    private ActivityModuleMethod method;
 
     public EventMessage(TextMessage jmsMessage) {
         this.jmsMessage = jmsMessage;
+    }
+
+    public EventMessage(TextMessage jmsMessage, ActivityModuleMethod method) {
+        this.jmsMessage = jmsMessage;
+        this.method = method;
     }
 
     public EventMessage(TextMessage jmsMessage, String errorMessage) {
@@ -39,21 +46,22 @@ public class EventMessage {
     public String getErrorMessage() {
         return errorMessage;
     }
-
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
-
     public TextMessage getJmsMessage() {
         return jmsMessage;
     }
-
     public void setJmsMessage(TextMessage jmsMessage) {
         this.jmsMessage = jmsMessage;
     }
-
     public ActivityFault getFault() {
         return fault;
     }
-
+    public ActivityModuleMethod getMethod() {
+        return method;
+    }
+    public void setMethod(ActivityModuleMethod method) {
+        this.method = method;
+    }
 }

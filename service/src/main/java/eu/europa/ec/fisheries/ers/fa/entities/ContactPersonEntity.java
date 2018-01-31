@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +24,7 @@ import java.io.Serializable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
@@ -30,6 +32,7 @@ import lombok.ToString;
 @Data
 @ToString(exclude = "contactParty")
 @EqualsAndHashCode(exclude = "contactParty")
+@NoArgsConstructor
 public class ContactPersonEntity implements Serializable {
 
 	@Id
@@ -59,6 +62,6 @@ public class ContactPersonEntity implements Serializable {
 	
 	private String alias;
 	
-	@OneToOne(mappedBy = "contactPerson")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "contactPerson")
 	private ContactPartyEntity contactParty;
 }

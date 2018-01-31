@@ -17,13 +17,14 @@ import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SpatialProducerBean;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.GeometryByPortCodeResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
@@ -66,5 +67,25 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
             log.error("Exception in communication with spatial while retrieving filtered area", e);
             throw new ServiceException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public String getGeometryForPortCode(String portCode) throws ServiceException {
+        log.info("Inside getGeometryForPortCode :"+portCode);
+       try {
+            String request = SpatialModuleRequestMapper.mapToGeometryByPortCodeRequest(portCode);
+            String correlationId = spatialProducer.sendModuleMessage(request, activityConsumer.getDestination());
+            TextMessage message = activityConsumer.getMessage(correlationId, TextMessage.class);
+            if (message != null && !isUserFault(message)) {
+                GeometryByPortCodeResponse response = SpatialModuleResponseMapper.mapGeometryByPortCodeResponseToString(message, correlationId);
+                return response.getPortGeometry();
+            } else {
+                throw new ServiceException("FAILED TO GET GEOMETRY FROM SPATIAL");
+            }
+        } catch (ServiceException | MessageException | SpatialModelMapperException e) {
+            log.error("Exception in communication with spatial while retrieving GEOMETRY", e);
+            throw new ServiceException(e.getMessage(), e);
+        }
+
     }
 }

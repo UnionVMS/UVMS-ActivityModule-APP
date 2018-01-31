@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
@@ -35,6 +37,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(exclude = {"contactPartyRole", "structuredAddresses", "contactPerson"})
 @ToString(exclude = {"contactPartyRole", "structuredAddresses", "contactPerson"})
+@NoArgsConstructor
 public class ContactPartyEntity implements Serializable {
 
 	@Id
@@ -43,18 +46,18 @@ public class ContactPartyEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "contact_person_id", nullable = false)
 	private ContactPersonEntity contactPerson;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vessel_transport_means_id")
 	private VesselTransportMeansEntity vesselTransportMeans;
 
-	@OneToMany(mappedBy = "contactParty", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
 	private Set<ContactPartyRoleEntity> contactPartyRole;
 
-	@OneToMany(mappedBy = "contactParty", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contactParty", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses;
 
 }

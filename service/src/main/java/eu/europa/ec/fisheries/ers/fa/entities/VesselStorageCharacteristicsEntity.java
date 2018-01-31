@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +26,7 @@ import java.util.Set;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -33,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 @Data
 @EqualsAndHashCode(exclude = {"fishingActivitiesForDestVesselCharId", "fishingActivitiesForSourceVesselCharId", "vesselStorageCharCode"})
 @ToString(exclude = {"fishingActivitiesForDestVesselCharId", "fishingActivitiesForSourceVesselCharId", "vesselStorageCharCode"})
+@NoArgsConstructor
 public class VesselStorageCharacteristicsEntity implements Serializable {
 
 	@Id
@@ -47,13 +50,13 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 	@Column(name = "vessel_scheme_id")
 	private String vesselSchemaId;
 
-	@OneToOne(mappedBy = "destVesselCharId")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "destVesselCharId")
 	private FishingActivityEntity fishingActivitiesForDestVesselCharId;
 
-	@OneToOne(mappedBy = "sourceVesselCharId")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "sourceVesselCharId")
 	private FishingActivityEntity fishingActivitiesForSourceVesselCharId;
 
-	@OneToMany(mappedBy = "vesselStorageCharacteristics", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselStorageCharacteristics", cascade = CascadeType.ALL)
 	private Set<VesselStorageCharCodeEntity> vesselStorageCharCode;
 
     public VesselStorageCharCodeEntity getFirstVesselStorageCharCode() {

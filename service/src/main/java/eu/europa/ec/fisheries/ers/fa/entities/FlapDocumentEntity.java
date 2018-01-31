@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,28 +25,30 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/16/2016.
- */
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_flap_document")
+@Data
+@NoArgsConstructor
 public class FlapDocumentEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flap_doc_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "fishing_activity_id")
     private FishingActivityEntity fishingActivity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "vessel_transport_means_id")
     private VesselTransportMeansEntity vesselTransportMeans;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "flapDocument")
+    @OneToOne(mappedBy = "flapDocument")
     private FluxCharacteristicEntity fluxCharacteristic;
 
     @Column(name = "flap_document_id")
@@ -62,63 +63,4 @@ public class FlapDocumentEntity implements Serializable {
     @Column(name = "flap_type_code_list_id")
     private String flapTypeCodeListId;
 
-    public int getId() {
-        return id;
-    }
-
-    public VesselTransportMeansEntity getVesselTransportMeans() {
-        return vesselTransportMeans;
-    }
-
-    public void setVesselTransportMeans(VesselTransportMeansEntity vesselTransportMeans) {
-        this.vesselTransportMeans = vesselTransportMeans;
-    }
-
-    public String getFlapDocumentId() {
-        return flapDocumentId;
-    }
-
-    public void setFlapDocumentId(String flapDocumentId) {
-        this.flapDocumentId = flapDocumentId;
-    }
-
-    public String getFlapDocumentSchemeId() {
-        return flapDocumentSchemeId;
-    }
-
-    public void setFlapDocumentSchemeId(String flapDocumentSchemeId) {
-        this.flapDocumentSchemeId = flapDocumentSchemeId;
-    }
-
-    public FishingActivityEntity getFishingActivity() {
-        return fishingActivity;
-    }
-
-    public void setFishingActivity(FishingActivityEntity fishingActivity) {
-        this.fishingActivity = fishingActivity;
-    }
-
-    public FluxCharacteristicEntity getFluxCharacteristic() {
-        return fluxCharacteristic;
-    }
-
-    public void setFluxCharacteristic(FluxCharacteristicEntity fluxCharacteristic) {
-        this.fluxCharacteristic = fluxCharacteristic;
-    }
-
-    public String getFlapTypeCode() {
-        return flapTypeCode;
-    }
-
-    public void setFlapTypeCode(String flapTypeCode) {
-        this.flapTypeCode = flapTypeCode;
-    }
-
-    public String getFlapTypeCodeListId() {
-        return flapTypeCodeListId;
-    }
-
-    public void setFlapTypeCodeListId(String flapTypeCodeListId) {
-        this.flapTypeCodeListId = flapTypeCodeListId;
-    }
 }

@@ -119,13 +119,12 @@ public abstract class FaCatchMapper extends BaseMapper {
     }
 
     protected VesselTransportMeansEntity getVesselTransportMeansForRelocation(FaCatchEntity faCatch) {
-        if (faCatch == null || faCatch.getFishingActivity() ==null || CollectionUtils.isEmpty(faCatch.getFishingActivity().getVesselTransportMeans()))  {
+        if (faCatch == null || faCatch.getFishingActivity() == null || CollectionUtils.isEmpty(faCatch.getFishingActivity().getVesselTransportMeans())) {
             return null;
         }
 
         return faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
     }
-
 
 
     protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
@@ -134,8 +133,8 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution);
         sizeDistributionEntity.setFaCatch(faCatchEntity);
-        Set<SizeDistributionClassCodeEntity> sizeDistributionSet=sizeDistributionEntity.getSizeDistributionClassCode();
-        if(CollectionUtils.isNotEmpty(sizeDistributionSet)){
+        Set<SizeDistributionClassCodeEntity> sizeDistributionSet = sizeDistributionEntity.getSizeDistributionClassCode();
+        if (CollectionUtils.isNotEmpty(sizeDistributionSet)) {
             faCatchEntity.setFishClassCode(sizeDistributionSet.iterator().next().getClassCode());
         }
 
@@ -234,24 +233,24 @@ public abstract class FaCatchMapper extends BaseMapper {
         CatchSummaryListDTO onBoardSummary = new CatchSummaryListDTO();
         catchSummary.put("landed", landedSummary);
         catchSummary.put("onboard", onBoardSummary);
-        if(CollectionUtils.isEmpty(faCatches)){
+        if (CollectionUtils.isEmpty(faCatches)) {
             return catchSummary;
         }
 
-        for(Object[] faCatch : faCatches){
-            String typeCode    = ((String) faCatch[0]).toUpperCase();
+        for (Object[] faCatch : faCatches) {
+            String typeCode = ((String) faCatch[0]).toUpperCase();
             String speciesCode = (String) faCatch[1];
             String areaName = (String) faCatch[2];
-            Double weight      = (Double) faCatch[3];
+            Double weight = (Double) faCatch[3];
 
 
-           // Double weight      = (Double) faCatch[2];
-            if("UNLOADED".equals(typeCode)){
-                landedSummary.addSpecieAndQuantity(speciesCode, weight,areaName);
-            } else if("ONBOARD".equals(typeCode)
+            // Double weight      = (Double) faCatch[2];
+            if ("UNLOADED".equals(typeCode)) {
+                landedSummary.addSpecieAndQuantity(speciesCode, weight, areaName);
+            } else if ("ONBOARD".equals(typeCode)
                     || "KEPT_IN_NET".equals(typeCode)
-                    || "TAKEN_ONBOARD".equals(typeCode)){
-                onBoardSummary.addSpecieAndQuantity(speciesCode, weight,areaName);
+                    || "TAKEN_ONBOARD".equals(typeCode)) {
+                onBoardSummary.addSpecieAndQuantity(speciesCode, weight, areaName);
             }
         }
 

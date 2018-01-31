@@ -9,13 +9,11 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,30 +27,36 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_fishing_gear")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@EqualsAndHashCode(exclude = {"fishingGearRole","gearCharacteristics"})
+@ToString(exclude = {"fishingGearRole","gearCharacteristics"})
 public class FishingGearEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_gear_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "gear_problem_id")
 	private GearProblemEntity gearProblem;
 
@@ -62,72 +66,10 @@ public class FishingGearEntity implements Serializable {
 	@Column(name = "type_code_list_id", nullable = false)
 	private String typeCodeListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
 	private Set<FishingGearRoleEntity> fishingGearRole;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
 	private Set<GearCharacteristicEntity> gearCharacteristics;
 
-	public int getId() {
-		return this.id;
-	}
-
-	public FaCatchEntity getFaCatch() {
-		return this.faCatch;
-	}
-
-	public void setFaCatch(FaCatchEntity faCatch) {
-		this.faCatch = faCatch;
-	}
-
-	public FishingActivityEntity getFishingActivity() {
-		return this.fishingActivity;
-	}
-
-	public void setFishingActivity(
-			FishingActivityEntity fishingActivity) {
-		this.fishingActivity = fishingActivity;
-	}
-
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-
-	public Set<GearCharacteristicEntity> getGearCharacteristics() {
-		return this.gearCharacteristics;
-	}
-
-	public void setGearCharacteristics(
-			Set<GearCharacteristicEntity> gearCharacteristics) {
-		this.gearCharacteristics = gearCharacteristics;
-	}
-
-	public GearProblemEntity getGearProblem() {
-		return gearProblem;
-	}
-
-	public void setGearProblem(GearProblemEntity gearProblem) {
-		this.gearProblem = gearProblem;
-	}
-
-	public Set<FishingGearRoleEntity> getFishingGearRole() {
-		return fishingGearRole;
-	}
-
-	public void setFishingGearRole(Set<FishingGearRoleEntity> fishingGearRole) {
-		this.fishingGearRole = fishingGearRole;
-	}
-
-	public String getTypeCodeListId() {
-		return typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
 }

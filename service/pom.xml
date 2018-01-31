@@ -13,10 +13,16 @@
 	<parent>
 		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
 		<artifactId>activity</artifactId>
-		<version>1.0.6-SNAPSHOT</version>
+		<version>1.0.10-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+		</dependency>
 	
 	  	<dependency>
             <groupId>com.vividsolutions</groupId>
@@ -54,6 +60,11 @@
 			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
 			<artifactId>movement-model</artifactId>
         </dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+			<artifactId>subscription-model</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
