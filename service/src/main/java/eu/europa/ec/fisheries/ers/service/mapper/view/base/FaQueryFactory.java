@@ -27,6 +27,10 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 @Slf4j
 public class FaQueryFactory {
 
+    private FaQueryFactory(){
+        super();
+    }
+
     public static FAQuery createFaQueryForTrip(String tripId, String sendTo, boolean consolidated) {
         FAQuery faq = new FAQuery();
         faq.setID(new IDType(UUID.randomUUID().toString(), "UUID", null, null, null,
