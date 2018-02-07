@@ -109,12 +109,13 @@ public interface FishingTripService {
 
 
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
-                                                                                                      Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
+                                                                                               Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
     /**
      * Returns list of FishingActivities for provided tripId
+     *
      * @param tripId
      * @return List<FishingActivityEntity> list of activities for the trip
      * @throws ServiceException
@@ -122,7 +123,9 @@ public interface FishingTripService {
     List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
 
 
-     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
+    FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
+
+    String getOwnerFluxPartyFromTripId(String tripId);
 }
