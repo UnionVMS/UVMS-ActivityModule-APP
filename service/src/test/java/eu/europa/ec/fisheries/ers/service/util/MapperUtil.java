@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -293,7 +294,7 @@ public class MapperUtil {
         faReportIdentifierEntity.setFaReportIdentifierId("Identifier Id 1");
         faReportIdentifierEntity.setFaReportIdentifierSchemeId("57th785-tjf845-tjfui5-tjfuir8");
         faReportIdentifierEntity.setFaReportDocument(faReportDocumentEntity);
-        faReportDocumentEntity.setFaReportIdentifiers(new HashSet<FaReportIdentifierEntity>(Arrays.asList(faReportIdentifierEntity)));
+        faReportDocumentEntity.setFaReportIdentifiers(new HashSet<>(Collections.singletonList(faReportIdentifierEntity)));
 
         FluxReportDocumentEntity fluxReportDocumentEntity = getFluxReportDocumentEntity();
         fluxReportDocumentEntity.setFaReportDocument(faReportDocumentEntity);

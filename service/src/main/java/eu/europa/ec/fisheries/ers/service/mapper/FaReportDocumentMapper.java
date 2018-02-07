@@ -12,6 +12,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -34,11 +39,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Mapper(uses = {VesselTransportMeansMapper.class, FishingActivityMapper.class})
 public abstract class FaReportDocumentMapper extends BaseMapper {
@@ -147,6 +147,5 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     })
     public abstract RelatedReportDto mapFaReportDocumentEntityToRelatedReportDto(FaReportIdentifierEntity entity);
 
-    public abstract List<RelatedReportDto> mapFaReportDocumentEntityListToRelatedReportDto(List<FaReportIdentifierEntity> entity);
 
 }
