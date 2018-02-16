@@ -18,6 +18,24 @@ import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPART
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
@@ -64,6 +82,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchEvolutionProgressProcessor;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.TripCatchEvolutionProgressRegistry;
 import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FLUXFAReportMessageEntityToFLUXFAReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
@@ -90,23 +109,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -474,6 +476,15 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return createMessageCounter(faReportDocumentDao.getFaReportDocumentsForTrip(tripId));
     }
 
+    public Object getFaReportDocumentsForTrip(String tripId) {
+        List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDocumentDao.getFaReportDocumentsForFaQuery(tripId);
+        FLUXFAReportMessageEntityToFLUXFAReportMessageMapper faReportEntityToModelMapper = new FLUXFAReportMessageEntityToFLUXFAReportMessageMapper();
+        if (CollectionUtils.isNotEmpty(faReportDocumentsForTrip)){
+            FaReportDocumentEntity faReportDocumentEntity = faReportDocumentsForTrip.get(0);
+            return faReportEntityToModelMapper.mapToFluxFaReportMessageEntity(faReportDocumentEntity.getFluxFaReportMessage());
+        }
+        return null;
+    }
     /**
      * Populates the MessageCounter adding to the right counter 1 unit depending on the type of report (typeCode, purposeCode, size()).
      *

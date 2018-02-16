@@ -32,6 +32,7 @@ import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResour
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityViewsResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingTripResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.ConfigResource;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.ReportDocumentResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.TestResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.XMLResource;
 import org.slf4j.Logger;
@@ -53,6 +54,7 @@ public class RestActivator extends Application {
         set.add(FishingActivityViewsResource.class);
         set.add(FACatchResource.class);
         set.add(XMLResource.class);
+        set.add(ReportDocumentResource.class);
 
     }
 

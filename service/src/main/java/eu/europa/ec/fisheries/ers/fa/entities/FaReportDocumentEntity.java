@@ -50,6 +50,19 @@ import org.hibernate.annotations.Type;
                         "JOIN FETCH fareport.fluxReportDocument fluxreport " +
                         "WHERE ftidentifier.tripId  = :tripId"),
 
+        @NamedQuery(name = FaReportDocumentEntity.FA_QUERY,
+                query = "SELECT rpt FROM FaReportDocumentEntity rpt " +
+                        //"JOIN FETCH rpt.fluxReportDocument flxrptdoc " +
+                        "LEFT JOIN FETCH rpt.fishingActivities act " +
+                        //"LEFT JOIN FETCH rpt.vesselTransportMeans vtm " +
+                        //"JOIN FETCH flxrptdoc.fluxReportIdentifiers flxrptdocids " +
+                        //"JOIN FETCH flxrptdoc.fluxParty flxparty " +
+                        //"JOIN FETCH flxparty.fluxPartyIdentifiers flxprtyids  " +
+                        "JOIN FETCH act.fishingTrips fshtrp " +
+                        "JOIN FETCH fshtrp.fishingTripIdentifiers fshtrpids " +
+                        "WHERE fshtrpids.tripId = :tripId"
+        ),
+
         @NamedQuery(name = FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID,
                 query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
                         "JOIN FETCH fareport.fishingActivities factivity " +
@@ -65,6 +78,7 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
     public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
+    public static final String FA_QUERY = "findForFaQuery";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

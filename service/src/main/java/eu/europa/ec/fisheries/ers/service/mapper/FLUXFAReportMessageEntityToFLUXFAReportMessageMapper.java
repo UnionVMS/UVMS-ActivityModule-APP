@@ -14,11 +14,14 @@ import static java.util.Collections.singletonList;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -30,14 +33,21 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
@@ -48,48 +58,68 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 /**
  * TODO create test
  */
-public class FaReportEntityToModelMapper {
+public class FLUXFAReportMessageEntityToFLUXFAReportMessageMapper {
 
-    FAReportDocument mapToFAReportDocument(FaReportDocumentEntity entity){
+    public FLUXFAReportMessage mapToFluxFaReportMessageEntity(FluxFaReportMessageEntity fluxFaReportMessageEntity){
+
+        FLUXFAReportMessage fluxfaReportMessage = new FLUXFAReportMessage();
+
+        Set<FaReportDocumentEntity> faReportDocuments = fluxFaReportMessageEntity.getFaReportDocuments();
+
+        List<FAReportDocument> faReportDocumentList = new ArrayList<>();
+
+        if (CollectionUtils.isNotEmpty(faReportDocuments)){
+
+            for (FaReportDocumentEntity faReportDocumentEntity : faReportDocuments){
+                FAReportDocument faReportDocument = mapToFluxFaReportMessageEntity(faReportDocumentEntity);
+                faReportDocumentList.add(faReportDocument);
+            }
+        }
+
+        fluxfaReportMessage.setFAReportDocuments(faReportDocumentList);
+
+        return fluxfaReportMessage;
+    }
+
+    private FAReportDocument mapToFluxFaReportMessageEntity(FaReportDocumentEntity faReportDocumentEntity) {
 
         FAReportDocument faReportDocument = new FAReportDocument();
 
-        mapAcceptanceDateTime(faReportDocument, entity.getAcceptedDatetime());
+        mapAcceptanceDateTime(faReportDocument, faReportDocumentEntity.getAcceptedDatetime());
 
-        mapTypeCode(faReportDocument, entity.getTypeCode(), entity.getTypeCodeListId());
+        mapTypeCode(faReportDocument, faReportDocumentEntity.getTypeCode(), faReportDocumentEntity.getTypeCodeListId());
 
-        mapFMCMarkerCode(faReportDocument, entity.getFmcMarker(), entity.getFmcMarkerListId());
+        mapFMCMarkerCode(faReportDocument, faReportDocumentEntity.getFmcMarker(), faReportDocumentEntity.getFmcMarkerListId());
 
-        mapRelatedFLUXReportDocument(faReportDocument, entity.getFluxReportDocument());
+        mapRelatedFLUXReportDocument(faReportDocument, faReportDocumentEntity.getFluxReportDocument());
 
-        mapRelatedReportIDs(faReportDocument,entity.getFaReportIdentifiers());
+        mapRelatedReportIDs(faReportDocument,faReportDocumentEntity.getFaReportIdentifiers());
 
-        mapSpecifiedVesselTransportMeans(faReportDocument, entity.getVesselTransportMeans());
+        mapSpecifiedVesselTransportMeans(faReportDocument, faReportDocumentEntity.getVesselTransportMeans());
 
-        Set<FishingActivityEntity> fishingActivities = entity.getFishingActivities(); // TODO MAP
-        FluxFaReportMessageEntity fluxFaReportMessage = entity.getFluxFaReportMessage();// TODO MAP
+        //Set<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities(); // TODO MAP
+        //FluxFaReportMessageEntity fluxFaReportMessage = faReportDocumentEntity.getFluxFaReportMessage();// TODO MAP
 
         return faReportDocument;
     }
 
-    private void mapSpecifiedVesselTransportMeans(FAReportDocument faReportDocument, Set<VesselTransportMeansEntity> entities) {
+        private void mapSpecifiedVesselTransportMeans(FAReportDocument faReportDocument, Set<VesselTransportMeansEntity> entities) {
 
         VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
 
-        //vesselTransportMeans.set
-        if(isNotEmpty(entities)){
+        if (isNotEmpty(entities)){
 
-            VesselTransportMeansEntity entity = entities.iterator().next();
+            VesselTransportMeansEntity transportMeansEntity = entities.iterator().next();
 
-            setRoleCode(vesselTransportMeans, entity.getRoleCodeListId(), entity.getRoleCode());
-            setNames(vesselTransportMeans, entity.getName());
-            setRegistrationVesselCountry(vesselTransportMeans, entity.getCountry(), entity.getCountrySchemeId());
-            setRegistrationEvent(vesselTransportMeans, entity.getRegistrationEvent());
+            setRoleCode(vesselTransportMeans, transportMeansEntity.getRoleCodeListId(), transportMeansEntity.getRoleCode());
+            setNames(vesselTransportMeans, transportMeansEntity.getName());
+            setRegistrationVesselCountry(vesselTransportMeans, transportMeansEntity.getCountry(), transportMeansEntity.getCountrySchemeId());
+            setRegistrationEvent(vesselTransportMeans, transportMeansEntity.getRegistrationEvent());
+            setIDs(vesselTransportMeans, transportMeansEntity.getVesselIdentifiers());
 
-            Set<VesselIdentifierEntity> vesselIdentifiers = entity.getVesselIdentifiers(); // TODO MAP
-            Set<ContactPartyEntity> contactParty = entity.getContactParty(); // TODO MAP
-            FishingActivityEntity fishingActivity = entity.getFishingActivity(); // TODO MAP
-            Set<FlapDocumentEntity> flapDocuments = entity.getFlapDocuments();  // TODO MAP
+            setSpecifiedContactParties(vesselTransportMeans, transportMeansEntity.getContactParty());
+            FishingActivityEntity fishingActivity = transportMeansEntity.getFishingActivity(); // TODO MAP
+            Set<FlapDocumentEntity> flapDocuments = transportMeansEntity.getFlapDocuments();  // TODO MAP
 
         }
 
@@ -97,14 +127,99 @@ public class FaReportEntityToModelMapper {
 
     }
 
-    private void setRegistrationEvent(VesselTransportMeans vesselTransportMeans, RegistrationEventEntity entity) {
-        RegistrationEvent registrationEvent = new RegistrationEvent();
+    private void setSpecifiedContactParties(VesselTransportMeans vesselTransportMeans, Set<ContactPartyEntity> contactPartyEntities) {
+        ArrayList<ContactParty> contactParties = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(contactPartyEntities)) {
+            for (ContactPartyEntity contactPartyEntity : contactPartyEntities){
+                ContactParty contactParty = new ContactParty();
+                setContactPerson(contactParty, contactPartyEntity.getContactPerson());
+                setRoles(contactParty, contactPartyEntity.getContactPartyRole());
+                setStructuredAddress(contactParty, contactPartyEntity.getStructuredAddresses());//TODO map
+                contactParties.add(contactParty);
+            }
+        }
+        vesselTransportMeans.setSpecifiedContactParties(contactParties);
+    }
 
-        setDateTime(registrationEvent, entity.getOccurrenceDatetime());
+    private void setStructuredAddress(ContactParty contactParty, Set<StructuredAddressEntity> structuredAddressEntities) {
 
-        setRelatedRegistrationLocation(registrationEvent, entity.getRegistrationLocation());
+        List<StructuredAddress> structuredAddressList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(structuredAddressEntities)){
+            for (StructuredAddressEntity structuredAddressEntity : structuredAddressEntities) {
+                StructuredAddress structuredAddress = new StructuredAddress();
+                //structuredAddress.setPostalArea(new TextType(structuredAddressEntity.getPostcode(), structuredAddressEntity.getP)); // FIXME not saved in DB
+                structuredAddress.setBlockName(new TextType(structuredAddressEntity.getBlockName(), null, null));
+                structuredAddress.setBuildingName(new TextType(structuredAddressEntity.getBuildingName(), null,null));
+                //structuredAddress.setBuildingNumber(new TextType(structuredAddressEntity.get(), null,null)); // FIXME not saved in DB
+                structuredAddress.setCityName(new TextType(structuredAddressEntity.getCityName(), null,null));
+                structuredAddress.setCitySubDivisionName(new TextType(structuredAddressEntity.getCitySubdivisionName(), null,null));
+                //structuredAddress.setFloorIdentification(new TextType(structuredAddressEntity.get(), null,null)); // FIXME not saved in DB
+                structuredAddress.setCountryName(new TextType(structuredAddressEntity.getCountryName(), null,null));
 
-        vesselTransportMeans.setSpecifiedRegistrationEvents(singletonList(registrationEvent));
+                CodeType codeType = new CodeType();
+                codeType.setValue(structuredAddressEntity.getPostcode());
+                structuredAddress.setPostcodeCode(codeType);
+
+                IDType idType = new IDType();
+                idType.setValue(structuredAddressEntity.getCountry());
+                structuredAddress.setCountryID(idType);
+
+                structuredAddressList.add(structuredAddress);
+            }
+        }
+
+        contactParty.setSpecifiedStructuredAddresses(structuredAddressList);
+    }
+
+    private void setRoles(ContactParty contactParty, Set<ContactPartyRoleEntity> contactPartyRoleEntities) {
+        List<CodeType> codeTypeList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(contactPartyRoleEntities)){
+            for (ContactPartyRoleEntity contactPartyRoleEntity : contactPartyRoleEntities){
+                CodeType codeType = new CodeType();
+                codeType.setValue(contactPartyRoleEntity.getRoleCode());
+                codeType.setListID(contactPartyRoleEntity.getRoleCodeListId());
+                codeTypeList.add(codeType);
+            }
+        }
+        contactParty.setRoleCodes(codeTypeList);
+    }
+
+    private void setContactPerson(ContactParty contactParty, ContactPersonEntity contactPersonEntity) {
+        if (ObjectUtils.allNotNull(contactParty, contactPersonEntity)){
+            contactPersonEntity.getGender(); //TODO
+            ContactPerson contactPerson = new ContactPerson();
+
+            contactPerson.setAlias(new TextType(contactPersonEntity.getAlias(), null, null));
+            contactPerson.setGivenName(new TextType(contactPersonEntity.getGivenName(), null, null));
+            contactPerson.setFamilyName(new TextType(contactPersonEntity.getFamilyName(), null, null));
+            contactPerson.setFamilyNamePrefix(new TextType(contactPersonEntity.getFamilyNamePrefix(), null, null));
+            contactPerson.setMiddleName(new TextType(contactPersonEntity.getMiddleName(), null, null));
+            contactPerson.setTitle(new TextType(contactPersonEntity.getTitle(), null, null));
+            contactPerson.setNameSuffix(new TextType(contactPersonEntity.getNameSuffix(), null, null));
+            contactParty.setSpecifiedContactPersons(Collections.singletonList(contactPerson));
+        }
+    }
+
+    private void setIDs(VesselTransportMeans vesselTransportMeans, Set<VesselIdentifierEntity> vesselIdentifiers) {
+        if (CollectionUtils.isNotEmpty(vesselIdentifiers)){
+            List<IDType> idTypeList = new ArrayList<>();
+            for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifiers){
+                IDType idType = new IDType();
+                idType.setValue( vesselIdentifierEntity.getVesselIdentifierId());
+                idType.setSchemeID(vesselIdentifierEntity.getVesselIdentifierSchemeId());
+                idTypeList.add(idType);
+            }
+            vesselTransportMeans.setIDS(idTypeList);
+        }
+    }
+
+    private void setRegistrationEvent(VesselTransportMeans vesselTransportMeans, RegistrationEventEntity registrationEventEntity) {
+        if (ObjectUtils.allNotNull(vesselTransportMeans, registrationEventEntity)){
+            RegistrationEvent registrationEvent = new RegistrationEvent();
+            setDateTime(registrationEvent, registrationEventEntity.getOccurrenceDatetime());
+            setRelatedRegistrationLocation(registrationEvent, registrationEventEntity.getRegistrationLocation());
+            vesselTransportMeans.setSpecifiedRegistrationEvents(singletonList(registrationEvent));
+        }
     }
 
     private void setRelatedRegistrationLocation(RegistrationEvent registrationEvent, RegistrationLocationEntity entity) {
