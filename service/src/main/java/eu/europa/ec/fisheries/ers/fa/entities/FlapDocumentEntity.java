@@ -27,12 +27,16 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_flap_document")
 @Data
 @NoArgsConstructor
+@ToString(of = {"flapDocumentId", "flapDocumentSchemeId", "flapTypeCode", "flapTypeCodeListId"})
+@EqualsAndHashCode(of = {"flapDocumentId", "flapDocumentSchemeId", "flapTypeCode", "flapTypeCodeListId"})
 public class FlapDocumentEntity implements Serializable {
 
     @Id
@@ -40,17 +44,6 @@ public class FlapDocumentEntity implements Serializable {
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flap_doc_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fishing_activity_id")
-    private FishingActivityEntity fishingActivity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vessel_transport_means_id")
-    private VesselTransportMeansEntity vesselTransportMeans;
-
-    @OneToOne(mappedBy = "flapDocument")
-    private FluxCharacteristicEntity fluxCharacteristic;
 
     @Column(name = "flap_document_id")
     private String flapDocumentId;
@@ -63,5 +56,16 @@ public class FlapDocumentEntity implements Serializable {
 
     @Column(name = "flap_type_code_list_id")
     private String flapTypeCodeListId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishing_activity_id")
+    private FishingActivityEntity fishingActivity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vessel_transport_means_id")
+    private VesselTransportMeansEntity vesselTransportMeans;
+
+    @OneToOne(mappedBy = "flapDocument")
+    private FluxCharacteristicEntity fluxCharacteristic;
 
 }

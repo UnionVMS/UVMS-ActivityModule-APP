@@ -40,14 +40,14 @@ public class SizeDistributionClassCodeEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "size_distribution_id")
-    private SizeDistributionEntity sizeDistribution;
-
     @Column(name = "class_code", nullable = false)
     private String classCode;
 
     @Column(name = "class_code_list_id", nullable = false)
     private String classCodeListId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "size_distribution_id")
+    private SizeDistributionEntity sizeDistribution;
 
 }

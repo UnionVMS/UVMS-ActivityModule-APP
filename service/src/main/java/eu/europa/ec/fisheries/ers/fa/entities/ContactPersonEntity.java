@@ -62,6 +62,6 @@ public class ContactPersonEntity implements Serializable {
 	
 	private String alias;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "contactPerson")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "contactPerson", optional = false)
 	private ContactPartyEntity contactParty;
 }

@@ -45,6 +45,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
@@ -96,25 +97,42 @@ public class FLUXFAReportMessageEntityToFLUXFAReportMessageMapper {
     }
 
     private FAReportDocument mapToFAReportDocument(FaReportDocumentEntity faReportDocumentEntity) {
-
         FAReportDocument faReportDocument = new FAReportDocument();
-
         mapAcceptanceDateTime(faReportDocument, faReportDocumentEntity.getAcceptedDatetime());
-
         mapTypeCode(faReportDocument, faReportDocumentEntity.getTypeCode(), faReportDocumentEntity.getTypeCodeListId());
-
         mapFMCMarkerCode(faReportDocument, faReportDocumentEntity.getFmcMarker(), faReportDocumentEntity.getFmcMarkerListId());
-
         mapRelatedFLUXReportDocument(faReportDocument, faReportDocumentEntity.getFluxReportDocument());
-
         mapRelatedReportIDs(faReportDocument,faReportDocumentEntity.getFaReportIdentifiers());
-
         mapSpecifiedVesselTransportMeans(faReportDocument, faReportDocumentEntity.getVesselTransportMeans());
-
-        //Set<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities(); // TODO MAP
-        //FluxFaReportMessageEntity fluxFaReportMessage = faReportDocumentEntity.getFluxFaReportMessage();// TODO MAP
-
+        mapFishingActivities(faReportDocument, faReportDocumentEntity.getFishingActivities());
         return faReportDocument;
+    }
+
+    private void mapFishingActivities(FAReportDocument faReportDocument, Set<FishingActivityEntity> fishingActivityEntities) { // TODO MAP
+
+        if (CollectionUtils.isNotEmpty(fishingActivityEntities)){
+
+            List<FishingActivity> fishingActivityList = new ArrayList<>();
+
+            for (FishingActivityEntity fishingActivityEntity : fishingActivityEntities) {
+                FishingActivity fishingActivity = new FishingActivity();
+                setGrantedFLAPDocuments(fishingActivity, fishingActivityEntity.getFlapDocuments()); // TODO map
+                //fishingActivity.getSpecifiedFACatches() // TODO map
+                //fishingActivity.getTypeCode();
+                //fishingActivity.getOccurrenceDateTime();
+
+                //fishingActivity.getReasonCode();
+                //fishingActivity.getOperationsQuantity();
+                //fishingActivity.getFishingDurationMeasure();
+                //fishingActivity.getSpeciesTargetCode();
+                //fishingActivity.getVesselRelatedActivityCode();
+                //fishingActivity.getFisheryTypeCode();
+                fishingActivityList.add(fishingActivity);
+            }
+
+
+            faReportDocument.setSpecifiedFishingActivities(fishingActivityList);
+        }
     }
 
     private void mapRelatedFLUXReportDocument(FAReportDocument faReportDocument, FluxReportDocumentEntity fluxReportDocumentEntity) {
@@ -131,26 +149,20 @@ public class FLUXFAReportMessageEntityToFLUXFAReportMessageMapper {
     }
 
     private void mapSpecifiedVesselTransportMeans(FAReportDocument faReportDocument, Set<VesselTransportMeansEntity> entities) {
-
-        VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
-
         if (isNotEmpty(entities)){
-
+            VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
             VesselTransportMeansEntity transportMeansEntity = entities.iterator().next();
-
             setRoleCode(vesselTransportMeans, transportMeansEntity.getRoleCodeListId(), transportMeansEntity.getRoleCode());
             setNames(vesselTransportMeans, transportMeansEntity.getName());
             setRegistrationVesselCountry(vesselTransportMeans, transportMeansEntity.getCountry(), transportMeansEntity.getCountrySchemeId());
             setRegistrationEvent(vesselTransportMeans, transportMeansEntity.getRegistrationEvent());
             setIDs(vesselTransportMeans, transportMeansEntity.getVesselIdentifiers());
-
             setSpecifiedContactParties(vesselTransportMeans, transportMeansEntity.getContactParty());
-            FishingActivityEntity fishingActivity = transportMeansEntity.getFishingActivity(); // TODO MAP
-            Set<FlapDocumentEntity> flapDocuments = transportMeansEntity.getFlapDocuments();  // TODO MAP
-
+            faReportDocument.setSpecifiedVesselTransportMeans(vesselTransportMeans);
         }
+    }
 
-        faReportDocument.setSpecifiedVesselTransportMeans(vesselTransportMeans);
+    private void setGrantedFLAPDocuments(FishingActivity vesselTransportMeans, Set<FlapDocumentEntity> flapDocumentEntities) { // TODO map
 
     }
 

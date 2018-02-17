@@ -40,14 +40,14 @@ public class GearProblemRecoveryEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gear_problem_id")
-    private GearProblemEntity gearProblem;
-
     @Column(name = "recovery_measure_code", nullable = false)
     private String recoveryMeasureCode;
 
     @Column(name = "recovery_measure_code_list_id", nullable = false)
     private String recoveryMeasureCodeListId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gear_problem_id")
+    private GearProblemEntity gearProblem;
 
 }

@@ -38,10 +38,6 @@ public class AapProductEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "aap_process_id")
-	private AapProcessEntity aapProcess;
-	
 	@Column(name = "packaging_type_code")
 	private String packagingTypeCode;
 	
@@ -101,4 +97,9 @@ public class AapProductEntity implements Serializable {
 
 	@Column(name = "usage_code_list_id")
 	private String usageCodeListId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "aap_process_id")
+	private AapProcessEntity aapProcess;
+
 }

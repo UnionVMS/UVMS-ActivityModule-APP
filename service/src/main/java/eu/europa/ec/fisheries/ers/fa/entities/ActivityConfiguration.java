@@ -53,8 +53,4 @@ public class ActivityConfiguration implements Serializable {
     @Column(name = "config_value")
     private String configValue;
 
-    public ActivityConfiguration(String configName, String configValue) {
-        setConfigName(configName);
-        setConfigValue(configValue);
-    }
 }

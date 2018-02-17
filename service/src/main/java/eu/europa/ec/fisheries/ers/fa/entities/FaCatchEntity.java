@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 
 @NamedQueries({
 		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
-				query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
+				query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " + // FIXME sum
 						"FROM FaCatchEntity faCatch " +
 						"JOIN faCatch.fluxLocations fluxLoc " +
 						"JOIN faCatch.fishingActivity fishAct " +

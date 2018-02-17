@@ -30,7 +30,10 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 
 @Entity
@@ -38,6 +41,9 @@ import org.apache.commons.collections.CollectionUtils;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 public class FluxReportDocumentEntity implements Serializable {
 
     @Id
@@ -79,90 +85,6 @@ public class FluxReportDocumentEntity implements Serializable {
     @OneToMany(mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
     private Set<FluxReportIdentifierEntity> fluxReportIdentifiers;
 
-    public int getId() {
-        return this.id;
-    }
-
-    public String getReferenceId() {
-        return this.referenceId;
-    }
-
-    public void setReferenceId(String referenceId) {
-        this.referenceId = referenceId;
-    }
-
-    public String getReferenceSchemeId() {
-        return referenceSchemeId;
-    }
-
-    public void setReferenceSchemeId(String referenceSchemeId) {
-        this.referenceSchemeId = referenceSchemeId;
-    }
-
-    public Date getCreationDatetime() {
-        return this.creationDatetime;
-    }
-
-    public void setCreationDatetime(Date creationDatetime) {
-        this.creationDatetime = creationDatetime;
-    }
-
-    public String getPurposeCode() {
-        return this.purposeCode;
-    }
-
-    public void setPurposeCode(String purposeCode) {
-        this.purposeCode = purposeCode;
-    }
-
-    public String getPurposeCodeListId() {
-        return this.purposeCodeListId;
-    }
-
-    public void setPurposeCodeListId(String purposeCodeListId) {
-        this.purposeCodeListId = purposeCodeListId;
-    }
-
-    public String getPurpose() {
-        return this.purpose;
-    }
-
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
-
-    public FaReportDocumentEntity getFaReportDocument() {
-        return faReportDocument;
-    }
-
-    public void setFaReportDocument(FaReportDocumentEntity faReportDocument) {
-        this.faReportDocument = faReportDocument;
-    }
-
-    public Set<FluxReportIdentifierEntity> getFluxReportIdentifiers() {
-        return fluxReportIdentifiers;
-    }
-
-    public void setFluxReportIdentifiers(Set<FluxReportIdentifierEntity> fluxReportIdentifiers) {
-        this.fluxReportIdentifiers = fluxReportIdentifiers;
-    }
-
-    public FluxFaReportMessageEntity getFluxFaReportMessage() {
-        return fluxFaReportMessage;
-    }
-
-    public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
-        this.fluxFaReportMessage = fluxFaReportMessage;
-    }
-
-    public FluxPartyEntity getFluxParty() {
-        return fluxParty;
-    }
-
-    public void setFluxParty(FluxPartyEntity fluxParty) {
-        this.fluxParty = fluxParty;
-    }
-
     public String getFluxPartyIdentifierBySchemeId(String schemeId) {
         if (CollectionUtils.isNotEmpty(fluxReportIdentifiers)) {
             for (FluxReportIdentifierEntity fluxReportIdentifierEntity : fluxReportIdentifiers) {
@@ -172,17 +94,5 @@ public class FluxReportDocumentEntity implements Serializable {
             }
         }
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return "FluxReportDocumentEntity{" +
-                "id=" + id +
-                ", referenceId='" + referenceId + '\'' +
-                ", creationDatetime=" + creationDatetime +
-                ", purposeCode='" + purposeCode + '\'' +
-                ", purposeCodeListId='" + purposeCodeListId + '\'' +
-                ", purpose='" + purpose + '\'' +
-                '}';
     }
 }
