@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -46,7 +45,11 @@ import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Type;
 
 @NamedQueries({
@@ -83,6 +86,9 @@ import org.hibernate.annotations.Type;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@ToString(of = {"id", "typeCode", "reasonCode", "occurence"})
+@EqualsAndHashCode(of = "id")
 public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
@@ -98,7 +104,6 @@ public class FishingActivityEntity implements Serializable {
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	@Column(name = "geom")
 	private Geometry geom;
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_report_document_id")
@@ -174,7 +179,7 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "calculated_start_time", length = 29)
 	private Date calculatedStartTime;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
 	private FishingActivityEntity relatedFishingActivity;
 
@@ -208,7 +213,6 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments;
 
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
@@ -223,344 +227,14 @@ public class FishingActivityEntity implements Serializable {
         return flapDocument;
     }
 
-	public int getId() {
-		return this.id;
-	}
-
-	public Geometry getGeom() {
-		return geom;
-	}
-
-	public void setGeom(Geometry geom) {
-		this.geom = geom;
-	}
-
-	public FaReportDocumentEntity getFaReportDocument() {
-		return this.faReportDocument;
-	}
-
-	public void setFaReportDocument(
-			FaReportDocumentEntity faReportDocument) {
-		this.faReportDocument = faReportDocument;
-	}
-
-	public VesselStorageCharacteristicsEntity getSourceVesselCharId() {
-		return this.sourceVesselCharId;
-	}
-
-	public void setSourceVesselCharId(
-			VesselStorageCharacteristicsEntity sourceVesselCharId) {
-		this.sourceVesselCharId = sourceVesselCharId;
-	}
-
-	public VesselStorageCharacteristicsEntity getDestVesselCharId() {
-		return this.destVesselCharId;
-	}
-
-    public void setDestVesselCharId(VesselStorageCharacteristicsEntity destVesselCharId) {
-        this.destVesselCharId = destVesselCharId;
-	}
-
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	public String getTypeCodeListid() {
-		return this.typeCodeListid;
-	}
-
-	public void setTypeCodeListid(String typeCodeListid) {
-		this.typeCodeListid = typeCodeListid;
-	}
-
-	public Date getOccurence() {
-		return this.occurence;
-	}
-
-	public void setOccurence(Date occurence) {
-		this.occurence = occurence;
-	}
-
-	public String getReasonCode() {
-		return this.reasonCode;
-	}
-
-	public void setReasonCode(String reasonCode) {
-		this.reasonCode = reasonCode;
-	}
-
-	public String getReasonCodeListId() {
-		return this.reasonCodeListId;
-	}
-
-	public void setReasonCodeListId(String reasonCodeListId) {
-		this.reasonCodeListId = reasonCodeListId;
-	}
-
-	public String getVesselActivityCode() {
-		return this.vesselActivityCode;
-	}
-
-	public void setVesselActivityCode(String vesselActivityCode) {
-		this.vesselActivityCode = vesselActivityCode;
-	}
-
-	public String getVesselActivityCodeListId() {
-		return this.vesselActivityCodeListId;
-	}
-
-	public void setVesselActivityCodeListId(String vesselActivityCodeListId) {
-		this.vesselActivityCodeListId = vesselActivityCodeListId;
-	}
-
-	public String getFisheryTypeCode() {
-		return this.fisheryTypeCode;
-	}
-
-	public void setFisheryTypeCode(String fisheryTypeCode) {
-		this.fisheryTypeCode = fisheryTypeCode;
-	}
-
-	public String getFisheryTypeCodeListId() {
-		return this.fisheryTypeCodeListId;
-	}
-
-	public void setFisheryTypeCodeListId(String fisheryTypeCodeListId) {
-		this.fisheryTypeCodeListId = fisheryTypeCodeListId;
-	}
-
-	public String getSpeciesTargetCode() {
-		return this.speciesTargetCode;
-	}
-
-	public void setSpeciesTargetCode(String speciesTargetCode) {
-		this.speciesTargetCode = speciesTargetCode;
-	}
-
-	public String getSpeciesTargetCodeListId() {
-		return this.speciesTargetCodeListId;
-	}
-
-	public void setSpeciesTargetCodeListId(String speciesTargetCodeListId) {
-		this.speciesTargetCodeListId = speciesTargetCodeListId;
-	}
-
-	public Double getOperationQuantity() {
-		return this.operationQuantity;
-	}
-
-	public void setOperationQuantity(Double operationQuantity) {
-		this.operationQuantity = operationQuantity;
-	}
-
-	public Double getFishingDurationMeasure() {
-		return this.fishingDurationMeasure;
-	}
-
-	public void setFishingDurationMeasure(Double fishingDurationMeasure) {
-		this.fishingDurationMeasure = fishingDurationMeasure;
-	}
-
-	public FishingActivityEntity getRelatedFishingActivity() {
-		return relatedFishingActivity;
-	}
-
-	public void setRelatedFishingActivity(FishingActivityEntity relatedFishingActivity) {
-		this.relatedFishingActivity = relatedFishingActivity;
-	}
-
-	public Set<FaCatchEntity> getFaCatchs() {
-		return this.faCatchs;
-	}
-
-	public void setFaCatchs(Set<FaCatchEntity> faCatchs) {
-		this.faCatchs = faCatchs;
-	}
-
-	public Set<DelimitedPeriodEntity> getDelimitedPeriods() {
-		return this.delimitedPeriods;
-	}
-
-	public void setDelimitedPeriods(
-			Set<DelimitedPeriodEntity> delimitedPeriods) {
-		this.delimitedPeriods = delimitedPeriods;
-	}
-
-	public Set<FishingActivityIdentifierEntity> getFishingActivityIdentifiers() {
-		return this.fishingActivityIdentifiers;
-	}
-
-	public void setFishingActivityIdentifiers(
-			Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers) {
-		this.fishingActivityIdentifiers = fishingActivityIdentifiers;
-	}
-
-	public Set<FishingTripEntity> getFishingTrips() {
-		return this.fishingTrips;
-	}
-
-	public void setFishingTrips(
-			Set<FishingTripEntity> fishingTrips) {
-		this.fishingTrips = fishingTrips;
-	}
-
-	public Set<FishingGearEntity> getFishingGears() {
-		return this.fishingGears;
-	}
-
-	public void setFishingGears(
-			Set<FishingGearEntity> fishingGears) {
-		this.fishingGears = fishingGears;
-	}
-
-	public Set<FluxCharacteristicEntity> getFluxCharacteristics() {
-		return this.fluxCharacteristics;
-	}
-
-	public void setFluxCharacteristics(
-			Set<FluxCharacteristicEntity> fluxCharacteristics) {
-		this.fluxCharacteristics = fluxCharacteristics;
-	}
-
-	public Set<GearProblemEntity> getGearProblems() {
-		return this.gearProblems;
-	}
-
-	public void setGearProblems(
-			Set<GearProblemEntity> gearProblems) {
-		this.gearProblems = gearProblems;
-	}
-
-	public Set<FluxLocationEntity> getFluxLocations() {
-		return fluxLocations;
-	}
-
-	public void setFluxLocations(Set<FluxLocationEntity> fluxLocations) {
-		this.fluxLocations = fluxLocations;
-	}
-
-	public Set<FishingActivityEntity> getAllRelatedFishingActivities() {
-		return allRelatedFishingActivities;
-	}
-
-	public void setAllRelatedFishingActivities(Set<FishingActivityEntity> allRelatedFishingActivities) {
-		this.allRelatedFishingActivities = allRelatedFishingActivities;
-	}
-
-	public String getFishingDurationMeasureCode() {
-		return fishingDurationMeasureCode;
-	}
-
-	public void setFishingDurationMeasureCode(String fishingDurationMeasureCode) {
-		this.fishingDurationMeasureCode = fishingDurationMeasureCode;
-	}
-
-	public Double getCalculatedFishingDuration() {
-		return calculatedFishingDuration;
-	}
-
-	public void setCalculatedFishingDuration(Double calculatedFishingDuration) {
-		this.calculatedFishingDuration = calculatedFishingDuration;
-	}
-
-	public String getOperationQuantityCode() {
-		return operationQuantityCode;
-	}
-
-	public void setOperationQuantityCode(String operationQuantityCode) {
-		this.operationQuantityCode = operationQuantityCode;
-	}
-
-	public Double getCalculatedOperationQuantity() {
-		return calculatedOperationQuantity;
-	}
-
-	public void setCalculatedOperationQuantity(Double calculatedOperationQuantity) {
-		this.calculatedOperationQuantity = calculatedOperationQuantity;
-	}
-
-
-
-	public String getVesselTransportGuid() {
-		return vesselTransportGuid;
-	}
-
-	public void setVesselTransportGuid(String vesselTransportGuid) {
-		this.vesselTransportGuid = vesselTransportGuid;
-	}
-
-    public String getWkt() {
-        return wkt;
-    }
-
-	public Set<VesselTransportMeansEntity> getVesselTransportMeans() {
-		return vesselTransportMeans;
-	}
-
-	public void setVesselTransportMeans(Set<VesselTransportMeansEntity> vesselTransportMeans) {
-		this.vesselTransportMeans = vesselTransportMeans;
-	}
-
-	@Override
-	public String toString() {
-		return "FishingActivityEntity{" +
-				"id=" + id +
-				", faReportDocument=" + faReportDocument +
-				", sourceVesselCharId=" + sourceVesselCharId +
-				", destVesselCharId=" + destVesselCharId +
-				", typeCode='" + typeCode + '\'' +
-				", typeCodeListid='" + typeCodeListid + '\'' +
-				", occurence=" + occurence +
-				", reasonCode='" + reasonCode + '\'' +
-				", reasonCodeListId='" + reasonCodeListId + '\'' +
-				", vesselActivityCode='" + vesselActivityCode + '\'' +
-				", vesselActivityCodeListId='" + vesselActivityCodeListId + '\'' +
-				", fisheryTypeCode='" + fisheryTypeCode + '\'' +
-				", fisheryTypeCodeListId='" + fisheryTypeCodeListId + '\'' +
-				", speciesTargetCode='" + speciesTargetCode + '\'' +
-				", speciesTargetCodeListId='" + speciesTargetCodeListId + '\'' +
-				", operationQuantity=" + operationQuantity +
-				", fishingDurationMeasure=" + fishingDurationMeasure +
-
-				'}';
-	}
-
-	public Set<FlapDocumentEntity> getFlapDocuments() {
-		return flapDocuments;
-	}
-
-	public void setFlapDocuments(Set<FlapDocumentEntity> flapDocuments) {
-		this.flapDocuments = flapDocuments;
-	}
-
-    public String getFlagState() {
-        return flagState;
-    }
-
-    public void setFlagState(String flagState) {
-        this.flagState = flagState;
-    }
-
-	public Date getCalculatedStartTime() {
-		return calculatedStartTime;
-	}
-
-	public void setCalculatedStartTime(Date calculatedStartTime) {
-		this.calculatedStartTime = calculatedStartTime;
-	}
-
 	@PostLoad
 	private void onLoad() {
         if (this.geom != null) {
             this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
         }
     }
-    public Double getCalculatedDuration(){
 
+    public Double getCalculatedDuration(){
         if (isEmpty(delimitedPeriods)) {
             return null;
         }
@@ -572,7 +246,6 @@ public class FishingActivityEntity implements Serializable {
 	}
 
 	public Double getDuration(){
-
 		if (isEmpty(delimitedPeriods)) {
 			return null;
 		}
@@ -584,7 +257,7 @@ public class FishingActivityEntity implements Serializable {
 	}
 
 	public String getDurationMeasure(){
-        if (isEmpty(delimitedPeriods)) {
+        if (CollectionUtils.isEmpty(delimitedPeriods)) {
             return null;
         }
         return delimitedPeriods.iterator().next().getDurationUnitCode(); // As per rules only MIN is allowed

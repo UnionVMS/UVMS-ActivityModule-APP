@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,12 +24,16 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_fishing_activity_identifier")
 @Data
 @NoArgsConstructor
+@ToString(of = "id")
+@EqualsAndHashCode(of = {"faIdentifierId", "faIdentifierSchemeId"})
 public class FishingActivityIdentifierEntity implements Serializable {
 
 	@Id
@@ -37,14 +42,14 @@ public class FishingActivityIdentifierEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
-
 	@Column(name = "fa_identifier_id")
 	private String faIdentifierId;
 
 	@Column(name = "fa_identifier_scheme_id")
 	private String faIdentifierSchemeId;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "fishing_activity_id")
+	private FishingActivityEntity fishingActivity;
 
 }

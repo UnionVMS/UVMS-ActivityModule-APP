@@ -60,28 +60,42 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
  */
 public class FLUXFAReportMessageEntityToFLUXFAReportMessageMapper {
 
-    public FLUXFAReportMessage mapToFluxFaReportMessageEntity(FluxFaReportMessageEntity fluxFaReportMessageEntity){
-
+    public FLUXFAReportMessage mapToFAReportDocument(FluxFaReportMessageEntity fluxFaReportMessageEntity){
         FLUXFAReportMessage fluxfaReportMessage = new FLUXFAReportMessage();
-
-        Set<FaReportDocumentEntity> faReportDocuments = fluxFaReportMessageEntity.getFaReportDocuments();
-
-        List<FAReportDocument> faReportDocumentList = new ArrayList<>();
-
-        if (CollectionUtils.isNotEmpty(faReportDocuments)){
-
-            for (FaReportDocumentEntity faReportDocumentEntity : faReportDocuments){
-                FAReportDocument faReportDocument = mapToFluxFaReportMessageEntity(faReportDocumentEntity);
-                faReportDocumentList.add(faReportDocument);
-            }
-        }
-
-        fluxfaReportMessage.setFAReportDocuments(faReportDocumentList);
-
+        mapFLUXReportDocument(fluxfaReportMessage, fluxFaReportMessageEntity);
+        mapFAReportDocuments(fluxFaReportMessageEntity, fluxfaReportMessage);
         return fluxfaReportMessage;
     }
 
-    private FAReportDocument mapToFluxFaReportMessageEntity(FaReportDocumentEntity faReportDocumentEntity) {
+    private void mapFLUXReportDocument(FLUXFAReportMessage fluxfaReportMessage, FluxFaReportMessageEntity fluxFaReportMessageEntity) {
+        if (ObjectUtils.allNotNull(fluxfaReportMessage, fluxfaReportMessage)){
+            FluxReportDocumentEntity fluxReportDocumentEntity = fluxFaReportMessageEntity.getFluxReportDocument();
+            if (fluxReportDocumentEntity != null){
+                FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
+                mapTypeCode(fluxReportDocument, fluxReportDocumentEntity.getPurposeCode(), fluxReportDocumentEntity.getPurposeCodeListId());
+                mapCreationDateTime(fluxReportDocument, fluxReportDocumentEntity.getCreationDatetime());
+                mapReferencedID(fluxReportDocument, fluxReportDocumentEntity.getReferenceId(), fluxReportDocumentEntity.getReferenceSchemeId());
+                mapTextType(fluxReportDocument, fluxReportDocumentEntity.getPurpose());
+                mapOwnerFLUXParty(fluxReportDocument, fluxReportDocumentEntity.getFluxParty());
+                mapIDS(fluxReportDocument, fluxReportDocumentEntity.getFluxReportIdentifiers());
+                fluxfaReportMessage.setFLUXReportDocument(fluxReportDocument);
+            }
+        }
+    }
+
+    private void mapFAReportDocuments(FluxFaReportMessageEntity fluxFaReportMessageEntity, FLUXFAReportMessage fluxfaReportMessage) {
+        Set<FaReportDocumentEntity> faReportDocuments = fluxFaReportMessageEntity.getFaReportDocuments();
+        List<FAReportDocument> faReportDocumentList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(faReportDocuments)){
+            for (FaReportDocumentEntity faReportDocumentEntity : faReportDocuments){
+                FAReportDocument faReportDocument = mapToFAReportDocument(faReportDocumentEntity);
+                faReportDocumentList.add(faReportDocument);
+            }
+        }
+        fluxfaReportMessage.setFAReportDocuments(faReportDocumentList);
+    }
+
+    private FAReportDocument mapToFAReportDocument(FaReportDocumentEntity faReportDocumentEntity) {
 
         FAReportDocument faReportDocument = new FAReportDocument();
 
@@ -103,7 +117,20 @@ public class FLUXFAReportMessageEntityToFLUXFAReportMessageMapper {
         return faReportDocument;
     }
 
-        private void mapSpecifiedVesselTransportMeans(FAReportDocument faReportDocument, Set<VesselTransportMeansEntity> entities) {
+    private void mapRelatedFLUXReportDocument(FAReportDocument faReportDocument, FluxReportDocumentEntity fluxReportDocumentEntity) {
+        if (ObjectUtils.allNotNull(faReportDocument, fluxReportDocumentEntity)){
+            FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
+            mapTypeCode(fluxReportDocument, fluxReportDocumentEntity.getPurposeCode(), fluxReportDocumentEntity.getPurposeCodeListId());
+            mapCreationDateTime(fluxReportDocument, fluxReportDocumentEntity.getCreationDatetime());
+            mapReferencedID(fluxReportDocument, fluxReportDocumentEntity.getReferenceId(), fluxReportDocumentEntity.getReferenceSchemeId());
+            mapTextType(fluxReportDocument, fluxReportDocumentEntity.getPurpose());
+            mapOwnerFLUXParty(fluxReportDocument, fluxReportDocumentEntity.getFluxParty());
+            mapIDS(fluxReportDocument, fluxReportDocumentEntity.getFluxReportIdentifiers());
+            faReportDocument.setRelatedFLUXReportDocument(fluxReportDocument);
+        }
+    }
+
+    private void mapSpecifiedVesselTransportMeans(FAReportDocument faReportDocument, Set<VesselTransportMeansEntity> entities) {
 
         VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
 
@@ -303,25 +330,6 @@ public class FLUXFAReportMessageEntityToFLUXFAReportMessageMapper {
             }
             faReportDocument.setRelatedReportIDs(idTypeList);
         }
-    }
-
-    private void mapRelatedFLUXReportDocument(FAReportDocument faReportDocument, FluxReportDocumentEntity entity) {
-
-        FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
-
-        mapTypeCode(fluxReportDocument, entity.getPurposeCode(), entity.getPurposeCodeListId());
-
-        mapCreationDateTime(fluxReportDocument, entity.getCreationDatetime());
-
-        mapReferencedID(fluxReportDocument, entity.getReferenceId(), entity.getReferenceSchemeId());
-
-        mapTextType(fluxReportDocument, entity.getPurpose());
-
-        mapOwnerFLUXParty(fluxReportDocument, entity.getFluxParty());
-
-        mapIDS(fluxReportDocument, entity.getFluxReportIdentifiers());
-
-        faReportDocument.setRelatedFLUXReportDocument(fluxReportDocument);
     }
 
     private void mapIDS(FLUXReportDocument fluxReportDocument, Set<FluxReportIdentifierEntity> fluxReportIdentifiers) {

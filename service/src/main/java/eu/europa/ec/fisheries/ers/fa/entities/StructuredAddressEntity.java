@@ -31,11 +31,11 @@ public class StructuredAddressEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_party_id")
     private ContactPartyEntity contactParty;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flux_location_id")
     private FluxLocationEntity fluxLocation;
 

@@ -13,6 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
@@ -23,17 +31,9 @@ import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilde
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Hibernate;
 
 /**
  * Created by sanera on 23/08/2016.
@@ -101,9 +101,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
             listQuery.setMaxResults(pagination.getPageSize());
         }
 
-        List resultList = listQuery.getResultList();
-        Hibernate.initialize(resultList);
-        return resultList;
+        return listQuery.getResultList();
     }
 
 
@@ -115,21 +113,21 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * @throws ServiceException
      */
     public Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
+
         Query listQuery = getQueryForFilterFishingTripIds(query);
         PaginationDto pagination = query.getPagination();
-        if (pagination != null) {
-            log.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
+        if (pagination != null && pagination.getOffset() != null) {
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
         List<Object[]> resultList = listQuery.getResultList();
-        Hibernate.initialize(resultList);
+
         if (CollectionUtils.isEmpty(resultList))
             return Collections.emptySet();
         Set<FishingTripId> fishingTripIds = new HashSet<>();
         for(Object[] objArr :resultList){
             try {
-                if(objArr !=null && objArr.length ==2){
+                if (objArr !=null && objArr.length ==2){
                     fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1]) );
                 }
             } catch (Exception e) {

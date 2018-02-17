@@ -481,7 +481,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         FLUXFAReportMessageEntityToFLUXFAReportMessageMapper faReportEntityToModelMapper = new FLUXFAReportMessageEntityToFLUXFAReportMessageMapper();
         if (CollectionUtils.isNotEmpty(faReportDocumentsForTrip)){
             FaReportDocumentEntity faReportDocumentEntity = faReportDocumentsForTrip.get(0);
-            return faReportEntityToModelMapper.mapToFluxFaReportMessageEntity(faReportDocumentEntity.getFluxFaReportMessage());
+            return faReportEntityToModelMapper.mapToFAReportDocument(faReportDocumentEntity.getFluxFaReportMessage());
         }
         return null;
     }

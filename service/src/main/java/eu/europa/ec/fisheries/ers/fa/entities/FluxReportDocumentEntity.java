@@ -72,7 +72,7 @@ public class FluxReportDocumentEntity implements Serializable {
     @OneToOne(mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, optional=false)
     @JoinColumn(name = "flux_party_id")
     private FluxPartyEntity fluxParty;
 
