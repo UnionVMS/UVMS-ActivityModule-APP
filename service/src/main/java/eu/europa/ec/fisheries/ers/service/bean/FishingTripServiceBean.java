@@ -108,6 +108,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -238,7 +239,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private Set<String> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
         if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
                 List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
                 for (FishingTripIdentifierEntity identifiers : identifierEntities) {
@@ -246,14 +247,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 }
             }
         }
-        log.info("Previous Trips : " + tripIds);
+        log.debug("Previous Trips : " + tripIds);
         return tripIds;
     }
 
     private Set<String> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
         if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
                 List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
                 for (FishingTripIdentifierEntity identifiers : identifierEntities) {
@@ -261,7 +262,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 }
             }
         }
-        log.info("Next Trips : " + tripIds);
+        log.debug("Next Trips : " + tripIds);
         return tripIds;
     }
 
@@ -476,14 +477,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return createMessageCounter(faReportDocumentDao.getFaReportDocumentsForTrip(tripId));
     }
 
-    public Object getFaReportDocumentsForTrip(String tripId) {
-        List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDocumentDao.getFaReportDocumentsForFaQuery(tripId);
+    public Object getFaReportDocumentsForTrip(Map<SubCriteriaType, String> criteriaTypeStringMap) {
+
+        String tripId = criteriaTypeStringMap.get(SubCriteriaType.TRIPID);
+        String consolidated = criteriaTypeStringMap.get(SubCriteriaType.CONSOLIDATED);
+
+        List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDocumentDao.getFaReportDocumentsForFaQuery(tripId, consolidated);
         FLUXFAReportMessageEntityToFLUXFAReportMessageMapper faReportEntityToModelMapper = new FLUXFAReportMessageEntityToFLUXFAReportMessageMapper();
-        if (CollectionUtils.isNotEmpty(faReportDocumentsForTrip)){
-            FaReportDocumentEntity faReportDocumentEntity = faReportDocumentsForTrip.get(0);
-            return faReportEntityToModelMapper.mapToFAReportDocument(faReportDocumentEntity.getFluxFaReportMessage());
-        }
-        return null;
+        return faReportEntityToModelMapper.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
     }
     /**
      * Populates the MessageCounter adding to the right counter 1 unit depending on the type of report (typeCode, purposeCode, size()).

@@ -31,6 +31,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 /**
@@ -94,7 +95,7 @@ public interface FishingTripService {
      * @param tripId
      * @return
      */
-    public ObjectNode getTripMapDetailsForTripId(String tripId);
+    ObjectNode getTripMapDetailsForTripId(String tripId);
 
     /**
      * This method will Return filtered FishingTrips which match with provided filter criterias
@@ -129,6 +130,6 @@ public interface FishingTripService {
 
     String getOwnerFluxPartyFromTripId(String tripId);
 
-    Object getFaReportDocumentsForTrip(String tripId);
+    Object getFaReportDocumentsForTrip(Map<SubCriteriaType, String> subCriteriaTypeStringMap);
 
 }

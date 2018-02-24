@@ -53,7 +53,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fmcMarkerListId", expression = "java(getCodeTypeListId(faReportDocument.getFMCMarkerCode()))"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(faReportDocument.getSpecifiedVesselTransportMeans(), faReportDocumentEntity))"),
             @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
-            @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedReportIDs(), faReportDocumentEntity))"),
+            @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedFLUXReportDocument().getIDS(), faReportDocumentEntity))"),
             @Mapping(target = "fishingActivities", expression = "java(getFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))"),
             @Mapping(target = "status", expression = "java(setStatusAsNew())"),
             @Mapping(target = "source", expression = "java(faReportSourceEnum.getSourceType())"),
@@ -115,6 +115,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return fluxReportDocumentEntity;
     }
 
+    // FIXME wrong id mapped
     protected Set<FaReportIdentifierEntity> mapToFAReportIdentifierEntities(List<IDType> idTypes, FaReportDocumentEntity faReportDocumentEntity) {
         if (CollectionUtils.isEmpty(idTypes)) {
             return Collections.emptySet();

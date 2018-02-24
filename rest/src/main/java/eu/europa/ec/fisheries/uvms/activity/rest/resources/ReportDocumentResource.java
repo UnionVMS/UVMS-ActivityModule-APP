@@ -18,8 +18,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import lombok.extern.slf4j.Slf4j;
 
 @Path("/report")
@@ -31,10 +35,15 @@ public class ReportDocumentResource extends UnionVMSResource {
     private FishingTripService fishingTripService;
 
     @GET
-    @Path("/{tripID}")
+    @Path("/{tripID}/{consolidated}")
     @Produces(value = {MediaType.APPLICATION_XML})
-    public Object test(@PathParam("tripID") String tripID){
-        return fishingTripService.getFaReportDocumentsForTrip(tripID);
+    public Object test(@PathParam("tripID") String tripID, @PathParam("consolidated") String consolidated){
+
+        Map<SubCriteriaType, String> subCriteriaTypeStringMap = new HashMap<>();
+        subCriteriaTypeStringMap.put(SubCriteriaType.TRIPID, tripID);
+        subCriteriaTypeStringMap.put(SubCriteriaType.CONSOLIDATED, consolidated);
+
+        return fishingTripService.getFaReportDocumentsForTrip(subCriteriaTypeStringMap);
 
     }
 }

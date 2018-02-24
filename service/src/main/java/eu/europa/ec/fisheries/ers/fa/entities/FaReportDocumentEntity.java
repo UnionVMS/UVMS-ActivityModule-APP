@@ -46,20 +46,14 @@ import org.hibernate.annotations.Type;
                         "WHERE identifier.fluxReportIdentifierId = :reportId " +
                         "AND identifier.fluxReportIdentifierSchemeId = :schemeId"),
 
-        @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
-                query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
-                        "JOIN FETCH fareport.fishingActivities factivity " +
-                        "JOIN FETCH factivity.fishingTrips fishingtrip " +
-                        "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
-                        "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId"),
-
         @NamedQuery(name = FaReportDocumentEntity.FA_QUERY,
                 query = "SELECT rpt FROM FaReportDocumentEntity rpt " +
                         "LEFT JOIN FETCH rpt.fishingActivities act " +
+                        "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
                         "JOIN FETCH act.fishingTrips fshtrp " +
                         "JOIN FETCH fshtrp.fishingTripIdentifiers fshtrpids " +
-                        "WHERE fshtrpids.tripId = :tripId"
+                        "WHERE fshtrpids.tripId = :tripId AND " +
+                        "((flxrep.purposeCode = '9' AND :consolidated = 'N') OR (:consolidated = 'Y' OR :consolidated is NULL))"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID,
                 query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
@@ -67,7 +61,15 @@ import org.hibernate.annotations.Type;
                         "JOIN FETCH factivity.fishingTrips fishingtrip " +
                         "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
                         "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId and fareport.status = 'new'")
+                        "WHERE ftidentifier.tripId  = :tripId and fareport.status = 'new'"),
+
+        @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "JOIN FETCH fareport.fishingActivities factivity " +
+                        "JOIN FETCH factivity.fishingTrips fishingtrip " +
+                        "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
+                        "JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "WHERE ftidentifier.tripId  = :tripId"),
 })
 @Entity
 @Table(name = "activity_fa_report_document")
