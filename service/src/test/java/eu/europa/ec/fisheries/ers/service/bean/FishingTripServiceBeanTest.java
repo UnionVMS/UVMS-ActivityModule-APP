@@ -293,7 +293,7 @@ public class FishingTripServiceBeanTest {
         when(faReportDocumentDao.loadReports("NOR-TRP-20160517234053706", "Y")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
         //Trigger
         ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).loadReports(Mockito.any(String.class), "Y");
+        Mockito.verify(faReportDocumentDao, Mockito.times(1)).loadReports(Mockito.any(String.class), Mockito.any(String.class));
 
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify

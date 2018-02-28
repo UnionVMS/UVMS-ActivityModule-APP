@@ -20,6 +20,7 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -85,9 +86,17 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
         query.setParameter(STATUSES, statuses);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(SCHEME_ID, schemeId);
-        query.setParameter(START_DATE, DateTime.parse(startDate, ISODateTimeFormat.dateTimeParser()).toDate());
-        query.setParameter(END_DATE,  DateTime.parse(endDate, ISODateTimeFormat.dateTimeParser()).toDate());
+        query.setParameter(START_DATE, DateUtils.START_OF_TIME.toDate());
+        query.setParameter(END_DATE, DateUtils.END_OF_TIME.toDate());
 
+        if (startDate != null){
+            query.setParameter(START_DATE, DateTime.parse(startDate, ISODateTimeFormat.dateTimeParser()).toDate());
+        }
+
+        if (endDate != null){
+            query.setParameter(END_DATE,  DateTime.parse(endDate, ISODateTimeFormat.dateTimeParser()).toDate());
+
+        }
         return query.getResultList();
     }
 

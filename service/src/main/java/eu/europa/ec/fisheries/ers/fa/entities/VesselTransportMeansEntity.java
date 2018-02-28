@@ -56,7 +56,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@EqualsAndHashCode(of = {"vesselIdentifiers"})
+@EqualsAndHashCode(exclude = {"contactParty", "vesselIdentifiers", "flapDocuments", "vesselPositionEvents"})
 @ToString(exclude = {"contactParty", "vesselIdentifiers", "flapDocuments", "vesselPositionEvents"})
 public class VesselTransportMeansEntity implements Serializable {
 
