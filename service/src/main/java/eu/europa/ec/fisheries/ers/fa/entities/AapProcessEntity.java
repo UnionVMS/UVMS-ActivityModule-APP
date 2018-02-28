@@ -45,10 +45,6 @@ public class AapProcessEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
-	
 	@Column(name = "conversion_factor")
 	private Double conversionFactor;
 	
@@ -57,5 +53,9 @@ public class AapProcessEntity implements Serializable {
 
 	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<AapProcessCodeEntity> aapProcessCode;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fa_catch_id")
+	private FaCatchEntity faCatch;
 
 }

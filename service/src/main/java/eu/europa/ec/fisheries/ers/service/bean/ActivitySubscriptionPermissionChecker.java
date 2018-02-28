@@ -8,17 +8,9 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
-import eu.europa.ec.fisheries.ers.service.mapper.subscription.ActivityToSubscriptionMapper;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
-import eu.europa.fisheries.uvms.subscription.model.mapper.SubscriptionModuleResponseMapper;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -27,6 +19,16 @@ import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
+
+import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
+import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
+import eu.europa.fisheries.uvms.subscription.model.mapper.SubscriptionModuleResponseMapper;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
@@ -46,7 +48,7 @@ public class ActivitySubscriptionPermissionChecker {
     private Destination activityReplyToQueue;
 
     public SubscriptionPermissionResponse checkPermissionForFaQuery(FAQuery faQuery) throws ActivityModuleException {
-        SubscriptionDataRequest subscriptionDataRequest = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(faQuery);
+        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(faQuery);
         String subscrPermissionRequest;
         try {
             subscrPermissionRequest = JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest);
@@ -57,7 +59,7 @@ public class ActivitySubscriptionPermissionChecker {
     }
 
     public SubscriptionPermissionResponse checkPermissionForFaReport(FLUXFAReportMessage faReport) throws ActivityModuleException {
-        SubscriptionDataRequest subscriptionDataRequest = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(faReport);
+        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(faReport);
         String subscrPermissionRequest;
         try {
             subscrPermissionRequest = JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest);

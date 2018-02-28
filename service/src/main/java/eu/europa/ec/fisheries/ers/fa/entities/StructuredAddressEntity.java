@@ -31,14 +31,6 @@ public class StructuredAddressEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "contact_party_id")
-    private ContactPartyEntity contactParty;
-
-    @ManyToOne
-    @JoinColumn(name = "flux_location_id")
-    private FluxLocationEntity fluxLocation;
-
     @Column(name = "block_name", length = 1000)
     private String blockName;
 
@@ -78,5 +70,13 @@ public class StructuredAddressEntity implements Serializable {
 
     @Column(name = "structured_address_type")
     private String structuredAddressType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contact_party_id")
+    private ContactPartyEntity contactParty;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flux_location_id")
+    private FluxLocationEntity fluxLocation;
 
 }

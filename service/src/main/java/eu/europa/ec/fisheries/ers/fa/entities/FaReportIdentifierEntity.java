@@ -24,12 +24,14 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_fa_report_identifier")
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"faReportIdentifierId","faReportIdentifierSchemeId"})
 public class FaReportIdentifierEntity implements Serializable {
 
 	@Id

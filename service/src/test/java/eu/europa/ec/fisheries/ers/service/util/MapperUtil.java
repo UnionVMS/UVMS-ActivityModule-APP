@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.SummaryReportDTO;
@@ -273,7 +274,7 @@ public class MapperUtil {
 
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        faReportDocumentEntity.setStatus(FaReportStatusEnum.UPDATED.getStatus());
+        faReportDocumentEntity.setStatus(FaReportStatusType.UPDATED.getStatus());
         faReportDocumentEntity.setTypeCode("FISHING_OPERATION");
         faReportDocumentEntity.setTypeCodeListId("FLUX_FA_REPORT_TYPE");
         faReportDocumentEntity.setAcceptedDatetime(new Date());
@@ -293,7 +294,7 @@ public class MapperUtil {
         faReportIdentifierEntity.setFaReportIdentifierId("Identifier Id 1");
         faReportIdentifierEntity.setFaReportIdentifierSchemeId("57th785-tjf845-tjfui5-tjfuir8");
         faReportIdentifierEntity.setFaReportDocument(faReportDocumentEntity);
-        faReportDocumentEntity.setFaReportIdentifiers(new HashSet<FaReportIdentifierEntity>(Arrays.asList(faReportIdentifierEntity)));
+        faReportDocumentEntity.setFaReportIdentifiers(new HashSet<>(Collections.singletonList(faReportIdentifierEntity)));
 
         FluxReportDocumentEntity fluxReportDocumentEntity = getFluxReportDocumentEntity();
         fluxReportDocumentEntity.setFaReportDocument(faReportDocumentEntity);

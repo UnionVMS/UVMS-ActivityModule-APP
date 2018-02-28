@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
@@ -26,6 +27,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @NamedQueries({
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRIP,
@@ -80,6 +85,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "activity_fishing_trip_identifier")
+@Data
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 public class FishingTripIdentifierEntity implements Serializable {
 
 	public static final String FIND_CURRENT_TRIP = "findCurrentTrip";
@@ -92,13 +100,8 @@ public class FishingTripIdentifierEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_trip_id")
-	private FishingTripEntity fishingTrip;
-
 	@Column(name = "trip_id", nullable = false)
 	private String tripId;
-
 
 	@Column(name = "trip_scheme_id", nullable = false)
 	private String tripSchemeId;
@@ -111,53 +114,8 @@ public class FishingTripIdentifierEntity implements Serializable {
 	@Column(name = "calculated_trip_end_date", length = 29)
 	private Date calculatedTripEndDate;
 
-	public FishingTripIdentifierEntity() {
-		super();
-	}
-	public int getId() {
-		return this.id;
-	}
-	public FishingTripEntity getFishingTrip() {
-		return this.fishingTrip;
-	}
-	public void setFishingTrip(FishingTripEntity fishingTrip) {
-		this.fishingTrip = fishingTrip;
-	}
-	public String getTripId() {
-		return this.tripId;
-	}
-	public void setTripId(String tripId) {
-		this.tripId = tripId;
-	}
-	public String getTripSchemeId() {
-		return this.tripSchemeId;
-	}
-	public void setTripSchemeId(String tripSchemeId) {
-		this.tripSchemeId = tripSchemeId;
-	}
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fishing_trip_id")
+    private FishingTripEntity fishingTrip;
 
-	public Date getCalculatedTripStartDate() {
-		return calculatedTripStartDate;
-	}
-
-	public void setCalculatedTripStartDate(Date calculatedTripStartDate) {
-		this.calculatedTripStartDate = calculatedTripStartDate;
-	}
-
-	public Date getCalculatedTripEndDate() {
-		return calculatedTripEndDate;
-	}
-
-	public void setCalculatedTripEndDate(Date calculatedTripEndDate) {
-		this.calculatedTripEndDate = calculatedTripEndDate;
-	}
-
-	@Override
-	public String toString() {
-		return "FishingTripIdentifierEntity{" +
-				"id=" + id +
-				", tripId='" + tripId + '\'' +
-				", tripSchemeId='" + tripSchemeId + '\'' +
-				'}';
-	}
 }

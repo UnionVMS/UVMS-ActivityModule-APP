@@ -41,7 +41,7 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
     })
     public abstract FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, @MappingTarget FluxFaReportMessageEntity fluxFaReportMessage);
 
-    protected Set<FaReportDocumentEntity>  getFaReportDocuments(List<FAReportDocument> faReportDocuments,
+    protected Set<FaReportDocumentEntity> getFaReportDocuments(List<FAReportDocument> faReportDocuments,
                                                                 FaReportSourceEnum faReportSourceEnum,
                                                                 FluxFaReportMessageEntity fluxFaReportMessage){
         Set<FaReportDocumentEntity> faReportDocumentEntities = new HashSet<>();

@@ -13,6 +13,20 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,20 +58,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by padhyad on 9/29/2016.
@@ -290,10 +290,10 @@ public class FishingTripServiceBeanTest {
     @SneakyThrows
     public void testGetTripMapDetailsForTripId() throws ServiceException, JsonProcessingException {
         String expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}";
-        when(faReportDocumentDao.getLatestFaReportDocumentsForTrip("NOR-TRP-20160517234053706")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
+        when(faReportDocumentDao.loadReports("NOR-TRP-20160517234053706", "Y")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
         //Trigger
         ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).getLatestFaReportDocumentsForTrip(Mockito.any(String.class));
+        Mockito.verify(faReportDocumentDao, Mockito.times(1)).loadReports(Mockito.any(String.class), Mockito.any(String.class));
 
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify
@@ -331,7 +331,6 @@ public class FishingTripServiceBeanTest {
         assertNotNull(response);
 
     }
-
 
     @Test
     @SneakyThrows

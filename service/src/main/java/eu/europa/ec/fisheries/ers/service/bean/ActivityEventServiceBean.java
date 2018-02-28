@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.subscription.ActivityToSubscriptionMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
@@ -121,11 +121,11 @@ public class ActivityEventServiceBean implements EventService {
             switch (baseRequest.getMessageType()){
                 case FLUX_FA_QUERY_MESSAGE:
                     FLUXFAQueryMessage fluxfaQueryMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAQueryMessage.class);
-                    subscriptionDataRequest = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
+                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
                     break;
                 case FLUX_FA_REPORT_MESSAGE:
                     FLUXFAReportMessage fluxFAReportMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAReportMessage.class);
-                    subscriptionDataRequest = ActivityToSubscriptionMapper.mapToSubscriptionDataRequest(fluxFAReportMessage);
+                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxFAReportMessage);
                     break;
                     default:
                         sendError(message, new IllegalArgumentException("VERBODEN VRUCHT"));

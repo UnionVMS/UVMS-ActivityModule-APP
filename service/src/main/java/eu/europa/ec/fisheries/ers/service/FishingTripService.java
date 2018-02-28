@@ -13,6 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -28,10 +31,8 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -94,7 +95,7 @@ public interface FishingTripService {
      * @param tripId
      * @return
      */
-    public ObjectNode getTripMapDetailsForTripId(String tripId);
+    ObjectNode getTripMapDetailsForTripId(String tripId);
 
     /**
      * This method will Return filtered FishingTrips which match with provided filter criterias
@@ -128,4 +129,6 @@ public interface FishingTripService {
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
 
     String getOwnerFluxPartyFromTripId(String tripId);
+
+
 }

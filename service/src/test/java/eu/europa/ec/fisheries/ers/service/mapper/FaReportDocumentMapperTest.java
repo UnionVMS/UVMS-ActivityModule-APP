@@ -13,19 +13,26 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
 /**
  * Created by padhyad on 7/18/2016.
@@ -60,6 +67,19 @@ public class FaReportDocumentMapperTest {
         assertEquals(entity.getFluxReportIdentifierSchemeId(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
     }
+
+    @Test
+
+    public void testReportDocumentMapper() {
+
+        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
+        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
+        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity, FaReportSourceEnum.FLUX);
+
+
+
+    }
+
 
     @Test
     public void testFaReportDocumentMapper() {
@@ -105,7 +125,7 @@ public class FaReportDocumentMapperTest {
         assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), faReportDocumentEntity.getAcceptedDatetime());
         assertEquals(faReportDocument.getFMCMarkerCode().getValue(), faReportDocumentEntity.getFmcMarker());
         assertEquals(faReportDocument.getFMCMarkerCode().getListID(), faReportDocumentEntity.getFmcMarkerListId());
-        assertEquals(FaReportStatusEnum.NEW.getStatus(), faReportDocumentEntity.getStatus());
+        assertEquals(FaReportStatusType.NEW.getStatus(), faReportDocumentEntity.getStatus());
         assertEquals(FaReportSourceEnum.FLUX.getSourceType(), faReportDocumentEntity.getSource());
     }
 

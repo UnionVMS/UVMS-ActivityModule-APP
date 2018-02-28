@@ -13,6 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.jms.TextMessage;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
@@ -27,16 +34,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.GeometryByPortCodeResponse;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.jms.TextMessage;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-
-/**
- * Created by padhyad on 10/11/2016.
- */
 @Stateless
 @Transactional
 @Slf4j

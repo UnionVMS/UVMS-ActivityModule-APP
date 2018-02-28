@@ -11,11 +11,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
 
@@ -25,9 +24,7 @@ public class ActivityConfigHelper extends BaseActivityBean implements ConfigHelp
 
     @Override
     public List<String> getAllParameterKeys() {
-        List<String> allParameterKeys = new ArrayList<String>();
-
-        return allParameterKeys;
+        return new ArrayList<>();
     }
 
     @Override

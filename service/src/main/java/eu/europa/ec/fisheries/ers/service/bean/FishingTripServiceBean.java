@@ -18,6 +18,24 @@ import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPART
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
@@ -90,23 +108,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -236,7 +237,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private Set<String> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
         if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
                 List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
                 for (FishingTripIdentifierEntity identifiers : identifierEntities) {
@@ -244,14 +245,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 }
             }
         }
-        log.info("Previous Trips : " + tripIds);
+        log.debug("Previous Trips : " + tripIds);
         return tripIds;
     }
 
     private Set<String> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
         if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
                 List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
                 for (FishingTripIdentifierEntity identifiers : identifierEntities) {
@@ -259,7 +260,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 }
             }
         }
-        log.info("Next Trips : " + tripIds);
+        log.debug("Next Trips : " + tripIds);
         return tripIds;
     }
 
@@ -471,7 +472,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public MessageCountDTO getMessageCountersForTripId(String tripId) {
-        return createMessageCounter(faReportDocumentDao.getFaReportDocumentsForTrip(tripId));
+        return createMessageCounter(faReportDocumentDao.loadReports(tripId, "N"));
     }
 
     /**
@@ -543,7 +544,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public ObjectNode getTripMapDetailsForTripId(String tripId) {
 
         log.info("Get GEO data for Fishing Trip for tripId:" + tripId);
-        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.getLatestFaReportDocumentsForTrip(tripId);
+        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.loadReports(tripId, "Y");
         List<Geometry> geoList = new ArrayList<>();
         for (FaReportDocumentEntity entity : faReportDocumentEntityList) {
             if (entity.getGeom() != null)
@@ -817,7 +818,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (tripId == null) {
             throw new ServiceException("tripId is null. Please provide valid tripId");
         }
-
         return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
 
     }
@@ -873,4 +873,5 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public String getOwnerFluxPartyFromTripId(String tripId){
         return fishingTripDao.getOwnerFluxPartyFromTripId(tripId);
     }
+
 }

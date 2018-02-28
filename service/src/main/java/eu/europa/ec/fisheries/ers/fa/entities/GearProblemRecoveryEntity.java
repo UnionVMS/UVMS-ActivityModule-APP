@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,14 +40,14 @@ public class GearProblemRecoveryEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "gear_problem_id")
-    private GearProblemEntity gearProblem;
-
     @Column(name = "recovery_measure_code", nullable = false)
     private String recoveryMeasureCode;
 
     @Column(name = "recovery_measure_code_list_id", nullable = false)
     private String recoveryMeasureCodeListId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gear_problem_id")
+    private GearProblemEntity gearProblem;
 
 }

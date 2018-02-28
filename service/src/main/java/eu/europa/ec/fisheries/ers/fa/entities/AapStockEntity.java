@@ -38,13 +38,14 @@ public class AapStockEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
-	
 	@Column(name = "stock_id")
 	private String stockId;
 	
 	@Column(name = "stock_scheme_id")
 	private String stockSchemeId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fa_catch_id")
+	private FaCatchEntity faCatch;
+
 }

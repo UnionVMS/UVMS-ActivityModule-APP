@@ -49,10 +49,6 @@ public class GearCharacteristicEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne
-	@JoinColumn(name = "fishing_gear_id")
-	private FishingGearEntity fishingGear;
-
 	@Column(name = "type_code", nullable = false)
     @NotNull
 	private String typeCode = StringUtils.EMPTY;
@@ -96,5 +92,9 @@ public class GearCharacteristicEntity implements Serializable {
 
 	@Column(name = "calculated_value_quantity")
 	private Double calculatedValueQuantity;
+
+	@ManyToOne
+	@JoinColumn(name = "fishing_gear_id")
+	private FishingGearEntity fishingGear;
 
 }

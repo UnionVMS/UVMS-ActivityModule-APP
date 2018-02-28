@@ -47,6 +47,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+//@EqualsAndHashCode(of = {"vesselIdentifierId", "vesselIdentifierSchemeId"})
 public class VesselIdentifierEntity implements Serializable {
 
 	public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "findLatestVesselByTripId";

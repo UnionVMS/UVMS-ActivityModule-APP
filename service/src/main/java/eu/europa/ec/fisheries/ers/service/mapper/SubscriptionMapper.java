@@ -8,7 +8,7 @@
  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.fisheries.ers.service.mapper.subscription;
+package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.SENDER;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VALIDITY_PERIOD;
@@ -18,6 +18,9 @@ import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.ST
 import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.SCHEME_ID;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.MessageType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
@@ -26,8 +29,6 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataQuery;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
-import java.util.ArrayList;
-import java.util.List;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
@@ -36,9 +37,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-public class ActivityToSubscriptionMapper {
+public class SubscriptionMapper {
 
-    private ActivityToSubscriptionMapper(){}
+    private SubscriptionMapper(){}
 
     public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
@@ -102,7 +103,9 @@ public class ActivityToSubscriptionMapper {
             SubscriptionDataCriteria criteria = new SubscriptionDataCriteria();
             criteria.setCriteria(CriteriaType.VESSEL);
             CodeType faQueryParameterTypeCode = faQueryParameter.getTypeCode();
-            criteria.setSubCriteria(SubCriteriaType.valueOf(faQueryParameterTypeCode.getValue()));
+            if (faQueryParameterTypeCode != null){
+                criteria.setSubCriteria(SubCriteriaType.valueOf(faQueryParameterTypeCode.getValue()));
+            }
             IDType valueID = faQueryParameter.getValueID();
             if (valueID != null){
                 criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueID().getSchemeID()));

@@ -50,7 +50,7 @@ public class ContactPartyEntity implements Serializable {
 	@JoinColumn(name = "contact_person_id", nullable = false)
 	private ContactPersonEntity contactPerson;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "vessel_transport_means_id")
 	private VesselTransportMeansEntity vesselTransportMeans;
 
