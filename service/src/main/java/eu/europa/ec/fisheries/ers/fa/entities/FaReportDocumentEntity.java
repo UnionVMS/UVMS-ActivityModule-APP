@@ -100,7 +100,7 @@ public class FaReportDocumentEntity implements Serializable {
     private String fmcMarkerListId;
 
     @Column(name = "status")
-    private String status;
+    private String status; // FIXME change to enum
 
     @Column(name = "source")
     private String source;

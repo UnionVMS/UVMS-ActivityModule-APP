@@ -29,6 +29,7 @@ import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -44,6 +45,7 @@ import lombok.NoArgsConstructor;
                         "LEFT JOIN fishActivities.fishingTrips fishTrips JOIN fishTrips.fishingTripIdentifiers fTripIdentifier " +
                         "WHERE fTripIdentifier.tripId =:fishingTripId")
 })
+@EqualsAndHashCode(of = {"fluxPartyIdentifierId","fluxPartyIdentifierSchemeId"})
 public class FluxPartyIdentifierEntity implements Serializable {
 
     public static final String MESSAGE_OWNER_FROM_TRIP_ID = "findMessageOwnerFromTripId";
