@@ -28,7 +28,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
@@ -125,7 +125,7 @@ public class FaReportDocumentMapperTest {
         assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), faReportDocumentEntity.getAcceptedDatetime());
         assertEquals(faReportDocument.getFMCMarkerCode().getValue(), faReportDocumentEntity.getFmcMarker());
         assertEquals(faReportDocument.getFMCMarkerCode().getListID(), faReportDocumentEntity.getFmcMarkerListId());
-        assertEquals(FaReportStatusEnum.NEW.getStatus(), faReportDocumentEntity.getStatus());
+        assertEquals(FaReportStatusType.NEW.getStatus(), faReportDocumentEntity.getStatus());
         assertEquals(FaReportSourceEnum.FLUX.getSourceType(), faReportDocumentEntity.getSource());
     }
 

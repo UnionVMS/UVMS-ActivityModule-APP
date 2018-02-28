@@ -37,15 +37,15 @@ public class VesselTransportMeansDao extends AbstractDAO<VesselTransportMeansEnt
 
     public VesselTransportMeansEntity findLatestVesselByTripId(String tripId) throws ServiceException {
         VesselTransportMeansEntity vesselTransportMeansEntity = null;
-            List<VesselTransportMeansEntity> byNamedQuery = findEntityByNamedQuery(
-                    VesselTransportMeansEntity.class,
-                    VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
-                    QueryParameter.with("tripId", tripId).parameters(),
-                    1
-            );
-            if (!CollectionUtils.isEmpty(byNamedQuery)) {
-                vesselTransportMeansEntity = byNamedQuery.get(0);
-            }
+        List<VesselTransportMeansEntity> byNamedQuery = findEntityByNamedQuery(
+                VesselTransportMeansEntity.class,
+                VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
+                QueryParameter.with("tripId", tripId).parameters(),
+                1
+        );
+        if (!CollectionUtils.isEmpty(byNamedQuery)) {
+            vesselTransportMeansEntity = byNamedQuery.get(0);
+        }
         return vesselTransportMeansEntity;
     }
 

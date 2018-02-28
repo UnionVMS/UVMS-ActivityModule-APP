@@ -11,31 +11,36 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.bean;
+package eu.europa.ec.fisheries.ers.fa.utils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+public enum FaReportStatusType {
+    NEW("new", 9), // AKA consolidated AKA last report
+    UPDATED("updated", 5),
+    CANCELED("canceled", 1),
+    DELETED("deleted", 3);
 
-public abstract class BaseActivityBean {
+    private String type;
+    private Integer purposeCode;
 
-    protected EntityManager em;
-
-    @PersistenceContext(unitName = "activityPUpostgres")
-    protected EntityManager postgres;
-
-    @PersistenceContext(unitName = "activityPUoracle")
-    protected EntityManager oracle;
-
-    protected void initEntityManager() {
-        String dbDialect = System.getProperty("db.dialect");
-        if ("oracle".equalsIgnoreCase(dbDialect)) {
-            em = oracle;
-        } else {
-            em = postgres;
-        }
+    FaReportStatusType(String type, Integer purposeCode) {
+        this.type = type;
+        this.purposeCode = purposeCode;
     }
 
-    protected EntityManager getEntityManager() {
-        return em;
+    public static FaReportStatusType getFaReportStatusEnum(Integer purposeCode) {
+        for(FaReportStatusType faReportStatusEnum : values()) {
+            if (purposeCode.equals(faReportStatusEnum.purposeCode)) {
+                return faReportStatusEnum;
+            }
+        }
+        return null;
+    }
+
+    public String getStatus() {
+        return this.type;
+    }
+
+    public Integer getPurposeCode() {
+        return this.purposeCode;
     }
 }

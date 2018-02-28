@@ -43,7 +43,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
@@ -116,8 +116,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
     public void saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
-        log.info("[INFO] Going to save [ "+faReportMessage.getFAReportDocuments().size()+" ] FaReportDocuments..");
-        FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
+        log.info("[INFO] Going to save [ " + faReportMessage.getFAReportDocuments().size() + " ] FaReportDocuments..");
+
+        FluxFaReportMessageEntity messageEntity =
+                FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             try {
@@ -251,7 +253,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                         faReportDocument.getRelatedFLUXReportDocument().getReferencedID().getValue(),
                         faReportDocument.getRelatedFLUXReportDocument().getReferencedID().getSchemeID());
                 if (faReportDocumentEntity != null) {
-                    FaReportStatusEnum faReportStatusEnum = FaReportStatusEnum.getFaReportStatusEnum(Integer.parseInt(faReportDocument.getRelatedFLUXReportDocument().getPurposeCode().getValue()));
+                    FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(faReportDocument.getRelatedFLUXReportDocument().getPurposeCode().getValue()));
                     faReportDocumentEntity.setStatus(faReportStatusEnum.getStatus());
                     faReportDocumentEntities.add(faReportDocumentEntity);
                 }

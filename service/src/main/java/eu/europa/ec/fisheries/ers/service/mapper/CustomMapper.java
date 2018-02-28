@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
@@ -41,6 +42,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -67,19 +69,47 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 /**
  * TODO create test
  */
-public class FLUXFAReportMessageEntityToFLUXFAReportMessageMapper {
+public class CustomMapper {
 
+    @SneakyThrows
     public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity){
         FLUXFAReportMessage target = new FLUXFAReportMessage();
+
+        FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
+        CodeType codeType = new CodeType();
+        codeType.setValue("9");
+        codeType.setListID("FLUX_GP_PURPOSE");
+        fluxReportDocument.setPurposeCode(codeType);
+
+        IDType idType = new IDType();
+        idType.setSchemeID("UUID");
+        idType.setValue(UUID.randomUUID().toString());
+
+        fluxReportDocument.setIDS(Collections.singletonList(idType));
+
+        DateTimeType dateTimeType = new DateTimeType();
+        dateTimeType.setDateTime(DateUtils.getCurrentDate());
+        fluxReportDocument.setCreationDateTime(dateTimeType);
+
+        TextType textType = new TextType();
+        textType.setValue("LOAD_REPORTS");
+        fluxReportDocument.setPurpose(textType);
+
+        FLUXParty party = new FLUXParty();
+        IDType idType1 = new IDType();
+        idType1.setSchemeID("FLUX_GP_PARTY");
+        idType1.setValue("TODO_SET_NODE_ALIAS");
+        party.setIDS(Collections.singletonList(idType1));
+        fluxReportDocument.setOwnerFLUXParty(party);
+
+        target.setFLUXReportDocument(fluxReportDocument);
         if (CollectionUtils.isNotEmpty(faReportMessageEntity)){
-            FluxFaReportMessageEntity source = faReportMessageEntity.iterator().next().getFluxFaReportMessage();
-            mapFLUXReportDocument(target, source);
-            mapFAReportDocuments(target, source.getFaReportDocuments());
+            mapFAReportDocuments(target, faReportMessageEntity);
         }
         return target;
     }
 
-    private void mapFAReportDocuments(FLUXFAReportMessage target, Set<FaReportDocumentEntity> faReportDocuments) {
+    private void mapFAReportDocuments(FLUXFAReportMessage target, List<FaReportDocumentEntity> faReportDocuments) {
         List<FAReportDocument> faReportDocumentList = new ArrayList<>();
         for (FaReportDocumentEntity faReportDocumentEntity : faReportDocuments){
             FAReportDocument faReportDocument = new FAReportDocument();

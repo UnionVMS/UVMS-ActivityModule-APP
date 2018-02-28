@@ -8,24 +8,31 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
-/**
- * Created by padhyad on 5/3/2016.
- */
 public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
 
     private static final String REPORT_ID = "reportId";
     private static final String SCHEME_ID = "schemeId";
     private static final String TRIP_ID = "tripId";
+    private static final String VESSEL_ID = "vesselId";
+    private static final String STATUSES = "statuses";
+    private static final String START_DATE = "startDate";
+    private static final String END_DATE = "endDate";
 
     private EntityManager em;
 
@@ -39,7 +46,7 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
     }
 
     /**
-     * Get FaReportDocument by one or more Report identifiers
+     * Load FaReportDocument by one or more Report identifiers
      *
      * @param reportId
      * @param schemeId
@@ -59,23 +66,29 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public List<FaReportDocumentEntity> getFaReportDocumentsForTrip(String tripId){
-        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
+    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated) {
+        return loadReports(tripId, consolidated, null, null, null, null);
+    }
+
+    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, String startDate, String endDate){
+
+        Set<String> statuses = new HashSet<>();
+        statuses.add(FaReportStatusType.NEW.getStatus());
+        if ("N".equals(consolidated) || consolidated == null){
+            statuses.add(FaReportStatusType.UPDATED.getStatus());
+            statuses.add(FaReportStatusType.CANCELED.getStatus());
+            statuses.add(FaReportStatusType.DELETED.getStatus());
+        }
+
+        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.LOAD_REPORTS, FaReportDocumentEntity.class);
         query.setParameter(TRIP_ID, tripId);
+        query.setParameter(STATUSES, statuses);
+        query.setParameter(VESSEL_ID, vesselId);
+        query.setParameter(SCHEME_ID, schemeId);
+        query.setParameter(START_DATE, DateTime.parse(startDate, ISODateTimeFormat.dateTimeParser()).toDate());
+        query.setParameter(END_DATE,  DateTime.parse(endDate, ISODateTimeFormat.dateTimeParser()).toDate());
+
         return query.getResultList();
     }
 
-    public List<FaReportDocumentEntity> getFaReportDocumentsForFaQuery(String tripId, String consolidated){
-        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FA_QUERY, FaReportDocumentEntity.class);
-        query.setParameter(TRIP_ID, tripId);
-        query.setParameter("consolidated", consolidated);
-        return query.getResultList();
-    }
-
-    public List<FaReportDocumentEntity> getLatestFaReportDocumentsForTrip(String tripId){ //CONSOLIDATED
-        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
-        query.setParameter(TRIP_ID, tripId);
-        return query.getResultList();
-    }
 }

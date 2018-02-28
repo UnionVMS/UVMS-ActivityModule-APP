@@ -43,7 +43,7 @@ import org.apache.commons.collections.CollectionUtils;
 @AllArgsConstructor
 @Data
 @ToString(of = "id")
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = {"fluxReportIdentifiers"})
 public class FluxReportDocumentEntity implements Serializable {
 
     @Id

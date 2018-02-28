@@ -35,53 +35,43 @@ import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-                        "INNER JOIN fareport.fluxReportDocument fluxreport " +
-                        "INNER JOIN fluxreport.fluxReportIdentifiers identifier " +
+                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "LEFT JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
                         "WHERE identifier.fluxReportIdentifierId = :reportId " +
-                        "AND identifier.fluxReportIdentifierSchemeId = :schemeId"),
-
-        @NamedQuery(name = FaReportDocumentEntity.FA_QUERY,
-                query = "SELECT rpt FROM FaReportDocumentEntity rpt " +
+                        "AND identifier.fluxReportIdentifierSchemeId = :schemeId"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,
+                query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
                         "LEFT JOIN FETCH rpt.fishingActivities act " +
+                        "LEFT JOIN FETCH rpt.vesselTransportMeans vtm " +
+                        "LEFT OUTER JOIN FETCH vtm.vesselIdentifiers vtmids " +
                         "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
                         "JOIN FETCH act.fishingTrips fshtrp " +
-                        "JOIN FETCH fshtrp.fishingTripIdentifiers fshtrpids " +
-                        "WHERE fshtrpids.tripId = :tripId AND " +
-                        "((flxrep.purposeCode = '9' AND :consolidated = 'N') OR (:consolidated = 'Y' OR :consolidated is NULL))"
-        ),
-        @NamedQuery(name = FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID,
-                query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
-                        "JOIN FETCH fareport.fishingActivities factivity " +
-                        "JOIN FETCH factivity.fishingTrips fishingtrip " +
-                        "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
-                        "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId and fareport.status = 'new'"),
-
-        @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
-                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-                        "JOIN FETCH fareport.fishingActivities factivity " +
-                        "JOIN FETCH factivity.fishingTrips fishingtrip " +
-                        "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
-                        "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId"),
+                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
+                        "WHERE rpt.status IN (:statuses) " +
+                        "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
+                        "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate))))"
+        )
 })
 @Entity
 @Table(name = "activity_fa_report_document")
 @Data
 @ToString(of = "id")
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "fluxReportDocument")
+@NoArgsConstructor
 public class FaReportDocumentEntity implements Serializable {
 
     public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
     public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
-    public static final String FA_QUERY = "findForFaQuery";
+    public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -130,13 +120,9 @@ public class FaReportDocumentEntity implements Serializable {
     private Set<FishingActivityEntity> fishingActivities;
 
     /**
-     * FIXME This one to many relationship is artificially created. From XML we will always receive only One VesselTreansportMeans per FaReportDocument.
-     *  FIXME This is done to avoid cyclic dependency ( Vessel->FishingActivity->FaReportDocument->Vessel )
+     * From XML we will always receive only One VesselTreansportMeans per FaReportDocument.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
-    public FaReportDocumentEntity() {
-        super();
-    }
 }

@@ -23,7 +23,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
@@ -53,7 +53,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fmcMarkerListId", expression = "java(getCodeTypeListId(faReportDocument.getFMCMarkerCode()))"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(faReportDocument.getSpecifiedVesselTransportMeans(), faReportDocumentEntity))"),
             @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
-            @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedFLUXReportDocument().getIDS(), faReportDocumentEntity))"),
+            @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedReportIDs(), faReportDocumentEntity))"),
             @Mapping(target = "fishingActivities", expression = "java(getFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))"),
             @Mapping(target = "status", expression = "java(setStatusAsNew())"),
             @Mapping(target = "source", expression = "java(faReportSourceEnum.getSourceType())"),
@@ -79,7 +79,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     protected abstract FaReportIdentifierEntity mapToFAReportIdentifierEntity(IDType idType);
 
     protected String setStatusAsNew() {
-        return FaReportStatusEnum.NEW.getStatus();
+        return FaReportStatusType.NEW.getStatus();
     }
 
     protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
@@ -115,7 +115,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return fluxReportDocumentEntity;
     }
 
-    // FIXME wrong id mapped
     protected Set<FaReportIdentifierEntity> mapToFAReportIdentifierEntities(List<IDType> idTypes, FaReportDocumentEntity faReportDocumentEntity) {
         if (CollectionUtils.isEmpty(idTypes)) {
             return Collections.emptySet();

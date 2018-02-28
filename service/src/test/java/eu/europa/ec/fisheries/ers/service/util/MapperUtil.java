@@ -50,7 +50,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.SummaryReportDTO;
@@ -274,7 +274,7 @@ public class MapperUtil {
 
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        faReportDocumentEntity.setStatus(FaReportStatusEnum.UPDATED.getStatus());
+        faReportDocumentEntity.setStatus(FaReportStatusType.UPDATED.getStatus());
         faReportDocumentEntity.setTypeCode("FISHING_OPERATION");
         faReportDocumentEntity.setTypeCodeListId("FLUX_FA_REPORT_TYPE");
         faReportDocumentEntity.setAcceptedDatetime(new Date());

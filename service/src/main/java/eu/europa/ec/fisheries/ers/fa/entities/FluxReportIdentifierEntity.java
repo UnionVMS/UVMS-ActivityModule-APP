@@ -18,6 +18,7 @@ import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -25,22 +26,17 @@ import lombok.NoArgsConstructor;
 @NamedQueries({
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        //"INNER JOIN flRepDoc.fluxFaReportMessage faRepMsg " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId"),
-
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_RELATED_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        //"INNER JOIN flRepDoc.faReportDocument faRepDoc " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId")
-
 })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"fluxReportIdentifierId", "fluxReportIdentifierSchemeId"})
 public class FluxReportIdentifierEntity implements Serializable {
 
     public static final String FIND_MATCHING_IDENTIFIER = "findMatchingIdentifier";

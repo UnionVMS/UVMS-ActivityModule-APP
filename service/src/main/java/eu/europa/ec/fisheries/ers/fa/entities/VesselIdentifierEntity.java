@@ -28,6 +28,7 @@ import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @NamedQueries({
@@ -47,6 +48,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(of = {"vesselIdentifierId", "vesselIdentifierSchemeId"})
 public class VesselIdentifierEntity implements Serializable {
 
 	public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "findLatestVesselByTripId";

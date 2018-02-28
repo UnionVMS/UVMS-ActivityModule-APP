@@ -12,19 +12,21 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import eu.europa.ec.fisheries.ers.service.FaQueryService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 
 @Path("/report")
 @Slf4j
@@ -34,16 +36,15 @@ public class ReportDocumentResource extends UnionVMSResource {
     @EJB
     private FishingTripService fishingTripService;
 
-    @GET
-    @Path("/{tripID}/{consolidated}")
+    @EJB
+    private FaQueryService faQueryService;
+
+    @POST
     @Produces(value = {MediaType.APPLICATION_XML})
-    public Object test(@PathParam("tripID") String tripID, @PathParam("consolidated") String consolidated){
-
-        Map<SubCriteriaType, String> subCriteriaTypeStringMap = new HashMap<>();
-        subCriteriaTypeStringMap.put(SubCriteriaType.TRIPID, tripID);
-        subCriteriaTypeStringMap.put(SubCriteriaType.CONSOLIDATED, consolidated);
-
-        return fishingTripService.getFaReportDocumentsForTrip(subCriteriaTypeStringMap);
-
+    @Consumes(value = {MediaType.APPLICATION_XML})
+    public Object test(FLUXFAQueryMessage fluxfaQueryMessage){
+        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
+        List<SubscriptionDataCriteria> queryCriteria = subscriptionDataRequest.getQuery().getCriteria();
+        return faQueryService.getReportsByCriteria(queryCriteria);
     }
 }

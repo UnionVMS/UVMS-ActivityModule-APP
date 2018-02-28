@@ -82,7 +82,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchEvolutionProgressProcessor;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.TripCatchEvolutionProgressRegistry;
 import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FLUXFAReportMessageEntityToFLUXFAReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
@@ -108,7 +107,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -474,18 +472,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public MessageCountDTO getMessageCountersForTripId(String tripId) {
-        return createMessageCounter(faReportDocumentDao.getFaReportDocumentsForTrip(tripId));
+        return createMessageCounter(faReportDocumentDao.loadReports(tripId, "N"));
     }
 
-    public Object getFaReportDocumentsForTrip(Map<SubCriteriaType, String> criteriaTypeStringMap) {
-
-        String tripId = criteriaTypeStringMap.get(SubCriteriaType.TRIPID);
-        String consolidated = criteriaTypeStringMap.get(SubCriteriaType.CONSOLIDATED);
-
-        List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDocumentDao.getFaReportDocumentsForFaQuery(tripId, consolidated);
-        FLUXFAReportMessageEntityToFLUXFAReportMessageMapper faReportEntityToModelMapper = new FLUXFAReportMessageEntityToFLUXFAReportMessageMapper();
-        return faReportEntityToModelMapper.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
-    }
     /**
      * Populates the MessageCounter adding to the right counter 1 unit depending on the type of report (typeCode, purposeCode, size()).
      *
@@ -555,7 +544,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public ObjectNode getTripMapDetailsForTripId(String tripId) {
 
         log.info("Get GEO data for Fishing Trip for tripId:" + tripId);
-        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.getLatestFaReportDocumentsForTrip(tripId);
+        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.loadReports(tripId, "Y");
         List<Geometry> geoList = new ArrayList<>();
         for (FaReportDocumentEntity entity : faReportDocumentEntityList) {
             if (entity.getGeom() != null)
@@ -829,7 +818,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (tripId == null) {
             throw new ServiceException("tripId is null. Please provide valid tripId");
         }
-
         return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
 
     }
@@ -885,4 +873,5 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public String getOwnerFluxPartyFromTripId(String tripId){
         return fishingTripDao.getOwnerFluxPartyFromTripId(tripId);
     }
+
 }

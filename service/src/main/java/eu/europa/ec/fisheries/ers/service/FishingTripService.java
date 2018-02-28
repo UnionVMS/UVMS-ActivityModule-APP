@@ -31,7 +31,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 /**
@@ -130,6 +130,5 @@ public interface FishingTripService {
 
     String getOwnerFluxPartyFromTripId(String tripId);
 
-    Object getFaReportDocumentsForTrip(Map<SubCriteriaType, String> subCriteriaTypeStringMap);
 
 }
