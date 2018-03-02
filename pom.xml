@@ -11,7 +11,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>1.0.10-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
     <url>http://www.your.site.com/</url>
@@ -455,7 +455,7 @@
 
     <scm>
         <connection>${scm.connection}</connection>
-        <tag>activity-1.0.1</tag>
+        <tag>activity-1.1</tag>
     </scm>
 
 
