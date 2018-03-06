@@ -6,7 +6,7 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.14</version>
+        <version>1.17-SNAPSHOT</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -545,12 +545,6 @@
             <properties>
                 <database.dialect>postgres</database.dialect>
                 <!-- the record -->
-            </properties>
-        </profile>
-        <profile>
-            <id>mare</id>
-            <properties>
-                <context.root>unionvms/</context.root>
             </properties>
         </profile>
         <profile>
