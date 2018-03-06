@@ -187,7 +187,7 @@ public class CustomMapper {
 
             // target.setDescriptions();
             //    target.setValues();
-                
+
                 fluxCharacteristicList.add(target);
 
             }
@@ -200,7 +200,7 @@ public class CustomMapper {
 
     private void mapValueMeasure(FLUXCharacteristic target, FluxCharacteristicEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
-            target.setValueMeasure();
+            //target.setValueMeasure();
 
         }
     }
