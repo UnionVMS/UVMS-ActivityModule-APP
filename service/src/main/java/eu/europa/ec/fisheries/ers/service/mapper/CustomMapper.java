@@ -27,7 +27,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
@@ -45,10 +45,12 @@ import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
@@ -62,6 +64,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IndicatorType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
@@ -129,22 +132,6 @@ public class CustomMapper {
         mapFishingActivities(target, source.getFishingActivities());
     }
 
-    private void mapFLUXReportDocument(FLUXFAReportMessage fluxfaReportMessage, FluxFaReportMessageEntity fluxFaReportMessageEntity) {
-        if (ObjectUtils.allNotNull(fluxfaReportMessage, fluxfaReportMessage)){
-            FluxReportDocumentEntity fluxReportDocumentEntity = fluxFaReportMessageEntity.getFluxReportDocument();
-            if (fluxReportDocumentEntity != null){
-                FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
-                mapTypeCode(fluxReportDocument, fluxReportDocumentEntity.getPurposeCode(), fluxReportDocumentEntity.getPurposeCodeListId());
-                mapCreationDateTime(fluxReportDocument, fluxReportDocumentEntity.getCreationDatetime());
-                mapReferencedID(fluxReportDocument, fluxReportDocumentEntity.getReferenceId(), fluxReportDocumentEntity.getReferenceSchemeId());
-                mapTextType(fluxReportDocument, fluxReportDocumentEntity.getPurpose());
-                mapOwnerFLUXParty(fluxReportDocument, fluxReportDocumentEntity.getFluxParty());
-                mapIDs(fluxReportDocument, fluxReportDocumentEntity.getFluxReportIdentifiers());
-                fluxfaReportMessage.setFLUXReportDocument(fluxReportDocument);
-            }
-        }
-    }
-
     private void mapFishingActivities(FAReportDocument faReportDocument, Set<FishingActivityEntity> fishingActivityEntities) {
 
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)){
@@ -164,10 +151,10 @@ public class CustomMapper {
                 mapOccurrenceDateTime(target, source.getOccurence());
                 mapSourceVesselStorageCharacteristic(target, source.getSourceVesselCharId());
                 mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
-
                 mapFluxLocations(target, source.getFluxLocations());
+                mapSpecifiedFLUXCharacteristics(target, source.getFluxCharacteristics());
 
-                source.getFluxCharacteristics(); // TODO MAP
+
                 source.getFishingGears(); // TODO MAP
                 source.getFlagState(); // TODO MAP
                 source.getFluxLocations(); // TODO MAP
@@ -180,17 +167,105 @@ public class CustomMapper {
         }
     }
 
-    private void mapFluxLocations(FishingActivity target, Set<FluxLocationEntity> fluxLocationEntities) {
-        List<FLUXLocation> fluxLocations = new ArrayList<>();
+    private void mapSpecifiedFLUXCharacteristics(FishingActivity fishingActivity, Set<FluxCharacteristicEntity> fluxCharacteristics) {
 
+
+        if (CollectionUtils.isNotEmpty(fluxCharacteristics)){
+
+            List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
+
+            for (FluxCharacteristicEntity source : fluxCharacteristics) {
+
+                FLUXCharacteristic target = new FLUXCharacteristic();
+
+                mapTypeCode(target, source);
+                mapValueCode(target, source);
+                mapValueDateTime(target, source);
+                mapValueIndicator(target, source);
+                mapValueQuantity(target, source);
+                mapValueMeasure(target, source);
+
+            // target.setDescriptions();
+            //    target.setValues();
+                
+                fluxCharacteristicList.add(target);
+
+            }
+
+            fishingActivity.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
+
+        }
+
+    }
+
+    private void mapValueMeasure(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            target.setValueMeasure();
+
+        }
+    }
+
+    private void mapValueQuantity(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)){
+            Double valueQuantity = source.getValueQuantity();
+            String valueQuantityCode = source.getValueQuantityCode();
+            if (StringUtils.isNotEmpty(valueQuantityCode) ||  valueQuantity != null){
+                QuantityType quantityType = new QuantityType();
+                if (StringUtils.isNotEmpty(valueQuantityCode)){
+                    quantityType.setUnitCode(valueQuantityCode);
+                }
+                if (valueQuantity != null){
+                    quantityType.setValue(new BigDecimal(valueQuantity));
+                }
+                target.setValueQuantity(quantityType);
+            }
+        }
+    }
+
+    private void mapValueIndicator(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)){
+            String valueIndicator = source.getValueIndicator();
+            if (StringUtils.isNotEmpty(valueIndicator)){
+                IndicatorType type = new IndicatorType();
+                IndicatorType.IndicatorString indicatorString = new IndicatorType.IndicatorString();
+                indicatorString.setValue(valueIndicator);
+                type.setIndicatorString(indicatorString);
+                target.setValueIndicator(type);
+            }
+        }
+    }
+
+    private void mapValueDateTime(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)){
+            Date valueDateTime = source.getValueDateTime();
+            if (valueDateTime != null){
+                DateTimeType dateTimeType = new DateTimeType();
+                dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(valueDateTime));
+                target.setValueDateTime(dateTimeType);
+            }
+        }
+    }
+
+    private void mapValueCode(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)){
+            if (source.getValueCode() != null){
+                CodeType codeType = new CodeType();
+                codeType.setValue(source.getValueCode());
+                target.setTypeCode(codeType);
+            }
+        }
+    }
+
+    private void mapFluxLocations(FishingActivity target, Set<FluxLocationEntity> fluxLocationEntities) {
         if (CollectionUtils.isNotEmpty(fluxLocationEntities)){
+            List<FLUXLocation> fluxLocations = new ArrayList<>();
             for (FluxLocationEntity source : fluxLocationEntities) {
                 FLUXLocation location = new FLUXLocation();
                 mapFLUXLocation(location, source);
                 fluxLocations.add(location);
             }
+            target.setRelatedFLUXLocations(fluxLocations);
         }
-        target.setRelatedFLUXLocations(fluxLocations);
     }
 
     private void mapFLUXLocation(FLUXLocation target, FluxLocationEntity source) {
@@ -315,6 +390,16 @@ public class CustomMapper {
             DateTimeType dateTimeType = new DateTimeType();
             dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
             target.setOccurrenceDateTime(dateTimeType);
+        }
+    }
+
+    private void mapTypeCode(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            if (source.getTypeCode() != null){
+                CodeType codeType = new CodeType();
+                codeType.setValue(source.getTypeCode());
+                target.setTypeCode(codeType);
+            }
         }
     }
 
