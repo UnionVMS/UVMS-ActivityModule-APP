@@ -168,15 +168,10 @@ public class CustomMapper {
     }
 
     private void mapSpecifiedFLUXCharacteristics(FishingActivity fishingActivity, Set<FluxCharacteristicEntity> fluxCharacteristics) {
-
         if (CollectionUtils.isNotEmpty(fluxCharacteristics)){
-
             List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
-
             for (FluxCharacteristicEntity source : fluxCharacteristics) {
-
                 FLUXCharacteristic target = new FLUXCharacteristic();
-
                 mapTypeCode(target, source);
                 mapValueCode(target, source);
                 mapValueDateTime(target, source);
@@ -184,25 +179,36 @@ public class CustomMapper {
                 mapValueQuantity(target, source);
                 mapValueMeasure(target, source);
                 mapDescriptions(target, source);
-
-            //    target.setValues();
-
+                mapValues(target, source);
                 fluxCharacteristicList.add(target);
-
             }
-
             fishingActivity.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
-
         }
+    }
 
+    private void mapValues(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            String valueText = source.getValueText();
+            if (StringUtils.isNotEmpty(valueText)) {
+                TextType textType = new TextType();
+                textType.setValue(valueText);
+                target.setValues(Collections.singletonList(textType));
+            }
+        }
     }
 
     private void mapDescriptions(FLUXCharacteristic target, FluxCharacteristicEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
             String description = source.getDescription();
-            if (StringUtils.isNotEmpty(description)){
+            String valueLanguageId = source.getValueLanguageId();
+            if (StringUtils.isNotEmpty(description) || StringUtils.isNotEmpty(valueLanguageId)){
                 TextType textType = new TextType();
-                textType.setValue(description);
+                if (StringUtils.isNotEmpty(description)){
+                    textType.setValue(description);
+                }
+                if (StringUtils.isNotEmpty(valueLanguageId)){
+                    textType.setLanguageID(source.getValueLanguageId());
+                }
                 target.setDescriptions(Collections.singletonList(textType));
             }
         }
