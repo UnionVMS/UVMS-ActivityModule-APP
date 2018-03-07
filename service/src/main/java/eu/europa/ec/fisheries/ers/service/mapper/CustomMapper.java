@@ -183,8 +183,8 @@ public class CustomMapper {
                 mapValueIndicator(target, source);
                 mapValueQuantity(target, source);
                 mapValueMeasure(target, source);
+                mapDescriptions(target, source);
 
-            // target.setDescriptions();
             //    target.setValues();
 
                 fluxCharacteristicList.add(target);
@@ -197,15 +197,32 @@ public class CustomMapper {
 
     }
 
+    private void mapDescriptions(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            String description = source.getDescription();
+            if (StringUtils.isNotEmpty(description)){
+                TextType textType = new TextType();
+                textType.setValue(description);
+                target.setDescriptions(Collections.singletonList(textType));
+            }
+        }
+    }
+
     private void mapValueMeasure(FLUXCharacteristic target, FluxCharacteristicEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
+            Double valueMeasure = source.getValueMeasure();
+            String valueMeasureUnitCode = source.getValueMeasureUnitCode();
 
-            MeasureType measureType = new MeasureType();
-
-           // measureType.setUnitCode();
-           // target.setValueMeasure();
-
-
+            if (valueMeasure != null || StringUtils.isNotEmpty(valueMeasureUnitCode)){
+                MeasureType measureType = new MeasureType();
+                if (valueMeasure != null){
+                    measureType.setValue(new BigDecimal(valueMeasure));
+                }
+                if (StringUtils.isNotEmpty(valueMeasureUnitCode)){
+                    measureType.setUnitCode(valueMeasureUnitCode);
+                }
+                target.setValueMeasure(measureType);
+            }
 
         }
     }

@@ -18,13 +18,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -33,12 +30,8 @@ import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
-/**
- * Created by padhyad on 7/29/2016.
- */
 public class FluxLocationMapperTest {
 
     @Test
@@ -96,19 +89,6 @@ public class FluxLocationMapperTest {
         AddressDetailsDTO fluxLocationDTO = FluxLocationMapper.INSTANCE.getPhysicalAddressDetails(fluxLocationEntity.getStructuredAddresses());
         assertNotNull(fluxLocationDTO);
         assertTrue(StringUtils.isNotEmpty(fluxLocationDTO.getBlockName()));
-    }
-
-    @Test
-    public void getFluxCharacteristicEntitiesTest(){
-        List<FLUXCharacteristic> fluxCarList = new ArrayList<FLUXCharacteristic>(){{
-            add(MapperUtil.getFluxCharacteristics());
-            add(MapperUtil.getFluxCharacteristics());
-        }};
-        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
-        Set<FluxCharacteristicEntity> fluxCharacteristicEntities =
-                FluxLocationMapper.INSTANCE.getFluxCharacteristicEntities(fluxCarList, fluxLocationEntity);
-        assertNotNull(fluxCharacteristicEntities);
-        assertTrue(fluxCharacteristicEntities.size() > 0);
     }
 
     private void assertFluxLocationEntityFields(FLUXLocation fluxLocation, FluxLocationEntity fluxLocationEntity, FluxLocationCatchTypeEnum fluxLocationTypeEnum) {

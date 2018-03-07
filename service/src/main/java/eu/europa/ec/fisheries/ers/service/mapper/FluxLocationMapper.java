@@ -12,14 +12,12 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
@@ -28,14 +26,12 @@ import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.IterableNonItatableUtil;
-
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
@@ -158,15 +154,4 @@ public abstract class FluxLocationMapper extends BaseMapper {
        return structuredAddressEntities;
     }
 
-    protected Set<FluxCharacteristicEntity> getFluxCharacteristicEntities(List<FLUXCharacteristic> fluxCharacteristics, FluxLocationEntity fluxLocationEntity) {
-        if (fluxCharacteristics == null || fluxCharacteristics.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
-        for(FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
-            FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, fluxLocationEntity, new FluxCharacteristicEntity());
-            fluxCharacteristicEntities.add(fluxCharacteristicEntity);
-        }
-       return fluxCharacteristicEntities;
-    }
 }

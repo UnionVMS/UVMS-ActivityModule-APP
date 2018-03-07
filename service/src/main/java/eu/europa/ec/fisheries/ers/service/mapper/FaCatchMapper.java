@@ -11,6 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
@@ -40,14 +48,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class,
         FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class,
@@ -171,7 +171,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
         for (FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
-            fluxCharacteristicEntities.add(FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, faCatchEntity, new FluxCharacteristicEntity()));
+            fluxCharacteristicEntities.add(FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, faCatchEntity));
         }
         return fluxCharacteristicEntities;
     }
