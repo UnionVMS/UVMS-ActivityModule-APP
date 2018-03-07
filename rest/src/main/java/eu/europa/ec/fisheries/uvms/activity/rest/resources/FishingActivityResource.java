@@ -8,7 +8,25 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
@@ -26,32 +44,7 @@ import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
-import java.util.List;
-
-/**
- * Created by padhyad on 7/6/2016.
- */
 @Path("/fa")
 @Slf4j
 @Stateless
@@ -66,38 +59,15 @@ public class FishingActivityResource extends UnionVMSResource {
     @EJB
     private FishingTripService fishingTripService;
 
-
     @EJB
     private USMService usmService;
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @Path("/save")
-    public Response saveFaReportDocument() throws ServiceException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message_cedric_data.xml");
-        JAXBContext jaxbContext;
-        FLUXFAReportMessage fluxfaReportMessage;
-        try {
-            jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        } catch (JAXBException e) {
-            log.error("Error occured during Unmorshalling of the FLUXFAReportMessage", e);
-           throw new ServiceException(e.getMessage());
-        }
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
-        return createSuccessResponse();
-    }
-
-
-    @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/commChannel")
     public Response getCommunicationChannel() throws ServiceException {
-
         return createSuccessResponse(FaReportSourceEnum.values());
     }
-
 
     @POST
     @Path("/list")
@@ -155,7 +125,6 @@ public class FishingActivityResource extends UnionVMSResource {
 
         return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
     }
-
 
     @GET
     @Path("/previous/{activityId}")

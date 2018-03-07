@@ -169,7 +169,6 @@ public class CustomMapper {
 
     private void mapSpecifiedFLUXCharacteristics(FishingActivity fishingActivity, Set<FluxCharacteristicEntity> fluxCharacteristics) {
 
-
         if (CollectionUtils.isNotEmpty(fluxCharacteristics)){
 
             List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
@@ -200,7 +199,13 @@ public class CustomMapper {
 
     private void mapValueMeasure(FLUXCharacteristic target, FluxCharacteristicEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
-            //target.setValueMeasure();
+
+            MeasureType measureType = new MeasureType();
+
+           // measureType.setUnitCode();
+           // target.setValueMeasure();
+
+
 
         }
     }
