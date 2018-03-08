@@ -297,21 +297,34 @@ public class CustomMapper {
     }
 
     private void mapFLUXLocation(FLUXLocation target, FluxLocationEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
+
+            setTypeCode(target, source);
 
             Double latitude = source.getLatitude();
             Double longitude = source.getLongitude();
             Double altitude = source.getAltitude();
-            String fluxLocationType = source.getFluxLocationType();
             String fluxLocationIdentifier = source.getFluxLocationIdentifier();
             GearProblemEntity gearProblem = source.getGearProblem();
-            String typeCode = source.getTypeCode();
             Set<StructuredAddressEntity> structuredAddresses = source.getStructuredAddresses();
             String countryId = source.getCountryId();
 
-
-        }
     }
+
+    private void setTypeCode(FLUXLocation target, FluxLocationEntity source) {
+        if (ObjectUtils.allNotNull(target, source)){
+            String fluxLocationType = source.getFluxLocationType();
+            //String typeCode = source.getF();
+           // if(StringUtils.isNotEmpty(fluxLocationType) || StringUtils.isNotEmpty(typeCode)){
+                CodeType codeType = new CodeType();
+
+                if (StringUtils.isNotEmpty(fluxLocationType)){
+                   // codeType.setValue();
+                    //codeType.se}
+
+               // target.setTypeCode();
+        }
+
+    }}
 
     private void mapDestinationVesselStorageCharacteristic(FishingActivity target, VesselStorageCharacteristicsEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
