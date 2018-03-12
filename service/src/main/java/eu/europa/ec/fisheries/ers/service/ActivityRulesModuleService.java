@@ -12,8 +12,11 @@ package eu.europa.ec.fisheries.ers.service;
 
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMapperException;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
+import javax.ejb.Local;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
+@Local
 public interface ActivityRulesModuleService {
 
     /**
@@ -27,5 +30,5 @@ public interface ActivityRulesModuleService {
      */
     void composeAndSendTripUpdateFaQueryToRules(String tripId) throws ActivityModuleException;
 
-    void sendFaReportToRules(FLUXFAReportMessage faReportXML, String onValue) throws ActivityModuleException;
+    void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXML, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException;
 }

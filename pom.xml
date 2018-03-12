@@ -22,8 +22,8 @@
             <email>rinaldi.gregory@gmail.com</email>
         </developer>
         <developer>
-            <name>Georgi Georgiev</name>
-            <email>georgi.georgiev@ordina.be</email>
+            <name>Andi Kovi</name>
+            <email>andi.kovi@cegeka.com</email>
         </developer>
     </developers>
 
@@ -38,7 +38,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>1.0.4</activity.model>
+        <activity.model>1.0.5-SNAPSHOT</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
@@ -46,7 +46,7 @@
         <exchange.model>4.0.4</exchange.model>
         <subscription.model>1.2</subscription.model>
 
-        <rules.model>3.0.22</rules.model>
+        <rules.model>3.0.23-SNAPSHOT</rules.model>
         <uvms.config.version>4.0.0</uvms.config.version>
         <mdr.model.version>1.0.1</mdr.model.version>
         <mockito.version>1.10.19</mockito.version>
