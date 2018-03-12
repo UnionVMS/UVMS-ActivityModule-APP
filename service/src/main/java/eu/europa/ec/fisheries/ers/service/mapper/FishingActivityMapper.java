@@ -564,12 +564,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     private String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears) {
-        String gearTypeCode = null;
         if (CollectionUtils.isNotEmpty(fishingGears)) {
             FishingGearEntity fishingGearEntity = fishingGears.iterator().next();
             return fishingGearEntity.getTypeCode();
         }
-        return gearTypeCode;
+        return null;
     }
 
     private FaCatchEntity mapFluxLocationSchemeIds(FACatch faCatch, FaCatchEntity faCatchEntity) {
