@@ -14,27 +14,19 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-/**
- * Created by padhyad on 7/29/2016.
- */
 public class FluxCharacteristicsMapperTest {
 
     @Test
-    public void testFluxCharacteristicsMapperWithFishingActivity() {
+    public void testFluxCharacteristicsMapper() {
         FLUXCharacteristic fluxCharacteristic = MapperUtil.getFluxCharacteristics();
-        FishingActivityEntity fishingActivityEntity = null;
-        FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, fishingActivityEntity);
-
+        FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic);
         assertEquals(fluxCharacteristic.getTypeCode().getValue(), fluxCharacteristicEntity.getTypeCode());
         assertEquals(fluxCharacteristic.getTypeCode().getListID(), fluxCharacteristicEntity.getTypeCodeListId());
         assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getValueMeasure().intValue());
@@ -48,29 +40,6 @@ public class FluxCharacteristicsMapperTest {
         assertEquals(fluxCharacteristic.getValueQuantity().getUnitCode(), fluxCharacteristicEntity.getValueQuantityCode());
         assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertTrue(fluxCharacteristicEntity.getDescription().startsWith(fluxCharacteristic.getDescriptions().get(0).getValue()));
-        assertNull(fluxCharacteristicEntity.getFishingActivity());
-    }
-
-    @Test
-    public void testFluxCharacteristicsMapperWithFACatch() {
-        FLUXCharacteristic fluxCharacteristic = MapperUtil.getFluxCharacteristics();
-        FaCatchEntity faCatchEntity = null;
-        FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, faCatchEntity);
-
-        assertEquals(fluxCharacteristic.getTypeCode().getValue(), fluxCharacteristicEntity.getTypeCode());
-        assertEquals(fluxCharacteristic.getTypeCode().getListID(), fluxCharacteristicEntity.getTypeCodeListId());
-        assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getValueMeasure().intValue());
-        assertEquals(fluxCharacteristic.getValueMeasure().getUnitCode(), fluxCharacteristicEntity.getValueMeasureUnitCode());
-        assertEquals(fluxCharacteristic.getValueMeasure().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueMeasure().intValue());
-        assertEquals(fluxCharacteristic.getValueDateTime().getDateTime().toGregorianCalendar().getTime(), fluxCharacteristicEntity.getValueDateTime());
-        assertEquals(fluxCharacteristic.getValueIndicator().getIndicatorString().getValue(), fluxCharacteristicEntity.getValueIndicator());
-        assertEquals(fluxCharacteristic.getValueCode().getValue(), fluxCharacteristicEntity.getValueCode());
-        assertTrue(fluxCharacteristicEntity.getValueText().startsWith(fluxCharacteristic.getValues().get(0).getValue()));
-        assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getValueQuantity().intValue());
-        assertEquals(fluxCharacteristic.getValueQuantity().getUnitCode(), fluxCharacteristicEntity.getValueQuantityCode());
-        assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueQuantity().intValue());
-        assertTrue(fluxCharacteristicEntity.getDescription().startsWith(fluxCharacteristic.getDescriptions().get(0).getValue()));
-        assertNull(fluxCharacteristicEntity.getFaCatch());
     }
 
 }

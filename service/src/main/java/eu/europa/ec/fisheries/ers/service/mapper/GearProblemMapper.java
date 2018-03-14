@@ -61,7 +61,11 @@ public abstract class GearProblemMapper extends BaseMapper {
         }
         Set<FluxLocationEntity> entitiesSet = new HashSet<>();
         for(FLUXLocation flLocAct : flLocList){
-            entitiesSet.add(FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct, FluxLocationCatchTypeEnum.GEAR_PROBLEM, gearProbEntity, new FluxLocationEntity()));
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct);
+            fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.GEAR_PROBLEM.getType());
+            fluxLocationEntity.setGearProblem(gearProbEntity);
+            FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct);
+            entitiesSet.add(FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct));
         }
         return entitiesSet;
     }

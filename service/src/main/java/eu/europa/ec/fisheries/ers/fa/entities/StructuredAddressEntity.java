@@ -65,6 +65,18 @@ public class StructuredAddressEntity implements Serializable {
 
     private String postcode;
 
+    @Column(name = "post_code_list_id")
+    private String postcodeListID;
+
+    @Column(name = "postal_area_value")
+    private String postalAreaValue;
+
+    @Column(name = "postal_area_language_id")
+    private String postalAreaLanguageID;
+
+    @Column(name = "postal_area_language_local_id")
+    private String postalAreaLanguageLocaleID;
+
     @Column(name = "streetname", length = 1000)
     private String streetName;
 

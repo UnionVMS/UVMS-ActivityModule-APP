@@ -37,7 +37,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(of = {"flapDocumentId", "flapDocumentSchemeId", "flapTypeCode", "flapTypeCodeListId"})
 @EqualsAndHashCode(of = {"flapDocumentId", "flapDocumentSchemeId", "flapTypeCode", "flapTypeCodeListId"})
-public class    FlapDocumentEntity implements Serializable {
+public class FlapDocumentEntity implements Serializable {
 
     @Id
     @Column(unique = true, nullable = false)

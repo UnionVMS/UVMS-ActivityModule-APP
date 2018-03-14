@@ -13,13 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * Created by padhyad on 7/28/2016.
@@ -30,7 +30,7 @@ public class VesselStorageCharactersticsMapperTest {
     public void testDestVesselStorageCharactersticsMapper() {
         VesselStorageCharacteristic vesselStorageCharacteristic = MapperUtil.getVesselStorageCharacteristic();
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = new VesselStorageCharacteristicsEntity();
-        VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(vesselStorageCharacteristic, null, vesselStorageCharacteristicsEntity);
+        VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(vesselStorageCharacteristic);
 
         assertEquals(vesselStorageCharacteristic.getID().getValue(), vesselStorageCharacteristicsEntity.getVesselId());
         assertEquals(vesselStorageCharacteristic.getID().getSchemeID(), vesselStorageCharacteristicsEntity.getVesselSchemaId());
@@ -43,7 +43,7 @@ public class VesselStorageCharactersticsMapperTest {
     public void testSourceVesselStorageCharactersticsMapper() {
         VesselStorageCharacteristic vesselStorageCharacteristic = MapperUtil.getVesselStorageCharacteristic();
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = new VesselStorageCharacteristicsEntity();
-        VesselStorageCharacteristicsMapper.INSTANCE.mapToSourceVesselStorageCharEntity(vesselStorageCharacteristic, null, vesselStorageCharacteristicsEntity);
+        VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(vesselStorageCharacteristic);
 
         assertEquals(vesselStorageCharacteristic.getID().getValue(), vesselStorageCharacteristicsEntity.getVesselId());
         assertEquals(vesselStorageCharacteristic.getID().getSchemeID(), vesselStorageCharacteristicsEntity.getVesselSchemaId());

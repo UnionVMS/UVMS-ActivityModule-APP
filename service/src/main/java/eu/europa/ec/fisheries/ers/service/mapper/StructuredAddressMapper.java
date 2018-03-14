@@ -11,43 +11,20 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-import java.util.Set;
-
 @Mapper
-public abstract class StructuredAddressMapper extends BaseMapper {
+public interface StructuredAddressMapper {
 
-    public static final StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
-
-    @Mappings({
-            @Mapping(target = "blockName", source = "structuredAddress.blockName.value"),
-            @Mapping(target = "buildingName", source = "structuredAddress.buildingName.value"),
-            @Mapping(target = "cityName", source = "structuredAddress.cityName.value"),
-            @Mapping(target = "citySubdivisionName", source = "structuredAddress.citySubDivisionName.value"),
-            @Mapping(target = "country", source = "structuredAddress.countryID.value"),
-            @Mapping(target = "countryName", source = "structuredAddress.countryName.value"),
-            @Mapping(target = "countrySubdivisionName", source = "structuredAddress.countrySubDivisionName.value"),
-            @Mapping(target = "countryIdSchemeId", source = "structuredAddress.countryID.schemeID"),
-            @Mapping(target = "addressId", source = "structuredAddress.ID.value"),
-            @Mapping(target = "plotId", source = "structuredAddress.plotIdentification.value"),
-            @Mapping(target = "postOfficeBox", source = "structuredAddress.postOfficeBox.value"),
-            @Mapping(target = "postcode", source = "structuredAddress.postcodeCode.value"),
-            @Mapping(target = "streetName", source = "structuredAddress.streetName.value"),
-            @Mapping(target = "contactParty", expression = "java(contactPartyEntity)"),
-            @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
-    })
-    public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, StructuredAddressTypeEnum structuredAddressTypeEnum, ContactPartyEntity contactPartyEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
+    StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
 
     @Mappings({
             @Mapping(target = "blockName", source = "structuredAddress.blockName.value"),
@@ -62,13 +39,16 @@ public abstract class StructuredAddressMapper extends BaseMapper {
             @Mapping(target = "plotId", source = "structuredAddress.plotIdentification.value"),
             @Mapping(target = "postOfficeBox", source = "structuredAddress.postOfficeBox.value"),
             @Mapping(target = "postcode", source = "structuredAddress.postcodeCode.value"),
-            @Mapping(target = "streetName", source = "structuredAddress.streetName.value"),
-            @Mapping(target = "fluxLocation", expression = "java(fluxLocationEntity)"),
-            @Mapping(target = "structuredAddressType", expression = "java(structuredAddressTypeEnum.getType())")
+            @Mapping(target = "postcodeListID", source = "structuredAddress.postcodeCode.listID"),
+            @Mapping(target = "postalAreaValue", source = "structuredAddress.postalArea.value"),
+            @Mapping(target = "postalAreaLanguageLocaleID", source = "structuredAddress.postalArea.languageLocaleID"),
+            @Mapping(target = "postalAreaLanguageID", source = "structuredAddress.postalArea.languageID"),
+            @Mapping(target = "streetName", source = "structuredAddress.streetName.value")
     })
-    public abstract StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress, StructuredAddressTypeEnum structuredAddressTypeEnum, FluxLocationEntity fluxLocationEntity, @MappingTarget StructuredAddressEntity structuredAddressEntity);
+    StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress);
 
-    public abstract AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
+    AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
-    public abstract Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
+    Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
+
 }

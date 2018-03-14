@@ -30,7 +30,7 @@ import java.util.List;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.FaQueryService;
-import eu.europa.ec.fisheries.ers.service.mapper.CustomMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import lombok.extern.slf4j.Slf4j;
@@ -100,7 +100,7 @@ public class FAQueryServiceBean implements FaQueryService {
             }
 
             List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(tripID, consolidated, vesselId, schemeId, startDate, endDate);
-            CustomMapper faReportEntityToModelMapper = new CustomMapper();
+            ActivityEntityToModelMapper faReportEntityToModelMapper = new ActivityEntityToModelMapper();
             return faReportEntityToModelMapper.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
 
         }

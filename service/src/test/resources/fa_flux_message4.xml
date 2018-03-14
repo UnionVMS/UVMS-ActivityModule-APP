@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<ns3:FLUXFAReportMessage xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
+                         xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20"
+                         xmlns:ns3="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3">
+    <ns3:FLUXReportDocument>
+        <ID schemeID="FLUX_SCHEME_ID1">FLUX_REPORT_ID_1</ID>
+        <ReferencedID schemeID="47rfh-5hry4-thfur75-4hf743">REF_ID 1</ReferencedID>
+        <CreationDateTime>
+            <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+        </CreationDateTime>
+        <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+        <Purpose>Purpose</Purpose>
+        <TypeCode listID="fhr574fh-thrud754-kgitjf754-gjtufe89">type Code1</TypeCode>
+        <OwnerFLUXParty>
+            <ID schemeID="47rfh-5hry4-thfur75-4hf743">Owner flux party id 1</ID>
+            <Name>fluxPartyOwnerName 1</Name>
+        </OwnerFLUXParty>
+    </ns3:FLUXReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="fhr574fh-thrud754-kgitjf754-gjtufe89">DECLARATION</TypeCode>
+        <FMCMarkerCode listID="h49rh-fhrus33-fj84hjs82-4h84hw82">Fmz marker 1</FMCMarkerCode>
+        <RelatedReportID schemeID="47rfh-5hry4-thfur75-4hf743">ID 1</RelatedReportID>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
+            <ReferencedID schemeID="fhty58-gh586t-5tjf8-t58rjewe">Ref ID 1</ReferencedID>
+            <CreationDateTime>
+                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="fhr596t-ght7u48-fjrudu5-tjfue8554">Purpose Code 1</PurposeCode>
+            <Purpose>This is Test Text</Purpose>
+            <!--<TypeCode listID="fhty58-gh586t-5tjf8-t58rjewe">Code Type 1</TypeCode>--><!--NOT MAPPED ALSO NOT CHECKED IN RULES-->
+            <OwnerFLUXParty>
+                <ID schemeID="58fjrut-tjfuri-586jte-5jfur">Owner flux party id 1</ID>
+                <Name>This is sample text for owner flux party</Name>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">ID 1</ID>
+            <Name>Test Name</Name>
+            <RoleCode listID="FA_VESSEL_ROLE">CATCHING_VESSEL</RoleCode>
+            <RegistrationVesselCountry>
+                <ID schemeID="tu587r-5jt85-tjfur7-tjgut7">Country Id 1</ID>
+            </RegistrationVesselCountry>
+            <GrantedFLAPDocument>
+                <ID schemeID="fhtg56-5thd75-thf6t93-thfrye">ID 1</ID>
+            </GrantedFLAPDocument>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+</ns3:FLUXFAReportMessage>

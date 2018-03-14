@@ -69,23 +69,9 @@ public class FaReportDocumentMapperTest {
     }
 
     @Test
-
-    public void testReportDocumentMapper() {
-
-        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity, FaReportSourceEnum.FLUX);
-
-
-
-    }
-
-
-    @Test
     public void testFaReportDocumentMapper() {
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportDocumentEntity, FaReportSourceEnum.FLUX);
+        FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, FaReportSourceEnum.FLUX);
 
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity);
 

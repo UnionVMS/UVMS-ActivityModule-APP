@@ -147,7 +147,9 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
         for (FishingTrip fishingTrip : fishingTrips) {
-            fishingTripEntities.add(FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, faCatchEntity, new FishingTripEntity()));
+            FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
+            fishingTripEntity.setFaCatch(faCatchEntity);
+            fishingTripEntities.add(fishingTripEntity);
         }
         return fishingTripEntities;
     }
@@ -171,7 +173,9 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
         for (FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
-            fluxCharacteristicEntities.add(FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, faCatchEntity));
+            FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic);
+            fluxCharacteristicEntity.setFaCatch(faCatchEntity);
+            fluxCharacteristicEntities.add(fluxCharacteristicEntity);
         }
         return fluxCharacteristicEntities;
     }
@@ -180,13 +184,19 @@ public abstract class FaCatchMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         if (specifiedFluxLocations != null && !specifiedFluxLocations.isEmpty()) {
             for (FLUXLocation fluxLocation : specifiedFluxLocations) {
-                fluxLocationEntities.add(FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED, faCatchEntity, new FluxLocationEntity()));
+                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+                fluxLocationEntity.setFaCatch(faCatchEntity);
+                fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType());
+                fluxLocationEntities.add(fluxLocationEntity);
             }
         }
 
         if (destFluxLocations != null && !destFluxLocations.isEmpty()) {
             for (FLUXLocation fluxLocation : destFluxLocations) {
-                fluxLocationEntities.add(FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION, faCatchEntity, new FluxLocationEntity()));
+                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+                fluxLocationEntity.setFaCatch(faCatchEntity);
+                fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType());
+                fluxLocationEntities.add(fluxLocationEntity);
             }
         }
 

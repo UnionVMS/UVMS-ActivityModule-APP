@@ -466,7 +466,7 @@ public class BaseMapper {
         }
         return value;
     }
-    
+
     /**
      * This method will return fishing trip start and end time
      * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time

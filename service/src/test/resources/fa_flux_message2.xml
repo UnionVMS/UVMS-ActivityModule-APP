@@ -23,5 +23,19 @@
         <AcceptanceDateTime>
             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
         </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
+            <ReferencedID schemeID="fhty58-gh586t-5tjf8-t58rjewe">Ref ID 1</ReferencedID>
+            <CreationDateTime>
+                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="fhr596t-ght7u48-fjrudu5-tjfue8554">Purpose Code 1</PurposeCode>
+            <Purpose>This is Test Text</Purpose>
+            <!--<TypeCode listID="fhty58-gh586t-5tjf8-t58rjewe">Code Type 1</TypeCode>--><!--NOT MAPPED ALSO NOT CHECKED IN RULES-->
+            <OwnerFLUXParty>
+                <ID schemeID="58fjrut-tjfuri-586jte-5jfur">Owner flux party id 1</ID>
+                <Name>This is sample text for owner flux party</Name>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
     </ns3:FAReportDocument>
 </ns3:FLUXFAReportMessage>

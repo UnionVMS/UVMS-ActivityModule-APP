@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <ns3:FLUXFAReportMessage xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
                          xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20"
                          xmlns:ns3="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3">
@@ -23,7 +33,7 @@
         <AcceptanceDateTime>
             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
         </AcceptanceDateTime>
-        <!--<RelatedFLUXReportDocument>
+        <RelatedFLUXReportDocument>
             <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
             <ReferencedID schemeID="fhty58-gh586t-5tjf8-t58rjewe">Ref ID 1</ReferencedID>
             <CreationDateTime>
@@ -31,7 +41,7 @@
             </CreationDateTime>
             <PurposeCode listID="fhr596t-ght7u48-fjrudu5-tjfue8554">Purpose Code 1</PurposeCode>
             <Purpose>This is Test Text</Purpose>
-            <TypeCode listID="fhty58-gh586t-5tjf8-t58rjewe">Code Type 1</TypeCode>
+            <!--<TypeCode listID="fhty58-gh586t-5tjf8-t58rjewe">Code Type 1</TypeCode>--><!--NOT MAPPED ALSO NOT CHECKED IN RULES-->
             <OwnerFLUXParty>
                 <ID schemeID="58fjrut-tjfuri-586jte-5jfur">Owner flux party id 1</ID>
                 <Name>This is sample text for owner flux party</Name>
@@ -54,46 +64,14 @@
                     <Description>This is Test Text</Description>
                     <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1
                     </GeopoliticalRegionCode>
-                    <ID schemeID="fhtyr8-45jrf-5784fhrt-thf75">ID 2</ID>
+                    <!--<ID schemeID="fhtyr8-45jrf-5784fhrt-thf75">ID 2</ID> NOT MAPPED FOR THE MOMENT -->
                     <Name>This is Test Name</Name>
                     <TypeCode listID="475rhf-587trhdy-thgy576-thfr64">Code type 1</TypeCode>
                 </RelatedRegistrationLocation>
             </SpecifiedRegistrationEvent>
-            <SpecifiedContactParty>
-                <RoleCode listID="FLUX_CONTACT_ ROLE">MASTER</RoleCode>
-                <SpecifiedStructuredAddress>
-                    <ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>
-                    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
-                    <BuildingName>Test Building</BuildingName>
-                    <StreetName>Test Street</StreetName>
-                    <CityName>Test City</CityName>
-                    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
-                    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
-                    <CountryName>Test Country</CountryName>
-                    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
-                    <BlockName>Test Block</BlockName>
-                    <PlotIdentification>123</PlotIdentification>
-                    <PostOfficeBox>548675</PostOfficeBox>
-                    <BuildingNumber>12345</BuildingNumber>
-                    <StaircaseNumber>3456</StaircaseNumber>
-                    <FloorIdentification>8888</FloorIdentification>
-                    <RoomIdentification>555</RoomIdentification>
-                    <PostalArea>123</PostalArea>
-                </SpecifiedStructuredAddress>
-                <SpecifiedContactPerson>
-                    <Title>MR</Title>
-                    <GivenName>Test Name</GivenName>
-                    <MiddleName>Test Middle Name</MiddleName>
-                    <FamilyNamePrefix>Test Prefix</FamilyNamePrefix>
-                    <FamilyName>Test Family Name</FamilyName>
-                    <NameSuffix>Test Suffix</NameSuffix>
-                    <GenderCode listID="4ryf65-fhtfyd-thfey45-tu5r7ght">Gender</GenderCode>
-                    <Alias>Test Alias</Alias>
-                </SpecifiedContactPerson>
-            </SpecifiedContactParty>
             <GrantedFLAPDocument>
                 <ID schemeID="fhtg56-5thd75-thf6t93-thfrye">ID 1</ID>
             </GrantedFLAPDocument>
-        </SpecifiedVesselTransportMeans>-->
+        </SpecifiedVesselTransportMeans>
     </ns3:FAReportDocument>
 </ns3:FLUXFAReportMessage>

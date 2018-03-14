@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -21,7 +22,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = {BaseMapper.class}, uses = XMLDateUtils.class)
 public interface FluxReportDocumentMapper {
 
     FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
@@ -29,7 +30,7 @@ public interface FluxReportDocumentMapper {
     @Mappings({
             @Mapping(target = "referenceId", source = "referencedID.value"),
             @Mapping(target = "referenceSchemeId", source = "referencedID.schemeID"),
-            @Mapping(target = "creationDatetime", source = "creationDateTime.dateTime"),
+            @Mapping(target = "creationDatetime", source = "fluxReportDocument.creationDateTime.dateTime"),
             @Mapping(target = "purposeCode", source = "purposeCode.value"),
             @Mapping(target = "purposeCodeListId", source = "purposeCode.listID"),
             @Mapping(target = "purpose", source = "purpose.value"),

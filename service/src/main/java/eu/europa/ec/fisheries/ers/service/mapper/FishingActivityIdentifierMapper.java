@@ -17,9 +17,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-/**
- * TODO create test
- */
 @Mapper
 public interface FishingActivityIdentifierMapper {
 

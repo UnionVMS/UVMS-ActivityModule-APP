@@ -10,24 +10,26 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.service.search.FilterMap;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.europa.ec.fisheries.ers.service.search.FilterMap;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
 @Mapper
 public abstract class FishingActivityRequestMapper {
 
     public static final FishingActivityRequestMapper INSTANCE = Mappers.getMapper(FishingActivityRequestMapper.class);
-
-
 
     /**
      * Backend API expects input as FishingActivityQuery. This method maps FACatchSummaryReportRequest to FishingActivityQuery object

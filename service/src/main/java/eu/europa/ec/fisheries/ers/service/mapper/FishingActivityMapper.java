@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -644,7 +643,9 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, FluxLocationCatchTypeEnum.FA_RELATED, fishingActivityEntity, new FluxLocationEntity());
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+            fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.FA_RELATED.getType());
+            fluxLocationEntity.setFishingActivity(fishingActivityEntity);
             fluxLocationEntities.add(fluxLocationEntity);
         }
         return fluxLocationEntities;
@@ -669,7 +670,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
         for (FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
-            FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic, fishingActivityEntity);
+            FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic);
+            fluxCharacteristicEntity.setFishingActivity(fishingActivityEntity);
             fluxCharacteristicEntities.add(fluxCharacteristicEntity);
         }
         return fluxCharacteristicEntities;
@@ -709,8 +711,9 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingTrip == null) {
             return Collections.emptySet();
         }
-        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, new FishingTripEntity());
-        return new HashSet<FishingTripEntity>(Arrays.asList(fishingTripEntity));
+        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
+        fishingTripEntity.setFishingActivity(fishingActivityEntity);
+        return new HashSet<>(Collections.singletonList(fishingTripEntity));
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
@@ -743,14 +746,20 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (sourceVesselStorageChar == null) {
             return null;
         }
-        return VesselStorageCharacteristicsMapper.INSTANCE.mapToSourceVesselStorageCharEntity(sourceVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
+        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
+                VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(sourceVesselStorageChar);
+        vesselStorageCharacteristicsEntity.setFishingActivitiesForSourceVesselCharId(fishingActivityEntity);
+        return vesselStorageCharacteristicsEntity;
     }
 
     protected VesselStorageCharacteristicsEntity getDestVesselStorageCharacteristics(VesselStorageCharacteristic destVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
         if (destVesselStorageChar == null) {
             return null;
         }
-        return VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar, fishingActivityEntity, new VesselStorageCharacteristicsEntity());
+        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
+                VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar);
+        vesselStorageCharacteristicsEntity.setFishingActivitiesForDestVesselCharId(fishingActivityEntity);
+        return  vesselStorageCharacteristicsEntity;
     }
 
     protected String getFlagState(FishingActivity fishingActivity) {

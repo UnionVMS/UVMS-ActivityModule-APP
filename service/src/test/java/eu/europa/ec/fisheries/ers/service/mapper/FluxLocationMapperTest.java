@@ -20,8 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -35,37 +33,29 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 public class FluxLocationMapperTest {
 
     @Test
-    public void testFluxLocationMapperWithFishingActivity() {
+    public void testFluxLocationMapper() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
-        FluxLocationCatchTypeEnum fluxLocationTypeEnum = FluxLocationCatchTypeEnum.FA_RELATED;
-        FishingActivityEntity fishingActivityEntity = null;
-        FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, fishingActivityEntity, fluxLocationEntity);
-
-        assertFluxLocationEntityFields(fluxLocation, fluxLocationEntity, fluxLocationTypeEnum);
+        FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+        assertEquals(fluxLocation.getTypeCode().getListID(), fluxLocationEntity.getTypeCodeListId());
+        assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode());
+        assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());
+        assertEquals(fluxLocation.getCountryID().getSchemeID(), fluxLocationEntity.getCountryIdSchemeId());
+        assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getValue(), fluxLocationEntity.getRfmoCode());
+        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().intValue(), fluxLocationEntity.getLongitude().intValue());
+        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().intValue(), fluxLocationEntity.getLatitude().intValue());
+        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure().getValue().intValue(), fluxLocationEntity.getAltitude().intValue());
+        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getSystemID().getValue(), fluxLocationEntity.getSystemId());
+        assertEquals(fluxLocation.getID().getValue(), fluxLocationEntity.getFluxLocationIdentifier());
+        assertEquals(fluxLocation.getID().getSchemeID(), fluxLocationEntity.getFluxLocationIdentifierSchemeId());
+        assertEquals(fluxLocation.getGeopoliticalRegionCode().getValue(), fluxLocationEntity.getGeopoliticalRegionCode());
+        assertEquals(fluxLocation.getGeopoliticalRegionCode().getListID(), fluxLocationEntity.getGeopoliticalRegionCodeListId());
+        assertTrue(fluxLocationEntity.getName().startsWith(fluxLocation.getNames().get(0).getValue()));
+        assertEquals(fluxLocation.getSovereignRightsCountryID().getValue(), fluxLocationEntity.getSovereignRightsCountryCode());
+        assertEquals(fluxLocation.getJurisdictionCountryID().getValue(), fluxLocationEntity.getJurisdictionCountryCode());
         assertNull(fluxLocationEntity.getFishingActivity());
-
         assertNotNull(fluxLocationEntity.getStructuredAddresses());
         StructuredAddressEntity structuredAddressEntity = fluxLocationEntity.getStructuredAddresses().iterator().next();
         assertNotNull(structuredAddressEntity);
-        assertFluxLocationEntityFields(fluxLocation, structuredAddressEntity.getFluxLocation(), fluxLocationTypeEnum);
-    }
-
-    @Test
-    public void testFluxLocationMapperWithFACatch() {
-        FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
-        FluxLocationCatchTypeEnum fluxLocationTypeEnum = FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED;
-        FaCatchEntity faCatchEntity = null;
-        FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, faCatchEntity, fluxLocationEntity);
-
-        assertFluxLocationEntityFields(fluxLocation, fluxLocationEntity, fluxLocationTypeEnum);
-        assertNull(fluxLocationEntity.getFaCatch());
-
-        assertNotNull(fluxLocationEntity.getStructuredAddresses());
-        StructuredAddressEntity structuredAddressEntity = fluxLocationEntity.getStructuredAddresses().iterator().next();
-        assertNotNull(structuredAddressEntity);
-        assertFluxLocationEntityFields(fluxLocation, structuredAddressEntity.getFluxLocation(), fluxLocationTypeEnum);
     }
 
     @Test
@@ -91,32 +81,11 @@ public class FluxLocationMapperTest {
         assertTrue(StringUtils.isNotEmpty(fluxLocationDTO.getBlockName()));
     }
 
-    private void assertFluxLocationEntityFields(FLUXLocation fluxLocation, FluxLocationEntity fluxLocationEntity, FluxLocationCatchTypeEnum fluxLocationTypeEnum) {
-        assertEquals(fluxLocation.getTypeCode().getListID(), fluxLocationEntity.getTypeCodeListId());
-        assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode());
-        assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());
-        assertEquals(fluxLocation.getCountryID().getSchemeID(), fluxLocationEntity.getCountryIdSchemeId());
-        assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getValue(), fluxLocationEntity.getRfmoCode());
-        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().intValue(), fluxLocationEntity.getLongitude().intValue());
-        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().intValue(), fluxLocationEntity.getLatitude().intValue());
-        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure().getValue().intValue(), fluxLocationEntity.getAltitude().intValue());
-        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getSystemID().getValue(), fluxLocationEntity.getSystemId());
-        assertEquals(fluxLocationTypeEnum.getType(), fluxLocationEntity.getFluxLocationType());
-        assertEquals(fluxLocation.getID().getValue(), fluxLocationEntity.getFluxLocationIdentifier());
-        assertEquals(fluxLocation.getID().getSchemeID(), fluxLocationEntity.getFluxLocationIdentifierSchemeId());
-        assertEquals(fluxLocation.getGeopoliticalRegionCode().getValue(), fluxLocationEntity.getGeopoliticalRegionCode());
-        assertEquals(fluxLocation.getGeopoliticalRegionCode().getListID(), fluxLocationEntity.getGeopoliticalRegionCodeListId());
-        assertTrue(fluxLocationEntity.getName().startsWith(fluxLocation.getNames().get(0).getValue()));
-        assertEquals(fluxLocation.getSovereignRightsCountryID().getValue(), fluxLocationEntity.getSovereignRightsCountryCode());
-        assertEquals(fluxLocation.getJurisdictionCountryID().getValue(), fluxLocationEntity.getJurisdictionCountryCode());
-    }
-
     private FluxLocationEntity getFluxLocationEntityMock() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = new FluxLocationEntity();
         FluxLocationCatchTypeEnum fluxLocationTypeEnum = FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED;
-        FaCatchEntity faCatchEntity = null;
-        FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation, fluxLocationTypeEnum, faCatchEntity, fluxLocationEntity);
+        FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+        fluxLocationEntity.setFluxLocationType(fluxLocationTypeEnum.getType());
         return fluxLocationEntity;
     }
 }

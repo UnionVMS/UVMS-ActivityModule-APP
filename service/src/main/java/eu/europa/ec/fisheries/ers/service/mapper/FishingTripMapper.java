@@ -17,13 +17,10 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
@@ -39,19 +36,9 @@ public abstract class FishingTripMapper extends BaseMapper {
             @Mapping(target = "typeCode", source = "fishingTrip.typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "fishingTrip.typeCode.listID"),
             @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS(), fishingTripEntity))"),
-            @Mapping(target = "fishingActivity", expression = "java(fishingActivityEntity)"),
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
     })
-    public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity, @MappingTarget FishingTripEntity fishingTripEntity);
-
-    @Mappings({
-            @Mapping(target = "typeCode", source = "fishingTrip.typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "fishingTrip.typeCode.listID"),
-            @Mapping(target = "fishingTripIdentifiers", expression = "java(mapToFishingTripIdentifierEntities(fishingTrip.getIDS(), fishingTripEntity))"),
-            @Mapping(target = "faCatch", expression = "java(faCatchEntity)"),
-            @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
-    })
-    public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip, FaCatchEntity faCatchEntity, @MappingTarget FishingTripEntity fishingTripEntity);
+    public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
 
     @Mappings({
             @Mapping(target = "tripId", source = "value"),
