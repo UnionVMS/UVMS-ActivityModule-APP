@@ -19,7 +19,9 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -106,6 +108,22 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             return null;
         }
         FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
+
+        if (fluxReportDocument.getOwnerFLUXParty() != null){
+            FluxPartyEntity fluxPartyEntity = FluxPartyMapper.INSTANCE.mapToFluxPartyEntity(fluxReportDocument.getOwnerFLUXParty());
+            fluxPartyEntity.setFluxReportDocument(fluxReportDocumentEntity);
+            fluxReportDocumentEntity.setFluxParty(fluxPartyEntity);
+        }
+
+        Set<FluxReportIdentifierEntity> reportIdentifierEntitySet = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(fluxReportDocument.getIDS())){
+            for (IDType idType : fluxReportDocument.getIDS()){
+                FluxReportIdentifierEntity fluxReportIdentifierEntity = FluxReportIdentifierMapper.INSTANCE.mapToFluxReportIdentifierEntity(idType);
+                fluxReportIdentifierEntity.setFluxReportDocument(fluxReportDocumentEntity);
+                reportIdentifierEntitySet.add(fluxReportIdentifierEntity);
+            }
+        }
+        fluxReportDocumentEntity.setFluxReportIdentifiers(reportIdentifierEntitySet);
         fluxReportDocumentEntity.setFaReportDocument(faReportDocumentEntity);
         return fluxReportDocumentEntity;
     }

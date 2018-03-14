@@ -70,9 +70,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-/**
- * TODO create test
- */
 public class ActivityEntityToModelMapper {
 
     @SneakyThrows
@@ -383,7 +380,12 @@ public class ActivityEntityToModelMapper {
             if (fishingDurationMeasure != null){
                 measureType.setValue(new BigDecimal(fishingDurationMeasure));
             }
-            measureType.setUnitCode(source.getFishingDurationMeasureCode());
+            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureCode())){
+                measureType.setUnitCode(source.getFishingDurationMeasureCode());
+            }
+            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureUnitCodeListVersionID())){
+                measureType.setUnitCodeListVersionID(source.getFishingDurationMeasureUnitCodeListVersionID());
+            }
             target.setFishingDurationMeasure(measureType);
         }
     }
@@ -413,7 +415,12 @@ public class ActivityEntityToModelMapper {
             if (operationQuantity != null){
                 quantityType.setValue(new BigDecimal(operationQuantity));
             }
-            quantityType.setUnitCode(source.getOperationQuantityCode());
+            if (StringUtils.isNotEmpty(source.getOperationQuantityCode())){
+                quantityType.setUnitCode(source.getOperationQuantityCode());
+            }
+            if (StringUtils.isNotEmpty(source.getOperationQuantityUnitCodeListID())){
+                quantityType.setUnitCodeListID(source.getOperationQuantityUnitCodeListID());
+            }
             target.setOperationsQuantity(quantityType);
         }
     }
@@ -522,9 +529,17 @@ public class ActivityEntityToModelMapper {
             for (StructuredAddressEntity source : structuredAddressEntities) {
                 StructuredAddress structuredAddress = new StructuredAddress();
 
-                structuredAddress.setPostalArea(new TextType(source.getPostalAreaValue(), source.getPostalAreaLanguageID(), source.getPostalAreaLanguageLocaleID()));
-                structuredAddress.setBlockName(new TextType(source.getBlockName(), null, null));
-                structuredAddress.setBuildingName(new TextType(source.getBuildingName(), null,null));
+                if (StringUtils.isNotEmpty(source.getPostalAreaValue()) || StringUtils.isNotEmpty(source.getPostalAreaLanguageID()) || StringUtils.isNotEmpty(source.getPostalAreaLanguageLocaleID())){
+                    structuredAddress.setPostalArea(new TextType(source.getPostalAreaValue(), source.getPostalAreaLanguageID(), source.getPostalAreaLanguageLocaleID()));
+                }
+
+                if (StringUtils.isNotEmpty(source.getBlockName())){
+                    structuredAddress.setBlockName(new TextType(source.getBlockName(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getBuildingName())){
+                    structuredAddress.setBuildingName(new TextType(source.getBuildingName(), null,null));
+                }
 
                 if (StringUtils.isNotEmpty(source.getStreetName())){
                     structuredAddress.setStreetName(new TextType(source.getStreetName(), null,null));
@@ -550,13 +565,30 @@ public class ActivityEntityToModelMapper {
                     structuredAddress.setStaircaseNumber(new TextType(source.getStaircaseNumberValue(), null,null));
                 }
 
-                //structuredAddress.setBuildingNumber(new TextType(source.get(), null,null)); // FIXME not saved in DB
-                structuredAddress.setCityName(new TextType(source.getCityName(), null,null));
-                structuredAddress.setCitySubDivisionName(new TextType(source.getCitySubdivisionName(), null,null));
-                //structuredAddress.setFloorIdentification(new TextType(source.get(), null,null)); // FIXME not saved in DB
-                structuredAddress.setCountryName(new TextType(source.getCountryName(), null,null));
+                if (StringUtils.isNotEmpty(source.getFloorIdentificationValue())){
+                    structuredAddress.setFloorIdentification(new TextType(source.getFloorIdentificationValue(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getRoomIdentificationValue())){
+                    structuredAddress.setRoomIdentification(new TextType(source.getRoomIdentificationValue(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getCityName())){
+                    structuredAddress.setCityName(new TextType(source.getCityName(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getCountryName())){
+                    structuredAddress.setCountryName(new TextType(source.getCountryName(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getCitySubdivisionName())){
+                    structuredAddress.setCitySubDivisionName(new TextType(source.getCitySubdivisionName(), null,null));
+                }
+
                 mapCountryID(structuredAddress, source.getCountryIDValue(),  source.getCountryIDSchemeID());
                 mapPostcode(structuredAddress, source.getPostcode(), source.getPostcodeListID());
+
+                //structuredAddress.setBuildingNumber(new TextType(source.get(), null,null)); // FIXME not saved in DB
 
                 structuredAddressList.add(structuredAddress);
             }
@@ -606,15 +638,30 @@ public class ActivityEntityToModelMapper {
 
     private void mapContactPerson(ContactParty target, ContactPersonEntity contactPersonEntity) {
         if (ObjectUtils.allNotNull(target, contactPersonEntity)){
-            contactPersonEntity.getGender(); //TODO
             ContactPerson source = new ContactPerson();
-            source.setAlias(new TextType(contactPersonEntity.getAlias(), null, null));
-            source.setGivenName(new TextType(contactPersonEntity.getGivenName(), null, null));
-            source.setFamilyName(new TextType(contactPersonEntity.getFamilyName(), null, null));
-            source.setFamilyNamePrefix(new TextType(contactPersonEntity.getFamilyNamePrefix(), null, null));
-            source.setMiddleName(new TextType(contactPersonEntity.getMiddleName(), null, null));
-            source.setTitle(new TextType(contactPersonEntity.getTitle(), null, null));
-            source.setNameSuffix(new TextType(contactPersonEntity.getNameSuffix(), null, null));
+            if (contactPersonEntity.getAlias() != null){
+                source.setAlias(new TextType(contactPersonEntity.getAlias(), null, null));
+            }
+            if (StringUtils.isNotEmpty(contactPersonEntity.getGivenName()))
+                source.setGivenName(new TextType(contactPersonEntity.getGivenName(), null, null));
+
+            if (StringUtils.isNotEmpty(contactPersonEntity.getFamilyName()))
+                source.setFamilyName(new TextType(contactPersonEntity.getFamilyName(), null, null));
+
+            if (StringUtils.isNotEmpty(contactPersonEntity.getFamilyNamePrefix()))
+                source.setFamilyNamePrefix(new TextType(contactPersonEntity.getFamilyNamePrefix(), null, null));
+
+            if (StringUtils.isNotEmpty(contactPersonEntity.getMiddleName()))
+                source.setMiddleName(new TextType(contactPersonEntity.getMiddleName(), null, null));
+
+            if (StringUtils.isNotEmpty(contactPersonEntity.getTitle()))
+                source.setTitle(new TextType(contactPersonEntity.getTitle(), null, null));
+
+            if (StringUtils.isNotEmpty(contactPersonEntity.getNameSuffix()))
+                source.setNameSuffix(new TextType(contactPersonEntity.getNameSuffix(), null, null));
+
+            contactPersonEntity.getGender(); //TODO
+
             target.setSpecifiedContactPersons(Collections.singletonList(source));
         }
     }

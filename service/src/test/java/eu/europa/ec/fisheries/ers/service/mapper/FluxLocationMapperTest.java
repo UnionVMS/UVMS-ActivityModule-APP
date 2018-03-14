@@ -18,15 +18,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
@@ -63,22 +59,6 @@ public class FluxLocationMapperTest {
         FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
         FluxLocationDto locationDto = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocationEntity);
         assertNotNull(locationDto);
-    }
-
-    @Test
-    public void getPostalAddressDetailsTest(){
-        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
-        List<AddressDetailsDTO> fluxLocationDTO = FluxLocationMapper.INSTANCE.getPostalAddressDetails(fluxLocationEntity.getStructuredAddresses());
-        assertNotNull(fluxLocationDTO);
-        assertTrue(fluxLocationDTO.size() > 0);
-    }
-
-    @Test
-    public void getPhysicalAddressDetailsTest(){
-        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
-        AddressDetailsDTO fluxLocationDTO = FluxLocationMapper.INSTANCE.getPhysicalAddressDetails(fluxLocationEntity.getStructuredAddresses());
-        assertNotNull(fluxLocationDTO);
-        assertTrue(StringUtils.isNotEmpty(fluxLocationDTO.getBlockName()));
     }
 
     private FluxLocationEntity getFluxLocationEntityMock() {

@@ -20,8 +20,6 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,15 +35,12 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
@@ -62,6 +57,7 @@ import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -69,7 +65,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
@@ -80,10 +75,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-
-/**
- * TODO create test
- */
 @Slf4j
 @NoArgsConstructor
 public class BaseMapper {
@@ -188,8 +179,6 @@ public class BaseMapper {
         return fishingGearRoles;
     }
 
-
-
     public static Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
         if (CollectionUtils.isEmpty(gearCharacteristics)) {
             return Collections.emptySet();
@@ -200,47 +189,6 @@ public class BaseMapper {
             gearCharacteristicEntities.add(gearCharacteristicEntity);
         }
         return gearCharacteristicEntities;
-    }
-
-    public static FluxPartyEntity getFluxPartyEntity(FLUXParty fluxParty, FluxReportDocumentEntity fluxReportDocumentEntity) {
-        if (fluxParty == null) {
-            return null;
-        }
-        FluxPartyEntity fluxPartyEntity = FluxPartyMapper.INSTANCE.mapToFluxPartyEntity(fluxParty);
-        fluxPartyEntity.setFluxReportDocument(fluxReportDocumentEntity);
-        return fluxPartyEntity;
-    }
-
-    public static Set<FluxReportIdentifierEntity> mapToFluxReportIdentifierEntities(List<IDType> idTypes, FluxReportDocumentEntity fluxReportDocumentEntity) {
-        if (idTypes == null || idTypes.isEmpty()) {
-            Collections.emptySet();
-        }
-        Set<FluxReportIdentifierEntity> identifiers = newSet();
-        for (IDType idType : idTypes) {
-            FluxReportIdentifierEntity entity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportIdentifierEntity(idType);
-            entity.setFluxReportDocument(fluxReportDocumentEntity);
-            identifiers.add(entity);
-        }
-        return identifiers;
-    }
-
-    public static FishingTripEntity getSpecifiedFishingTrip(FishingActivityEntity activityEntity) {
-        FishingTripEntity fishingTripEntity = null;
-        Set<FishingTripEntity> fishingTrips = activityEntity.getFishingTrips();
-        if (!CollectionUtils.isEmpty(fishingTrips)) {
-            fishingTripEntity = activityEntity.getFishingTrips().iterator().next();
-        }
-        return fishingTripEntity;
-    }
-
-
-    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingTripEntity tripEntity) {
-        Set<FluxLocationEntity> fluxLocations = newSet();
-        FishingActivityEntity fishingActivity = tripEntity.getFishingActivity();
-        if (fishingActivity != null) {
-            fluxLocations = fishingActivity.getFluxLocations();
-        }
-        return fluxLocations;
     }
 
     public static List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet) {
@@ -333,45 +281,28 @@ public class BaseMapper {
         return calendar;
     }
 
-    public static List<String> getRoles(Set<ContactPartyRoleEntity> contactPartyRoles) {
-        List<String> roles = new ArrayList<>();
-        for (ContactPartyRoleEntity roleEntity : contactPartyRoles) {
-            roles.add(roleEntity.getRoleCode());
-        }
-        return roles;
-    }
-
     public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
         FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
         return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
     }
 
-    public static Set<FluxLocationEntity> getRelatedFluxLocations(FishingActivityEntity activityEntity) {
-        FishingTripEntity specifiedFishingTrip = getSpecifiedFishingTrip(activityEntity);
-        Set<FluxLocationEntity> relatedFluxLocations = new HashSet<>();
-        if (specifiedFishingTrip != null) {
-            relatedFluxLocations = getRelatedFluxLocations(specifiedFishingTrip);
-        }
-        return relatedFluxLocations;
-    }
-
-    protected String getIdType(IDType idType) {
+    public static String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
     }
 
-    protected String getIdTypeSchemaId(IDType idType) {
+    public static String getIdTypeSchemaId(IDType idType) {
         return (idType == null) ? null : idType.getSchemeID();
     }
 
-    protected String getCodeType(CodeType codeType) {
+    public static String getCodeType(CodeType codeType) {
         return (codeType == null) ? null : codeType.getValue();
     }
 
-    protected String getCodeTypeListId(CodeType codeType) {
+    public static String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
     }
 
-    protected Double getCalculatedQuantity(QuantityType quantityType) {
+    protected static Double getCalculatedQuantity(QuantityType quantityType) {
         if (quantityType == null) {
             return null;
         }
@@ -404,16 +335,13 @@ public class BaseMapper {
         if (CollectionUtils.isEmpty(fishingActivityList)) {
             return null;
         }
-
         for (FishingActivityEntity fishingActivityEntity : fishingActivityList) {
             if (faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())) {
                 return fishingActivityEntity;
             }
         }
-
         return null;
     }
-
 
     protected FluxLocationEntity extractFLUXPosition(Set<FluxLocationEntity> fluxLocationEntityList) {
         if (CollectionUtils.isEmpty(fluxLocationEntityList)) {
@@ -430,7 +358,6 @@ public class BaseMapper {
 
     protected String extractGeometryWkt(Double longitude, Double latitude) {
         Geometry geom = GeometryUtils.createPoint(longitude, latitude);
-
         return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
     }
 
@@ -452,23 +379,14 @@ public class BaseMapper {
 
     protected Date convertToDate(DateTimeType dateTime) {
         Date value = null;
-        try {
-            if (dateTime != null) {
-                if (dateTime.getDateTime() != null) {
-                    value = dateTime.getDateTime().toGregorianCalendar().getTime();
-                } else if (dateTime.getDateTimeString() != null) {
-                    DateFormat df = new SimpleDateFormat(dateTime.getDateTimeString().getFormat());
-                    value = df.parse(dateTime.getDateTimeString().getValue());
-                }
-            }
-        } catch (java.text.ParseException e) {
-            log.error(e.getMessage(), e);
+        if (dateTime != null){
+            value = XMLDateUtils.xmlGregorianCalendarToDate(dateTime.getDateTime());
         }
         return value;
     }
 
     /**
-     * This method will return fishing trip start and end time
+     * return fishing trip start and end time
      * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time
      * fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
      *

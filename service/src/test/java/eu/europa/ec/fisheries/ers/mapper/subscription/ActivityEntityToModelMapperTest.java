@@ -87,7 +87,8 @@ public class ActivityEntityToModelMapperTest {
                 //$("fa_flux_message3.xml"),
                 //$("fa_flux_message4.xml"),
                 //$("fa_flux_message5.xml"),
-                $("fa_flux_message6.xml")
+                //$("fa_flux_message6.xml"),
+                $("fa_flux_message7.xml")
 
         );
     }

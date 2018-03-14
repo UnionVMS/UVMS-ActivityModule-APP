@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
@@ -45,9 +46,13 @@ public interface StructuredAddressMapper {
             @Mapping(target = "postalAreaLanguageLocaleID", source = "postalArea.languageLocaleID"),
             @Mapping(target = "postalAreaLanguageID", source = "postalArea.languageID"),
             @Mapping(target = "streetName", source = "streetName.value"),
-            @Mapping(target = "staircaseNumberValue", source = "staircaseNumber.value")
+            @Mapping(target = "staircaseNumberValue", source = "staircaseNumber.value"),
+            @Mapping(target = "floorIdentificationValue", source = "floorIdentification.value"),
+            @Mapping(target = "roomIdentificationValue", source = "roomIdentification.value")
     })
     StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress);
+
+    Set<StructuredAddressEntity> mapToStructuredAddress(List<StructuredAddress> structuredAddress);
 
     AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 

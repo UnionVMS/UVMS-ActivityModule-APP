@@ -10,19 +10,18 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import static com.ninja_squad.dbsetup.Operations.deleteAllFrom;
+import static com.ninja_squad.dbsetup.Operations.insertInto;
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.uvms.BaseDAOTest;
 
-import static com.ninja_squad.dbsetup.Operations.deleteAllFrom;
-import static com.ninja_squad.dbsetup.Operations.insertInto;
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-
 
 public abstract class BaseErsFaDaoTest extends BaseDAOTest {
 
-    // ERS REF DATA : DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
     public static final Operation ERS_REFERENCE_DATA = sequenceOf(
             insertInto("activity.activity_flux_fa_report_message")
                     .row()

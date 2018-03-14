@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.Collections;
@@ -30,9 +31,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-/**
- * Created by padhyad on 6/14/2016.
- */
 @Mapper(uses = {FishingGearMapper.class, FluxLocationMapper.class})
 public abstract class GearProblemMapper extends BaseMapper {
 
@@ -54,7 +52,6 @@ public abstract class GearProblemMapper extends BaseMapper {
     })
     public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
 
-
     protected Set<FluxLocationEntity> mapToFluxLocations(List<FLUXLocation> flLocList, GearProblemEntity gearProbEntity){
         if(CollectionUtils.isEmpty(flLocList)){
             return Collections.emptySet();
@@ -72,7 +69,7 @@ public abstract class GearProblemMapper extends BaseMapper {
 
     protected Set<GearProblemRecoveryEntity> mapToGearProblemRecoveries(List<CodeType> codeTypes, GearProblemEntity gearProblemEntity) {
         if (codeTypes == null || codeTypes.isEmpty()) {
-            Collections.emptySet();
+            return Collections.emptySet();
         }
         Set<GearProblemRecoveryEntity> gearProblemRecoveries = new HashSet<>();
         for (CodeType codeType : codeTypes) {

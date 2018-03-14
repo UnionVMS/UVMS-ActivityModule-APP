@@ -129,15 +129,12 @@ public class FishingActivityServiceBeanTest {
         when(assetModule.getAssetListResponse(Mockito.any(AssetListQuery.class))).thenReturn(listAssetResponse);
 
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
-
         assertNotNull(vesselDetailsDTO);
-
     }
 
     @Test
     @SneakyThrows
     public void getFishingActivityReportAndRelatedDataForFishingTrip() throws ServiceException {
-
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
         when(vesselIdentifiersDao.getLatestVesselIdByTrip(Mockito.anyString())).thenReturn(MapperUtil.getVesselIdentifiersList());
     }

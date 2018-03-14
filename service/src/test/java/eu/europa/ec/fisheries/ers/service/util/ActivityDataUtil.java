@@ -13,6 +13,15 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
@@ -32,17 +41,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sanera on 31/08/2016.
@@ -85,15 +83,6 @@ public class ActivityDataUtil {
         registrationLocationEntity.setLocationCountrySchemeId(locationCountrySchemeId);
         return registrationLocationEntity;
     }
-
-    public static RegistrationEventEntity getRegistrationEventEntity(String description, Date OccurrenceDatetime, RegistrationLocationEntity registrationLocation) {
-        RegistrationEventEntity registrationEventEntity = new RegistrationEventEntity();
-        registrationEventEntity.setDescription(description);
-        registrationEventEntity.setOccurrenceDatetime(OccurrenceDatetime);
-        registrationEventEntity.setRegistrationLocation(registrationLocation);
-        return registrationEventEntity;
-    }
-
 
     public static VesselTransportMeansEntity getVesselTransportMeansEntity(String roleCode, String roleCodeListId, String name, RegistrationEventEntity registrationEventEntity) {
         VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
@@ -208,18 +197,6 @@ public class ActivityDataUtil {
         return rolesList;
     }
 
-    public static ListAssetResponse getListAssetResponse() {
-        ListAssetResponse listResponse = new ListAssetResponse();
-        Asset asset = new Asset();
-        asset.setCfr("UPDATED_CFR");
-        asset.setImo("UPDATED_IMO");
-        asset.setIrcs("UPDATED_IRCS");
-        listResponse.setCurrentPage(1);
-        listResponse.setTotalNumberOfPages(1);
-        listResponse.getAsset().add(asset);
-        return listResponse;
-    }
-
     public static Set<VesselIdentifierEntity> getVesselIdentifiers(VesselTransportMeansEntity vesselTransportMeansEntity1, String ident_, String scheme_) {
         Set<VesselIdentifierEntity> identifiers = new HashSet<>();
         VesselIdentifierEntity identifier = new VesselIdentifierEntity();
@@ -228,10 +205,6 @@ public class ActivityDataUtil {
         identifier.setVesselIdentifierSchemeId(scheme_);
         identifiers.add(identifier);
         return identifiers;
-    }
-
-    public static List<Object[]> getFaCatches() {
-        return faCatches;
     }
 
     public static List<FaCatchEntity> getFaCatchesEntities() {

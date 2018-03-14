@@ -28,8 +28,10 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
@@ -48,6 +50,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
 @Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class,
         FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class,
@@ -185,6 +188,26 @@ public abstract class FaCatchMapper extends BaseMapper {
         if (specifiedFluxLocations != null && !specifiedFluxLocations.isEmpty()) {
             for (FLUXLocation fluxLocation : specifiedFluxLocations) {
                 FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+
+                Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
+
+                StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
+                StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(physicalStructuredAddress);
+                physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
+                structuredAddressEntitySet.add(physicalStructuredAddressEntity);
+
+                List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
+                if (postalStructuredAddresses != null && !postalStructuredAddresses.isEmpty()) {
+                    for (StructuredAddress structuredAddress : postalStructuredAddresses) {
+                        StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress);
+                        structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
+                        structuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                        structuredAddressEntitySet.add(structuredAddressEntity);
+                    }
+                }
+
+                fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
                 fluxLocationEntity.setFaCatch(faCatchEntity);
                 fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType());
                 fluxLocationEntities.add(fluxLocationEntity);
@@ -229,7 +252,6 @@ public abstract class FaCatchMapper extends BaseMapper {
         return aapProcessEntities;
     }
 
-
     /**
      * Depending on the catch type (typeCode->FaCatchEntity) returns a DTO containing the sums of ONBOARD and
      * LANDED fishQuantity and species.
@@ -252,9 +274,6 @@ public abstract class FaCatchMapper extends BaseMapper {
             String speciesCode = (String) faCatch[1];
             String areaName = (String) faCatch[2];
             Double weight = (Double) faCatch[3];
-
-
-            // Double weight      = (Double) faCatch[2];
             if ("UNLOADED".equals(typeCode)) {
                 landedSummary.addSpecieAndQuantity(speciesCode, weight, areaName);
             } else if ("ONBOARD".equals(typeCode)

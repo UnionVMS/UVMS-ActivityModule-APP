@@ -44,7 +44,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
             @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
             @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
     })
-    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty,VesselTransportMeansEntity vesselTransportMeansEntity);
+    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty, VesselTransportMeansEntity vesselTransportMeansEntity);
 
     @Mappings({
             @Mapping(target = "roleCode", source = "value"),

@@ -157,6 +157,9 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "operation_quantity_code")
 	private String operationQuantityCode;
 
+	@Column(name = "operation_quantity_unit_code_list_id")
+	private String operationQuantityUnitCodeListID;
+
 	@Column(name = "calculated_operation_quantity")
 	private Double calculatedOperationQuantity;
 
@@ -165,6 +168,9 @@ public class FishingActivityEntity implements Serializable {
 
 	@Column(name = "fishing_duration_measure_code")
 	private String fishingDurationMeasureCode;
+
+	@Column(name = "fishing_duration_measure_unit_code_list_version_id")
+	private String fishingDurationMeasureUnitCodeListVersionID;
 
 	@Column(name = "calculated_fishing_duration")
 	private Double calculatedFishingDuration;

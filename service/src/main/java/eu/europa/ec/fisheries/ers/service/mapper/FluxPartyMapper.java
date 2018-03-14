@@ -27,17 +27,14 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-/**
- * Created by padhyad on 9/16/2016.
- */
-@Mapper
-public abstract class FluxPartyMapper extends BaseMapper {
+@Mapper(imports = BaseMapper.class)
+public abstract class FluxPartyMapper {
 
     public static final FluxPartyMapper INSTANCE = Mappers.getMapper(FluxPartyMapper.class);
 
     @Mappings({
-            @Mapping(target = "fluxPartyName", expression = "java(getTextFromList(fluxParty.getNames()))"),
-            @Mapping(target = "nameLanguageId", expression = "java(getLanguageIdFromList(fluxParty.getNames()))"),
+            @Mapping(target = "fluxPartyName", expression = "java(BaseMapper.getTextFromList(fluxParty.getNames()))"),
+            @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxParty.getNames()))"),
             @Mapping(target = "fluxPartyIdentifiers", expression = "java(mapToFluxPartyIdentifierEntities(fluxParty.getIDS(), fluxPartyEntity))"),
     })
     public abstract FluxPartyEntity mapToFluxPartyEntity(FLUXParty fluxParty);

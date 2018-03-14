@@ -12,17 +12,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper(imports = {BaseMapper.class}, uses = XMLDateUtils.class)
+@Mapper(uses = XMLDateUtils.class)
 public interface FluxReportDocumentMapper {
 
     FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
@@ -33,22 +30,8 @@ public interface FluxReportDocumentMapper {
             @Mapping(target = "creationDatetime", source = "creationDateTime.dateTime"),
             @Mapping(target = "purposeCode", source = "purposeCode.value"),
             @Mapping(target = "purposeCodeListId", source = "purposeCode.listID"),
-            @Mapping(target = "purpose", source = "purpose.value"),
-            @Mapping(target = "fluxParty", expression = "java(BaseMapper.getFluxPartyEntity(fluxReportDocument.getOwnerFLUXParty(), fluxReportDocumentEntity))"),
-            @Mapping(target = "fluxReportIdentifiers", expression = "java(BaseMapper.mapToFluxReportIdentifierEntities(fluxReportDocument.getIDS(), fluxReportDocumentEntity))"),
+            @Mapping(target = "purpose", source = "purpose.value")
     })
     FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument);
-
-    @Mappings({
-            @Mapping(target = "fluxReportIdentifierId", source = "value"),
-            @Mapping(target = "fluxReportIdentifierSchemeId", source = "schemeID")
-    })
-    FluxReportIdentifierEntity mapToFluxReportIdentifierEntity(IDType idType);
-
-    @Mappings({
-            @Mapping(target = "fluxReportId", source = "fluxReportIdentifierId"),
-            @Mapping(target = "fluxReportSchemeId", source = "fluxReportIdentifierSchemeId")
-    })
-    FluxReportIdentifierDTO mapToFluxReportIdentifierDTO(FluxReportIdentifierEntity identifierEntity);
 
 }

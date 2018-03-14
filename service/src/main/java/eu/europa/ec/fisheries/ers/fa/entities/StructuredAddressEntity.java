@@ -90,6 +90,12 @@ public class StructuredAddressEntity implements Serializable {
     @Column(name = "staircase_number_value")
     private String staircaseNumberValue;
 
+    @Column(name = "floor_identification_value")
+    private String floorIdentificationValue;
+
+    @Column(name = "room_identification_value")
+    private String roomIdentificationValue;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_party_id")
     private ContactPartyEntity contactParty;
