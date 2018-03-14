@@ -1409,7 +1409,7 @@
                     <PlotIdentification>123</PlotIdentification>
                     <PostOfficeBox>548675</PostOfficeBox>
                     <BuildingNumber>12345</BuildingNumber>
-                 <!--<StaircaseNumber>3456</StaircaseNumber>-->
+                    <StaircaseNumber>3456</StaircaseNumber>
                  <!--<FloorIdentification>8888</FloorIdentification>-->
                  <!--<RoomIdentification>555</RoomIdentification>-->
                  <PostalArea>123</PostalArea>

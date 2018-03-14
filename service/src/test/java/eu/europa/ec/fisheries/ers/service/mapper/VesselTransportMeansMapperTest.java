@@ -23,9 +23,6 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 
-/**
- * Created by padhyad on 7/28/2016.
- */
 public class VesselTransportMeansMapperTest {
 
     @Test

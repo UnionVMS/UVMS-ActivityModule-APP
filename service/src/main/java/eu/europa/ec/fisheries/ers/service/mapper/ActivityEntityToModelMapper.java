@@ -546,6 +546,10 @@ public class ActivityEntityToModelMapper {
                     structuredAddress.setPlotIdentification(new TextType(source.getPlotId(), null,null));
                 }
 
+                if (StringUtils.isNotEmpty(source.getStaircaseNumberValue())){
+                    structuredAddress.setStaircaseNumber(new TextType(source.getStaircaseNumberValue(), null,null));
+                }
+
                 //structuredAddress.setBuildingNumber(new TextType(source.get(), null,null)); // FIXME not saved in DB
                 structuredAddress.setCityName(new TextType(source.getCityName(), null,null));
                 structuredAddress.setCitySubDivisionName(new TextType(source.getCitySubdivisionName(), null,null));
