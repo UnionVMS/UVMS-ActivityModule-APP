@@ -57,15 +57,15 @@ public abstract class FaCatchMapper extends BaseMapper {
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", source = "faCatch.typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "faCatch.typeCode.listID"),
-            @Mapping(target = "speciesCode", source = "faCatch.speciesCode.value"),
-            @Mapping(target = "speciesCodeListid", source = "faCatch.speciesCode.listID"),
-            @Mapping(target = "unitQuantity", source = "faCatch.unitQuantity.value"),
-            @Mapping(target = "unitQuantityCode", source = "faCatch.unitQuantity.unitCode"),
+            @Mapping(target = "typeCode", source = "typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "speciesCode", source = "speciesCode.value"),
+            @Mapping(target = "speciesCodeListid", source = "speciesCode.listID"),
+            @Mapping(target = "unitQuantity", source = "unitQuantity.value"),
+            @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
             @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(faCatch.getUnitQuantity()))"),
-            @Mapping(target = "weightMeasure", source = "faCatch.weightMeasure.value"),
-            @Mapping(target = "weightMeasureUnitCode", source = "faCatch.weightMeasure.unitCode"),
+            @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
+            @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(faCatch.getWeightMeasure()))"),
             @Mapping(target = "usageCode", expression = "java(getCodeType(faCatch.getUsageCode()))"),
             @Mapping(target = "usageCodeListId", expression = "java(getCodeTypeListId(faCatch.getUsageCode()))"),
@@ -86,11 +86,11 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "country", expression = "java(getVesselTransportMeansForRelocation(faCatch).getCountry())"),
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToAssetIdentifiers(faCatch))"),
             @Mapping(target = "name", expression = "java(getVesselTransportMeansForRelocation(faCatch).getName())"),
-            @Mapping(target = "speciesCode", source = "faCatch.speciesCode"),
-            @Mapping(target = "type", source = "faCatch.typeCode"),
-            @Mapping(target = "weight", source = "faCatch.calculatedWeightMeasure"),
-            @Mapping(target = "unit", source = "faCatch.calculatedUnitQuantity"),
-            @Mapping(target = "characteristics", source = "faCatch.fishingActivity.fluxCharacteristics")
+            @Mapping(target = "speciesCode", source = "speciesCode"),
+            @Mapping(target = "type", source = "typeCode"),
+            @Mapping(target = "weight", source = "calculatedWeightMeasure"),
+            @Mapping(target = "unit", source = "calculatedUnitQuantity"),
+            @Mapping(target = "characteristics", source = "fishingActivity.fluxCharacteristics")
     })
     public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
 

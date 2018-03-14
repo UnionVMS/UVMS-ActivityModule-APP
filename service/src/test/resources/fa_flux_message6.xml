@@ -1399,16 +1399,16 @@
                     <!--<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>-->
                     <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
                     <BuildingName>Test Building</BuildingName>
-                    <!--<StreetName>Test Street</StreetName>-->
+                    <StreetName>Test Street</StreetName>
                     <CityName>Test City</CityName>
                     <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
                     <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
                     <CountryName>Test Country</CountryName>
-                <!--<CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>-->
+                    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
                     <BlockName>Test Block</BlockName>
-                    <!-- <PlotIdentification>123</PlotIdentification>-->
-                    <!--<PostOfficeBox>548675</PostOfficeBox>-->
-                 <!--<BuildingNumber>12345</BuildingNumber>-->
+                    <PlotIdentification>123</PlotIdentification>
+                    <PostOfficeBox>548675</PostOfficeBox>
+                    <BuildingNumber>12345</BuildingNumber>
                  <!--<StaircaseNumber>3456</StaircaseNumber>-->
                  <!--<FloorIdentification>8888</FloorIdentification>-->
                  <!--<RoomIdentification>555</RoomIdentification>-->

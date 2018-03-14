@@ -37,13 +37,17 @@ public class StructuredAddressEntity implements Serializable {
     @Column(name = "building_name", length = 1000)
     private String buildingName;
 
+    @Column(name = "building_number")
+    private String buildingNumber;
+
     @Column(name = "city_name")
     private String cityName;
 
     @Column(name = "city_subdivision_name")
     private String citySubdivisionName;
 
-    private String country;
+    @Column(name = "country_id_value")
+    private String countryIDValue;
 
     @Column(name = "country_name")
     private String countryName;
@@ -52,7 +56,7 @@ public class StructuredAddressEntity implements Serializable {
     private String countrySubdivisionName;
 
     @Column(name = "country_id_scheme_id")
-    private String countryIdSchemeId;
+    private String countryIDSchemeID;
 
     @Column(name = "address_id")
     private String addressId;
@@ -82,6 +86,9 @@ public class StructuredAddressEntity implements Serializable {
 
     @Column(name = "structured_address_type")
     private String structuredAddressType;
+
+    @Column(name = "staircase_number_value")
+    private String staircaseNumberValue;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_party_id")

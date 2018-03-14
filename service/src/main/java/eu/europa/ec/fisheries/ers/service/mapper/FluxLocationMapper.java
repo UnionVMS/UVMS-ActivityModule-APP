@@ -36,23 +36,23 @@ public abstract class FluxLocationMapper extends BaseMapper {
     public static final FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", source = "fluxLocation.typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "fluxLocation.typeCode.listID"),
-            @Mapping(target = "countryId", source = "fluxLocation.countryID.value"),
-            @Mapping(target = "rfmoCode", source = "fluxLocation.regionalFisheriesManagementOrganizationCode.value"),
-            @Mapping(target = "longitude", source = "fluxLocation.specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value"),
-            @Mapping(target = "latitude", source = "fluxLocation.specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value"),
-            @Mapping(target = "altitude", source = "fluxLocation.specifiedPhysicalFLUXGeographicalCoordinate.altitudeMeasure.value"),
-            @Mapping(target = "countryIdSchemeId", source = "fluxLocation.countryID.schemeID"),
-            @Mapping(target = "fluxLocationIdentifier", source = "fluxLocation.ID.value"),
-            @Mapping(target = "fluxLocationIdentifierSchemeId", source = "fluxLocation.ID.schemeID"),
-            @Mapping(target = "geopoliticalRegionCode", source = "fluxLocation.geopoliticalRegionCode.value"),
-            @Mapping(target = "geopoliticalRegionCodeListId", source = "fluxLocation.geopoliticalRegionCode.listID"),
+            @Mapping(target = "typeCode", source = "typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "countryId", source = "countryID.value"),
+            @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode.value"),
+            @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value"),
+            @Mapping(target = "latitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value"),
+            @Mapping(target = "altitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.altitudeMeasure.value"),
+            @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID"),
+            @Mapping(target = "fluxLocationIdentifier", source = "ID.value"),
+            @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID"),
+            @Mapping(target = "geopoliticalRegionCode", source = "geopoliticalRegionCode.value"),
+            @Mapping(target = "geopoliticalRegionCodeListId", source = "geopoliticalRegionCode.listID"),
             @Mapping(target = "name", expression = "java(getTextFromList(fluxLocation.getNames()))"),
             @Mapping(target = "nameLanguageId", expression = "java(getLanguageIdFromList(fluxLocation.getNames()))"),
-            @Mapping(target = "sovereignRightsCountryCode", source = "fluxLocation.sovereignRightsCountryID.value"),
-            @Mapping(target = "jurisdictionCountryCode", source = "fluxLocation.jurisdictionCountryID.value"),
-            @Mapping(target = "systemId", source = "fluxLocation.specifiedPhysicalFLUXGeographicalCoordinate.systemID.value"),
+            @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryID.value"),
+            @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryID.value"),
+            @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value"),
             @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntities(fluxLocation.getPostalStructuredAddresses(), fluxLocation.getPhysicalStructuredAddress(), fluxLocationEntity))")
     })
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);

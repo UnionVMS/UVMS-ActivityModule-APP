@@ -27,23 +27,25 @@ public interface StructuredAddressMapper {
     StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
 
     @Mappings({
-            @Mapping(target = "blockName", source = "structuredAddress.blockName.value"),
-            @Mapping(target = "buildingName", source = "structuredAddress.buildingName.value"),
-            @Mapping(target = "cityName", source = "structuredAddress.cityName.value"),
-            @Mapping(target = "citySubdivisionName", source = "structuredAddress.citySubDivisionName.value"),
-            @Mapping(target = "country", source = "structuredAddress.countryID.value"),
-            @Mapping(target = "countryName", source = "structuredAddress.countryName.value"),
-            @Mapping(target = "countrySubdivisionName", source = "structuredAddress.countrySubDivisionName.value"),
-            @Mapping(target = "countryIdSchemeId", source = "structuredAddress.countryID.schemeID"),
-            @Mapping(target = "addressId", source = "structuredAddress.ID.value"),
-            @Mapping(target = "plotId", source = "structuredAddress.plotIdentification.value"),
-            @Mapping(target = "postOfficeBox", source = "structuredAddress.postOfficeBox.value"),
-            @Mapping(target = "postcode", source = "structuredAddress.postcodeCode.value"),
-            @Mapping(target = "postcodeListID", source = "structuredAddress.postcodeCode.listID"),
-            @Mapping(target = "postalAreaValue", source = "structuredAddress.postalArea.value"),
-            @Mapping(target = "postalAreaLanguageLocaleID", source = "structuredAddress.postalArea.languageLocaleID"),
-            @Mapping(target = "postalAreaLanguageID", source = "structuredAddress.postalArea.languageID"),
-            @Mapping(target = "streetName", source = "structuredAddress.streetName.value")
+            @Mapping(target = "blockName", source = "blockName.value"),
+            @Mapping(target = "buildingName", source = "buildingName.value"),
+            @Mapping(target = "buildingNumber", source = "buildingNumber.value"),
+            @Mapping(target = "cityName", source = "cityName.value"),
+            @Mapping(target = "citySubdivisionName", source = "citySubDivisionName.value"),
+            @Mapping(target = "countryIDValue", source = "countryID.value"),
+            @Mapping(target = "countryIDSchemeID", source = "countryID.schemeID"),
+            @Mapping(target = "countryName", source = "countryName.value"),
+            @Mapping(target = "countrySubdivisionName", source = "countrySubDivisionName.value"),
+            @Mapping(target = "addressId", source = "ID.value"),
+            @Mapping(target = "plotId", source = "plotIdentification.value"),
+            @Mapping(target = "postOfficeBox", source = "postOfficeBox.value"),
+            @Mapping(target = "postcode", source = "postcodeCode.value"),
+            @Mapping(target = "postcodeListID", source = "postcodeCode.listID"),
+            @Mapping(target = "postalAreaValue", source = "postalArea.value"),
+            @Mapping(target = "postalAreaLanguageLocaleID", source = "postalArea.languageLocaleID"),
+            @Mapping(target = "postalAreaLanguageID", source = "postalArea.languageID"),
+            @Mapping(target = "streetName", source = "streetName.value"),
+            @Mapping(target = "staircaseNumberValue", source = "staircaseNumber.value")
     })
     StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress);
 

@@ -33,7 +33,7 @@ public abstract class AapProcessMapper extends BaseMapper {
     public static final AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
 
     @Mappings({
-            @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactorNumeric.value"),
+            @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value"),
             @Mapping(target = "aapProducts", expression = "java(getAapProductEntities(aapProcess.getResultAAPProducts(), aapProcessEntity))"),
             @Mapping(target = "aapProcessCode", expression = "java(getAapProcessCodes(aapProcess.getTypeCodes(), aapProcessEntity))")
     })

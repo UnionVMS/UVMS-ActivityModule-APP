@@ -30,7 +30,7 @@ public interface FluxReportDocumentMapper {
     @Mappings({
             @Mapping(target = "referenceId", source = "referencedID.value"),
             @Mapping(target = "referenceSchemeId", source = "referencedID.schemeID"),
-            @Mapping(target = "creationDatetime", source = "fluxReportDocument.creationDateTime.dateTime"),
+            @Mapping(target = "creationDatetime", source = "creationDateTime.dateTime"),
             @Mapping(target = "purposeCode", source = "purposeCode.value"),
             @Mapping(target = "purposeCodeListId", source = "purposeCode.listID"),
             @Mapping(target = "purpose", source = "purpose.value"),

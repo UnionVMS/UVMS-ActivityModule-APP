@@ -508,7 +508,7 @@ public class ActivityEntityToModelMapper {
                 ContactParty contactParty = new ContactParty();
                 mapContactPerson(contactParty, source.getContactPerson());
                 mapRoles(contactParty, source.getContactPartyRole());
-                mapStructuredAddress(contactParty, source.getStructuredAddresses());//TODO map
+                mapStructuredAddress(contactParty, source.getStructuredAddresses());
                 contactParties.add(contactParty);
             }
         }
@@ -521,27 +521,57 @@ public class ActivityEntityToModelMapper {
         if (CollectionUtils.isNotEmpty(structuredAddressEntities)){
             for (StructuredAddressEntity source : structuredAddressEntities) {
                 StructuredAddress structuredAddress = new StructuredAddress();
+
                 structuredAddress.setPostalArea(new TextType(source.getPostalAreaValue(), source.getPostalAreaLanguageID(), source.getPostalAreaLanguageLocaleID()));
                 structuredAddress.setBlockName(new TextType(source.getBlockName(), null, null));
                 structuredAddress.setBuildingName(new TextType(source.getBuildingName(), null,null));
+
+                if (StringUtils.isNotEmpty(source.getStreetName())){
+                    structuredAddress.setStreetName(new TextType(source.getStreetName(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getCountrySubdivisionName())){
+                    structuredAddress.setCountrySubDivisionName(new TextType(source.getCountrySubdivisionName(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getPostOfficeBox())){
+                    structuredAddress.setPostOfficeBox(new TextType(source.getPostOfficeBox(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getBuildingNumber())){
+                    structuredAddress.setBuildingNumber(new TextType(source.getBuildingNumber(), null,null));
+                }
+
+                if (StringUtils.isNotEmpty(source.getPlotId())){
+                    structuredAddress.setPlotIdentification(new TextType(source.getPlotId(), null,null));
+                }
+
                 //structuredAddress.setBuildingNumber(new TextType(source.get(), null,null)); // FIXME not saved in DB
                 structuredAddress.setCityName(new TextType(source.getCityName(), null,null));
                 structuredAddress.setCitySubDivisionName(new TextType(source.getCitySubdivisionName(), null,null));
                 //structuredAddress.setFloorIdentification(new TextType(source.get(), null,null)); // FIXME not saved in DB
                 structuredAddress.setCountryName(new TextType(source.getCountryName(), null,null));
-
+                mapCountryID(structuredAddress, source.getCountryIDValue(),  source.getCountryIDSchemeID());
                 mapPostcode(structuredAddress, source.getPostcode(), source.getPostcodeListID());
-
-
-                IDType idType = new IDType();
-                idType.setValue(source.getCountry());
-                structuredAddress.setCountryID(idType);
 
                 structuredAddressList.add(structuredAddress);
             }
         }
 
         target.setSpecifiedStructuredAddresses(structuredAddressList);
+    }
+
+    private void mapCountryID(StructuredAddress structuredAddress, String countryIDValue, String countryIDSchemeID) {
+        if (ObjectUtils.allNotNull(structuredAddress) && (StringUtils.isNotEmpty(countryIDValue) || StringUtils.isNotEmpty(countryIDSchemeID))){
+            IDType idType = new IDType();
+            if (StringUtils.isNotEmpty(countryIDSchemeID)){
+                idType.setSchemeID(countryIDSchemeID);
+            }
+            if (StringUtils.isNotEmpty(countryIDValue)){
+                idType.setValue(countryIDValue);
+            }
+            structuredAddress.setCountryID(idType);
+        }
     }
 
     private void mapPostcode(StructuredAddress structuredAddress, String postcode, String postcodeListID) {

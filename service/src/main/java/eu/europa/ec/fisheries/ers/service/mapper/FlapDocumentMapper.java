@@ -16,11 +16,9 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
@@ -31,13 +29,12 @@ public interface FlapDocumentMapper {
     FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
 
     @Mappings({
-            @Mapping(target = "flapDocumentId", source = "flapDocument.ID.value"),
-            @Mapping(target = "flapDocumentSchemeId", source = "flapDocument.ID.schemeID"),
-            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
-            @Mapping(target = "flapTypeCode", source = "flapDocument.typeCode.value"),
-            @Mapping(target = "flapTypeCodeListId", source = "flapDocument.typeCode.listID")
+            @Mapping(target = "flapDocumentId", source = "ID.value"),
+            @Mapping(target = "flapDocumentSchemeId", source = "ID.schemeID"),
+            @Mapping(target = "flapTypeCode", source = "typeCode.value"),
+            @Mapping(target = "flapTypeCodeListId", source = "typeCode.listID")
     })
-    FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument, VesselTransportMeansEntity vesselTransportMeansEntity, @MappingTarget FlapDocumentEntity flapDocumentEntity);
+    FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument);
 
     @Mappings({
             @Mapping(target = "faIdentifierId", source = "flapDocumentId"),

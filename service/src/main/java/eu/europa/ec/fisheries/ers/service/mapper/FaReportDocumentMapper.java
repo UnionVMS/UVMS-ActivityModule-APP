@@ -80,7 +80,9 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             return null;
         }
         Set<VesselTransportMeansEntity> entities = new HashSet<>();
-        entities.add( VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans,faReportDocumentEntity));
+        VesselTransportMeansEntity vesselTransportMeansEntity = VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans);
+        vesselTransportMeansEntity.setFaReportDocument(faReportDocumentEntity);
+        entities.add(vesselTransportMeansEntity);
         return entities;
     }
 
@@ -122,14 +124,14 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     }
 
     @Mappings({
-            @Mapping(target = "type" , source = "faReportDocument.typeCode"),
-            @Mapping(target = "acceptedDate" , source = "faReportDocument.acceptedDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
-            @Mapping(target = "creationDate" , source = "faReportDocument.fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "type" , source = "typeCode"),
+            @Mapping(target = "acceptedDate" , source = "acceptedDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
             @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"FLUX_GP_PARTY\"))"),
             @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
-            @Mapping(target = "purposeCode" , source = "faReportDocument.fluxReportDocument.purposeCode"),
-            @Mapping(target = "fmcMark" , source = "faReportDocument.fmcMarker"),
-            @Mapping(target = "relatedReports" , source = "faReportDocument.faReportIdentifiers"),
+            @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),
+            @Mapping(target = "fmcMark" , source = "fmcMarker"),
+            @Mapping(target = "relatedReports" , source = "faReportIdentifiers"),
             @Mapping(target = "id", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"UUID\"))"),
     })
     public abstract ReportDocumentDto mapFaReportDocumentToReportDocumentDto(FaReportDocumentEntity faReportDocument);
