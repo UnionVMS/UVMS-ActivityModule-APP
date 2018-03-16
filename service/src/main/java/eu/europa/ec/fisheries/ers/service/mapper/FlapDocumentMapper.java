@@ -13,10 +13,12 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -35,6 +37,11 @@ public interface FlapDocumentMapper {
             @Mapping(target = "flapTypeCodeListId", source = "typeCode.listID")
     })
     FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument);
+
+    @InheritInverseConfiguration
+    FLAPDocument mapToFlapDocument(FlapDocumentEntity flapDocument);
+
+    List<FLAPDocument> mapToFlapDocumentList(Set<FlapDocumentEntity> flapDocument);
 
     @Mappings({
             @Mapping(target = "faIdentifierId", source = "flapDocumentId"),

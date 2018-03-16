@@ -71,6 +71,7 @@
             <SpecifiedContactParty>
                 <RoleCode listID="FLUX_CONTACT_ ROLE">MASTER</RoleCode>
                 <SpecifiedStructuredAddress>
+                    <ID />
                     <!--<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>-->
                     <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
                     <BuildingName>Test Building</BuildingName>
@@ -92,6 +93,7 @@
             </SpecifiedContactParty>
             <GrantedFLAPDocument>
                 <ID schemeID="fhtg56-5thd75-thf6t93-thfrye">ID 1</ID>
+                <TypeCode/>
             </GrantedFLAPDocument>
         </SpecifiedVesselTransportMeans>
     </ns3:FAReportDocument>

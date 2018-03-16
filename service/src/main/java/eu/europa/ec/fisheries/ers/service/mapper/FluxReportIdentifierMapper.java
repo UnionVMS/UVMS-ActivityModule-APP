@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -28,6 +29,9 @@ public interface FluxReportIdentifierMapper {
             @Mapping(target = "fluxReportIdentifierSchemeId", source = "schemeID")
     })
     FluxReportIdentifierEntity mapToFluxReportIdentifierEntity(IDType idType);
+
+    @InheritInverseConfiguration
+    IDType mapToFluxReportIdentifier(FluxReportIdentifierEntity idType);
 
     @Mappings({
             @Mapping(target = "fluxReportId", source = "fluxReportIdentifierId"),

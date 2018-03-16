@@ -192,7 +192,7 @@ public abstract class FaCatchMapper extends BaseMapper {
                 Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
 
                 StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
-                StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(physicalStructuredAddress);
+                StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
                 physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
                 physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
                 structuredAddressEntitySet.add(physicalStructuredAddressEntity);
@@ -200,7 +200,7 @@ public abstract class FaCatchMapper extends BaseMapper {
                 List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
                 if (postalStructuredAddresses != null && !postalStructuredAddresses.isEmpty()) {
                     for (StructuredAddress structuredAddress : postalStructuredAddresses) {
-                        StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress);
+                        StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
                         structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
                         structuredAddressEntity.setFluxLocation(fluxLocationEntity);
                         structuredAddressEntitySet.add(structuredAddressEntity);

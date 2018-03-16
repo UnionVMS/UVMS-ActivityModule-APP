@@ -56,6 +56,7 @@
             </RegistrationVesselCountry>
             <GrantedFLAPDocument>
                 <ID schemeID="fhtg56-5thd75-thf6t93-thfrye">ID 1</ID>
+                <TypeCode/>
             </GrantedFLAPDocument>
         </SpecifiedVesselTransportMeans>
     </ns3:FAReportDocument>

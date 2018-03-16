@@ -119,7 +119,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         log.info("[INFO] Going to save [ " + faReportMessage.getFAReportDocuments().size() + " ] FaReportDocuments..");
 
         FluxFaReportMessageEntity messageEntity =
-                FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
+                new FluxFaReportMessageMapper().mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             try {

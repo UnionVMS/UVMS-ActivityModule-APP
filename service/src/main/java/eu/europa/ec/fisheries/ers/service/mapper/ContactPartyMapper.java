@@ -81,7 +81,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();
         for (StructuredAddress structuredAddress : structuredAddresses) {
             StructuredAddressEntity structuredAddressEntity =
-                    StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress);
+                    StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
             structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.CONTACT_PARTY_SPECIFIED.getType());
             structuredAddressEntity.setContactParty(contactPartyEntity);
             structuredAddressEntities.add(structuredAddressEntity);

@@ -11,10 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -47,6 +49,11 @@ public interface FluxLocationMapper {
             @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value")
     })
     FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
+
+    @InheritInverseConfiguration
+    FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
+
+    List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
 
     @Mappings({
             @Mapping(target = "geometry", source = "wkt")

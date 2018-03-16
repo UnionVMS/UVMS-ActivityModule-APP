@@ -655,7 +655,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 fishingActivitySummaries.addAll(getFishingActivitySummaryList(fishingActivityEntityList, uniqueActivityIdList));
             }
 
-            fishingTripIdLists.add(FishingTripIdWithGeometryMapper.INSTANCE.mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList));
+            FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometryMapper().mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
+            fishingTripIdLists.add(fishingTripIdWithGeometry);
         }
 
         // populate response object

@@ -11,15 +11,20 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = BaseMapper.class, uses = XMLDateUtils.class)
 public interface DelimitedPeriodMapper {
 
     DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
@@ -29,9 +34,15 @@ public interface DelimitedPeriodMapper {
             @Mapping(target = "endDate", source = "endDateTime.dateTime"),
             @Mapping(target = "duration", source = "durationMeasure.value"),
             @Mapping(target = "durationUnitCode", source = "durationMeasure.unitCode"),
+            @Mapping(target = "durationMeasureUnitCodeListVersionID", source = "durationMeasure.unitCodeListVersionID"),
             @Mapping(target = "calculatedDuration", expression = "java(BaseMapper.getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
     })
     DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
+
+    @InheritInverseConfiguration
+    DelimitedPeriod mapToDelimitedPeriod(DelimitedPeriodEntity delimitedPeriod);
+
+    List<DelimitedPeriod> mapToDelimitedPeriodList(Set<DelimitedPeriodEntity> delimitedPeriod);
 
     DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
 

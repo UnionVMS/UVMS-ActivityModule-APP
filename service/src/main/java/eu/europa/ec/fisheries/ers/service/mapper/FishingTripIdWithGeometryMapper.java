@@ -32,37 +32,37 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.NullValueMappingStrategy;
-import org.mapstruct.factory.Mappers;
 
-/**
- * Created by sanera on 02/12/2016.
- */
-@Mapper(nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL)
 @Slf4j
-public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
-    public static final FishingTripIdWithGeometryMapper INSTANCE = Mappers.getMapper(FishingTripIdWithGeometryMapper.class);
+public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
-    @Mappings({
-            @Mapping(target = "tripId", source = "dto.tripId"),
-            @Mapping(target = "firstFishingActivity", expression = "java(getFirstFishingActivityType(fishingActivities))"),
-            @Mapping(target = "firstFishingActivityDateTime", expression = "java(getFirstFishingActivityStartTime(fishingActivities))"),
-            @Mapping(target = "lastFishingActivity", expression = "java(getLastFishingActivityType(fishingActivities))"),
-            @Mapping(target = "lastFishingActivityDateTime", expression = "java(getLastFishingActivityStartTime(fishingActivities))"),
-            @Mapping(target = "vesselIdLists", expression = "java(getVesselIdListsForFishingActivity(fishingActivities))"),
-            @Mapping(target = "flagState", expression = "java(getFlagStateFromActivityList(fishingActivities))"),
-            @Mapping(target = "noOfCorrections", expression = "java(getNumberOfCorrectionsForFishingActivities(fishingActivities))"),
-            @Mapping(target = "tripDuration", expression = "java(getTotalTripDuration(fishingActivities))"),
-            @Mapping(target = "schemeId", source = "dto.schemeID"),
-            @Mapping(target = "relativeFirstFaDateTime", expression = "java(getRelativeFirstFishingActivityDateForTrip(fishingActivities))"),
-            @Mapping(target = "relativeLastFaDateTime", expression = "java(getRelativeLastFishingActivityDateForTrip(fishingActivities))"),
-            @Mapping(target = "geometry", expression = "java(getGeometryMultiPointForAllFishingActivities(fishingActivities))")})
-    public abstract FishingTripIdWithGeometry mapToFishingTripIdWithDetails(FishingTripId dto, List<FishingActivityEntity> fishingActivities);
+    public FishingTripIdWithGeometry mapToFishingTripIdWithDetails(FishingTripId dto, List<FishingActivityEntity> fishingActivities) {
+        if ( dto == null && fishingActivities == null ) {
+            return null;
+        }
 
-    protected String getGeometryMultiPointForAllFishingActivities(List<FishingActivityEntity> fishingActivities) {
+        FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometry();
+
+        if ( dto != null ) {
+            fishingTripIdWithGeometry.setTripId( dto.getTripId() );
+            fishingTripIdWithGeometry.setSchemeId( dto.getSchemeID() );
+        }
+        fishingTripIdWithGeometry.setFirstFishingActivityDateTime( getFirstFishingActivityStartTime(fishingActivities) );
+        fishingTripIdWithGeometry.setVesselIdLists( getVesselIdListsForFishingActivity(fishingActivities) );
+        fishingTripIdWithGeometry.setNoOfCorrections( getNumberOfCorrectionsForFishingActivities(fishingActivities) );
+        fishingTripIdWithGeometry.setRelativeLastFaDateTime( getRelativeLastFishingActivityDateForTrip(fishingActivities) );
+        fishingTripIdWithGeometry.setFirstFishingActivity( getFirstFishingActivityType(fishingActivities) );
+        fishingTripIdWithGeometry.setFlagState( getFlagStateFromActivityList(fishingActivities) );
+        fishingTripIdWithGeometry.setLastFishingActivity( getLastFishingActivityType(fishingActivities) );
+        fishingTripIdWithGeometry.setRelativeFirstFaDateTime( getRelativeFirstFishingActivityDateForTrip(fishingActivities) );
+        fishingTripIdWithGeometry.setGeometry( getGeometryMultiPointForAllFishingActivities(fishingActivities) );
+        fishingTripIdWithGeometry.setTripDuration( getTotalTripDuration(fishingActivities) );
+        fishingTripIdWithGeometry.setLastFishingActivityDateTime( getLastFishingActivityStartTime(fishingActivities) );
+
+        return fishingTripIdWithGeometry;
+    }
+
+    private String getGeometryMultiPointForAllFishingActivities(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null) {
             return null;
         }
@@ -86,14 +86,14 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return GeometryWkt;
     }
 
-    protected String getFirstFishingActivityType(List<FishingActivityEntity> fishingActivities) {
+    private String getFirstFishingActivityType(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null) {
             return null;
         }
         return fishingActivities.get(0).getTypeCode();
     }
 
-    protected XMLGregorianCalendar getFirstFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
+    private XMLGregorianCalendar getFirstFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null || fishingActivities.get(0).getCalculatedStartTime() == null) {
             return null;
         }
@@ -101,7 +101,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return convertToXMLGregorianCalendar(fishingActivities.get(0).getCalculatedStartTime(), false);
     }
 
-    protected String getLastFishingActivityType(List<FishingActivityEntity> fishingActivities) {
+    private String getLastFishingActivityType(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null) {
             return null;
         }
@@ -109,7 +109,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return fishingActivities.get(totalFishingActivityCount - 1).getTypeCode();
     }
 
-    protected XMLGregorianCalendar getLastFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
+    private XMLGregorianCalendar getLastFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null || fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime() == null) {
             return null;
         }
@@ -117,7 +117,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return convertToXMLGregorianCalendar(fishingActivities.get(totalFishingActivityCount - 1).getCalculatedStartTime(), false);
     }
 
-    protected List<VesselIdentifierType> getVesselIdListsForFishingActivity(List<FishingActivityEntity> fishingActivities) {
+    private List<VesselIdentifierType> getVesselIdListsForFishingActivity(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument() == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument().getVesselTransportMeans() == null) {
             return Collections.emptyList();
         }
@@ -142,7 +142,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return vesselIdentifierTypes;
     }
 
-    protected String getFlagStateFromActivityList(List<FishingActivityEntity> fishingActivities) {
+    private String getFlagStateFromActivityList(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument() == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument().getVesselTransportMeans() == null) {
             return null;
         }
@@ -155,7 +155,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return vesselTransportMeansEntityList.iterator().next().getCountry();
     }
 
-    protected int getNumberOfCorrectionsForFishingActivities(List<FishingActivityEntity> fishingActivities) {
+    private int getNumberOfCorrectionsForFishingActivities(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return 0;
         }
@@ -172,7 +172,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         Calculate trip duration from all the activities happened during the trip
         if we have only start date received, we will subtract it from current date
      */
-    protected Double getTotalTripDuration(List<FishingActivityEntity> fishingActivities) {
+    private Double getTotalTripDuration(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return new Double(0);
         }
@@ -201,7 +201,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return duration; // duration returned is in miliseconds
     }
 
-    protected XMLGregorianCalendar getRelativeFirstFishingActivityDateForTrip(List<FishingActivityEntity> fishingActivities) {
+    private XMLGregorianCalendar getRelativeFirstFishingActivityDateForTrip(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return null;
         }
@@ -211,7 +211,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         return convertToXMLGregorianCalendar(tripStartDate, false);
     }
 
-    protected XMLGregorianCalendar getRelativeLastFishingActivityDateForTrip(List<FishingActivityEntity> fishingActivities) {
+    private XMLGregorianCalendar getRelativeLastFishingActivityDateForTrip(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return null;
         }

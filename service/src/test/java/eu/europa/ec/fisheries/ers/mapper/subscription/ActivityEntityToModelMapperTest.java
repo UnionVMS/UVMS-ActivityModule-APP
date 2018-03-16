@@ -23,7 +23,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapperImpl;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -40,7 +39,7 @@ public class ActivityEntityToModelMapperTest {
 
     private ActivityEntityToModelMapper modelMapper = new ActivityEntityToModelMapper();
     private Unmarshaller unmarshaller;
-    private FluxFaReportMessageMapper incomingFAReportMapper = new FluxFaReportMessageMapperImpl();
+    private FluxFaReportMessageMapper incomingFAReportMapper = new FluxFaReportMessageMapper();
 
     @Before
     public void setUp() throws Exception
@@ -67,7 +66,6 @@ public class ActivityEntityToModelMapperTest {
 
         DetailedDiff diff = new DetailedDiff(new org.custommonkey.xmlunit.Diff(controlSource, testSource));
         assertTrue("XML are similar " + diff, diff.similar());
-
     }
 
     private FAReportDocument getFirstElement(FLUXFAReportMessage source) {
@@ -88,7 +86,9 @@ public class ActivityEntityToModelMapperTest {
                 //$("fa_flux_message4.xml"),
                 //$("fa_flux_message5.xml"),
                 //$("fa_flux_message6.xml"),
-                $("fa_flux_message7.xml")
+                //$("fa_flux_message7.xml"),
+                $("fa_flux_message8.xml")
+
 
         );
     }

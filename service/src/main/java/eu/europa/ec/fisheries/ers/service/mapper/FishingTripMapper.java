@@ -19,6 +19,7 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -39,6 +40,11 @@ public abstract class FishingTripMapper extends BaseMapper {
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingTrip.getSpecifiedDelimitedPeriods(), fishingTripEntity))")
     })
     public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
+
+    @InheritInverseConfiguration
+    public abstract FishingTrip mapToFishingTrip(FishingTripEntity fishingTrip);
+
+    public abstract List<FishingTrip> mapToFishingTripList(Set<FishingTripEntity> fishingTrip);
 
     @Mappings({
             @Mapping(target = "tripId", source = "value"),

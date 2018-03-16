@@ -13,13 +13,15 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(uses = XMLDateUtils.class)
+@Mapper(uses = {XMLDateUtils.class, FluxReportIdentifierMapper.class, FluxPartyMapper.class})
 public interface FluxReportDocumentMapper {
 
     FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
@@ -30,8 +32,15 @@ public interface FluxReportDocumentMapper {
             @Mapping(target = "creationDatetime", source = "creationDateTime.dateTime"),
             @Mapping(target = "purposeCode", source = "purposeCode.value"),
             @Mapping(target = "purposeCodeListId", source = "purposeCode.listID"),
-            @Mapping(target = "purpose", source = "purpose.value")
+            @Mapping(target = "purpose", source = "purpose.value"),
+            @Mapping(target = "fluxReportIdentifiers", source = "IDS"),
+            @Mapping(target = "fluxParty", source = "ownerFLUXParty"),
     })
     FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument);
+
+    @InheritInverseConfiguration
+    FLUXReportDocument mapToFluxReportDocument(FluxReportDocumentEntity fluxReportDocument);
+
+    CodeType map(java.lang.String value);
 
 }

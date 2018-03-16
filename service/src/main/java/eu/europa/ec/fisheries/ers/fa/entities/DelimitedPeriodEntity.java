@@ -63,6 +63,9 @@ public class DelimitedPeriodEntity implements Serializable {
 	@Column(name = "duration_unit_code")
 	private String durationUnitCode;
 
+    @Column(name = "duration_measure_unit_code_list_version_id")
+    private String durationMeasureUnitCodeListVersionID;
+
 	@Column(name = "calculated_duration")
 	private Double calculatedDuration;
 

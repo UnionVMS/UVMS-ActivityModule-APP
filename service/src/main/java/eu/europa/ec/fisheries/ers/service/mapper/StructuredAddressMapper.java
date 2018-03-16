@@ -16,6 +16,7 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -50,9 +51,14 @@ public interface StructuredAddressMapper {
             @Mapping(target = "floorIdentificationValue", source = "floorIdentification.value"),
             @Mapping(target = "roomIdentificationValue", source = "roomIdentification.value")
     })
-    StructuredAddressEntity mapToStructuredAddress(StructuredAddress structuredAddress);
+    StructuredAddressEntity mapToStructuredAddressEntity(StructuredAddress structuredAddress);
 
-    Set<StructuredAddressEntity> mapToStructuredAddress(List<StructuredAddress> structuredAddress);
+    @InheritInverseConfiguration
+    StructuredAddress mapToStructuredAddress(StructuredAddressEntity structuredAddress);
+
+    List<StructuredAddress> mapToStructuredAddressList(Set<StructuredAddressEntity> structuredAddress);
+
+    Set<StructuredAddressEntity> mapToStructuredAddressEntitySet(List<StructuredAddress> structuredAddress);
 
     AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
