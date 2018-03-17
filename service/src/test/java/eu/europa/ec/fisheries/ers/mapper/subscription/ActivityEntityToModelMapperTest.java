@@ -18,6 +18,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
@@ -42,14 +44,12 @@ public class ActivityEntityToModelMapperTest {
     private FluxFaReportMessageMapper incomingFAReportMapper = new FluxFaReportMessageMapper();
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         JAXBContext context = JAXBContext.newInstance(FLUXFAReportMessage.class);
         unmarshaller = context.createUnmarshaller();
     }
 
-    @Test
-    @Parameters(method = "resources")
+    @Test @Parameters(method = "resources")
     public void testMapToFLUXFAReportMessage(String resource) throws Exception {
 
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
@@ -64,8 +64,41 @@ public class ActivityEntityToModelMapperTest {
         XMLUnit.setIgnoreComments(true);
         XMLUnit.setIgnoreAttributeOrder(true);
 
-        DetailedDiff diff = new DetailedDiff(new org.custommonkey.xmlunit.Diff(controlSource, testSource));
+        DetailedDiff diff = new DetailedDiff(new org.custommonkey.xmlunit.Diff(clearEmptyTags(controlSource), clearEmptyTags(testSource)));
         assertTrue("XML are similar " + diff, diff.similar());
+    }
+
+    private Object[] resources() {
+
+        return $(
+                $("fa_flux_message.xml"),
+                $("fa_flux_message2.xml"),
+                $("fa_flux_message3.xml"),
+                $("fa_flux_message4.xml"),
+                $("fa_flux_message5.xml"),
+                $("fa_flux_message6.xml"),
+                $("fa_flux_message7.xml"),
+                $("fa_flux_message8.xml")
+
+
+        );
+    }
+
+    private String clearEmptyTags(String testSource) {
+        String[] patterns = new String[]{
+                // This will remove empty elements that look like <ElementName/>
+                "\\s*<\\w+/>",
+                // This will remove empty elements that look like <ElementName></ElementName>
+                "\\s*<\\w+></\\w+>",
+                // This will remove empty elements that look like
+                // <ElementName>
+                // </ElementName>
+                "\\s*<\\w+>\n*\\s*</\\w+>"};
+        for (String pattern : patterns) {
+            Matcher matcher = Pattern.compile(pattern).matcher(testSource);
+            testSource = matcher.replaceAll("");
+        }
+        return testSource;
     }
 
     private FAReportDocument getFirstElement(FLUXFAReportMessage source) {
@@ -75,21 +108,5 @@ public class ActivityEntityToModelMapperTest {
     private FLUXFAReportMessage sourceToEntity(String resource) throws JAXBException {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(resource);
         return (FLUXFAReportMessage) unmarshaller.unmarshal(is);
-    }
-
-    protected Object[] resources(){
-
-        return $(
-                //$("fa_flux_message.xml"),
-                //$("fa_flux_message2.xml"),
-                //$("fa_flux_message3.xml"),
-                //$("fa_flux_message4.xml"),
-                //$("fa_flux_message5.xml"),
-                //$("fa_flux_message6.xml"),
-                //$("fa_flux_message7.xml"),
-                $("fa_flux_message8.xml")
-
-
-        );
     }
 }
