@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
@@ -39,7 +38,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Ignore
 public class ActivityToSubscriptionMapperTest {
 
     private FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage();
