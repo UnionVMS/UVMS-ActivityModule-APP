@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
@@ -39,7 +38,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Ignore
 public class ActivityToSubscriptionMapperTest {
 
     private FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage();
@@ -58,7 +56,7 @@ public class ActivityToSubscriptionMapperTest {
         DateTimeType startDateTime = new DateTimeType();
 
         GregorianCalendar cal = new GregorianCalendar();
-        DateTime dateTime = DateUtils.XML_FORMATTER.parseDateTime("2016-07-01T02:00:00.000+02:00");
+        DateTime dateTime = DateUtils.XML_FORMATTER.parseDateTime("2016-07-01T02:00:00Z");
         cal.setTime(dateTime.toDate());
         XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
         startDateTime.setDateTime(xmlDate);
@@ -67,7 +65,7 @@ public class ActivityToSubscriptionMapperTest {
         DateTimeType endDateTime = new DateTimeType();
 
         GregorianCalendar cal2 = new GregorianCalendar();
-        DateTime dateTime2 = DateUtils.XML_FORMATTER.parseDateTime("2017-07-01T02:00:00.000+02:00");
+        DateTime dateTime2 = DateUtils.XML_FORMATTER.parseDateTime("2017-07-01T02:00:00Z");
         cal2.setTime(dateTime2.toDate());
         XMLGregorianCalendar xmlDate2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal2);
         endDateTime.setDateTime(xmlDate2);
