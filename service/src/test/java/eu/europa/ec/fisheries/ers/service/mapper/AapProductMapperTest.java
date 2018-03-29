@@ -45,14 +45,12 @@ public class AapProductMapperTest {
 
         assertEquals(aapProduct.getPackagingUnitQuantity().getValue().doubleValue(), aapProductEntity.getPackagingUnitCount());
         assertEquals(aapProduct.getPackagingUnitQuantity().getUnitCode(), aapProductEntity.getPackagingUnitCountCode());
-        assertEquals(aapProduct.getPackagingUnitQuantity().getValue().intValue(), aapProductEntity.getCalculatedPackagingUnitCount().intValue());
 
         assertEquals(aapProduct.getSpeciesCode().getValue(), aapProductEntity.getSpeciesCode());
         assertEquals(aapProduct.getSpeciesCode().getListID(), aapProductEntity.getSpeciesCodeListId());
 
         assertEquals(aapProduct.getUnitQuantity().getValue().intValue(), aapProductEntity.getUnitQuantity().intValue());
         assertEquals(aapProduct.getUnitQuantity().getUnitCode(), aapProductEntity.getUnitQuantityCode());
-        assertEquals(aapProduct.getUnitQuantity().getValue().intValue(), aapProductEntity.getCalculatedUnitQuantity().intValue());
 
         assertEquals(aapProduct.getWeightMeasure().getValue().intValue(), aapProductEntity.getWeightMeasure().intValue());
         assertEquals(aapProduct.getWeightMeasure().getUnitCode(), aapProductEntity.getWeightMeasureUnitCode());

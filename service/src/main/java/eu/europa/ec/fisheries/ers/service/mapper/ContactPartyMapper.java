@@ -11,6 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
@@ -28,11 +33,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class})
 public abstract class ContactPartyMapper extends BaseMapper {
 
@@ -44,7 +44,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
             @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
             @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
     })
-    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty,VesselTransportMeansEntity vesselTransportMeansEntity);
+    public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty, VesselTransportMeansEntity vesselTransportMeansEntity);
 
     @Mappings({
             @Mapping(target = "roleCode", source = "value"),
@@ -80,7 +80,10 @@ public abstract class ContactPartyMapper extends BaseMapper {
         }
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();
         for (StructuredAddress structuredAddress : structuredAddresses) {
-            StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddress(structuredAddress, StructuredAddressTypeEnum.CANTACT_PARTY_SPECIFIED, contactPartyEntity, new StructuredAddressEntity());
+            StructuredAddressEntity structuredAddressEntity =
+                    StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
+            structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.CONTACT_PARTY_SPECIFIED.getType());
+            structuredAddressEntity.setContactParty(contactPartyEntity);
             structuredAddressEntities.add(structuredAddressEntity);
         }
         return structuredAddressEntities;

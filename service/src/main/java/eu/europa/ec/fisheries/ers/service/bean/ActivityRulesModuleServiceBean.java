@@ -11,6 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.List;
+
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
@@ -28,10 +33,6 @@ import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionParameter;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionAnswer;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
-import java.util.List;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -68,7 +69,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
         if (StringUtils.isEmpty(sendTo)) {
             throw new ActivityModuleException("Owner for the provided Trip Id [ " + tripId + " ] was not found, so the Update Trip Query cannot be executed!");
         }
-        // TODO : Ask cedric where to get this parameter from! Answer : FROM SUBSCRIPTION
+        // TODO : Ask cedric where to get this parameter from! or ask Greg
         boolean consolidated = false;
         FAQuery faQueryForTrip = FaQueryFactory.createFaQueryForTrip(tripId, sendTo, consolidated);
         if (faQueryForTrip == null) {

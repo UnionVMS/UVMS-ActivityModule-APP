@@ -34,12 +34,10 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     private FishingActivityDao dao = new FishingActivityDao(em);
 
-
     @Before
     public void prepare() {
         super.prepare();
     }
-
 
     @Test
     @SneakyThrows
@@ -113,7 +111,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertNotNull(finishingActivityList);
     }
 
-
     @Test
     @SneakyThrows
     public void testGetFishingActivityListByQuery_GetByFaReportID() throws Exception {
@@ -160,16 +157,9 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         sortingDto.setSortBy(SearchFilter.OCCURRENCE);
         sortingDto.setReversed(false);
         query.setSorting(sortingDto);
-
-
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
-
-        System.out.println("done:" + finishingActivityList.size());
-
         assertNotNull(finishingActivityList);
-
     }
-
 
     @Test
     @SneakyThrows
@@ -216,19 +206,16 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         sortingDto.setReversed(false);
         query.setSorting(sortingDto);
 
-
         query.setSearchCriteriaMap(searchCriteriaMap);
         PaginationDto pagination = new PaginationDto();
         pagination.setPageSize(2);
         pagination.setOffset(1);
         query.setPagination(pagination);
 
-
         SortKey sortingDto2 = new SortKey();
         sortingDto2.setSortBy(SearchFilter.OCCURRENCE);
         sortingDto2.setReversed(false);
         query.setSorting(sortingDto2);
-
 
         int size = dao.getCountForFishingActivityListByQuery(query);
 
@@ -236,7 +223,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
      //   assertNotEquals(0, size);
 
     }
-
 
     @Test
     @SneakyThrows
@@ -247,6 +233,5 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertNotNull(finishingActivityList);
         assertNotEquals(0, finishingActivityList.size());
     }
-
 
 }

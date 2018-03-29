@@ -22,21 +22,12 @@ import java.util.UUID;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
@@ -51,13 +42,11 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
@@ -69,10 +58,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-/**
- * TODO create test
- */
-public class CustomMapper {
+public class ActivityEntityToModelMapper {
 
     @SneakyThrows
     public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity){
@@ -124,10 +110,10 @@ public class CustomMapper {
 
     private void mapFAReportDocument(FAReportDocument target, FaReportDocumentEntity source) {
         mapAcceptanceDateTime(target, source.getAcceptedDatetime());
-        mapTypeCode(target, source.getTypeCode(), source.getTypeCodeListId());
+        mapPurposeCode(target, source.getTypeCode(), source.getTypeCodeListId());
         mapFMCMarkerCode(target, source.getFmcMarker(), source.getFmcMarkerListId());
-        mapRelatedFLUXReportDocument(target, source.getFluxReportDocument());
-        mapRelatedReportIDs(target,source.getFaReportIdentifiers());
+        target.setRelatedFLUXReportDocument(FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocument(source.getFluxReportDocument()));
+        mapRelatedReportIDs(target, source.getFaReportIdentifiers());
         mapSpecifiedVesselTransportMeans(target, source.getVesselTransportMeans());
         mapFishingActivities(target, source.getFishingActivities());
     }
@@ -141,7 +127,7 @@ public class CustomMapper {
             for (FishingActivityEntity source : fishingActivityEntities) {
 
                 FishingActivity target = new FishingActivity();
-                mapTypeCode(target, source);
+                mapPurposeCode(target, source);
                 mapReasonCode(target, source);
                 mapOperationsQuantity(target, source);
                 mapFisheryTypeCode(target, source);
@@ -151,13 +137,15 @@ public class CustomMapper {
                 mapOccurrenceDateTime(target, source.getOccurence());
                 mapSourceVesselStorageCharacteristic(target, source.getSourceVesselCharId());
                 mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
-                mapFluxLocations(target, source.getFluxLocations());
+
+                target.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
                 mapSpecifiedFLUXCharacteristics(target, source.getFluxCharacteristics());
 
+                target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
 
+                // TODO map TRIP !
                 source.getFishingGears(); // TODO MAP
                 source.getFlagState(); // TODO MAP
-                source.getFluxLocations(); // TODO MAP
                 //target.getSpecifiedFACatches() // TODO map
 
                 fishingActivityList.add(target);
@@ -168,39 +156,67 @@ public class CustomMapper {
     }
 
     private void mapSpecifiedFLUXCharacteristics(FishingActivity fishingActivity, Set<FluxCharacteristicEntity> fluxCharacteristics) {
-
-
         if (CollectionUtils.isNotEmpty(fluxCharacteristics)){
-
             List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
-
             for (FluxCharacteristicEntity source : fluxCharacteristics) {
-
                 FLUXCharacteristic target = new FLUXCharacteristic();
-
-                mapTypeCode(target, source);
+                mapPurposeCode(target, source);
                 mapValueCode(target, source);
                 mapValueDateTime(target, source);
                 mapValueIndicator(target, source);
                 mapValueQuantity(target, source);
                 mapValueMeasure(target, source);
-
-            // target.setDescriptions();
-            //    target.setValues();
-
+                mapDescriptions(target, source);
+                mapValues(target, source);
                 fluxCharacteristicList.add(target);
-
             }
-
             fishingActivity.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
-
         }
+    }
 
+    private void mapValues(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            String valueText = source.getValueText();
+            if (StringUtils.isNotEmpty(valueText)) {
+                TextType textType = new TextType();
+                textType.setValue(valueText);
+                target.setValues(Collections.singletonList(textType));
+            }
+        }
+    }
+
+    private void mapDescriptions(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            String description = source.getDescription();
+            String valueLanguageId = source.getValueLanguageId();
+            if (StringUtils.isNotEmpty(description) || StringUtils.isNotEmpty(valueLanguageId)){
+                TextType textType = new TextType();
+                if (StringUtils.isNotEmpty(description)){
+                    textType.setValue(description);
+                }
+                if (StringUtils.isNotEmpty(valueLanguageId)){
+                    textType.setLanguageID(source.getValueLanguageId());
+                }
+                target.setDescriptions(Collections.singletonList(textType));
+            }
+        }
     }
 
     private void mapValueMeasure(FLUXCharacteristic target, FluxCharacteristicEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
-            //target.setValueMeasure();
+            Double valueMeasure = source.getValueMeasure();
+            String valueMeasureUnitCode = source.getValueMeasureUnitCode();
+
+            if (valueMeasure != null || StringUtils.isNotEmpty(valueMeasureUnitCode)){
+                MeasureType measureType = new MeasureType();
+                if (valueMeasure != null){
+                    measureType.setValue(new BigDecimal(valueMeasure));
+                }
+                if (StringUtils.isNotEmpty(valueMeasureUnitCode)){
+                    measureType.setUnitCode(valueMeasureUnitCode);
+                }
+                target.setValueMeasure(measureType);
+            }
 
         }
     }
@@ -256,35 +272,6 @@ public class CustomMapper {
         }
     }
 
-    private void mapFluxLocations(FishingActivity target, Set<FluxLocationEntity> fluxLocationEntities) {
-        if (CollectionUtils.isNotEmpty(fluxLocationEntities)){
-            List<FLUXLocation> fluxLocations = new ArrayList<>();
-            for (FluxLocationEntity source : fluxLocationEntities) {
-                FLUXLocation location = new FLUXLocation();
-                mapFLUXLocation(location, source);
-                fluxLocations.add(location);
-            }
-            target.setRelatedFLUXLocations(fluxLocations);
-        }
-    }
-
-    private void mapFLUXLocation(FLUXLocation target, FluxLocationEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
-
-            Double latitude = source.getLatitude();
-            Double longitude = source.getLongitude();
-            Double altitude = source.getAltitude();
-            String fluxLocationType = source.getFluxLocationType();
-            String fluxLocationIdentifier = source.getFluxLocationIdentifier();
-            GearProblemEntity gearProblem = source.getGearProblem();
-            String typeCode = source.getTypeCode();
-            Set<StructuredAddressEntity> structuredAddresses = source.getStructuredAddresses();
-            String countryId = source.getCountryId();
-
-
-        }
-    }
-
     private void mapDestinationVesselStorageCharacteristic(FishingActivity target, VesselStorageCharacteristicsEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
             VesselStorageCharacteristic vesselStorageCharacteristic = new VesselStorageCharacteristic();
@@ -326,11 +313,16 @@ public class CustomMapper {
     }
 
     private void mapVesselRelatedActivityCode(FishingActivity target, FishingActivityEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
+        if (ObjectUtils.allNotNull(target, source) && (StringUtils.isNotEmpty(source.getVesselActivityCode()) || StringUtils.isNotEmpty(source.getVesselActivityCodeListId()))) {
             CodeType codeType = new CodeType();
-            codeType.setValue(source.getVesselActivityCode());
-            codeType.setValue(source.getVesselActivityCodeListId());
-            target.setSpeciesTargetCode(codeType);
+
+            if (StringUtils.isNotEmpty(source.getVesselActivityCode())){
+                codeType.setValue(source.getVesselActivityCode());
+            }
+            if (StringUtils.isNotEmpty(source.getVesselActivityCodeListId())){
+                codeType.setListID(source.getVesselActivityCodeListId());
+            }
+            target.setVesselRelatedActivityCode(codeType);
         }
     }
 
@@ -341,25 +333,39 @@ public class CustomMapper {
             if (fishingDurationMeasure != null){
                 measureType.setValue(new BigDecimal(fishingDurationMeasure));
             }
-            measureType.setUnitCode(source.getFishingDurationMeasureCode());
+            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureCode())){
+                measureType.setUnitCode(source.getFishingDurationMeasureCode());
+            }
+            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureUnitCodeListVersionID())){
+                measureType.setUnitCodeListVersionID(source.getFishingDurationMeasureUnitCodeListVersionID());
+            }
             target.setFishingDurationMeasure(measureType);
         }
     }
 
     private void mapSpeciesTargetCode(FishingActivity target, FishingActivityEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
+        if (ObjectUtils.allNotNull(target, source) && (StringUtils.isNotEmpty(source.getSpeciesTargetCode()) || StringUtils.isNotEmpty(source.getSpeciesTargetCodeListId()))) {
             CodeType codeType = new CodeType();
-            codeType.setValue(source.getSpeciesTargetCode());
-            codeType.setValue(source.getSpeciesTargetCodeListId());
+
+            if (StringUtils.isNotEmpty(source.getSpeciesTargetCode())){
+                codeType.setValue(source.getSpeciesTargetCode());
+            }
+            if (StringUtils.isNotEmpty(source.getSpeciesTargetCodeListId())){
+                codeType.setListID(source.getSpeciesTargetCodeListId());
+            }
             target.setSpeciesTargetCode(codeType);
         }
     }
 
     private void mapFisheryTypeCode(FishingActivity target, FishingActivityEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
+        if (ObjectUtils.allNotNull(target, source) && (StringUtils.isNotEmpty(source.getFisheryTypeCode()) || StringUtils.isNotEmpty(source.getFisheryTypeCodeListId()))) {
             CodeType codeType = new CodeType();
-            codeType.setValue(source.getFisheryTypeCode());
-            codeType.setListID(source.getFisheryTypeCodeListId());
+            if (StringUtils.isNotEmpty(source.getFisheryTypeCode())){
+                codeType.setValue(source.getFisheryTypeCode());
+            }
+            if (StringUtils.isNotEmpty(source.getFisheryTypeCodeListId())){
+                codeType.setListID(source.getFisheryTypeCodeListId());
+            }
             target.setFisheryTypeCode(codeType);
         }
     }
@@ -367,12 +373,21 @@ public class CustomMapper {
     private void mapOperationsQuantity(FishingActivity target, FishingActivityEntity source) {
         if (ObjectUtils.allNotNull(target, target)){
             QuantityType quantityType = new QuantityType();
-            Double operationQuantity = source.getOperationQuantity();
-            if (operationQuantity != null){
-                quantityType.setValue(new BigDecimal(operationQuantity));
+            if (source.getOperationsQuantity() != null){
+                Double operationQuantity = source.getOperationsQuantity().getValue();
+                if (operationQuantity != null){
+                    quantityType.setValue(new BigDecimal(operationQuantity));
+                }
+                String unitCode = source.getOperationsQuantity().getUnitCode();
+                if (StringUtils.isNotEmpty(unitCode)){
+                    quantityType.setUnitCode(unitCode);
+                }
+                String unitCodeListID = source.getOperationsQuantity().getUnitCodeListID();
+                if (StringUtils.isNotEmpty(unitCodeListID)){
+                    quantityType.setUnitCodeListID(unitCodeListID);
+                }
+                target.setOperationsQuantity(quantityType);
             }
-            quantityType.setUnitCode(source.getOperationQuantityCode());
-            target.setOperationsQuantity(quantityType);
         }
     }
 
@@ -393,7 +408,7 @@ public class CustomMapper {
         }
     }
 
-    private void mapTypeCode(FLUXCharacteristic target, FluxCharacteristicEntity source) {
+    private void mapPurposeCode(FLUXCharacteristic target, FluxCharacteristicEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
             if (source.getTypeCode() != null){
                 CodeType codeType = new CodeType();
@@ -403,25 +418,12 @@ public class CustomMapper {
         }
     }
 
-    private void mapTypeCode(FishingActivity target, FishingActivityEntity source) {
+    private void mapPurposeCode(FishingActivity target, FishingActivityEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
             CodeType codeType = new CodeType();
             codeType.setValue(source.getTypeCode());
             codeType.setListID(source.getTypeCodeListid());
             target.setTypeCode(codeType);
-        }
-    }
-
-    private void mapRelatedFLUXReportDocument(FAReportDocument target, FluxReportDocumentEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
-            mapTypeCode(fluxReportDocument, source.getPurposeCode(), source.getPurposeCodeListId());
-            mapCreationDateTime(fluxReportDocument, source.getCreationDatetime());
-            mapReferencedID(fluxReportDocument, source.getReferenceId(), source.getReferenceSchemeId());
-            mapTextType(fluxReportDocument, source.getPurpose());
-            mapOwnerFLUXParty(fluxReportDocument, source.getFluxParty());
-            mapIDs(fluxReportDocument, source.getFluxReportIdentifiers());
-            target.setRelatedFLUXReportDocument(fluxReportDocument);
         }
     }
 
@@ -435,12 +437,10 @@ public class CustomMapper {
             mapRegistrationEvent(vesselTransportMeans, source.getRegistrationEvent());
             mapIDs(vesselTransportMeans, source.getVesselIdentifiers());
             mapSpecifiedContactParties(vesselTransportMeans, source.getContactParty());
+
+            vesselTransportMeans.setGrantedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
             target.setSpecifiedVesselTransportMeans(vesselTransportMeans);
         }
-    }
-
-    private void mapGrantedFLAPDocuments(FishingActivity vesselTransportMeans, Set<FlapDocumentEntity> flapDocumentEntities) { // TODO map
-
     }
 
     private void mapSpecifiedContactParties(VesselTransportMeans target, Set<ContactPartyEntity> contactPartyEntities) {
@@ -448,43 +448,19 @@ public class CustomMapper {
         if (CollectionUtils.isNotEmpty(contactPartyEntities)) {
             for (ContactPartyEntity source : contactPartyEntities){
                 ContactParty contactParty = new ContactParty();
-                mapContactPerson(contactParty, source.getContactPerson());
+
+                ContactPerson contactPerson = ContactPersonMapper.INSTANCE.mapToContactPerson(source.getContactPerson());
+
+                if (contactPerson != null){
+                    contactParty.setSpecifiedContactPersons(Collections.singletonList(contactPerson)); // TODO @Greg mapstruct add non-iterable type
+                }
                 mapRoles(contactParty, source.getContactPartyRole());
-                mapStructuredAddress(contactParty, source.getStructuredAddresses());//TODO map
+
+                contactParty.setSpecifiedStructuredAddresses(StructuredAddressMapper.INSTANCE.mapToStructuredAddressList(source.getStructuredAddresses()));
                 contactParties.add(contactParty);
             }
         }
         target.setSpecifiedContactParties(contactParties);
-    }
-
-    private void mapStructuredAddress(ContactParty target, Set<StructuredAddressEntity> structuredAddressEntities) {
-
-        List<StructuredAddress> structuredAddressList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(structuredAddressEntities)){
-            for (StructuredAddressEntity source : structuredAddressEntities) {
-                StructuredAddress structuredAddress = new StructuredAddress();
-                //structuredAddress.setPostalArea(new TextType(source.getPostcode(), source.getP)); // FIXME not saved in DB
-                structuredAddress.setBlockName(new TextType(source.getBlockName(), null, null));
-                structuredAddress.setBuildingName(new TextType(source.getBuildingName(), null,null));
-                //structuredAddress.setBuildingNumber(new TextType(source.get(), null,null)); // FIXME not saved in DB
-                structuredAddress.setCityName(new TextType(source.getCityName(), null,null));
-                structuredAddress.setCitySubDivisionName(new TextType(source.getCitySubdivisionName(), null,null));
-                //structuredAddress.setFloorIdentification(new TextType(source.get(), null,null)); // FIXME not saved in DB
-                structuredAddress.setCountryName(new TextType(source.getCountryName(), null,null));
-
-                CodeType codeType = new CodeType();
-                codeType.setValue(source.getPostcode());
-                structuredAddress.setPostcodeCode(codeType);
-
-                IDType idType = new IDType();
-                idType.setValue(source.getCountry());
-                structuredAddress.setCountryID(idType);
-
-                structuredAddressList.add(structuredAddress);
-            }
-        }
-
-        target.setSpecifiedStructuredAddresses(structuredAddressList);
     }
 
     private void mapRoles(ContactParty target, Set<ContactPartyRoleEntity> contactPartyRoleEntities) {
@@ -500,21 +476,6 @@ public class CustomMapper {
         target.setRoleCodes(codeTypeList);
     }
 
-    private void mapContactPerson(ContactParty target, ContactPersonEntity contactPersonEntity) {
-        if (ObjectUtils.allNotNull(target, contactPersonEntity)){
-            contactPersonEntity.getGender(); //TODO
-            ContactPerson source = new ContactPerson();
-            source.setAlias(new TextType(contactPersonEntity.getAlias(), null, null));
-            source.setGivenName(new TextType(contactPersonEntity.getGivenName(), null, null));
-            source.setFamilyName(new TextType(contactPersonEntity.getFamilyName(), null, null));
-            source.setFamilyNamePrefix(new TextType(contactPersonEntity.getFamilyNamePrefix(), null, null));
-            source.setMiddleName(new TextType(contactPersonEntity.getMiddleName(), null, null));
-            source.setTitle(new TextType(contactPersonEntity.getTitle(), null, null));
-            source.setNameSuffix(new TextType(contactPersonEntity.getNameSuffix(), null, null));
-            target.setSpecifiedContactPersons(Collections.singletonList(source));
-        }
-    }
-
     private void mapIDs(VesselTransportMeans vesselTransportMeans, Set<VesselIdentifierEntity> vesselIdentifiers) {
         if (CollectionUtils.isNotEmpty(vesselIdentifiers)){
             List<IDType> idTypeList = new ArrayList<>();
@@ -528,27 +489,26 @@ public class CustomMapper {
         }
     }
 
-    private void mapIDs(FLUXReportDocument target, Set<FluxReportIdentifierEntity> fluxReportIdentifiers) {
-        if (CollectionUtils.isNotEmpty(fluxReportIdentifiers)){
-            List<IDType> idTypeList = new ArrayList<>();
-            for (FluxReportIdentifierEntity source : fluxReportIdentifiers){
-                IDType idType = new IDType();
-                String fluxReportIdentifierId = source.getFluxReportIdentifierId();
-                String fluxReportIdentifierSchemeId = source.getFluxReportIdentifierSchemeId();
-                idType.setSchemeID(fluxReportIdentifierSchemeId);
-                idType.setValue(fluxReportIdentifierId);
-                idTypeList.add(idType);
-            }
-            target.setIDS(idTypeList);
-        }
-    }
-
     private void mapRegistrationEvent(VesselTransportMeans target, RegistrationEventEntity source) {
         if (ObjectUtils.allNotNull(target, source)){
             RegistrationEvent registrationEvent = new RegistrationEvent();
             mapOccurrenceDateTime(registrationEvent, source.getOccurrenceDatetime());
+            mapDescription(registrationEvent, source.getDescription(), source.getDescLanguageId());
             mapRelatedRegistrationLocation(registrationEvent, source.getRegistrationLocation());
             target.setSpecifiedRegistrationEvents(singletonList(registrationEvent));
+        }
+    }
+
+    private void mapDescription(RegistrationEvent target, String description, String descLanguageId) {
+        if (ObjectUtils.allNotNull(target) && StringUtils.isNotEmpty(description) || StringUtils.isNotEmpty(descLanguageId)) {
+            TextType textType = new TextType();
+            if (StringUtils.isNotEmpty(description)){
+                textType.setValue(description);
+            }
+            if (StringUtils.isNotEmpty(descLanguageId)){
+                textType.setLanguageID(descLanguageId);
+            }
+            target.setDescriptions(Collections.singletonList(textType));
         }
     }
 
@@ -559,12 +519,12 @@ public class CustomMapper {
             mapCountryID(registrationLocation, source);
             setGeopoliticalRegionCode(registrationLocation, source);
             mapNames(registrationLocation, source);
-            mapTypeCode(registrationLocation, source);
+            mapPurposeCode(registrationLocation, source);
             target.setRelatedRegistrationLocation(registrationLocation);
         }
     }
 
-    private void mapTypeCode(RegistrationLocation target, RegistrationLocationEntity source) {
+    private void mapPurposeCode(RegistrationLocation target, RegistrationLocationEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
             CodeType codeType = new CodeType();
             codeType.setValue(source.getTypeCode());
@@ -651,72 +611,16 @@ public class CustomMapper {
         }
     }
 
-    private void mapOwnerFLUXParty(FLUXReportDocument target, FluxPartyEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
-            FLUXParty fluxParty = new FLUXParty();
-            String fluxPartyName = source.getFluxPartyName();
-            String nameLanguageId = source.getNameLanguageId();
-            mapNamesAndLanguageId(fluxParty, fluxPartyName, nameLanguageId);
-            Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = source.getFluxPartyIdentifiers();
-            mapFluxPartyIdentifiers(fluxParty, fluxPartyIdentifiers);
-            target.setOwnerFLUXParty(fluxParty);
-        }
-    }
-
-    private void mapFluxPartyIdentifiers(FLUXParty target, Set<FluxPartyIdentifierEntity> fluxPartyIdentifierEntities) {
-        if (CollectionUtils.isNotEmpty(fluxPartyIdentifierEntities)){
-            List<IDType> idTypeList = new ArrayList<>();
-            for (FluxPartyIdentifierEntity source : fluxPartyIdentifierEntities){
-                IDType idType = new IDType();
-                String fluxPartyIdentifierId = source.getFluxPartyIdentifierId();
-                String fluxPartyIdentifierSchemeId = source.getFluxPartyIdentifierSchemeId();
-                idType.setSchemeID(fluxPartyIdentifierSchemeId);
-                idType.setValue(fluxPartyIdentifierId);
-                idTypeList.add(idType);
-            }
-            target.setIDS(idTypeList);
-        }
-    }
-
-    private void mapNamesAndLanguageId(FLUXParty target, String fluxPartyName, String nameLanguageId) {
-        if (ObjectUtils.allNotNull(target)) {
-            TextType textType = new TextType();
-            textType.setValue(fluxPartyName);
-            textType.setLanguageID(nameLanguageId);
-            target.setNames(singletonList(textType));
-        }
-    }
-
-    private void mapTextType(FLUXReportDocument target, String purposeValue) {
-        if (ObjectUtils.allNotNull(target)) {
-            TextType textType = new TextType();
-            textType.setValue(purposeValue);
-            target.setPurpose(textType);
-        }
-    }
-
-    private void mapReferencedID(FLUXReportDocument target, String referenceId, String referenceSchemeId) {
-        if (ObjectUtils.allNotNull(target)) {
-            IDType idType = new IDType();
-            idType.setValue(referenceId);
-            idType.setSchemeID(referenceSchemeId);
-            target.setReferencedID(idType);
-        }
-    }
-
-    private void mapCreationDateTime(FLUXReportDocument target, Date source) {
-        if (ObjectUtils.allNotNull(target, source)) {
-            DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
-            target.setCreationDateTime(dateTimeType);
-        }
-    }
-
     private void mapFMCMarkerCode(FAReportDocument target, String fmcMarkerValue, String fmcMarkerListId) {
-        if (ObjectUtils.allNotNull(target)) {
+        if (ObjectUtils.allNotNull(target) && (StringUtils.isNotEmpty(fmcMarkerValue) || StringUtils.isNotEmpty(fmcMarkerListId))) {
             CodeType codeType = new CodeType();
-            codeType.setValue(fmcMarkerValue);
-            codeType.setListID(fmcMarkerListId);
+
+            if (StringUtils.isNotEmpty(fmcMarkerValue)){
+                codeType.setValue(fmcMarkerValue);
+            }
+            if (StringUtils.isNotEmpty(fmcMarkerListId)){
+                codeType.setListID(fmcMarkerListId);
+            }
             target.setFMCMarkerCode(codeType);
         }
     }
@@ -730,16 +634,7 @@ public class CustomMapper {
         }
     }
 
-    private void mapTypeCode(FLUXReportDocument target, String typeCode, String listId) {
-        if (ObjectUtils.allNotNull(target)) {
-            CodeType codeType = new CodeType();
-            codeType.setValue(typeCode);
-            codeType.setListID(listId);
-            target.setTypeCode(codeType);
-        }
-    }
-
-    private void mapTypeCode(FAReportDocument target, String typeCode, String listId) {
+    private void mapPurposeCode(FAReportDocument target, String typeCode, String listId) {
         if (ObjectUtils.allNotNull(target)) {
             CodeType codeType = new CodeType();
             codeType.setValue(typeCode);

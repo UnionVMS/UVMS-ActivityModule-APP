@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="emrinalgr" id="1">
+
+        <renameColumn columnDataType="FLOAT8"
+                      newColumnName="value"
+                      oldColumnName="duration"
+                      tableName="activity_delimited_period"/>
+
+        <renameColumn columnDataType="VARCHAR(255)"
+                newColumnName="unit_code"
+                oldColumnName="duration_unit_code"
+                tableName="activity_delimited_period"/>
+
+        <addColumn tableName="activity_delimited_period">
+            <column name="unit_code_list_version_id" type="VARCHAR(255)"/>
+        </addColumn>
+
+        <renameColumn columnDataType="FLOAT8"
+                      newColumnName="value"
+                      oldColumnName="operation_quantity"
+                      tableName="activity_fishing_activity"/>
+
+        <renameColumn columnDataType="VARCHAR(255)"
+                      newColumnName="unit_code"
+                      oldColumnName="operation_quantity_code"
+                      tableName="activity_fishing_activity"/>
+
+
+        <addColumn tableName="activity_fishing_activity">
+            <column name="operation_quantity_unit_code_list_id" type="VARCHAR(255)"/>
+            <column name="unit_code_list_version_id" type="VARCHAR(255)"/>
+            <column name="fishing_duration_measure_unit_code_list_version_id" type="varchar(255)"/>
+        </addColumn>
+
+        <addColumn tableName="activity_structured_address">
+            <column name="building_number" type="VARCHAR(255)"/>
+            <column name="country_id_value" type="VARCHAR(255)"/>
+            <column name="postal_area_language_id" type="VARCHAR(255)"/>
+            <column name="post_code_list_id" type="VARCHAR(255)"/>
+            <column name="postal_area_value" type="VARCHAR(255)"/>
+            <column name="postal_area_language_local_id" type="VARCHAR(255)"/>
+            <column name="staircase_number_value" type="VARCHAR(255)"/>
+            <column name="floor_identification_value" type="VARCHAR(255)"/>
+            <column name="room_identification_value" type="VARCHAR(255)"/>
+
+        </addColumn>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -42,27 +42,26 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 
-@Mapper
-public abstract class GearCharacteristicsMapper extends BaseMapper {
+@Mapper(imports = BaseMapper.class)
+public abstract class GearCharacteristicsMapper {
 
     public static final GearCharacteristicsMapper INSTANCE = Mappers.getMapper(GearCharacteristicsMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", source = "gearCharacteristic.typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "gearCharacteristic.typeCode.listID"),
-            @Mapping(target = "description", expression = "java(getTextFromList(gearCharacteristic.getDescriptions()))"),
-            @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
+            @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(gearCharacteristic.getDescriptions()))"),
+            @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
             @Mapping(target = "valueMeasure", source = "gearCharacteristic.valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", source = "gearCharacteristic.valueMeasure.unitCode"),
-            @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(gearCharacteristic.getValueMeasure()))"),
+            @Mapping(target = "calculatedValueMeasure", expression = "java(BaseMapper.getCalculatedMeasure(gearCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", source = "gearCharacteristic.valueDateTime.dateTime"),
             @Mapping(target = "valueIndicator", source = "gearCharacteristic.valueIndicator.indicatorString.value"),
             @Mapping(target = "valueCode", source = "gearCharacteristic.valueCode.value"),
             @Mapping(target = "valueText", source = "gearCharacteristic.value.value"),
             @Mapping(target = "valueQuantity", source = "gearCharacteristic.valueQuantity.value"),
             @Mapping(target = "valueQuantityCode", source = "gearCharacteristic.valueQuantity.unitCode"),
-            @Mapping(target = "calculatedValueQuantity", expression = "java(getCalculatedQuantity(gearCharacteristic.getValueQuantity()))"),
-            @Mapping(target = "fishingGear", expression = "java(fishingGearEntity)")
+            @Mapping(target = "fishingGear", source = "fishingGearEntity")
     })
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);
 

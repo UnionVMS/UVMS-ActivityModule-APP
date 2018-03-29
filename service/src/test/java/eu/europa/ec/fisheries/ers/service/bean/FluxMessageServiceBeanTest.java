@@ -124,7 +124,7 @@ public class FluxMessageServiceBeanTest {
 
     private FaReportDocumentEntity getMockedFishingActivityReportEntity() {
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        return FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.MANUAL);
+        return FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, FaReportSourceEnum.MANUAL);
     }
 
     private List<String> getMockedAssets() {

@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.HashSet;
@@ -18,42 +19,36 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 
-/**
- * Created by kovian on 18/01/2017.
- */
-@Mapper(uses = {FaReportDocumentMapper.class, FluxReportDocumentMapper.class})
-public abstract class FluxFaReportMessageMapper extends BaseMapper {
+public class FluxFaReportMessageMapper {
 
-    public static final FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
+    public FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage) {
+        if ( fluxfaReportMessage == null && faReportSourceEnum == null ) {
+            return null;
+        }
 
-    @Mappings({
-            @Mapping(target = "faReportDocuments", expression = "java(getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage))"),
-            @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage))")
-    })
-    public abstract FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, @MappingTarget FluxFaReportMessageEntity fluxFaReportMessage);
+        fluxFaReportMessage.setFluxReportDocument( getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage) );
+        fluxFaReportMessage.setFaReportDocuments( getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
 
-    protected Set<FaReportDocumentEntity> getFaReportDocuments(List<FAReportDocument> faReportDocuments,
+        return fluxFaReportMessage;
+    }
+
+    private Set<FaReportDocumentEntity> getFaReportDocuments(List<FAReportDocument> faReportDocuments,
                                                                 FaReportSourceEnum faReportSourceEnum,
                                                                 FluxFaReportMessageEntity fluxFaReportMessage){
         Set<FaReportDocumentEntity> faReportDocumentEntities = new HashSet<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
-            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), faReportSourceEnum);
+            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);
             entity.setFluxFaReportMessage(fluxFaReportMessage);
             faReportDocumentEntities.add(entity);
         }
         return faReportDocumentEntities;
     }
 
-    protected FluxReportDocumentEntity getFluxReportDocument(FLUXReportDocument fluxReportDocument, FluxFaReportMessageEntity fluxFaReportMessage){
+    private FluxReportDocumentEntity getFluxReportDocument(FLUXReportDocument fluxReportDocument, FluxFaReportMessageEntity fluxFaReportMessage){
         if(fluxReportDocument == null){
             return null;
         }

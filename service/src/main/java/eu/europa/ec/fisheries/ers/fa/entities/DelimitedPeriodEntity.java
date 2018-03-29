@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,12 +28,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_delimited_period")
 @Data
-@NoArgsConstructor
 public class DelimitedPeriodEntity implements Serializable {
 
 	@Id
@@ -56,21 +55,15 @@ public class DelimitedPeriodEntity implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "end_date", length = 29)
 	private Date endDate;
-	
-	@Column(precision = 17, scale = 17)
-	private Double duration;
 
-	@Column(name = "duration_unit_code")
-	private String durationUnitCode;
+    @Embedded
+	private MeasureType durationMeasure;
 
 	@Column(name = "calculated_duration")
 	private Double calculatedDuration;
 
-	public DelimitedPeriodEntity(FishingActivityEntity fishingActivity, FishingTripEntity fishingTrip, Date startDate, Date endDate, Double duration) {
-		this.fishingActivity = fishingActivity;
-		this.fishingTrip = fishingTrip;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.duration = duration;
-	}
+	public DelimitedPeriodEntity(){
+        durationMeasure = new MeasureType();
+    }
+
 }

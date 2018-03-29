@@ -8,16 +8,22 @@
  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.fisheries.ers.dao;
+package eu.europa.ec.fisheries.ers.fa.entities;
 
-import eu.europa.ec.fisheries.ers.fa.entities.BaseErsFaDaoTest;
-import org.junit.Test;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
-public class VesselIdentifierDaoTest extends BaseErsFaDaoTest {
+import lombok.Data;
 
-    @Test
-    public void name() throws Exception {
+@Embeddable
+@Data
+public class MeasureType {
 
+    private Double value;
 
-    }
+    @Column(name = "unit_code")
+    private String unitCode;
+
+    @Column(name = "unit_code_list_version_id")
+    private String unitCodeListVersionID;
 }

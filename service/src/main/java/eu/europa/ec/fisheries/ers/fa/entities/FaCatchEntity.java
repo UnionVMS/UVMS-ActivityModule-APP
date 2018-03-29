@@ -24,11 +24,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.NoArgsConstructor;
 
 @NamedQueries({
@@ -154,6 +157,18 @@ public class FaCatchEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FishingTripEntity> fishingTrips;
+
+	@PrePersist
+	public void prePersist(){
+		if (unitQuantity != null || unitQuantityCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(unitQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedUnitQuantity =  result.doubleValue();
+			}
+		}
+	}
 
 	public int getId() {
 		return this.id;

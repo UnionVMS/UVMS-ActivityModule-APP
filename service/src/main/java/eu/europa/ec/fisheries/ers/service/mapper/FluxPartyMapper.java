@@ -13,6 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static java.util.Collections.singletonList;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -20,24 +23,25 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-/**
- * Created by padhyad on 9/16/2016.
- */
-@Mapper
-public abstract class FluxPartyMapper extends BaseMapper {
+@Mapper(imports = BaseMapper.class)
+public abstract class FluxPartyMapper {
 
     public static final FluxPartyMapper INSTANCE = Mappers.getMapper(FluxPartyMapper.class);
 
     @Mappings({
-            @Mapping(target = "fluxPartyName", expression = "java(getTextFromList(fluxParty.getNames()))"),
-            @Mapping(target = "nameLanguageId", expression = "java(getLanguageIdFromList(fluxParty.getNames()))"),
+            @Mapping(target = "fluxPartyName", expression = "java(BaseMapper.getTextFromList(fluxParty.getNames()))"),
+            @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxParty.getNames()))"),
             @Mapping(target = "fluxPartyIdentifiers", expression = "java(mapToFluxPartyIdentifierEntities(fluxParty.getIDS(), fluxPartyEntity))"),
     })
     public abstract FluxPartyEntity mapToFluxPartyEntity(FLUXParty fluxParty);
@@ -47,6 +51,51 @@ public abstract class FluxPartyMapper extends BaseMapper {
             @Mapping(target = "fluxPartyIdentifierSchemeId", source = "schemeID")
     })
     public abstract FluxPartyIdentifierEntity mapToFluxPartyIdentifierEntity(IDType idType);
+
+
+    public FLUXParty mapToFluxParty(FluxPartyEntity fluxParty){
+        if ( fluxParty == null) {
+            return null;
+        }
+
+        String fluxPartyName = fluxParty.getFluxPartyName();
+        String nameLanguageId = fluxParty.getNameLanguageId();
+
+        FLUXParty party = new FLUXParty();
+
+        mapNamesAndLanguageId(party, fluxPartyName, nameLanguageId);
+        mapFluxPartyIdentifiers(party, fluxParty.getFluxPartyIdentifiers());
+
+        return party;
+    }
+
+    private void mapFluxPartyIdentifiers(FLUXParty target, Set<FluxPartyIdentifierEntity> fluxPartyIdentifierEntities) {
+        if (CollectionUtils.isNotEmpty(fluxPartyIdentifierEntities)){
+            List<IDType> idTypeList = new ArrayList<>();
+            for (FluxPartyIdentifierEntity source : fluxPartyIdentifierEntities){
+                IDType idType = new IDType();
+                String fluxPartyIdentifierId = source.getFluxPartyIdentifierId();
+                String fluxPartyIdentifierSchemeId = source.getFluxPartyIdentifierSchemeId();
+                idType.setSchemeID(fluxPartyIdentifierSchemeId);
+                idType.setValue(fluxPartyIdentifierId);
+                idTypeList.add(idType);
+            }
+            target.setIDS(idTypeList);
+        }
+    }
+
+    private void mapNamesAndLanguageId(FLUXParty target, String fluxPartyName, String nameLanguageId) {
+        if (ObjectUtils.allNotNull(target) && (StringUtils.isNotEmpty(fluxPartyName) || StringUtils.isNotEmpty(nameLanguageId))) {
+            TextType textType = new TextType();
+            if (StringUtils.isNotEmpty(fluxPartyName)){
+                textType.setValue(fluxPartyName);
+            }
+            if (StringUtils.isNotEmpty(nameLanguageId)){
+                textType.setLanguageID(fluxPartyName);
+            }
+            target.setNames(singletonList(textType));
+        }
+    }
 
     protected Set<FluxPartyIdentifierEntity> mapToFluxPartyIdentifierEntities(List<IDType> idTypes, FluxPartyEntity fluxPartyEntity) {
         if (idTypes == null || idTypes.isEmpty()) {

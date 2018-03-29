@@ -26,7 +26,7 @@ public interface RegistrationEventMapper {
     @Mappings({
             @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationEvent.getDescriptions()))"),
             @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationEvent.getDescriptions()))"),
-            @Mapping(target = "occurrenceDatetime", source = "registrationEvent.occurrenceDateTime.dateTime"),
+            @Mapping(target = "occurrenceDatetime", source = "occurrenceDateTime.dateTime"),
             @Mapping(target = "registrationLocation", expression = "java(BaseMapper.mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))"),
     })
     RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);

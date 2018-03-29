@@ -70,7 +70,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class BaseActivityViewMapper extends BaseMapper {
 
     public static AreaDto getAreas(FishingActivityEntity faEntity) {
-        AreaDto areaDto = AreaDtoMapper.INSTANCE.mapToAreaDto(faEntity);
+        AreaDto areaDto = new AreaDtoMapper().mapToAreaDto(faEntity);
         areaDto.setFluxLocations(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationEnum.AREA));
         return areaDto;
     }

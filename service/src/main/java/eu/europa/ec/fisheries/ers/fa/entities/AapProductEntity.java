@@ -19,10 +19,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -101,5 +104,25 @@ public class AapProductEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "aap_process_id")
 	private AapProcessEntity aapProcess;
+
+	@PrePersist
+	public void prePersist(){ // TODO test me
+		if (unitQuantity != null || unitQuantityCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(unitQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedUnitQuantity =  result.doubleValue();
+			}
+		}
+        if (packagingUnitCountCode != null || packagingUnitCount != null){
+            UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(packagingUnitCountCode);
+            if (unitCodeEnum != null) {
+                BigDecimal quantity = new BigDecimal(packagingUnitCount);
+                BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+                calculatedPackagingUnitCount =  result.doubleValue();
+            }
+        }
+	}
 
 }

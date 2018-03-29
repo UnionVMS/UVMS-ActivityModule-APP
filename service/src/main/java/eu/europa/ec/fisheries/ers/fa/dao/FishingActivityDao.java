@@ -53,7 +53,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public int getPreviousFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
         int previousActivityId = 0;
         if (activityTypeCode == null || activityCalculatedStartTime == null) {
-            LOG.error("activityTypeCode OR  activityCalculatedStartTime is null.");
+            LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
             return previousActivityId;
         }
 
@@ -83,10 +83,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.error("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
         }
 
-        LOG.info("Previous Fishing Activity : " + result);
+        LOG.debug("Previous Fishing Activity : " + result);
         if (result != null) {
             previousActivityId = (int) result;
         }
@@ -108,7 +108,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public int getNextFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
         int nextFishingActivity = 0;
         if (activityTypeCode == null || activityCalculatedStartTime == null) {
-            LOG.error("activityTypeCode OR  activityCalculatedStartTime is null.");
+            LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
             return nextFishingActivity;
         }
         String query = "SELECT a.id from FishingActivityEntity a " +
@@ -137,7 +137,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.error("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
         }
 
         LOG.info("Next Fishing Activity : " + result);

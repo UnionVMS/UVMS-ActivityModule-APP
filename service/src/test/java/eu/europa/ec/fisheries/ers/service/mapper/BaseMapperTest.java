@@ -87,13 +87,13 @@ public class BaseMapperTest extends BaseUnitilsTest {
         period1.setStartDate(sdf.parse("21/12/2011"));
         period1.setEndDate(sdf.parse("21/12/2013"));
         period1.setCalculatedDuration(22.22d);
-        period1.setDurationUnitCode("MIN");
+        period1.getDurationMeasure().setUnitCode("MIN");
 
         DelimitedPeriodEntity period2 = new DelimitedPeriodEntity();
         period2.setStartDate(sdf.parse("21/11/2010"));
         period2.setEndDate(sdf.parse("21/11/2012"));
         period2.setCalculatedDuration(2.24d);
-        period2.setDurationUnitCode("HOU");
+        period2.getDurationMeasure().setUnitCode("HOU");
 
         DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
 

@@ -33,8 +33,8 @@ public class DelimitedPeriodMapperTest {
 
         assertEquals(delimitedPeriod.getStartDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getStartDate());
         assertEquals(delimitedPeriod.getEndDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getEndDate());
-        assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getDuration().intValue());
-        assertEquals(delimitedPeriod.getDurationMeasure().getUnitCode(), delimitedPeriodEntity.getDurationUnitCode());
+        assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getDurationMeasure().getValue().intValue());
+        assertEquals(delimitedPeriod.getDurationMeasure().getUnitCode(), delimitedPeriodEntity.getDurationMeasure().getUnitCode());
         assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getCalculatedDuration().intValue());
         assertNull(delimitedPeriodEntity.getFishingActivity());
     }
@@ -46,8 +46,8 @@ public class DelimitedPeriodMapperTest {
 
         assertEquals(delimitedPeriod.getStartDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getStartDate());
         assertEquals(delimitedPeriod.getEndDateTime().getDateTime().toGregorianCalendar().getTime(), delimitedPeriodEntity.getEndDate());
-        assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getDuration().intValue());
-        assertEquals(delimitedPeriod.getDurationMeasure().getUnitCode(), delimitedPeriodEntity.getDurationUnitCode());
+        assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getDurationMeasure().getValue().intValue());
+        assertEquals(delimitedPeriod.getDurationMeasure().getUnitCode(), delimitedPeriodEntity.getDurationMeasure().getUnitCode());
         assertEquals(delimitedPeriod.getDurationMeasure().getValue().intValue(), delimitedPeriodEntity.getCalculatedDuration().intValue());
         assertNull(delimitedPeriodEntity.getFishingTrip());
     }

@@ -56,7 +56,7 @@ public class ActivityToSubscriptionMapperTest {
         DateTimeType startDateTime = new DateTimeType();
 
         GregorianCalendar cal = new GregorianCalendar();
-        DateTime dateTime = DateUtils.XML_FORMATTER.parseDateTime("2016-07-01T02:00:00Z");
+        DateTime dateTime = DateUtils.XML_FORMATTER.parseDateTime("2016-07-01T11:14:00Z");
         cal.setTime(dateTime.toDate());
         XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
         startDateTime.setDateTime(xmlDate);

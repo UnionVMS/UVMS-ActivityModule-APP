@@ -17,6 +17,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,16 +30,19 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
@@ -151,11 +155,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "species_target_code_list_id")
 	private String speciesTargetCodeListId;
 
-	@Column(name = "operation_quantity")
-	private Double operationQuantity;
-
-	@Column(name = "operation_quantity_code")
-	private String operationQuantityCode;
+	@Embedded
+	private QuantityType operationsQuantity;
 
 	@Column(name = "calculated_operation_quantity")
 	private Double calculatedOperationQuantity;
@@ -165,6 +166,9 @@ public class FishingActivityEntity implements Serializable {
 
 	@Column(name = "fishing_duration_measure_code")
 	private String fishingDurationMeasureCode;
+
+	@Column(name = "fishing_duration_measure_unit_code_list_version_id")
+	private String fishingDurationMeasureUnitCodeListVersionID;
 
 	@Column(name = "calculated_fishing_duration")
 	private Double calculatedFishingDuration;
@@ -227,6 +231,22 @@ public class FishingActivityEntity implements Serializable {
         return flapDocument;
     }
 
+    @PrePersist
+    public void prePersist(){
+        if (operationsQuantity != null){
+            Double value = operationsQuantity.getValue();
+            String unitCode = operationsQuantity.getUnitCode();
+            if (value != null || unitCode != null){
+                UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitCode);
+                if (unitCodeEnum != null && value != null) {
+                    BigDecimal quantity = new BigDecimal(value);
+                    BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+                    calculatedOperationQuantity =  result.doubleValue();
+                }
+            }
+        }
+    }
+
 	@PostLoad
 	private void onLoad() {
         if (this.geom != null) {
@@ -251,7 +271,7 @@ public class FishingActivityEntity implements Serializable {
 		}
 		Double durationSubTotal = null;
 		for (DelimitedPeriodEntity period : delimitedPeriods) {
-			durationSubTotal = Utils.addDoubles(period.getDuration(), durationSubTotal);
+			durationSubTotal = Utils.addDoubles(period.getDurationMeasure().getValue(), durationSubTotal);
 		}
 		return durationSubTotal;
 	}
@@ -260,7 +280,7 @@ public class FishingActivityEntity implements Serializable {
         if (CollectionUtils.isEmpty(delimitedPeriods)) {
             return null;
         }
-        return delimitedPeriods.iterator().next().getDurationUnitCode(); // As per rules only MIN is allowed
+        return delimitedPeriods.iterator().next().getDurationMeasure().getUnitCode(); // As per rules only MIN is allowed
     }
 
     public Set<FluxLocationDto> getLocations_() {

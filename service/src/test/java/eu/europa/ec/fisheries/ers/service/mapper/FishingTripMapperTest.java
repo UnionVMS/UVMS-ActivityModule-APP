@@ -13,14 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 
 /**
  * Created by padhyad on 7/29/2016.
@@ -30,9 +32,7 @@ public class FishingTripMapperTest {
     @Test
     public void getFishingTripWithFishingActivity() {
         FishingTrip fishingTrip = MapperUtil.getFishingTrip();
-        FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, fishingTripEntity);
+        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
 
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
@@ -54,9 +54,7 @@ public class FishingTripMapperTest {
     @Test
     public void getFishingTripWithFACatch() {
         FishingTrip fishingTrip = MapperUtil.getFishingTrip();
-        FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        FaCatchEntity faCatchEntity = null;
-        FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, faCatchEntity, fishingTripEntity);
+        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
 
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());

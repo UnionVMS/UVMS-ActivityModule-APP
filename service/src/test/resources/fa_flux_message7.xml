@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<ns3:FLUXFAReportMessage xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
+                         xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20"
+                         xmlns:ns3="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3">
+    <ns3:FLUXReportDocument>
+        <ID schemeID="FLUX_SCHEME_ID1">FLUX_REPORT_ID_1</ID>
+        <ReferencedID schemeID="47rfh-5hry4-thfur75-4hf743">REF_ID 1</ReferencedID>
+        <CreationDateTime>
+            <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+        </CreationDateTime>
+        <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+        <Purpose>Purpose</Purpose>
+        <TypeCode listID="fhr574fh-thrud754-kgitjf754-gjtufe89">type Code1</TypeCode>
+        <OwnerFLUXParty>
+            <ID schemeID="47rfh-5hry4-thfur75-4hf743">Owner flux party id 1</ID>
+            <Name>fluxPartyOwnerName 1</Name>
+        </OwnerFLUXParty>
+    </ns3:FLUXReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="fhr574fh-thrud754-kgitjf754-gjtufe89">DECLARATION</TypeCode>
+        <FMCMarkerCode listID="h49rh-fhrus33-fj84hjs82-4h84hw82">Fmz marker 1</FMCMarkerCode>
+        <RelatedReportID schemeID="47rfh-5hry4-thfur75-4hf743">ID 1</RelatedReportID>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
+            <ReferencedID schemeID="fhty58-gh586t-5tjf8-t58rjewe">Ref ID 1</ReferencedID>
+            <CreationDateTime>
+                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="fhr596t-ght7u48-fjrudu5-tjfue8554">Purpose Code 1</PurposeCode>
+            <Purpose>This is Test Text</Purpose>
+            <!--<TypeCode listID="fhty58-gh586t-5tjf8-t58rjewe">Code Type 1</TypeCode>--><!--NOT MAPPED ALSO NOT CHECKED IN RULES-->
+            <OwnerFLUXParty>
+                <ID schemeID="58fjrut-tjfuri-586jte-5jfur">Owner flux party id 1</ID>
+                <Name>This is sample text for owner flux party</Name>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedFishingActivity>
+            <!--<ID schemeID="fhr574fh-thrud754-kgitjf754-gjtufe89">Id 1</ID>-->
+            <TypeCode listID="FLUX_FA_TYPE">JOINT_FISHING_OPERATION</TypeCode>
+            <OccurrenceDateTime>
+                <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+            </OccurrenceDateTime>
+            <ReasonCode listID="h49rh-fhrus33-fj84hjs82-4h84hw82">Reason code 1</ReasonCode>
+            <VesselRelatedActivityCode listID="58thft-58fjd8-gt85eje-hjgute8">Vessel activity 1</VesselRelatedActivityCode>
+            <FisheryTypeCode listID="57thre-fn48320-fn39fjr-tjfow84">Fishing Type code 1</FisheryTypeCode>
+            <SpeciesTargetCode listID="47rfh-5hry4-thfur75-4hf743">Species code 1</SpeciesTargetCode>
+            <OperationsQuantity unitCode="C62" unitCodeListID="thfy586-gjtur95-tjgut49-f58f93j">100</OperationsQuantity>
+            <FishingDurationMeasure unitCode="C62" unitCodeListVersionID="4hr2yf0-t583thf-6jgttue8-6jtie844">500</FishingDurationMeasure>
+            <SpecifiedDelimitedPeriod>
+                <StartDateTime>
+                    <ns2:DateTime>2011-07-01T11:14:00Z</ns2:DateTime>
+                </StartDateTime>
+                <EndDateTime>
+                    <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                </EndDateTime>
+               <!-- <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500.0</DurationMeasure>-->
+                <DurationMeasure/>
+            </SpecifiedDelimitedPeriod>
+           <!-- <SpecifiedFishingTrip>
+                <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
+                <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>
+                <SpecifiedDelimitedPeriod>
+                    <StartDateTime>
+                        <ns2:DateTime>2011-07-01T11:14:00Z</ns2:DateTime>
+                    </StartDateTime>
+                    <EndDateTime>
+                        <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                    </EndDateTime>
+                    <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                </SpecifiedDelimitedPeriod>
+            </SpecifiedFishingTrip>-->
+        </SpecifiedFishingActivity>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">ID 1</ID>
+            <Name>Test Name</Name>
+            <RoleCode listID="FA_VESSEL_ROLE">CATCHING_VESSEL</RoleCode>
+            <RegistrationVesselCountry>
+                <ID schemeID="tu587r-5jt85-tjfur7-tjgut7">Country Id 1</ID>
+            </RegistrationVesselCountry>
+            <SpecifiedRegistrationEvent>
+                <Description>This is test Text</Description>
+                <OccurrenceDateTime>
+                    <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+                </OccurrenceDateTime>
+                <RelatedRegistrationLocation>
+                    <CountryID schemeID="TERRITORY">XEU</CountryID>
+                    <Description>This is Test Text</Description>
+                    <GeopoliticalRegionCode listID="57tug6-tfu576-5tud75-t57e5td-56tdwe">Region Code 1
+                    </GeopoliticalRegionCode>
+                    <!--<ID schemeID="fhtyr8-45jrf-5784fhrt-thf75">ID 2</ID> NOT MAPPED FOR THE MOMENT -->
+                    <Name>This is Test Name</Name>
+                    <TypeCode listID="475rhf-587trhdy-thgy576-thfr64">Code type 1</TypeCode>
+                </RelatedRegistrationLocation>
+            </SpecifiedRegistrationEvent>
+            <SpecifiedContactParty>
+                <RoleCode listID="FLUX_CONTACT_ ROLE">MASTER</RoleCode>
+                <SpecifiedStructuredAddress>
+                    <!--<ID schemeID="5ryit6-5tj47e-45jfyr-4tu57fg">ID type 1</ID>-->
+                    <ID />
+                    <PostcodeCode listID="5ryit6-5tj47e-45jfyr-4tu57fg-rt54tgr">Post code 1</PostcodeCode>
+                    <BuildingName>Test Building</BuildingName>
+                    <StreetName>Test Street</StreetName>
+                    <CityName>Test City</CityName>
+                    <CountryID schemeID="ryfht53-fht5-6htfur-57thft">Test Country</CountryID>
+                    <CitySubDivisionName>Test city subdivision</CitySubDivisionName>
+                    <CountryName>Test Country</CountryName>
+                    <CountrySubDivisionName>Test country subdivision</CountrySubDivisionName>
+                    <BlockName>Test Block</BlockName>
+                    <PlotIdentification>123</PlotIdentification>
+                    <PostOfficeBox>548675</PostOfficeBox>
+                    <BuildingNumber>12345</BuildingNumber>
+                    <StaircaseNumber>3456</StaircaseNumber>
+                    <FloorIdentification>8888</FloorIdentification>
+                    <RoomIdentification>555</RoomIdentification>
+                    <PostalArea>123</PostalArea>
+                </SpecifiedStructuredAddress>
+                <SpecifiedContactPerson>
+                    <Title>MR</Title>
+                    <GivenName>Test Name</GivenName>
+                    <MiddleName>Test Middle Name</MiddleName>
+                    <FamilyNamePrefix>Test Prefix</FamilyNamePrefix>
+                    <FamilyName>Test Family Name</FamilyName>
+                    <NameSuffix>Test Suffix</NameSuffix>
+                    <!--<GenderCode listID="4ryf65-fhtfyd-thfey45-tu5r7ght">Gender</GenderCode>-->
+                    <GenderCode />
+                    <Alias>Test Alias</Alias>
+                </SpecifiedContactPerson>
+            </SpecifiedContactParty>
+            <GrantedFLAPDocument>
+                <ID schemeID="fhtg56-5thd75-thf6t93-thfrye">ID 1</ID>
+                <TypeCode/>
+            </GrantedFLAPDocument>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+</ns3:FLUXFAReportMessage>
