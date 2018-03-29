@@ -72,7 +72,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 @Slf4j
@@ -131,7 +130,7 @@ public class BaseMapper {
                 fishingTime = fishingTime.add(new BigDecimal(calcDur));
             }
 
-            unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationUnitCode() : unitCode;
+            unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode() : unitCode;
         }
 
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
@@ -300,20 +299,6 @@ public class BaseMapper {
 
     public static String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
-    }
-
-    protected static Double getCalculatedQuantity(QuantityType quantityType) {
-        if (quantityType == null) {
-            return null;
-        }
-        UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(quantityType.getUnitCode());
-        if (unitCodeEnum != null) {
-            BigDecimal quantity = quantityType.getValue();
-            BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
-            return result.doubleValue();
-        } else {
-            return null;
-        }
     }
 
     protected String getCountry(VesselCountry country) {

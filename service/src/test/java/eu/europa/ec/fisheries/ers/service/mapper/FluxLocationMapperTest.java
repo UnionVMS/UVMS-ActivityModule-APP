@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
@@ -49,9 +48,6 @@ public class FluxLocationMapperTest {
         assertEquals(fluxLocation.getSovereignRightsCountryID().getValue(), fluxLocationEntity.getSovereignRightsCountryCode());
         assertEquals(fluxLocation.getJurisdictionCountryID().getValue(), fluxLocationEntity.getJurisdictionCountryCode());
         assertNull(fluxLocationEntity.getFishingActivity());
-        assertNotNull(fluxLocationEntity.getStructuredAddresses());
-        StructuredAddressEntity structuredAddressEntity = fluxLocationEntity.getStructuredAddresses().iterator().next();
-        assertNotNull(structuredAddressEntity);
     }
 
     @Test

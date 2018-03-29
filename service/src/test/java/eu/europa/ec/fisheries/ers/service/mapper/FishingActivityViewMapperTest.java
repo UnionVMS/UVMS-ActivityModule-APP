@@ -44,7 +44,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import lombok.SneakyThrows;
-import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,12 +165,13 @@ public class FishingActivityViewMapperTest {
         assertNotNull(dto.getLocations());
     }
 
+    @SneakyThrows
     private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
         List<FaCatchEntity> faCatchList = new ArrayList<>();
-        FaCatchEntity clone_1 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
-        FaCatchEntity clone_2 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
-        FaCatchEntity clone_3 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
-        FaCatchEntity clone_4 = (FaCatchEntity) SerializationUtils.clone(faCatchExample);
+        FaCatchEntity clone_1 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
+        FaCatchEntity clone_2 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
+        FaCatchEntity clone_3 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
+        FaCatchEntity clone_4 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
 
         faCatchList.add(cloneEntity(clone_1, "LSC", 100.00));
         faCatchList.add(cloneEntity(clone_2, "LSC", 100.00));
@@ -187,7 +188,7 @@ public class FishingActivityViewMapperTest {
     }
 
     private FLUXFAReportMessage getActivityDataFromXML() throws JAXBException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fishingActivityViewMapperTest.xml");
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         return (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);

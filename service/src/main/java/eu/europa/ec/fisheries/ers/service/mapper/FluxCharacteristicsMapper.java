@@ -37,7 +37,6 @@ public interface FluxCharacteristicsMapper {
             @Mapping(target = "valueLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxCharacteristic.getValues()))"),
             @Mapping(target = "valueQuantity", source = "valueQuantity.value"),
             @Mapping(target = "valueQuantityCode", source = "valueQuantity.unitCode"),
-            @Mapping(target = "calculatedValueQuantity", expression = "java(BaseMapper.getCalculatedQuantity(fluxCharacteristic.getValueQuantity()))"),
             @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "descriptionLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
     })

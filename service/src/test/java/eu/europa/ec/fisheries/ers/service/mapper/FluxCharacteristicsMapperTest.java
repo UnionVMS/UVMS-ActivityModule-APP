@@ -38,7 +38,6 @@ public class FluxCharacteristicsMapperTest {
         assertTrue(fluxCharacteristicEntity.getValueText().startsWith(fluxCharacteristic.getValues().get(0).getValue()));
         assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getValueQuantity().intValue());
         assertEquals(fluxCharacteristic.getValueQuantity().getUnitCode(), fluxCharacteristicEntity.getValueQuantityCode());
-        assertEquals(fluxCharacteristic.getValueQuantity().getValue().intValue(), fluxCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertTrue(fluxCharacteristicEntity.getDescription().startsWith(fluxCharacteristic.getDescriptions().get(0).getValue()));
     }
 

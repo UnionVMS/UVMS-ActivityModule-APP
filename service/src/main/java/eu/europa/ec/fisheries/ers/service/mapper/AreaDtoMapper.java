@@ -17,10 +17,8 @@ import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import org.apache.commons.collections.CollectionUtils;
-import org.mapstruct.factory.Mappers;
 
 public class AreaDtoMapper extends BaseMapper {
-    public static final AreaDtoMapper INSTANCE = Mappers.getMapper(AreaDtoMapper.class);
 
     public AreaDto mapToAreaDto(FishingActivityEntity faEntity) {
         if ( faEntity == null ) {

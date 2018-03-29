@@ -373,17 +373,21 @@ public class ActivityEntityToModelMapper {
     private void mapOperationsQuantity(FishingActivity target, FishingActivityEntity source) {
         if (ObjectUtils.allNotNull(target, target)){
             QuantityType quantityType = new QuantityType();
-            Double operationQuantity = source.getOperationQuantity();
-            if (operationQuantity != null){
-                quantityType.setValue(new BigDecimal(operationQuantity));
+            if (source.getOperationsQuantity() != null){
+                Double operationQuantity = source.getOperationsQuantity().getValue();
+                if (operationQuantity != null){
+                    quantityType.setValue(new BigDecimal(operationQuantity));
+                }
+                String unitCode = source.getOperationsQuantity().getUnitCode();
+                if (StringUtils.isNotEmpty(unitCode)){
+                    quantityType.setUnitCode(unitCode);
+                }
+                String unitCodeListID = source.getOperationsQuantity().getUnitCodeListID();
+                if (StringUtils.isNotEmpty(unitCodeListID)){
+                    quantityType.setUnitCodeListID(unitCodeListID);
+                }
+                target.setOperationsQuantity(quantityType);
             }
-            if (StringUtils.isNotEmpty(source.getOperationQuantityCode())){
-                quantityType.setUnitCode(source.getOperationQuantityCode());
-            }
-            if (StringUtils.isNotEmpty(source.getOperationQuantityUnitCodeListID())){
-                quantityType.setUnitCodeListID(source.getOperationQuantityUnitCodeListID());
-            }
-            target.setOperationsQuantity(quantityType);
         }
     }
 

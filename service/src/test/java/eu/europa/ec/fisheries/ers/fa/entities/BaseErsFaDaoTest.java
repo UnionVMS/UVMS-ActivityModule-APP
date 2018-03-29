@@ -160,8 +160,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("fishery_type_code_list_id", "FISHERY_CODE_LIST")
                     .column("species_target_code", "SPECIES_CODE")
                     .column("species_target_code_list_id", "SPECIES_CODE_LIST")
-                    .column("operation_quantity", 23)
-                    .column("operation_quantity_code", "C62")
+                    .column("value", 23)
+                    .column("unit_code", "C62")
                     .column("calculated_operation_quantity", 23.00)
                     .column("fishing_duration_measure", 11.20)
                     .column("fishing_duration_measure_code", "C62")
@@ -174,7 +174,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .end().build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
-                            "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operation_quantity", "operation_quantity_code",
+                            "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "value", "unit_code",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
                             "dest_vessel_char_id",  "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state","calculated_start_time")
                     .values(2, "ARRIVAL", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
@@ -417,13 +417,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .build()
 
     );
-    protected static final Operation INSERT_STRUCTURED_ADDRESS = sequenceOf(
-            insertInto("activity.activity_structured_address")
-                    .columns("id", "block_name", "building_name", "city_name", "city_subdivision_name", "country", "country_name", "country_subdivision_name", "address_id", "plot_id", "post_office_box",
-                            "postcode", "streetname", "flux_location_id", "contact_party_id", "structured_address_type")
-                    .values(1, "SDS", "SDS", "CXV", "VCVB", "CVCV", "GHH", "YUU", "JHJ", "JGH", "CVGH", "GHJ", "TYT", 1, 1, "DFS")
-                    .build()
-    );
+
     protected static final Operation INSERT_CONTACT_PERSON = sequenceOf(
             insertInto("activity.activity_contact_person")
                     .columns("id", "title", "given_name", "middle_name", "family_name", "family_name_prefix", "name_suffix", "gender", "alias")
@@ -449,7 +443,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     );
     protected static final Operation INSERT_DELIMITED_PERIOD = sequenceOf(
             insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "duration", "duration_unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
+                    .columns("id", "start_date", "end_date", "value", "unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(1, "2010-06-27 07:47:31.711", "2013-06-27 07:47:31.711", 1, "C62", 1.00, 1, 1)
                     .values(2, "2012-05-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 1, 2)
                     .values(3, "2013-06-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 1, 3)
@@ -536,7 +530,6 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                 INSERT_ERS_AAP_PROCESS_CODE_DATA,
                 INSERT_ERS_AAP_PRODUCT_DATA,
                 INSERT_FLUX_LOCATION,
-                INSERT_STRUCTURED_ADDRESS,
                 INSERT_ERS_FISHING_GEAR_DATA,
                 INSERT_ERS_FISHING_GEAR_ROLE_DATA,
                 INSERT_ERS_FISHING_TRIP_DATA,

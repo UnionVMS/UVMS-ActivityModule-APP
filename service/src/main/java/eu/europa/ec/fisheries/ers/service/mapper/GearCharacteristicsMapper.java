@@ -61,7 +61,6 @@ public abstract class GearCharacteristicsMapper {
             @Mapping(target = "valueText", source = "gearCharacteristic.value.value"),
             @Mapping(target = "valueQuantity", source = "gearCharacteristic.valueQuantity.value"),
             @Mapping(target = "valueQuantityCode", source = "gearCharacteristic.valueQuantity.unitCode"),
-            @Mapping(target = "calculatedValueQuantity", expression = "java(BaseMapper.getCalculatedQuantity(gearCharacteristic.getValueQuantity()))"),
             @Mapping(target = "fishingGear", source = "fishingGearEntity")
     })
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);

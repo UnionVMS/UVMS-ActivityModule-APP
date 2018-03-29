@@ -21,13 +21,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -111,4 +114,15 @@ public class FluxCharacteristicEntity implements Serializable {
 		super();
 	}
 
+	@PrePersist
+	public void prePersist(){
+		if (valueQuantity != null || valueQuantityCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(valueQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedValueQuantity =  result.doubleValue();
+			}
+		}
+	}
 }

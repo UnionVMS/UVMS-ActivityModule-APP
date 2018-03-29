@@ -14,6 +14,12 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static junitparams.JUnitParamsRunner.$;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.internal.util.collections.Sets.newSet;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
@@ -24,12 +30,6 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
-
-import static junitparams.JUnitParamsRunner.$;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.internal.util.collections.Sets.newSet;
 
 
 @RunWith(JUnitParamsRunner.class)
@@ -53,7 +53,6 @@ public class GearCharacteristicsMapperTest {
         assertTrue(gearCharacteristicEntity.getValueText().startsWith(gearCharacteristic.getValue().getValue()));
         assertEquals(gearCharacteristic.getValueQuantity().getValue().intValue(), gearCharacteristicEntity.getValueQuantity().intValue());
         assertEquals(gearCharacteristic.getValueQuantity().getUnitCode(), gearCharacteristicEntity.getValueQuantityCode());
-        assertEquals(gearCharacteristic.getValueQuantity().getValue().intValue(), gearCharacteristicEntity.getCalculatedValueQuantity().intValue());
         assertNull(gearCharacteristicEntity.getFishingGear());
     }
 

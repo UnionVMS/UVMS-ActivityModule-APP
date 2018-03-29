@@ -17,9 +17,8 @@ import lombok.Data;
 
 @Embeddable
 @Data
-public class FAMeasureType {
+public class MeasureType {
 
-    @Column(name = "duration")
     private Double value;
 
     @Column(name = "unit_code")

@@ -19,14 +19,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -96,5 +99,17 @@ public class GearCharacteristicEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "fishing_gear_id")
 	private FishingGearEntity fishingGear;
+
+	@PrePersist
+	public void prePersist(){
+		if (valueQuantityCode != null || valueQuantity != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(valueQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedValueQuantity =  result.doubleValue();
+			}
+		}
+	}
 
 }

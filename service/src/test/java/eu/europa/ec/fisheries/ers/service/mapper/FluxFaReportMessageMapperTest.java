@@ -47,7 +47,7 @@ public class FluxFaReportMessageMapperTest {
         assertNotNull(fluxRepMessageEntity);
         assertNotNull(fluxReportDocument);
         assertNotNull(fluxReportDocument.getFluxFaReportMessage());
-        assertNotNull(faReportDocuments.get(0).getFluxReportDocument());
+        assertNotNull(faReportDocuments.get(0));
 
         assertEquals(1, faReportDocuments.size());
     }

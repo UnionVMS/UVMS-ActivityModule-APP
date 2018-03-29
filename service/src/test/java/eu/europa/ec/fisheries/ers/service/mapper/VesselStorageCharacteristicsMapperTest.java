@@ -21,13 +21,10 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 
-/**
- * Created by padhyad on 7/28/2016.
- */
-public class VesselStorageCharactersticsMapperTest {
+public class VesselStorageCharacteristicsMapperTest {
 
     @Test
-    public void testDestVesselStorageCharactersticsMapper() {
+    public void testDestVesselStorageCharacteristicsMapper() {
         VesselStorageCharacteristic model = MapperUtil.getVesselStorageCharacteristic();
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(model);
 
@@ -39,7 +36,7 @@ public class VesselStorageCharactersticsMapperTest {
     }
 
     @Test
-    public void testSourceVesselStorageCharactersticsMapper() {
+    public void testSourceVesselStorageCharacteristicsMapper() {
         VesselStorageCharacteristic vesselStorageCharacteristic = MapperUtil.getVesselStorageCharacteristic();
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(vesselStorageCharacteristic);
 

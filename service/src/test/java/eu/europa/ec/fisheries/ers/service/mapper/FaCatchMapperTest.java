@@ -28,9 +28,6 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
-/**
- * Created by padhyad on 8/1/2016.
- */
 public class FaCatchMapperTest {
 
     @Test
@@ -87,7 +84,6 @@ public class FaCatchMapperTest {
         assertEquals(faCatch.getWeightMeasure().getUnitCode(), faCatchEntity.getWeightMeasureUnitCode());
         assertEquals(faCatch.getUnitQuantity().getValue().intValue(), faCatchEntity.getUnitQuantity().intValue());
         assertEquals(faCatch.getUnitQuantity().getUnitCode(), faCatchEntity.getUnitQuantityCode());
-        assertEquals(faCatch.getUnitQuantity().getValue().intValue(), faCatchEntity.getCalculatedUnitQuantity().intValue());
         assertEquals(faCatch.getUsageCode().getValue(), faCatchEntity.getUsageCode());
         assertEquals(faCatch.getUsageCode().getListID(), faCatchEntity.getUsageCodeListId());
     }

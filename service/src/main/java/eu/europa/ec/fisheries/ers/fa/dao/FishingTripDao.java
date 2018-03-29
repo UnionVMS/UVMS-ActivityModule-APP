@@ -53,7 +53,8 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public FishingTripEntity fetchVesselTransportDetailsForFishingTrip(String fishingTripId) {
-        String sql = "SELECT DISTINCT ft from FishingTripEntity ft JOIN FETCH ft.fishingActivity a" +
+        String sql = "SELECT DISTINCT ft from FishingTripEntity ft " +
+                "  JOIN FETCH ft.fishingActivity a" +
                 "  JOIN FETCH a.faReportDocument fa" +
                 "  JOIN FETCH fa.vesselTransportMeans vt" +
                 "  JOIN FETCH vt.contactParty cparty " +

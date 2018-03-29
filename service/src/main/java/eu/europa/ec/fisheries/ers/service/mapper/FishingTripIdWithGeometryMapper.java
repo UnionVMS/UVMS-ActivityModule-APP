@@ -169,7 +169,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
     }
 
     /*
-        Calculate trip duration from all the activities happened during the trip
+        Calculate trip value from all the activities happened during the trip
         if we have only start date received, we will subtract it from current date
      */
     private Double getTotalTripDuration(List<FishingActivityEntity> fishingActivities) {
@@ -198,7 +198,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             }
         }
 
-        return duration; // duration returned is in miliseconds
+        return duration; // value returned is in miliseconds
     }
 
     private XMLGregorianCalendar getRelativeFirstFishingActivityDateForTrip(List<FishingActivityEntity> fishingActivities) {

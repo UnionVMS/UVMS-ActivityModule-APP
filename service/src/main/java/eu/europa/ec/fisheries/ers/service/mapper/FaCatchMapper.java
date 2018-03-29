@@ -66,7 +66,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "speciesCodeListid", source = "speciesCode.listID"),
             @Mapping(target = "unitQuantity", source = "unitQuantity.value"),
             @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
-            @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(faCatch.getUnitQuantity()))"),
+           // @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(faCatch.getUnitQuantity().getUnitCode(), faCatch.getUnitQuantity().getValue()))"),
             @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(faCatch.getWeightMeasure()))"),
@@ -193,17 +193,22 @@ public abstract class FaCatchMapper extends BaseMapper {
 
                 StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
                 StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
-                physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
-                structuredAddressEntitySet.add(physicalStructuredAddressEntity);
+
+                if (physicalStructuredAddressEntity != null){
+                    physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                    physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
+                    structuredAddressEntitySet.add(physicalStructuredAddressEntity);
+                }
 
                 List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
                 if (postalStructuredAddresses != null && !postalStructuredAddresses.isEmpty()) {
                     for (StructuredAddress structuredAddress : postalStructuredAddresses) {
                         StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
-                        structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
-                        structuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                        structuredAddressEntitySet.add(structuredAddressEntity);
+                        if (structuredAddressEntity != null){
+                            structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
+                            structuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                            structuredAddressEntitySet.add(structuredAddressEntity);
+                        }
                     }
                 }
 
