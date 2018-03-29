@@ -35,6 +35,8 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+
+import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +87,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
         TextMessage textMessage = null;
         try {
             textMessage = (TextMessage) message;
+            MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
             ActivityModuleRequest request;
             request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
             LOG.debug("Message unmarshalled successfully in activity");

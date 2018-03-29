@@ -11,11 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
@@ -107,6 +109,9 @@ public class ActivityEventServiceBean implements EventService {
     private ActivityErrorMessageServiceBean producer;
 
     @EJB
+    private ActivityRulesModuleService activityRulesModuleServiceBean;
+
+    @EJB
     private SubscriptionProducerBean subscriptionProducer;
 
     @Override
@@ -144,7 +149,7 @@ public class ActivityEventServiceBean implements EventService {
             TextMessage jmsMessage = eventMessage.getJmsMessage();
             SetFLUXFAReportOrQueryMessageRequest request = JAXBMarshaller.unmarshallTextMessage(jmsMessage, SetFLUXFAReportOrQueryMessageRequest.class);
             log.info("SetFLUXFAReportOrQueryMessageRequest unmarshalled");
-            if(request==null){
+            if(request == null){
                 log.error("Unmarshalled SetFLUXFAReportOrQueryMessageRequest is null. Something went wrong during jms comm?!");
                 return;
             }
@@ -159,12 +164,14 @@ public class ActivityEventServiceBean implements EventService {
                     }
                     break;
                 case GET_FLUX_FA_QUERY:
-                    FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
-                    // TODO : Implement me... Map tp real HQl/SQL query and run the query and map the results to FLUXFAReportMessage and send it to rules...
                     log.error("TODO : FAQUERY mappers NOT implemented yet....");
+                    FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
+                    // TODO : Implement me... Map tp real HQl/SQL query and run the query and map the results to FLUXFAReportMessage and send it to
+                    FLUXFAReportMessage faRepQueryResponseAfterMapping = new FLUXFAReportMessage();
+                    activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faRepQueryResponseAfterMapping, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID());
                     break;
             }
-        } catch (ActivityModelMarshallException | ServiceException e) {
+        } catch (ActivityModelMarshallException | ServiceException | ActivityModuleException | JMSException e) {
             sendError(eventMessage, e);
         }
     }
@@ -180,9 +187,9 @@ public class ActivityEventServiceBean implements EventService {
             log.debug("FishingTripResponse ::: "+FACatchSummaryHelper.printJsonstructure(baseResponse));
             String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
             log.debug("FishingTriId response marshalled");
-            producer.sendModuleResponseMessage(message.getJmsMessage(), response, producer.getModuleName());
+            producer.sendResponseMessageToSender(message.getJmsMessage(), response);
             log.debug("Response sent back.");
-        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
+        } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
             sendError(message, e);
         }
     }
@@ -196,8 +203,8 @@ public class ActivityEventServiceBean implements EventService {
             FACatchSummaryReportRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FACatchSummaryReportRequest.class);
             FACatchSummaryReportResponse faCatchSummaryReportResponse= faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
-            producer.sendModuleResponseMessage(message.getJmsMessage(), response, producer.getModuleName());
-        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
+            producer.sendResponseMessageToSender(message.getJmsMessage(), response);
+        } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
             sendError(message, e);
         }
 
@@ -211,8 +218,8 @@ public class ActivityEventServiceBean implements EventService {
             GetNonUniqueIdsRequest getNonUniqueIdsRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetNonUniqueIdsRequest.class);
             GetNonUniqueIdsResponse faCatchSummaryReportResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest.getActivityUniquinessLists());
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
-            producer.sendModuleResponseMessage(message.getJmsMessage(), response, producer.getModuleName());
-        } catch (ActivityModelMarshallException | JMSException e) {
+            producer.sendResponseMessageToSender(message.getJmsMessage(), response);
+        } catch (ActivityModelMarshallException | JMSException | MessageException e) {
             sendError(message, e);
         }
     }
@@ -225,8 +232,8 @@ public class ActivityEventServiceBean implements EventService {
             GetFishingActivitiesForTripRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetFishingActivitiesForTripRequest.class);
             GetFishingActivitiesForTripResponse response = activityServiceBean.getFaAndTripIdsFromTripIds(request.getFaAndTripIds());
             String responseStr = JAXBMarshaller.marshallJaxBObjectToString(response);
-            producer.sendModuleResponseMessage(message.getJmsMessage(), responseStr, producer.getModuleName());
-        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
+            producer.sendResponseMessageToSender(message.getJmsMessage(), responseStr);
+        } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
             sendError(message, e);
         }
     }

@@ -22,9 +22,11 @@ import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.FaQueryFactory;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
@@ -58,6 +60,9 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     @EJB
     private ActivitySubscriptionPermissionChecker permissionChecker;
 
+    @EJB
+    private ActivityResponseQueueProducerBean activityResponseQueueProducer;
+
     @Override
     public void composeAndSendTripUpdateFaQueryToRules(String tripId) throws ActivityModuleException {
         String sendTo = fishingTripService.getOwnerFluxPartyFromTripId(tripId);
@@ -88,6 +93,9 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage(faQueryForTrip);
                 final String faqReqStr = JAXBMarshaller.marshallJaxBObjectToString(fluxfaQueryMessage);
                 // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
+                // senderOrReceiver :  From subscription
+                // FR : system parameter
+                // username : Mock to FLUX
                 rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFaQueryMessageRequest(faqReqStr, "FLUX", logId,
                         dataFlow, "BEL"), activityConsumerBean.getDestination());
             } else {
@@ -100,13 +108,13 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
     @Override
-    public void sendFaReportToRules(FLUXFAReportMessage faReportXML, String onValue) throws ActivityModuleException {
-        String sendTo = extractOwnerFromFLUXReportDocument(faReportXML.getFLUXReportDocument());
+    public void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXMLObj, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException {
+        String sendTo = extractOwnerFromFLUXReportDocument(faReportXMLObj.getFLUXReportDocument());
         if (StringUtils.isEmpty(sendTo)) {
             throw new ActivityModuleException("Owner for the provided FLUXFAReportMessage was not found, so FLUXFAReportMessage won't be sent!");
         }
         try {
-            SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaReport(faReportXML);
+            SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaReport(faReportXMLObj);
             if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
                 final List<SubscriptionParameter> parameters = subscriptionPermissionResponse.getParameters();
                 String dataFlow = extractParameterByName(parameters, "DF");
@@ -119,11 +127,19 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                     log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
                     throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
                 }
-                String logId = faReportXML.getFLUXReportDocument().getIDS().get(0).getValue();
-                final String faReportXMLStr = JAXBMarshaller.marshallJaxBObjectToString(faReportXML);
+                String logId = null;
+                if(faReportXMLObj.getFLUXReportDocument() != null && CollectionUtils.isNotEmpty(faReportXMLObj.getFLUXReportDocument().getIDS())){
+                    logId = faReportXMLObj.getFLUXReportDocument().getIDS().get(0).getValue();
+                }
+                final String faReportXMLStr = JAXBMarshaller.marshallJaxBObjectToString(faReportXMLObj);
                 // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
-                rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(faReportXMLStr, "FLUX", logId,
-                        dataFlow, "BEL", onValue), activityConsumerBean.getDestination());
+                final String sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(faReportXMLStr, "FLUX",
+                        logId, dataFlow, "BEL", onValue, isEmptyReportMessage(faReportXMLObj));
+                if(SyncAsyncRequestType.SYNC.equals(type)){
+                    activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest, activityConsumerBean.getDestination(), null, null, jmsMessageCorrId);
+                } else {
+                    rulesProducerBean.sendModuleMessage(sendFLUXFAReportMessageRequest, activityConsumerBean.getDestination());
+                }
             } else {
                 throw new ActivityModuleException("Error while trying to prepare the transmission of FaReportMessage!");
             }
@@ -133,7 +149,11 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
         }
     }
 
-    public String extractOwnerFromFLUXReportDocument(FLUXReportDocument fluxReportDocument) {
+    private boolean isEmptyReportMessage(FLUXFAReportMessage faReportXMLObj) {
+        return faReportXMLObj == null && CollectionUtils.isEmpty(faReportXMLObj.getFAReportDocuments());
+    }
+
+    private String extractOwnerFromFLUXReportDocument(FLUXReportDocument fluxReportDocument) {
         String owner = null;
         if (fluxReportDocument != null) {
             final FLUXParty ownerFLUXParty = fluxReportDocument.getOwnerFLUXParty();

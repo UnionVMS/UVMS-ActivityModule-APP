@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
@@ -193,7 +194,7 @@ public class FishingTripResource extends UnionVMSResource {
                                                 @Context HttpServletResponse response) throws ServiceException {
         LOG.info("Going to process sending of FaReportMessage....");
         try {
-            rulesService.sendFaReportToRules((FLUXFAReportMessage)JAXBMarshaller.unMarshallMessage(mockedFaReport, FLUXFAReportMessage.class), "SOMEON");
+            rulesService.sendSyncAsyncFaReportToRules((FLUXFAReportMessage)JAXBMarshaller.unMarshallMessage(mockedFaReport, FLUXFAReportMessage.class), "SOMEON", SyncAsyncRequestType.ASYNC, null);
         } catch (ActivityModuleException | RulesModelMarshallException e) {
             return createErrorResponse("Error while trying to send Update Trip Query!" + e.getMessage());
         }
