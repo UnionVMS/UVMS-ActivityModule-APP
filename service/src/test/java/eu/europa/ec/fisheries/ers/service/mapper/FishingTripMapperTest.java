@@ -17,9 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
@@ -40,15 +38,7 @@ public class FishingTripMapperTest {
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
         assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
-        FishingTripIdentifierEntity identifierEntity = fishingTripEntity.getFishingTripIdentifiers().iterator().next();
-        assertNotNull(identifierEntity);
-        assertEquals(fishingTrip.getIDS().get(0).getValue(), identifierEntity.getTripId());
-        assertEquals(fishingTrip.getIDS().get(0).getSchemeID(), identifierEntity.getTripSchemeId());
 
-        DelimitedPeriodEntity delimitedPeriodEntity = fishingTripEntity.getDelimitedPeriods().iterator().next();
-        assertNotNull(delimitedPeriodEntity);
-        assertEquals(fishingTrip.getTypeCode().getValue(), delimitedPeriodEntity.getFishingTrip().getTypeCode());
-        assertEquals(fishingTrip.getTypeCode().getListID(), delimitedPeriodEntity.getFishingTrip().getTypeCodeListId());
     }
 
     @Test
@@ -62,14 +52,6 @@ public class FishingTripMapperTest {
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
         assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
-        FishingTripIdentifierEntity identifierEntity = fishingTripEntity.getFishingTripIdentifiers().iterator().next();
-        assertNotNull(identifierEntity);
-        assertEquals(fishingTrip.getIDS().get(0).getValue(), identifierEntity.getTripId());
-        assertEquals(fishingTrip.getIDS().get(0).getSchemeID(), identifierEntity.getTripSchemeId());
 
-        DelimitedPeriodEntity delimitedPeriodEntity = fishingTripEntity.getDelimitedPeriods().iterator().next();
-        assertNotNull(delimitedPeriodEntity);
-        assertEquals(fishingTrip.getTypeCode().getValue(), delimitedPeriodEntity.getFishingTrip().getTypeCode());
-        assertEquals(fishingTrip.getTypeCode().getListID(), delimitedPeriodEntity.getFishingTrip().getTypeCodeListId());
     }
 }

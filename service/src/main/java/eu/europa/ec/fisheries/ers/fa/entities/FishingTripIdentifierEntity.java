@@ -87,7 +87,7 @@ import lombok.ToString;
 @Table(name = "activity_fishing_trip_identifier")
 @Data
 @ToString(of = "id")
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = {"tripId", "tripSchemeId"})
 public class FishingTripIdentifierEntity implements Serializable {
 
 	public static final String FIND_CURRENT_TRIP = "findCurrentTrip";

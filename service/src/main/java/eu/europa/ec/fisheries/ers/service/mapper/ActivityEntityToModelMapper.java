@@ -45,6 +45,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
@@ -143,7 +144,12 @@ public class ActivityEntityToModelMapper {
 
                 target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
 
-                // TODO map TRIP !
+                List<FishingTrip> fishingTrips = FishingTripMapper.INSTANCE.mapToFishingTripList(source.getFishingTrips());
+                if (CollectionUtils.isNotEmpty(fishingTrips)){
+                    target.setSpecifiedFishingTrip(fishingTrips.get(0));
+
+                }
+
                 source.getFishingGears(); // TODO MAP
                 source.getFlagState(); // TODO MAP
                 //target.getSpecifiedFACatches() // TODO map

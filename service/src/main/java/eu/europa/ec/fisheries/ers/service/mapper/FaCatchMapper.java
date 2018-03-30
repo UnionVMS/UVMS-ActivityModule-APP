@@ -23,7 +23,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
@@ -48,7 +47,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
@@ -80,7 +78,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))"),
             @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))"),
-            @Mapping(target = "fishingTrips", expression = "java(getFishingTripEntities(faCatch.getRelatedFishingTrips(), faCatchEntity))")
+            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(faCatch.getRelatedFishingTrips(), faCatchEntity))")
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
@@ -142,19 +140,6 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
 
         return sizeDistributionEntity;
-    }
-
-    protected Set<FishingTripEntity> getFishingTripEntities(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {
-        if (fishingTrips == null || fishingTrips.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
-        for (FishingTrip fishingTrip : fishingTrips) {
-            FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
-            fishingTripEntity.setFaCatch(faCatchEntity);
-            fishingTripEntities.add(fishingTripEntity);
-        }
-        return fishingTripEntities;
     }
 
     protected Set<AapStockEntity> getAapStockEntities(List<AAPStock> aapStocks, FaCatchEntity faCatchEntity) {
