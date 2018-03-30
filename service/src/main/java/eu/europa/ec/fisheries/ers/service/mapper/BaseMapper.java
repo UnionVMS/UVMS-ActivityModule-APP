@@ -110,22 +110,22 @@ public class BaseMapper {
         return mapFromFluxLocation(newHashSet(filtered.iterator()));
     }
 
-    public static Set<FishingTripEntity> getFishingTripEntities(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
+    public static Set<FishingTripEntity> mapToFishingTripEntitySet(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
         if (fishingTrip == null) {
             return Collections.emptySet();
         }
-        FishingTripEntity fishingTripEntity = getFishingTripEntity(fishingTrip);
+        FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
         fishingTripEntity.setFishingActivity(fishingActivityEntity);
         return new HashSet<>(Collections.singletonList(fishingTripEntity));
     }
 
-    public static Set<FishingTripEntity> getFishingTripEntities(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {
+    public static Set<FishingTripEntity> mapToFishingTripEntitySet(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {
         if (fishingTrips == null || fishingTrips.isEmpty()) {
             return Collections.emptySet();
         }
         Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
         for (FishingTrip fishingTrip : fishingTrips) {
-            FishingTripEntity fishingTripEntity = getFishingTripEntity(fishingTrip);
+            FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
 
             fishingTripEntity.setFaCatch(faCatchEntity);
             fishingTripEntities.add(fishingTripEntity);
@@ -133,7 +133,7 @@ public class BaseMapper {
         return fishingTripEntities;
     }
 
-    private static FishingTripEntity getFishingTripEntity(FishingTrip fishingTrip) {
+    private static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();
         if (CollectionUtils.isNotEmpty(ids)){
@@ -252,7 +252,6 @@ public class BaseMapper {
                 if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
                     String identifierId = identifierDto.getFaIdentifierId();
                     AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-
                     criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
                     criteriaPair.setValue(identifierId);
                     criteriaList.add(criteriaPair);

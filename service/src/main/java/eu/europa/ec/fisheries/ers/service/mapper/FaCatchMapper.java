@@ -78,7 +78,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))"),
             @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))"),
-            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.getFishingTripEntities(faCatch.getRelatedFishingTrips(), faCatchEntity))")
+            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(faCatch.getRelatedFishingTrips(), faCatchEntity))")
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
