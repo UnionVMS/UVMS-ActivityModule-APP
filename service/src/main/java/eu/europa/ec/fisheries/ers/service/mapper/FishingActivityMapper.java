@@ -67,7 +67,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
@@ -108,7 +107,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "fishingActivityIdentifiers", expression = "java(mapToFishingActivityIdentifierEntities(fishingActivity.getIDS(), fishingActivityEntity))"),
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
-            @Mapping(target = "fishingTrips", expression = "java(getFishingTripEntities(fishingActivity.getSpecifiedFishingTrip(), fishingActivityEntity))"),
+            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.getFishingTripEntities(fishingActivity.getSpecifiedFishingTrip(), fishingActivityEntity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(fishingActivity.getSpecifiedFishingGears(), fishingActivityEntity))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsEntities(fishingActivity.getSpecifiedFLUXCharacteristics(), fishingActivityEntity))"),
             @Mapping(target = "gearProblems", expression = "java(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), fishingActivityEntity))"),
@@ -237,8 +236,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return vesselTransportMeansEntities;
     }
 
-
-
     protected VesselTransportMeansEntity getFaReportDocVesselTransportMeans(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans())) {
             return new VesselTransportMeansEntity();
@@ -324,7 +321,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return fluxReportIdentifierDTO.getFluxReportId();
     }
 
-
     protected String getUniqueFaReportSchemeId(FishingActivityEntity entity){
 
         List<FluxReportIdentifierDTO> fluxReportIdentifierDTOs=  getUniqueId(entity);
@@ -336,7 +332,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         FluxReportIdentifierDTO fluxReportIdentifierDTO=  fluxReportIdentifierDTOs.get(0);
         return fluxReportIdentifierDTO.getFluxReportSchemeId();
     }
-
 
     protected List<FluxReportIdentifierDTO> getUniqueId(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() == null) {
@@ -403,7 +398,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
         return identifiers;
     }
-
 
     protected List<String> getSpeciesCode(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {
@@ -518,23 +512,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         ports.remove(null);
         return new ArrayList<>(ports);
-    }
-
-
-    protected List<String> getFishingActivityLocationTypes(FishingActivityEntity entity, String locationType) {
-        if (entity == null || entity.getFluxLocations() == null) {
-            return Collections.emptyList();
-        }
-        Set<String> areas = new HashSet<>();
-        Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
-
-        for (FluxLocationEntity location : fluxLocations) {
-            if (locationType == null || locationType.equalsIgnoreCase(location.getTypeCode())) {
-                areas.add(location.getFluxLocationIdentifier());
-            }
-        }
-        areas.remove(null);
-        return new ArrayList<>(areas);
     }
 
     protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
@@ -691,26 +668,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingActivityEntity == null || CollectionUtils.isEmpty(fishingActivityEntity.getFishingTrips())) {
             return null;
         }
-
         Set<FishingTripEntity> fishingTripEntities= fishingActivityEntity.getFishingTrips();
         FishingTripEntity fishingTripEntity= fishingTripEntities.iterator().next();
-
-        if(CollectionUtils.isEmpty(fishingTripEntity.getFishingTripIdentifiers()))
+        if (CollectionUtils.isEmpty(fishingTripEntity.getFishingTripIdentifiers()))
             return null;
-
         return fishingTripEntity.getFishingTripIdentifiers().iterator().next().getTripId();
-
-
-    }
-
-
-    protected Set<FishingTripEntity> getFishingTripEntities(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
-        if (fishingTrip == null) {
-            return Collections.emptySet();
-        }
-        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
-        fishingTripEntity.setFishingActivity(fishingActivityEntity);
-        return new HashSet<>(Collections.singletonList(fishingTripEntity));
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
