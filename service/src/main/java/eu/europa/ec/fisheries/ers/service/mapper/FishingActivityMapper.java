@@ -67,7 +67,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
@@ -115,7 +114,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
             @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(fishingActivity.getSpecifiedFishingTrip(), fishingActivityEntity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(fishingActivity.getSpecifiedFishingGears(), fishingActivityEntity))"),
-            @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicsEntities(fishingActivity.getSpecifiedFLUXCharacteristics(), fishingActivityEntity))"),
+            @Mapping(target = "fluxCharacteristics", ignore = true),
             @Mapping(target = "gearProblems", expression = "java(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), fishingActivityEntity))"),
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), fishingActivityEntity))"),
             @Mapping(target = "faCatchs", expression = "java(mapToFaCatchEntities(fishingActivity.getSpecifiedFACatches(), fishingActivityEntity))"),
@@ -650,19 +649,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             gearProblemEntities.add(gearProblemEntity);
         }
         return gearProblemEntities;
-    }
-
-    protected Set<FluxCharacteristicEntity> getFluxCharacteristicsEntities(List<FLUXCharacteristic> fluxCharacteristics, FishingActivityEntity fishingActivityEntity) {
-        if (fluxCharacteristics == null || fluxCharacteristics.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FluxCharacteristicEntity> fluxCharacteristicEntities = new HashSet<>();
-        for (FLUXCharacteristic fluxCharacteristic : fluxCharacteristics) {
-            FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(fluxCharacteristic);
-            fluxCharacteristicEntity.setFishingActivity(fishingActivityEntity);
-            fluxCharacteristicEntities.add(fluxCharacteristicEntity);
-        }
-        return fluxCharacteristicEntities;
     }
 
     protected Set<FishingGearEntity> getFishingGearEntities(List<FishingGear> fishingGears, FishingActivityEntity fishingActivityEntity) {

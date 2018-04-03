@@ -21,6 +21,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
@@ -37,6 +39,8 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
@@ -83,6 +87,25 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     })
     protected abstract FaReportIdentifierEntity mapToFAReportIdentifierEntity(IDType idType);
 
+    @Mappings({
+            @Mapping(target = "type" , source = "typeCode"),
+            @Mapping(target = "acceptedDate" , source = "acceptedDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"FLUX_GP_PARTY\"))"),
+            @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
+            @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),
+            @Mapping(target = "fmcMark" , source = "fmcMarker"),
+            @Mapping(target = "relatedReports" , source = "faReportIdentifiers"),
+            @Mapping(target = "id", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"UUID\"))"),
+    })
+    public abstract ReportDocumentDto mapFaReportDocumentToReportDocumentDto(FaReportDocumentEntity faReportDocument);
+
+    @Mappings({
+            @Mapping(target = "id" , source = "faReportIdentifierId"),
+            @Mapping(target = "schemeId" , source = "faReportIdentifierSchemeId"),
+    })
+    public abstract RelatedReportDto mapFaReportDocumentEntityToRelatedReportDto(FaReportIdentifierEntity entity);
+
     protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
         if (vesselTransportMeans == null) {
             return null;
@@ -101,7 +124,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         Set<FishingActivityEntity> fishingActivityEntities =  new HashSet<>();
         for (FishingActivity fishingActivity : fishingActivities) {
             List<FishingGear> specifiedFishingGears = fishingActivity.getSpecifiedFishingGears();
-            FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
+            FishingActivityEntity target = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
             if (CollectionUtils.isNotEmpty(specifiedFishingGears)){
                 Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
                 for (FishingGear fishingGear : specifiedFishingGears) {
@@ -120,7 +143,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                     }
                     fishingGearEntitySet.add(fishingGearEntity);
                 }
-                fishingActivityEntity.setFishingGears(fishingGearEntitySet);
+                target.setFishingGears(fishingGearEntitySet);
 
             }
 
@@ -128,15 +151,30 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             if (CollectionUtils.isNotEmpty(specifiedFLAPDocuments)){
                 for (FLAPDocument specifiedFLAPDocument : specifiedFLAPDocuments) {
                     FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
-                    fishingActivityEntity.addFlapDocuments(entity);
+                    target.addFlapDocuments(entity);
                 }
             }
 
-            fishingActivityEntities.add(fishingActivityEntity);
+            fishingActivityEntities.add(target);
             if (CollectionUtils.isNotEmpty(fishingActivity.getRelatedFishingActivities())) {
-                fishingActivityEntities.addAll(fishingActivityEntity.getAllRelatedFishingActivities());
+                fishingActivityEntities.addAll(target.getAllRelatedFishingActivities());
             }
 
+            List<FLUXCharacteristic> specifiedFLUXCharacteristics = fishingActivity.getSpecifiedFLUXCharacteristics();
+            if (CollectionUtils.isNotEmpty(specifiedFLUXCharacteristics)){
+                for (FLUXCharacteristic specifiedFLUXCharacteristic : specifiedFLUXCharacteristics) {
+                    FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(specifiedFLUXCharacteristic);
+                    List<FLUXLocation> specifiedFLUXLocations = specifiedFLUXCharacteristic.getSpecifiedFLUXLocations();
+                    if (CollectionUtils.isNotEmpty(specifiedFLUXLocations)){
+                        for (FLUXLocation specifiedFLUXLocation : specifiedFLUXLocations) {
+                            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(specifiedFLUXLocation);
+                            fluxCharacteristicEntity.setFluxLocation(fluxLocationEntity);
+                            fluxCharacteristicEntity.setFishingActivity(target);
+                        }
+                    }
+                    target.addFluxCharacteristics(fluxCharacteristicEntity);
+                }
+            }
         }
         return fishingActivityEntities;
     }
@@ -176,25 +214,5 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         }
         return faReportIdentifierEntities;
     }
-
-    @Mappings({
-            @Mapping(target = "type" , source = "typeCode"),
-            @Mapping(target = "acceptedDate" , source = "acceptedDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
-            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
-            @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"FLUX_GP_PARTY\"))"),
-            @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
-            @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),
-            @Mapping(target = "fmcMark" , source = "fmcMarker"),
-            @Mapping(target = "relatedReports" , source = "faReportIdentifiers"),
-            @Mapping(target = "id", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"UUID\"))"),
-    })
-    public abstract ReportDocumentDto mapFaReportDocumentToReportDocumentDto(FaReportDocumentEntity faReportDocument);
-
-    @Mappings({
-            @Mapping(target = "id" , source = "faReportIdentifierId"),
-            @Mapping(target = "schemeId" , source = "faReportIdentifierSchemeId"),
-    })
-    public abstract RelatedReportDto mapFaReportDocumentEntityToRelatedReportDto(FaReportIdentifierEntity entity);
-
 
 }

@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
@@ -73,11 +72,6 @@ public class FishingActivityMapperTest {
         DelimitedPeriodEntity delimitedPeriodEntity = fishingActivityEntity.getDelimitedPeriods().iterator().next();
         assertNotNull(delimitedPeriodEntity);
         assertFishingActivityFields(fishingActivity, delimitedPeriodEntity.getFishingActivity());
-
-        assertNotNull(fishingActivityEntity.getFluxCharacteristics());
-        FluxCharacteristicEntity fluxCharacteristicEntity = fishingActivityEntity.getFluxCharacteristics().iterator().next();
-        assertNotNull(fluxCharacteristicEntity);
-        assertFishingActivityFields(fishingActivity, fluxCharacteristicEntity.getFishingActivity());
 
         assertNotNull(fishingActivityEntity.getFluxLocations());
         FluxLocationEntity fluxLocationEntity = fishingActivityEntity.getFluxLocations().iterator().next();

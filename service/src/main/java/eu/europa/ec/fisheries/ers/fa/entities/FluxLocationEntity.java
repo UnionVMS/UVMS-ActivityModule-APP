@@ -28,6 +28,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -40,8 +42,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.geotools.geometry.jts.GeometryBuilder;
 import org.hibernate.annotations.Type;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 @Entity
 @Table(name = "activity_flux_location")
@@ -151,5 +155,14 @@ public class FluxLocationEntity implements Serializable {
 		if(this.geom != null){
 			this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
 		}
+	}
+
+	public List<TextType> getNames(){
+        List<TextType> names = null;
+		if (StringUtils.isNotEmpty(name)){
+            names = new ArrayList<>();
+            names.add(new TextType(name, null, null));
+		}
+		return names;
 	}
 }

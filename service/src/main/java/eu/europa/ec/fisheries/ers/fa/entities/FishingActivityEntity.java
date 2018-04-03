@@ -204,7 +204,7 @@ public class FishingActivityEntity implements Serializable {
 	private Set<FishingGearEntity> fishingGears;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FluxCharacteristicEntity> fluxCharacteristics;
+	private Set<FluxCharacteristicEntity> fluxCharacteristics =  new HashSet<>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<GearProblemEntity> gearProblems;
@@ -255,10 +255,15 @@ public class FishingActivityEntity implements Serializable {
         }
     }
 
-    public void addFlapDocuments(FlapDocumentEntity flapDocumentEntity){
-    	flapDocuments.add(flapDocumentEntity);
-		flapDocumentEntity.setFishingActivity(this);
+    public void addFluxCharacteristics(FluxCharacteristicEntity characteristicEntity){
+        fluxCharacteristics.add(characteristicEntity);
+        characteristicEntity.setFishingActivity(this);
 	}
+
+    public void addFlapDocuments(FlapDocumentEntity flapDocumentEntity){
+        flapDocuments.add(flapDocumentEntity);
+        flapDocumentEntity.setFishingActivity(this);
+    }
 
     public Double getCalculatedDuration(){
         if (isEmpty(delimitedPeriods)) {
