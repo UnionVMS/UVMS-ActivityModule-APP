@@ -26,6 +26,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
@@ -42,6 +43,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
@@ -140,7 +142,21 @@ public class ActivityEntityToModelMapper {
                 mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
 
                 target.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
-                mapSpecifiedFLUXCharacteristics(target, source.getFluxCharacteristics());
+
+                Set<FluxCharacteristicEntity> fluxCharacteristics = source.getFluxCharacteristics();
+                if (CollectionUtils.isNotEmpty(fluxCharacteristics)){
+                    List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
+                    for (FluxCharacteristicEntity fluxCharacteristicEntity : fluxCharacteristics) {
+                        FLUXCharacteristic fLUXCharacteristic = FluxCharacteristicsMapper.INSTANCE.mapToFLUXCharacteristic(fluxCharacteristicEntity);
+                        FluxLocationEntity fluxLocation = fluxCharacteristicEntity.getFluxLocation();
+                        FLUXLocation location = FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation);
+                        if (fluxLocation != null){
+                            fLUXCharacteristic.setSpecifiedFLUXLocations(Collections.singletonList(location));
+                        }
+                        fluxCharacteristicList.add(fLUXCharacteristic);
+                    }
+                    target.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
+                }
 
                 target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
 
@@ -163,25 +179,6 @@ public class ActivityEntityToModelMapper {
             }
 
             faReportDocument.setSpecifiedFishingActivities(fishingActivityList);
-        }
-    }
-
-    private void mapSpecifiedFLUXCharacteristics(FishingActivity fishingActivity, Set<FluxCharacteristicEntity> fluxCharacteristics) {
-        if (CollectionUtils.isNotEmpty(fluxCharacteristics)){
-            List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
-            for (FluxCharacteristicEntity source : fluxCharacteristics) {
-                FLUXCharacteristic target = new FLUXCharacteristic();
-                mapPurposeCode(target, source);
-                mapValueCode(target, source);
-                mapValueDateTime(target, source);
-                mapValueIndicator(target, source);
-                mapValueQuantity(target, source);
-                mapValueMeasure(target, source);
-                mapDescriptions(target, source);
-                mapValues(target, source);
-                fluxCharacteristicList.add(target);
-            }
-            fishingActivity.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
         }
     }
 

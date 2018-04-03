@@ -98,9 +98,12 @@ public class ActivityEntityToModelMapperTest {
                // $("UNFA_IRCS6_18_ARRIVAL_DCL_CYP-TRP-20170608000000000010.xml"),
                // $("UNFA_IRCS4_08_ARRIVAL_DCL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
                // $("UNFA_IRCS4_07_ARRIVAL_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml")//,
-                $("UNFA_IRCS4_06_BFT-TRANSFER_DECL_SVN-TRP-SVN-TRP-20170622000000000008.xml")//,
+               // $("UNFA_IRCS4_06_BFT-TRANSFER_DECL_SVN-TRP-SVN-TRP-20170622000000000008.xml")//,
 
                // $("UNFA_IRCS4_04_BFT-TRANSFER_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml")
+                $("UNFA_IRCS6_08A_TRA-UNL_CYP-TRP-20170608000000000010.xml")
+
+
 
 
 
@@ -122,7 +125,7 @@ public class ActivityEntityToModelMapperTest {
             Matcher matcher = Pattern.compile(pattern).matcher(testSource);
             testSource = matcher.replaceAll("");
         }
-        testSource = testSource.replace("<ValueIndicator>\n" + "                    <ns2:IndicatorString/>\n" + "                </ValueIndicator>", "");
+        testSource = testSource.replace("<ValueIndicator>", "").replace("<ns2:IndicatorString/>", "").replace("</ValueIndicator>", "");
         return testSource;
     }
 
