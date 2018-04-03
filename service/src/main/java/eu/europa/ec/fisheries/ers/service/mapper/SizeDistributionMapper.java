@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -27,15 +28,20 @@ public interface SizeDistributionMapper {
 
     @Mappings({
             @Mapping(target = "categoryCode", source = "categoryCode.value"),
-            @Mapping(target = "categoryCodeListId", source = "categoryCode.listID"),
-            @Mapping(target = "sizeDistributionClassCode", expression = "java(BaseMapper.mapToSizeDistributionClassCodes(sizeDistribution.getClassCodes(), sizeDistributionEntity))")
+            @Mapping(target = "categoryCodeListId", source = "categoryCode.listID")
     })
     SizeDistributionEntity mapToSizeDistributionEntity(SizeDistribution sizeDistribution);
+
+    @InheritInverseConfiguration
+    SizeDistribution mapToSizeDistribution(SizeDistributionEntity sizeDistributionEntity);
 
     @Mappings({
             @Mapping(target = "classCode", source = "value"),
             @Mapping(target = "classCodeListId", source = "listID")
     })
     SizeDistributionClassCodeEntity mapToSizeDistributionClassCodeEntity(CodeType codeType);
+
+    @InheritInverseConfiguration
+    CodeType mapToSizeDistributionClassCode(SizeDistributionClassCodeEntity classCodeEntity);
 
 }

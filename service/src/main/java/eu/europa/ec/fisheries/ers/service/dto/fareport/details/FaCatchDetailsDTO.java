@@ -13,10 +13,10 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
 
 /**
  * Created by padhyad on 8/11/2016.

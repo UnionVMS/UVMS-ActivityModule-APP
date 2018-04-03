@@ -18,13 +18,15 @@ import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
+import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = BaseMapper.class, uses = CustomBigDecimal.class)
 public abstract class AapProductMapper {
 
     public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
@@ -56,6 +58,9 @@ public abstract class AapProductMapper {
             @Mapping(target = "usageCodeListId", source = "usageCode.listID"),
     })
     public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct);
+
+    @InheritInverseConfiguration
+    public abstract AAPProduct mapToAapProduct(AapProductEntity aapProductEntity);
 
     @Mappings({
             @Mapping(target = "type", source = "aapProcess.faCatch.typeCode"),

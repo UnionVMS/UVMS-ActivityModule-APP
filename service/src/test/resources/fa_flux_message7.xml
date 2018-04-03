@@ -68,7 +68,7 @@
                <!-- <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500.0</DurationMeasure>-->
                 <DurationMeasure/>
             </SpecifiedDelimitedPeriod>
-           <!-- <SpecifiedFishingTrip>
+            <SpecifiedFishingTrip>
                 <ID schemeID="fhty58-gh586t-5tjf8-t58rjewe">ID 1</ID>
                 <TypeCode listID="57t3yf-ght43yrf-ght56yru-ght7565h">Code Type 1</TypeCode>
                 <SpecifiedDelimitedPeriod>
@@ -80,7 +80,7 @@
                     </EndDateTime>
                     <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
                 </SpecifiedDelimitedPeriod>
-            </SpecifiedFishingTrip>-->
+            </SpecifiedFishingTrip>
         </SpecifiedFishingActivity>
         <SpecifiedVesselTransportMeans>
             <ID schemeID="CFR">ID 1</ID>

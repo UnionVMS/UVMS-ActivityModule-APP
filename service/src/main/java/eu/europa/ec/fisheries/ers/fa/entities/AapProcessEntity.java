@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
@@ -49,13 +50,24 @@ public class AapProcessEntity implements Serializable {
 	private Double conversionFactor;
 	
 	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<AapProductEntity> aapProducts;
+	private Set<AapProductEntity> aapProducts = new HashSet<>();
 
 	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<AapProcessCodeEntity> aapProcessCode;
+	private Set<AapProcessCodeEntity> aapProcessCode = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
+
+	public void addAapProducts(AapProductEntity aapProductEntity){
+		aapProducts.add(aapProductEntity);
+		aapProductEntity.setAapProcess(this);
+	}
+
+	public void addProcessCode(AapProcessCodeEntity aapProcessCodeEntity){
+		aapProcessCode.add(aapProcessCodeEntity);
+		aapProcessCodeEntity.setAapProcess(this);
+
+	}
 
 }

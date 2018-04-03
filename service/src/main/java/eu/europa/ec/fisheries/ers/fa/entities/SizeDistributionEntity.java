@@ -22,6 +22,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -33,8 +34,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "activity_size_distribution")
 @Data
-@EqualsAndHashCode(exclude = "sizeDistributionClassCode")
-@ToString(exclude = "sizeDistributionClassCode")
+@EqualsAndHashCode(exclude = "sizeDistributionClassCodeEntities")
+@ToString(exclude = {"sizeDistributionClassCodeEntities", "faCatch"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class SizeDistributionEntity implements Serializable {
@@ -55,6 +56,10 @@ public class SizeDistributionEntity implements Serializable {
 	private FaCatchEntity faCatch;
 
 	@OneToMany(mappedBy = "sizeDistribution", cascade = CascadeType.ALL)
-	private Set<SizeDistributionClassCodeEntity> sizeDistributionClassCode;
+	private Set<SizeDistributionClassCodeEntity> sizeDistributionClassCodeEntities = new HashSet<>();
 
+	public void addSizeDistribution(SizeDistributionClassCodeEntity classCodeEntity){
+		sizeDistributionClassCodeEntities.add(classCodeEntity);
+		classCodeEntity.setSizeDistribution(this);
+	}
 }

@@ -1,116 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
 <!--Sample UN/CEFACT file. DF: 	urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2-->
 <!--All data is fictuous. Any similarity with reality is based on pure coincidence.-->
-<rsm:FLUXFAReportMessage xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd" xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<rsm:FLUXReportDocument>
-		<ram:ID schemeID="UUID">088F6BF7-8E42-487E-A826-D05375B01A57</ram:ID>
-		<ram:CreationDateTime>
-			<udt:DateTime>2017-06-26T23:32:00Z</udt:DateTime>
-		</ram:CreationDateTime>
-		<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
-		<ram:OwnerFLUXParty>
-			<ram:ID schemeID="FLUX_GP_PARTY">SVN</ram:ID>
-		</ram:OwnerFLUXParty>
-	</rsm:FLUXReportDocument>
-	<rsm:FAReportDocument>
-		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
-		<ram:AcceptanceDateTime>
-			<udt:DateTime>2017-06-26T23:30:00Z</udt:DateTime>
-		</ram:AcceptanceDateTime>
-		<ram:RelatedFLUXReportDocument>
-			<ram:ID schemeID="UUID">2572FA88-44F3-41AC-B0AA-23235E0FA42B</ram:ID>
-			<ram:CreationDateTime>
-				<udt:DateTime>2017-06-26T23:31:00Z</udt:DateTime>
-			</ram:CreationDateTime>
-			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
-			<ram:OwnerFLUXParty>
-				<ram:ID schemeID="FLUX_GP_PARTY">SVN</ram:ID>
-			</ram:OwnerFLUXParty>
-		</ram:RelatedFLUXReportDocument>
-		<ram:SpecifiedFishingActivity>
-			<ram:ID schemeID="JFO">2017-123</ram:ID>
-			<ram:TypeCode listID="FLUX_FA_TYPE">RELOCATION</ram:TypeCode>
-			<ram:OccurrenceDateTime>
-				<udt:DateTime>2017-06-26T21:15:00Z</udt:DateTime>
-			</ram:OccurrenceDateTime>
-			<ram:SpecifiedFACatch>
-				<ram:SpeciesCode listID="FAO_SPECIES">BFT</ram:SpeciesCode>
-				<ram:WeightMeasure unitCode="KGM">15000</ram:WeightMeasure>
-				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
-				<ram:SpecifiedSizeDistribution>
-					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
-				</ram:SpecifiedSizeDistribution>
-				<ram:AppliedAAPProcess>
-					<ram:TypeCode listID="FISH_PRESENTATION">WHL</ram:TypeCode>
-					<ram:TypeCode listID="FISH_PRESERVATION">ALI</ram:TypeCode>
-				</ram:AppliedAAPProcess>
-				<ram:DestinationFLUXLocation>
-					<ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
-					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
-					<ram:ID schemeID="FARM">ATEU1ESP00001</ram:ID>
-					<ram:Name>TUNA GRASO</ram:Name>
-				</ram:DestinationFLUXLocation>
-			</ram:SpecifiedFACatch>
-			<ram:RelatedFLUXLocation>
-				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
-				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-					<ram:LongitudeMeasure>6.830</ram:LongitudeMeasure>
-					<ram:LatitudeMeasure>39.650</ram:LatitudeMeasure>
-				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-			</ram:RelatedFLUXLocation>
-			<ram:DestinationVesselStorageCharacteristic>
-				<ram:TypeCode listID="VESSEL_STORAGE_TYPE">CAGE</ram:TypeCode>
-				<ram:ID schemeID="BFT-CAGE-ID">ROU059</ram:ID>
-			</ram:DestinationVesselStorageCharacteristic>
-			<ram:SpecifiedFLAPDocument>
-				<ram:ID schemeID="ICCAT_AUTHORISATION">SVN-2017/AUT/123</ram:ID>
-			</ram:SpecifiedFLAPDocument>
-			<ram:SpecifiedFishingTrip>
-				<ram:ID schemeID="EU_TRIP_ID">SVN-TRP-20170622000000000008</ram:ID>
-				<ram:TypeCode listID="FISHING_TRIP_TYPE">JFO</ram:TypeCode>
-			</ram:SpecifiedFishingTrip>
-			<ram:RelatedVesselTransportMeans>
-				<ram:ID schemeID="IRCS">IRCS7</ram:ID>
-				<ram:ID schemeID="EXT_MARK">XR007</ram:ID>
-				<ram:ID schemeID="ICCAT">ATEU0ROU13245</ram:ID>
-				<ram:Name>Hotel</ram:Name>
-				<ram:RoleCode listID="FA_VESSEL_ROLE">RECEIVER</ram:RoleCode>
-				<ram:RegistrationVesselCountry>
-					<ram:ID schemeID="TERRITORY">ROU</ram:ID>
-				</ram:RegistrationVesselCountry>
-				<ram:SpecifiedContactParty>
-					<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
-					<ram:SpecifiedContactPerson>
-						<ram:GivenName>Julia</ram:GivenName>
-						<ram:FamilyName>H</ram:FamilyName>
-						<ram:Alias>Master H</ram:Alias>
-					</ram:SpecifiedContactPerson>
-				</ram:SpecifiedContactParty>
-			</ram:RelatedVesselTransportMeans>
-		</ram:SpecifiedFishingActivity>
-		<ram:SpecifiedVesselTransportMeans>
-			<ram:ID schemeID="CFR">SVN123456789</ram:ID>
-			<ram:ID schemeID="IRCS">IRCS4</ram:ID>
-			<ram:ID schemeID="EXT_MARK">XR004</ram:ID>
-			<ram:ID schemeID="ICCAT">ATEU0SVN13245</ram:ID>
-			<ram:Name>Echo</ram:Name>
-			<ram:RoleCode listID="FA_VESSEL_ROLE">DONOR</ram:RoleCode>
-			<ram:RegistrationVesselCountry>
-				<ram:ID schemeID="TERRITORY">SVN</ram:ID>
-			</ram:RegistrationVesselCountry>
-			<ram:SpecifiedContactParty>
-				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
-				<ram:SpecifiedStructuredAddress>
-					<ram:StreetName>Street K</ram:StreetName>
-					<ram:CityName>City L</ram:CityName>
-					<ram:CountryID schemeID="TERRITORY">SVN</ram:CountryID>
-				</ram:SpecifiedStructuredAddress>
-				<ram:SpecifiedContactPerson>
-					<ram:GivenName>Jake</ram:GivenName>
-					<ram:FamilyName>E</ram:FamilyName>
-					<ram:Alias>Master E</ram:Alias>
-				</ram:SpecifiedContactPerson>
-			</ram:SpecifiedContactParty>
-		</ram:SpecifiedVesselTransportMeans>
-	</rsm:FAReportDocument>
+<rsm:FLUXFAReportMessage xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd">
+    <rsm:FLUXReportDocument>
+        <ram:ID schemeID="UUID">088F6BF7-8E42-487E-A826-D05375B01A57</ram:ID>
+        <ram:CreationDateTime>
+            <udt:DateTime>2017-06-26T23:32:00Z</udt:DateTime>
+        </ram:CreationDateTime>
+        <ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+        <ram:OwnerFLUXParty>
+            <ram:ID schemeID="FLUX_GP_PARTY">SVN</ram:ID>
+        </ram:OwnerFLUXParty>
+    </rsm:FLUXReportDocument>
+    <rsm:FAReportDocument>
+        <ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+        <ram:AcceptanceDateTime>
+            <udt:DateTime>2017-06-26T23:30:00Z</udt:DateTime>
+        </ram:AcceptanceDateTime>
+        <ram:RelatedFLUXReportDocument>
+            <ram:ID schemeID="UUID">2572FA88-44F3-41AC-B0AA-23235E0FA42B</ram:ID>
+            <ram:CreationDateTime>
+                <udt:DateTime>2017-06-26T23:31:00Z</udt:DateTime>
+            </ram:CreationDateTime>
+            <ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+            <ram:OwnerFLUXParty>
+                <ram:ID schemeID="FLUX_GP_PARTY">SVN</ram:ID>
+            </ram:OwnerFLUXParty>
+        </ram:RelatedFLUXReportDocument>
+        <ram:SpecifiedFishingActivity>
+            <!--<ram:ID schemeID="JFO">2017-123</ram:ID>-->
+            <ram:TypeCode listID="FLUX_FA_TYPE">RELOCATION</ram:TypeCode>
+            <ram:OccurrenceDateTime>
+                <udt:DateTime>2017-06-26T21:15:00Z</udt:DateTime>
+            </ram:OccurrenceDateTime>
+            <ram:SpecifiedFACatch>
+                <ram:SpeciesCode listID="FAO_SPECIES">BFT</ram:SpeciesCode>
+                <ram:WeightMeasure unitCode="KGM">15000</ram:WeightMeasure>
+                <ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+                <ram:SpecifiedSizeDistribution>
+                    <ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+                </ram:SpecifiedSizeDistribution>
+                <ram:AppliedAAPProcess>
+                    <ram:TypeCode listID="FISH_PRESENTATION">WHL</ram:TypeCode>
+                    <ram:TypeCode listID="FISH_PRESERVATION">ALI</ram:TypeCode>
+                </ram:AppliedAAPProcess>
+                <!---
+                <ram:DestinationFLUXLocation>
+                    <ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
+                    <ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+                    <ram:ID schemeID="FARM">ATEU1ESP00001</ram:ID>
+                    <ram:Name>TUNA GRASO</ram:Name>
+                </ram:DestinationFLUXLocation>
+                -->
+            </ram:SpecifiedFACatch>
+            <ram:RelatedFLUXLocation>
+                <ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+                <ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+                    <ram:LongitudeMeasure>6.83</ram:LongitudeMeasure>
+                    <ram:LatitudeMeasure>39.65</ram:LatitudeMeasure>
+                </ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+            </ram:RelatedFLUXLocation>
+            <ram:DestinationVesselStorageCharacteristic>
+                <ram:TypeCode listID="VESSEL_STORAGE_TYPE">CAGE</ram:TypeCode>
+                <ram:ID schemeID="BFT-CAGE-ID">ROU059</ram:ID>
+            </ram:DestinationVesselStorageCharacteristic>
+            <ram:SpecifiedFLAPDocument>
+                <ram:ID schemeID="ICCAT_AUTHORISATION">SVN-2017/AUT/123</ram:ID>
+            </ram:SpecifiedFLAPDocument>
+            <ram:SpecifiedFishingTrip>
+                <ram:ID schemeID="EU_TRIP_ID">SVN-TRP-20170622000000000008</ram:ID>
+                <ram:TypeCode listID="FISHING_TRIP_TYPE">JFO</ram:TypeCode>
+            </ram:SpecifiedFishingTrip>
+            <ram:RelatedVesselTransportMeans>
+                <ram:ID schemeID="IRCS">IRCS7</ram:ID>
+                <ram:ID schemeID="EXT_MARK">XR007</ram:ID>
+                <ram:ID schemeID="ICCAT">ATEU0ROU13245</ram:ID>
+                <ram:Name>Hotel</ram:Name>
+                <ram:RoleCode listID="FA_VESSEL_ROLE">RECEIVER</ram:RoleCode>
+                <ram:RegistrationVesselCountry>
+                    <ram:ID schemeID="TERRITORY">ROU</ram:ID>
+                </ram:RegistrationVesselCountry>
+                <ram:SpecifiedContactParty>
+                    <ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+                    <ram:SpecifiedContactPerson>
+                        <ram:GivenName>Julia</ram:GivenName>
+                        <ram:FamilyName>H</ram:FamilyName>
+                        <ram:Alias>Master H</ram:Alias>
+                    </ram:SpecifiedContactPerson>
+                </ram:SpecifiedContactParty>
+            </ram:RelatedVesselTransportMeans>
+        </ram:SpecifiedFishingActivity>
+        <ram:SpecifiedVesselTransportMeans>
+            <ram:ID schemeID="CFR">SVN123456789</ram:ID>
+            <ram:ID schemeID="IRCS">IRCS4</ram:ID>
+            <ram:ID schemeID="EXT_MARK">XR004</ram:ID>
+            <ram:ID schemeID="ICCAT">ATEU0SVN13245</ram:ID>
+            <ram:Name>Echo</ram:Name>
+            <ram:RoleCode listID="FA_VESSEL_ROLE">DONOR</ram:RoleCode>
+            <ram:RegistrationVesselCountry>
+                <ram:ID schemeID="TERRITORY">SVN</ram:ID>
+            </ram:RegistrationVesselCountry>
+            <ram:SpecifiedContactParty>
+                <ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+                <ram:SpecifiedStructuredAddress>
+                    <ram:StreetName>Street K</ram:StreetName>
+                    <ram:CityName>City L</ram:CityName>
+                    <ram:CountryID schemeID="TERRITORY">SVN</ram:CountryID>
+                </ram:SpecifiedStructuredAddress>
+                <ram:SpecifiedContactPerson>
+                    <ram:GivenName>Jake</ram:GivenName>
+                    <ram:FamilyName>E</ram:FamilyName>
+                    <ram:Alias>Master E</ram:Alias>
+                </ram:SpecifiedContactPerson>
+            </ram:SpecifiedContactParty>
+        </ram:SpecifiedVesselTransportMeans>
+    </rsm:FAReportDocument>
 </rsm:FLUXFAReportMessage>

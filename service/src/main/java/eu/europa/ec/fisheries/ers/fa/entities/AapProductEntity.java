@@ -47,7 +47,7 @@ public class AapProductEntity implements Serializable {
 	@Column(name = "packaging_type_code_list_id")
 	private String packagingTypeCodeListId;
 	
-	@Column(name = "packaging_unit_avarage_weight", precision = 17, scale = 17)
+	@Column(name = "packaging_unit_avarage_weight")
 	private Double packagingUnitAvarageWeight;
 
 	@Column(name = "packaging_weight_unit_code")

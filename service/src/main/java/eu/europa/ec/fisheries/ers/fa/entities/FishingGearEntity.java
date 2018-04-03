@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -68,9 +69,19 @@ public class FishingGearEntity implements Serializable {
 	private String typeCodeListId;
 
 	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
-	private Set<FishingGearRoleEntity> fishingGearRole;
+	private Set<FishingGearRoleEntity> fishingGearRole = new HashSet<>();
 
 	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
-	private Set<GearCharacteristicEntity> gearCharacteristics;
+	private Set<GearCharacteristicEntity> gearCharacteristics =  new HashSet<>();
+
+	public void addGearCharacteristic(GearCharacteristicEntity characteristicEntity){
+		gearCharacteristics.add(characteristicEntity);
+		characteristicEntity.setFishingGear(this);
+	}
+
+    public void addFishingGearRole(FishingGearRoleEntity roleEntity){
+        fishingGearRole.add(roleEntity);
+        roleEntity.setFishingGear(this);
+    }
 
 }

@@ -16,6 +16,7 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -24,7 +25,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
-@Mapper(imports = BaseMapper.class, uses = {XMLDateUtils.class})
+@Mapper(imports = BaseMapper.class, uses = {XMLDateUtils.class, CustomBigDecimal.class})
 public interface DelimitedPeriodMapper {
 
     DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);

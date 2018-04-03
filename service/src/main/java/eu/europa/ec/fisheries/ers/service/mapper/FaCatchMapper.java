@@ -19,14 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -35,24 +32,22 @@ import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FluxCharacteristicsViewDtoMapper;
+import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import org.apache.commons.collections.CollectionUtils;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-@Mapper(uses = {FishingGearMapper.class, FluxCharacteristicsMapper.class,
-        FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class,
-        FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class})
+@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class,FluxLocationMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class})
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
@@ -64,16 +59,15 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "speciesCodeListid", source = "speciesCode.listID"),
             @Mapping(target = "unitQuantity", source = "unitQuantity.value"),
             @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
-           // @Mapping(target = "calculatedUnitQuantity", expression = "java(getCalculatedQuantity(faCatch.getUnitQuantity().getUnitCode(), faCatch.getUnitQuantity().getValue()))"),
             @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
             @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(faCatch.getWeightMeasure()))"),
-            @Mapping(target = "usageCode", expression = "java(getCodeType(faCatch.getUsageCode()))"),
-            @Mapping(target = "usageCodeListId", expression = "java(getCodeTypeListId(faCatch.getUsageCode()))"),
-            @Mapping(target = "weighingMeansCode", expression = "java(getCodeType(faCatch.getWeighingMeansCode()))"),
-            @Mapping(target = "weighingMeansCodeListId", expression = "java(getCodeTypeListId(faCatch.getWeighingMeansCode()))"),
-            @Mapping(target = "sizeDistribution", expression = "java(getSizeDistributionEntity(faCatch.getSpecifiedSizeDistribution(), faCatchEntity))"),
-            @Mapping(target = "aapProcesses", expression = "java(getAapProcessEntities(faCatch.getAppliedAAPProcesses(), faCatchEntity))"),
+            @Mapping(target = "usageCode", source = "faCatch.usageCode.value"),
+            @Mapping(target = "usageCodeListId", source = "faCatch.usageCode.listID"),
+            @Mapping(target = "weighingMeansCode", source = "faCatch.weighingMeansCode.value"),
+            @Mapping(target = "weighingMeansCodeListId", source = "faCatch.weighingMeansCode.listID"),
+            @Mapping(target = "sizeDistribution", ignore = true),
+            @Mapping(target = "aapProcesses", ignore = true),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))"),
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))"),
@@ -81,6 +75,20 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(faCatch.getRelatedFishingTrips(), faCatchEntity))")
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
+
+    @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "appliedAAPProcesses", source = "aapProcesses"),
+            @Mapping(target = "specifiedSizeDistribution", source = "sizeDistribution"),
+            @Mapping(target = "specifiedSizeDistribution.classCodes", source = "sizeDistribution.sizeDistributionClassCodeEntities"),
+            @Mapping(target = "specifiedFLUXLocations", source = "fluxLocations"),
+            //@Mapping(target = "destinationFLUXLocations", source = "???") TODO map to destinationFLUXLocations
+    })
+    public abstract FACatch mapToFaCatch(FaCatchEntity faCatch);
+
+    public abstract List<FACatch> mapToFaCatchList(Set<FaCatchEntity> faCatch);
+
+    public abstract un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType map(java.lang.String value);
 
     @Mappings({
             @Mapping(target = "roleName", expression = "java(getVesselTransportMeansForRelocation(faCatch).getRoleCode())"),
@@ -95,21 +103,17 @@ public abstract class FaCatchMapper extends BaseMapper {
     })
     public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
 
-
     public abstract List<RelocationDto> mapToRelocationDtoList(Set<FaCatchEntity> faCatches);
 
     protected List<AssetIdentifierDto> mapToAssetIdentifiers(FaCatchEntity faCatch) {
         List<AssetIdentifierDto> assetIdentifierDtos = new ArrayList<>();
         if (faCatch != null && faCatch.getFishingActivity() != null && CollectionUtils.isNotEmpty(faCatch.getFishingActivity().getVesselTransportMeans())) {
             VesselTransportMeansEntity vesselTransportMeans = faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
-
             Map<VesselIdentifierSchemeIdEnum, String> vesselIdentifiers = vesselTransportMeans.getVesselIdentifiersMap();
-
             // Set IRCS always if present
             if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS) != null) {
                 assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.IRCS, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS)));
             }
-
             if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.ICCAT) != null) {
                 assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.ICCAT, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.ICCAT)));
             } else if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.CFR) != null) {
@@ -125,21 +129,6 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
 
         return faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
-    }
-
-
-    protected SizeDistributionEntity getSizeDistributionEntity(SizeDistribution sizeDistribution, FaCatchEntity faCatchEntity) {
-        if (sizeDistribution == null) {
-            return null;
-        }
-        SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(sizeDistribution);
-        sizeDistributionEntity.setFaCatch(faCatchEntity);
-        Set<SizeDistributionClassCodeEntity> sizeDistributionSet = sizeDistributionEntity.getSizeDistributionClassCode();
-        if (CollectionUtils.isNotEmpty(sizeDistributionSet)) {
-            faCatchEntity.setFishClassCode(sizeDistributionSet.iterator().next().getClassCode());
-        }
-
-        return sizeDistributionEntity;
     }
 
     protected Set<AapStockEntity> getAapStockEntities(List<AAPStock> aapStocks, FaCatchEntity faCatchEntity) {
@@ -227,19 +216,6 @@ public abstract class FaCatchMapper extends BaseMapper {
             fishingGearEntities.add(fishingGearEntity);
         }
         return fishingGearEntities;
-    }
-
-    protected Set<AapProcessEntity> getAapProcessEntities(List<AAPProcess> aapProcesses, FaCatchEntity faCatchEntity) {
-        if (aapProcesses == null || aapProcesses.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<AapProcessEntity> aapProcessEntities = new HashSet<>();
-        for (AAPProcess aapProcess : aapProcesses) {
-            AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
-            aapProcessEntity.setFaCatch(faCatchEntity);
-            aapProcessEntities.add(aapProcessEntity);
-        }
-        return aapProcessEntities;
     }
 
     /**

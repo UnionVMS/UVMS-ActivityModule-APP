@@ -35,8 +35,8 @@ import lombok.ToString;
 @Table(name = "activity_gear_problem")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"locations","gearProblemRecovery","fishingGears"})
-@ToString(exclude = {"locations","gearProblemRecovery","fishingGears"})
+@EqualsAndHashCode(exclude = {"locations", "gearProblemRecovery", "fishingGears"})
+@ToString(exclude = {"locations", "gearProblemRecovery", "fishingGears"})
 public class GearProblemEntity implements Serializable {
 
 	@Id

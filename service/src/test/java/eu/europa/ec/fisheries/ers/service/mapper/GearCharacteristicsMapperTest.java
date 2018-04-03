@@ -16,7 +16,6 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
@@ -38,8 +37,7 @@ public class GearCharacteristicsMapperTest {
     @Test
     public void testGearCharacteristicsMapper() {
         GearCharacteristic gearCharacteristic = MapperUtil.getGearCharacteristics();
-        GearCharacteristicEntity gearCharacteristicEntity = new GearCharacteristicEntity();
-        GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(gearCharacteristic, null, gearCharacteristicEntity);
+        GearCharacteristicEntity gearCharacteristicEntity = GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(gearCharacteristic);
 
         assertEquals(gearCharacteristic.getTypeCode().getValue(), gearCharacteristicEntity.getTypeCode());
         assertEquals(gearCharacteristic.getTypeCode().getListID(), gearCharacteristicEntity.getTypeCodeListId());
@@ -53,7 +51,6 @@ public class GearCharacteristicsMapperTest {
         assertTrue(gearCharacteristicEntity.getValueText().startsWith(gearCharacteristic.getValue().getValue()));
         assertEquals(gearCharacteristic.getValueQuantity().getValue().intValue(), gearCharacteristicEntity.getValueQuantity().intValue());
         assertEquals(gearCharacteristic.getValueQuantity().getUnitCode(), gearCharacteristicEntity.getValueQuantityCode());
-        assertNull(gearCharacteristicEntity.getFishingGear());
     }
 
     @Test

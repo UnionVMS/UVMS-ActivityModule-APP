@@ -1,89 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <!--Sample UN/CEFACT file. DF: 	urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2-->
 <!--All data is fictuous. Any similarity with reality is based on pure coincidence.-->
 <rsm:FLUXFAReportMessage xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd" xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<rsm:FLUXReportDocument>
-		<ram:ID schemeID="UUID">1B18C59E-0182-46BA-BE40-C4E04F2E9AC5</ram:ID>
-		<ram:CreationDateTime>
-			<udt:DateTime>2017-06-14T16:03:00Z</udt:DateTime>
-		</ram:CreationDateTime>
-		<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
-		<ram:OwnerFLUXParty>
-			<ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
-		</ram:OwnerFLUXParty>
-	</rsm:FLUXReportDocument>
-	<rsm:FAReportDocument>
-		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
-		<ram:AcceptanceDateTime>
-			<udt:DateTime>2017-06-14T16:01:00Z</udt:DateTime>
-		</ram:AcceptanceDateTime>
-		<ram:RelatedFLUXReportDocument>
-			<ram:ID schemeID="UUID">6D73F9DB-EF3F-4724-A34E-8A346624D8C0</ram:ID>
-			<ram:CreationDateTime>
-				<udt:DateTime>2017-06-14T16:02:00Z</udt:DateTime>
-			</ram:CreationDateTime>
-			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
-			<ram:OwnerFLUXParty>
-				<ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
-			</ram:OwnerFLUXParty>
-		</ram:RelatedFLUXReportDocument>
-		<ram:SpecifiedFishingActivity>
-			<ram:TypeCode listID="FLUX_FA_TYPE">ARRIVAL</ram:TypeCode>
-			<ram:OccurrenceDateTime>
-				<udt:DateTime>2017-06-14T16:00:00Z</udt:DateTime>
-			</ram:OccurrenceDateTime>
-			<ram:ReasonCode listID="FA_REASON_ARRIVAL">LAN</ram:ReasonCode>
-			<ram:RelatedFLUXLocation>
-				<ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
-				<ram:ID schemeID="LOCATION">ESLCG</ram:ID>
-			</ram:RelatedFLUXLocation>
-			<ram:SpecifiedFLUXCharacteristic>
-				<ram:TypeCode listID="FA_CHARACTERISTIC">START_DATETIME_LANDING</ram:TypeCode>
-				<ram:ValueDateTime>
-					<udt:DateTime>2017-06-14T18:00:00Z</udt:DateTime>
-				</ram:ValueDateTime>
-			</ram:SpecifiedFLUXCharacteristic>
-			<ram:SpecifiedFishingGear>
-				<ram:TypeCode listID="GEAR_TYPE">PTB</ram:TypeCode>
-				<ram:RoleCode listID="FA_GEAR_ROLE">ONBOARD</ram:RoleCode>
-				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
-					<ram:ValueMeasure unitCode="MMT">120</ram:ValueMeasure>
-				</ram:ApplicableGearCharacteristic>
-				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">GM</ram:TypeCode>
-					<ram:ValueMeasure unitCode="MTR">102</ram:ValueMeasure>
-				</ram:ApplicableGearCharacteristic>
-				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">GD</ram:TypeCode>
-					<ram:Value>Gear1</ram:Value>
-				</ram:ApplicableGearCharacteristic>
-			</ram:SpecifiedFishingGear>
-			<ram:SpecifiedFishingTrip>
-				<ram:ID schemeID="EU_TRIP_ID">CYP-TRP-20170608000000000010</ram:ID>
-			</ram:SpecifiedFishingTrip>
-		</ram:SpecifiedFishingActivity>
-		<ram:SpecifiedVesselTransportMeans>
-			<ram:ID schemeID="CFR">CYP123456789</ram:ID>
-			<ram:ID schemeID="IRCS">IRCS6</ram:ID>
-			<ram:ID schemeID="EXT_MARK">XR006</ram:ID>
-			<ram:Name>Golf</ram:Name>
-			<ram:RegistrationVesselCountry>
-				<ram:ID schemeID="TERRITORY">CYP</ram:ID>
-			</ram:RegistrationVesselCountry>
-			<ram:SpecifiedContactParty>
-				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
-				<ram:SpecifiedStructuredAddress>
-					<ram:StreetName>Street Q</ram:StreetName>
-					<ram:CityName>City R</ram:CityName>
-					<ram:CountryID schemeID="TERRITORY">CYP</ram:CountryID>
-				</ram:SpecifiedStructuredAddress>
-				<ram:SpecifiedContactPerson>
-					<ram:GivenName>Jamie</ram:GivenName>
-					<ram:FamilyName>G</ram:FamilyName>
-					<ram:Alias>Master G</ram:Alias>
-				</ram:SpecifiedContactPerson>
-			</ram:SpecifiedContactParty>
-		</ram:SpecifiedVesselTransportMeans>
-	</rsm:FAReportDocument>
+    <rsm:FLUXReportDocument>
+        <ram:ID schemeID="UUID">1B18C59E-0182-46BA-BE40-C4E04F2E9AC5</ram:ID>
+        <ram:CreationDateTime>
+            <udt:DateTime>2017-06-14T16:03:00Z</udt:DateTime>
+        </ram:CreationDateTime>
+        <ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+        <ram:OwnerFLUXParty>
+            <ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
+        </ram:OwnerFLUXParty>
+    </rsm:FLUXReportDocument>
+    <rsm:FAReportDocument>
+        <ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+        <ram:AcceptanceDateTime>
+            <udt:DateTime>2017-06-14T16:01:00Z</udt:DateTime>
+        </ram:AcceptanceDateTime>
+        <ram:RelatedFLUXReportDocument>
+            <ram:ID schemeID="UUID">6D73F9DB-EF3F-4724-A34E-8A346624D8C0</ram:ID>
+            <ram:CreationDateTime>
+                <udt:DateTime>2017-06-14T16:02:00Z</udt:DateTime>
+            </ram:CreationDateTime>
+            <ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+            <ram:OwnerFLUXParty>
+                <ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
+            </ram:OwnerFLUXParty>
+        </ram:RelatedFLUXReportDocument>
+        <ram:SpecifiedFishingActivity>
+            <ram:TypeCode listID="FLUX_FA_TYPE">ARRIVAL</ram:TypeCode>
+            <ram:OccurrenceDateTime>
+                <udt:DateTime>2017-06-14T16:00:00Z</udt:DateTime>
+            </ram:OccurrenceDateTime>
+            <ram:ReasonCode listID="FA_REASON_ARRIVAL">LAN</ram:ReasonCode>
+            <ram:RelatedFLUXLocation>
+                <ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
+                <ram:ID schemeID="LOCATION">ESLCG</ram:ID>
+            </ram:RelatedFLUXLocation>
+            <ram:SpecifiedFLUXCharacteristic>
+                <!--<ram:TypeCode listID="FA_CHARACTERISTIC">START_DATETIME_LANDING</ram:TypeCode>-->
+                <ram:ValueDateTime>
+                    <udt:DateTime>2017-06-14T18:00:00Z</udt:DateTime>
+                </ram:ValueDateTime>
+            </ram:SpecifiedFLUXCharacteristic>
+            <ram:SpecifiedFishingGear>
+                <ram:TypeCode listID="GEAR_TYPE">PTB</ram:TypeCode>
+                <ram:RoleCode listID="FA_GEAR_ROLE">ONBOARD</ram:RoleCode>
+                <ram:ApplicableGearCharacteristic>
+                    <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">GD</ram:TypeCode>
+                    <ram:Value>Gear1</ram:Value>
+                </ram:ApplicableGearCharacteristic>
+                <ram:ApplicableGearCharacteristic>
+                    <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">GM</ram:TypeCode>
+                    <ram:ValueMeasure unitCode="MTR">102</ram:ValueMeasure>
+                </ram:ApplicableGearCharacteristic>
+                <ram:ApplicableGearCharacteristic>
+                    <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
+                    <ram:ValueMeasure unitCode="MMT">120</ram:ValueMeasure>
+                </ram:ApplicableGearCharacteristic>
+            </ram:SpecifiedFishingGear>
+            <ram:SpecifiedFishingTrip>
+                <ram:ID schemeID="EU_TRIP_ID">CYP-TRP-20170608000000000010</ram:ID>
+            </ram:SpecifiedFishingTrip>
+        </ram:SpecifiedFishingActivity>
+        <ram:SpecifiedVesselTransportMeans>
+            <ram:ID schemeID="CFR">CYP123456789</ram:ID>
+            <ram:ID schemeID="IRCS">IRCS6</ram:ID>
+            <ram:ID schemeID="EXT_MARK">XR006</ram:ID>
+            <ram:Name>Golf</ram:Name>
+            <ram:RegistrationVesselCountry>
+                <ram:ID schemeID="TERRITORY">CYP</ram:ID>
+            </ram:RegistrationVesselCountry>
+            <ram:SpecifiedContactParty>
+                <ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+                <ram:SpecifiedStructuredAddress>
+                    <ram:StreetName>Street Q</ram:StreetName>
+                    <ram:CityName>City R</ram:CityName>
+                    <ram:CountryID schemeID="TERRITORY">CYP</ram:CountryID>
+                </ram:SpecifiedStructuredAddress>
+                <ram:SpecifiedContactPerson>
+                    <ram:GivenName>Jamie</ram:GivenName>
+                    <ram:FamilyName>G</ram:FamilyName>
+                    <ram:Alias>Master G</ram:Alias>
+                </ram:SpecifiedContactPerson>
+            </ram:SpecifiedContactParty>
+        </ram:SpecifiedVesselTransportMeans>
+    </rsm:FAReportDocument>
 </rsm:FLUXFAReportMessage>
