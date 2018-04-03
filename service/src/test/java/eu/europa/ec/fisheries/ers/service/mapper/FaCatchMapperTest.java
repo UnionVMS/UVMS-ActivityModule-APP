@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
@@ -38,18 +37,10 @@ public class FaCatchMapperTest {
         assertFaCatchFields(faCatch, faCatchEntity);
         assertNull(faCatchEntity.getFishingActivity());
 
-        assertNotNull(faCatchEntity.getAapProcesses());
-        AapProcessEntity aapProcessEntity = faCatchEntity.getAapProcesses().iterator().next();
-        assertNotNull(aapProcessEntity);
-        assertFaCatchFields(faCatch, aapProcessEntity.getFaCatch());
-
         assertNotNull(faCatchEntity.getAapStocks());
         AapStockEntity aapStockEntity = faCatchEntity.getAapStocks().iterator().next();
         assertNotNull(aapStockEntity);
         assertFaCatchFields(faCatch, aapStockEntity.getFaCatch());
-
-        assertNotNull(faCatchEntity.getSizeDistribution());
-        assertFaCatchFields(faCatch, faCatchEntity.getSizeDistribution().getFaCatch());
 
         assertNotNull(faCatchEntity.getFishingGears());
         FishingGearEntity fishingGearEntity = faCatchEntity.getFishingGears().iterator().next();

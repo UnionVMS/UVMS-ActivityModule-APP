@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static org.mockito.internal.util.collections.Sets.newSet;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -39,17 +38,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
@@ -69,7 +63,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
@@ -180,19 +173,6 @@ public class BaseMapper {
         return build;
     }
 
-    public static Set<SizeDistributionClassCodeEntity> mapToSizeDistributionClassCodes(List<CodeType> codeTypes, SizeDistributionEntity sizeDistributionEntity) {
-        if (codeTypes == null || codeTypes.isEmpty()) {
-            Collections.emptySet();
-        }
-        Set<SizeDistributionClassCodeEntity> classCodes = new HashSet<>();
-        for (CodeType codeType : codeTypes) {
-            SizeDistributionClassCodeEntity entity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(codeType);
-            entity.setSizeDistribution(sizeDistributionEntity);
-            classCodes.add(entity);
-        }
-        return classCodes;
-    }
-
     public static RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
         if (registrationLocation == null) {
             return null;
@@ -200,31 +180,6 @@ public class BaseMapper {
         RegistrationLocationEntity registrationLocationEntity = RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation);
         registrationLocationEntity.setRegistrationEvent(registrationEventEntity);
         return registrationLocationEntity;
-    }
-
-    public static Set<FishingGearRoleEntity> mapToFishingGears(List<CodeType> codeTypes, FishingGearEntity fishingGearEntity) {
-        if (CollectionUtils.isEmpty(codeTypes)) {
-            Collections.emptySet();
-        }
-        Set<FishingGearRoleEntity> fishingGearRoles = newSet();
-        for (CodeType codeType : codeTypes) {
-            FishingGearRoleEntity gearRole = FishingGearMapper.INSTANCE.mapToFishingGearRoleEntity(codeType);
-            gearRole.setFishingGear(fishingGearEntity);
-            fishingGearRoles.add(gearRole);
-        }
-        return fishingGearRoles;
-    }
-
-    public static Set<GearCharacteristicEntity> getGearCharacteristicEntities(List<GearCharacteristic> gearCharacteristics, FishingGearEntity fishingGearEntity) {
-        if (CollectionUtils.isEmpty(gearCharacteristics)) {
-            return Collections.emptySet();
-        }
-        Set<GearCharacteristicEntity> gearCharacteristicEntities = newSet();
-        for (GearCharacteristic gearCharacteristic : gearCharacteristics) {
-            GearCharacteristicEntity gearCharacteristicEntity = GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(gearCharacteristic, fishingGearEntity, new GearCharacteristicEntity());
-            gearCharacteristicEntities.add(gearCharacteristicEntity);
-        }
-        return gearCharacteristicEntities;
     }
 
     public static List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet) {

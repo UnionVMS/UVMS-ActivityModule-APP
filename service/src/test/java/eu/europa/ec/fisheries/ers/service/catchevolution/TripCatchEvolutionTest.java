@@ -1,5 +1,15 @@
 package eu.europa.ec.fisheries.ers.service.catchevolution;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -15,18 +25,6 @@ import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
 
@@ -53,13 +51,6 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         Assert.assertEquals(fishingActivities.get(0).getCalculatedStartTime().getTime(), fishingActivityEntity2.getCalculatedStartTime().getTime());
         Assert.assertEquals(fishingActivities.get(2).getCalculatedStartTime().getTime(), fishingActivityEntity1.getCalculatedStartTime().getTime());
         Assert.assertEquals(fishingActivities.get(3).getCalculatedStartTime(), null);
-    }
-
-    @Test
-    public void testIsFaCatchTypePresent() {
-        Set<FaCatchEntity> faCatches = new HashSet<>(ActivityDataUtil.getFaCatchesEntities());
-
-        assertTrue(isFaCatchTypePresent(faCatches, FaCatchTypeEnum.DEMINIMIS));
     }
 
     @Test

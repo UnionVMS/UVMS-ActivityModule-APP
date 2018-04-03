@@ -39,6 +39,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -215,7 +216,7 @@ public class FishingActivityEntity implements Serializable {
 	private Set<FishingActivityEntity> allRelatedFishingActivities;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FlapDocumentEntity> flapDocuments;
+	private Set<FlapDocumentEntity> flapDocuments = new HashSet<>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<VesselTransportMeansEntity> vesselTransportMeans;
@@ -253,6 +254,11 @@ public class FishingActivityEntity implements Serializable {
             this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
         }
     }
+
+    public void addFlapDocuments(FlapDocumentEntity flapDocumentEntity){
+    	flapDocuments.add(flapDocumentEntity);
+		flapDocumentEntity.setFishingActivity(this);
+	}
 
     public Double getCalculatedDuration(){
         if (isEmpty(delimitedPeriods)) {

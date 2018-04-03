@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Sample UN/CEFACT file. DF: 	urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2-->
+<!--All data is fictuous. Any similarity with reality is based on pure coincidence.-->
+<rsm:FLUXFAReportMessage xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd" xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<rsm:FLUXReportDocument>
+		<ram:ID schemeID="UUID">2A383E76-C8CB-4D8C-AFA8-497190BE5775</ram:ID>
+		<ram:CreationDateTime>
+			<udt:DateTime>2017-06-27T18:03:00Z</udt:DateTime>
+		</ram:CreationDateTime>
+		<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+		<ram:OwnerFLUXParty>
+			<ram:ID schemeID="FLUX_GP_PARTY">SVN</ram:ID>
+		</ram:OwnerFLUXParty>
+	</rsm:FLUXReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">NOTIFICATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2017-06-27T18:00:00Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">040D3EB8-F7CA-465E-825C-3233A433BFA7</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2017-06-27T18:01:00Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">SVN</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">ARRIVAL</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2017-06-27T22:45:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:ReasonCode listID="FA_REASON_ARRIVAL">RES</ram:ReasonCode>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
+				<ram:ID schemeID="LOCATION">FRSET</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">SVN-TRP-20170622000000000008</ram:ID>
+				<ram:TypeCode listID="FISHING_TRIP_TYPE">JFO</ram:TypeCode>
+				<ram:SpecifiedDelimitedPeriod>
+					<ram:StartDateTime>
+						<udt:DateTime>2017-06-22T07:30:00Z</udt:DateTime>
+					</ram:StartDateTime>
+				</ram:SpecifiedDelimitedPeriod>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">SVN123456789</ram:ID>
+			<ram:ID schemeID="IRCS">IRCS4</ram:ID>
+			<ram:ID schemeID="EXT_MARK">XR004</ram:ID>
+			<ram:ID schemeID="ICCAT">ATEU0SVN13245</ram:ID>
+			<ram:Name>Echo</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">SVN</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>Street K</ram:StreetName>
+					<ram:CityName>City L</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">SVN</ram:CountryID>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:GivenName>Jake</ram:GivenName>
+					<ram:FamilyName>E</ram:FamilyName>
+					<ram:Alias>Master E</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+</rsm:FLUXFAReportMessage>

@@ -10,7 +10,7 @@
 
 package eu.europa.ec.fisheries.ers.mapper.subscription;
 
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.assertFalse;
 import static junitparams.JUnitParamsRunner.$;
 
 import javax.xml.bind.JAXBContext;
@@ -28,12 +28,13 @@ import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.ElementSelectors;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
@@ -65,22 +66,44 @@ public class ActivityEntityToModelMapperTest {
         XMLUnit.setIgnoreComments(true);
         XMLUnit.setIgnoreAttributeOrder(true);
 
-        DetailedDiff diff = new DetailedDiff(new org.custommonkey.xmlunit.Diff(clearEmptyTags(controlSource), clearEmptyTags(testSource)));
-        diff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
-        assertTrue("XML are similar " + diff, diff.similar());
-    }
+        String clearControlSource = clearEmptyTags(controlSource);
+        String clearTestSource = clearEmptyTags(testSource);
+
+        org.xmlunit.diff.Diff myDiffSimilar = DiffBuilder
+                .compare(clearControlSource)
+                .withTest(clearTestSource)
+                .ignoreWhitespace()
+                .ignoreComments()
+                .checkForSimilar()
+                .withNodeMatcher(
+                         new DefaultNodeMatcher(ElementSelectors.and(
+                                 ElementSelectors.byNameAndText,
+                                 ElementSelectors.byNameAndAllAttributes)))
+                .build();
+
+        assertFalse("XML similar " + myDiffSimilar.toString(), myDiffSimilar.hasDifferences());    }
 
     private Object[] resources() {
 
         return $(
-                //$("fa_flux_message.xml"),
-                //$("fa_flux_message2.xml"),
-                //$("fa_flux_message3.xml"),
-                //$("fa_flux_message4.xml"),
-                //$("fa_flux_message5.xml"),
-                //$("fa_flux_message6.xml"),
-                //$("fa_flux_message7.xml"),
-                $("fa_flux_message8.xml")
+               // $("fa_flux_message3.xml"),
+               // $("fa_flux_message4.xml"),
+               // $("fa_flux_message5.xml"),
+               // $("fa_flux_message6.xml"),
+               // $("fa_flux_message7.xml"),
+               // $("fa_flux_message8.xml"),
+               // $("UNFA_IRCS6_14_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
+               // $("UNFA_IRCS6_15_CANCEL_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
+               // $("UNFA_IRCS6_19_LANDING_CYP-TRP-20170608000000000010.xml"),
+               // $("UNFA_IRCS6_18_ARRIVAL_DCL_CYP-TRP-20170608000000000010.xml"),
+               // $("UNFA_IRCS4_08_ARRIVAL_DCL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+               // $("UNFA_IRCS4_07_ARRIVAL_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml")//,
+                $("UNFA_IRCS4_06_BFT-TRANSFER_DECL_SVN-TRP-SVN-TRP-20170622000000000008.xml")//,
+
+               // $("UNFA_IRCS4_04_BFT-TRANSFER_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml")
+
+
+
 
         );
     }
@@ -99,6 +122,7 @@ public class ActivityEntityToModelMapperTest {
             Matcher matcher = Pattern.compile(pattern).matcher(testSource);
             testSource = matcher.replaceAll("");
         }
+        testSource = testSource.replace("<ValueIndicator>\n" + "                    <ns2:IndicatorString/>\n" + "                </ValueIndicator>", "");
         return testSource;
     }
 

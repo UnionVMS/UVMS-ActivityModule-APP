@@ -19,6 +19,8 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
@@ -34,9 +36,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Mapper(uses = {VesselTransportMeansMapper.class, FishingActivityMapper.class})
@@ -55,7 +61,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(faReportDocument.getSpecifiedVesselTransportMeans(), faReportDocumentEntity))"),
             @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
             @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedReportIDs(), faReportDocumentEntity))"),
-            @Mapping(target = "fishingActivities", expression = "java(getFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))")
+            @Mapping(target = "fishingActivities", expression = "java(mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))")
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, FaReportSourceEnum faReportSourceEnum);
 
@@ -88,17 +94,49 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return entities;
     }
 
-    protected Set<FishingActivityEntity> getFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
+    protected Set<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return Collections.emptySet();
         }
         Set<FishingActivityEntity> fishingActivityEntities =  new HashSet<>();
         for (FishingActivity fishingActivity : fishingActivities) {
+            List<FishingGear> specifiedFishingGears = fishingActivity.getSpecifiedFishingGears();
             FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
+            if (CollectionUtils.isNotEmpty(specifiedFishingGears)){
+                Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
+                for (FishingGear fishingGear : specifiedFishingGears) {
+                    FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+                    List<CodeType> roleCodes = fishingGear.getRoleCodes();
+                    if (CollectionUtils.isNotEmpty(roleCodes)){
+                        for (CodeType roleCode : roleCodes) {
+                            fishingGearEntity.addFishingGearRole(FishingGearMapper.INSTANCE.mapToFishingGearRoleEntity(roleCode));
+                        }
+                    }
+                    List<GearCharacteristic> applicableGearCharacteristics = fishingGear.getApplicableGearCharacteristics();
+                    if (CollectionUtils.isNotEmpty(applicableGearCharacteristics)){
+                        for (GearCharacteristic applicableGearCharacteristic : applicableGearCharacteristics) {
+                            fishingGearEntity.addGearCharacteristic(GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(applicableGearCharacteristic));
+                        }
+                    }
+                    fishingGearEntitySet.add(fishingGearEntity);
+                }
+                fishingActivityEntity.setFishingGears(fishingGearEntitySet);
+
+            }
+
+            List<FLAPDocument> specifiedFLAPDocuments = fishingActivity.getSpecifiedFLAPDocuments();
+            if (CollectionUtils.isNotEmpty(specifiedFLAPDocuments)){
+                for (FLAPDocument specifiedFLAPDocument : specifiedFLAPDocuments) {
+                    FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
+                    fishingActivityEntity.addFlapDocuments(entity);
+                }
+            }
+
             fishingActivityEntities.add(fishingActivityEntity);
-            if (fishingActivityEntity.getAllRelatedFishingActivities() != null && !fishingActivityEntity.getAllRelatedFishingActivities().isEmpty()) {
+            if (CollectionUtils.isNotEmpty(fishingActivity.getRelatedFishingActivities())) {
                 fishingActivityEntities.addAll(fishingActivityEntity.getAllRelatedFishingActivities());
             }
+
         }
         return fishingActivityEntities;
     }
@@ -108,13 +146,11 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             return null;
         }
         FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
-
         if (fluxReportDocument.getOwnerFLUXParty() != null){
             FluxPartyEntity fluxPartyEntity = FluxPartyMapper.INSTANCE.mapToFluxPartyEntity(fluxReportDocument.getOwnerFLUXParty());
             fluxPartyEntity.setFluxReportDocument(fluxReportDocumentEntity);
             fluxReportDocumentEntity.setFluxParty(fluxPartyEntity);
         }
-
         Set<FluxReportIdentifierEntity> reportIdentifierEntitySet = new HashSet<>();
         if (CollectionUtils.isNotEmpty(fluxReportDocument.getIDS())){
             for (IDType idType : fluxReportDocument.getIDS()){

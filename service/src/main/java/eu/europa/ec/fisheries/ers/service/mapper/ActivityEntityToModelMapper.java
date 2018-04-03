@@ -150,9 +150,14 @@ public class ActivityEntityToModelMapper {
 
                 }
 
-                source.getFishingGears(); // TODO MAP
+                target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
+                target.setSpecifiedFACatches(FaCatchMapper.INSTANCE.mapToFaCatchList(source.getFaCatchs()));
+
+                mapRelatedVesselTransportMeans(target, source.getVesselTransportMeans());
+
+                target.setSpecifiedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
+
                 source.getFlagState(); // TODO MAP
-                //target.getSpecifiedFACatches() // TODO map
 
                 fishingActivityList.add(target);
             }
@@ -430,6 +435,24 @@ public class ActivityEntityToModelMapper {
             codeType.setValue(source.getTypeCode());
             codeType.setListID(source.getTypeCodeListid());
             target.setTypeCode(codeType);
+        }
+    }
+
+    private void mapRelatedVesselTransportMeans(FishingActivity target, Set<VesselTransportMeansEntity> entities) {
+        if (CollectionUtils.isNotEmpty(entities) && target != null){
+            List<VesselTransportMeans> vesselTransportMeansList = new ArrayList<>();
+            for (VesselTransportMeansEntity source : entities) {
+                VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
+                setRoleCode(vesselTransportMeans, source.getRoleCodeListId(), source.getRoleCode());
+                mapNames(vesselTransportMeans, source.getName());
+                mapRegistrationVesselCountry(vesselTransportMeans, source.getCountry(), source.getCountrySchemeId());
+                mapRegistrationEvent(vesselTransportMeans, source.getRegistrationEvent());
+                mapIDs(vesselTransportMeans, source.getVesselIdentifiers());
+                mapSpecifiedContactParties(vesselTransportMeans, source.getContactParty());
+                vesselTransportMeans.setGrantedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
+                vesselTransportMeansList.add(vesselTransportMeans);
+            }
+            target.setRelatedVesselTransportMeans(vesselTransportMeansList);
         }
     }
 

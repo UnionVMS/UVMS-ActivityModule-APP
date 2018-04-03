@@ -35,7 +35,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
@@ -69,19 +68,6 @@ public class ActivityDataUtil {
         fluxReportDocumentEntity.setPurposeCodeListId(purposeCodeListId);
         fluxReportDocumentEntity.setReferenceId(referenceID);
         return fluxReportDocumentEntity;
-    }
-
-    public static RegistrationLocationEntity getRegistrationLocationEntity(String description, String regionCode, String regionCodeListId, String name, String typeCode, String typeCodeListId, String locationCountryId, String locationCountrySchemeId) {
-        RegistrationLocationEntity registrationLocationEntity = new RegistrationLocationEntity();
-        registrationLocationEntity.setDescription(description);
-        registrationLocationEntity.setRegionCode(regionCode);
-        registrationLocationEntity.setRegionCodeListId(regionCodeListId);
-        registrationLocationEntity.setName(name);
-        registrationLocationEntity.setTypeCode(typeCode);
-        registrationLocationEntity.setTypeCodeListId(typeCodeListId);
-        registrationLocationEntity.setLocationCountryId(locationCountryId);
-        registrationLocationEntity.setLocationCountrySchemeId(locationCountrySchemeId);
-        return registrationLocationEntity;
     }
 
     public static VesselTransportMeansEntity getVesselTransportMeansEntity(String roleCode, String roleCodeListId, String name, RegistrationEventEntity registrationEventEntity) {
@@ -123,7 +109,7 @@ public class ActivityDataUtil {
         SizeDistributionClassCodeEntity entity = new SizeDistributionClassCodeEntity();
         entity.setClassCode(classCode);
         entity.setClassCodeListId(classCodeListId);
-        sizeDistributionEntity.setSizeDistributionClassCode(new HashSet<>(Arrays.asList(entity)));
+        sizeDistributionEntity.setSizeDistributionClassCodeEntities(new HashSet<>(Arrays.asList(entity)));
 
         sizeDistributionEntity.setCategoryCode(categoryCode);
         sizeDistributionEntity.setCategoryCodeListId(categoryCodeListId);
