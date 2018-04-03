@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Sample UN/CEFACT file. DF: 	urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2-->
+<!--All data is fictuous. Any similarity with reality is based on pure coincidence.-->
+<rsm:FLUXFAReportMessage xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd" xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<rsm:FLUXReportDocument>
+		<ram:ID schemeID="UUID">B342A32E-2030-49BC-B360-2964DAC88552</ram:ID>
+		<ram:CreationDateTime>
+			<udt:DateTime>2017-06-14T09:18:00Z</udt:DateTime>
+		</ram:CreationDateTime>
+		<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+		<ram:OwnerFLUXParty>
+			<ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
+		</ram:OwnerFLUXParty>
+	</rsm:FLUXReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">NOTIFICATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2017-06-14T09:15:00Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">E4A7BF62-874E-4769-82DD-EB9BB64AA8A3</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2017-06-14T09:17:00Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">ARRIVAL</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2017-06-14T15:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:ReasonCode listID="FA_REASON_ARRIVAL">LAN</ram:ReasonCode>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HAD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">100</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.9.b.2</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">14D7</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HKE</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">11.5</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.9.b.2</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">14D7</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HKE</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">240</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">15D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">250</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">15D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">POK</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">15</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">700</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">50</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">BMS</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HKE</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">99.5</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.c</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17E1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HAD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">100</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.9.b.2</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">14D7</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HKE</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">11.5</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.9.b.2</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">14D7</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HKE</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">240</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">15D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">250</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">15D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">POK</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">15</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">700</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">50</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">BMS</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+					<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17D5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">HKE</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">99.5</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">UNLOADED</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">27.8.c</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="ICES_STAT_RECTANGLE">17E1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>	
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
+				<ram:ID schemeID="LOCATION">ESFNE</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">CYP-TRP-20170608000000000010</ram:ID>
+				<ram:SpecifiedDelimitedPeriod>
+					<ram:StartDateTime>
+						<udt:DateTime>2017-06-08T08:50:00Z</udt:DateTime>
+					</ram:StartDateTime>
+				</ram:SpecifiedDelimitedPeriod>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">CYP123456789</ram:ID>
+			<ram:ID schemeID="IRCS">IRCS6</ram:ID>
+			<ram:ID schemeID="EXT_MARK">XR006</ram:ID>
+			<ram:Name>Golf</ram:Name>			
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">CYP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>Street Q</ram:StreetName>
+					<ram:CityName>City R</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">CYP</ram:CountryID>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:GivenName>Jamie</ram:GivenName>
+					<ram:FamilyName>G</ram:FamilyName>
+					<ram:Alias>Master G</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+</rsm:FLUXFAReportMessage>
