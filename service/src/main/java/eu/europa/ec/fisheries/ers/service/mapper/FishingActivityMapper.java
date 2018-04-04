@@ -55,6 +55,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -79,7 +80,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 
-@Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class,
+@Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class, XMLDateUtils.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
         FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class, FlapDocumentMapper.class
 })
@@ -106,7 +107,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingDurationMeasure", source = "fishingActivity.fishingDurationMeasure.value"),
             @Mapping(target = "fishingDurationMeasureCode", source = "fishingActivity.fishingDurationMeasure.unitCode"),
             @Mapping(target = "fishingDurationMeasureUnitCodeListVersionID", source = "fishingActivity.fishingDurationMeasure.unitCodeListVersionID"),
-            @Mapping(target = "calculatedFishingDuration", expression = "java(getCalculatedMeasure(fishingActivity.getFishingDurationMeasure()))"),
             @Mapping(target = "faReportDocument", expression = "java(faReportDocumentEntity)"),// FIXME
             @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
@@ -121,7 +121,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity, fishingActivityEntity))"),
             @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
             @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))"),
-            @Mapping(target = "calculatedStartTime", expression = "java(convertToDate(getCalculatedStartTime(fishingActivity)))"),
+            @Mapping(target = "calculatedStartTime", expression = "java(getCalculatedStartTime(fishingActivity))"), // FIXME ugly
             @Mapping(target = "flapDocuments", ignore = true)
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);// FIXME
@@ -287,6 +287,43 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
         return entity.getCalculatedStartTime();
+    }
+
+    protected Date getCalculatedStartTime(FishingActivity fishingActivity){
+        if (fishingActivity == null){
+            return null;
+        }
+        DateTimeType dateTimeType;
+        DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
+        if (occurrenceDateTime != null && occurrenceDateTime.getDateTime() != null){
+            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime());
+        }
+        if (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())){
+            List<DelimitedPeriod> delimitedPeriodEntities=  fishingActivity.getSpecifiedDelimitedPeriods();
+            dateTimeType = delimitedPeriodEntities.iterator().next().getStartDateTime();
+            if (dateTimeType != null && dateTimeType.getDateTime() != null){
+                return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime());
+            }
+        }
+        // We reached till this point of code means FishingActivity has neither occurrence date or startDate for DelimitedPeriod.
+        // In such cases, we need to check if its subactivities have date mentioned.
+        // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
+        List<FishingActivity> relatedFishingActivities=fishingActivity.getRelatedFishingActivities();
+        if (CollectionUtils.isNotEmpty(relatedFishingActivities)){
+            for (FishingActivity subFishingActivity: relatedFishingActivities){
+                if (subFishingActivity.getOccurrenceDateTime() != null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
+                        fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime() != null)){
+                    dateTimeType = subFishingActivity.getOccurrenceDateTime();
+                    if (dateTimeType == null){
+                        dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
+                    }
+                    if (dateTimeType != null && dateTimeType.getDateTime() != null){
+                        return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime());
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     protected Date getEndDate(FishingActivityEntity entity) {
@@ -743,45 +780,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
 
         return vesselList.iterator().next().getCountry();
-    }
-
-
-    protected DateTimeType getCalculatedStartTime(FishingActivity fishingActivity){
-        if(fishingActivity == null)
-            return null;
-
-        DateTimeType dateTimeType = null;
-        if(fishingActivity.getOccurrenceDateTime()!=null)
-            return fishingActivity.getOccurrenceDateTime();
-
-        if(CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())){
-            List<DelimitedPeriod> delimitedPeriodEntities=  fishingActivity.getSpecifiedDelimitedPeriods();
-            dateTimeType = delimitedPeriodEntities.iterator().next().getStartDateTime();
-            if(dateTimeType!=null){
-                return dateTimeType;
-            }
-
-        }
-
-        // We reached till this point of code means FishingActivity has neither occurrence date or startDate for DelimitedPeriod.
-        // In such cases, we need to check if its subactivities have date mentioned.
-        // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
-        List<FishingActivity> relatedFishingActivities=fishingActivity.getRelatedFishingActivities();
-        if(CollectionUtils.isNotEmpty(relatedFishingActivities)){
-            for(FishingActivity subFishingActivity: relatedFishingActivities){
-                if(subFishingActivity.getOccurrenceDateTime()!=null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
-                        fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime()!=null)){
-                    dateTimeType = subFishingActivity.getOccurrenceDateTime();
-                    if(dateTimeType ==null){
-                        dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
-                    }
-                    return dateTimeType;
-                }
-            }
-        }
-
-
-        return null;
     }
 
     private boolean isItDupicateOrNull(String valueTocheck, List<String> listTobeCheckedAgainst){

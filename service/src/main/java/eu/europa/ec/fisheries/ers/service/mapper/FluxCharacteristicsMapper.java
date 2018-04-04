@@ -11,11 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
+import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,7 +21,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = BaseMapper.class, uses = CustomBigDecimal.class)
 public interface FluxCharacteristicsMapper {
 
     FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);
@@ -33,7 +31,6 @@ public interface FluxCharacteristicsMapper {
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "valueMeasure", source = "valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", source = "valueMeasure.unitCode"),
-            @Mapping(target = "calculatedValueMeasure", expression = "java(BaseMapper.getCalculatedMeasure(fluxCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", source = "valueDateTime.dateTime"),
             @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value"),
             @Mapping(target = "valueCode", source = "valueCode.value"),
@@ -50,8 +47,6 @@ public interface FluxCharacteristicsMapper {
 
     @InheritInverseConfiguration
     FLUXCharacteristic mapToFLUXCharacteristic(FluxCharacteristicEntity fluxCharacteristicEntity);
-
-    List<FLUXCharacteristic> mapToFLUXCharacteristicList(Set<FluxCharacteristicEntity> fluxCharacteristicEntity);
 
     FluxCharacteristicsDto mapToFluxCharacteristicsDto(FluxCharacteristicEntity fluxCharacteristicEntity);
 

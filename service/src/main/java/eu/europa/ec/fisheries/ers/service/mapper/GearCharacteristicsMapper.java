@@ -55,7 +55,6 @@ public abstract class GearCharacteristicsMapper {
             @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
             @Mapping(target = "valueMeasure", source = "valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", source = "valueMeasure.unitCode"),
-            @Mapping(target = "calculatedValueMeasure", expression = "java(BaseMapper.getCalculatedMeasure(gearCharacteristic.getValueMeasure()))"),
             @Mapping(target = "valueDateTime", source = "valueDateTime.dateTime"),
             @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value"),
             @Mapping(target = "valueCode", source = "valueCode.value"),

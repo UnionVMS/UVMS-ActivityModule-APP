@@ -246,7 +246,15 @@ public class FishingActivityEntity implements Serializable {
                 }
             }
         }
-    }
+		if (fishingDurationMeasure != null && fishingDurationMeasureCode != null) {
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(fishingDurationMeasureCode);
+			if (unitCodeEnum != null) {
+				BigDecimal measuredValue = new BigDecimal(fishingDurationMeasure);
+				BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedFishingDuration = result.doubleValue();
+			}
+		}
+	}
 
 	@PostLoad
 	private void onLoad() {

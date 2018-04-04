@@ -167,12 +167,20 @@ public class FaCatchEntity implements Serializable {
 
 	@PrePersist
 	public void prePersist(){
-		if (unitQuantity != null || unitQuantityCode != null){
+		if (unitQuantity != null && unitQuantityCode != null){
 			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitQuantityCode);
 			if (unitCodeEnum != null) {
 				BigDecimal quantity = new BigDecimal(unitQuantity);
 				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
 				calculatedUnitQuantity =  result.doubleValue();
+			}
+		}
+		if (weightMeasure != null && weightMeasureUnitCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(weightMeasureUnitCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(weightMeasure);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedWeightMeasure =  result.doubleValue();
 			}
 		}
 	}

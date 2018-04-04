@@ -25,7 +25,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
-@Mapper(imports = BaseMapper.class, uses = {XMLDateUtils.class, CustomBigDecimal.class})
+@Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class})
 public interface DelimitedPeriodMapper {
 
     DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
@@ -33,8 +33,7 @@ public interface DelimitedPeriodMapper {
     @Mappings({
             @Mapping(target = "startDate", source = "startDateTime.dateTime"),
             @Mapping(target = "endDate", source = "endDateTime.dateTime"),
-            @Mapping(target = "durationMeasure", source = "durationMeasure"),
-            @Mapping(target = "calculatedDuration", expression = "java(BaseMapper.getCalculatedMeasure(delimitedPeriod.getDurationMeasure()))"),
+            @Mapping(target = "durationMeasure", source = "durationMeasure")
     })
     DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
 

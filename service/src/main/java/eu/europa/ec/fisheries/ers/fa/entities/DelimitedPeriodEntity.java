@@ -20,13 +20,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.Data;
 
 @Entity
@@ -66,4 +69,15 @@ public class DelimitedPeriodEntity implements Serializable {
         durationMeasure = new MeasureType();
     }
 
+    @PrePersist
+    public void prePersist(){
+        if (durationMeasure != null && durationMeasure.getUnitCode() != null && durationMeasure.getValue() != null) {
+            UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(durationMeasure.getUnitCode());
+            if (unitCodeEnum != null) {
+                BigDecimal measuredValue = new BigDecimal(durationMeasure.getValue());
+                BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+                calculatedDuration = result.doubleValue();
+            }
+        }
+    }
 }

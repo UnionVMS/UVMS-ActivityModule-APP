@@ -124,6 +124,14 @@ public class FluxCharacteristicEntity implements Serializable {
 				calculatedValueQuantity =  result.doubleValue();
 			}
 		}
+		if (valueMeasure != null || valueMeasureUnitCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueMeasureUnitCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(valueMeasure);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedValueMeasure =  result.doubleValue();
+			}
+		}
 	}
 
 }

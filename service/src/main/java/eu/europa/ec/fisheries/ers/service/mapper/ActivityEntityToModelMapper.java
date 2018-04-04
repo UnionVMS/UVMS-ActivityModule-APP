@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -33,6 +34,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,6 +43,7 @@ import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
@@ -56,7 +59,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IndicatorType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
@@ -167,7 +169,33 @@ public class ActivityEntityToModelMapper {
                 }
 
                 target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
-                target.setSpecifiedFACatches(FaCatchMapper.INSTANCE.mapToFaCatchList(source.getFaCatchs()));
+
+                Set<FaCatchEntity> faCatchs = source.getFaCatchs();
+
+                if (CollectionUtils.isNotEmpty(faCatchs)) {
+                    List<FACatch> faCatchList = new ArrayList<>();
+                    for (FaCatchEntity faCatchEntity : faCatchs) {
+                        FACatch faCatch = FaCatchMapper.INSTANCE.mapToFaCatch(faCatchEntity);
+                        Set<FluxLocationEntity> fluxLocations = faCatchEntity.getFluxLocations();
+                        List<FLUXLocation> specified = new ArrayList<>();
+                        List<FLUXLocation> destination = new ArrayList<>();
+                        if (CollectionUtils.isNotEmpty(fluxLocations)) {
+                            for (FluxLocationEntity fluxLocation : fluxLocations) {
+                                if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType().equals(fluxLocation.getFluxLocationType())) {
+                                    specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+                                }
+                                if (FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType().equals(fluxLocation.getFluxLocationType())) {
+                                    destination.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+                                }
+                            }
+                            faCatch.setSpecifiedFLUXLocations(specified);
+                            faCatch.setDestinationFLUXLocations(destination);
+                        }
+                        faCatch.setRelatedFishingTrips(FishingTripMapper.INSTANCE.mapToFishingTripList(faCatchEntity.getFishingTrips()));
+                        faCatchList.add(faCatch);
+                    }
+                    target.setSpecifiedFACatches(faCatchList);
+                }
 
                 mapRelatedVesselTransportMeans(target, source.getVesselTransportMeans());
 
@@ -179,104 +207,6 @@ public class ActivityEntityToModelMapper {
             }
 
             faReportDocument.setSpecifiedFishingActivities(fishingActivityList);
-        }
-    }
-
-    private void mapValues(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
-            String valueText = source.getValueText();
-            if (StringUtils.isNotEmpty(valueText)) {
-                TextType textType = new TextType();
-                textType.setValue(valueText);
-                target.setValues(Collections.singletonList(textType));
-            }
-        }
-    }
-
-    private void mapDescriptions(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
-            String description = source.getDescription();
-            String valueLanguageId = source.getValueLanguageId();
-            if (StringUtils.isNotEmpty(description) || StringUtils.isNotEmpty(valueLanguageId)){
-                TextType textType = new TextType();
-                if (StringUtils.isNotEmpty(description)){
-                    textType.setValue(description);
-                }
-                if (StringUtils.isNotEmpty(valueLanguageId)){
-                    textType.setLanguageID(source.getValueLanguageId());
-                }
-                target.setDescriptions(Collections.singletonList(textType));
-            }
-        }
-    }
-
-    private void mapValueMeasure(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
-            Double valueMeasure = source.getValueMeasure();
-            String valueMeasureUnitCode = source.getValueMeasureUnitCode();
-
-            if (valueMeasure != null || StringUtils.isNotEmpty(valueMeasureUnitCode)){
-                MeasureType measureType = new MeasureType();
-                if (valueMeasure != null){
-                    measureType.setValue(new BigDecimal(valueMeasure));
-                }
-                if (StringUtils.isNotEmpty(valueMeasureUnitCode)){
-                    measureType.setUnitCode(valueMeasureUnitCode);
-                }
-                target.setValueMeasure(measureType);
-            }
-
-        }
-    }
-
-    private void mapValueQuantity(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            Double valueQuantity = source.getValueQuantity();
-            String valueQuantityCode = source.getValueQuantityCode();
-            if (StringUtils.isNotEmpty(valueQuantityCode) ||  valueQuantity != null){
-                QuantityType quantityType = new QuantityType();
-                if (StringUtils.isNotEmpty(valueQuantityCode)){
-                    quantityType.setUnitCode(valueQuantityCode);
-                }
-                if (valueQuantity != null){
-                    quantityType.setValue(new BigDecimal(valueQuantity));
-                }
-                target.setValueQuantity(quantityType);
-            }
-        }
-    }
-
-    private void mapValueIndicator(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            String valueIndicator = source.getValueIndicator();
-            if (StringUtils.isNotEmpty(valueIndicator)){
-                IndicatorType type = new IndicatorType();
-                IndicatorType.IndicatorString indicatorString = new IndicatorType.IndicatorString();
-                indicatorString.setValue(valueIndicator);
-                type.setIndicatorString(indicatorString);
-                target.setValueIndicator(type);
-            }
-        }
-    }
-
-    private void mapValueDateTime(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            Date valueDateTime = source.getValueDateTime();
-            if (valueDateTime != null){
-                DateTimeType dateTimeType = new DateTimeType();
-                dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(valueDateTime));
-                target.setValueDateTime(dateTimeType);
-            }
-        }
-    }
-
-    private void mapValueCode(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            if (source.getValueCode() != null){
-                CodeType codeType = new CodeType();
-                codeType.setValue(source.getValueCode());
-                target.setTypeCode(codeType);
-            }
         }
     }
 
@@ -413,16 +343,6 @@ public class ActivityEntityToModelMapper {
             DateTimeType dateTimeType = new DateTimeType();
             dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
             target.setOccurrenceDateTime(dateTimeType);
-        }
-    }
-
-    private void mapPurposeCode(FLUXCharacteristic target, FluxCharacteristicEntity source) {
-        if (ObjectUtils.allNotNull(target, source)) {
-            if (source.getTypeCode() != null){
-                CodeType codeType = new CodeType();
-                codeType.setValue(source.getTypeCode());
-                target.setTypeCode(codeType);
-            }
         }
     }
 
