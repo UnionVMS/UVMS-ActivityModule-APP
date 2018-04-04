@@ -84,13 +84,13 @@
 					<ram:Value>Gear1</ram:Value>
 				</ram:ApplicableGearCharacteristic>
                 <ram:ApplicableGearCharacteristic>
+                    <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">MT</ram:TypeCode>
+                    <ram:Value>OTB-2</ram:Value>
+                </ram:ApplicableGearCharacteristic>
+                <ram:ApplicableGearCharacteristic>
                     <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
                     <ram:ValueMeasure unitCode="MMT">120</ram:ValueMeasure>
                 </ram:ApplicableGearCharacteristic>
-                <ram:ApplicableGearCharacteristic>
-                   <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">MT</ram:TypeCode>
-					<ram:Value>OTB-2</ram:Value>
-				</ram:ApplicableGearCharacteristic>
 			</ram:SpecifiedFishingGear>
 			<ram:SpecifiedFishingTrip>
 				<ram:ID schemeID="EU_TRIP_ID">CYP-TRP-20170608000000000010</ram:ID>
