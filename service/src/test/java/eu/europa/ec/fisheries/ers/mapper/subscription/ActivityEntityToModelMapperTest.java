@@ -86,7 +86,6 @@ public class ActivityEntityToModelMapperTest {
     private Object[] resources() {
 
         return $(
-/*
                 $("fa_flux_message4.xml"),
                 $("fa_flux_message5.xml"),
                 $("fa_flux_message6.xml"),
@@ -105,9 +104,8 @@ public class ActivityEntityToModelMapperTest {
                 $("UNFA_IRCS4_04_BFT-TRANSFER_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
                 $("UNFA_IRCS6_08A_TRA-UNL_CYP-TRP-20170608000000000010.xml"),
                 $("UNFA_IRCS6_01_DEPARTURE_COB_CYP-TRP-20170608000000000010.xml"),
-                $("UNFA_IRCS6_02_FOP1_CYP-TRP-20170608000000000010.xml"),*/
+                $("UNFA_IRCS6_02_FOP1_CYP-TRP-20170608000000000010.xml"),
                 $("UNFA_IRCS6_03_ENTRY_CYP-TRP-20170608000000000010.xml")
-
         );
     }
 

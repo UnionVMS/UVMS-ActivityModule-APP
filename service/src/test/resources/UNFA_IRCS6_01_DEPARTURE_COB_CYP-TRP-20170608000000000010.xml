@@ -84,28 +84,12 @@
 					<ram:Value>Gear1</ram:Value>
 				</ram:ApplicableGearCharacteristic>
                 <ram:ApplicableGearCharacteristic>
-                  <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">MT</ram:TypeCode>
+                    <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
+                    <ram:ValueMeasure unitCode="MMT">120</ram:ValueMeasure>
+                </ram:ApplicableGearCharacteristic>
+                <ram:ApplicableGearCharacteristic>
+                   <ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">MT</ram:TypeCode>
 					<ram:Value>OTB-2</ram:Value>
-				</ram:ApplicableGearCharacteristic>
-				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
-					<ram:ValueMeasure unitCode="MMT">120</ram:ValueMeasure>
-				</ram:ApplicableGearCharacteristic>
-			</ram:SpecifiedFishingGear>
-			<ram:SpecifiedFishingGear>
-				<ram:TypeCode listID="GEAR_TYPE">PTB</ram:TypeCode>
-				<ram:RoleCode listID="FA_GEAR_ROLE">ONBOARD</ram:RoleCode>
-				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
-					<ram:ValueMeasure unitCode="MMT">80</ram:ValueMeasure>
-				</ram:ApplicableGearCharacteristic>
-				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">GM</ram:TypeCode>
-					<ram:ValueMeasure unitCode="MTR">200</ram:ValueMeasure>
-				</ram:ApplicableGearCharacteristic>
-				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">GD</ram:TypeCode>
-					<ram:Value>Gear2</ram:Value>
 				</ram:ApplicableGearCharacteristic>
 			</ram:SpecifiedFishingGear>
 			<ram:SpecifiedFishingTrip>
