@@ -59,8 +59,8 @@
 			<ram:RelatedFLUXLocation>
 				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
 				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-					<ram:LongitudeMeasure>6.830</ram:LongitudeMeasure>
-					<ram:LatitudeMeasure>39.650</ram:LatitudeMeasure>
+					<ram:LongitudeMeasure>6.83</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>39.65</ram:LatitudeMeasure>
 				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
 			</ram:RelatedFLUXLocation>
 			<ram:SpecifiedFLUXCharacteristic>

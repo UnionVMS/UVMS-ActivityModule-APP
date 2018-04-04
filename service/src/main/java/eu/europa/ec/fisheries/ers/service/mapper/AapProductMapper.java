@@ -26,7 +26,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
-@Mapper(imports = BaseMapper.class, uses = CustomBigDecimal.class)
+@Mapper(uses = CustomBigDecimal.class)
 public abstract class AapProductMapper {
 
     public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
@@ -42,7 +42,6 @@ public abstract class AapProductMapper {
             @Mapping(target = "packagingTypeCodeListId", source = "packagingTypeCode.listID"),
             @Mapping(target = "packagingUnitAvarageWeight", source = "packagingUnitAverageWeightMeasure.value"),
             @Mapping(target = "packagingWeightUnitCode", source = "packagingUnitAverageWeightMeasure.unitCode"),
-            @Mapping(target = "calculatedPackagingWeight", expression = "java(BaseMapper.getCalculatedMeasure(aapProduct.getPackagingUnitAverageWeightMeasure()))"),
             @Mapping(target = "packagingUnitCount", source = "packagingUnitQuantity.value"),
             @Mapping(target = "packagingUnitCountCode", source = "packagingUnitQuantity.unitCode"),
             @Mapping(target = "speciesCode", source = "speciesCode.value"),
@@ -51,7 +50,6 @@ public abstract class AapProductMapper {
             @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
             @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
-            @Mapping(target = "calculatedWeightMeasure", expression = "java(BaseMapper.getCalculatedMeasure(aapProduct.getWeightMeasure()))"),
             @Mapping(target = "weighingMeansCode", source = "weighingMeansCode.value"),
             @Mapping(target = "weighingMeansCodeListId", source = "weighingMeansCode.listID"),
             @Mapping(target = "usageCode", source = "usageCode.value"),

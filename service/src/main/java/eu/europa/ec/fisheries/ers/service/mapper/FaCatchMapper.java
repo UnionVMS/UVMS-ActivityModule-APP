@@ -47,7 +47,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class,FluxLocationMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class})
+@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class})
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
@@ -61,7 +61,6 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
             @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
-            @Mapping(target = "calculatedWeightMeasure", expression = "java(getCalculatedMeasure(faCatch.getWeightMeasure()))"),
             @Mapping(target = "usageCode", source = "faCatch.usageCode.value"),
             @Mapping(target = "usageCodeListId", source = "faCatch.usageCode.listID"),
             @Mapping(target = "weighingMeansCode", source = "faCatch.weighingMeansCode.value"),
@@ -80,13 +79,9 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "appliedAAPProcesses", source = "aapProcesses"),
             @Mapping(target = "specifiedSizeDistribution", source = "sizeDistribution"),
-            @Mapping(target = "specifiedSizeDistribution.classCodes", source = "sizeDistribution.sizeDistributionClassCodeEntities"),
-            @Mapping(target = "specifiedFLUXLocations", source = "fluxLocations"),
-            //@Mapping(target = "destinationFLUXLocations", source = "???") TODO map to destinationFLUXLocations
+            @Mapping(target = "specifiedSizeDistribution.classCodes", source = "sizeDistribution.sizeDistributionClassCodeEntities")
     })
     public abstract FACatch mapToFaCatch(FaCatchEntity faCatch);
-
-    public abstract List<FACatch> mapToFaCatchList(Set<FaCatchEntity> faCatch);
 
     public abstract un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType map(java.lang.String value);
 

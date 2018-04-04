@@ -53,14 +53,12 @@
                     <ram:TypeCode listID="FISH_PRESENTATION">WHL</ram:TypeCode>
                     <ram:TypeCode listID="FISH_PRESERVATION">ALI</ram:TypeCode>
                 </ram:AppliedAAPProcess>
-                <!---
                 <ram:DestinationFLUXLocation>
                     <ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
                     <ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
                     <ram:ID schemeID="FARM">ATEU1ESP00001</ram:ID>
                     <ram:Name>TUNA GRASO</ram:Name>
                 </ram:DestinationFLUXLocation>
-                -->
             </ram:SpecifiedFACatch>
             <ram:RelatedFLUXLocation>
                 <ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>

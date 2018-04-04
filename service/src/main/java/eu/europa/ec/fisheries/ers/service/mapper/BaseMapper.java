@@ -44,8 +44,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
@@ -55,7 +53,6 @@ import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -68,9 +65,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 @Slf4j
@@ -154,6 +149,7 @@ public class BaseMapper {
             Double calcDur = period.getCalculatedDuration();
             Date start = period.getStartDate();
             Date end = period.getEndDate();
+
             if (startDate == null || start.before(startDate)) {
                 startDate = start;
             }
@@ -173,19 +169,6 @@ public class BaseMapper {
             build.setDuration(null);
         }
         return build;
-    }
-
-    public static Set<SizeDistributionClassCodeEntity> mapToSizeDistributionClassCodes(List<CodeType> codeTypes, SizeDistributionEntity sizeDistributionEntity) {
-        if (codeTypes == null || codeTypes.isEmpty()) {
-            Collections.emptySet();
-        }
-        Set<SizeDistributionClassCodeEntity> classCodes = new HashSet<>();
-        for (CodeType codeType : codeTypes) {
-            SizeDistributionClassCodeEntity entity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(codeType);
-            entity.setSizeDistribution(sizeDistributionEntity);
-            classCodes.add(entity);
-        }
-        return classCodes;
     }
 
     public static RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
@@ -231,20 +214,6 @@ public class BaseMapper {
         return criteriaList;
     }
 
-    public static Double getCalculatedMeasure(MeasureType measureType) {
-        if (measureType == null) {
-            return null;
-        }
-        UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(measureType.getUnitCode());
-        if (unitCodeEnum != null) {
-            BigDecimal measuredValue = measureType.getValue();
-            BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
-            return result.doubleValue();
-        } else {
-            return null;
-        }
-    }
-
     public static String getLanguageIdFromList(List<TextType> textTypes) {
         if (CollectionUtils.isEmpty(textTypes)) {
             return null;
@@ -258,7 +227,6 @@ public class BaseMapper {
         }
         return textTypes.get(0).getValue();
     }
-
 
     public static boolean getCorrection(FishingActivityEntity entity) {
         if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() == null) {
@@ -363,14 +331,6 @@ public class BaseMapper {
             }
         }
         return positionDto;
-    }
-
-    protected Date convertToDate(DateTimeType dateTime) {
-        Date value = null;
-        if (dateTime != null){
-            value = XMLDateUtils.xmlGregorianCalendarToDate(dateTime.getDateTime());
-        }
-        return value;
     }
 
     /**

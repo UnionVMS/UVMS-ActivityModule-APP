@@ -172,7 +172,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             return;
         for(FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities){
             try {
-                List<FishingActivityEntity> fishingActivityEntityList=fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
+                List<FishingActivityEntity> fishingActivityEntityList = fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
                 if(CollectionUtils.isNotEmpty(fishingActivityEntityList)){
                     //Calculate trip start date
                     FishingActivityEntity firstFishingActivity= fishingActivityEntityList.get(0);

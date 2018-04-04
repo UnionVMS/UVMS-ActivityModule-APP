@@ -86,27 +86,27 @@ public class ActivityEntityToModelMapperTest {
     private Object[] resources() {
 
         return $(
-               // $("fa_flux_message3.xml"),
-               // $("fa_flux_message4.xml"),
-               // $("fa_flux_message5.xml"),
-               // $("fa_flux_message6.xml"),
-               // $("fa_flux_message7.xml"),
-               // $("fa_flux_message8.xml"),
-               // $("UNFA_IRCS6_14_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
-               // $("UNFA_IRCS6_15_CANCEL_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
-               // $("UNFA_IRCS6_19_LANDING_CYP-TRP-20170608000000000010.xml"),
-               // $("UNFA_IRCS6_18_ARRIVAL_DCL_CYP-TRP-20170608000000000010.xml"),
-               // $("UNFA_IRCS4_08_ARRIVAL_DCL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
-               // $("UNFA_IRCS4_07_ARRIVAL_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml")//,
-               // $("UNFA_IRCS4_06_BFT-TRANSFER_DECL_SVN-TRP-SVN-TRP-20170622000000000008.xml")//,
-
-               // $("UNFA_IRCS4_04_BFT-TRANSFER_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml")
-                $("UNFA_IRCS6_08A_TRA-UNL_CYP-TRP-20170608000000000010.xml")
-
-
-
-
-
+/*
+                $("fa_flux_message4.xml"),
+                $("fa_flux_message5.xml"),
+                $("fa_flux_message6.xml"),
+                $("fa_flux_message7.xml"),
+                $("fa_flux_message8.xml"),
+                $("UNFA_IRCS6_14_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_15_CANCEL_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_19_LANDING_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_18_ARRIVAL_DCL_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_07_DELETE_FOP4_withError_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_09_EXIT_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS5_08B_TRA-LOAD_EST-TRP-20170531000000000001.xml"),
+                $("UNFA_IRCS4_08_ARRIVAL_DCL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS4_07_ARRIVAL_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS4_06_BFT-TRANSFER_DECL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS4_04_BFT-TRANSFER_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS6_08A_TRA-UNL_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_01_DEPARTURE_COB_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_02_FOP1_CYP-TRP-20170608000000000010.xml"),*/
+                $("UNFA_IRCS6_03_ENTRY_CYP-TRP-20170608000000000010.xml")
 
         );
     }
@@ -125,7 +125,7 @@ public class ActivityEntityToModelMapperTest {
             Matcher matcher = Pattern.compile(pattern).matcher(testSource);
             testSource = matcher.replaceAll("");
         }
-        testSource = testSource.replace("<ValueIndicator>", "").replace("<ns2:IndicatorString/>", "").replace("</ValueIndicator>", "");
+        testSource = testSource.replace("<ValueIndicator>\n" + "                    <ns2:IndicatorString/>\n" + "                </ValueIndicator>", "").replace("<ValueIndicator>\n" + "                <ns2:IndicatorString/>\n" + "            </ValueIndicator>", "").replace("<TypeCode listID=\"\"></TypeCode>","");
         return testSource;
     }
 

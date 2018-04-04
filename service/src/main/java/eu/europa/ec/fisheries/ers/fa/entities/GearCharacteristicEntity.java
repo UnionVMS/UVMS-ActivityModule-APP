@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
@@ -110,6 +109,13 @@ public class GearCharacteristicEntity implements Serializable {
 				calculatedValueQuantity =  result.doubleValue();
 			}
 		}
+        if (valueMeasureUnitCode != null || valueMeasure != null){
+            UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueMeasureUnitCode);
+            if (unitCodeEnum != null) {
+                BigDecimal quantity = new BigDecimal(valueQuantity);
+                BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+                calculatedValueMeasure =  result.doubleValue();
+            }
+        }
 	}
-
 }

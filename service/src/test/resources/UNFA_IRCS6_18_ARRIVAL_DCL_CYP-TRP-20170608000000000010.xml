@@ -48,9 +48,9 @@
                 <ram:ID schemeID="LOCATION">ESLCG</ram:ID>
             </ram:RelatedFLUXLocation>
             <ram:SpecifiedFLUXCharacteristic>
-                <!--<ram:TypeCode listID="FA_CHARACTERISTIC">START_DATETIME_LANDING</ram:TypeCode>-->
+                <ram:TypeCode listID="FA_CHARACTERISTIC">START_DATETIME_LANDING</ram:TypeCode>
                 <ram:ValueDateTime>
-                    <udt:DateTime>2017-06-14T18:00:00Z</udt:DateTime>
+                    <DateTime>2017-06-14T18:00:00Z</DateTime>
                 </ram:ValueDateTime>
             </ram:SpecifiedFLUXCharacteristic>
             <ram:SpecifiedFishingGear>
