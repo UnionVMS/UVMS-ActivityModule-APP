@@ -26,7 +26,7 @@ public interface AapProcessMapper {
 
     @Mappings({
             @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value"),
-            @Mapping(target = "aapProcessCode", source = "typeCodes"),
+            @Mapping(target = "aapProcessCode", ignore = true),
             @Mapping(target = "aapProducts", ignore = true),
     })
     AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
@@ -34,6 +34,7 @@ public interface AapProcessMapper {
     @InheritInverseConfiguration
     @Mappings({
             @Mapping(source = "aapProducts", target = "resultAAPProducts"),
+            @Mapping(source = "aapProcessCode", target = "typeCodes"),
     })
     AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
 

@@ -115,7 +115,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
-    public void saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
+    public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         log.info("[INFO] Going to save [ " + faReportMessage.getFAReportDocuments().size() + " ] FaReportDocuments..");
 
         FluxFaReportMessageEntity messageEntity =
@@ -130,12 +130,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             }
         }
         log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
-        fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
+        FluxFaReportMessageEntity entity = fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
         log.debug("Save partial FluxFaReportMessage before further processing" );
         updateFaReportCorrections(faReportMessage.getFAReportDocuments());
         log.debug("Update FaReport Corrections is complete." );
         updateFishingTripStartAndEndDate(faReportDocuments);
         log.info("FluxFaReportMessage Saved successfully.");
+        return entity;
     }
 
     /**
