@@ -42,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
@@ -69,8 +68,8 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 @Slf4j
 public class ActivityEntityToModelMapper {
 
-    public static ActivityEntityToModelMapper INSTANCE = Mappers.getMapper(ActivityEntityToModelMapper.class);
-
+    public static ActivityEntityToModelMapper INSTANCE = new ActivityEntityToModelMapper();
+  
     private ActivityEntityToModelMapper(){
 
     }
