@@ -112,7 +112,7 @@ public class GearCharacteristicEntity implements Serializable {
         if (valueMeasureUnitCode != null || valueMeasure != null){
             UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueMeasureUnitCode);
             if (unitCodeEnum != null) {
-                BigDecimal quantity = new BigDecimal(valueQuantity);
+                BigDecimal quantity = new BigDecimal(valueMeasure);
                 BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
                 calculatedValueMeasure =  result.doubleValue();
             }

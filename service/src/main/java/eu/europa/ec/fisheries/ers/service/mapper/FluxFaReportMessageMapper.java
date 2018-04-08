@@ -29,16 +29,12 @@ public class FluxFaReportMessageMapper {
         if ( fluxfaReportMessage == null && faReportSourceEnum == null ) {
             return null;
         }
-
-        fluxFaReportMessage.setFluxReportDocument( getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage) );
-        fluxFaReportMessage.setFaReportDocuments( getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
-
+        fluxFaReportMessage.setFluxReportDocument(getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage) );
+        fluxFaReportMessage.setFaReportDocuments(getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
         return fluxFaReportMessage;
     }
 
-    private Set<FaReportDocumentEntity> getFaReportDocuments(List<FAReportDocument> faReportDocuments,
-                                                                FaReportSourceEnum faReportSourceEnum,
-                                                                FluxFaReportMessageEntity fluxFaReportMessage){
+    private Set<FaReportDocumentEntity> getFaReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage){
         Set<FaReportDocumentEntity> faReportDocumentEntities = new HashSet<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
             FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);

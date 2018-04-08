@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.fa.utils;
 
-/**
- * Created by padhyad on 10/5/2016.
- */
 public enum UnitCodeEnum {
 
     KGM("KGM", 1),

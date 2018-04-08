@@ -67,7 +67,6 @@ public class AapProcessEntity implements Serializable {
 	public void addProcessCode(AapProcessCodeEntity aapProcessCodeEntity){
 		aapProcessCode.add(aapProcessCodeEntity);
 		aapProcessCodeEntity.setAapProcess(this);
-
 	}
 
 }

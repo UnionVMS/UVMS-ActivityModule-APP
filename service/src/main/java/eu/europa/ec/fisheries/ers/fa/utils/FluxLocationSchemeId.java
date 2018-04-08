@@ -24,7 +24,6 @@ public enum FluxLocationSchemeId {
     RFMO("rfmo"),
     MANAGEMENT_AREA("managementArea");
 
-
     private String columnName;
 
     FluxLocationSchemeId(String columnName) {
