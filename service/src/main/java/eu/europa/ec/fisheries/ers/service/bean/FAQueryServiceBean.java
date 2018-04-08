@@ -100,8 +100,7 @@ public class FAQueryServiceBean implements FaQueryService {
             }
 
             List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(tripID, consolidated, vesselId, schemeId, startDate, endDate);
-            ActivityEntityToModelMapper faReportEntityToModelMapper = new ActivityEntityToModelMapper();
-            return faReportEntityToModelMapper.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
+            return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
 
         }
 

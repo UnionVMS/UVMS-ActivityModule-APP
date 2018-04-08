@@ -12,6 +12,8 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static java.util.Collections.singletonList;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,10 +38,11 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
@@ -63,9 +66,15 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
+@Slf4j
 public class ActivityEntityToModelMapper {
 
-    @SneakyThrows
+    public static ActivityEntityToModelMapper INSTANCE = Mappers.getMapper(ActivityEntityToModelMapper.class);
+
+    private ActivityEntityToModelMapper(){
+
+    }
+
     public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity){
         FLUXFAReportMessage target = new FLUXFAReportMessage();
 
@@ -82,7 +91,13 @@ public class ActivityEntityToModelMapper {
         fluxReportDocument.setIDS(Collections.singletonList(idType));
 
         DateTimeType dateTimeType = new DateTimeType();
-        dateTimeType.setDateTime(DateUtils.getCurrentDate());
+
+        try {
+            XMLGregorianCalendar currentDate = DateUtils.getCurrentDate();
+            dateTimeType.setDateTime(currentDate);
+        } catch (DatatypeConfigurationException e) {
+            log.warn(e.getMessage(), e);
+        }
         fluxReportDocument.setCreationDateTime(dateTimeType);
 
         TextType textType = new TextType();
