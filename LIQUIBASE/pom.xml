@@ -8,7 +8,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>1.1.5</version>
+        <version>1.1.6-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -313,9 +313,4 @@
 			</properties>
 		</profile>                       		
     </profiles>
-
-
-  <scm>
-    <tag>activity-1.1.5</tag>
-  </scm>
 </project>
