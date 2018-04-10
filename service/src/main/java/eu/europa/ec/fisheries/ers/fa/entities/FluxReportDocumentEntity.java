@@ -11,11 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -58,8 +55,8 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(name = "reference_id")
     private String referenceId;
 
-    @Embedded
-    @AttributeOverrides({
+    //@Embedded
+    /*@AttributeOverrides({
             @AttributeOverride(name="name",
                     column=@Column(name="type_code_name")),
             @AttributeOverride(name="value",
@@ -80,8 +77,8 @@ public class FluxReportDocumentEntity implements Serializable {
                     column=@Column(name="type_code_list_uri")),
             @AttributeOverride(name="list_scheme_id",
                     column=@Column(name="type_code_list_scheme_id"))
-    })
-    private CodeType typeCode;
+    })*/
+   // private CodeType typeCode;
 
     @Column(name = "reference_scheme_id")
     private String referenceSchemeId;

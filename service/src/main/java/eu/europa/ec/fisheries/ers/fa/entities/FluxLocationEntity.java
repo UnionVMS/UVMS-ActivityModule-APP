@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -123,28 +121,6 @@ public class FluxLocationEntity implements Serializable {
 	private String nameLanguageId;
 
 	@Embedded
-	@AttributeOverrides({
-			@AttributeOverride(name="name",
-					column=@Column(name="regional_fisheries_management_organization_code_name")),
-			@AttributeOverride(name="value",
-					column=@Column(name="regional_fisheries_management_organization_code_value")),
-            @AttributeOverride(name="list_id",
-                    column=@Column(name="regional_fisheries_management_organization_code_list_id")),
-            @AttributeOverride(name="list_agency_id",
-                    column=@Column(name="regional_fisheries_management_organization_code_list_agency_id")),
-            @AttributeOverride(name="list_agency_name",
-                    column=@Column(name="regional_fisheries_management_organization_code_list_agency_name")),
-            @AttributeOverride(name="list_name",
-                    column=@Column(name="regional_fisheries_management_organization_code_list_name")),
-            @AttributeOverride(name="list_version_id",
-                    column=@Column(name="regional_fisheries_management_organization_code_list_version_id")),
-            @AttributeOverride(name="language_id",
-                    column=@Column(name="regional_fisheries_management_organization_code_language_id")),
-            @AttributeOverride(name="list_uri",
-                    column=@Column(name="regional_fisheries_management_organization_code_list_uri")),
-            @AttributeOverride(name="list_scheme_id",
-                    column=@Column(name="regional_fisheries_management_organization_code_list_scheme_id"))
-	})
 	private CodeType regionalFisheriesManagementOrganizationCode;
 
 	@Column(name = "sovereign_rights_country_code")

@@ -21,18 +21,18 @@
         </addColumn>
 
         <renameColumn columnDataType="FLOAT8"
-                      newColumnName="value"
+                      newColumnName="operationquantity_value"
                       oldColumnName="operation_quantity"
                       tableName="activity_fishing_activity"/>
 
         <renameColumn columnDataType="VARCHAR(255)"
-                      newColumnName="unit_code"
+                      newColumnName="operationquantity_unit_code"
                       oldColumnName="operation_quantity_code"
                       tableName="activity_fishing_activity"/>
 
 
         <addColumn tableName="activity_fishing_activity">
-            <column name="operation_quantity_unit_code_list_id" type="VARCHAR(255)"/>
+            <column name="operationquantity_unit_code_list_id" type="VARCHAR(255)"/>
             <column name="unit_code_list_version_id" type="VARCHAR(255)"/>
             <column name="fishing_duration_measure_unit_code_list_version_id" type="varchar(255)"/>
         </addColumn>
