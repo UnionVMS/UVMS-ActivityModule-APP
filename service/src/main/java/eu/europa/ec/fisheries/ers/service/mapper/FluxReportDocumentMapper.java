@@ -21,7 +21,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(uses = {XMLDateUtils.class, FluxReportIdentifierMapper.class, FluxPartyMapper.class})
+@Mapper(uses = {XMLDateUtils.class, FluxReportIdentifierMapper.class, FluxPartyMapper.class, CodeTypeMapper.class})
 public interface FluxReportDocumentMapper {
 
     FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);

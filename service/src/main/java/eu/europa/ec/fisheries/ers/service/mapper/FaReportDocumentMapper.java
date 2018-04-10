@@ -64,7 +64,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "source", source = "faReportSourceEnum.sourceType"),
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(faReportDocument.getSpecifiedVesselTransportMeans(), faReportDocumentEntity))"),
             @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
-            @Mapping(target = "faReportIdentifiers", expression = "java(mapToFAReportIdentifierEntities(faReportDocument.getRelatedReportIDs(), faReportDocumentEntity))"),
+            @Mapping(target = "faReportIdentifiers", ignore = true),
             @Mapping(target = "fishingActivities", expression = "java(mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))")
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, FaReportSourceEnum faReportSourceEnum);
@@ -80,12 +80,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
 
     public abstract List<FaReportCorrectionDTO> mapToFaReportCorrectionDtoList(List<FaReportDocumentEntity> faReportDocumentEntities);
-
-    @Mappings({
-            @Mapping(target = "faReportIdentifierId", expression = "java(getIdType(idType))"),
-            @Mapping(target = "faReportIdentifierSchemeId", expression = "java(getIdTypeSchemaId(idType))")
-    })
-    protected abstract FaReportIdentifierEntity mapToFAReportIdentifierEntity(IDType idType);
 
     @Mappings({
             @Mapping(target = "type" , source = "typeCode"),
@@ -106,7 +100,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     })
     public abstract RelatedReportDto mapFaReportDocumentEntityToRelatedReportDto(FaReportIdentifierEntity entity);
 
-    protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
+    Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
         if (vesselTransportMeans == null) {
             return null;
         }
@@ -121,7 +115,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return Collections.emptySet();
         }
-        Set<FishingActivityEntity> fishingActivityEntities =  new HashSet<>();
+        Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
         for (FishingActivity fishingActivity : fishingActivities) {
             List<FishingGear> specifiedFishingGears = fishingActivity.getSpecifiedFishingGears();
             FishingActivityEntity target = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
@@ -152,6 +146,13 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 for (FLAPDocument specifiedFLAPDocument : specifiedFLAPDocuments) {
                     FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
                     target.addFlapDocuments(entity);
+                }
+            }
+
+            List<IDType> ids = fishingActivity.getIDS();
+            if (CollectionUtils.isNotEmpty(ids)){
+                for (IDType id : ids) {
+                    target.addFishingActivityIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToFishingActivityIdentifierEntity(id));
                 }
             }
 
@@ -200,19 +201,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         fluxReportDocumentEntity.setFluxReportIdentifiers(reportIdentifierEntitySet);
         fluxReportDocumentEntity.setFaReportDocument(faReportDocumentEntity);
         return fluxReportDocumentEntity;
-    }
-
-    protected Set<FaReportIdentifierEntity> mapToFAReportIdentifierEntities(List<IDType> idTypes, FaReportDocumentEntity faReportDocumentEntity) {
-        if (CollectionUtils.isEmpty(idTypes)) {
-            return Collections.emptySet();
-        }
-        Set<FaReportIdentifierEntity> faReportIdentifierEntities = new HashSet<>();
-        for (IDType idType : idTypes) {
-            FaReportIdentifierEntity faReportIdentifierEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportIdentifierEntity(idType);
-            faReportIdentifierEntity.setFaReportDocument(faReportDocumentEntity);
-            faReportIdentifierEntities.add(faReportIdentifierEntity);
-        }
-        return faReportIdentifierEntities;
     }
 
 }
