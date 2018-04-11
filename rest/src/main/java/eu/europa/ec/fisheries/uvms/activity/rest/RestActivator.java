@@ -53,7 +53,6 @@ public class RestActivator extends Application {
         set.add(FACatchResource.class);
         set.add(XMLResource.class);
         set.add(ReportDocumentResource.class);
-
     }
 
     @Override

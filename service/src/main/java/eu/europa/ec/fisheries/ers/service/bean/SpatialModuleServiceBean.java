@@ -54,7 +54,7 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
             String request = SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(new ArrayList<>(areaIdentifiers), new ArrayList<AreaIdentifierType>());
             String correlationId = spatialProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage message = activityConsumer.getMessage(correlationId, TextMessage.class);
-            if (message != null && !isUserFault(message)) {
+            if (message != null && isNotUserFault(message)) {
                 FilterAreasSpatialRS response = SpatialModuleResponseMapper.mapToFilterAreasSpatialRSFromResponse(message, correlationId);
                 return response.getGeometry();
             } else {
@@ -73,7 +73,7 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
             String request = SpatialModuleRequestMapper.mapToGeometryByPortCodeRequest(portCode);
             String correlationId = spatialProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage message = activityConsumer.getMessage(correlationId, TextMessage.class);
-            if (message != null && !isUserFault(message)) {
+            if (message != null && isNotUserFault(message)) {
                 GeometryByPortCodeResponse response = SpatialModuleResponseMapper.mapGeometryByPortCodeResponseToString(message, correlationId);
                 return response.getPortGeometry();
             } else {
@@ -83,6 +83,5 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
             log.error("Exception in communication with spatial while retrieving GEOMETRY", e);
             throw new ServiceException(e.getMessage(), e);
         }
-
     }
 }

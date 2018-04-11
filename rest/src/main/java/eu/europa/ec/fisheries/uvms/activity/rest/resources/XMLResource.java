@@ -41,9 +41,6 @@ public class XMLResource {
     @Consumes(value = {MediaType.APPLICATION_XML})
     @Path("/faCatchReport")
     public FACatchSummaryReportResponse getFaCatchSummaryReport(FACatchSummaryReportRequest request) throws ServiceException {
-
-        FACatchSummaryReportResponse response = faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(request));
-        return response;
-
+        return faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(request));
     }
 }

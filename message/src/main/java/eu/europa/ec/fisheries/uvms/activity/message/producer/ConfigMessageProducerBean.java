@@ -15,27 +15,35 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
-import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
-import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
+import javax.annotation.PostConstruct;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Stateless
-public class ConfigMessageProducerBean extends AbstractProducer implements ConfigMessageProducer {
+@LocalBean
+public class ConfigMessageProducerBean extends AbstractProducer {
 
     final static Logger LOG = LoggerFactory.getLogger(ConfigMessageProducerBean.class);
 
-    @Override
+    private Queue activityQueue;
+
+    @PostConstruct
+    public void init() {
+        activityQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY);
+    }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public String sendConfigMessage(String text) throws ConfigMessageException {
+    public String sendConfigMessage(String text) throws MessageException {
         try {
-            return sendModuleMessage(text, JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY));
+            return sendModuleMessage(text, activityQueue);
         } catch (MessageException e) {
             LOG.error("[ Error when sending config message. ] {}", e.getMessage());
-            throw new ConfigMessageException(e.getMessage());
+            throw e;
         }
     }
 

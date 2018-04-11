@@ -13,15 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
@@ -39,7 +30,16 @@ import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sanera on 31/08/2016.
@@ -86,7 +86,7 @@ public class ActivityDataUtil {
         faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
         faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
         faReportDocumentEntity.setVesselTransportMeans(new HashSet<>(Arrays.asList(vesselTransportMeansEntity)));
-        faReportDocumentEntity.setStatus(status);
+        faReportDocumentEntity.setStatus(FaReportStatusType.valueOf(status));
         return faReportDocumentEntity;
     }
 

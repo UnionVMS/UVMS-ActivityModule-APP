@@ -82,11 +82,6 @@
         </dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>uvms-config</artifactId>
-		</dependency>
-
-		<dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
 			<version>${uvms.commons.version}</version>

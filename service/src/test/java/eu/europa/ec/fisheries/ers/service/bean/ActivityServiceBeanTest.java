@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class ActivityServiceBeanTest {
 
         //Test
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOList.get(0);
-        assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
+        assertEquals(faReportDocumentEntity.getStatus(), FaReportStatusType.valueOf(faReportCorrectionDTO.getCorrectionType()));
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
         assertEquals(faReportDocumentEntity.getAcceptedDatetime(), faReportCorrectionDTO.getAcceptedDate());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId(),

@@ -130,7 +130,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
 
         List<FishingActivityEntity> activityList;
-        log.debug("FishingActivityQuery received : {}", query);
+        log.debug("[INFO] FishingActivityQuery received : {}", query);
 
         // Get the VesselTransportMeans guids from Assets if one of the Vessel related filters (VESSEL, VESSEL_GROUP) has been issued.
         // Returning true means that the query didn't produce results.
@@ -313,9 +313,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     private void validateInputFilters(Map<SearchFilter, List<String>> searchMapWithMultipleValues) throws ServiceException {
         if (MapUtils.isNotEmpty(searchMapWithMultipleValues)) {
-            Iterator<Map.Entry<SearchFilter, List<String>>> searchMapIterator = searchMapWithMultipleValues.entrySet().iterator();
-            while (searchMapIterator.hasNext()) {
-                Map.Entry<SearchFilter, List<String>> e = searchMapIterator.next();
+            for (Map.Entry<SearchFilter, List<String>> e : searchMapWithMultipleValues.entrySet()) {
                 SearchFilter key = e.getKey();
                 List<String> values = e.getValue();
                 if (values.contains(null) || values.contains("")) {

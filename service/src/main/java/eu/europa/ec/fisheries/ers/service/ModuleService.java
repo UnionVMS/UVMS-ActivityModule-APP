@@ -24,9 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class ModuleService {
 
-    protected boolean isUserFault(TextMessage message) {
+    protected boolean isNotUserFault(TextMessage message) {
         boolean isErrorResponse = false;
-
         try {
             UserFault userFault = JAXBUtils.unMarshallMessage(message.getText(), UserFault.class);
             log.error("UserFault error JMS message received with text: " + userFault.getFault());
@@ -35,7 +34,6 @@ public abstract class ModuleService {
             //do nothing  since it's not a UserFault. Logging this error is wrong for the purpose of its usage..
             //log.error("Unexpected exception was thrown.", e);
         }
-
-        return isErrorResponse;
+        return !isErrorResponse;
     }
 }

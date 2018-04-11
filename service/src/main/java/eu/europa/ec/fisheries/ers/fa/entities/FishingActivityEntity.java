@@ -180,6 +180,9 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "flag_state")
 	private String flagState;
 
+	@Column(name="latest")
+	private Boolean latest;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_start_time", length = 29)
 	private Date calculatedStartTime;

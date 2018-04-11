@@ -19,17 +19,15 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
-import java.util.Set;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import java.util.Set;
 import org.junit.Test;
 
 public class VesselDetailsDTOTest extends BaseUnitilsTest {

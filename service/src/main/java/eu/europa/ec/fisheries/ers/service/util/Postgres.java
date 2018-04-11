@@ -12,9 +12,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.util;
 
-public class PostGres implements DatabaseDialect {
+public class Postgres implements DatabaseDialect {
 
-    public static final int DEFAULT_WILDFLY_SRID = 4326;
+    private static final int DEFAULT_WILDFLY_SRID = 4326;
 
     @Override
     public Integer defaultSRID() {

@@ -55,7 +55,7 @@ import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
-import eu.europa.ec.fisheries.ers.service.util.PostGres;
+import eu.europa.ec.fisheries.ers.service.util.Postgres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -64,6 +64,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 
 @Stateless
@@ -104,7 +106,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         initEntityManager();
         faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
         fluxReportMessageDao = new FluxFaReportMessageDao(getEntityManager());
-        dialect = new PostGres();
+        dialect = new Postgres();
         if ("oracle".equals(properties.getProperty("database.dialect"))){
             dialect = new Oracle();
         }
@@ -116,10 +118,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
-        log.info("[INFO] Going to save [ " + faReportMessage.getFAReportDocuments().size() + " ] FaReportDocuments..");
-
-        FluxFaReportMessageEntity messageEntity =
-                new FluxFaReportMessageMapper().mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
+        log.info("[START] Going to save [ " + faReportMessage.getFAReportDocuments().size() + " ] FaReportDocuments..");
+        FluxFaReportMessageEntity messageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum,
+                new FluxFaReportMessageEntity());
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             try {
@@ -129,13 +130,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 log.error("Could not update Geometry OR enrichActivities for faReportDocument:"+faReportDocument.getId());
             }
         }
-        log.debug("fishing activity records to be saved : "+faReportDocuments.size() );
+        log.debug("[INFO] Fishing activity records to be saved : "+faReportDocuments.size() );
         FluxFaReportMessageEntity entity = fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
-        log.debug("Save partial FluxFaReportMessage before further processing" );
-        updateFaReportCorrections(faReportMessage.getFAReportDocuments());
-        log.debug("Update FaReport Corrections is complete." );
+        log.debug("[INFO] Saved partial FluxFaReportMessage before further processing" );
+        updateFaReportCorrectionsOrCancellations(faReportMessage.getFAReportDocuments());
+        log.debug("[INFO] Updating FaReport Corrections is complete." );
         updateFishingTripStartAndEndDate(faReportDocuments);
-        log.info("FluxFaReportMessage Saved successfully.");
+        log.info("[END] FluxFaReportMessage Saved successfully.");
         return entity;
     }
 
@@ -245,26 +246,41 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     /**
      * If there is a reference Id exist for any of the FaReport Document, than it means this is an update to an existing report.
      */
-    private void updateFaReportCorrections(List<FAReportDocument> faReportDocuments) throws ServiceException {
+    private void updateFaReportCorrectionsOrCancellations(List<FAReportDocument> faReportDocuments) throws ServiceException {
         List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
-            if (faReportDocument.getRelatedFLUXReportDocument().getReferencedID() != null &&
-                    faReportDocument.getRelatedFLUXReportDocument().getPurposeCode() != null) {
-                FaReportDocumentEntity faReportDocumentEntity = faReportDocumentDao.findFaReportByIdAndScheme(
-                        faReportDocument.getRelatedFLUXReportDocument().getReferencedID().getValue(),
-                        faReportDocument.getRelatedFLUXReportDocument().getReferencedID().getSchemeID());
+            FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
+            IDType receivedRefId = relatedFLUXReportDocument.getReferencedID();
+            if (receivedRefId != null && relatedFLUXReportDocument.getPurposeCode() != null) {
+                FaReportDocumentEntity faReportDocumentEntity = faReportDocumentDao.findFaReportByIdAndScheme(receivedRefId.getValue(),
+                        receivedRefId.getSchemeID());
                 if (faReportDocumentEntity != null) {
-                    FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(faReportDocument.getRelatedFLUXReportDocument().getPurposeCode().getValue()));
-                    faReportDocumentEntity.setStatus(faReportStatusEnum.getStatus());
+                    FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(relatedFLUXReportDocument.getPurposeCode().getValue()));
+                    log.debug("[INFO] Found FaReportDocument with id [" +receivedRefId+ "] (same as the received message ReferencedID)! Going to modify its " +
+                            "purpose code from ["+ faReportDocumentEntity.getStatus() +"] to [" +relatedFLUXReportDocument.getPurposeCode()+ "] (aka "+faReportStatusEnum+")...");
+                    faReportDocumentEntity.setStatus(faReportStatusEnum);
                     faReportDocumentEntities.add(faReportDocumentEntity);
+                    // Correction (purposecode == 5) => set 'latest' to false (for each activitiy related to this report)
+                    checkAndUpdateActivitiesForCorrection(receivedRefId, faReportDocumentEntity.getFishingActivities(), faReportStatusEnum);
                 }
             }
         }
         faReportDocumentDao.updateAllFaData(faReportDocumentEntities);
     }
 
+    private void checkAndUpdateActivitiesForCorrection(IDType receivedRefId, Set<FishingActivityEntity> fishingActivities, FaReportStatusType faReportStatusEnum) {
+        if(FaReportStatusType.UPDATED.equals(faReportStatusEnum)){
+            if(CollectionUtils.isNotEmpty(fishingActivities)){
+                for (FishingActivityEntity fishingActivity : fishingActivities) {
+                    fishingActivity.setLatest(false);
+                }
+            } else {
+                log.warn("[WARN] Didn't find any activities to correct related to FaReportDocument with ID [" +receivedRefId+ "] ..");
+            }
+        }
+    }
 
-    private void updateFishingTripStartAndEndDate(Set<FaReportDocumentEntity> faReportDocuments) throws ServiceException {
+    private void updateFishingTripStartAndEndDate(Set<FaReportDocumentEntity> faReportDocuments) {
         log.debug("Start  update of FishingTrip Start And End Date");
         if(CollectionUtils.isEmpty(faReportDocuments)){
             log.error("FaReportDocuments List is EMPTY or NULL in updateFishingTripStartAndEndDate");
@@ -285,11 +301,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * @param faReportDocumentEntity
      */
     private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
-
         List<MovementType> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
-
         Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
-
         List<Geometry> multiPointForFaReport =populateGeometriesForFishingActivities(movements,  fishingActivityEntities);
         faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport));
     }
@@ -309,7 +322,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) {
                         point = getGeometryForLocation(fluxLocation);
-                        log.debug("Geometry calculated for location is:"+point);
+                        log.debug("[INFO] Geometry calculated for location is : "+point);
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) {
                         point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
@@ -345,7 +358,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * @return
      */
     private Geometry getGeometryFromMdr(String fluxLocationIdentifier){
-        log.debug("Get Geometry from MDR for:"+fluxLocationIdentifier);
+        log.debug("[INFO] Get Geometry from MDR for : "+fluxLocationIdentifier);
         if(fluxLocationIdentifier ==null){
             return null;
         }
@@ -522,7 +535,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
         return movementMap;
     }
-
 
     public void setDialect(DatabaseDialect dialect) {
         this.dialect = dialect;
