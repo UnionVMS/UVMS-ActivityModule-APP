@@ -47,6 +47,75 @@
             <column name="typecode_listschemeid" type="VARCHAR(255)"/>
         </addColumn>
 
+        <!--
+       <sql>
+
+            ALTER TABLE "activity_flux_location"
+            RENAME COLUMN "name" TO "namevalue";
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_name VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_value VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listagencyid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listagencyname VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listname VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listversionid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_languageid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listschemeuri VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listuri VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_name VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_value VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listagencyid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listagencyname VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listname VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listversionid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_languageid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listuri VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listschemeid VARCHAR(255);
+
+       </sql>
+
+       -->
     </changeSet>
 
 </databaseChangeLog>

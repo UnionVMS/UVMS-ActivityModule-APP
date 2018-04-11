@@ -16,10 +16,6 @@
                 oldColumnName="duration_unit_code"
                 tableName="activity_delimited_period"/>
 
-        <addColumn tableName="activity_delimited_period">
-            <column name="durationmeasure_unitcodelistversionid" type="VARCHAR(255)"/>
-        </addColumn>
-
         <renameColumn columnDataType="FLOAT8"
                       newColumnName="operationsquantity_value"
                       oldColumnName="operation_quantity"
@@ -29,6 +25,10 @@
                       newColumnName="operationsquantity_unitcode"
                       oldColumnName="operation_quantity_code"
                       tableName="activity_fishing_activity"/>
+
+        <addColumn tableName="activity_delimited_period">
+            <column name="durationmeasure_unitcodelistversionid" type="VARCHAR(255)"/>
+        </addColumn>
 
         <addColumn tableName="activity_fishing_activity">
             <column name="operationsquantity_unitcodelistid" type="VARCHAR(255)"/>
@@ -46,8 +46,65 @@
             <column name="staircase_number_value" type="VARCHAR(255)"/>
             <column name="floor_identification_value" type="VARCHAR(255)"/>
             <column name="room_identification_value" type="VARCHAR(255)"/>
-
         </addColumn>
+
+        <!--
+        <sql>
+
+            ALTER TABLE "activity_delimited_period"
+            RENAME COLUMN "duration" TO "durationmeasure_value";
+
+            ALTER TABLE "activity_delimited_period"
+            RENAME COLUMN "duration_unit_code" TO "durationmeasure_unitcode";
+
+            ALTER TABLE "activity_fishing_activity"
+            RENAME COLUMN "operation_quantity" TO "operationsquantity_value";
+
+            ALTER TABLE "activity_fishing_activity"
+            RENAME COLUMN "operation_quantity_code" TO "operationsquantity_unitcode";
+
+            ALTER TABLE activity_delimited_period
+            ADD durationmeasure_unitcodelistversionid VARCHAR(255);
+
+            ALTER TABLE activity_fishing_activity
+            ADD operationsquantity_unitcodelistid VARCHAR(255);
+
+            ALTER TABLE activity_fishing_activity
+            ADD unit_code_list_version_id VARCHAR(255);
+
+            ALTER TABLE activity_fishing_activity
+            ADD fishing_duration_measure_unit_code_list_version_id VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD building_number VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD country_id_value VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD postal_area_language_id VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD post_code_list_id VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD postal_area_value VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD postal_area_language_local_id VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD staircase_number_value VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD floor_identification_value VARCHAR(255);
+
+            ALTER TABLE activity_structured_address
+            ADD room_identification_value VARCHAR(255);
+
+        </sql>
+
+        -->
 
     </changeSet>
 
