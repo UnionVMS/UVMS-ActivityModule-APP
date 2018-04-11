@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,30 +56,8 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(name = "reference_id")
     private String referenceId;
 
-    //@Embedded
-    /*@AttributeOverrides({
-            @AttributeOverride(name="name",
-                    column=@Column(name="type_code_name")),
-            @AttributeOverride(name="value",
-                    column=@Column(name="type_code_value")),
-            @AttributeOverride(name="list_id",
-                    column=@Column(name="type_code_list_id")),
-            @AttributeOverride(name="list_agency_id",
-                    column=@Column(name="type_code_list_agency_id")),
-            @AttributeOverride(name="list_agency_name",
-                    column=@Column(name="type_code_list_agency_name")),
-            @AttributeOverride(name="list_name",
-                    column=@Column(name="type_code_list_name")),
-            @AttributeOverride(name="list_version_id",
-                    column=@Column(name="type_code_list_version_id")),
-            @AttributeOverride(name="language_id",
-                    column=@Column(name="type_code_language_id")),
-            @AttributeOverride(name="list_uri",
-                    column=@Column(name="type_code_list_uri")),
-            @AttributeOverride(name="list_scheme_id",
-                    column=@Column(name="type_code_list_scheme_id"))
-    })*/
-   // private CodeType typeCode;
+    @Embedded
+    private CodeType typeCode;
 
     @Column(name = "reference_scheme_id")
     private String referenceSchemeId;

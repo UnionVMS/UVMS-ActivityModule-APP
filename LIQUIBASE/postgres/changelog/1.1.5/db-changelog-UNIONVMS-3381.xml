@@ -7,32 +7,31 @@
     <changeSet author="emrinalgr" id="1">
 
         <renameColumn columnDataType="FLOAT8"
-                      newColumnName="value"
+                      newColumnName="durationmeasure_value"
                       oldColumnName="duration"
                       tableName="activity_delimited_period"/>
 
         <renameColumn columnDataType="VARCHAR(255)"
-                newColumnName="unit_code"
+                newColumnName="durationmeasure_unitcode"
                 oldColumnName="duration_unit_code"
                 tableName="activity_delimited_period"/>
 
         <addColumn tableName="activity_delimited_period">
-            <column name="unit_code_list_version_id" type="VARCHAR(255)"/>
+            <column name="durationmeasure_unitcodelistversionid" type="VARCHAR(255)"/>
         </addColumn>
 
         <renameColumn columnDataType="FLOAT8"
-                      newColumnName="operationquantity_value"
+                      newColumnName="operationsquantity_value"
                       oldColumnName="operation_quantity"
                       tableName="activity_fishing_activity"/>
 
         <renameColumn columnDataType="VARCHAR(255)"
-                      newColumnName="operationquantity_unit_code"
+                      newColumnName="operationsquantity_unitcode"
                       oldColumnName="operation_quantity_code"
                       tableName="activity_fishing_activity"/>
 
-
         <addColumn tableName="activity_fishing_activity">
-            <column name="operationquantity_unit_code_list_id" type="VARCHAR(255)"/>
+            <column name="operationsquantity_unitcodelistid" type="VARCHAR(255)"/>
             <column name="unit_code_list_version_id" type="VARCHAR(255)"/>
             <column name="fishing_duration_measure_unit_code_list_version_id" type="varchar(255)"/>
         </addColumn>

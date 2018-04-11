@@ -10,21 +10,19 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 import lombok.Data;
 
 @Embeddable
 @Data
-public class QuantityType {
+public class QuantityType implements Serializable {
 
     private Double value;
 
-    @Column(name = "unit_code")
     private String unitCode;
 
-    @Column(name = "unit_code_list_version_id")
     private String unitCodeListID;
 
 }

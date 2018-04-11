@@ -55,7 +55,7 @@ import org.hibernate.annotations.Type;
                         "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
                         "JOIN FETCH act.fishingTrips fshtrp " +
                         "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
-                        "WHERE rpt.status IN (:statuses) " +
+                        "WHERE rpt.status IN (:statuses) " + // FIXME rpt.status swas changed from string to enum
                         "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
                         "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate))))"
         )

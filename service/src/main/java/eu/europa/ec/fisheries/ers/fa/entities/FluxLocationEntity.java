@@ -114,7 +114,7 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "geopolitical_region_code_list_id")
 	private String geopoliticalRegionCodeListId;
 
-	@Column(columnDefinition = "text")
+	@Column(columnDefinition = "text", name = "namevalue")
 	private String name;
 
 	@Column(name = "name_laguage_id")
@@ -165,7 +165,7 @@ public class FluxLocationEntity implements Serializable {
         List<TextType> names = null;
 		if (StringUtils.isNotEmpty(name)){
             names = new ArrayList<>();
-            names.add(new TextType(name, null, null));
+            names.add(new TextType(name, nameLanguageId, null));
 		}
 		return names;
 	}

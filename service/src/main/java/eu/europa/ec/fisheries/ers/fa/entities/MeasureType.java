@@ -10,7 +10,6 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.Data;
@@ -21,9 +20,7 @@ public class MeasureType {
 
     private Double value;
 
-    @Column(name = "unit_code")
     private String unitCode;
 
-    @Column(name = "unit_code_list_version_id")
     private String unitCodeListVersionID;
 }

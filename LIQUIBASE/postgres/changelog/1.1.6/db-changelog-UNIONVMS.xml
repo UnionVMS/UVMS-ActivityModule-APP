@@ -16,34 +16,36 @@
 
     <changeSet author="emrinalgr" id="2">
 
-        <addColumn tableName="activity_flux_location">
-            <column name="regional_fisheries_management_organization_code_name" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_value" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_list_id" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_list_agency_id" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_list_agency_name" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_list_name" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_list_version_id" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_language_id" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_list_uri" type="VARCHAR(255)"/>
-            <column name="regional_fisheries_management_organization_code_list_scheme_id" type="VARCHAR(255)"/>
-        </addColumn>
+        <renameColumn columnDataType="VARCHAR(255)"
+                      newColumnName="namevalue"
+                      oldColumnName="name"
+                      tableName="activity_flux_location"/>
 
+        <addColumn tableName="activity_flux_location">
+            <column name="regionalfisheriesmanagementorganizationcode_name" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_value" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listagencyid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listagencyname" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listname" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listversionid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_languageid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listschemeuri" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listuri" type="VARCHAR(255)"/>
+        </addColumn>
 
         <addColumn tableName="activity_flux_report_document">
-            <column name="type_code_name" type="VARCHAR(255)"/>
-            <column name="type_code_value" type="VARCHAR(255)"/>
-            <column name="type_code_list_id" type="VARCHAR(255)"/>
-            <column name="type_code_list_agency_id" type="VARCHAR(255)"/>
-            <column name="type_code_list_agency_name" type="VARCHAR(255)"/>
-            <column name="type_code_list_name" type="VARCHAR(255)"/>
-            <column name="type_code_list_version_id" type="VARCHAR(255)"/>
-            <column name="type_code_language_id" type="VARCHAR(255)"/>
-            <column name="type_code_list_uri" type="VARCHAR(255)"/>
-            <column name="type_code_list_scheme_id" type="VARCHAR(255)"/>
+            <column name="typecode_name" type="VARCHAR(255)"/>
+            <column name="typecode_value" type="VARCHAR(255)"/>
+            <column name="typecode_listid" type="VARCHAR(255)"/>
+            <column name="typecode_listagencyid" type="VARCHAR(255)"/>
+            <column name="typecode_listagencyname" type="VARCHAR(255)"/>
+            <column name="typecode_listname" type="VARCHAR(255)"/>
+            <column name="typecode_listversionid" type="VARCHAR(255)"/>
+            <column name="typecode_languageid" type="VARCHAR(255)"/>
+            <column name="typecode_listuri" type="VARCHAR(255)"/>
+            <column name="typecode_listschemeid" type="VARCHAR(255)"/>
         </addColumn>
-
-
 
     </changeSet>
 

@@ -21,31 +21,22 @@ public class CodeType implements Serializable {
 
     private String value;
 
-    //@Column(name = "list_id")
     private String listID;
 
-    //@Column(name = "list_agency_id")
     private String listAgencyID;
 
-    //@Column(name = "list_agency_name")
     private String listAgencyName;
 
-    //@Column(name = "list_name")
     private String listName;
 
-   // @Column(name = "list_version_id")
     private String listVersionID;
 
-   // @Column(name = "name")
     private String name;
 
-   // @Column(name = "language_id")
     private String languageID;
 
-   // @Column(name = "list_uri")
     private String listURI;
 
-   // @Column(name = "list_scheme_id")
     private String listSchemeURI;
 
 }
