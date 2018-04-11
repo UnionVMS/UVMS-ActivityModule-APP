@@ -128,16 +128,13 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     @Override
     public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
-
         List<FishingActivityEntity> activityList;
         log.debug("[INFO] FishingActivityQuery received : {}", query);
-
         // Get the VesselTransportMeans guids from Assets if one of the Vessel related filters (VESSEL, VESSEL_GROUP) has been issued.
         // Returning true means that the query didn't produce results.
         if (checkAndEnrichIfVesselFiltersArePresent(query)) {
             return createResultDTO(null, 0);
         }
-
         // Check if any filters are present. If not, We need to return all fishing activity data
         String areaWkt = getRestrictedAreaGeom(datasets);
         log.debug("Geometry for the user received from USM : " + areaWkt);
@@ -151,10 +148,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
         separateSingleVsMultipleFilters(query);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query);
-
         int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
-
         return createResultDTO(activityList, totalCountOfRecords);
     }
 
@@ -176,10 +171,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
         List<String> guidsFromAssets;
-
         if(searchCriteriaMap ==null)
             return false;
-
         String vesselSearchStr      = searchCriteriaMap.get(SearchFilter.VESSEL);
         String vesselGroupSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL_GROUP);
         if(StringUtils.isNotEmpty(vesselSearchStr) || StringUtils.isNotEmpty(vesselGroupSearchStr)){
@@ -209,10 +202,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
         Geometry geom = getRestrictedAreaGeometry(datasets);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
-
         if (activityEntity == null)
             throw new ServiceException("Could not find FishingActivityEntity for the given id:" + activityId);
-
         log.debug("FishingActivityEntity fetched from database with id:" + activityEntity.getId());
         FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
         fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntity, tripId));
@@ -283,14 +274,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         Map<SearchFilter, List<String>> searchMapWithMultipleValues = query.getSearchCriteriaMapMultipleValues();
         if (searchMapWithMultipleValues == null || searchMapWithMultipleValues.size() == 0 || searchMapWithMultipleValues.get(SearchFilter.PURPOSE) == null)
             throw new ServiceException("No purpose code provided for the Fishing activity filters! At least one needed!");
-
         Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
         if (searchMap == null)
             return;
-
         validateInputFilters(searchMapWithMultipleValues);
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
-
         Iterator<Map.Entry<SearchFilter, String>> searchMapIterator = searchMap.entrySet().iterator();
         while (searchMapIterator.hasNext()) {
             Map.Entry<SearchFilter, String> e = searchMapIterator.next();
@@ -306,7 +294,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
                 searchMapIterator.remove();
             }
         }
-
         query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleValues);
         query.setSearchCriteriaMap(searchMap);
     }
@@ -351,7 +338,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         if (datasets == null || datasets.isEmpty()) {
             return null;
         }
-
         try {
             List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
             String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
@@ -378,12 +364,10 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         if (fishingActivityViewDTO == null || StringUtils.isBlank(fluxLocationIdSchemeId)) {
             return;
         }
-
         final String ACRONYM = "LOCATION";
         String filter = null;
         final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
         Integer nrOfResults = 1;
-
         if (CollectionUtils.isNotEmpty(fishingActivityViewDTO.getLocations())) {
             for (FluxLocationDto fluxLocationDto : fishingActivityViewDTO.getLocations()) {
                 if (fluxLocationIdSchemeId.equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
@@ -408,7 +392,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * @param activityEntity
      * @return ActivityHistoryDto
      */
-    public ActivityHistoryDto getActivityHistoryDto(FishingActivityEntity activityEntity){
+    private ActivityHistoryDto getActivityHistoryDto(FishingActivityEntity activityEntity){
         ActivityHistoryDto activityHistoryDto = new ActivityHistoryDto();
         int fishingActivityId = activityEntity.getId();
         String fishingActivityType= activityEntity.getTypeCode();
@@ -418,10 +402,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
              return activityHistoryDto;
          }
         log.info(" Activity for which history to be found:"+fishingActivityId +" fishingActivityType:"+fishingActivityType +" fishingActivityTime:"+DateUtils.parseUTCDateToString(fishingActivityTime));
-
         activityHistoryDto.setPreviousId(fishingActivityDao.getPreviousFishingActivityId(fishingActivityId,fishingActivityType,fishingActivityTime));
         activityHistoryDto.setNextId(fishingActivityDao.getNextFishingActivityId(fishingActivityId,fishingActivityType,fishingActivityTime));
-
         return activityHistoryDto;
     }
 

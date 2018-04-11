@@ -73,14 +73,13 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
 
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, String startDate, String endDate){
 
-        Set<String> statuses = new HashSet<>();
-        statuses.add(FaReportStatusType.NEW.getStatus());
+        Set<FaReportStatusType> statuses = new HashSet<>();
+        statuses.add(FaReportStatusType.NEW);
         if ("N".equals(consolidated) || consolidated == null){
-            statuses.add(FaReportStatusType.UPDATED.getStatus());
-            statuses.add(FaReportStatusType.CANCELED.getStatus());
-            statuses.add(FaReportStatusType.DELETED.getStatus());
+            statuses.add(FaReportStatusType.UPDATED);
+            statuses.add(FaReportStatusType.CANCELED);
+            statuses.add(FaReportStatusType.DELETED);
         }
-
         Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.LOAD_REPORTS, FaReportDocumentEntity.class);
         query.setParameter(TRIP_ID, tripId);
         query.setParameter(STATUSES, statuses);
@@ -88,11 +87,9 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
         query.setParameter(SCHEME_ID, schemeId);
         query.setParameter(START_DATE, DateUtils.START_OF_TIME.toDate());
         query.setParameter(END_DATE, DateUtils.END_OF_TIME.toDate());
-
         if (startDate != null){
             query.setParameter(START_DATE, DateTime.parse(startDate, ISODateTimeFormat.dateTimeParser()).toDate());
         }
-
         if (endDate != null){
             query.setParameter(END_DATE,  DateTime.parse(endDate, ISODateTimeFormat.dateTimeParser()).toDate());
 
