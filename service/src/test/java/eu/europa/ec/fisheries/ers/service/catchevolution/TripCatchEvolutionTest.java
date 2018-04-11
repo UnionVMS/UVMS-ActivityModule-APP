@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.ers.service.catchevolution;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -69,7 +70,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
     public void testHandleOnboardCatch() {
         FaReportDocumentEntity faReportDocumentEntity = ActivityDataUtil.getFaReportDocumentEntity(FaReportDocumentType.DECLARATION.name(), "FLUX_FA_REPORT_TYPE",
                 DateUtils.parseToUTCDate("2016-06-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), null,
-                null, "new");
+                null, FaReportStatusType.NEW);
         FishingActivityEntity fishingActivityEntity = ActivityDataUtil.getFishingActivityEntity(FishingActivityTypeEnum.FISHING_OPERATION.name(), "FLUX_FA_TYPE",
                 DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity, null);
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "LOADED", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
@@ -88,7 +89,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
     public void testHandleCumulatedCatchNoDeletion() {
         FaReportDocumentEntity faReportDocumentEntity = ActivityDataUtil.getFaReportDocumentEntity(FaReportDocumentType.DECLARATION.name(), "FLUX_FA_REPORT_TYPE",
                 DateUtils.parseToUTCDate("2016-06-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), null,
-                null, "new");
+                null, FaReportStatusType.NEW);
         FishingActivityEntity fishingActivityEntity = ActivityDataUtil.getFishingActivityEntity(FishingActivityTypeEnum.FISHING_OPERATION.name(), "FLUX_FA_TYPE",
                 DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity, null);
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "LOADED", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
@@ -107,7 +108,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
     public void testHandleCumulatedCatchWithDeletion() {
         FaReportDocumentEntity faReportDocumentEntity = ActivityDataUtil.getFaReportDocumentEntity(FaReportDocumentType.DECLARATION.name(), "FLUX_FA_REPORT_TYPE",
                 DateUtils.parseToUTCDate("2016-06-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), null,
-                null, "new");
+                null, FaReportStatusType.NEW);
         FishingActivityEntity fishingActivityEntity = ActivityDataUtil.getFishingActivityEntity(FishingActivityTypeEnum.DISCARD.name(), "FLUX_FA_TYPE",
                 DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity, null);
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "DEMINIMIS", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",

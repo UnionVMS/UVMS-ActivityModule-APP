@@ -28,7 +28,6 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripSearchBuilder.class);
     private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft from FishingTripEntity ft JOIN FETCH ft.fishingTripIdentifiers ftripId LEFT JOIN FETCH ft.fishingActivity a LEFT JOIN FETCH a.faReportDocument fa ";
 
-
     /**
      *For some usecases we need different database column mappings for same filters.
      * We can call method which sets these specific mappings for certain business requirements while calling constructor     *
@@ -42,30 +41,19 @@ public class FishingTripSearchBuilder extends SearchQueryBuilder {
 
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
-
         LOG.debug("Start building SQL depending upon Filter Criterias");
-
         StringBuilder sql = new StringBuilder();
-
-
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
-
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         LOG.info("sql :" + sql);
-
         return sql;
     }
 
     // Build Where part of the query based on Filter criterias
     @Override
-    public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
-        LOG.debug("Create Where part of Query");
-
-        sql.append(" where ");
+    public void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         createWherePartForQueryForFilters(sql, query);
-
-        return sql;
     }
 
 }

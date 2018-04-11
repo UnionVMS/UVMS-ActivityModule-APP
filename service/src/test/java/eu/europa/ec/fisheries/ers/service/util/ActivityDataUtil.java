@@ -13,15 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
@@ -39,7 +30,16 @@ import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sanera on 31/08/2016.
@@ -79,7 +79,7 @@ public class ActivityDataUtil {
         return vesselTransportMeansEntity;
     }
 
-    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Date acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, String status) {
+    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Date acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportStatusType status) {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setTypeCode(typeCode);
         faReportDocumentEntity.setTypeCodeListId(typeCodeListId);
@@ -200,7 +200,7 @@ public class ActivityDataUtil {
         VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
         vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1", "CFR"));
         FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
-                vesselTransportMeansEntity1, "new");
+                vesselTransportMeansEntity1, FaReportStatusType.NEW);
         FishingActivityEntity fishingActivityEntity1 = ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity1, null);
         SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
 

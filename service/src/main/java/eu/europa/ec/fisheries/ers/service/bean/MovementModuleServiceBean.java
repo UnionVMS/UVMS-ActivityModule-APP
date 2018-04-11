@@ -64,7 +64,6 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException {
-
         try {
             MovementQuery movementQuery = new MovementQuery();
             addListCriteria(vesselIds, movementQuery);
@@ -74,7 +73,7 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             String request = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
             String moduleMessage = movementProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage response = activityConsumer.getMessage(moduleMessage, TextMessage.class);
-            if (response != null && !isUserFault(response)) {
+            if (response != null && isNotUserFault(response)) {
                 List<MovementMapResponseType> mapResponseTypes = MovementModuleResponseMapper.mapToMovementMapResponse(response);
                 List<MovementType> movements = new ArrayList<>();
                 for (MovementMapResponseType movementMap : mapResponseTypes) {

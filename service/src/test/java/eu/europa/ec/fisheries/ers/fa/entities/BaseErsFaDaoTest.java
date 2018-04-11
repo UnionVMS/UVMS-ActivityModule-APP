@@ -17,6 +17,7 @@ import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.BaseDAOTest;
 
 
@@ -460,13 +461,13 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_fa_report_document")
                     .columns("id", "type_code", "type_code_list_id", "accepted_datetime", "flux_report_document_id",  "fmc_marker", "fmc_marker_list_id", "status",
                             "source", "flux_fa_report_message_id")
-                    .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1,  "fmc", "fmc_list", "new", "FLUX", 1)
-                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2,  "fmc", "fmc_list", "new", "FLUX", 1)
-                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .values(5, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 6, "fmc", "fmc_list", "new", "FLUX", 1)
-                    .values(7, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 7, "fmc", "fmc_list", "new", "FLUX", 1)
+                    .values(1, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2014-12-12"), 1,  "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(2, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-09-12"), 2,  "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(3, "DECLARATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-08-12"), 3, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(4, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-07-12"), 4, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(5, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 6, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(7, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 7, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
                     .build()
     );
     protected static final Operation INSERT_FLUX_FA_REPORT_MESSAGE_DATA = sequenceOf(

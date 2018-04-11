@@ -4,7 +4,7 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet author="emrinalgr" id="1">
+    <changeSet author="emrinalgr" id="1324325431">
 
         <renameColumn columnDataType="FLOAT8"
                       newColumnName="durationmeasure_value"

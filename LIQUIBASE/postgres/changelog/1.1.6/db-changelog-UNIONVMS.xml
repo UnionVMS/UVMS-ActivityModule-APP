@@ -14,7 +14,7 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet author="emrinalgr" id="2">
+    <changeSet author="emrinalgr" id="6387387638763">
 
         <renameColumn columnDataType="VARCHAR(255)"
                       newColumnName="namevalue"
@@ -34,6 +34,10 @@
             <column name="regionalfisheriesmanagementorganizationcode_listuri" type="VARCHAR(255)"/>
         </addColumn>
 
+        <addColumn tableName="activity_fishing_activity">
+            <column name="latest" type="BOOLEAN" defaultValue="true"/>
+        </addColumn>
+
         <addColumn tableName="activity_flux_report_document">
             <column name="typecode_name" type="VARCHAR(255)"/>
             <column name="typecode_value" type="VARCHAR(255)"/>
@@ -43,8 +47,8 @@
             <column name="typecode_listname" type="VARCHAR(255)"/>
             <column name="typecode_listversionid" type="VARCHAR(255)"/>
             <column name="typecode_languageid" type="VARCHAR(255)"/>
+            <column name="typecode_listschemeuri" type="VARCHAR(255)"/>
             <column name="typecode_listuri" type="VARCHAR(255)"/>
-            <column name="typecode_listschemeid" type="VARCHAR(255)"/>
         </addColumn>
 
         <!--

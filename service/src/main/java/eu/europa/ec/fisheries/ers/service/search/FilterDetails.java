@@ -13,33 +13,19 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
+import lombok.Data;
+
 /**
  * Created by sanera on 12/07/2016.
  */
+@Data
 public class FilterDetails {
 
     private String joinString;
     private String condition;
 
-
-    public FilterDetails(String joinString, String condition) {
+    FilterDetails(String joinString, String condition) {
         this.joinString = joinString;
-        this.condition = condition;
-    }
-
-    public FilterDetails() {
-        super();
-    }
-    public String getJoinString() {
-        return joinString;
-    }
-    public void setJoinString(String joinString) {
-        this.joinString = joinString;
-    }
-    public String getCondition() {
-        return condition;
-    }
-    public void setCondition(String condition) {
         this.condition = condition;
     }
 

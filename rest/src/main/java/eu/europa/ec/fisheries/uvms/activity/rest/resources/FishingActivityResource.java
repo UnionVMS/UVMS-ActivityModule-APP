@@ -97,13 +97,13 @@ public class FishingActivityResource extends UnionVMSResource {
                                                @HeaderParam("roleName") String roleName,
                                                FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
-        log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        log.info("[INFO] Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        log.info("Successful retrieved");
+        log.debug("[INFO] Successful retrieved..");
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }

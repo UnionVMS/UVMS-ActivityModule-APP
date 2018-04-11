@@ -11,9 +11,16 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,11 +35,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
-
-import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -55,7 +57,7 @@ import org.hibernate.annotations.Type;
                         "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
                         "JOIN FETCH act.fishingTrips fshtrp " +
                         "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
-                        "WHERE rpt.status IN (:statuses) " + // FIXME rpt.status swas changed from string to enum
+                        "WHERE rpt.status IN (:statuses) " +
                         "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
                         "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate))))"
         )
@@ -100,7 +102,8 @@ public class FaReportDocumentEntity implements Serializable {
     private String fmcMarkerListId;
 
     @Column(name = "status")
-    private String status; // FIXME change to enum
+    @Enumerated(EnumType.STRING)
+    private FaReportStatusType status;
 
     @Column(name = "source")
     private String source;

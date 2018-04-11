@@ -14,27 +14,34 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
-import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
-import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.jms.Queue;
 import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @Slf4j
-public class ConfigMessageConsumerBean extends AbstractConsumer implements ConfigMessageConsumer {
+public class ConfigMessageConsumerBean extends AbstractConsumer {
+
+    private Queue activityQueue;
+
+    @PostConstruct
+    public void init() {
+        activityQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY);
+    }
 
     @Override
     public String getDestinationName() {
         return MessageConstants.QUEUE_ACTIVITY;
     }
-
-    @Override
-    public <T> T getConfigMessage(String correlationId, Class type) throws ConfigMessageException {
+    
+    public <T> T getConfigMessage(String correlationId, Class type) throws MessageException {
         try {
             return getMessage(correlationId, type);
         } catch (MessageException e) {
             log.error("[ Error when getting config message. ] {}", e.getMessage());
-            throw new ConfigMessageException(e.getMessage());
+            throw e;
         }
     }
 

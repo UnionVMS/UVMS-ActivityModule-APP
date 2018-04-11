@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.ers.service.util;
 
 public class Oracle implements DatabaseDialect {
 
-    public static final int DEFAULT_ORACLE_SRID = 8307;
+    private static final int DEFAULT_ORACLE_SRID = 8307;
 
     @Override
     public Integer defaultSRID() {

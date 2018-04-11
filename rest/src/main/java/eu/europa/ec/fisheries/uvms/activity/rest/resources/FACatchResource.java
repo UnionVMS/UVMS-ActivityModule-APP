@@ -84,7 +84,6 @@ public class FACatchResource extends UnionVMSResource {
                                              @PathParam("fishingTripId") String tripId) throws ServiceException {
         log.info("getFACatchSummaryDetails: " + tripId);
         return createSuccessResponse( reportService.getCatchDetailsScreen(tripId));
-
     }
 }
 
