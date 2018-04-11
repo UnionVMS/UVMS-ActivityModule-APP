@@ -33,7 +33,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testFindEntityById() throws Exception {
+    public void testFindEntityById() {
         dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
         assertNotNull(entity);
@@ -41,7 +41,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testFindFaReportById() throws Exception {
+    public void testFindFaReportById() {
         dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
         String identifier = entity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId();
@@ -56,7 +56,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testGetLatestFaReportDocumentsForTrip() throws Exception {
+    public void testGetLatestFaReportDocumentsForTrip() {
         dbSetupTracker.skipNextLaunch();
         List<FaReportDocumentEntity> entities=dao.loadReports("NOR-TRP-20160517234053706", "Y");
         assertNotNull(entities);
@@ -65,7 +65,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testReturnNullIfEmpty() throws Exception {
+    public void testReturnNullIfEmpty(){
         dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity faReportDocEntity = dao.findFaReportByIdAndScheme("TEST_NON_EXISTANT-REP-ID", "TEST_NON_EXISTANT-SCH-ID");
         assertNull(faReportDocEntity);
@@ -73,12 +73,10 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testGetFaReportDocumentsForTrip() throws Exception {
+    public void testGetFaReportDocumentsForTrip(){
         dbSetupTracker.skipNextLaunch();
         List<FaReportDocumentEntity> faReportDocumentsForTrip = dao.loadReports("NOR-TRP-20160517234053706", "N");
         assertNotNull(faReportDocumentsForTrip);
         assertTrue(faReportDocumentsForTrip.size() > 0);
     }
-
-
 }

@@ -48,7 +48,7 @@ public abstract class SearchQueryBuilder {
 
     // Assumption for the weight is, calculated_weight_measure is in Kg.
     // IF we get WEIGHT MEASURE as TON, we need to convert the input value to Kilograms.
-    public static Double normalizeWeightValue(String value, String weightMeasure) {
+    private static Double normalizeWeightValue(String value, String weightMeasure) {
         Double valueConverted = Double.parseDouble(value);
         if ("TNE".equals(weightMeasure)) {
             valueConverted = 1000D * valueConverted;
@@ -60,7 +60,7 @@ public abstract class SearchQueryBuilder {
         return filterMap;
     }
 
-    public void setFilterMap(FilterMap filterMap) {
+    void setFilterMap(FilterMap filterMap) {
         this.filterMap = filterMap;
     }
 
@@ -80,7 +80,7 @@ public abstract class SearchQueryBuilder {
      * @param query
      * @return
      */
-    public StringBuilder createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
+    void createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
         Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
@@ -104,7 +104,6 @@ public abstract class SearchQueryBuilder {
         getJoinPartForSortingOptions(sql, query);
 
         //   LOG.debug("Generated SQL for JOIN Part :" + sql);
-        return sql;
     }
 
     private void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
@@ -149,7 +148,7 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    protected void appendJoinString(StringBuilder sql, String joinString) {
+    void appendJoinString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
@@ -157,7 +156,7 @@ public abstract class SearchQueryBuilder {
         sql.append(LEFT).append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }
 
-    protected void appendRightJoinString(StringBuilder sql, String joinString) {
+    private void appendRightJoinString(StringBuilder sql, String joinString) {
         sql.append(RIGHT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
@@ -233,7 +232,9 @@ public abstract class SearchQueryBuilder {
         sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
     }
 
-    public StringBuilder createWherePartForQueryForFilters(StringBuilder sql, FishingActivityQuery query) {
+    void createWherePartForQueryForFilters(StringBuilder sql, FishingActivityQuery query) {
+        LOG.debug("[INFO] Creating Where part of Query");
+        sql.append(" where ");
         Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
         if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
@@ -243,6 +244,9 @@ public abstract class SearchQueryBuilder {
             keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
         }
         // Create Where part of SQL Query
+        if(query.getShowOnlyLatest() != null){
+            sql.append(" a.latest=:latest ").append(" and ");
+        }
         int i = 0;
         for (SearchFilter key : keySet) {
             if (!appendWhereQueryPart(sql, filterMappings, keySet, i, key)) {
@@ -250,7 +254,7 @@ public abstract class SearchQueryBuilder {
             }
             i++;
         }
-        return sql;
+        LOG.debug("[INFO] Generated Query After Where :" + sql);
     }
 
     private boolean appendWhereQueryPart(StringBuilder sql, Map<SearchFilter, FilterDetails> filterMappings, Set<SearchFilter> keySet, int i, SearchFilter key) {
@@ -261,9 +265,9 @@ public abstract class SearchQueryBuilder {
         if (i != 0) {
             sql.append(" and ");
         }
-
         if (SearchFilter.QUANTITY_MIN.equals(key)) {
-            sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" ))");
+            sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :")
+                    .append(FilterMap.QUANTITY_MIN).append(" ))");
 
         } else if (SearchFilter.QUANTITY_MAX.equals(key)) {
             sql.append(" ( ");
@@ -283,7 +287,7 @@ public abstract class SearchQueryBuilder {
      * @param query
      * @return
      */
-    public abstract StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query);
+    public abstract void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query);
 
     /**
      * Create sorting part for the Query
@@ -293,7 +297,7 @@ public abstract class SearchQueryBuilder {
      * @return
      * @throws ServiceException
      */
-    public StringBuilder createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) throws ServiceException {
+    void createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) throws ServiceException {
         LOG.debug("Create Sorting part of Query");
         SortKey sort = query.getSorting();
         if (sort != null && sort.getSortBy() != null) {
@@ -313,7 +317,6 @@ public abstract class SearchQueryBuilder {
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }
-        return sql;
     }
 
     /**
@@ -324,17 +327,16 @@ public abstract class SearchQueryBuilder {
      * @param query
      * @return
      */
-    public StringBuilder getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
+    private void getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
         Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
         if (searchCriteriaMap == null) {
-            return sql;
+            return;
         }
         sql.append(" and(  ");
         sql.append(FilterMap.getFilterSortMappings().get(filter));
         sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
         sql.append(" ) ");
         sql.append(" OR dp is null ) ");
-        return sql;
     }
 
     public Query fillInValuesForTypedQuery(FishingActivityQuery query, Query typedQuery) throws ServiceException {
@@ -345,6 +347,9 @@ public abstract class SearchQueryBuilder {
         }
         if (MapUtils.isNotEmpty(searchForMultipleValues)) {
             applyListValuesToQuery(searchForMultipleValues, typedQuery);
+        }
+        if(query.getShowOnlyLatest() != null){
+            typedQuery.setParameter("latest",query.getShowOnlyLatest());
         }
         return typedQuery;
     }
@@ -385,7 +390,6 @@ public abstract class SearchQueryBuilder {
             case FA_REPORT_ID:
                 typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
                 break;
-
             case AREA_GEOM:
                 Geometry geom;
                 try {

@@ -188,7 +188,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      */
     private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearchBuilder search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
-
         Query typedQuery = em.createQuery(sql.toString());
         return search.fillInValuesForTypedQuery(query, typedQuery);
 

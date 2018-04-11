@@ -119,6 +119,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
             @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))"),
             @Mapping(target = "calculatedStartTime", expression = "java(getCalculatedStartTime(fishingActivity))"), // FIXME
+            @Mapping(target = "latest", constant = "true"),
             @Mapping(target = "flapDocuments", ignore = true)
     })
     public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);// FIXME
@@ -130,7 +131,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fromId", expression = "java(getFromId(entity))"),
             @Mapping(target = "fromName", source = "faReportDocument.fluxReportDocument.fluxParty.fluxPartyName"),
             @Mapping(target = "vesselTransportMeansName", expression = "java(getFaReportDocVesselTransportMeans(entity).getName())"),
-            @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
+            @Mapping(target = "purposeCode", source = "faReportDocument.status.purposeCode"),
             @Mapping(target = "FAReportType", source = "faReportDocument.typeCode"),
             @Mapping(source = "typeCode", target = "activityType"),
             @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))"),

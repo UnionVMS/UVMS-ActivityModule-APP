@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.fa.utils;
 
 public enum FaReportStatusType {
+
     NEW("new", 9), // AKA consolidated AKA last report
     UPDATED("updated", 5),
     CANCELED("canceled", 1),

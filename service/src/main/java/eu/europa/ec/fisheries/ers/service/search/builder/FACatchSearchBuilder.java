@@ -18,12 +18,10 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by sanera on 20/01/2017.
@@ -31,80 +29,67 @@ import java.util.Map;
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
 
-  protected String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
-          "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
-           "  JOIN a.faReportDocument fa  " ;
+    private String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
+            "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
+            "  JOIN a.faReportDocument fa  ";
 
-    protected String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure)  " ;
+    private String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure)  ";
 
-   public FACatchSearchBuilder() {
+    public FACatchSearchBuilder() {
         super();
-        FilterMap filterMap=FilterMap.createFilterMap();
+        FilterMap filterMap = FilterMap.createFilterMap();
         filterMap.populateFilterMAppingsWithChangeForFACatchReport();
         setFilterMap(filterMap);
     }
 
 
-    @Override
     /**
      * Remember that not all the catches should be considered for the catchSummary. There are specific conditions mentioned in the requirement. Only those catches should be selected for the summary which match the criteria.
      */
+    @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         StringBuilder sql = new StringBuilder();
-     //   FilterMap.populateFilterMAppingsWithChangeForFACatchReport();
+        // FilterMap.populateFilterMAppingsWithChangeForFACatchReport();
         Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
-        List<GroupCriteria> groupByFieldList= query.getGroupByFields();
+        List<GroupCriteria> groupByFieldList = query.getGroupByFields();
         sql.append("SELECT  "); // Common Join for all filters
-
         appendSelectGroupColumns(groupByFieldList, sql, groupMappings);
-
         createJoinPartOfTheQuery(query, sql, groupMappings, groupByFieldList);
-
         createWherePartOfQuery(query, sql, groupByFieldList);
-
         createGroupByPartOfTheQuery(sql, groupMappings, groupByFieldList);
-
         log.debug("sql :" + sql);
-
         return sql;
     }
 
-    protected void createGroupByPartOfTheQuery(StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMappings, List<GroupCriteria> groupByFieldList) {
+    private void createGroupByPartOfTheQuery(StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMappings, List<GroupCriteria> groupByFieldList) {
         sql.append(" GROUP BY  ");
-
         // Add group by statement based on grouping factors
         int i = 0;
         for (GroupCriteria criteria : groupByFieldList) {
-
             if (i != 0)
                 sql.append(", ");
-
             GroupCriteriaMapper mapper = groupMappings.get(criteria);
             sql.append(mapper.getColumnName());
             i++;
         }
     }
 
-    protected void createWherePartOfQuery(FishingActivityQuery query, StringBuilder sql, List<GroupCriteria> groupByFieldList) {
+    private void createWherePartOfQuery(FishingActivityQuery query, StringBuilder sql, List<GroupCriteria> groupByFieldList) {
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-
-        if(groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE)!=-1){
-              enrichWherePartOFQueryForDISOrDIM(sql);
-          }else{
-              conditionsForFACatchSummaryReport(sql);
-          }
+        if (groupByFieldList.indexOf(GroupCriteria.CATCH_TYPE) != -1) {
+            enrichWherePartOFQueryForDISOrDIM(sql);
+        } else {
+            conditionsForFACatchSummaryReport(sql);
+        }
     }
 
     protected void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings, List<GroupCriteria> groupByFieldList) {
         // Below is default JOIN for the query
         sql.append(FA_CATCH_JOIN);
-
         // Create join part of SQL query
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
-
         // Add joins if not added by activity filtering . Below code will add joins required by FA Catch report joins
         for (GroupCriteria criteria : groupByFieldList) {
-
             GroupCriteriaMapper mapper = groupMAppings.get(criteria);
             if (sql.indexOf(mapper.getTableJoin()) == -1) {
                 appendJoinString(sql, mapper.getTableJoin());
@@ -112,7 +97,6 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         }
     }
 
-    @NotNull
     protected void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings) throws ServiceException {
 
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
@@ -125,52 +109,45 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
             sql.append(mapper.getColumnName());
             sql.append(", ");
         }
-
         sql.append(SUM_WEIGHT);
     }
 
     /**
-     *  Special condition to get data for DIM/DIS
+     * Special condition to get data for DIM/DIS
+     *
      * @param sql
      */
-    protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
-
+    protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql) {
         sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
     }
 
-
-
-    protected void conditionsForFACatchSummaryReport(StringBuilder sql){
+    protected void conditionsForFACatchSummaryReport(StringBuilder sql) {
         sql.append(" and (" +
-                "(a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN('") .append(FaCatchTypeEnum.ONBOARD)
-                 .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(FishingActivityTypeEnum.RELOCATION.toString())
+                "(a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD)
+                .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(FishingActivityTypeEnum.RELOCATION.toString())
                 .append("' and a.relatedFishingActivity.typeCode='").append(FishingActivityTypeEnum.JOINED_FISHING_OPERATION.toString()).append("' and a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid  ")
-                 .append(" and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.TAKEN_ON_BOARD)
+                .append(" and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.TAKEN_ON_BOARD)
                 .append("','").append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("')))");
     }
 
-
-
     @Override
-    public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
-        sql.append(" where ");
+    public void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         createWherePartForQueryForFilters(sql, query);
-        return sql;
     }
 
     @Override
-    public  void appendJoinFetchString(StringBuilder sql, String joinString) {
+    public void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
-   
+
     @Override
-    protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
+    protected void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
     }
 
     @Override
-    protected  void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
+    protected void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN).append(valueToFindAndApply);
         }

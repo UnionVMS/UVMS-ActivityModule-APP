@@ -45,7 +45,6 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
     private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
 
-
     /**
      * For some usecases we need different database column mappings for same filters.
      * We can call method which sets these specific mappings for certain business requirements while calling constructor     *
@@ -59,32 +58,20 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
-
         LOG.debug("Start building SQL depending upon Filter Criterias");
-
         StringBuilder sql = new StringBuilder();
-
-
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
-
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         LOG.info("sql :" + sql);
-
         return sql;
     }
 
     // Build Where part of the query based on Filter criterias
     @Override
-    public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
-        LOG.debug("Create Where part of Query");
-
-        sql.append(" where ");
+    public void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         createWherePartForQueryForFilters(sql, query);
-
-        return sql;
     }
-
 
     /**
      * Process FishingTripEntities to identify Unique FishingTrips.
@@ -161,7 +148,6 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         return null;
     }
 
-
     protected void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN).append(valueToFindAndApply);
@@ -169,14 +155,11 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         }
     }
 
-
     protected  void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
-
     protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
-
 }

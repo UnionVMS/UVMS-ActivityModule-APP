@@ -35,6 +35,7 @@
             <column name="operation_quantity_unit_code_list_id" type="VARCHAR(255)"/>
             <column name="unit_code_list_version_id" type="VARCHAR(255)"/>
             <column name="fishing_duration_measure_unit_code_list_version_id" type="varchar(255)"/>
+            <column name="latest" type="BOOLEAN" defaultValue="true"/>
         </addColumn>
 
         <addColumn tableName="activity_structured_address">

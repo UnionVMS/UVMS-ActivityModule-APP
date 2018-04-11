@@ -33,7 +33,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.util.PostGres;
+import eu.europa.ec.fisheries.ers.service.util.Postgres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
@@ -110,7 +110,7 @@ public class FluxMessageServiceBeanTest {
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
-        fluxMessageService.setDialect(new PostGres());
+        fluxMessageService.setDialect(new Postgres());
         fluxMessageService.saveFishingActivityReportDocuments(fluxFaReportMessage, FaReportSourceEnum.FLUX);
 
         //Verify
@@ -120,7 +120,7 @@ public class FluxMessageServiceBeanTest {
 
         //Test
         List<FaReportDocumentEntity>  faReportDocumentEntities = captor.getValue();
-        assertEquals(FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(faReportDocuments.get(1).getRelatedFLUXReportDocument().getPurposeCode().getValue())).getStatus(),
+        assertEquals(FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(faReportDocuments.get(1).getRelatedFLUXReportDocument().getPurposeCode().getValue())),
                 faReportDocumentEntities.get(0).getStatus());
     }
 

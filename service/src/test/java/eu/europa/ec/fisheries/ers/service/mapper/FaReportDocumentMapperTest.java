@@ -44,7 +44,7 @@ public class FaReportDocumentMapperTest {
         FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
         FaReportCorrectionDTO faReportCorrectionDTO = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDto(faReportDocumentEntity);
 
-        assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
+        assertEquals(faReportDocumentEntity.getStatus().getStatus(), faReportCorrectionDTO.getCorrectionType().toLowerCase());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
 
         FluxReportIdentifierEntity entity = faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
@@ -59,7 +59,7 @@ public class FaReportDocumentMapperTest {
         List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(Arrays.asList(faReportDocumentEntity));
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOs.get(0);
 
-        assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
+        assertEquals(faReportDocumentEntity.getStatus().getStatus(), faReportCorrectionDTO.getCorrectionType().toLowerCase());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
 
         FluxReportIdentifierEntity entity = faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
@@ -111,7 +111,7 @@ public class FaReportDocumentMapperTest {
         assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), faReportDocumentEntity.getAcceptedDatetime());
         assertEquals(faReportDocument.getFMCMarkerCode().getValue(), faReportDocumentEntity.getFmcMarker());
         assertEquals(faReportDocument.getFMCMarkerCode().getListID(), faReportDocumentEntity.getFmcMarkerListId());
-        assertEquals(FaReportStatusType.NEW.getStatus(), faReportDocumentEntity.getStatus());
+        assertEquals(FaReportStatusType.NEW, faReportDocumentEntity.getStatus());
         assertEquals(FaReportSourceEnum.FLUX.getSourceType(), faReportDocumentEntity.getSource());
     }
 
