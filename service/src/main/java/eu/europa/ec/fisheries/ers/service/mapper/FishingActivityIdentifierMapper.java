@@ -10,12 +10,17 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Mapper
 public interface FishingActivityIdentifierMapper {
@@ -25,4 +30,16 @@ public interface FishingActivityIdentifierMapper {
     IdentifierDto mapToActivityIdentifierDTO(FishingActivityIdentifierEntity entity);
 
     Set<IdentifierDto> mapToIdentifierDTOSet(Set<FishingActivityIdentifierEntity> entity);
+
+    @Mappings({
+            @Mapping(target = "faIdentifierId", source = "value"),
+            @Mapping(target = "faIdentifierSchemeId", source = "schemeID")
+    })
+    FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
+
+    @InheritInverseConfiguration
+    IDType mapToIDType(FishingActivityIdentifierEntity identifierEntity);
+
+    List<IDType> mapToIDTypeList(Set<FishingActivityIdentifierEntity> identifierEntities);
+
 }

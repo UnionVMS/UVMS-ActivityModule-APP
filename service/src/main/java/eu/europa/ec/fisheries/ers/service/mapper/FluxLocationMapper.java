@@ -24,7 +24,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
 @Mapper(imports = BaseMapper.class, uses = {FluxCharacteristicsMapper.class,
-        StructuredAddressMapper.class, FluxCharacteristicsMapper.class})
+        StructuredAddressMapper.class, FluxCharacteristicsMapper.class, CodeTypeMapper.class})
 public interface FluxLocationMapper {
 
     FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);

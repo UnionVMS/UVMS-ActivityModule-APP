@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
@@ -74,14 +73,7 @@ public class FaReportDocumentMapperTest {
         FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, FaReportSourceEnum.FLUX);
 
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity);
-
-        assertNotNull(faReportDocumentEntity.getFaReportIdentifiers());
-        FaReportIdentifierEntity faReportIdentifierEntity = faReportDocumentEntity.getFaReportIdentifiers().iterator().next();
         assertNotNull(faReportDocumentEntity);
-        assertEquals(faReportDocument.getRelatedReportIDs().get(0).getValue(), faReportIdentifierEntity.getFaReportIdentifierId());
-        assertEquals(faReportDocument.getRelatedReportIDs().get(0).getSchemeID(), faReportIdentifierEntity.getFaReportIdentifierSchemeId());
-        assertFaReportDocumentFields(faReportDocument, faReportIdentifierEntity.getFaReportDocument());
-
         assertNotNull(faReportDocumentEntity.getFishingActivities());
         FishingActivityEntity fishingActivityEntity = faReportDocumentEntity.getFishingActivities().iterator().next();
         assertNotNull(fishingActivityEntity);
@@ -101,8 +93,6 @@ public class FaReportDocumentMapperTest {
         assertNull(vesselTransportMeansEntityList);
         Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity());
         assertTrue(fishingActivityEntities1.size() == 0);
-        Set<FaReportIdentifierEntity> faReportIdentifierEntities = FaReportDocumentMapper.INSTANCE.mapToFAReportIdentifierEntities(null, new FaReportDocumentEntity());
-        assertTrue(faReportIdentifierEntities.size() == 0);
     }
 
     private void assertFaReportDocumentFields(FAReportDocument faReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
@@ -114,6 +104,4 @@ public class FaReportDocumentMapperTest {
         assertEquals(FaReportStatusType.NEW, faReportDocumentEntity.getStatus());
         assertEquals(FaReportSourceEnum.FLUX.getSourceType(), faReportDocumentEntity.getSource());
     }
-
-
 }

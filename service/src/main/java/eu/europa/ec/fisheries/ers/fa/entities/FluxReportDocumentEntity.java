@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -54,6 +55,9 @@ public class FluxReportDocumentEntity implements Serializable {
 
     @Column(name = "reference_id")
     private String referenceId;
+
+    @Embedded
+    private CodeType typeCode;
 
     @Column(name = "reference_scheme_id")
     private String referenceSchemeId;

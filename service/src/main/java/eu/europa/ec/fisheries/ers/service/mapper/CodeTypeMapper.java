@@ -8,19 +8,19 @@
  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.europa.ec.fisheries.ers.fa.entities;
+package eu.europa.ec.fisheries.ers.service.mapper;
 
-import javax.persistence.Embeddable;
+import eu.europa.ec.fisheries.ers.fa.entities.CodeType;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-import lombok.Data;
+@Mapper
+public interface CodeTypeMapper {
 
-@Embeddable
-@Data
-public class MeasureType {
+    CodeTypeMapper INSTANCE = Mappers.getMapper(CodeTypeMapper.class);
 
-    private Double value;
+    CodeType mapToCodeType(un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType codeType);
 
-    private String unitCode;
+    un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType mapToCodeType(CodeType codeType);
 
-    private String unitCodeListVersionID;
 }

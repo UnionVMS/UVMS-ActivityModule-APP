@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="emrinalgr" id="6387387638763">
+
+        <renameColumn columnDataType="VARCHAR(255)"
+                      newColumnName="namevalue"
+                      oldColumnName="name"
+                      tableName="activity_flux_location"/>
+
+        <addColumn tableName="activity_flux_location">
+            <column name="regionalfisheriesmanagementorganizationcode_name" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_value" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listagencyid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listagencyname" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listname" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listversionid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_languageid" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listschemeuri" type="VARCHAR(255)"/>
+            <column name="regionalfisheriesmanagementorganizationcode_listuri" type="VARCHAR(255)"/>
+        </addColumn>
+
+        <addColumn tableName="activity_fishing_activity">
+            <column name="latest" type="BOOLEAN" defaultValue="true"/>
+        </addColumn>
+
+        <addColumn tableName="activity_flux_report_document">
+            <column name="typecode_name" type="VARCHAR(255)"/>
+            <column name="typecode_value" type="VARCHAR(255)"/>
+            <column name="typecode_listid" type="VARCHAR(255)"/>
+            <column name="typecode_listagencyid" type="VARCHAR(255)"/>
+            <column name="typecode_listagencyname" type="VARCHAR(255)"/>
+            <column name="typecode_listname" type="VARCHAR(255)"/>
+            <column name="typecode_listversionid" type="VARCHAR(255)"/>
+            <column name="typecode_languageid" type="VARCHAR(255)"/>
+            <column name="typecode_listschemeuri" type="VARCHAR(255)"/>
+            <column name="typecode_listuri" type="VARCHAR(255)"/>
+        </addColumn>
+
+        <!--
+       <sql>
+
+            ALTER TABLE "activity_flux_location"
+            RENAME COLUMN "name" TO "namevalue";
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_name VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_value VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listagencyid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listagencyname VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listname VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listversionid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_languageid VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listschemeuri VARCHAR(255);
+
+            ALTER TABLE activity_flux_location
+            ADD regionalfisheriesmanagementorganizationcode_listuri VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_name VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_value VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listagencyid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listagencyname VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listname VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listversionid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_languageid VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listuri VARCHAR(255);
+
+            ALTER TABLE activity_flux_report_document
+            ADD typecode_listschemeid VARCHAR(255);
+
+       </sql>
+
+       -->
+    </changeSet>
+
+</databaseChangeLog>

@@ -276,6 +276,11 @@ public class FishingActivityEntity implements Serializable {
         flapDocumentEntity.setFishingActivity(this);
     }
 
+	public void addFishingActivityIdentifiers(FishingActivityIdentifierEntity identifierEntity){
+		fishingActivityIdentifiers.add(identifierEntity);
+		identifierEntity.setFishingActivity(this);
+	}
+
     public Double getCalculatedDuration(){
         if (isEmpty(delimitedPeriods)) {
             return null;

@@ -11,16 +11,32 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 import lombok.Data;
 
 @Embeddable
 @Data
-public class MeasureType {
+public class CodeType implements Serializable {
 
-    private Double value;
+    private String value;
 
-    private String unitCode;
+    private String listID;
 
-    private String unitCodeListVersionID;
+    private String listAgencyID;
+
+    private String listAgencyName;
+
+    private String listName;
+
+    private String listVersionID;
+
+    private String name;
+
+    private String languageID;
+
+    private String listURI;
+
+    private String listSchemeURI;
+
 }

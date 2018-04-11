@@ -157,6 +157,7 @@ public class ActivityEntityToModelMapper {
                 mapSourceVesselStorageCharacteristic(target, source.getSourceVesselCharId());
                 mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
 
+                target.setIDS(FishingActivityIdentifierMapper.INSTANCE.mapToIDTypeList(source.getFishingActivityIdentifiers()));
                 target.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
 
                 Set<FluxCharacteristicEntity> fluxCharacteristics = source.getFluxCharacteristics();
@@ -179,7 +180,6 @@ public class ActivityEntityToModelMapper {
                 List<FishingTrip> fishingTrips = FishingTripMapper.INSTANCE.mapToFishingTripList(source.getFishingTrips());
                 if (CollectionUtils.isNotEmpty(fishingTrips)){
                     target.setSpecifiedFishingTrip(fishingTrips.get(0));
-
                 }
 
                 target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));

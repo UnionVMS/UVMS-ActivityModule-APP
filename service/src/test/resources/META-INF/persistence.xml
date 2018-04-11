@@ -46,6 +46,9 @@
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselPositionEventEntity</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.CodeType</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.QuantityType</class>
+		<class>eu.europa.ec.fisheries.ers.fa.entities.MeasureType</class>
 
 		<properties>
 			<property name="hibernate.default_schema" value="activity" />
@@ -61,6 +64,7 @@
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
 			<property name="javax.persistence.schema-generation.create-database-schemas" value="true" />
+			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
 
 			<property name="show_sql" value="true" />
 			<property name="format_sql" value="true" />

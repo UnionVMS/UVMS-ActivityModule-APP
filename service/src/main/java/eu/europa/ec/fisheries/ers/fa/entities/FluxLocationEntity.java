@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -113,11 +114,14 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "geopolitical_region_code_list_id")
 	private String geopoliticalRegionCodeListId;
 
-	@Column(columnDefinition = "text")
+	@Column(columnDefinition = "text", name = "namevalue")
 	private String name;
 
 	@Column(name = "name_laguage_id")
 	private String nameLanguageId;
+
+	@Embedded
+	private CodeType regionalFisheriesManagementOrganizationCode;
 
 	@Column(name = "sovereign_rights_country_code")
 	private String sovereignRightsCountryCode;
@@ -161,7 +165,7 @@ public class FluxLocationEntity implements Serializable {
         List<TextType> names = null;
 		if (StringUtils.isNotEmpty(name)){
             names = new ArrayList<>();
-            names.add(new TextType(name, null, null));
+            names.add(new TextType(name, nameLanguageId, null));
 		}
 		return names;
 	}
