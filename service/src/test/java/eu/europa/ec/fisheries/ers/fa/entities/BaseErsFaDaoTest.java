@@ -161,8 +161,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("fishery_type_code_list_id", "FISHERY_CODE_LIST")
                     .column("species_target_code", "SPECIES_CODE")
                     .column("species_target_code_list_id", "SPECIES_CODE_LIST")
-                    .column("value", 23)
-                    .column("unit_code", "C62")
+                    .column("operationsquantity_value", 23)
+                    .column("operationsquantity_unitcode", "C62")
                     .column("calculated_operation_quantity", 23.00)
                     .column("fishing_duration_measure", 11.20)
                     .column("fishing_duration_measure_code", "C62")
@@ -175,7 +175,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .end().build(),
             insertInto("activity.activity_fishing_activity")
                     .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
-                            "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "value", "unit_code",
+                            "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operationsquantity_value", "operationsquantity_unitcode",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
                             "dest_vessel_char_id",  "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state","calculated_start_time")
                     .values(2, "ARRIVAL", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
@@ -387,7 +387,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     protected static final Operation INSERT_FLUX_LOCATION = sequenceOf(
             insertInto("activity.activity_flux_location")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "name",
+                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "namevalue",
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(1, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "J", "EFFORT_ZONE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
@@ -444,7 +444,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     );
     protected static final Operation INSERT_DELIMITED_PERIOD = sequenceOf(
             insertInto("activity.activity_delimited_period")
-                    .columns("id", "start_date", "end_date", "value", "unit_code", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
+                    .columns("id", "start_date", "end_date", "durationmeasure_value", "durationMeasure_unitcode", "calculated_duration", "fishing_activity_id", "fishing_trip_id")
                     .values(1, "2010-06-27 07:47:31.711", "2013-06-27 07:47:31.711", 1, "C62", 1.00, 1, 1)
                     .values(2, "2012-05-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 1, 2)
                     .values(3, "2013-06-27 07:47:31.711", "2016-06-27 07:47:31.711", 1, "C62", 1.00, 1, 3)
