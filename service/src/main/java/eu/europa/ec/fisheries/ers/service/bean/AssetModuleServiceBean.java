@@ -22,8 +22,8 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
@@ -121,7 +121,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         try {
             String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class);
-            if (response != null && !isUserFault(response)) {
+            if (response != null && isNotUserFault(response)) {
                 List<Asset> assets = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationId);
                 List<String> assetGuids = new ArrayList<>();
                 for (Asset asset : assets) {
@@ -167,7 +167,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         return assetGroupSearchFieldList;
     }
 
-
     private AssetListQuery createAssetListQuery(String vesselToSearchFor) {
         AssetListQuery assetListQuery       = new AssetListQuery();
         AssetListCriteria assetListCriteria = new AssetListCriteria();
@@ -183,19 +182,16 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         }
         assetListCriteria.setIsDynamic(false); // DO not know why
         assetListQuery.setAssetSearchCriteria(assetListCriteria);
-
         // Set asset pagination
         AssetListPagination pagination = new AssetListPagination();
         pagination.setPage(1);
         pagination.setListSize(1000);
         assetListQuery.setPagination(pagination);
-
         return assetListQuery;
     }
 
     private AssetListQuery createAssetListQuery(Collection<VesselIdentifierEntity> vesselIdentifiers) {
         AssetListQuery assetListQuery = new AssetListQuery();
-
         //Set asset list criteria
         AssetListCriteria assetListCriteria = new AssetListCriteria();
         for (VesselIdentifierEntity identifier : vesselIdentifiers) {
@@ -209,17 +205,13 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
                 log.warn("For Identifier : '"+identifier.getVesselIdentifierSchemeId()+"' it was not found the counterpart in the VesselTypeAssetQueryEnum.");
             }
         }
-
         assetListCriteria.setIsDynamic(false); // DO not know why
         assetListQuery.setAssetSearchCriteria(assetListCriteria);
-
         // Set asset pagination
         AssetListPagination pagination = new AssetListPagination();
         pagination.setPage(1);
         pagination.setListSize(1000);
         assetListQuery.setPagination(pagination);
-
         return assetListQuery;
     }
-
 }

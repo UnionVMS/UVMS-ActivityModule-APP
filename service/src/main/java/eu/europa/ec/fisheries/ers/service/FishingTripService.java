@@ -13,10 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
@@ -26,11 +30,9 @@ import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -93,7 +95,7 @@ public interface FishingTripService {
      * @param tripId
      * @return
      */
-    public ObjectNode getTripMapDetailsForTripId(String tripId);
+    ObjectNode getTripMapDetailsForTripId(String tripId);
 
     /**
      * This method will Return filtered FishingTrips which match with provided filter criterias
@@ -104,19 +106,29 @@ public interface FishingTripService {
      * @throws ServiceException
      */
 
-    FishingTripResponse getFishingTripIdsForFilter(FishingActivityQuery query) throws ServiceException;
+    FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException;
 
 
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
-                                                                                                      Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
+                                                                                               Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
     /**
      * Returns list of FishingActivities for provided tripId
+     *
      * @param tripId
      * @return List<FishingActivityEntity> list of activities for the trip
      * @throws ServiceException
      */
     List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
+
+
+    FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
+
+    CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
+
+    String getOwnerFluxPartyFromTripId(String tripId);
+
+
 }

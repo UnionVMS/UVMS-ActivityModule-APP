@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
@@ -25,21 +24,28 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_fishing_gear")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@EqualsAndHashCode(exclude = {"fishingGearRole","gearCharacteristics"})
+@ToString(exclude = {"fishingGearRole","gearCharacteristics"})
 public class FishingGearEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_gear_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
@@ -62,72 +68,20 @@ public class FishingGearEntity implements Serializable {
 	@Column(name = "type_code_list_id", nullable = false)
 	private String typeCodeListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
-	private Set<FishingGearRoleEntity> fishingGearRole;
+	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
+	private Set<FishingGearRoleEntity> fishingGearRole = new HashSet<>();
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingGear", cascade = CascadeType.ALL)
-	private Set<GearCharacteristicEntity> gearCharacteristics;
+	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
+	private Set<GearCharacteristicEntity> gearCharacteristics =  new HashSet<>();
 
-	public int getId() {
-		return this.id;
+	public void addGearCharacteristic(GearCharacteristicEntity characteristicEntity){
+		gearCharacteristics.add(characteristicEntity);
+		characteristicEntity.setFishingGear(this);
 	}
 
-	public FaCatchEntity getFaCatch() {
-		return this.faCatch;
-	}
+    public void addFishingGearRole(FishingGearRoleEntity roleEntity){
+        fishingGearRole.add(roleEntity);
+        roleEntity.setFishingGear(this);
+    }
 
-	public void setFaCatch(FaCatchEntity faCatch) {
-		this.faCatch = faCatch;
-	}
-
-	public FishingActivityEntity getFishingActivity() {
-		return this.fishingActivity;
-	}
-
-	public void setFishingActivity(
-			FishingActivityEntity fishingActivity) {
-		this.fishingActivity = fishingActivity;
-	}
-
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-
-	public Set<GearCharacteristicEntity> getGearCharacteristics() {
-		return this.gearCharacteristics;
-	}
-
-	public void setGearCharacteristics(
-			Set<GearCharacteristicEntity> gearCharacteristics) {
-		this.gearCharacteristics = gearCharacteristics;
-	}
-
-	public GearProblemEntity getGearProblem() {
-		return gearProblem;
-	}
-
-	public void setGearProblem(GearProblemEntity gearProblem) {
-		this.gearProblem = gearProblem;
-	}
-
-	public Set<FishingGearRoleEntity> getFishingGearRole() {
-		return fishingGearRole;
-	}
-
-	public void setFishingGearRole(Set<FishingGearRoleEntity> fishingGearRole) {
-		this.fishingGearRole = fishingGearRole;
-	}
-
-	public String getTypeCodeListId() {
-		return typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
 }

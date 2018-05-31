@@ -23,7 +23,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -34,13 +33,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.ToString;
 import org.mockito.internal.util.collections.Sets;
 
@@ -50,6 +50,9 @@ public class ActivityDetailsDto {
 
     @JsonView(CommonView.class)
     private String type;
+
+    @JsonView(CommonView.class)
+    private Long id;
 
     @JsonIgnore
     private Set<FluxCharacteristicsDto> fluxCharacteristics;
@@ -66,7 +69,7 @@ public class ActivityDetailsDto {
 
     @JsonSerialize(using = CustomDateSerializer.class)
     @JsonView({Landing.class, Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
-            JointFishingOperation.class, Relocation.class})
+            JointFishingOperation.class, Relocation.class,NotificationOfArrival.class})
     private Date occurrence;
 
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -111,7 +114,7 @@ public class ActivityDetailsDto {
     public Map<String, Set<Object>> getCharacteristics() {
         Map<String, Set<Object>> characMap = null;
         if (fluxCharacteristics != null) {
-            characMap = Collections.emptyMap();
+            characMap = Maps.newHashMap();
             for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
 
                 Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();
@@ -285,14 +288,15 @@ public class ActivityDetailsDto {
     }
 
     private void add(String key, Object value, Map<String, Set<Object>> map) {
-
-        Set<Object> valueSet = map.get(key);
-        if (valueSet == null) {
-            valueSet = Sets.newSet();
-        } else {
-            valueSet.add(value);
+        if(key !=null) {
+            Set<Object> valueSet = map.get(key);
+            if (valueSet == null) {
+                valueSet = Sets.newSet();
+            } else if (value != null) {
+                    valueSet.add(value);
+            }
+            map.put(key, valueSet);
         }
-        map.put(key, valueSet);
     }
 
     public Set<FlapDocumentDto> getFlapDocuments() {
@@ -301,5 +305,13 @@ public class ActivityDetailsDto {
 
     public void setFlapDocuments(Set<FlapDocumentDto> flapDocuments) {
         this.flapDocuments = flapDocuments;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

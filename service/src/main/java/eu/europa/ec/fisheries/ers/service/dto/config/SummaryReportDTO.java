@@ -13,39 +13,31 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.util.List;
 
-/**
- * Created by padhyad on 10/24/2016.
- */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(Include.NON_EMPTY)
 public class SummaryReportDTO {
 
-    @JsonProperty("values")
     private List<String> values;
 
-    @JsonProperty("order")
     private List<String> order;
 
-    @JsonProperty("values")
     public List<String> getValues() {
         return values;
     }
 
-    @JsonProperty("values")
     public void setValues(List<String> values) {
         this.values = values;
     }
 
-    @JsonProperty("order")
     public List<String> getOrder() {
         return order;
     }
 
-    @JsonProperty("order")
     public void setOrder(List<String> order) {
         this.order = order;
     }

@@ -10,6 +10,7 @@
  *
  *
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselPositionEventEntity;
@@ -18,15 +19,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselGeographicalCoordinate;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselPositionEvent;
 
-/**
- * Created by sanera on 17/03/2017.
- */
-@Mapper()
-public abstract class VesselPositionEventMapper extends BaseMapper  {
-    public static final VesselPositionEventMapper INSTANCE = Mappers.getMapper(VesselPositionEventMapper.class);
+@Mapper
+public interface VesselPositionEventMapper {
+
+    VesselPositionEventMapper INSTANCE = Mappers.getMapper(VesselPositionEventMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", source = "vesselPositionEvent.typeCode.value"),
@@ -39,41 +37,6 @@ public abstract class VesselPositionEventMapper extends BaseMapper  {
             @Mapping(target = "activityTypeCode", source = "vesselPositionEvent.activityTypeCode.value"),
             @Mapping(target = "vesselTransportMeans", source = "vesselTransportMeansEntity")
     })
-
-    public abstract VesselPositionEventEntity mapToVesselPositionEventEntity(VesselPositionEvent vesselPositionEvent,VesselTransportMeansEntity vesselTransportMeansEntity);
-
-    protected Double getLatitude(VesselGeographicalCoordinate coordinate) {
-        if (coordinate == null) {
-            return null;
-        }
-        if (coordinate.getLatitudeMeasure() != null) {
-            return coordinate.getLatitudeMeasure().getValue().doubleValue();
-        } else {
-            return null;
-        }
-    }
-
-
-    protected Double getAltitude(VesselGeographicalCoordinate coordinate) {
-        if (coordinate == null) {
-            return null;
-        }
-        if (coordinate.getLatitudeMeasure() != null) {
-            return coordinate.getAltitudeMeasure().getValue().doubleValue();
-        } else {
-            return null;
-        }
-    }
-
-    protected Double getLongitude(VesselGeographicalCoordinate coordinate) {
-        if (coordinate == null) {
-            return null;
-        }
-        if (coordinate.getLatitudeMeasure() != null) {
-            return coordinate.getLongitudeMeasure().getValue().doubleValue();
-        } else {
-            return null;
-        }
-    }
+    VesselPositionEventEntity mapToVesselPositionEventEntity(VesselPositionEvent vesselPositionEvent,VesselTransportMeansEntity vesselTransportMeansEntity);
 
 }

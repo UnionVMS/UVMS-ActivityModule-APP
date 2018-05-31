@@ -19,7 +19,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 import java.util.List;
@@ -58,4 +58,8 @@ public interface ActivityService {
     FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException;
 
     GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException;
+
+    public int getPreviousFishingActivity(int fishingActivityId);
+
+    public int getNextFishingActivity(int fishingActivityId);
 }

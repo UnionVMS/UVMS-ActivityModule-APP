@@ -25,8 +25,8 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MovementProducerBean;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
@@ -64,7 +64,6 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException {
-
         try {
             MovementQuery movementQuery = new MovementQuery();
             addListCriteria(vesselIds, movementQuery);
@@ -74,7 +73,7 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             String request = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
             String moduleMessage = movementProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage response = activityConsumer.getMessage(moduleMessage, TextMessage.class);
-            if (response != null && !isUserFault(response)) {
+            if (response != null && isNotUserFault(response)) {
                 List<MovementMapResponseType> mapResponseTypes = MovementModuleResponseMapper.mapToMovementMapResponse(response);
                 List<MovementType> movements = new ArrayList<>();
                 for (MovementMapResponseType movementMap : mapResponseTypes) {

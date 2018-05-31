@@ -13,31 +13,27 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.ers.fa.utils.JaxbUtil;
-import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
-import lombok.extern.slf4j.Slf4j;
-
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
 
-/**
- * Created by padhyad on 10/12/2016.
- */
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public abstract class ModuleService {
 
-    protected boolean isUserFault(TextMessage message) {
+    protected boolean isNotUserFault(TextMessage message) {
         boolean isErrorResponse = false;
-
         try {
-            UserFault userFault = JaxbUtil.unmarshallTextMessage(message, UserFault.class);
+            UserFault userFault = JAXBUtils.unMarshallMessage(message.getText(), UserFault.class);
             log.error("UserFault error JMS message received with text: " + userFault.getFault());
             isErrorResponse = true;
-        } catch (JAXBException e) {
-            //do nothing  since it's not a UserFault
-            log.error("Unexpected exception was thrown.", e);
+        } catch (JAXBException | JMSException e) {
+            //do nothing  since it's not a UserFault. Logging this error is wrong for the purpose of its usage..
+            //log.error("Unexpected exception was thrown.", e);
         }
-
-        return isErrorResponse;
+        return !isErrorResponse;
     }
 }

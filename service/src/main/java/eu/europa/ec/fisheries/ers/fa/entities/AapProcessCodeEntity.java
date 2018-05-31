@@ -25,15 +25,17 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/15/2016.
- */
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_aap_process_code")
+@Data
+@NoArgsConstructor
 public class AapProcessCodeEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_procode_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
@@ -47,32 +49,4 @@ public class AapProcessCodeEntity implements Serializable {
 
     @Column(name = "type_code_list_id", nullable = false)
     private String typeCodeListId;
-
-    public int getId() {
-        return id;
-    }
-
-    public AapProcessEntity getAapProcess() {
-        return aapProcess;
-    }
-
-    public void setAapProcess(AapProcessEntity aapProcess) {
-        this.aapProcess = aapProcess;
-    }
-
-    public String getTypeCode() {
-        return typeCode;
-    }
-
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
-    }
-
-    public String getTypeCodeListId() {
-        return typeCodeListId;
-    }
-
-    public void setTypeCodeListId(String typeCodeListId) {
-        this.typeCodeListId = typeCodeListId;
-    }
 }

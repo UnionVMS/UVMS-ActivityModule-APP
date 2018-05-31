@@ -10,31 +10,35 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import lombok.SneakyThrows;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.*;
-
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     private FishingActivityDao dao = new FishingActivityDao(em);
 
-
     @Before
     public void prepare() {
         super.prepare();
     }
-
 
     @Test
     @SneakyThrows
@@ -46,6 +50,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void testGetFishingActivityForTrip(){
         dbSetupTracker.skipNextLaunch();
 
@@ -108,7 +113,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertNotNull(finishingActivityList);
     }
 
-
     @Test
     @SneakyThrows
     public void testGetFishingActivityListByQuery_GetByFaReportID() throws Exception {
@@ -155,16 +159,9 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         sortingDto.setSortBy(SearchFilter.OCCURRENCE);
         sortingDto.setReversed(false);
         query.setSorting(sortingDto);
-
-
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
-
-        System.out.println("done:" + finishingActivityList.size());
-
         assertNotNull(finishingActivityList);
-
     }
-
 
     @Test
     @SneakyThrows
@@ -211,19 +208,16 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         sortingDto.setReversed(false);
         query.setSorting(sortingDto);
 
-
         query.setSearchCriteriaMap(searchCriteriaMap);
         PaginationDto pagination = new PaginationDto();
         pagination.setPageSize(2);
         pagination.setOffset(1);
         query.setPagination(pagination);
 
-
         SortKey sortingDto2 = new SortKey();
         sortingDto2.setSortBy(SearchFilter.OCCURRENCE);
         sortingDto2.setReversed(false);
         query.setSorting(sortingDto2);
-
 
         int size = dao.getCountForFishingActivityListByQuery(query);
 
@@ -232,9 +226,9 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     }
 
-
     @Test
     @SneakyThrows
+    @Ignore
     public void testGetFishingActivityListForFishingTrip() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -242,6 +236,5 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertNotNull(finishingActivityList);
         assertNotEquals(0, finishingActivityList.size());
     }
-
 
 }

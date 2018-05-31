@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,23 +23,33 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_fishing_trip")
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
+@ToString(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
+@Data
 public class FishingTripEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_trip_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
@@ -50,75 +59,29 @@ public class FishingTripEntity implements Serializable {
 	@Column(name = "type_code_list_id")
 	private String typeCodeListId;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
-	private Set<DelimitedPeriodEntity> delimitedPeriods;
+	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingTrip", cascade = CascadeType.ALL)
-	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers;
+	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<>();
 
-	public FishingTripEntity() {
-		super();
-	}
+    public void addFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
+        fishingTripIdentifiers.add(identifierEntity);
+        identifierEntity.setFishingTrip(this);
+    }
 
-	public int getId() {
-		return this.id;
-	}
+    public void addDelimitedPeriods(DelimitedPeriodEntity periodEntity) {
+        delimitedPeriods.add(periodEntity);
+        periodEntity.setFishingTrip(this);
+    }
 
-	public FaCatchEntity getFaCatch() {
-		return this.faCatch;
-	}
+    public void removeDelimitedPeriods(DelimitedPeriodEntity area) {
+        delimitedPeriods.remove(area);
+        area.setFishingTrip(null);
+    }
 
-	public void setFaCatch(FaCatchEntity faCatch) {
-		this.faCatch = faCatch;
-	}
-
-	public FishingActivityEntity getFishingActivity() {
-		return this.fishingActivity;
-	}
-
-	public void setFishingActivity(
-			FishingActivityEntity fishingActivity) {
-		this.fishingActivity = fishingActivity;
-	}
-
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	public String getTypeCodeListId() {
-		return this.typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public Set<DelimitedPeriodEntity> getDelimitedPeriods() {
-		return this.delimitedPeriods;
-	}
-
-	public void setDelimitedPeriods(Set<DelimitedPeriodEntity> delimitedPeriods) {
-		this.delimitedPeriods = delimitedPeriods;
-	}
-
-	public Set<FishingTripIdentifierEntity> getFishingTripIdentifiers() {
-		return this.fishingTripIdentifiers;
-	}
-
-	public void setFishingTripIdentifiers(Set<FishingTripIdentifierEntity> fishingTripIdentifiers) {
-		this.fishingTripIdentifiers = fishingTripIdentifiers;
-	}
-
-	@Override
-	public String toString() {
-		return "FishingTripEntity{" +
-				"id=" + id +
-				", typeCode='" + typeCode + '\'' +
-				", typeCodeListId='" + typeCodeListId + '\'' +
-				'}';
-	}
+    public void removeFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
+        fishingTripIdentifiers.remove(identifierEntity);
+        identifierEntity.setFishingTrip(null);
+    }
 }

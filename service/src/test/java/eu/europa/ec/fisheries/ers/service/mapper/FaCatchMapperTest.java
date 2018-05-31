@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
@@ -28,9 +27,6 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
-/**
- * Created by padhyad on 8/1/2016.
- */
 public class FaCatchMapperTest {
 
     @Test
@@ -41,18 +37,10 @@ public class FaCatchMapperTest {
         assertFaCatchFields(faCatch, faCatchEntity);
         assertNull(faCatchEntity.getFishingActivity());
 
-        assertNotNull(faCatchEntity.getAapProcesses());
-        AapProcessEntity aapProcessEntity = faCatchEntity.getAapProcesses().iterator().next();
-        assertNotNull(aapProcessEntity);
-        assertFaCatchFields(faCatch, aapProcessEntity.getFaCatch());
-
         assertNotNull(faCatchEntity.getAapStocks());
         AapStockEntity aapStockEntity = faCatchEntity.getAapStocks().iterator().next();
         assertNotNull(aapStockEntity);
         assertFaCatchFields(faCatch, aapStockEntity.getFaCatch());
-
-        assertNotNull(faCatchEntity.getSizeDistribution());
-        assertFaCatchFields(faCatch, faCatchEntity.getSizeDistribution().getFaCatch());
 
         assertNotNull(faCatchEntity.getFishingGears());
         FishingGearEntity fishingGearEntity = faCatchEntity.getFishingGears().iterator().next();
@@ -83,11 +71,9 @@ public class FaCatchMapperTest {
         assertEquals(faCatch.getWeighingMeansCode().getValue(), faCatchEntity.getWeighingMeansCode());
         assertEquals(faCatch.getWeighingMeansCode().getListID(), faCatchEntity.getWeighingMeansCodeListId());
         assertEquals(faCatch.getWeightMeasure().getValue().intValue(), faCatchEntity.getWeightMeasure().intValue());
-        assertEquals(faCatch.getWeightMeasure().getValue().intValue(), faCatchEntity.getCalculatedWeightMeasure().intValue());
         assertEquals(faCatch.getWeightMeasure().getUnitCode(), faCatchEntity.getWeightMeasureUnitCode());
         assertEquals(faCatch.getUnitQuantity().getValue().intValue(), faCatchEntity.getUnitQuantity().intValue());
         assertEquals(faCatch.getUnitQuantity().getUnitCode(), faCatchEntity.getUnitQuantityCode());
-        assertEquals(faCatch.getUnitQuantity().getValue().intValue(), faCatchEntity.getCalculatedUnitQuantity().intValue());
         assertEquals(faCatch.getUsageCode().getValue(), faCatchEntity.getUsageCode());
         assertEquals(faCatch.getUsageCode().getListID(), faCatchEntity.getUsageCodeListId());
     }

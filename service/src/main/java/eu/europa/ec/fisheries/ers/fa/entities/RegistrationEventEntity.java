@@ -8,13 +8,12 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.ers.fa.entities;
 
+package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,21 +26,26 @@ import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
 @Table(name = "activity_registration_event")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = {"vesselTransportMeanses", "registrationLocation"})
+@ToString(exclude = {"vesselTransportMeanses", "registrationLocation"})
 public class RegistrationEventEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "reg_event_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    private int id;
+	@Column(unique = true, nullable = false)
+	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "reg_event_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+	private int id;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "registration_location_id", nullable = false)
-	private RegistrationLocationEntity registrationLocation;
-
-	@Column(columnDefinition = "text", name = "description")
+	@Column(columnDefinition = "text")
 	private String description;
 
 	@Column(name = "desc_language_id")
@@ -51,64 +55,11 @@ public class RegistrationEventEntity implements Serializable {
 	@Column(name = "occurrence_datetime", length = 29)
 	private Date occurrenceDatetime;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "registrationEvent")
+	@OneToOne(mappedBy = "registrationEvent")
 	private VesselTransportMeansEntity vesselTransportMeanses;
 
-	public RegistrationEventEntity() {
-		super();
-	}
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "registration_location_id", nullable = false)
+	private RegistrationLocationEntity registrationLocation;
 
-	public int getId() {
-		return this.id;
-	}
-
-	public RegistrationLocationEntity getRegistrationLocation() {
-		return this.registrationLocation;
-	}
-
-	public void setRegistrationLocation(
-			RegistrationLocationEntity registrationLocation) {
-		this.registrationLocation = registrationLocation;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Date getOccurrenceDatetime() {
-		return this.occurrenceDatetime;
-	}
-
-	public void setOccurrenceDatetime(Date occurrenceDatetime) {
-		this.occurrenceDatetime = occurrenceDatetime;
-	}
-
-	public VesselTransportMeansEntity getVesselTransportMeanses() {
-		return vesselTransportMeanses;
-	}
-
-	public void setVesselTransportMeanses(VesselTransportMeansEntity vesselTransportMeanses) {
-		this.vesselTransportMeanses = vesselTransportMeanses;
-	}
-
-	public String getDescLanguageId() {
-		return descLanguageId;
-	}
-
-	public void setDescLanguageId(String descLanguageId) {
-		this.descLanguageId = descLanguageId;
-	}
-
-	@Override
-	public String toString() {
-		return "RegistrationEventEntity{" +
-				"id=" + id +
-				", description='" + description + '\'' +
-				", occurrenceDatetime=" + occurrenceDatetime +
-				'}';
-	}
 }

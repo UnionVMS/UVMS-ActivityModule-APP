@@ -8,16 +8,14 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.utils;
 
-/**
- * Created by padhyad on 6/29/2016.
- */
 public enum StructuredAddressTypeEnum {
 
     FLUX_PHYSICAL("flux_physical"),
     FLUX_POSTAL("flux_postal"),
-    CANTACT_PARTY_SPECIFIED("contact_party_specified");
+    CONTACT_PARTY_SPECIFIED("contact_party_specified");
 
     private String type;
 

@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
@@ -18,31 +19,35 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
+
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_aap_product")
+@Data
+@NoArgsConstructor
 public class AapProductEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_product_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "aap_process_id")
-	private AapProcessEntity aapProcess;
-	
 	@Column(name = "packaging_type_code")
 	private String packagingTypeCode;
 	
 	@Column(name = "packaging_type_code_list_id")
 	private String packagingTypeCodeListId;
 	
-	@Column(name = "packaging_unit_avarage_weight", precision = 17, scale = 17)
+	@Column(name = "packaging_unit_avarage_weight")
 	private Double packagingUnitAvarageWeight;
 
 	@Column(name = "packaging_weight_unit_code")
@@ -96,183 +101,27 @@ public class AapProductEntity implements Serializable {
 	@Column(name = "usage_code_list_id")
 	private String usageCodeListId;
 
-	public AapProductEntity() {
-		super();
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "aap_process_id")
+	private AapProcessEntity aapProcess;
 
-	public int getId() {
-		return this.id;
-	}
-	
-	public AapProcessEntity getAapProcess() {
-		return this.aapProcess;
-	}
-
-	public void setAapProcess(AapProcessEntity aapProcess) {
-		this.aapProcess = aapProcess;
-	}
-
-
-	public String getPackagingTypeCode() {
-		return this.packagingTypeCode;
-	}
-
-	public void setPackagingTypeCode(String packagingTypeCode) {
-		this.packagingTypeCode = packagingTypeCode;
-	}
-
-	
-	public String getPackagingTypeCodeListId() {
-		return this.packagingTypeCodeListId;
-	}
-
-	public void setPackagingTypeCodeListId(String packagingTypeCodeListId) {
-		this.packagingTypeCodeListId = packagingTypeCodeListId;
-	}
-
-	
-	public Double getPackagingUnitAvarageWeight() {
-		return this.packagingUnitAvarageWeight;
-	}
-
-	public void setPackagingUnitAvarageWeight(Double packagingUnitAvarageWeight) {
-		this.packagingUnitAvarageWeight = packagingUnitAvarageWeight;
-	}
-
-	
-	public Double getPackagingUnitCount() {
-		return this.packagingUnitCount;
-	}
-
-	public void setPackagingUnitCount(Double packagingUnitCount) {
-		this.packagingUnitCount = packagingUnitCount;
-	}
-
-	public String getSpeciesCode() {
-		return speciesCode;
-	}
-
-	public void setSpeciesCode(String speciesCode) {
-		this.speciesCode = speciesCode;
-	}
-
-	public String getSpeciesCodeListId() {
-		return speciesCodeListId;
-	}
-
-	public void setSpeciesCodeListId(String speciesCodeListId) {
-		this.speciesCodeListId = speciesCodeListId;
-	}
-
-	public Double getUnitQuantity() {
-		return unitQuantity;
-	}
-
-	public void setUnitQuantity(Double unitQuantity) {
-		this.unitQuantity = unitQuantity;
-	}
-
-	public Double getWeightMeasure() {
-		return weightMeasure;
-	}
-
-	public void setWeightMeasure(Double weightMeasure) {
-		this.weightMeasure = weightMeasure;
-	}
-
-	public String getWeighingMeansCode() {
-		return weighingMeansCode;
-	}
-
-	public void setWeighingMeansCode(String weighingMeansCode) {
-		this.weighingMeansCode = weighingMeansCode;
-	}
-
-	public String getWeighingMeansCodeListId() {
-		return weighingMeansCodeListId;
-	}
-
-	public void setWeighingMeansCodeListId(String weighingMeansCodeListId) {
-		this.weighingMeansCodeListId = weighingMeansCodeListId;
-	}
-
-	public String getUsageCode() {
-		return usageCode;
-	}
-
-	public void setUsageCode(String usageCode) {
-		this.usageCode = usageCode;
-	}
-
-	public String getUsageCodeListId() {
-		return usageCodeListId;
-	}
-
-	public void setUsageCodeListId(String usageCodeListId) {
-		this.usageCodeListId = usageCodeListId;
-	}
-
-	public String getPackagingWeightUnitCode() {
-		return packagingWeightUnitCode;
-	}
-
-	public void setPackagingWeightUnitCode(String packagingWeightUnitCode) {
-		this.packagingWeightUnitCode = packagingWeightUnitCode;
-	}
-
-	public Double getCalculatedPackagingWeight() {
-		return calculatedPackagingWeight;
-	}
-
-	public void setCalculatedPackagingWeight(Double calculatedPackagingWeight) {
-		this.calculatedPackagingWeight = calculatedPackagingWeight;
-	}
-
-	public String getWeightMeasureUnitCode() {
-		return weightMeasureUnitCode;
-	}
-
-	public void setWeightMeasureUnitCode(String weightMeasureUnitCode) {
-		this.weightMeasureUnitCode = weightMeasureUnitCode;
-	}
-
-	public Double getCalculatedWeightMeasure() {
-		return calculatedWeightMeasure;
-	}
-
-	public void setCalculatedWeightMeasure(Double calculatedWeightMeasure) {
-		this.calculatedWeightMeasure = calculatedWeightMeasure;
-	}
-
-	public String getPackagingUnitCountCode() {
-		return packagingUnitCountCode;
-	}
-
-	public void setPackagingUnitCountCode(String packagingUnitCountCode) {
-		this.packagingUnitCountCode = packagingUnitCountCode;
-	}
-
-	public Double getCalculatedPackagingUnitCount() {
-		return calculatedPackagingUnitCount;
-	}
-
-	public void setCalculatedPackagingUnitCount(Double calculatedPackagingUnitCount) {
-		this.calculatedPackagingUnitCount = calculatedPackagingUnitCount;
-	}
-
-	public String getUnitQuantityCode() {
-		return unitQuantityCode;
-	}
-
-	public void setUnitQuantityCode(String unitQuantityCode) {
-		this.unitQuantityCode = unitQuantityCode;
-	}
-
-	public Double getCalculatedUnitQuantity() {
-		return calculatedUnitQuantity;
-	}
-
-	public void setCalculatedUnitQuantity(Double calculatedUnitQuantity) {
-		this.calculatedUnitQuantity = calculatedUnitQuantity;
+	@PrePersist
+	public void prePersist(){ // TODO test me
+		if (unitQuantity != null || unitQuantityCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(unitQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedUnitQuantity =  result.doubleValue();
+			}
+		}
+        if (packagingUnitCountCode != null || packagingUnitCount != null){
+            UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(packagingUnitCountCode);
+            if (unitCodeEnum != null) {
+                BigDecimal quantity = new BigDecimal(packagingUnitCount);
+                BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+                calculatedPackagingUnitCount =  result.doubleValue();
+            }
+        }
 	}
 }

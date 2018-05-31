@@ -23,9 +23,6 @@ import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 
-/**
- * Created by padhyad on 7/29/2016.
- */
 public class GearProblemMapperTest {
 
     @Test
@@ -47,5 +44,11 @@ public class GearProblemMapperTest {
         assertEquals(gearProblem.getAffectedQuantity().getValue().intValue(), fishingGearEntity.getGearProblem().getAffectedQuantity());
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), fishingGearEntity.getGearProblem().getGearProblemRecovery().iterator().next().getRecoveryMeasureCode());
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), fishingGearEntity.getGearProblem().getGearProblemRecovery().iterator().next().getRecoveryMeasureCodeListId());
+
+        assertEquals(gearProblemEntity.getTypeCode(), "Code Type 1");
+        assertEquals(gearProblemEntity.getTypeCodeListId(), "fhty58-gh586t-5tjf8-t58rjewe");
+        gearProblemEntity.getLocations().iterator().next().onPrePersist();
+        assertNotNull(gearProblemEntity.getLocations().iterator().next().getGeom());
+
     }
 }

@@ -24,10 +24,13 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -42,6 +45,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
@@ -54,42 +58,40 @@ import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by kovian on 14/02/2017.
- *
+ * <p>
  * Base Class to be extended by all the mappers related to Activity Views (LANDING, ARRIVAL, AREA_ENTRY  etc..)
  */
 public abstract class BaseActivityViewMapper extends BaseMapper {
 
-    /**
-     * Add a quantity to another quantity checking that neither of the values is null;
-     * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
-     *
-     * @param actualMeasureToAdd
-     * @param meausureSubTotalToAddTo
-     * @return
-     */
-    protected static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
-        Double returnValue = null;
-        if (actualMeasureToAdd != null && !(Math.abs(actualMeasureToAdd - 0.0) < 0.00000001)) {
-            if (meausureSubTotalToAddTo == null) {
-                meausureSubTotalToAddTo = 0.0;
-            }
-            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
-        } else if (meausureSubTotalToAddTo != null) {
-            returnValue = meausureSubTotalToAddTo;
-        }
-        return returnValue;
-    }
-
     public static AreaDto getAreas(FishingActivityEntity faEntity) {
-        AreaDto areaDto = AreaDtoMapper.INSTANCE.mapToAreaDto(faEntity);
+        AreaDto areaDto = new AreaDtoMapper().mapToAreaDto(faEntity);
         areaDto.setFluxLocations(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationEnum.AREA));
         return areaDto;
+    }
+
+    public AreaDto getSortedAreas(FishingActivityEntity faEntity, Comparator<FluxLocationDto> comparator) {
+        AreaDto areaDto = getAreas(faEntity);
+        final List<FluxLocationDto> fluxLocationDtos = new ArrayList<>(areaDto.getFluxLocations());
+
+        TreeSet<FluxLocationDto> fluxLocationDtoTreeSet = new TreeSet<FluxLocationDto>(comparator);
+        fluxLocationDtoTreeSet.addAll(fluxLocationDtos);
+        areaDto.setFluxLocations(fluxLocationDtoTreeSet);
+
+        return areaDto;
+    }
+
+    public Set<FluxLocationDto> getSortedLocations(FishingActivityEntity faEntity, Comparator<FluxLocationDto> comparator) {
+        Set<FluxLocationDto> fluxLocationDtos = faEntity.getLocations_();
+        TreeSet<FluxLocationDto> fluxLocationDtoTreeSet = new TreeSet<FluxLocationDto>(comparator);
+        fluxLocationDtoTreeSet.addAll(fluxLocationDtos);
+
+        return fluxLocationDtoTreeSet;
     }
 
     public List<RelocationDto> getRelocations(FishingActivityEntity fishingActivityEntity) {
@@ -155,7 +157,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             return Collections.emptyMap();
         }
         Map<String, String> characMap = new HashMap<>();
-        for(FluxCharacteristicEntity fluxCharacteristic : fluxCharacteristics) {
+        for (FluxCharacteristicEntity fluxCharacteristic : fluxCharacteristics) {
             String value = null;
             if (fluxCharacteristic.getValueMeasure() != null) {
                 value = String.valueOf(fluxCharacteristic.getValueMeasure());
@@ -182,12 +184,12 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
      * @param faEntity
      * @return
      */
-    protected ActivityDetailsDto mapActivityDetails(FishingActivityEntity faEntity){
+    protected ActivityDetailsDto mapActivityDetails(FishingActivityEntity faEntity) {
         ActivityDetailsDto activityDetails = FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(faEntity);
         return populateActivityDetails(faEntity, activityDetails);
     }
 
-    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity){
+    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
         return FaReportDocumentMapper.INSTANCE.mapFaReportDocumentToReportDocumentDto(faRepDocEntity);
     }
 
@@ -209,8 +211,8 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return gearDto;
     }
 
-    protected GearDto mapToFirstFishingGear(Set<FishingGearEntity> fishingGearEntities){
-        if(CollectionUtils.isEmpty(fishingGearEntities)){
+    protected GearDto mapToFirstFishingGear(Set<FishingGearEntity> fishingGearEntities) {
+        if (CollectionUtils.isEmpty(fishingGearEntities)) {
             return null;
         }
         return mapSingleGearToDto(fishingGearEntities.iterator().next());
@@ -224,51 +226,57 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         }
         Set<GearCharacteristicEntity> gearCharacteristics = gearEntity.getGearCharacteristics();
         if (CollectionUtils.isNotEmpty(gearCharacteristics)) {
-            for(GearCharacteristicEntity charac : gearCharacteristics){
+            for (GearCharacteristicEntity charac : gearCharacteristics) {
                 fillCharacteristicField(charac, gearDto);
             }
         }
     }
 
     private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {
-        String quantityOnly     = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
-        String quantityWithUnit = new  StringBuilder(quantityOnly).append(charac.getValueMeasureUnitCode()).toString();
-        switch(charac.getTypeCode()){
-            case GEAR_CHARAC_TYPE_CODE_ME :
+        String quantityOnly = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
+        String quantityWithUnit = new StringBuilder(quantityOnly).append(charac.getValueMeasureUnitCode()).toString();
+        switch (charac.getTypeCode()) {
+            case GEAR_CHARAC_TYPE_CODE_ME:
                 gearDto.setMeshSize(quantityWithUnit);
                 break;
-            case GEAR_CHARAC_TYPE_CODE_GM :
+            case GEAR_CHARAC_TYPE_CODE_GM:
                 gearDto.setLengthWidth(quantityWithUnit);
                 break;
-            case GEAR_CHARAC_TYPE_CODE_GN :
+            case GEAR_CHARAC_TYPE_CODE_GN:
                 gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
                 break;
-            case GEAR_CHARAC_TYPE_CODE_HE :
+            case GEAR_CHARAC_TYPE_CODE_HE:
                 gearDto.setHeight(quantityWithUnit);
                 break;
-            case GEAR_CHARAC_TYPE_CODE_NI :
+            case GEAR_CHARAC_TYPE_CODE_NI:
                 gearDto.setNrOfLines(quantityWithUnit);
                 break;
-            case GEAR_CHARAC_TYPE_CODE_NN :
+            case GEAR_CHARAC_TYPE_CODE_NN:
                 gearDto.setNrOfNets(quantityWithUnit);
                 break;
-            case GEAR_CHARAC_TYPE_CODE_NL :
+            case GEAR_CHARAC_TYPE_CODE_NL:
                 gearDto.setNominalLengthOfNet(quantityWithUnit);
                 break;
-            case GEAR_CHARAC_TYPE_CODE_QG :
-                if(charac.getValueQuantityCode() != GEAR_CHARAC_Q_CODE_C62){
+            case GEAR_CHARAC_TYPE_CODE_QG:
+                if (!Objects.equals(charac.getValueQuantityCode(), GEAR_CHARAC_Q_CODE_C62)) {
                     gearDto.setQuantity(quantityWithUnit);
                 }
                 break;
-            case GEAR_CHARAC_TYPE_CODE_GD :
-                gearDto.setDescription(charac.getDescription());
+            case GEAR_CHARAC_TYPE_CODE_GD:
+                String description = charac.getDescription();
+                if (StringUtils.isNoneEmpty(description)){
+                    gearDto.setDescription(charac.getDescription());
+                }
+                else {
+                    gearDto.setDescription(charac.getValueText());
+                }
                 break;
-            default :
+            default:
                 break;
         }
     }
 
-    protected List<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity){
+    protected List<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity) {
         return FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity.getFaCatchs());
     }
 

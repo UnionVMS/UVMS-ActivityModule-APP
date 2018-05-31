@@ -11,8 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPersonDetailsDTO;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -32,9 +36,15 @@ public interface ContactPersonMapper {
             @Mapping(target = "familyNamePrefix", source = "familyNamePrefix.value"),
             @Mapping(target = "nameSuffix", source = "nameSuffix.value"),
             @Mapping(target = "gender", source = "genderCode.value"),
-            @Mapping(target = "alias", source = "alias.value"),
+            @Mapping(target = "alias", source = "alias.value")
+            // TODO map gender
     })
     ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
+
+    @InheritInverseConfiguration
+    ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
+
+    List<ContactPerson> mapToContactPersonList(Set<ContactPersonEntity> contactPerson);
 
     ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 }

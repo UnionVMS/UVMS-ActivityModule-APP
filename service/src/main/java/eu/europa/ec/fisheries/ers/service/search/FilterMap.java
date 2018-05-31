@@ -31,45 +31,46 @@ import java.util.Set;
  */
 public class FilterMap {
 
-    public static final String OWNER_ID = "ownerId";
-    public static final String FROM_ID = "fromId";
-    public static final String OCCURENCE_START_DATE = "startDate";
-    public static final String OCCURENCE_END_DATE = "endDate";
-    public static final String VESSEL_IDENTITY_NAME = "vtName";
-    public static final String VESSEL_IDENTIFIRE = "vtSchemeId";
-    public static final String VTM_GUIDS = "guids";
-    public static final String PURPOSE_CODE = "purposeCode";
-    public static final String REPORT_TYPE_CODE = "faReportTypeCode";
-    public static final String ACTIVITY_TYPE_CODE = "activityTypecode";
-    public static final String AREA_ID = "fluxAreaId";
-    public static final String PORT_ID = "fluxPortId";
-    public static final String FISHING_GEAR = "fishingGearType";
-    public static final String SPECIES_CODE = "speciesCode";
+    private static final String OWNER_ID = "ownerId";
+    private static final String FROM_ID = "fromId";
+    private static final String OCCURENCE_START_DATE = "startDate";
+    private static final String OCCURENCE_END_DATE = "endDate";
+    private static final String VESSEL_IDENTITY_NAME = "vtName";
+    private static final String VESSEL_IDENTIFIRE = "vtSchemeId";
+    private static final String VTM_GUIDS = "guids";
+    private static final String PURPOSE_CODE = "purposeCode";
+    private static final String REPORT_TYPE_CODE = "faReportTypeCode";
+    private static final String ACTIVITY_TYPE_CODE = "activityTypecode";
+    private static final String AREA_ID = "fluxAreaId";
+    private static final String PORT_ID = "fluxPortId";
+    private static final String FISHING_GEAR = "fishingGearType";
+    private static final String SPECIES_CODE = "speciesCode";
     public static final String QUANTITY_MIN = "minWeight";
     public static final String QUANTITY_MAX = "maxWeight";
-    public static final String CONTACT_PERSON_NAME = "agent";
-    public static final String TRIP_ID = "tripId";
-    public static final String CONTACT_ROLE_CODE = "roleCode";
+    private static final String CONTACT_PERSON_NAME = "agent";
+    private static final String TRIP_ID = "tripId";
+    private static final String TRIP_SCHEME_ID = "tripSchemeId";
+    private static final String CONTACT_ROLE_CODE = "roleCode";
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
     public static final String CONTACT_PARTY_TABLE_ALIAS = "vt.contactParty cparty";
-    public static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
+    private static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
     public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
-    public static final String GEAR_TYPE_TABLE_ALIAS = " a.fishingGears fg ";
-    public static final String FISHING_TRIP_TABLE_ALIAS = " a.fishingTrips fishingTrip ";
-    public static final String FISHING_TRIP_IDENTIFIER_TABLE_ALIAS = " fishingTrip.fishingTripIdentifiers fishingTripId ";
+    private static final String GEAR_TYPE_TABLE_ALIAS = " a.fishingGears fg ";
+    private static final String FISHING_TRIP_TABLE_ALIAS = " a.fishingTrips fishingTrip ";
+    private static final String FISHING_TRIP_IDENTIFIER_TABLE_ALIAS = " fishingTrip.fishingTripIdentifiers fishingTripId ";
     public static final String AAP_PROCESS_TABLE_ALIAS = " faCatch.aapProcesses aprocess ";
     public static final String AAP_PRODUCT_TABLE_ALIAS = " aprocess.aapProducts aprod ";
-    public static final String DATASOURCE = "dataSource";
-    public static final String FAREPORT_ID = "faReportId";
-    public static final String AREA_GEOM = "areaGeom";
-    public static final String FA_CATCH_TERITTORY = "faCatch.territory";
-    public static final String FA_CATCH_FAO_AREA = "faCatch.faoArea";
-    public static final String FA_CATCH_ICES_STAT_RECTANGLE = "faCatch.icesStatRectangle";
-    public static final String FA_CATCH_EFFORT_ZONE = "faCatch.effortZone";
-    public static final String FA_CATCH_RMFO = "faCatch.rfmo";
-    public static final String FA_CATCH_GFCM_GSA = "faCatch.gfcmGsa";
-    public static final String FA_CATCH_GFCM_STAT_RECTANGLE = "faCatch.gfcmStatRectangle";
+    private static final String DATASOURCE = "dataSource";
+    private static final String FAREPORT_ID = "faReportId";
+    private static final String AREA_GEOM = "areaGeom";
+    private static final String FA_CATCH_TERITTORY = "faCatch.territory";
+    private static final String FA_CATCH_FAO_AREA = "faCatch.faoArea";
+    private static final String FA_CATCH_ICES_STAT_RECTANGLE = "faCatch.icesStatRectangle";
+    private static final String FA_CATCH_EFFORT_ZONE = "faCatch.effortZone";
+    private static final String FA_CATCH_RMFO = "faCatch.rfmo";
+    private static final String FA_CATCH_GFCM_GSA = "faCatch.gfcmGsa";
+    private static final String FA_CATCH_GFCM_STAT_RECTANGLE = "faCatch.gfcmStatRectangle";
     public static final String FLUX_REP_MESSAGE_FROM_FA_REP = "fa.fluxFaReportMessage fluxMsg ";
     public static final String FLUX_REP_DOC_FROM_MESSAGE = "fluxMsg.fluxReportDocument fluxRepDoc ";
     public static final String FLUX_PARTY_FOR_MESSAGE = "fluxRepDoc.fluxParty fpFrom ";
@@ -155,6 +156,7 @@ public class FilterMap {
         filterQueryParameterMappings.put(SearchFilter.AREA_GEOM, AREA_GEOM);
         filterQueryParameterMappings.put(SearchFilter.TRIP_ID, TRIP_ID);
         filterQueryParameterMappings.put(SearchFilter.CONTACT_ROLE_CODE, CONTACT_ROLE_CODE);
+        filterQueryParameterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, TRIP_SCHEME_ID);
     }
 
     private static void populateFiltersWhichSupportMultipleValues() {
@@ -172,9 +174,10 @@ public class FilterMap {
 
     public static void populateGroupByMapping() {
 
-        groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.occurence", "setDay")); // set method belongs to class FaCatchSummaryCustomEntity
-        groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.occurence", "setMonth")); // set method belongs to class FaCatchSummaryCustomEntity
-        groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.occurence", "setYear")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_DAY, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setDay")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_MONTH, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setMonth")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE_YEAR, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setYear")); // set method belongs to class FaCatchSummaryCustomEntity
+        groupByMapping.put(GroupCriteria.DATE, new GroupCriteriaMapper(" ", "a.calculatedStartTime", "setDate")); // set method belongs to class FaCatchSummaryCustomEntity
         groupByMapping.put(GroupCriteria.VESSEL, new GroupCriteriaMapper(" ", "a.vesselTransportGuid", "setVesselTransportGuid"));
         groupByMapping.put(GroupCriteria.SIZE_CLASS, new GroupCriteriaMapper(" ", "faCatch.fishClassCode", "setFishClass"));
         groupByMapping.put(GroupCriteria.FLAG_STATE, new GroupCriteriaMapper(" ", "a.flagState", "setFlagState"));
@@ -241,6 +244,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FA_REPORT_ID, new FilterDetails(StringUtils.SPACE, "fa.id =:" + FAREPORT_ID));
         filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(StringUtils.SPACE, "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
         filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     /**
@@ -252,8 +256,21 @@ public class FilterMap {
     public void populateFilterMappingsForFilterFishingTrips() {
          filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
          filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
+
          filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
                      "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
+    }
+
+
+    public void populateFilterMappingsForFilterFishingTripIds() {
+
+        filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
+                "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
+
+        filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN  " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN  " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
+
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN  " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN  " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     public void populateFilterMAppingsWithChangeForFACatchReport() {

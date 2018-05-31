@@ -5,31 +5,45 @@
 	<artifactId>service</artifactId>
 	<name>${project.parent.artifactId}-service</name>
 	<packaging>ejb</packaging>
+	
+	<properties>
+		<jts.version>1.13</jts.version>
+	</properties>
 
 	<parent>
 		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
 		<artifactId>activity</artifactId>
-		<version>0.5.15-SNAPSHOT</version>
+		<version>1.1.7-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+		</dependency>
+	
+	  	<dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>${jts.version}</version>
+            <scope>provided</scope>
+        </dependency>        
+
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -45,8 +59,12 @@
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
 			<artifactId>movement-model</artifactId>
-            <classifier>date</classifier>
         </dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+			<artifactId>subscription-model</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -54,15 +72,52 @@
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>uvms-config</artifactId>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
-			<scope>provided</scope>
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
         </dependency>
+
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-message</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-date</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-service</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-dao</artifactId>
+			<version>${uvms.commons.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-geometry</artifactId>
+			<version>${uvms.commons.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.vividsolutions</groupId>
+					<artifactId>jts</artifactId>
+				</exclusion>
+			</exclusions>			
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-rest</artifactId>
+            <version>${uvms.commons.version}</version>
+        </dependency>
+        
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -72,13 +127,11 @@
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
 			<artifactId>exchange-model</artifactId>
-			<classifier>date</classifier>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
 			<artifactId>rules-model</artifactId>
-			<classifier>date</classifier>
 		</dependency>
 
 		<dependency>
@@ -166,7 +219,6 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
-			<classifier>date</classifier>
         </dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -238,7 +290,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ejb-plugin</artifactId>
@@ -317,5 +373,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
 </project>

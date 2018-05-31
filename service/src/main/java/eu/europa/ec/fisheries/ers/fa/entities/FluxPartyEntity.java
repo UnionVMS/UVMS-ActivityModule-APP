@@ -16,7 +16,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,20 +26,26 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
-/**
- * Created by padhyad on 9/15/2016.
- */
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
 @Table(name = "activity_flux_party")
+@Data
+@EqualsAndHashCode(exclude = {"fluxPartyIdentifiers"})
+@ToString(exclude = {"fluxPartyIdentifiers"})
+@NoArgsConstructor
 public class FluxPartyEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_pty_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxParty")
+    @OneToOne(mappedBy = "fluxParty", optional=false)
     private FluxReportDocumentEntity fluxReportDocument;
 
     @Column(name = "flux_party_name")
@@ -49,42 +54,7 @@ public class FluxPartyEntity implements Serializable {
     @Column(name = "name_language_id")
     private String nameLanguageId;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxParty", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fluxParty", cascade = CascadeType.ALL)
     private Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers;
 
-    public int getId() {
-        return id;
-    }
-
-    public FluxReportDocumentEntity getFluxReportDocument() {
-        return fluxReportDocument;
-    }
-
-    public void setFluxReportDocument(FluxReportDocumentEntity fluxReportDocument) {
-        this.fluxReportDocument = fluxReportDocument;
-    }
-
-    public Set<FluxPartyIdentifierEntity> getFluxPartyIdentifiers() {
-        return fluxPartyIdentifiers;
-    }
-
-    public void setFluxPartyIdentifiers(Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers) {
-        this.fluxPartyIdentifiers = fluxPartyIdentifiers;
-    }
-
-    public String getFluxPartyName() {
-        return fluxPartyName;
-    }
-
-    public void setFluxPartyName(String fluxPartyName) {
-        this.fluxPartyName = fluxPartyName;
-    }
-
-    public String getNameLanguageId() {
-        return nameLanguageId;
-    }
-
-    public void setNameLanguageId(String nameLanguageId) {
-        this.nameLanguageId = nameLanguageId;
-    }
 }

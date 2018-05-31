@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
@@ -22,19 +23,24 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
 @Table(name = "activity_fishing_activity_identifier")
+@Data
+@NoArgsConstructor
+@ToString(of = "id")
+@EqualsAndHashCode(of = {"faIdentifierId", "faIdentifierSchemeId"})
 public class FishingActivityIdentifierEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
 
 	@Column(name = "fa_identifier_id")
 	private String faIdentifierId;
@@ -42,37 +48,8 @@ public class FishingActivityIdentifierEntity implements Serializable {
 	@Column(name = "fa_identifier_scheme_id")
 	private String faIdentifierSchemeId;
 
-	public FishingActivityIdentifierEntity() {
-		super();
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public FishingActivityEntity getFishingActivity() {
-		return this.fishingActivity;
-	}
-
-	public void setFishingActivity(
-			FishingActivityEntity fishingActivity) {
-		this.fishingActivity = fishingActivity;
-	}
-
-	public String getFaIdentifierId() {
-		return this.faIdentifierId;
-	}
-
-	public void setFaIdentifierId(String faIdentifierId) {
-		this.faIdentifierId = faIdentifierId;
-	}
-
-	public String getFaIdentifierSchemeId() {
-		return this.faIdentifierSchemeId;
-	}
-
-	public void setFaIdentifierSchemeId(String faIdentifierSchemeId) {
-		this.faIdentifierSchemeId = faIdentifierSchemeId;
-	}
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "fishing_activity_id")
+	private FishingActivityEntity fishingActivity;
 
 }

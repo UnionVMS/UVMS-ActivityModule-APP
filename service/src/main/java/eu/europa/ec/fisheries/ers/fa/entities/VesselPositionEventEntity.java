@@ -28,24 +28,26 @@ import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by sanera on 9/16/2016.
- */
+import com.vividsolutions.jts.geom.Geometry;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "activity_vessel_position_event")
+@Data
+@NoArgsConstructor
 public class VesselPositionEventEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "pos_event_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vessel_transport_means_id")
     private VesselTransportMeansEntity vesselTransportMeans;
-
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "obtained_occurrence_date_time", length = 29)
@@ -60,96 +62,16 @@ public class VesselPositionEventEntity implements Serializable {
     @Column(name = "course_value_measure")
     private Double courseValueMeasure;
 
-    @Column(name = "latitude")
     private Double latitude;
 
-    @Column(name = "altitude")
     private Double altitude;
 
-    @Column(name = "longitude")
     private Double longitude;
 
     @Column(name = "activity_type_code")
     private String activityTypeCode;
 
-    public int getId() {
-        return id;
-    }
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    private Geometry geom;
 
-    public VesselTransportMeansEntity getVesselTransportMeans() {
-        return vesselTransportMeans;
-    }
-
-    public void setVesselTransportMeans(VesselTransportMeansEntity vesselTransportMeans) {
-        this.vesselTransportMeans = vesselTransportMeans;
-    }
-
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Date getObtainedOccurrenceDateTime() {
-        return obtainedOccurrenceDateTime;
-    }
-
-    public void setObtainedOccurrenceDateTime(Date obtainedOccurrenceDateTime) {
-        this.obtainedOccurrenceDateTime = obtainedOccurrenceDateTime;
-    }
-
-    public String getTypeCode() {
-        return typeCode;
-    }
-
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
-    }
-
-    public Double getSpeedValueMeasure() {
-        return speedValueMeasure;
-    }
-
-    public void setSpeedValueMeasure(Double speedValueMeasure) {
-        this.speedValueMeasure = speedValueMeasure;
-    }
-
-    public Double getCourseValueMeasure() {
-        return courseValueMeasure;
-    }
-
-    public void setCourseValueMeasure(Double courseValueMeasure) {
-        this.courseValueMeasure = courseValueMeasure;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getAltitude() {
-        return altitude;
-    }
-
-    public void setAltitude(Double altitude) {
-        this.altitude = altitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getActivityTypeCode() {
-        return activityTypeCode;
-    }
-
-    public void setActivityTypeCode(String activityTypeCode) {
-        this.activityTypeCode = activityTypeCode;
-    }
 }

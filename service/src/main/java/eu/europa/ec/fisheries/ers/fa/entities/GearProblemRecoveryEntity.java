@@ -25,22 +25,20 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/16/2016.
- */
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_gear_problem_recovery")
+@Data
+@NoArgsConstructor
 public class GearProblemRecoveryEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "prob_rec_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gear_problem_id")
-    private GearProblemEntity gearProblem;
 
     @Column(name = "recovery_measure_code", nullable = false)
     private String recoveryMeasureCode;
@@ -48,31 +46,8 @@ public class GearProblemRecoveryEntity implements Serializable {
     @Column(name = "recovery_measure_code_list_id", nullable = false)
     private String recoveryMeasureCodeListId;
 
-    public int getId() {
-        return id;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gear_problem_id")
+    private GearProblemEntity gearProblem;
 
-    public GearProblemEntity getGearProblem() {
-        return gearProblem;
-    }
-
-    public void setGearProblem(GearProblemEntity gearProblem) {
-        this.gearProblem = gearProblem;
-    }
-
-    public String getRecoveryMeasureCode() {
-        return recoveryMeasureCode;
-    }
-
-    public void setRecoveryMeasureCode(String recoveryMeasureCode) {
-        this.recoveryMeasureCode = recoveryMeasureCode;
-    }
-
-    public String getRecoveryMeasureCodeListId() {
-        return recoveryMeasureCodeListId;
-    }
-
-    public void setRecoveryMeasureCodeListId(String recoveryMeasureCodeListId) {
-        this.recoveryMeasureCodeListId = recoveryMeasureCodeListId;
-    }
 }

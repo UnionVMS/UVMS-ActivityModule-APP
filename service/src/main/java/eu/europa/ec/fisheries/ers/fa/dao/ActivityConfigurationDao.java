@@ -11,11 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
+import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 
 /**
  * Created by sanera on 20/06/2017.

@@ -22,18 +22,19 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Entity that will map the configuration of Activity module.
- */
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @NamedQueries({
         @NamedQuery(name = ActivityConfiguration.GET_PROPERTY_VALUE,
                 query = "SELECT config.configValue " +
                         "FROM ActivityConfiguration config " +
-                        "WHERE config.configName =:"+ActivityConfiguration.CONFIG_NAME)
+                        "WHERE config.configName =:" + ActivityConfiguration.CONFIG_NAME)
 })
-
 @Entity
 @Table(name = "activity_configuration")
+@Data
+@NoArgsConstructor
 public class ActivityConfiguration implements Serializable {
 
     public static final String GET_PROPERTY_VALUE ="GetPropertyValue";
@@ -41,10 +42,10 @@ public class ActivityConfiguration implements Serializable {
     public static final String LIMIT_FISHING_TRIPS ="LIMIT_FISHING_TRIPS";
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "act_config_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    private Long id;
+    private int id;
 
     @Column(name = "config_name")
     private String configName;
@@ -52,28 +53,4 @@ public class ActivityConfiguration implements Serializable {
     @Column(name = "config_value")
     private String configValue;
 
-    public ActivityConfiguration(){super();}
-
-    public ActivityConfiguration(String configName, String configValue) {
-        setConfigName(configName);
-        setConfigValue(configValue);
-    }
-    public String getConfigName() {
-        return configName;
-    }
-    public void setConfigName(String configName) {
-        this.configName = configName;
-    }
-    public String getConfigValue() {
-        return configValue;
-    }
-    public void setConfigValue(String value) {
-        this.configValue = value;
-    }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

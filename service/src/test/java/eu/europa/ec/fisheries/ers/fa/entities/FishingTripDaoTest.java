@@ -13,19 +13,23 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import lombok.SneakyThrows;
-import org.junit.Before;
-import org.junit.Test;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static junit.framework.TestCase.assertNotNull;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Created by sanera on 06/09/2016.
@@ -41,6 +45,7 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
+    @Ignore //FIXME
     public void testFetchVesselTransportDetailsForFishingTrip() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -58,28 +63,11 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
 
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
 
-
-  //      searchCriteriaMap.put(Filters.PERIOD_START, "2012-05-27T07:47:31");
-   //     searchCriteriaMap.put(Filters.PERIOD_END, "2015-05-27T07:47:31");
-
-     //   searchCriteriaMap.put(Filters.PURPOSE, "9");
-  //      searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-     //   searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
-    //    searchCriteriaMap.put(Filters.ACTIVITY_TYPE, "DEPARTURE");
-
-//        searchCriteriaMap.put(Filters.SPECIES, "PLE");
- //       searchCriteriaMap.put(Filters.MASTER, "MARK");
-   //     searchCriteriaMap.put(Filters.AREAS, "27.4.b");
-     //   searchCriteriaMap.put(Filters.PORT, "GBR");
-
-       // searchCriteriaMap.put(Filters.QUANTITY_MIN, "0");
-      //  searchCriteriaMap.put(Filters.QUANTITY_MAX, "25");
         Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
         List<String> activityTypeValues=new ArrayList<>();
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         activityTypeValues.add("ARRIVAL");
-
 
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(searchCriteriaMap);
@@ -94,4 +82,147 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
 
     }
 
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripIdsForMatchingFilterCriteria() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> purposeCodeValues=new ArrayList<>();
+        purposeCodeValues.add("9");
+        purposeCodeValues.add("1");
+        purposeCodeValues.add("5");
+        purposeCodeValues.add("3");
+
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
+        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query);
+        FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID");
+
+        assertEquals(true,fishingTripIdSet.contains(fishingTripId));
+        assertNotNull(fishingTripIdSet);
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripIdsForMatchingFilterCriteria_allCommonFilters() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+        searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.FROM, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
+        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2018-05-27T07:47:31");
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(SearchFilter.AREAS, "J");
+        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(SearchFilter.SPECIES, "BFT");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "50");
+        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> purposeCodeValues=new ArrayList<>();
+        purposeCodeValues.add("9");
+        purposeCodeValues.add("1");
+        purposeCodeValues.add("5");
+        purposeCodeValues.add("3");
+
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
+        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query);
+        FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID");
+
+        assertEquals(true,fishingTripIdSet.contains(fishingTripId));
+        assertNotNull(fishingTripIdSet);
+
+    }
+
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingTripIdsForMatchingFilterCriteria_noFilters() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> purposeCodeValues=new ArrayList<>();
+        purposeCodeValues.add("9");
+        purposeCodeValues.add("1");
+        purposeCodeValues.add("5");
+        purposeCodeValues.add("3");
+
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
+        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query);
+        FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID");
+
+        assertEquals(true,fishingTripIdSet.contains(fishingTripId));
+        assertNotNull(fishingTripIdSet);
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGetCountOfFishingTripsForMatchingFilterCriteria() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+
+        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
+        searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
+        searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.FROM, "OWNER1");
+        searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
+        searchCriteriaMap.put(SearchFilter.PERIOD_END, "2018-05-27T07:47:31");
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        searchCriteriaMap.put(SearchFilter.AREAS, "J");
+        searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
+        searchCriteriaMap.put(SearchFilter.SPECIES, "BFT");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
+        searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "50");
+        searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
+
+        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> purposeCodeValues=new ArrayList<>();
+        purposeCodeValues.add("9");
+        purposeCodeValues.add("1");
+        purposeCodeValues.add("5");
+        purposeCodeValues.add("3");
+
+
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
+        Integer fishingTripCount= dao.getCountOfFishingTripsForMatchingFilterCriteria(query);
+        System.out.println("Count : "+fishingTripCount);
+
+        assertEquals(true,fishingTripCount >= 1);
+
+    }
 }

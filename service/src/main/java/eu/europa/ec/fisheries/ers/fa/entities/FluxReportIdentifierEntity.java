@@ -16,39 +16,39 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/15/2016.
- */
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_flux_report_identifier")
 @NamedQueries({
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        //"INNER JOIN flRepDoc.fluxFaReportMessage faRepMsg " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId"),
-
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_RELATED_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        //"INNER JOIN flRepDoc.faReportDocument faRepDoc " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId")
-
 })
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = {"fluxReportIdentifierId", "fluxReportIdentifierSchemeId"})
 public class FluxReportIdentifierEntity implements Serializable {
 
     public static final String FIND_MATCHING_IDENTIFIER = "findMatchingIdentifier";
     public static final String FIND_RELATED_MATCHING_IDENTIFIER = "findRelatedMatchingIdentifier";
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_rep_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "flux_report_document_id")
     private FluxReportDocumentEntity fluxReportDocument;
 
@@ -58,31 +58,4 @@ public class FluxReportIdentifierEntity implements Serializable {
     @Column(name = "flux_report_identifier_scheme_id")
     private String fluxReportIdentifierSchemeId;
 
-    public int getId() {
-        return id;
-    }
-
-    public FluxReportDocumentEntity getFluxReportDocument() {
-        return fluxReportDocument;
-    }
-
-    public void setFluxReportDocument(FluxReportDocumentEntity fluxReportDocument) {
-        this.fluxReportDocument = fluxReportDocument;
-    }
-
-    public String getFluxReportIdentifierId() {
-        return fluxReportIdentifierId;
-    }
-
-    public void setFluxReportIdentifierId(String fluxReportIdentifierId) {
-        this.fluxReportIdentifierId = fluxReportIdentifierId;
-    }
-
-    public String getFluxReportIdentifierSchemeId() {
-        return fluxReportIdentifierSchemeId;
-    }
-
-    public void setFluxReportIdentifierSchemeId(String fluxReportIdentifierSchemeId) {
-        this.fluxReportIdentifierSchemeId = fluxReportIdentifierSchemeId;
-    }
 }

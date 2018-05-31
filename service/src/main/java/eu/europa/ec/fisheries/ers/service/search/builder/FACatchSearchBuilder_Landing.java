@@ -6,24 +6,23 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.GroupCriteriaMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by sanera on 01/03/2017.
  */
 public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
 
-    protected String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
+    private String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
             "JOIN "+ FilterMap.AAP_PROCESS_TABLE_ALIAS +" JOIN  " +FilterMap.AAP_PRODUCT_TABLE_ALIAS+
             "  JOIN a.faReportDocument fa  " ;
 
 
-    protected String SUM_WEIGHT = " SUM(aprod.calculatedWeightMeasure)  " ;
+    private String SUM_WEIGHT = " SUM(aprod.calculatedWeightMeasure)  " ;
 
     protected void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings, List<GroupCriteria> groupByFieldList) {
         // Below is default JOIN for the query
@@ -44,23 +43,18 @@ public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
 
     @NotNull
     protected void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings) throws ServiceException {
-
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
-
         // Build SELECT part of query.
         for (GroupCriteria criteria : groupByFieldList) {
-
             GroupCriteriaMapper mapper = groupMAppings.get(criteria);
             sql.append(mapper.getColumnName());
             sql.append(", ");
         }
-
         sql.append(SUM_WEIGHT);
     }
 
     protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
-
         sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.LANDING).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
     }
 

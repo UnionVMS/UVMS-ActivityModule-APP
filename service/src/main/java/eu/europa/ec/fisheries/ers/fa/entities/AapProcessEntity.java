@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
@@ -23,71 +24,49 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_aap_process")
+@Data
+@EqualsAndHashCode(exclude = {"aapProducts", "aapProcessCode"})
+@ToString(exclude = {"aapProducts", "aapProcessCode"})
+@NoArgsConstructor
 public class AapProcessEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_process_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
+	@Column(name = "conversion_factor")
+	private Double conversionFactor;
+	
+	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<AapProductEntity> aapProducts = new HashSet<>();
+
+	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<AapProcessCodeEntity> aapProcessCode = new HashSet<>();
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
-	
-	@Column(name = "conversion_factor")
-	private Integer conversionFactor;
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess", cascade = CascadeType.ALL)
-	private Set<AapProductEntity> aapProducts;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "aapProcess", cascade = CascadeType.ALL)
-	private Set<AapProcessCodeEntity> aapProcessCode;
-
-	public AapProcessEntity() {
-		super();
+	public void addAapProducts(AapProductEntity aapProductEntity){
+		aapProducts.add(aapProductEntity);
+		aapProductEntity.setAapProcess(this);
 	}
 
-	public int getId() {
-		return this.id;
+	public void addProcessCode(AapProcessCodeEntity aapProcessCodeEntity){
+		aapProcessCode.add(aapProcessCodeEntity);
+		aapProcessCodeEntity.setAapProcess(this);
 	}
 
-
-	public FaCatchEntity getFaCatch() {
-		return this.faCatch;
-	}
-
-	public void setFaCatch(FaCatchEntity faCatch) {
-		this.faCatch = faCatch;
-	}
-
-	public Integer getConversionFactor() {
-		return this.conversionFactor;
-	}
-
-	public void setConversionFactor(Integer conversionFactor) {
-		this.conversionFactor = conversionFactor;
-	}
-
-	
-	public Set<AapProductEntity> getAapProducts() {
-		return this.aapProducts;
-	}
-
-	public void setAapProducts(
-			Set<AapProductEntity> aapProducts) {
-		this.aapProducts = aapProducts;
-	}
-
-	public Set<AapProcessCodeEntity> getAapProcessCode() {
-		return aapProcessCode;
-	}
-
-	public void setAapProcessCode(Set<AapProcessCodeEntity> aapProcessCode) {
-		this.aapProcessCode = aapProcessCode;
-	}
 }

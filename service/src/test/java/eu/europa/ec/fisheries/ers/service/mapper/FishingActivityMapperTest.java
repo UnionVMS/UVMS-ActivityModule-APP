@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
@@ -74,11 +73,6 @@ public class FishingActivityMapperTest {
         assertNotNull(delimitedPeriodEntity);
         assertFishingActivityFields(fishingActivity, delimitedPeriodEntity.getFishingActivity());
 
-        assertNotNull(fishingActivityEntity.getFluxCharacteristics());
-        FluxCharacteristicEntity fluxCharacteristicEntity = fishingActivityEntity.getFluxCharacteristics().iterator().next();
-        assertNotNull(fluxCharacteristicEntity);
-        assertFishingActivityFields(fishingActivity, fluxCharacteristicEntity.getFishingActivity());
-
         assertNotNull(fishingActivityEntity.getFluxLocations());
         FluxLocationEntity fluxLocationEntity = fishingActivityEntity.getFluxLocations().iterator().next();
         assertNotNull(fluxLocationEntity);
@@ -109,12 +103,10 @@ public class FishingActivityMapperTest {
         assertEquals(fishingActivity.getFisheryTypeCode().getListID(), fishingActivityEntity.getFisheryTypeCodeListId());
         assertEquals(fishingActivity.getSpeciesTargetCode().getValue(), fishingActivityEntity.getSpeciesTargetCode());
         assertEquals(fishingActivity.getSpeciesTargetCode().getListID(), fishingActivityEntity.getSpeciesTargetCodeListId());
-        assertEquals(fishingActivity.getOperationsQuantity().getValue().intValue(), fishingActivityEntity.getOperationQuantity().intValue());
-        assertEquals(fishingActivity.getOperationsQuantity().getUnitCode(), fishingActivityEntity.getOperationQuantityCode());
-        assertEquals(fishingActivity.getOperationsQuantity().getValue().intValue(), fishingActivityEntity.getCalculatedOperationQuantity().intValue());
+        assertEquals(fishingActivity.getOperationsQuantity().getValue().intValue(), fishingActivityEntity.getOperationsQuantity().getValue().intValue());
+        assertEquals(fishingActivity.getOperationsQuantity().getUnitCode(), fishingActivityEntity.getOperationsQuantity().getUnitCode());
         assertEquals(fishingActivity.getFishingDurationMeasure().getValue().intValue(), fishingActivityEntity.getFishingDurationMeasure().intValue());
         assertEquals(fishingActivity.getFishingDurationMeasure().getUnitCode(), fishingActivityEntity.getFishingDurationMeasureCode());
-        assertEquals(fishingActivity.getFishingDurationMeasure().getValue().intValue(), fishingActivityEntity.getCalculatedFishingDuration().intValue());
     //    assertEquals(fishingActivity.getSpecifiedFLAPDocument().getID().getValue(), fishingActivityEntity.getFlapDocumentId());
       //  assertEquals(fishingActivity.getSpecifiedFLAPDocument().getID().getSchemeID(), fishingActivityEntity.getFlapDocumentSchemeId());
     }

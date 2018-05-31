@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.ers.service.search.builder;
 
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +43,10 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
      */
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
-    //    FilterMap.populateFilterMappings();
+        // FilterMap.populateFilterMappings();
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
-
         sql.append(FISHING_ACTIVITY_JOIN); // Common Join for all filters
-
         // Create join part of SQL query
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
@@ -62,14 +60,8 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
      * Build Where part of the query based on Filter criterias
      */
     @Override
-    public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
-        LOG.debug("Create Where part of Query");
-        sql.append(" where ");
+    public void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         createWherePartForQueryForFilters(sql, query);
-        LOG.debug("Generated Query After Where :" + sql);
         sql.append(" and a.relatedFishingActivity IS NULL ");
-        return sql;
     }
-
-
 }

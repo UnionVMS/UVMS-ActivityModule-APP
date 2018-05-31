@@ -8,28 +8,28 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_structured_address")
+@EqualsAndHashCode(exclude = {"contactParty"})
+@Data
+@NoArgsConstructor
 public class StructuredAddressEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "str_add_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contact_party_id")
-    private ContactPartyEntity contactParty;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flux_location_id")
-    private FluxLocationEntity fluxLocation;
 
     @Column(name = "block_name", length = 1000)
     private String blockName;
@@ -37,14 +37,17 @@ public class StructuredAddressEntity implements Serializable {
     @Column(name = "building_name", length = 1000)
     private String buildingName;
 
+    @Column(name = "building_number")
+    private String buildingNumber;
+
     @Column(name = "city_name")
     private String cityName;
 
     @Column(name = "city_subdivision_name")
     private String citySubdivisionName;
 
-    @Column(name = "country")
-    private String country;
+    @Column(name = "country_id_value")
+    private String countryIDValue;
 
     @Column(name = "country_name")
     private String countryName;
@@ -53,7 +56,7 @@ public class StructuredAddressEntity implements Serializable {
     private String countrySubdivisionName;
 
     @Column(name = "country_id_scheme_id")
-    private String countryIdSchemeId;
+    private String countryIDSchemeID;
 
     @Column(name = "address_id")
     private String addressId;
@@ -64,8 +67,19 @@ public class StructuredAddressEntity implements Serializable {
     @Column(name = "post_office_box")
     private String postOfficeBox;
 
-    @Column(name = "postcode")
     private String postcode;
+
+    @Column(name = "post_code_list_id")
+    private String postcodeListID;
+
+    @Column(name = "postal_area_value")
+    private String postalAreaValue;
+
+    @Column(name = "postal_area_language_id")
+    private String postalAreaLanguageID;
+
+    @Column(name = "postal_area_language_local_id")
+    private String postalAreaLanguageLocaleID;
 
     @Column(name = "streetname", length = 1000)
     private String streetName;
@@ -73,141 +87,21 @@ public class StructuredAddressEntity implements Serializable {
     @Column(name = "structured_address_type")
     private String structuredAddressType;
 
-    public StructuredAddressEntity() {
-        super();
-    }
+    @Column(name = "staircase_number_value")
+    private String staircaseNumberValue;
 
-    public int getId() {
-        return this.id;
-    }
+    @Column(name = "floor_identification_value")
+    private String floorIdentificationValue;
 
-    public ContactPartyEntity getContactParty() {
-        return this.contactParty;
-    }
+    @Column(name = "room_identification_value")
+    private String roomIdentificationValue;
 
-    public void setContactParty(
-            ContactPartyEntity contactParty) {
-        this.contactParty = contactParty;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contact_party_id")
+    private ContactPartyEntity contactParty;
 
-    public FluxLocationEntity getFluxLocation() {
-        return this.fluxLocation;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flux_location_id")
+    private FluxLocationEntity fluxLocation;
 
-    public void setFluxLocation(
-            FluxLocationEntity fluxLocation) {
-        this.fluxLocation = fluxLocation;
-    }
-
-    public String getBlockName() {
-        return this.blockName;
-    }
-
-    public void setBlockName(String blockName) {
-        this.blockName = blockName;
-    }
-
-    public String getBuildingName() {
-        return this.buildingName;
-    }
-
-    public void setBuildingName(String buildingName) {
-        this.buildingName = buildingName;
-    }
-
-    public String getCityName() {
-        return this.cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public String getCitySubdivisionName() {
-        return this.citySubdivisionName;
-    }
-
-    public void setCitySubdivisionName(String citySubdivisionName) {
-        this.citySubdivisionName = citySubdivisionName;
-    }
-
-    public String getCountry() {
-        return this.country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCountryName() {
-        return this.countryName;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
-    public String getCountrySubdivisionName() {
-        return this.countrySubdivisionName;
-    }
-
-    public void setCountrySubdivisionName(String countrySubdivisionName) {
-        this.countrySubdivisionName = countrySubdivisionName;
-    }
-
-    public String getCountryIdSchemeId() {
-        return countryIdSchemeId;
-    }
-
-    public void setCountryIdSchemeId(String countryIdSchemeId) {
-        this.countryIdSchemeId = countryIdSchemeId;
-    }
-
-    public String getAddressId() {
-        return this.addressId;
-    }
-
-    public void setAddressId(String addressId) {
-        this.addressId = addressId;
-    }
-
-    public String getPlotId() {
-        return this.plotId;
-    }
-
-    public void setPlotId(String plotId) {
-        this.plotId = plotId;
-    }
-
-    public String getPostOfficeBox() {
-        return this.postOfficeBox;
-    }
-
-    public void setPostOfficeBox(String postOfficeBox) {
-        this.postOfficeBox = postOfficeBox;
-    }
-
-    public String getPostcode() {
-        return this.postcode;
-    }
-
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
-    }
-
-    public String getStreetName() {
-        return this.streetName;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
-    }
-
-    public String getStructuredAddressType() {
-        return structuredAddressType;
-    }
-
-    public void setStructuredAddressType(String structuredAddressType) {
-        this.structuredAddressType = structuredAddressType;
-    }
 }

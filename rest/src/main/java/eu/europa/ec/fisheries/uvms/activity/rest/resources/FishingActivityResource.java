@@ -8,25 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.ActivityExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.util.IUserRoleInterceptor;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -43,15 +26,32 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by padhyad on 7/6/2016.
- */
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+
 @Path("/fa")
 @Slf4j
 @Stateless
@@ -66,29 +66,25 @@ public class FishingActivityResource extends UnionVMSResource {
     @EJB
     private FishingTripService fishingTripService;
 
-
     @EJB
     private USMService usmService;
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @Path("/save")
-    public Response saveFaReportDocument() throws ServiceException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message_cedric_data.xml");
-        JAXBContext jaxbContext;
-        FLUXFAReportMessage fluxfaReportMessage;
-        try {
-            jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        } catch (JAXBException e) {
-            log.error("Error occured during Unmorshalling of the FLUXFAReportMessage", e);
-           throw new ServiceException(e.getMessage());
-        }
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
-        return createSuccessResponse();
+    @Path("/commChannel")
+    public Response getCommunicationChannel() throws ServiceException {
+        return createSuccessResponse(FaReportSourceEnum.values());
     }
 
+    @POST
+    @Produces(value = {MediaType.APPLICATION_XML})
+    @Consumes(value = {MediaType.APPLICATION_XML})
+    @Path("/FLUXFAReportMessage")
+    public String persist(FLUXFAReportMessage request) throws ServiceException, JAXBException {
+        FluxFaReportMessageEntity entity = fluxResponseMessageService.saveFishingActivityReportDocuments(request, FaReportSourceEnum.MANUAL);
+        FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(Collections.list(Collections.enumeration(entity.getFaReportDocuments())));
+        return JAXBUtils.marshallJaxBObjectToString(fluxfaReportMessage, "ISO-8859-1", true, new FANamespaceMapper());
+    }
 
     @POST
     @Path("/list")
@@ -101,13 +97,13 @@ public class FishingActivityResource extends UnionVMSResource {
                                                @HeaderParam("roleName") String roleName,
                                                FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
-        log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        log.info("[INFO] Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        log.info("Successful retrieved");
+        log.debug("[INFO] Successful retrieved..");
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }
@@ -130,7 +126,7 @@ public class FishingActivityResource extends UnionVMSResource {
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         log.info("Successful retrieved");
-        FishingTripResponse fishingTripIdsForFilter = fishingTripService.getFishingTripIdsForFilter(fishingActivityQuery);
+        FishingTripResponse fishingTripIdsForFilter = fishingTripService.filterFishingTrips(fishingActivityQuery);
         return createSuccessResponse(fishingTripIdsForFilter);
     }
 
@@ -145,6 +141,40 @@ public class FishingActivityResource extends UnionVMSResource {
                                       @PathParam("schemeId") String schemeId) throws ServiceException {
 
         return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
+    }
+
+    @GET
+    @Path("/previous/{activityId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getPreviousFishingActivity(@Context HttpServletRequest request,
+                                      @Context HttpServletResponse response,
+                                      @PathParam("activityId") String activityId) throws ServiceException {
+        int converstedActivityId=0;
+        log.info("Received ActivityId from frontEnd as: " + activityId);
+        if(activityId !=null){
+
+            converstedActivityId=Integer.parseInt(activityId);
+        }
+        return createSuccessResponse(activityService.getPreviousFishingActivity(converstedActivityId));
+    }
+
+    @GET
+    @Path("/next/{activityId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ActivityExceptionInterceptor.class)
+    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response getNextFishingActivity(@Context HttpServletRequest request,
+                                               @Context HttpServletResponse response,
+                                               @PathParam("activityId") String activityId) throws ServiceException {
+        int converstedActivityId=0;
+        log.info("Received ActivityId from frontEnd as: " + activityId);
+        if(activityId !=null){
+
+            converstedActivityId=Integer.parseInt(activityId);
+        }
+        return createSuccessResponse(activityService.getNextFishingActivity(converstedActivityId));
     }
 
 }

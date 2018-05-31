@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import javax.annotation.PostConstruct;
@@ -33,13 +34,10 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by sanera on 17/01/2017.
- */
 @Stateless
 @Local(FaCatchReportService.class)
 @Transactional
@@ -51,8 +49,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
     @PostConstruct
     public void init() {
         initEntityManager();
-        faCatchDao = new FaCatchDao(getEntityManager());
-
+        faCatchDao = new FaCatchDao(em);
     }
 
     /**
@@ -72,7 +69,8 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
    }
 
     /**
-     * This method gets you table structure for Catch details summary
+     *
+     * This method gets you table structure for Catch details summary on TRIP SUMMARY VIEW
      * @param tripId data will be returned for this tripId
      * @param isLanding If landing then summary structure will include PRESENTATION information otherwise only species information will be included
      * @return
@@ -92,7 +90,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
     @NotNull
     private List<GroupCriteria> getGroupByFields(boolean isLanding) {
         List<GroupCriteria> groupByFields = new ArrayList<>();
-        groupByFields.add(GroupCriteria.DATE_DAY);
+        groupByFields.add(GroupCriteria.DATE);
         groupByFields.add(GroupCriteria.FAO_AREA);
         groupByFields.add(GroupCriteria.TERRITORY);
         groupByFields.add(GroupCriteria.EFFORT_ZONE);
@@ -112,6 +110,8 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
     /**
      *  This method groups FACatch Data, performs business logic to create summary report
      *  and creates FacatchSummaryDTO object as expected by web interface.
+     *  isReporting : TRUE indicates that the method should be used to generate result for REPORTING module
+     *                FALSE indicates that the method should be used to generate result from TRIP SUMMARY VIEW
      * @param query
      * @return
      * @throws ServiceException
@@ -136,6 +136,14 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         return faCatchSummaryDTO;
     }
 
+    /**
+     * This method is used to create Catch Details page from Run Report.
+     * So, To display summary  of catches, we need to consider all fishing Activity filters as well as aggregation factors specified by user .
+     * Aggregation factors could be dynamically selected by user like veesel,period,area etc.
+     * @param query
+     * @return
+     * @throws ServiceException
+     */
     @Override
     public FACatchSummaryReportResponse getFACatchSummaryReportResponse(FishingActivityQuery query) throws ServiceException {
         log.debug("FACatchSummaryReportResponse creation starts");
@@ -147,7 +155,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         // We can not transfter DTO as it is over JMS because of JAVA maps.so, Map DTO to the type transferrable over JMS
         FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
 
-        // Create response object
+        // Create response object for JMS
         FACatchSummaryReportResponse faCatchSummaryReportResponse =new FACatchSummaryReportResponse();
         faCatchSummaryReportResponse.setSummaryRecords(faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs()));
         faCatchSummaryReportResponse.setTotal(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal()));

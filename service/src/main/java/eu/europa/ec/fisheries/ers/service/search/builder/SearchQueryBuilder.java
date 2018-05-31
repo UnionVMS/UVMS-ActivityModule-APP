@@ -13,23 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import eu.europa.ec.fisheries.ers.fa.utils.WeightConversion;
-import eu.europa.ec.fisheries.ers.service.search.FilterDetails;
-import eu.europa.ec.fisheries.ers.service.search.FilterMap;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.common.utils.GeometryUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,36 +20,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by sanera on 28/09/2016.
- */
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import eu.europa.ec.fisheries.ers.service.search.FilterDetails;
+import eu.europa.ec.fisheries.ers.service.search.FilterMap;
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
-    protected static final String JOIN_FETCH = " JOIN FETCH ";
-    protected static final String LEFT = " LEFT ";
-    protected static final String RIGHT = " RIGHT ";
-    protected static final String JOIN =  " JOIN ";
+    private static final String JOIN_FETCH = " JOIN FETCH ";
+    static final String LEFT = " LEFT ";
+    private static final String RIGHT = " RIGHT ";
+    protected static final String JOIN = " JOIN ";
 
-    private Map<SearchFilter,String> queryParameterMappings =  FilterMap.getFilterQueryParameterMappings();
-    private FilterMap  filterMap = FilterMap.createFilterMap();
-
-
-
-    protected SearchQueryBuilder(){
-
-    }
-
-
-    protected SearchQueryBuilder(FilterMap  filterMap){
-      this.filterMap = filterMap;
-    }
+    private Map<SearchFilter, String> queryParameterMappings = FilterMap.getFilterQueryParameterMappings();
+    private FilterMap filterMap = FilterMap.createFilterMap();
 
     // Assumption for the weight is, calculated_weight_measure is in Kg.
     // IF we get WEIGHT MEASURE as TON, we need to convert the input value to Kilograms.
-    public static Double normalizeWeightValue(String value, String weightMeasure) {
+    private static Double normalizeWeightValue(String value, String weightMeasure) {
         Double valueConverted = Double.parseDouble(value);
-        if (WeightConversion.TON.equals(weightMeasure)) {
-            valueConverted = WeightConversion.convertToKiloGram(Double.parseDouble(value), WeightConversion.TON);
+        if ("TNE".equals(weightMeasure)) {
+            valueConverted = 1000D * valueConverted;
         }
         return valueConverted;
     }
@@ -75,7 +60,7 @@ public abstract class SearchQueryBuilder {
         return filterMap;
     }
 
-    public void setFilterMap(FilterMap filterMap) {
+    void setFilterMap(FilterMap filterMap) {
         this.filterMap = filterMap;
     }
 
@@ -86,7 +71,7 @@ public abstract class SearchQueryBuilder {
      * @return
      * @throws ServiceException
      */
-    public  abstract StringBuilder createSQL(FishingActivityQuery query) throws ServiceException ;
+    public abstract StringBuilder createSQL(FishingActivityQuery query) throws ServiceException;
 
     /**
      * Create Table Joins based on Filters provided by user. Avoid joining unnecessary tables
@@ -95,14 +80,14 @@ public abstract class SearchQueryBuilder {
      * @param query
      * @return
      */
-    public  StringBuilder createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
+    void createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
         Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
         if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
             keySet.addAll(query.getSearchCriteriaMap().keySet());
         }
-        if(MapUtils.isNotEmpty(query.getSearchCriteriaMapMultipleValues())) {
+        if (MapUtils.isNotEmpty(query.getSearchCriteriaMapMultipleValues())) {
             keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
         }
         for (SearchFilter key : keySet) {
@@ -118,11 +103,10 @@ public abstract class SearchQueryBuilder {
         }
         getJoinPartForSortingOptions(sql, query);
 
-     //   LOG.debug("Generated SQL for JOIN Part :" + sql);
-        return sql;
+        //   LOG.debug("Generated SQL for JOIN Part :" + sql);
     }
 
-    private  void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
+    private void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
         switch (key) {
             case MASTER:
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
@@ -151,7 +135,7 @@ public abstract class SearchQueryBuilder {
                 appendRightJoinString(sql, joinString);
                 break;
             case PERIOD_END:
-                appendLeftJoinString(sql, joinString);
+                appendLeftJoinFetchString(sql, joinString);
                 break;
             case CONTACT_ROLE_CODE:
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.VESSEL_TRANSPORT_TABLE_ALIAS);
@@ -164,20 +148,19 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    protected void appendJoinString(StringBuilder sql, String joinString) {
+    void appendJoinString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
-    protected void appendLeftJoinString(StringBuilder sql, String joinString) {
-        sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
+    protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
+        sql.append(LEFT).append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }
 
-    protected void appendRightJoinString(StringBuilder sql, String joinString) {
+    private void appendRightJoinString(StringBuilder sql, String joinString) {
         sql.append(RIGHT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
-
-    protected  void appendJoinFetchString(StringBuilder sql, String joinString) {
+    protected void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN_FETCH).append(joinString).append(StringUtils.SPACE);
     }
 
@@ -187,7 +170,7 @@ public abstract class SearchQueryBuilder {
      * @param sql
      * @param valueToFindAndApply
      */
-    protected  void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
+    protected void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN_FETCH).append(valueToFindAndApply);
         }
@@ -200,19 +183,16 @@ public abstract class SearchQueryBuilder {
      * @param query
      * @return
      */
-    private  StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query) {
+    private StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query) {
         SortKey sort = query.getSorting();
         // IF sorting has been requested and
         if (sort == null) {
             return sql;
         }
-
         SearchFilter field = sort.getSortBy();
-
-        if(field == null) {
+        if (field == null) {
             return sql;
         }
-
         // Make sure that the field which we want to sort, table Join is present for it.
         switch (getFiledCase(sql, field)) {
             case 1:
@@ -227,7 +207,6 @@ public abstract class SearchQueryBuilder {
             default:
                 break;
         }
-
         return sql;
     }
 
@@ -240,8 +219,7 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    private  int getFiledCase(StringBuilder sql, SearchFilter field) {
-        //      if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
+    private int getFiledCase(StringBuilder sql, SearchFilter field) {
         if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
             return 1;
         } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
@@ -250,22 +228,25 @@ public abstract class SearchQueryBuilder {
         return 0;
     }
 
-    protected  void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
+    protected void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
     }
 
-    public StringBuilder createWherePartForQueryForFilters(StringBuilder sql,FishingActivityQuery query){
+    void createWherePartForQueryForFilters(StringBuilder sql, FishingActivityQuery query) {
+        LOG.debug("[INFO] Creating Where part of Query");
+        sql.append(" where ");
         Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
         Set<SearchFilter> keySet = new HashSet<>();
-        if(MapUtils.isNotEmpty(query.getSearchCriteriaMap())){
+        if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
             keySet.addAll(query.getSearchCriteriaMap().keySet());
         }
-
-        if(MapUtils.isNotEmpty(query.getSearchCriteriaMapMultipleValues())){
+        if (MapUtils.isNotEmpty(query.getSearchCriteriaMapMultipleValues())) {
             keySet.addAll(query.getSearchCriteriaMapMultipleValues().keySet());
         }
-
         // Create Where part of SQL Query
+        if(query.getShowOnlyLatest() != null){
+            sql.append(" a.latest=:latest ").append(" and ");
+        }
         int i = 0;
         for (SearchFilter key : keySet) {
             if (!appendWhereQueryPart(sql, filterMappings, keySet, i, key)) {
@@ -273,22 +254,20 @@ public abstract class SearchQueryBuilder {
             }
             i++;
         }
-        return sql;
+        LOG.debug("[INFO] Generated Query After Where :" + sql);
     }
 
     private boolean appendWhereQueryPart(StringBuilder sql, Map<SearchFilter, FilterDetails> filterMappings, Set<SearchFilter> keySet, int i, SearchFilter key) {
-        if ((SearchFilter.QUANTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUANTITY_MAX)) ||
-                (filterMappings.get(key) == null )) { // skip this as MIN and MAX both are required to form where part. Treat it differently
+        if ((SearchFilter.QUANTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUANTITY_MAX)) || (filterMappings.get(key) == null)) { // skip this as MIN and MAX both are required to form where part. Treat it differently
             return false;
         }
-
         String mapping = filterMappings.get(key).getCondition();
         if (i != 0) {
             sql.append(" and ");
         }
-
-        if(SearchFilter.QUANTITY_MIN.equals(key) ){
-            sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" ))") ;
+        if (SearchFilter.QUANTITY_MIN.equals(key)) {
+            sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :")
+                    .append(FilterMap.QUANTITY_MIN).append(" ))");
 
         } else if (SearchFilter.QUANTITY_MAX.equals(key)) {
             sql.append(" ( ");
@@ -303,42 +282,41 @@ public abstract class SearchQueryBuilder {
 
     /**
      * Build Where part of the query based on Filter criterias
+     *
      * @param sql
      * @param query
      * @return
      */
-    public abstract StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) ;
+    public abstract void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query);
 
     /**
      * Create sorting part for the Query
+     *
      * @param sql
      * @param query
      * @return
      * @throws ServiceException
      */
-    public StringBuilder createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) throws ServiceException {
+    void createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) throws ServiceException {
         LOG.debug("Create Sorting part of Query");
         SortKey sort = query.getSorting();
-        if (sort != null && sort.getSortBy() !=null) {
+        if (sort != null && sort.getSortBy() != null) {
             SearchFilter field = sort.getSortBy();
-            //  if (SearchFilter.PERIOD_START.equals(field) || SearchFilter.PERIOD_END.equals(field)) {
             if (SearchFilter.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
             }
-            String orderby =" ASC ";
-            if(sort.isReversed()) {
+            String orderby = " ASC ";
+            if (sort.isReversed()) {
                 orderby = " DESC ";
             }
             String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
-            if(sortFieldMapping ==null) {
+            if (sortFieldMapping == null) {
                 throw new ServiceException("Information about which database field to be used for sorting is unavailable");
             }
             sql.append(" order by ").append(sortFieldMapping).append(orderby);
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }
-      //  LOG.debug("Generated Query After Sort :" + sql);
-        return sql;
     }
 
     /**
@@ -349,62 +327,46 @@ public abstract class SearchQueryBuilder {
      * @param query
      * @return
      */
-
-
-
-    public  StringBuilder getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
+    private void getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
         Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
-        if(searchCriteriaMap == null){
-            return sql;
+        if (searchCriteriaMap == null) {
+            return;
         }
         sql.append(" and(  ");
         sql.append(FilterMap.getFilterSortMappings().get(filter));
         sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
-
-        if (searchCriteriaMap.containsKey(filter)) {
-            sql.append(" where ");
-            sql.append(" ( dp1.startDate >= :startDate  OR a.occurence  >= :startDate ) ");
-            if (searchCriteriaMap.containsKey(SearchFilter.PERIOD_END)) {
-                sql.append(" and  dp1.endDate <= :endDate ");
-            }
-        }
         sql.append(" ) ");
         sql.append(" OR dp is null ) ");
-        return sql;
     }
 
     public Query fillInValuesForTypedQuery(FishingActivityQuery query, Query typedQuery) throws ServiceException {
-        Map<SearchFilter, String> searchCriteriaMap             = query.getSearchCriteriaMap();
+        Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
         Map<SearchFilter, List<String>> searchForMultipleValues = query.getSearchCriteriaMapMultipleValues();
         if (MapUtils.isNotEmpty(searchCriteriaMap)) {
             applySingleValuesToQuery(searchCriteriaMap, typedQuery);
         }
-        if(MapUtils.isNotEmpty(searchForMultipleValues)) {
+        if (MapUtils.isNotEmpty(searchForMultipleValues)) {
             applyListValuesToQuery(searchForMultipleValues, typedQuery);
+        }
+        if(query.getShowOnlyLatest() != null){
+            typedQuery.setParameter("latest",query.getShowOnlyLatest());
         }
         return typedQuery;
     }
 
-
     private void applySingleValuesToQuery(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery) throws ServiceException {
-
         // Assign values to created SQL Query
-        for (Map.Entry<SearchFilter, String> entry : searchCriteriaMap.entrySet()){
-
-            SearchFilter key =  entry.getKey();
-            String value     =  entry.getValue();
-
+        for (Map.Entry<SearchFilter, String> entry : searchCriteriaMap.entrySet()) {
+            SearchFilter key = entry.getKey();
+            String value = entry.getValue();
             //For WeightMeasure there is no mapping present, In that case
-            if(queryParameterMappings.get(key) == null) {
+            if (queryParameterMappings.get(key) == null) {
                 continue;
             }
-
-            if(StringUtils.isEmpty(value)) {
+            if (StringUtils.isEmpty(value)) {
                 throw new ServiceException("Value for filter " + key + " is null or empty");
             }
-
             applyValueDependingOnKey(searchCriteriaMap, typedQuery, key, value);
-
         }
     }
 
@@ -417,10 +379,10 @@ public abstract class SearchQueryBuilder {
                 typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value, DateUtils.DATE_TIME_UI_FORMAT));
                 break;
             case QUANTITY_MIN:
-                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
+                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                 break;
             case QUANTITY_MAX:
-                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value,searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
+                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                 break;
             case MASTER:
                 typedQuery.setParameter(queryParameterMappings.get(key), value.toUpperCase());
@@ -428,7 +390,6 @@ public abstract class SearchQueryBuilder {
             case FA_REPORT_ID:
                 typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
                 break;
-        
             case AREA_GEOM:
                 Geometry geom;
                 try {
@@ -445,7 +406,6 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-
     /**
      * Applies the values stored in the searchCriteriaMapMultipleValues map to the typedQuery
      *
@@ -454,27 +414,23 @@ public abstract class SearchQueryBuilder {
      * @return
      * @throws ServiceException
      */
-    private void applyListValuesToQuery(Map<SearchFilter,List<String>> searchCriteriaMap, Query typedQuery) throws ServiceException {
-
+    private void applyListValuesToQuery(Map<SearchFilter, List<String>> searchCriteriaMap, Query typedQuery) throws ServiceException {
         // Assign values to created SQL Query
-        for (Map.Entry<SearchFilter,List<String>> entry : searchCriteriaMap.entrySet()){
+        for (Map.Entry<SearchFilter, List<String>> entry : searchCriteriaMap.entrySet()) {
 
-            SearchFilter key =  entry.getKey();
-            List<String> valueList=  entry.getValue();
+            SearchFilter key = entry.getKey();
+            List<String> valueList = entry.getValue();
             //For WeightMeasure there is no mapping present, In that case
-            if(queryParameterMappings.get(key) ==null) {
+            if (queryParameterMappings.get(key) == null) {
                 continue;
             }
-
-            if(valueList ==null || valueList.isEmpty()) {
+            if (valueList == null || valueList.isEmpty()) {
                 throw new ServiceException("valueList for filter " + key + " is null or empty");
             }
-
-            switch(key){
-
+            switch (key) {
                 case MASTER:
-                    List<String> uppperCaseValList=new ArrayList<>();
-                    for(String val:valueList){
+                    List<String> uppperCaseValList = new ArrayList<>();
+                    for (String val : valueList) {
                         uppperCaseValList.add(val.toUpperCase());
                     }
                     typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
@@ -483,8 +439,6 @@ public abstract class SearchQueryBuilder {
                     typedQuery.setParameter(queryParameterMappings.get(key), valueList);
                     break;
             }
-
-
         }
     }
 }

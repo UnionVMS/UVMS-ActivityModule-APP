@@ -8,7 +8,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>0.5.15-SNAPSHOT</version>
+        <version>1.1.7-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -66,14 +66,9 @@
         </dependency>
 
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vividsolutions</groupId>
-                    <artifactId>jts</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-message</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -90,19 +85,6 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-            <artifactId>movement-model</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-            <artifactId>asset-model</artifactId>
-            <scope>provided</scope>
-        </dependency>
--->
 
         <dependency>
             <groupId>fish.focus.uvms.maven</groupId>
@@ -113,21 +95,52 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.logging</groupId>
+    				<artifactId>jboss-logging</artifactId>					
+				</exclusion>
+			</exclusions>
 		</dependency>
 
          <dependency>
 			 <groupId>org.jboss.resteasy</groupId>
     		<artifactId>resteasy-jaxb-provider</artifactId>
+    		<exclusions>
+    			<exclusion>
+    				    <groupId>com.sun.xml.bind</groupId>
+    					<artifactId>jaxb-impl</artifactId>   				
+    			</exclusion>
+    		</exclusions>    		
 		</dependency>
 
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>commons-logging</groupId>
+            		<artifactId>commons-logging</artifactId>
+            	</exclusion>
+            	<exclusion>
+				    <groupId>javax.mail</groupId>
+				    <artifactId>mail</artifactId>            		
+            	</exclusion>
+            	<exclusion>            	
+            		<groupId>org.jboss.resteasy</groupId>
+    				<artifactId>resteasy-jaxrs</artifactId>
+            	</exclusion>
+            	<exclusion>            	
+            	    <groupId>org.jboss.resteasy</groupId>
+    				<artifactId>resteasy-client</artifactId>
+            	</exclusion>            	
+            </exclusions>
         </dependency>
 
 		<dependency>
 		    <groupId>org.jboss.resteasy</groupId>
 		    <artifactId>jaxrs-api</artifactId>
+		    <scope>provided</scope>
 		</dependency>
 
     </dependencies>
@@ -193,7 +206,7 @@
                                     <docletArtifact>
                                         <groupId>com.carma</groupId>
                                         <artifactId>swagger-doclet</artifactId>
-                                        <version>1.0.4.1</version>
+                                        <version>1.1.2</version>
                                     </docletArtifact>
                                     <reportOutputDirectory>src/main/webapp</reportOutputDirectory>
                                     <useStandardDocletOptions>false</useStandardDocletOptions>
@@ -211,5 +224,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

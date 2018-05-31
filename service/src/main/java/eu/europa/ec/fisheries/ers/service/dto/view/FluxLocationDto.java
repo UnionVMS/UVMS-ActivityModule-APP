@@ -11,28 +11,27 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
-@EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
 public class FluxLocationDto {
 
     @JsonView(CommonView.class)
@@ -56,6 +55,12 @@ public class FluxLocationDto {
 
     @JsonView(CommonView.class)
     private Set<AddressDetailsDTO> structuredAddresses;
+
+    @JsonIgnore
+    private String typeCode;
+
+    @JsonView(CommonView.class)
+    private String portDescription;
 
     public String getGeometry() {
         return geometry;
@@ -111,6 +116,22 @@ public class FluxLocationDto {
 
     public void setFluxCharacteristic(FluxCharacteristicsDto fluxCharacteristic) {
         this.fluxCharacteristic = fluxCharacteristic;
+    }
+
+    public String getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
+    }
+
+    public String getPortDescription() {
+        return portDescription;
+    }
+
+    public void setPortDescription(String portDescription) {
+        this.portDescription = portDescription;
     }
 
     @JsonProperty("characteristics")

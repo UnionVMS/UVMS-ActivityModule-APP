@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
 import java.util.Date;
 import java.util.List;

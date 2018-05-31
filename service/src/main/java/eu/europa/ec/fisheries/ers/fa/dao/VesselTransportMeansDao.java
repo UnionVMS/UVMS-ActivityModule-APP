@@ -17,9 +17,9 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import eu.europa.ec.fisheries.uvms.service.QueryParameter;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class VesselTransportMeansDao extends AbstractDAO<VesselTransportMeansEntity> {
@@ -36,29 +36,17 @@ public class VesselTransportMeansDao extends AbstractDAO<VesselTransportMeansEnt
     }
 
     public VesselTransportMeansEntity findLatestVesselByTripId(String tripId) throws ServiceException {
-
         VesselTransportMeansEntity vesselTransportMeansEntity = null;
-
-        try {
-
-            List<VesselTransportMeansEntity> byNamedQuery = findEntityByNamedQuery(
-                    VesselTransportMeansEntity.class,
-                    VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
-                    QueryParameter.with("tripId", tripId).parameters(),
-                    1
-            );
-
-            if (!CollectionUtils.isEmpty(byNamedQuery)) {
-                vesselTransportMeansEntity = byNamedQuery.get(0);
-            }
-
-        } catch (ServiceException e) {
-            throw new ServiceException(e.getMessage(), e);
+        List<VesselTransportMeansEntity> byNamedQuery = findEntityByNamedQuery(
+                VesselTransportMeansEntity.class,
+                VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
+                QueryParameter.with("tripId", tripId).parameters(),
+                1
+        );
+        if (!CollectionUtils.isEmpty(byNamedQuery)) {
+            vesselTransportMeansEntity = byNamedQuery.get(0);
         }
-
         return vesselTransportMeansEntity;
-
-
     }
 
 }

@@ -31,6 +31,7 @@ import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
@@ -50,7 +51,7 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
         HashSet<FluxLocationEntity> fluxLocationEntities = Sets.newHashSet(locationEntity_1, locationEntity_2);
 
-        assertEquals(2, fluxLocationEntities.size());
+        assertEquals(1, fluxLocationEntities.size());
 
         Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(fluxLocationEntities);
 
@@ -86,18 +87,20 @@ public class BaseMapperTest extends BaseUnitilsTest {
         period1.setStartDate(sdf.parse("21/12/2011"));
         period1.setEndDate(sdf.parse("21/12/2013"));
         period1.setCalculatedDuration(22.22d);
+        period1.getDurationMeasure().setUnitCode("MIN");
 
         DelimitedPeriodEntity period2 = new DelimitedPeriodEntity();
         period2.setStartDate(sdf.parse("21/11/2010"));
         period2.setEndDate(sdf.parse("21/11/2012"));
         period2.setCalculatedDuration(2.24d);
+        period2.getDurationMeasure().setUnitCode("HOU");
 
         DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
 
         assertEquals(24.46d, periodDTO.getDuration());
         assertEquals(period2.getStartDate(), periodDTO.getStartDate());
         assertEquals(period1.getEndDate(), periodDTO.getEndDate());
-
+        assertEquals(UnitCodeEnum.MIN.getUnit(), periodDTO.getUnitCode());
     }
 
     @Test

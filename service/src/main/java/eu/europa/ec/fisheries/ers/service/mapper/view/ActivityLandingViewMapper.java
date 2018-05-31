@@ -56,13 +56,15 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
         Date startDate = null;
         Date endDate = null;
         Double duration = null;
+        String unitCode = null;
         if (CollectionUtils.isNotEmpty(delimitedPeriods)) {
             DelimitedPeriodEntity delimPeriod = delimitedPeriods.iterator().next();
             startDate = delimPeriod.getStartDate();
             endDate = delimPeriod.getEndDate();
-            duration = delimPeriod.getDuration();
+            duration = delimPeriod.getDurationMeasure().getValue();
+            unitCode = delimPeriod.getDurationMeasure().getUnitCode();
         }
-        return new DelimitedPeriodDTO(startDate, endDate, duration);
+        return new DelimitedPeriodDTO(startDate, endDate, duration, unitCode);
     }
 
 }

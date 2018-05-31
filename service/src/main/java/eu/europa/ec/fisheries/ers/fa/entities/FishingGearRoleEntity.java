@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,20 +24,20 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/15/2016.
- */
+import lombok.Data;
+
 @Entity
 @Table(name = "activity_fishing_gear_role")
+@Data
 public class FishingGearRoleEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "gear_role_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "fishing_gear_id")
     private FishingGearEntity fishingGear;
 
@@ -48,31 +47,4 @@ public class FishingGearRoleEntity implements Serializable {
     @Column(name = "role_code_list_id", nullable = false)
     private String roleCodeListId;
 
-    public int getId() {
-        return id;
-    }
-
-    public String getRoleCode() {
-        return roleCode;
-    }
-
-    public void setRoleCode(String roleCode) {
-        this.roleCode = roleCode;
-    }
-
-    public String getRoleCodeListId() {
-        return roleCodeListId;
-    }
-
-    public void setRoleCodeListId(String roleCodeListId) {
-        this.roleCodeListId = roleCodeListId;
-    }
-
-    public FishingGearEntity getFishingGear() {
-        return fishingGear;
-    }
-
-    public void setFishingGear(FishingGearEntity fishingGear) {
-        this.fishingGear = fishingGear;
-    }
 }

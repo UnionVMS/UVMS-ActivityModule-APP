@@ -11,14 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,21 +29,35 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.apache.commons.collections.CollectionUtils;
+
 @Entity
 @Table(name = "activity_flux_report_document")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@ToString(of = "id")
+@EqualsAndHashCode(of = {"fluxReportIdentifiers"})
 public class FluxReportDocumentEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_rep_doc_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
     @Column(name = "reference_id")
     private String referenceId;
+
+    @Embedded
+    private CodeType typeCode;
 
     @Column(name = "reference_scheme_id")
     private String referenceSchemeId;
@@ -65,124 +75,28 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(columnDefinition = "text", name = "purpose")
     private String purpose;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "flux_fa_report_message_id")
     private FluxFaReportMessageEntity fluxFaReportMessage;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument")
+    @OneToOne(mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, optional=false)
     @JoinColumn(name = "flux_party_id")
     private FluxPartyEntity fluxParty;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fluxReportDocument", cascade = CascadeType.ALL)
     private Set<FluxReportIdentifierEntity> fluxReportIdentifiers;
 
-    public int getId() {
-        return this.id;
-    }
-
-    public String getReferenceId() {
-        return this.referenceId;
-    }
-
-    public void setReferenceId(String referenceId) {
-        this.referenceId = referenceId;
-    }
-
-    public String getReferenceSchemeId() {
-        return referenceSchemeId;
-    }
-
-    public void setReferenceSchemeId(String referenceSchemeId) {
-        this.referenceSchemeId = referenceSchemeId;
-    }
-
-    public Date getCreationDatetime() {
-        return this.creationDatetime;
-    }
-
-    public void setCreationDatetime(Date creationDatetime) {
-        this.creationDatetime = creationDatetime;
-    }
-
-    public String getPurposeCode() {
-        return this.purposeCode;
-    }
-
-    public void setPurposeCode(String purposeCode) {
-        this.purposeCode = purposeCode;
-    }
-
-    public String getPurposeCodeListId() {
-        return this.purposeCodeListId;
-    }
-
-    public void setPurposeCodeListId(String purposeCodeListId) {
-        this.purposeCodeListId = purposeCodeListId;
-    }
-
-    public String getPurpose() {
-        return this.purpose;
-    }
-
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
-
-    public FaReportDocumentEntity getFaReportDocument() {
-        return faReportDocument;
-    }
-
-    public void setFaReportDocument(FaReportDocumentEntity faReportDocument) {
-        this.faReportDocument = faReportDocument;
-    }
-
-    public Set<FluxReportIdentifierEntity> getFluxReportIdentifiers() {
-        return fluxReportIdentifiers;
-    }
-
-    public void setFluxReportIdentifiers(Set<FluxReportIdentifierEntity> fluxReportIdentifiers) {
-        this.fluxReportIdentifiers = fluxReportIdentifiers;
-    }
-
-    public FluxFaReportMessageEntity getFluxFaReportMessage() {
-        return fluxFaReportMessage;
-    }
-
-    public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
-        this.fluxFaReportMessage = fluxFaReportMessage;
-    }
-
-    public FluxPartyEntity getFluxParty() {
-        return fluxParty;
-    }
-
-    public void setFluxParty(FluxPartyEntity fluxParty) {
-        this.fluxParty = fluxParty;
-    }
-
     public String getFluxPartyIdentifierBySchemeId(String schemeId) {
-        if (fluxParty != null) {
-            for (FluxPartyIdentifierEntity fluxPartyIdentifier : fluxParty.getFluxPartyIdentifiers()) {
-                if (fluxPartyIdentifier.getFluxPartyIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
-                    return fluxPartyIdentifier.getFluxPartyIdentifierId();
+        if (CollectionUtils.isNotEmpty(fluxReportIdentifiers)) {
+            for (FluxReportIdentifierEntity fluxReportIdentifierEntity : fluxReportIdentifiers) {
+                if (fluxReportIdentifierEntity.getFluxReportIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
+                    return fluxReportIdentifierEntity.getFluxReportIdentifierId();
                 }
             }
         }
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return "FluxReportDocumentEntity{" +
-                "id=" + id +
-                ", referenceId='" + referenceId + '\'' +
-                ", creationDatetime=" + creationDatetime +
-                ", purposeCode='" + purposeCode + '\'' +
-                ", purposeCodeListId='" + purposeCodeListId + '\'' +
-                ", purpose='" + purpose + '\'' +
-                '}';
     }
 }

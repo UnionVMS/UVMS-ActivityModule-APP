@@ -10,13 +10,8 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import lombok.SneakyThrows;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -24,8 +19,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import lombok.SneakyThrows;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 /**
  * Created by kovian on 26/01/2017.
@@ -39,7 +39,7 @@ public class FluxFaReportMessageMapperTest {
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        FluxFaReportMessageEntity fluxRepMessageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
+        FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
 
         List<FaReportDocumentEntity> faReportDocuments = new ArrayList(fluxRepMessageEntity.getFaReportDocuments());
         FluxReportDocumentEntity fluxReportDocument = fluxRepMessageEntity.getFluxReportDocument();
@@ -47,7 +47,7 @@ public class FluxFaReportMessageMapperTest {
         assertNotNull(fluxRepMessageEntity);
         assertNotNull(fluxReportDocument);
         assertNotNull(fluxReportDocument.getFluxFaReportMessage());
-        assertNotNull(faReportDocuments.get(0).getFluxReportDocument());
+        assertNotNull(faReportDocuments.get(0));
 
         assertEquals(1, faReportDocuments.size());
     }

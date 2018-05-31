@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,37 +24,29 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
 @Table(name = "activity_flux_fa_report_message")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = "faReportDocuments")
+@ToString(exclude = "faReportDocuments")
 public class FluxFaReportMessageEntity implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "rep_msg_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "fluxFaReportMessage", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "fluxFaReportMessage", cascade = CascadeType.ALL)
     private FluxReportDocumentEntity fluxReportDocument;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fluxFaReportMessage", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fluxFaReportMessage", cascade = CascadeType.ALL)
     private Set<FaReportDocumentEntity> faReportDocuments;
-
-    public int getId() {
-        return id;
-    }
-
-    public FluxReportDocumentEntity getFluxReportDocument() {
-        return fluxReportDocument;
-    }
-    public void setFluxReportDocument(FluxReportDocumentEntity fluxReportDocument) {
-        this.fluxReportDocument = fluxReportDocument;
-    }
-    public Set<FaReportDocumentEntity> getFaReportDocuments() {
-        return faReportDocuments;
-    }
-    public void setFaReportDocuments(Set<FaReportDocumentEntity> faReportDocuments) {
-        this.faReportDocuments = faReportDocuments;
-    }
 
 }

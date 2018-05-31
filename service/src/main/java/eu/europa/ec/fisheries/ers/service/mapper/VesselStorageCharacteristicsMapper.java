@@ -16,20 +16,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.ers.service.dto.StorageDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(uses = {VesselStorageCharCodeMapper.class})
-public abstract class VesselStorageCharacteristicsMapper extends BaseMapper {
+public abstract class VesselStorageCharacteristicsMapper {
 
     public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
 
@@ -37,17 +35,8 @@ public abstract class VesselStorageCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "vesselId", source = "vesselStorageCharacteristic.ID.value"),
             @Mapping(target = "vesselSchemaId", source = "vesselStorageCharacteristic.ID.schemeID"),
             @Mapping(target = "vesselStorageCharCode", expression = "java(mapToVesselStorageCharCodes(vesselStorageCharacteristic.getTypeCodes(), vesselStorageCharacteristicsEntity))"),
-            @Mapping(target = "fishingActivitiesForDestVesselCharId", expression = "java(fishingActivityEntity)")
     })
-    public abstract VesselStorageCharacteristicsEntity mapToDestVesselStorageCharEntity(VesselStorageCharacteristic vesselStorageCharacteristic, FishingActivityEntity fishingActivityEntity, @MappingTarget VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity);
-
-    @Mappings({
-            @Mapping(target = "vesselId", source = "vesselStorageCharacteristic.ID.value"),
-            @Mapping(target = "vesselSchemaId", source = "vesselStorageCharacteristic.ID.schemeID"),
-            @Mapping(target = "vesselStorageCharCode", expression = "java(mapToVesselStorageCharCodes(vesselStorageCharacteristic.getTypeCodes(), vesselStorageCharacteristicsEntity))"),
-            @Mapping(target = "fishingActivitiesForSourceVesselCharId", expression = "java(fishingActivityEntity)")
-    })
-    public abstract VesselStorageCharacteristicsEntity mapToSourceVesselStorageCharEntity(VesselStorageCharacteristic vesselStorageCharacteristic, FishingActivityEntity fishingActivityEntity, @MappingTarget VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity);
+    public abstract VesselStorageCharacteristicsEntity mapToDestVesselStorageCharEntity(VesselStorageCharacteristic vesselStorageCharacteristic);
 
     @Mappings({
             @Mapping(target = "vesselTypeCode", source = "value"),

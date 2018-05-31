@@ -13,8 +13,23 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.dao.*;
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -24,10 +39,17 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.dto.PaginationDto;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.persistence.EntityManager;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Rule;
@@ -37,15 +59,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import javax.persistence.EntityManager;
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 
 public class ActivityServiceBeanTest {
@@ -85,7 +98,7 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testGetFaReportCorrections() throws ServiceException {
+    public void testGetFaReportCorrections() {
 
         //Mock
         FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
@@ -99,7 +112,7 @@ public class ActivityServiceBeanTest {
 
         //Test
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOList.get(0);
-        assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
+        assertEquals(faReportDocumentEntity.getStatus(), FaReportStatusType.valueOf(faReportCorrectionDTO.getCorrectionType()));
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
         assertEquals(faReportDocumentEntity.getAcceptedDatetime(), faReportCorrectionDTO.getAcceptedDate());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId(),
@@ -112,20 +125,15 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getFishingActivityListByQuery() throws ServiceException {
-
+    public void getFishingActivityListByQuery() {
         FishingActivityQuery query = new FishingActivityQuery();
-
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
-
         searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
         List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
-
         Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
         List<String> purposeCodeList= new ArrayList<>();
         purposeCodeList.add("9");
         searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
-
         PaginationDto pagination =new PaginationDto();
         pagination.setPageSize(4);
         pagination.setOffset(1);
@@ -134,12 +142,9 @@ public class ActivityServiceBeanTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
         when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
-
         when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
-
         //Trigger
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, null);
-
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
@@ -149,7 +154,7 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getFishingActivityListByQuery_emptyResultSet() throws ServiceException {
+    public void getFishingActivityListByQuery_emptyResultSet() {
 
         FishingActivityQuery query = new FishingActivityQuery();
 

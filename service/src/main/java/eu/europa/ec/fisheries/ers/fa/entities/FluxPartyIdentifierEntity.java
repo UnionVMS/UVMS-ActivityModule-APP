@@ -21,24 +21,42 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-/**
- * Created by padhyad on 9/15/2016.
- */
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "activity_flux_party_identifier")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@NamedQueries({
+        @NamedQuery(name = FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID,
+                query = "SELECT DISTINCT fPartyIdentifier FROM FluxPartyIdentifierEntity fPartyIdentifier LEFT JOIN fPartyIdentifier.fluxParty flParty " +
+                        "LEFT JOIN flParty.fluxReportDocument fluxRepDoc LEFT JOIN fluxRepDoc.fluxFaReportMessage fluxRepMessage " +
+                        "LEFT JOIN fluxRepMessage.faReportDocuments faRepDocs LEFT JOIN faRepDocs.fishingActivities fishActivities " +
+                        "LEFT JOIN fishActivities.fishingTrips fishTrips JOIN fishTrips.fishingTripIdentifiers fTripIdentifier " +
+                        "WHERE fTripIdentifier.tripId =:fishingTripId")
+})
+@EqualsAndHashCode(of = {"fluxPartyIdentifierId","fluxPartyIdentifierSchemeId"})
 public class FluxPartyIdentifierEntity implements Serializable {
 
+    public static final String MESSAGE_OWNER_FROM_TRIP_ID = "findMessageOwnerFromTripId";
+
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "pty_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "flux_party_id")
     private FluxPartyEntity fluxParty;
 
@@ -48,31 +66,4 @@ public class FluxPartyIdentifierEntity implements Serializable {
     @Column(name = "flux_party_identifier_scheme_id")
     private String fluxPartyIdentifierSchemeId;
 
-    public int getId() {
-        return id;
-    }
-
-    public FluxPartyEntity getFluxParty() {
-        return fluxParty;
-    }
-
-    public void setFluxParty(FluxPartyEntity fluxParty) {
-        this.fluxParty = fluxParty;
-    }
-
-    public String getFluxPartyIdentifierId() {
-        return fluxPartyIdentifierId;
-    }
-
-    public void setFluxPartyIdentifierId(String fluxPartyIdentifierId) {
-        this.fluxPartyIdentifierId = fluxPartyIdentifierId;
-    }
-
-    public String getFluxPartyIdentifierSchemeId() {
-        return fluxPartyIdentifierSchemeId;
-    }
-
-    public void setFluxPartyIdentifierSchemeId(String fluxPartyIdentifierSchemeId) {
-        this.fluxPartyIdentifierSchemeId = fluxPartyIdentifierSchemeId;
-    }
 }

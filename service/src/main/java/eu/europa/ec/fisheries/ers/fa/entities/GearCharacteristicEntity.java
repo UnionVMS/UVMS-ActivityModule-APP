@@ -9,27 +9,29 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
@@ -40,17 +42,14 @@ import org.apache.commons.lang.StringUtils;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class GearCharacteristicEntity implements Serializable {
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "gear_char_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_gear_id")
-	private FishingGearEntity fishingGear;
 
 	@Column(name = "type_code", nullable = false)
     @NotNull
@@ -60,7 +59,6 @@ public class GearCharacteristicEntity implements Serializable {
     @NotNull
 	private String typeCodeListId = StringUtils.EMPTY;
 
-	@Column(name = "description")
 	private String description;
 
 	@Column(name = "desc_language_id")
@@ -97,128 +95,27 @@ public class GearCharacteristicEntity implements Serializable {
 	@Column(name = "calculated_value_quantity")
 	private Double calculatedValueQuantity;
 
-	public int getId() {
-		return this.id;
-	}
+	@ManyToOne
+	@JoinColumn(name = "fishing_gear_id")
+	private FishingGearEntity fishingGear;
 
-	public FishingGearEntity getFishingGear() {
-		return this.fishingGear;
+	@PrePersist
+	public void prePersist(){
+		if (valueQuantityCode != null || valueQuantity != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(valueQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedValueQuantity =  result.doubleValue();
+			}
+		}
+        if (valueMeasureUnitCode != null || valueMeasure != null){
+            UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueMeasureUnitCode);
+            if (unitCodeEnum != null) {
+                BigDecimal quantity = new BigDecimal(valueMeasure);
+                BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+                calculatedValueMeasure =  result.doubleValue();
+            }
+        }
 	}
-
-	public void setFishingGear(FishingGearEntity fishingGear) {
-		this.fishingGear = fishingGear;
-	}
-
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	public String getTypeCodeListId() {
-		return this.typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Double getValueMeasure() {
-		return this.valueMeasure;
-	}
-
-	public void setValueMeasure(Double valueMeasure) {
-		this.valueMeasure = valueMeasure;
-	}
-
-	public Date getValueDateTime() {
-		return this.valueDateTime;
-	}
-
-	public void setValueDateTime(Date valueDateTime) {
-		this.valueDateTime = valueDateTime;
-	}
-
-	public String getValueIndicator() {
-		return this.valueIndicator;
-	}
-
-	public void setValueIndicator(String valueIndicator) {
-		this.valueIndicator = valueIndicator;
-	}
-
-	public String getValueCode() {
-		return this.valueCode;
-	}
-
-	public void setValueCode(String valueCode) {
-		this.valueCode = valueCode;
-	}
-
-	public String getValueText() {
-		return this.valueText;
-	}
-
-	public void setValueText(String valueText) {
-		this.valueText = valueText;
-	}
-
-	public Double getValueQuantity() {
-		return this.valueQuantity;
-	}
-
-	public void setValueQuantity(Double valueQuantity) {
-		this.valueQuantity = valueQuantity;
-	}
-
-	public String getDescLanguageId() {
-		return descLanguageId;
-	}
-
-	public void setDescLanguageId(String descLanguageId) {
-		this.descLanguageId = descLanguageId;
-	}
-
-	public String getValueMeasureUnitCode() {
-		return valueMeasureUnitCode;
-	}
-
-	public void setValueMeasureUnitCode(String valueMeasureUnitCode) {
-		this.valueMeasureUnitCode = valueMeasureUnitCode;
-	}
-
-	public Double getCalculatedValueMeasure() {
-		return calculatedValueMeasure;
-	}
-
-	public void setCalculatedValueMeasure(Double calculatedValueMeasure) {
-		this.calculatedValueMeasure = calculatedValueMeasure;
-	}
-
-	public String getValueQuantityCode() {
-		return valueQuantityCode;
-	}
-
-	public void setValueQuantityCode(String valueQuantityCode) {
-		this.valueQuantityCode = valueQuantityCode;
-	}
-
-	public Double getCalculatedValueQuantity() {
-		return calculatedValueQuantity;
-	}
-
-	public void setCalculatedValueQuantity(Double calculatedValueQuantity) {
-		this.calculatedValueQuantity = calculatedValueQuantity;
-	}
-
 }

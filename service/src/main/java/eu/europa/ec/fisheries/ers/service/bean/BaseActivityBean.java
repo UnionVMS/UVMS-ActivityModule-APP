@@ -16,9 +16,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- * Created by padhyad on 3/17/2017.
- */
 public abstract class BaseActivityBean {
 
     protected EntityManager em;
