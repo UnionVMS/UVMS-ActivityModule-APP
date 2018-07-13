@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_size_distribution_classcodeAndColumnSize_distribution_id">
+        <createIndex
+                indexName="activity_size_distribution_classcode_i_1"
+                tableName="activity_size_distribution_classcode">
+            <column name="size_distribution_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_size_distribution_classcode_i_1"
+                    tableName="activity_size_distribution_classcode"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_vessel_storage_char_codeAndColumnVessel_storage_char_id">
+        <createIndex
+                indexName="activity_vessel_storage_char_code_i_1"
+                tableName="activity_vessel_storage_char_code">
+            <column name="vessel_storage_char_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_vessel_storage_char_code_i_1"
+                    tableName="activity_vessel_storage_char_code"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_registration_eventAndColumnRegistration_location_id">
+        <createIndex
+                indexName="activity_registration_event_i_1"
+                tableName="activity_registration_event">
+            <column name="registration_location_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_registration_event_i_1"
+                    tableName="activity_registration_event"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_party_identifierAndColumnFlux_party_id">
+        <createIndex
+                indexName="activity_flux_party_identifier_i_1"
+                tableName="activity_flux_party_identifier">
+            <column name="flux_party_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_party_identifier_i_1"
+                    tableName="activity_flux_party_identifier"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_report_documentAndColumnFlux_party_id">
+        <createIndex
+                indexName="activity_flux_report_document_i_1"
+                tableName="activity_flux_report_document">
+            <column name="flux_party_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_report_document_i_1"
+                    tableName="activity_flux_report_document"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_report_documentAndColumnFlux_fa_report_message_id">
+        <createIndex
+                indexName="activity_flux_report_document_i_2"
+                tableName="activity_flux_report_document">
+            <column name="flux_fa_report_message_id" type="int"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_report_document_i_2"
+                    tableName="activity_flux_report_document"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_report_identifierAndColumnFlux_report_document_id">
+        <createIndex
+                indexName="activity_flux_report_identifier_i_1"
+                tableName="activity_flux_report_identifier">
+            <column name="flux_report_document_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_report_identifier_i_1"
+                    tableName="activity_flux_report_identifier"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fa_report_documentAndColumnFlux_report_document_id">
+        <createIndex
+                indexName="activity_fa_report_document_i_1"
+                tableName="activity_fa_report_document">
+            <column name="flux_report_document_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fa_report_document_i_1"
+                    tableName="activity_fa_report_document"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_activityAndColumnFa_report_document_id">
+        <createIndex
+                indexName="activity_fishing_activity_i_1"
+                tableName="activity_fishing_activity">
+            <column name="fa_report_document_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_activity_i_1"
+                    tableName="activity_fishing_activity"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_activityAndColumnRelated_fishing_activity_id">
+        <createIndex
+                indexName="activity_fishing_activity_i_2"
+                tableName="activity_fishing_activity">
+            <column name="related_fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_activity_i_2"
+                    tableName="activity_fishing_activity"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_activityAndColumnDest_vessel_char_id">
+        <createIndex
+                indexName="activity_fishing_activity_i_3"
+                tableName="activity_fishing_activity">
+            <column name="dest_vessel_char_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_activity_i_3"
+                    tableName="activity_fishing_activity"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_activityAndColumnSource_vessel_char_id">
+        <createIndex
+                indexName="activity_fishing_activity_i_4"
+                tableName="activity_fishing_activity">
+            <column name="source_vessel_char_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_activity_i_4"
+                    tableName="activity_fishing_activity"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_activity_identifierAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_fishing_activity_identifier_i_1"
+                tableName="activity_fishing_activity_identifier">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_activity_identifier_i_1"
+                    tableName="activity_fishing_activity_identifier"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_vessel_transport_meansAndColumnRegistration_event_id">
+        <createIndex
+                indexName="activity_vessel_transport_means_i_1"
+                tableName="activity_vessel_transport_means">
+            <column name="registration_event_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_vessel_transport_means_i_1"
+                    tableName="activity_vessel_transport_means"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_vessel_transport_meansAndColumnFa_report_document_id">
+        <createIndex
+                indexName="activity_vessel_transport_means_i_2"
+                tableName="activity_vessel_transport_means">
+            <column name="fa_report_document_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_vessel_transport_means_i_2"
+                    tableName="activity_vessel_transport_means"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_vessel_transport_meansAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_vessel_transport_means_i_3"
+                tableName="activity_vessel_transport_means">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_vessel_transport_means_i_3"
+                    tableName="activity_vessel_transport_means"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flap_documentAndColumnVessel_transport_means_id">
+        <createIndex
+                indexName="activity_flap_document_i_1"
+                tableName="activity_flap_document">
+            <column name="vessel_transport_means_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flap_document_i_1"
+                    tableName="activity_flap_document"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flap_documentAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_flap_document_i_2"
+                tableName="activity_flap_document">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flap_document_i_2"
+                    tableName="activity_flap_document"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fa_catchAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_fa_catch_i_1"
+                tableName="activity_fa_catch">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fa_catch_i_1"
+                    tableName="activity_fa_catch"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fa_catchAndColumnSize_distribution_id">
+        <createIndex
+                indexName="activity_fa_catch_i_2"
+                tableName="activity_fa_catch">
+            <column name="size_distribution_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fa_catch_i_2"
+                    tableName="activity_fa_catch"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_aap_processAndColumnFa_catch_id">
+        <createIndex
+                indexName="activity_aap_process_i_1"
+                tableName="activity_aap_process">
+            <column name="fa_catch_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_aap_process_i_1"
+                    tableName="activity_aap_process"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_aap_process_codeAndColumnAap_process_id">
+        <createIndex
+                indexName="activity_aap_process_code_i_1"
+                tableName="activity_aap_process_code">
+            <column name="aap_process_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_aap_process_code_i_1"
+                    tableName="activity_aap_process_code"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_aap_productAndColumnAap_process_id">
+        <createIndex
+                indexName="activity_aap_product_i_1"
+                tableName="activity_aap_product">
+            <column name="aap_process_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_aap_product_i_1"
+                    tableName="activity_aap_product"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_aap_stockAndColumnFa_catch_id">
+        <createIndex
+                indexName="activity_aap_stock_i_1"
+                tableName="activity_aap_stock">
+            <column name="fa_catch_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_aap_stock_i_1"
+                    tableName="activity_aap_stock"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_contact_partyAndColumnContact_person_id">
+        <createIndex
+                indexName="activity_contact_party_i_1"
+                tableName="activity_contact_party">
+            <column name="contact_person_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_contact_party_i_1"
+                    tableName="activity_contact_party"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_contact_partyAndColumnVessel_transport_means_id">
+        <createIndex
+                indexName="activity_contact_party_i_2"
+                tableName="activity_contact_party">
+            <column name="vessel_transport_means_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_contact_party_i_2"
+                    tableName="activity_contact_party"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_contact_party_roleAndColumnContact_party_id">
+        <createIndex
+                indexName="activity_contact_party_role_i_1"
+                tableName="activity_contact_party_role">
+            <column name="contact_party_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_contact_party_role_i_1"
+                    tableName="activity_contact_party_role"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_tripAndColumnFa_catch_id">
+        <createIndex
+                indexName="activity_fishing_trip_i_1"
+                tableName="activity_fishing_trip">
+            <column name="fa_catch_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_trip_i_1"
+                    tableName="activity_fishing_trip"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_tripAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_fishing_trip_i_2"
+                tableName="activity_fishing_trip">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_trip_i_2"
+                    tableName="activity_fishing_trip"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_trip_identifierAndColumnFishing_trip_id">
+        <createIndex
+                indexName="activity_fishing_trip_identifier_i_1"
+                tableName="activity_fishing_trip_identifier">
+            <column name="fishing_trip_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_trip_identifier_i_1"
+                    tableName="activity_fishing_trip_identifier"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_delimited_periodAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_delimited_period_i_1"
+                tableName="activity_delimited_period">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_delimited_period_i_1"
+                    tableName="activity_delimited_period"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_gear_problemAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_gear_problem_i_1"
+                tableName="activity_gear_problem">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_gear_problem_i_1"
+                    tableName="activity_gear_problem"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_locationAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_flux_location_i_1"
+                tableName="activity_flux_location">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_location_i_1"
+                    tableName="activity_flux_location"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_locationAndColumnFa_catch_id">
+        <createIndex
+                indexName="activity_flux_location_i_2"
+                tableName="activity_flux_location">
+            <column name="fa_catch_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_location_i_2"
+                    tableName="activity_flux_location"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_locationAndColumnGear_problem_id">
+        <createIndex
+                indexName="activity_flux_location_i_3"
+                tableName="activity_flux_location">
+            <column name="gear_problem_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_location_i_3"
+                    tableName="activity_flux_location"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_gear_problem_recoveryAndColumnGear_problem_id">
+        <createIndex
+                indexName="activity_gear_problem_recovery_i_1"
+                tableName="activity_gear_problem_recovery">
+            <column name="gear_problem_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_gear_problem_recovery_i_1"
+                    tableName="activity_gear_problem_recovery"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_gearAndColumnFa_catch_id">
+        <createIndex
+                indexName="activity_fishing_gear_i_1"
+                tableName="activity_fishing_gear">
+            <column name="fa_catch_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_gear_i_1"
+                    tableName="activity_fishing_gear"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_gearAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_fishing_gear_i_2"
+                tableName="activity_fishing_gear">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_gear_i_2"
+                    tableName="activity_fishing_gear"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_gearAndColumnGear_problem_id">
+        <createIndex
+                indexName="activity_fishing_gear_i_3"
+                tableName="activity_fishing_gear">
+            <column name="gear_problem_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_gear_i_3"
+                    tableName="activity_fishing_gear"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_fishing_gear_roleAndColumnFishing_gear_id">
+        <createIndex
+                indexName="activity_fishing_gear_role_i_1"
+                tableName="activity_fishing_gear_role">
+            <column name="fishing_gear_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_fishing_gear_role_i_1"
+                    tableName="activity_fishing_gear_role"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_gear_characteristicAndColumnFishing_gear_id">
+        <createIndex
+                indexName="activity_gear_characteristic_i_1"
+                tableName="activity_gear_characteristic">
+            <column name="fishing_gear_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_gear_characteristic_i_1"
+                    tableName="activity_gear_characteristic"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_characteristicAndColumnFa_catch_id">
+        <createIndex
+                indexName="activity_flux_characteristic_i_1"
+                tableName="activity_flux_characteristic">
+            <column name="fa_catch_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_characteristic_i_1"
+                    tableName="activity_flux_characteristic"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_characteristicAndColumnFishing_activity_id">
+        <createIndex
+                indexName="activity_flux_characteristic_i_2"
+                tableName="activity_flux_characteristic">
+            <column name="fishing_activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_characteristic_i_2"
+                    tableName="activity_flux_characteristic"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_characteristicAndColumnSpecified_flap_document_id">
+        <createIndex
+                indexName="activity_flux_characteristic_i_3"
+                tableName="activity_flux_characteristic">
+            <column name="specified_flap_document_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_characteristic_i_3"
+                    tableName="activity_flux_characteristic"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_flux_characteristicAndColumnSpecified_flux_location_id">
+        <createIndex
+                indexName="activity_flux_characteristic_i_4"
+                tableName="activity_flux_characteristic">
+            <column name="specified_flux_location_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_flux_characteristic_i_4"
+                    tableName="activity_flux_characteristic"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_structured_addressAndColumnContact_party_id">
+        <createIndex
+                indexName="activity_structured_address_i_1"
+                tableName="activity_structured_address">
+            <column name="contact_party_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_structured_address_i_1"
+                    tableName="activity_structured_address"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_structured_addressAndColumnFlux_location_id">
+        <createIndex
+                indexName="activity_structured_address_i_2"
+                tableName="activity_structured_address">
+            <column name="flux_location_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_structured_address_i_2"
+                    tableName="activity_structured_address"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="addIndexOnTableActivity_vessel_position_eventAndColumnVessel_transport_means_id">
+        <createIndex
+                indexName="activity_vessel_position_event_i_1"
+                tableName="activity_vessel_position_event">
+            <column name="vessel_transport_means_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="activity_vessel_position_event_i_1"
+                    tableName="activity_vessel_position_event"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
