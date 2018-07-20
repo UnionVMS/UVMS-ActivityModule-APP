@@ -154,7 +154,7 @@
 					</exclusion>
 					<exclusion>
 					    <groupId>net.sf.ehcache</groupId>
-	  					<artifactId>ehcache</artifactId>				
+	  					<artifactId>ehcache</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -168,7 +168,7 @@
 	    				 <artifactId>slf4j-api</artifactId>
 	            	</exclusion>
 	            </exclusions>
-	        </dependency>		
+	        </dependency>
             
 	        <dependency>
 	            <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -177,7 +177,7 @@
 	            <exclusions>
 	            	<exclusion>
 	            		<groupId>eu.europa.ec.fisheries.uvms</groupId>
-            			<artifactId>uvms-commons</artifactId>	            		
+            			<artifactId>uvms-commons</artifactId>
 	            	</exclusion>
 	            </exclusions>
 	        </dependency>
@@ -336,12 +336,12 @@
                     </exclusion>
                     <exclusion>
                     	<groupId>javax.xml.bind</groupId>
-    					<artifactId>jaxb-api</artifactId>                    	
+    					<artifactId>jaxb-api</artifactId>
                     </exclusion>
                     <exclusion>
                     	<groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>                    	
-                    </exclusion>                	                                    	
+    					<artifactId>jaxb-impl</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -356,13 +356,13 @@
                     </exclusion>
                     <exclusion>
                     	<groupId>javax.xml.bind</groupId>
-    					<artifactId>jaxb-api</artifactId>                    	
+    					<artifactId>jaxb-api</artifactId>
                     </exclusion>
                     <exclusion>
                     	<groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>                    	
-                    </exclusion>                	
-                </exclusions>                
+    					<artifactId>jaxb-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -434,7 +434,7 @@
   			  <artifactId>slf4j-api</artifactId>
     		  <version>1.7.25</version>
     		</dependency>
-            
+
         </dependencies>
 
     </dependencyManagement>

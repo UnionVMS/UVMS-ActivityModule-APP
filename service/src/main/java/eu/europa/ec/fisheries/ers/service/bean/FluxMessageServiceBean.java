@@ -201,6 +201,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         if(CollectionUtils.isNotEmpty(faReportDocument.getVesselTransportMeans())) {
             for(VesselTransportMeansEntity vesselTransportMeansEntity : faReportDocument.getVesselTransportMeans()) {
                 enrichWithGuidFromAssets(vesselTransportMeansEntity);
+                vesselTransportMeansEntity.setFaReportDocument(faReportDocument);
             }
         }
         Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
