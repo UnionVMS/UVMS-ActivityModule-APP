@@ -160,14 +160,13 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         FishingTripSearchBuilder search = new FishingTripSearchBuilder();
         StringBuilder sqlToGetActivityList = search.createSQL(query);
         log.debug("SQL:" + sqlToGetActivityList);
-
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
         return search.fillInValuesForTypedQuery(query, typedQuery);
     }
 
     private Query getQueryForFilterFishingTripIds(FishingActivityQuery query) throws ServiceException {
         FishingTripIdSearchBuilder search = new FishingTripIdSearchBuilder();
-        StringBuilder sqlToGetActivityList = search.createCountSQL(query);
+        StringBuilder sqlToGetActivityList = search.createSQL(query);
         log.debug("SQL:" + sqlToGetActivityList);
         TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(),Object[].class);
         return search.fillInValuesForTypedQuery(query, typedQuery);
