@@ -11,25 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBException;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
@@ -51,6 +32,19 @@ import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
+import java.util.Collections;
+import java.util.List;
 
 @Path("/fa")
 @Slf4j
@@ -96,14 +90,12 @@ public class FishingActivityResource extends UnionVMSResource {
                                                @HeaderParam("scopeName") String scopeName,
                                                @HeaderParam("roleName") String roleName,
                                                FishingActivityQuery fishingActivityQuery) throws ServiceException {
-
         log.info("[INFO] Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        log.debug("[INFO] Successful retrieved..");
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }
@@ -125,7 +117,6 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        log.info("Successful retrieved");
         FishingTripResponse fishingTripIdsForFilter = fishingTripService.filterFishingTrips(fishingActivityQuery);
         return createSuccessResponse(fishingTripIdsForFilter);
     }

@@ -141,20 +141,19 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     /**
      * Get total number of records for matching criteria without considering pagination
      *
-     * @param query
+     * @param queryDto
      * @return
      * @throws ServiceException
      */
-    public Integer getCountOfFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
-        Query listQuery = getQueryForFilterFishingTripIds(query);
+    public Integer getCountOfFishingTripsForMatchingFilterCriteria(FishingActivityQuery queryDto) throws ServiceException {
+        FishingTripIdSearchBuilder search = new FishingTripIdSearchBuilder();
+        StringBuilder sqlToGetActivityList = search.createCountSQL(queryDto);
+        log.debug("SQL:" + sqlToGetActivityList);
+        Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
+        Query query = search.fillInValuesForTypedQuery(queryDto, typedQuery);
+        Long nrOfFa = (Long) query.getResultList().get(0);
+        return nrOfFa.intValue();
 
-        List resultList = listQuery.getResultList();
-        Integer resultCount = new Integer(0);
-        if(CollectionUtils.isNotEmpty(resultList)){
-            resultCount = resultList.size();
-        }
-
-        return resultCount;
     }
 
     private Query getQueryForFilterFishingTrips(FishingActivityQuery query) throws ServiceException {
@@ -168,10 +167,10 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
     private Query getQueryForFilterFishingTripIds(FishingActivityQuery query) throws ServiceException {
         FishingTripIdSearchBuilder search = new FishingTripIdSearchBuilder();
-        StringBuilder sqlToGetActivityList = search.createSQL(query);
+        StringBuilder sqlToGetActivityList = search.createCountSQL(query);
         log.debug("SQL:" + sqlToGetActivityList);
-
         TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(),Object[].class);
         return search.fillInValuesForTypedQuery(query, typedQuery);
     }
+
 }

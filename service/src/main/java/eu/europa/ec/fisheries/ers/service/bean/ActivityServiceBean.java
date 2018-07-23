@@ -298,7 +298,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * Query to calculate total number of result set
      */
     private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
-        log.info(" Get total pages count");
         return fishingActivityDao.getCountForFishingActivityListByQuery(query);
     }
 
