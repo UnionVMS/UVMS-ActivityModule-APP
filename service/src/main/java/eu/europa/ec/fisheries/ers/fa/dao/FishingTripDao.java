@@ -121,6 +121,10 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
+        else {
+            listQuery.setMaxResults(100);
+        }
+
         List<Object[]> resultList = listQuery.getResultList();
 
         if (CollectionUtils.isEmpty(resultList))

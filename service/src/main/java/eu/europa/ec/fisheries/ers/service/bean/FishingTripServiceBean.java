@@ -574,7 +574,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
-        checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
+       // checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
         log.debug("Fishing trips received from db:" + fishingTripIds.size());
 
         // build Fishing trip response from FishingTripEntityList and return
@@ -591,11 +591,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 log.debug("fishing trip threshold value:" + threshold);
                 if (fishingTripIds.size() > threshold)
                     throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
-
                 log.info("fishing trip list size is within threshold value:" + fishingTripIds.size());
             }
         }
-
     }
 
 
@@ -631,7 +629,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         List<FishingActivitySummary> fishingActivitySummaries = new ArrayList<>();
 
         List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
-        for (FishingTripId fishingTripId : fishingTripIds) { // FIXME find a way to remove execution of queries inside loop
+        for (FishingTripId fishingTripId : fishingTripIds) {
 
             FishingActivityQuery query = new FishingActivityQuery();
             Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
