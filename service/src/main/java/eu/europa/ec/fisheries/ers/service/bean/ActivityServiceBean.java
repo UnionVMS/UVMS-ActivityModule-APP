@@ -10,21 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
@@ -34,11 +19,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.AssetModuleService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.MdrModuleService;
-import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -51,11 +32,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityWithIdentifiers;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -67,6 +44,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.*;
 
 
 /**
@@ -216,7 +200,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     }
 
     @Override
-    public GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException {
+    public GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) {
         GetFishingActivitiesForTripResponse response = new GetFishingActivitiesForTripResponse();
         List<FaIdsListWithTripIdMap> responseList = new ArrayList<>();
         response.setFaWithIdentifiers(responseList);
@@ -314,7 +298,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * Query to calculate total number of result set
      */
     private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
-        log.info(" Get total pages count");
         return fishingActivityDao.getCountForFishingActivityListByQuery(query);
     }
 

@@ -126,7 +126,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             try {
                 updateGeometry(faReportDocument);
                 enrichFishingActivityWithGuiID(faReportDocument);
-            }catch (Exception e){
+            } catch (Exception e){
                 log.error("Could not update Geometry OR enrichActivities for faReportDocument:"+faReportDocument.getId());
             }
         }

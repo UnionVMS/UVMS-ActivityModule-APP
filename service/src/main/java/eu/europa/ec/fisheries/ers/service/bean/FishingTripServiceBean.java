@@ -604,24 +604,16 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException {
-
-
         log.info("getFishingTripResponse For Filter");
         if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
             return new FishingTripResponse();
         }
-
-
         Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
-        log.debug("Fishing trips received from db:" + fishingTripIds.size());
-
         Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
         FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripIds, false);
-
         fishingTripResponse.setTotalCountOfRecords(BigInteger.valueOf(totalCountOfRecords));
-
         return fishingTripResponse;
     }
 
@@ -631,7 +623,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * collectFishingActivities : If the value is TRUE, all fishing Activities for every fishing Trip would be sent in the response.
      * If the value is FALSE, No fishing activities would be sent in the response.
      */
-    public FishingTripResponse buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds, boolean collectFishingActivities) throws ServiceException {
+    FishingTripResponse buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds, boolean collectFishingActivities) throws ServiceException {
         if (fishingTripIds == null || fishingTripIds.isEmpty()) {
             return new FishingTripResponse();
         }

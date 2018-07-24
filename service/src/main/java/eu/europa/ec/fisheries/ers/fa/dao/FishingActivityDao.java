@@ -176,11 +176,11 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
         LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
-        StringBuilder sqlToGetActivityListCount = search.createSQL(query);
-
-        Query countQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
-
-        return countQuery.getResultList().size();
+        StringBuilder sqlToGetActivityListCount = search.createCountingSql(query);
+        String replace = sqlToGetActivityListCount.toString().replace("JOIN FETCH", "JOIN");
+        Query countQuery = getTypedQueryForFishingActivityFilter(new StringBuilder(replace), query, search);
+        Long nrOfFa = (Long) countQuery.getResultList().get(0);
+        return nrOfFa.intValue();
     }
 
     /**
