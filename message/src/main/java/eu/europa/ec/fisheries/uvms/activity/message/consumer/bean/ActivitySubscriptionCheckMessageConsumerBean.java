@@ -1,17 +1,8 @@
-/*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
-
-This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
-and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
-the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
-details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
-
- */
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
-import eu.europa.ec.fisheries.uvms.activity.message.event.*;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
@@ -37,35 +28,18 @@ import javax.jms.TextMessage;
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY_NAME),
-        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector IS NULL"),
+        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector = 'SubscriptionCheck'"),
 })
 @Slf4j
-public class ActivityMessageConsumerBean implements MessageListener {
+public class ActivitySubscriptionCheckMessageConsumerBean implements MessageListener {
 
     @Inject
-    @ReceiveFishingActivityRequestEvent
-    private Event<EventMessage> receiveFishingActivityEvent;
-
-    @Inject
-    @GetFishingTripListEvent
-    private Event<EventMessage> getFishingTripListEvent;
-
-    @Inject
-    @GetFACatchSummaryReportEvent
-    private Event<EventMessage> getFACatchSummaryReportEvent;
-
-    @Inject
-    @GetNonUniqueIdsRequestEvent
-    private Event<EventMessage> getNonUniqueIdsRequest;
-
-    @Inject
-    @GetFishingActivityForTripsRequestEvent
-    private Event<EventMessage> getFishingActivityForTrips;
+    @MapToSubscriptionRequestEvent
+    private Event<EventMessage> mapToSubscriptionRequest;
 
     @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
-
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -88,26 +62,14 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 return;
             }
             switch (method) {
-                case GET_FLUX_FA_REPORT:
-                case GET_FLUX_FA_QUERY:
-                    receiveFishingActivityEvent.fire(new EventMessage(textMessage, method));
-                    break;
-                case GET_FISHING_TRIPS:
-                    getFishingTripListEvent.fire(new EventMessage(textMessage));
-                    break;
-                case GET_FA_CATCH_SUMMARY_REPORT:
-                    getFACatchSummaryReportEvent.fire(new EventMessage(textMessage));
-                    break;
-                case GET_NON_UNIQUE_IDS:
-                    getNonUniqueIdsRequest.fire(new EventMessage(textMessage));
-                    break;
-                case GET_FISHING_ACTIVITY_FOR_TRIPS:
-                    getFishingActivityForTrips.fire(new EventMessage(textMessage));
+                case MAP_TO_SUBSCRIPTION_REQUEST:
+                    mapToSubscriptionRequest.fire(new EventMessage(textMessage));
                     break;
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));
             }
+
         } catch (ActivityModelMarshallException | ClassCastException e) {
             log.error("[ Error when receiving message in activity: ] {}", e);
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
