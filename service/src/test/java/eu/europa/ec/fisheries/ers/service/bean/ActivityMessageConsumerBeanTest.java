@@ -10,16 +10,10 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-
-import javax.enterprise.event.Event;
-import javax.jms.TextMessage;
-
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivitySubscriptionCheckMessageConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
@@ -42,16 +36,27 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import javax.enterprise.event.Event;
+import javax.jms.TextMessage;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
 /**
  * Created by kovian on 17/07/2017.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MappedDiagnosticContext.class})
-@PowerMockIgnore( {"javax.management.*"})
+@PowerMockIgnore({"javax.management.*"})
 public class ActivityMessageConsumerBeanTest {
 
     @InjectMocks
     ActivityMessageConsumerBean consumer;
+
+    @InjectMocks
+    ActivitySubscriptionCheckMessageConsumerBean subscriptionConsumer;
 
     @Mock
     ClientSession session;
@@ -84,10 +89,10 @@ public class ActivityMessageConsumerBeanTest {
 
     @Test
     @SneakyThrows
-    public void testOnMessageMethod(){
+    public void testOnMessageMethod() {
         mockStatic(MappedDiagnosticContext.class);
         PowerMockito.doNothing().when(MappedDiagnosticContext.class, "addMessagePropertiesToThreadMappedDiagnosticContext", Mockito.any(TextMessage.class));
-        for(ActivityModuleMethod moduleMethod : ActivityModuleMethod.values()){
+        for (ActivityModuleMethod moduleMethod : ActivityModuleMethod.values()) {
 
             GetNonUniqueIdsRequest request = new GetNonUniqueIdsRequest();
             request.setMethod(moduleMethod);
@@ -100,16 +105,31 @@ public class ActivityMessageConsumerBeanTest {
             PowerMockito.verifyStatic();
             MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
         }
-        verify(mapToSubscriptionRequest, times(1)).fire(any(EventMessage.class));
-        verify(receiveFishingActivityEvent,times(2)).fire(any(EventMessage.class));
-        verify(getFishingTripListEvent,times(1)).fire(any(EventMessage.class));
-        verify(getFACatchSummaryReportEvent,times(1)).fire(any(EventMessage.class));
-        verify(getNonUniqueIdsRequest,times(1)).fire(any(EventMessage.class));
+        verify(receiveFishingActivityEvent, times(2)).fire(any(EventMessage.class));
+        verify(getFishingTripListEvent, times(1)).fire(any(EventMessage.class));
+        verify(getFACatchSummaryReportEvent, times(1)).fire(any(EventMessage.class));
+        verify(getNonUniqueIdsRequest, times(1)).fire(any(EventMessage.class));
     }
 
     @Test
     @SneakyThrows
-    public void testThrowing(){
+    public void testOnMessageMethodForSubscriptionRequest() {
+        mockStatic(MappedDiagnosticContext.class);
+        PowerMockito.doNothing().when(MappedDiagnosticContext.class, "addMessagePropertiesToThreadMappedDiagnosticContext", Mockito.any(TextMessage.class));
+        GetNonUniqueIdsRequest request = new GetNonUniqueIdsRequest();
+        request.setMethod(ActivityModuleMethod.MAP_TO_SUBSCRIPTION_REQUEST);
+        ActiveMQTextMessage textMessage = new ActiveMQTextMessage(session);
+        final String strReq = JAXBMarshaller.marshallJaxBObjectToString(request);
+        Whitebox.setInternalState(textMessage, "text", new SimpleString(strReq));
+        subscriptionConsumer.onMessage(textMessage);
+        PowerMockito.verifyStatic();
+        MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
+        verify(mapToSubscriptionRequest, times(1)).fire(any(EventMessage.class));
+    }
+
+    @Test
+    @SneakyThrows
+    public void testThrowing() {
         mockStatic(MappedDiagnosticContext.class);
         PowerMockito.doNothing().when(MappedDiagnosticContext.class, "addMessagePropertiesToThreadMappedDiagnosticContext", Mockito.any(TextMessage.class));
         ReceiveSalesReportRequest request = new ReceiveSalesReportRequest();
@@ -120,7 +140,7 @@ public class ActivityMessageConsumerBeanTest {
         consumer.onMessage(textMessage);
         PowerMockito.verifyStatic();
         MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
-        verify(errorEvent,times(1)).fire(any(EventMessage.class));
+        verify(errorEvent, times(1)).fire(any(EventMessage.class));
     }
 
 }

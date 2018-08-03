@@ -146,25 +146,19 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * @param faReportDocument
      */
     public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument){
-
         Set<FishingActivityEntity> fishingActivities=faReportDocument.getFishingActivities();
         if(CollectionUtils.isEmpty(fishingActivities)) {
             log.error("Could not find FishingActivities for faReportDocument.");
             return;
         }
-
         for(FishingActivityEntity fishingActivityEntity:fishingActivities){
             Set<FishingTripEntity> fishingTripEntities=fishingActivityEntity.getFishingTrips();
-
             if(CollectionUtils.isEmpty(fishingTripEntities)) {
                 continue;
             }
-
             for(FishingTripEntity fishingTripEntity :fishingTripEntities){
                 setTripStartAndEndDateForFishingTrip(fishingTripEntity);
-
             }
-
         }
     }
 
