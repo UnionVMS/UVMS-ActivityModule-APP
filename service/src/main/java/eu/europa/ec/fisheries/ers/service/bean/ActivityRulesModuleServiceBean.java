@@ -150,7 +150,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
     private boolean isEmptyReportMessage(FLUXFAReportMessage faReportXMLObj) {
-        return faReportXMLObj == null && CollectionUtils.isEmpty(faReportXMLObj.getFAReportDocuments());
+        return CollectionUtils.isEmpty(faReportXMLObj != null ? faReportXMLObj.getFAReportDocuments() : null);
     }
 
     private String extractOwnerFromFLUXReportDocument(FLUXReportDocument fluxReportDocument) {

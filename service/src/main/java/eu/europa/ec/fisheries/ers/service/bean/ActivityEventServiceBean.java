@@ -10,46 +10,30 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.EventService;
-import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.*;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
+import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -59,9 +43,6 @@ import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
-import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 @LocalBean
 @Stateless
@@ -168,7 +149,7 @@ public class ActivityEventServiceBean implements EventService {
             log.debug("FishingTripResponse ::: "+FACatchSummaryHelper.printJsonstructure(baseResponse));
             String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
             log.debug("FishingTriId response marshalled");
-            producer.sendResponseMessageToSender(message.getJmsMessage(), response);
+            producer.sendResponseMessageToSender(message.getJmsMessage(), response, 3_600_000L);
             log.debug("Response sent back.");
         } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
             sendError(message, e);

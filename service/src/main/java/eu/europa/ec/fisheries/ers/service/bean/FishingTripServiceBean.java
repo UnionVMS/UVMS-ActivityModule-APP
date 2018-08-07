@@ -23,7 +23,6 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,6 +110,7 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mockito.internal.util.collections.Sets;
 
@@ -227,7 +227,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 FishingTripIdentifierEntity identifierEntity = fishingTripIdentifierDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId());
                 currentTrip = identifierEntity != null ? identifierEntity.getTripId() : null;
-                break;
+                if (StringUtils.isEmpty(currentTrip)){
+                    break;
+                }
             }
         }
         log.info("Current Trip : " + currentTrip);
@@ -792,7 +794,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
         tripWidgetDto.setTrips(tripOverviewDtoList);
         //As per new requirement, vessel should always be the one associated with fishing Activity in the trip widget
-        if (activityEntity != null && activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
+        if (activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
             Set<VesselTransportMeansEntity> vesselTransportMeansEntities = activityEntity.getFaReportDocument().getVesselTransportMeans();
             for (VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities) {
                 if (vesselTransportMeansEntity.getFishingActivity() == null) {
@@ -813,8 +815,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     }
 
-    @NotNull
-    private TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
+    public TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
         Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
         TripOverviewDto tripOverviewDto = new TripOverviewDto();
         Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips(); // Find out fishingTrip schemeId matching to tripId from fishingActivity object.

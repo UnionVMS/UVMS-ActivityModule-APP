@@ -148,7 +148,6 @@ public class FishingTripServiceBeanTest {
         assertEquals(previousIds.subList(1, previousIds.size()), cronology.getPreviousTrips());
     }
 
-
     @Test
     @SneakyThrows
     public void getCronologyOfFishingTrip_All() {
