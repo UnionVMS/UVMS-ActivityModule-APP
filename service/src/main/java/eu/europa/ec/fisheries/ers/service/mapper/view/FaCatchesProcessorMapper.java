@@ -179,7 +179,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
                     fillDetailsForSubGroup(bmsGroupDetailsDto, entity);
                     break;
                 default:
-                    log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : " + entity.getId() + " is neither LSC or BMS!");
+                    log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : " + entity.getId() + " is neither LSC nor BMS!");
             }
         }
         setWeightsForSubGroup(groupDto, lscGroupDetailsDto, bmsGroupDetailsDto, lscGroupTotalWeight, lscGroupTotalUnits, bmsGroupTotalWeight, bmsGroupTotalUnits);

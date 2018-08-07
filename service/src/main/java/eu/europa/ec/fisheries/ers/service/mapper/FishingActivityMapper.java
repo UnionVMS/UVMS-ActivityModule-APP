@@ -149,7 +149,9 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "endDate", expression = "java(getEndDate(entity))"),
             @Mapping(target = "hasCorrection", expression = "java(getCorrection(entity))"),
             @Mapping(target = "fluxReportReferenceId", source = "faReportDocument.fluxReportDocument.referenceId"),
-            @Mapping(target = "fluxReportReferenceSchemeId", source = "faReportDocument.fluxReportDocument.referenceSchemeId")
+            @Mapping(target = "fluxReportReferenceSchemeId", source = "faReportDocument.fluxReportDocument.referenceSchemeId"),
+            @Mapping(target = "cancelingReportID", source = "canceledBy"),
+            @Mapping(target = "deletingReportID", source = "deletedBy")
     })
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
 

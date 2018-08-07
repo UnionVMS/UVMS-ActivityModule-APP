@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <!-- Vessel transport related table -->
-    <include file="\postgres\schema\tables\v0.2\activity_vessel_position_event.xml"/>
+    <!-- Add canceledBy and deletedBy columns to activity fishing activity table -->
+    <include file="\postgres\schema\tables\v0.3\add_correctedby_deletedby_to_activity_table.xml"/>
 
 </databaseChangeLog>

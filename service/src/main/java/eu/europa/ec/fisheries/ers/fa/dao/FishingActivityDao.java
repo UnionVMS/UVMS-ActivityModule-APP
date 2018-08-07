@@ -200,17 +200,11 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         LOG.info("Get Fishing Activity Report list by Query.");
         FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
-
         // Create Query dynamically based on filter and Sort criteria
         StringBuilder sqlToGetActivityList = search.createSQL(query);
-
         // Apply real values to Query built
         Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
-
-        // Agreed with frontend.
-        // Page size : Number of record to be retrieved in one page
-        // offSet : The position from where the result should be picked. Starts with 0
-
+        // Agreed with frontend : Page size : Number of record to be retrieved in one page; offSet : The position from where the result should be picked. Starts with 0
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
             LOG.debug("Pagination information getting applied to Query is: Offset :" + pagination.getOffset() + " PageSize:" + pagination.getPageSize());
@@ -218,7 +212,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
-
         return listQuery.getResultList();
     }
 

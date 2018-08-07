@@ -12,20 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -33,25 +19,12 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
-import eu.europa.ec.fisheries.ers.service.AssetModuleService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.FluxMessageService;
-import eu.europa.ec.fisheries.ers.service.MdrModuleService;
-import eu.europa.ec.fisheries.ers.service.MovementModuleService;
-import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
@@ -62,10 +35,14 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.*;
 
 
 @Stateless
@@ -133,7 +110,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         log.debug("[INFO] Fishing activity records to be saved : "+faReportDocuments.size() );
         FluxFaReportMessageEntity entity = fluxReportMessageDao.saveFluxFaReportMessage(messageEntity);
         log.debug("[INFO] Saved partial FluxFaReportMessage before further processing" );
-        updateFaReportCorrectionsOrCancellations(faReportMessage.getFAReportDocuments());
+        updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());
         log.debug("[INFO] Updating FaReport Corrections is complete." );
         updateFishingTripStartAndEndDate(faReportDocuments);
         log.info("[END] FluxFaReportMessage Saved successfully.");
@@ -239,38 +216,57 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
 
     /**
-     * If there is a reference Id exist for any of the FaReport Document, than it means this is an update to an existing report.
+     * If the reference Id (of the received report) exist for any of the FaReport Document, than it means that this is an update to an existing report.
      */
-    private void updateFaReportCorrectionsOrCancellations(List<FAReportDocument> faReportDocuments) throws ServiceException {
-        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
-        for (FAReportDocument faReportDocument : faReportDocuments) {
-            FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
-            IDType receivedRefId = relatedFLUXReportDocument.getReferencedID();
-            if (receivedRefId != null && relatedFLUXReportDocument.getPurposeCode() != null) {
-                FaReportDocumentEntity faReportDocumentEntity = faReportDocumentDao.findFaReportByIdAndScheme(receivedRefId.getValue(),
-                        receivedRefId.getSchemeID());
-                if (faReportDocumentEntity != null) {
-                    FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(relatedFLUXReportDocument.getPurposeCode().getValue()));
-                    log.debug("[INFO] Found FaReportDocument with id [" +receivedRefId+ "] (same as the received message ReferencedID)! Going to modify its " +
-                            "purpose code from ["+ faReportDocumentEntity.getStatus() +"] to [" +relatedFLUXReportDocument.getPurposeCode()+ "] (aka "+faReportStatusEnum+")...");
-                    faReportDocumentEntity.setStatus(faReportStatusEnum);
-                    faReportDocumentEntities.add(faReportDocumentEntity);
+    private void updateFaReportCorrectionsOrCancellations(Set<FaReportDocumentEntity> justReceivedAndSavedFaReports) {
+        List<FaReportDocumentEntity> newFaReportEntities = new ArrayList<>();
+        for (FaReportDocumentEntity justSavedReport : justReceivedAndSavedFaReports) {
+            FluxReportDocumentEntity justSavedFluxReport = justSavedReport.getFluxReportDocument();
+            String receivedRefId = justSavedFluxReport.getReferenceId();
+            String receivedRefSchemeId = justSavedFluxReport.getReferenceSchemeId();
+            if (StringUtils.isNotEmpty(receivedRefId) && justSavedFluxReport.getPurposeCode() != null) {
+                // Get the document(s) that have the same id as the just received msg's ReferenceId.
+                FaReportDocumentEntity foundRelatedFaReport = faReportDocumentDao.findFaReportByIdAndScheme(receivedRefId, receivedRefSchemeId);
+                if (foundRelatedFaReport != null) { // Means that the report we just received refers to an exising one (Correcting it/Deleting it/Cancelling it)
+
+                    FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(justSavedFluxReport.getPurposeCode()));
+
+                    // Change status with the new reports status (new report = report that refers to this one = the newly saved one)
+                    foundRelatedFaReport.setStatus(faReportStatusEnum);
+
                     // Correction (purposecode == 5) => set 'latest' to false (for each activitiy related to this report)
-                    checkAndUpdateActivitiesForCorrection(receivedRefId, faReportDocumentEntity.getFishingActivities(), faReportStatusEnum);
+                    checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(foundRelatedFaReport, faReportStatusEnum, justSavedReport.getId());
+
+                    // Add the changed reports to a list to be updated.
+                    newFaReportEntities.add(foundRelatedFaReport);
                 }
             }
         }
-        faReportDocumentDao.updateAllFaData(faReportDocumentEntities);
+        faReportDocumentDao.updateAllFaData(newFaReportEntities);
     }
 
-    private void checkAndUpdateActivitiesForCorrection(IDType receivedRefId, Set<FishingActivityEntity> fishingActivities, FaReportStatusType faReportStatusEnum) {
-        if(FaReportStatusType.UPDATED.equals(faReportStatusEnum)){
-            if(CollectionUtils.isNotEmpty(fishingActivities)){
-                for (FishingActivityEntity fishingActivity : fishingActivities) {
-                    fishingActivity.setLatest(false);
-                }
-            } else {
-                log.warn("[WARN] Didn't find any activities to correct related to FaReportDocument with ID [" +receivedRefId+ "] ..");
+
+    private void checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(FaReportDocumentEntity faReportDocumentEntity, FaReportStatusType faReportStatusEnum, int idOfCfPotentiallyCancellingOrDeletingReport) {
+        Set<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities();
+        if(CollectionUtils.isNotEmpty(fishingActivities)){
+            switch(faReportStatusEnum){
+                case UPDATED:
+                    for (FishingActivityEntity fishingActivity : fishingActivities) {
+                        fishingActivity.setLatest(false);
+                    }
+                    break;
+                case CANCELED:
+                    for (FishingActivityEntity fishingActivity : fishingActivities) {
+                        fishingActivity.setCanceledBy(idOfCfPotentiallyCancellingOrDeletingReport);
+                    }
+                    break;
+                case DELETED:
+                    for (FishingActivityEntity fishingActivity : fishingActivities) {
+                        fishingActivity.setDeletedBy(idOfCfPotentiallyCancellingOrDeletingReport);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }

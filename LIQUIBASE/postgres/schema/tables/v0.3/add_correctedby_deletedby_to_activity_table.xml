@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet author="kovian" id="Add canceledBy and deletedBy to activity table">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="canceled_by" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="activity_fishing_activity">
+            <column name="deleted_by" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="log" columnName="canceled_by"/>
+            <dropColumn tableName="log" columnName="deleted_by"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
