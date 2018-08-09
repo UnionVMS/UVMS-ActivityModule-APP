@@ -18,6 +18,7 @@ import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.ST
 import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.SCHEME_ID;
 import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 public class SubscriptionMapper {
@@ -77,13 +79,27 @@ public class SubscriptionMapper {
 
     private static List<SubscriptionDataCriteria> mapDelimitedPeriodToFaQuerySubscriptionCriteria(DelimitedPeriod period){
         List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
-        if(period != null) {
-            SubscriptionDataCriteria startDateTimeCriteria =
-                    createCriteria(VALIDITY_PERIOD, START_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getStartDateTime().getDateTime().toString());
-            dataCriteriaList.add(startDateTimeCriteria);
-            SubscriptionDataCriteria endDateTimeCriteria =
-                    createCriteria(VALIDITY_PERIOD, END_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, period.getEndDateTime().getDateTime().toString());
-            dataCriteriaList.add(endDateTimeCriteria);
+        if (period != null) {
+            DateTimeType startDateTime = period.getStartDateTime();
+            DateTimeType endDateTime = period.getEndDateTime();
+
+            if (startDateTime != null){
+                XMLGregorianCalendar dateTime = startDateTime.getDateTime();
+                if (dateTime != null){
+                    SubscriptionDataCriteria startDateTimeCriteria =
+                            createCriteria(VALIDITY_PERIOD, START_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, dateTime.toString());
+                    dataCriteriaList.add(startDateTimeCriteria);
+                }
+            }
+
+            if (endDateTime != null){
+                XMLGregorianCalendar dateTime = endDateTime.getDateTime();
+                if (dateTime != null){
+                    SubscriptionDataCriteria endDateTimeCriteria =
+                            createCriteria(VALIDITY_PERIOD, END_DATE, YYYY_MM_DD_T_HH_MM_SS_SSSZ, dateTime.toString());
+                    dataCriteriaList.add(endDateTimeCriteria);
+                }
+            }
         }
         return dataCriteriaList;
     }
