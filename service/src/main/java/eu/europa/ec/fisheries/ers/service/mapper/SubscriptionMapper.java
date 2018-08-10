@@ -30,6 +30,7 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataQuery;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
+import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
@@ -39,6 +40,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+@Slf4j
 public class SubscriptionMapper {
 
     private SubscriptionMapper(){}
@@ -120,19 +122,36 @@ public class SubscriptionMapper {
             criteria.setCriteria(CriteriaType.VESSEL);
             CodeType faQueryParameterTypeCode = faQueryParameter.getTypeCode();
             if (faQueryParameterTypeCode != null){
-                criteria.setSubCriteria(SubCriteriaType.valueOf(faQueryParameterTypeCode.getValue()));
+                try {
+                    SubCriteriaType subCriteriaType = SubCriteriaType.valueOf(faQueryParameterTypeCode.getValue());
+                    criteria.setSubCriteria(subCriteriaType);
+                }
+                catch (IllegalArgumentException e){
+                    log.warn(e.getMessage(), e);
+                }
             }
             IDType valueID = faQueryParameter.getValueID();
             if (valueID != null){
-                criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueID().getSchemeID()));
-                criteria.setValue(faQueryParameter.getValueID().getValue());
 
+                try {
+                    ValueType valueType = ValueType.valueOf(faQueryParameter.getValueID().getSchemeID());
+                    criteria.setValueType(valueType);
+                    criteria.setValue(faQueryParameter.getValueID().getValue());
+                }
+                catch (IllegalArgumentException e){
+                    log.warn(e.getMessage(), e);
+                }
             }
             CodeType valueCode = faQueryParameter.getValueCode();
             if (valueCode != null){
-                criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueCode().getListID()));
-                criteria.setValue(faQueryParameter.getValueCode().getValue());
 
+                try {
+                    criteria.setValueType(ValueType.valueOf(faQueryParameter.getValueCode().getListID()));
+                    criteria.setValue(faQueryParameter.getValueCode().getValue());
+                }
+                catch (IllegalArgumentException e){
+                    log.warn(e.getMessage(), e);
+                }
             }
             dataCriteriaList.add(criteria);
         }
