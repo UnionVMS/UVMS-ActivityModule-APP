@@ -92,7 +92,7 @@ public class FilterMap {
         populateGroupByMapping();
     }
 
-    public String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
+    public static final String DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
     // This contains Table Join and Where condition mapping for each Filter
     private EnumMap<SearchFilter, FilterDetails> filterMappings = new EnumMap<>(SearchFilter.class);
 
