@@ -56,15 +56,10 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
      */
     public FaReportDocumentEntity findFaReportByIdAndScheme(String reportId, String schemeId) {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
-        query.setParameter(REPORT_ID, reportId.toLowerCase());
+        query.setParameter(REPORT_ID, reportId);
         query.setParameter(SCHEME_ID, schemeId);
         query.setMaxResults(1);
-        List<FaReportDocumentEntity> entities = query.getResultList();
-        if (!entities.isEmpty()) {
-            return entities.get(0);
-        } else {
-            return null;
-        }
+        return (FaReportDocumentEntity) query.getSingleResult();
     }
 
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated) {
