@@ -29,8 +29,13 @@ public class FluxFaReportMessageMapper {
         if ( fluxfaReportMessage == null && faReportSourceEnum == null ) {
             return null;
         }
-        fluxFaReportMessage.setFluxReportDocument(getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage) );
-        fluxFaReportMessage.setFaReportDocuments(getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
+
+        if (fluxfaReportMessage != null){
+            FluxReportDocumentEntity fluxReportDocument = getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage);
+            fluxFaReportMessage.setFluxReportDocument(fluxReportDocument);
+            fluxFaReportMessage.setFaReportDocuments(getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
+        }
+
         return fluxFaReportMessage;
     }
 

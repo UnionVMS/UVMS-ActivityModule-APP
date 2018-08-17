@@ -10,6 +10,16 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.facatch;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -28,16 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
 
 /**
  * This class acts as helper class for FAcatchSummary Report functionality.
@@ -135,7 +135,7 @@ public abstract class FACatchSummaryHelper {
             SimpleDateFormat day = new SimpleDateFormat("MMM");
             return day.format(date);
         } else if (GroupCriteria.DATE_YEAR.equals(criteria)) {
-            SimpleDateFormat day = new SimpleDateFormat("YYYY");
+            SimpleDateFormat day = new SimpleDateFormat("yyyy");
             return day.format(date);
         }else if(GroupCriteria.DATE.equals(criteria)){
             return (new SimpleDateFormat("yyyy-MM-dd")).format(date);
