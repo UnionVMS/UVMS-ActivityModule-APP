@@ -13,14 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -274,7 +274,6 @@ public class FilterMap {
     }
 
     public void populateFilterMAppingsWithChangeForFACatchReport() {
-        DELIMITED_PERIOD_TABLE_ALIAS = " a.delimitedPeriods dp ";
         populateFilterMappings();
         filterMappings.put(SearchFilter.SPECIES, new FilterDetails(" ", "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") )"));
         filterMappings.put(SearchFilter.GEAR, new FilterDetails("faCatch.fishingGears fg", "fg.typeCode IN (:" + FISHING_GEAR + ")"));
