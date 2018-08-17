@@ -70,15 +70,6 @@ public class FishingActivityResource extends UnionVMSResource {
         return createSuccessResponse(FaReportSourceEnum.values());
     }
 
-    @POST
-    @Produces(value = {MediaType.APPLICATION_XML})
-    @Consumes(value = {MediaType.APPLICATION_XML})
-    @Path("/FLUXFAReportMessage")
-    public String persist(FLUXFAReportMessage request) throws ServiceException, JAXBException {
-        FluxFaReportMessageEntity entity = fluxResponseMessageService.saveFishingActivityReportDocuments(request, FaReportSourceEnum.MANUAL);
-        FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(Collections.list(Collections.enumeration(entity.getFaReportDocuments())));
-        return JAXBUtils.marshallJaxBObjectToString(fluxfaReportMessage, "ISO-8859-1", true, new FANamespaceMapper());
-    }
 
     @POST
     @Path("/list")
