@@ -174,16 +174,16 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
      */
     private Double getTotalTripDuration(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
-            return new Double(0);
+            return 0d;
         }
 
-        Double duration = new Double(0);
+        Double duration = 0d;
         Date startDate = getFishingTripDateTimeFromFishingActivities(fishingActivities, FishingActivityTypeEnum.DEPARTURE.toString());
         Date endDate = getFishingTripDateTimeFromFishingActivities(fishingActivities, FishingActivityTypeEnum.ARRIVAL.toString());
 
         Date currentDate = new Date();
         if (startDate != null && endDate != null) {
-            duration = Double.valueOf(endDate.getTime() - startDate.getTime());
+            duration = (double) (endDate.getTime() - startDate.getTime());
         } else if (endDate == null && startDate != null) { // received null means no ARRIVAL yet received for the trip
 
             log.info("ARRIVAL is not yet received for the trip");
@@ -192,9 +192,9 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             int fishingActivityCount = fishingActivities.size();
             Date lastActivityDate = fishingActivities.get(fishingActivityCount - 1).getCalculatedStartTime();
             if (lastActivityDate != null && lastActivityDate.compareTo(startDate) > 0) { // If last activity date is later than start date
-                duration = Double.valueOf(lastActivityDate.getTime() - startDate.getTime());
+                duration = (double) (lastActivityDate.getTime() - startDate.getTime());
             } else if (currentDate.compareTo(startDate) > 0) {// if not, then compare with current date
-                duration = Double.valueOf(currentDate.getTime() - startDate.getTime());
+                duration = (double) (currentDate.getTime() - startDate.getTime());
             }
         }
 

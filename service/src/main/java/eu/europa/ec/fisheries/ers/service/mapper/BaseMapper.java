@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static com.google.common.collect.Sets.newHashSet;
 
-import javax.validation.constraints.NotNull;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -317,7 +316,6 @@ public class BaseMapper {
         return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
     }
 
-    @NotNull
     protected PositionDto extractPositionDtoFromFishingActivity(FishingActivityEntity faEntity) {
         if (faEntity == null) {
             return null;
