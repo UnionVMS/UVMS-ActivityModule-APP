@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.dao;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.HashSet;
@@ -58,8 +59,13 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
         query.setParameter(REPORT_ID, reportId);
         query.setParameter(SCHEME_ID, schemeId);
-        query.setMaxResults(1);
-        return (FaReportDocumentEntity) query.getSingleResult();
+        FaReportDocumentEntity singleResult;
+        try {
+            singleResult = (FaReportDocumentEntity) query.getSingleResult();
+        } catch (NoResultException ex){
+            singleResult = null; // no need to log this exception!
+        }
+        return singleResult;
     }
 
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated) {
