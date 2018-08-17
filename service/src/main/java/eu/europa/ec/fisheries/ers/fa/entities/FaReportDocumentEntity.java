@@ -46,7 +46,7 @@ import org.hibernate.annotations.Type;
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
                         "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
                         "LEFT JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
-                        "WHERE identifier.fluxReportIdentifierId = :reportId " +
+                        "WHERE lower(identifier.fluxReportIdentifierId) = :reportId " +
                         "AND identifier.fluxReportIdentifierSchemeId = :schemeId"
         ),
         @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,

@@ -54,9 +54,9 @@ public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
      * @return FaReportDocumentEntity
      * @throws ServiceException
      */
-    public FaReportDocumentEntity findFaReportByIdAndScheme(String reportId, String schemeId) throws ServiceException {
+    public FaReportDocumentEntity findFaReportByIdAndScheme(String reportId, String schemeId) {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
-        query.setParameter(REPORT_ID, reportId);
+        query.setParameter(REPORT_ID, reportId.toLowerCase());
         query.setParameter(SCHEME_ID, schemeId);
         query.setMaxResults(1);
         List<FaReportDocumentEntity> entities = query.getResultList();
