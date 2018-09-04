@@ -19,8 +19,6 @@ import lombok.Data;
 public class MeasureType {
 
     private Double value;
-
     private String unitCode;
-
     private String unitCodeListVersionID;
 }
