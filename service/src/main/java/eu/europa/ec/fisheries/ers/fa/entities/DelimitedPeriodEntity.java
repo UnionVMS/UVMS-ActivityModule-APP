@@ -60,14 +60,10 @@ public class DelimitedPeriodEntity implements Serializable {
 	private Date endDate;
 
     @Embedded
-	private MeasureType durationMeasure;
+	private MeasureType durationMeasure =  new MeasureType();
 
 	@Column(name = "calculated_duration")
 	private Double calculatedDuration;
-
-	public DelimitedPeriodEntity(){
-        durationMeasure = new MeasureType();
-    }
 
     @PrePersist
     public void prePersist(){

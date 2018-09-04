@@ -15,6 +15,7 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.MeasureType;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
@@ -61,8 +62,11 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
             DelimitedPeriodEntity delimPeriod = delimitedPeriods.iterator().next();
             startDate = delimPeriod.getStartDate();
             endDate = delimPeriod.getEndDate();
-            duration = delimPeriod.getDurationMeasure().getValue();
-            unitCode = delimPeriod.getDurationMeasure().getUnitCode();
+            MeasureType durationMeasure = delimPeriod.getDurationMeasure();
+            if (durationMeasure != null){
+                duration = delimPeriod.getDurationMeasure().getValue();
+                unitCode = delimPeriod.getDurationMeasure().getUnitCode();
+            }
         }
         return new DelimitedPeriodDTO(startDate, endDate, duration, unitCode);
     }
