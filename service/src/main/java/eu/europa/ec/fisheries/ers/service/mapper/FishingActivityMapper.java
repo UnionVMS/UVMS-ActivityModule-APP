@@ -594,31 +594,38 @@ public abstract class FishingActivityMapper extends BaseMapper {
         for (FLUXLocation location : fluxLocations) {
             if (location.getRegionalFisheriesManagementOrganizationCode() != null)
                 faCatchEntity.setRfmo(location.getRegionalFisheriesManagementOrganizationCode().getValue());
-
             IDType id = location.getID();
             if (id != null) {
-                switch (FluxLocationSchemeId.valueOf(id.getSchemeID())) {
-                    case TERRITORY:
-                        faCatchEntity.setTerritory(id.getValue());
-                        break;
-                    case FAO_AREA:
-                        faCatchEntity.setFaoArea(id.getValue());
-                        break;
-                    case ICES_STAT_RECTANGLE:
-                        faCatchEntity.setIcesStatRectangle(id.getValue());
-                        break;
-                    case EFFORT_ZONE:
-                        faCatchEntity.setEffortZone(id.getValue());
-                        break;
-                    case GFCM_GSA:
-                        faCatchEntity.setGfcmGsa(id.getValue());
-                        break;
-                    case GFCM_STAT_RECTANGLE:
-                        faCatchEntity.setGfcmStatRectangle(id.getValue());
-                        break;
-                    default:
-                        log.error("Unknown schemeId for FluxLocation." + id.getSchemeID());
-                        break;
+                FluxLocationSchemeId fluxLocationSchemeId = null;
+                try {
+                    fluxLocationSchemeId = FluxLocationSchemeId.valueOf(id.getSchemeID());
+                } catch (IllegalArgumentException e){
+                    log.warn("Unknown schemeId for FluxLocation." + id.getSchemeID());
+                }
+                if (fluxLocationSchemeId != null){
+                    switch (fluxLocationSchemeId) {
+                        case TERRITORY:
+                            faCatchEntity.setTerritory(id.getValue());
+                            break;
+                        case FAO_AREA:
+                            faCatchEntity.setFaoArea(id.getValue());
+                            break;
+                        case ICES_STAT_RECTANGLE:
+                            faCatchEntity.setIcesStatRectangle(id.getValue());
+                            break;
+                        case EFFORT_ZONE:
+                            faCatchEntity.setEffortZone(id.getValue());
+                            break;
+                        case GFCM_GSA:
+                            faCatchEntity.setGfcmGsa(id.getValue());
+                            break;
+                        case GFCM_STAT_RECTANGLE:
+                            faCatchEntity.setGfcmStatRectangle(id.getValue());
+                            break;
+                        default:
+                            log.error("Unknown schemeId for FluxLocation." + id.getSchemeID());
+                            break;
+                    }
                 }
             }
         }
