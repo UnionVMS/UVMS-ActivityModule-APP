@@ -623,7 +623,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
                             faCatchEntity.setGfcmStatRectangle(id.getValue());
                             break;
                         default:
-                            log.error("Unknown schemeId for FluxLocation." + id.getSchemeID());
+                            log.warn("Unknown schemeId for FluxLocation." + id.getSchemeID());
                             break;
                     }
                 }
