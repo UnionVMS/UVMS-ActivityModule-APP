@@ -10,12 +10,9 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -43,10 +40,10 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Singleton
-@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @Slf4j
-public class ConcurrentFaReportSaverBean {
+@Stateless
+@LocalBean
+public class FaReportSaverBean {
 
     @EJB
     private FluxMessageService fluxMessageService;
@@ -54,14 +51,21 @@ public class ConcurrentFaReportSaverBean {
     @EJB
     private ActivityMatchingIdsServiceBean matchingIdsService;
 
-    @Lock(LockType.WRITE)
+    @EJB
+    private ExchangeServiceBean exchangeServiceBean;
+
     public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) throws ActivityModelMarshallException, ServiceException {
-        FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
-        deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
-        if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
-            fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
-        } else {
-            log.error("[ERROR] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+
+        try {
+            FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
+            deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
+            if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
+                fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
+            } else {
+                log.error("[ERROR] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+            }
+        } catch (Exception e){
+           // exchangeServiceBean.updateMessageStatus();
         }
     }
 
