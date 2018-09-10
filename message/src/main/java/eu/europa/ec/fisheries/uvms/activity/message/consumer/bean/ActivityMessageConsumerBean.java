@@ -11,7 +11,22 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 
-import eu.europa.ec.fisheries.uvms.activity.message.event.*;
+import javax.ejb.ActivationConfigProperty;
+import javax.ejb.MessageDriven;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;
+
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
@@ -23,21 +38,15 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
-
 @MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY_NAME),
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector IS NULL"),
+        @ActivationConfigProperty(propertyName = "maxMessagesPerSessions", propertyValue = "100"),
+        @ActivationConfigProperty(propertyName = "initialRedeliveryDelay", propertyValue = "60000"),
+        @ActivationConfigProperty(propertyName = "maximumRedeliveries", propertyValue = "3"),
+        @ActivationConfigProperty(propertyName = "maxSessions", propertyValue = "10")
 })
 @Slf4j
 public class ActivityMessageConsumerBean implements MessageListener {

@@ -68,7 +68,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 @Slf4j
 public class ActivityEntityToModelMapper {
 
-    public static ActivityEntityToModelMapper INSTANCE = new ActivityEntityToModelMapper();
+    public static final ActivityEntityToModelMapper INSTANCE = new ActivityEntityToModelMapper();
   
     private ActivityEntityToModelMapper(){
 
