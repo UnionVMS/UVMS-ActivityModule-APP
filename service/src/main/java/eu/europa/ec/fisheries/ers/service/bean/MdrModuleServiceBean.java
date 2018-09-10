@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MdrProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;

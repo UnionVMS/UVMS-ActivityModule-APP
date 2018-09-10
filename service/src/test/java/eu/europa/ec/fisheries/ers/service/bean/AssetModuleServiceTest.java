@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import lombok.SneakyThrows;
 import org.junit.Before;

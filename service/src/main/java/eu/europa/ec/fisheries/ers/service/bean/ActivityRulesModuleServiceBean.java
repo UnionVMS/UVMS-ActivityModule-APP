@@ -21,7 +21,7 @@ import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.FaQueryFactory;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
