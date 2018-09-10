@@ -65,7 +65,7 @@ public class FaReportSaverBean {
                 log.error("[ERROR] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
             }
         } catch (Exception e){
-           // exchangeServiceBean.updateMessageStatus();
+            exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
         }
     }
 

@@ -14,8 +14,11 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import eu.europa.ec.fisheries.schema.exchange.v1.ExchangeLogStatusTypeType;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityEventQueueConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
+import eu.europa.ec.fisheries.uvms.exchange.model.mapper.ExchangeModuleRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Stateless
@@ -26,13 +29,16 @@ public class ExchangeServiceBean {
     @EJB
     private ExchangeProducerBean exchangeProducerBean;
 
-    public void updateMessageStatus(String fluxReportMessageId, ExchangeLogStatusTypeType statusType) {
-       // try {
-           // String statusMsg = ExchangeModuleRequestMapper.createUpdateLogStatusRequest(logGuid, statusType, duplicate);
-          //  log.debug("Message to exchange to update status : {}", statusMsg);
-           // getRulesProducer().sendDataSourceMessage(statusMsg, DataSourceQueue.EXCHANGE);
-        //} catch (ExchangeModelMarshallException | MessageException e) {
-            //throw new RulesServiceException(e.getMessage(), e);
-        //}
+    @EJB
+    private ActivityEventQueueConsumerBean eventQueueConsumerBean;
+
+    public void updateExchangeMessage(String exchangeLogGuid, Exception exception) {
+       try {
+           String statusMsg = ExchangeModuleRequestMapper.createUpdateLogStatusRequest(exchangeLogGuid, exception);
+           log.debug("Message to exchange to update status : {}", statusMsg);
+           exchangeProducerBean.sendModuleMessage(statusMsg, eventQueueConsumerBean.getDestination());
+        } catch (ExchangeModelMarshallException | MessageException e) {
+            log.error("Could not update message status to technical business error with exchangeLogGuid {}", exchangeLogGuid, e);
+        }
     }
 }
