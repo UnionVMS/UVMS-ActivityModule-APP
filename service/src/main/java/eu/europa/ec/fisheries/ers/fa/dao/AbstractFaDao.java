@@ -10,11 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.Serializable;
 import java.util.List;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by padhyad on 5/18/2016.
@@ -28,9 +27,4 @@ public abstract class AbstractFaDao<T extends Serializable> extends AbstractDAO<
         }
     }
 
-    public void updateAllFaData(List<T> entities) {
-        for (T entity : entities) {
-            getEntityManager().merge(entity);
-        }
-    }
 }

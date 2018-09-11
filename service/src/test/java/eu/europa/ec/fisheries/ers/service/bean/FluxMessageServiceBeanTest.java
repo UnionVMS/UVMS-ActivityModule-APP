@@ -14,8 +14,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
@@ -41,16 +38,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import static org.junit.Assert.assertEquals;
 
 @Ignore
 public class FluxMessageServiceBeanTest {
@@ -102,7 +96,7 @@ public class FluxMessageServiceBeanTest {
 
         //Mock the APIs
         Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
-        Mockito.doNothing().when(faReportDocumentDao).updateAllFaData(Mockito.any(List.class));
+        Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
         Mockito.doReturn(Mockito.anyList()).when(fluxFaReportMessageDao).saveFluxFaReportMessage(Mockito.any(FluxFaReportMessageEntity.class));
 
         Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
@@ -116,7 +110,7 @@ public class FluxMessageServiceBeanTest {
         //Verify
        // Mockito.verify(fluxFaReportMessageDao, Mockito.times(1)).saveFluxFaReportMessage(Mockito.any(FluxFaReportMessageEntity.class));
         Mockito.verify(faReportDocumentDao, Mockito.times(2)).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
-        Mockito.verify(faReportDocumentDao, Mockito.times(2)).updateAllFaData(captor.capture());
+        Mockito.verify(faReportDocumentDao, Mockito.times(2)).bulkUploadFaData(captor.capture());
 
         //Test
         List<FaReportDocumentEntity>  faReportDocumentEntities = captor.getValue();
