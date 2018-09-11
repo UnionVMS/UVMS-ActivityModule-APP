@@ -260,7 +260,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 }
             }
         }
-        faReportDocumentDao.updateAllFaData(faReportDocumentEntities);
+        faReportDocumentDao.bulkUploadFaData(faReportDocumentEntities);
     }
 
     private void checkAndUpdateActivitiesForCorrection(IDType receivedRefId, Set<FishingActivityEntity> fishingActivities, FaReportStatusType faReportStatusEnum) {
@@ -284,7 +284,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             calculateFishingTripStartAndEndDate(faReportDocument);
         }
-        faReportDocumentDao.updateAllFaData(new ArrayList<>(faReportDocuments));
+        faReportDocumentDao.bulkUploadFaData(new ArrayList<>(faReportDocuments));
         log.debug("Update of Start And End Date for all fishingTrips is complete");
     }
 
