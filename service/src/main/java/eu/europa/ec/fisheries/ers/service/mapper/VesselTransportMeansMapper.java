@@ -17,23 +17,14 @@ import java.util.List;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselPositionEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselPositionEvent;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Mapper(uses = {FaReportDocumentMapper.class, VesselIdentifierMapper.class, ContactPartyMapper.class, FlapDocumentMapper.class,VesselStorageCharacteristicsMapper.class})
@@ -45,7 +36,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "roleCode", source = "roleCode.value"),
             @Mapping(target = "roleCodeListId", source = "roleCode.listID"),
             @Mapping(target = "name", expression = "java(getTextFromList(vesselTransportMeans.getNames()))"),
-            @Mapping(target = "flapDocuments", expression = "java(getFlapDocumentEntities(vesselTransportMeans.getGrantedFLAPDocuments(), vesselTransportMeansEntity))"),
+           // @Mapping(target = "flapDocuments", expression = "java(getFlapDocumentEntities(vesselTransportMeans.getGrantedFLAPDocuments(), vesselTransportMeansEntity))"),
             @Mapping(target = "country", source = "registrationVesselCountry.ID.value"),
             @Mapping(target = "countrySchemeId", source = "registrationVesselCountry.ID.schemeID"),
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToVesselIdentifierEntities(vesselTransportMeans.getIDS(), vesselTransportMeansEntity))"),
@@ -69,7 +60,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public abstract List<VesselDetailsDTO> map(Set<VesselTransportMeansEntity> entity);
 
-    protected Set<FlapDocumentEntity> getFlapDocumentEntities(List<FLAPDocument> flapDocuments, VesselTransportMeansEntity vesselTransportMeansEntity) {
+    protected Set<FlapDocumentEntity> getFlapDocumentEntities(List<FLAPDocument> flapDocuments, VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity activity) {
         if (flapDocuments == null || flapDocuments.isEmpty()) {
             return Collections.emptySet();
         }
@@ -77,6 +68,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         for (FLAPDocument flapDocument : flapDocuments) {
             FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(flapDocument);
             entity.setVesselTransportMeans(vesselTransportMeansEntity);
+            entity.setFishingActivity(activity);
             flapDocumentEntities.add(entity);
         }
         return flapDocumentEntities;

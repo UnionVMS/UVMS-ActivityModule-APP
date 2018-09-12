@@ -146,14 +146,14 @@ public class ActivityEventServiceBean implements EventService {
                     saveReportBean.handleFaReportSaving(request);
                     break;
                 case GET_FLUX_FA_QUERY:
-                    log.error("TODO : FAQUERY mappers NOT implemented yet....");
+                    log.warn("TODO : FAQUERY mappers NOT implemented yet....");
                     FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
                     // TODO : Implement me... Map tp real HQl/SQL query and run the query and map the results to FLUXFAReportMessage and send it to
                     FLUXFAReportMessage faRepQueryResponseAfterMapping = new FLUXFAReportMessage();
                     activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faRepQueryResponseAfterMapping, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID());
                     break;
             }
-        } catch (ActivityModelMarshallException | ServiceException | ActivityModuleException | JMSException e) {
+        } catch (ActivityModelMarshallException | ActivityModuleException | JMSException e) {
             sendError(eventMessage, e);
         }
     }

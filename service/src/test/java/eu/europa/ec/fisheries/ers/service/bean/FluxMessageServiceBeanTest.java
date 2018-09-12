@@ -95,9 +95,7 @@ public class FluxMessageServiceBeanTest {
     public void testSaveFishingActivityReportDocuments() throws ServiceException, ParseException, DatatypeConfigurationException {
 
         //Mock the APIs
-        Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
-        Mockito.doNothing().when(faReportDocumentDao).bulkUploadFaData(Mockito.any(List.class));
-        Mockito.doReturn(Mockito.anyList()).when(fluxFaReportMessageDao).saveFluxFaReportMessage(Mockito.any(FluxFaReportMessageEntity.class));
+        Mockito.doReturn(Mockito.anyList()).when(fluxFaReportMessageDao).createEntity(Mockito.any(FluxFaReportMessageEntity.class));
 
         Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
         Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Date.class), Mockito.any(Date.class));
@@ -110,7 +108,6 @@ public class FluxMessageServiceBeanTest {
         //Verify
        // Mockito.verify(fluxFaReportMessageDao, Mockito.times(1)).saveFluxFaReportMessage(Mockito.any(FluxFaReportMessageEntity.class));
         Mockito.verify(faReportDocumentDao, Mockito.times(2)).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
-        Mockito.verify(faReportDocumentDao, Mockito.times(2)).bulkUploadFaData(captor.capture());
 
         //Test
         List<FaReportDocumentEntity>  faReportDocumentEntities = captor.getValue();
