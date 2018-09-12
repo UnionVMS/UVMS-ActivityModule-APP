@@ -36,7 +36,6 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "roleCode", source = "roleCode.value"),
             @Mapping(target = "roleCodeListId", source = "roleCode.listID"),
             @Mapping(target = "name", expression = "java(getTextFromList(vesselTransportMeans.getNames()))"),
-           // @Mapping(target = "flapDocuments", expression = "java(getFlapDocumentEntities(vesselTransportMeans.getGrantedFLAPDocuments(), vesselTransportMeansEntity))"),
             @Mapping(target = "country", source = "registrationVesselCountry.ID.value"),
             @Mapping(target = "countrySchemeId", source = "registrationVesselCountry.ID.schemeID"),
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToVesselIdentifierEntities(vesselTransportMeans.getIDS(), vesselTransportMeansEntity))"),
