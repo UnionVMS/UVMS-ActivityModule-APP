@@ -13,15 +13,9 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
@@ -32,6 +26,10 @@ import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by padhyad on 7/18/2016.
@@ -71,27 +69,19 @@ public class FaReportDocumentMapperTest {
     public void testFaReportDocumentMapper() {
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
         FaReportDocumentEntity faReportDocumentEntity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, FaReportSourceEnum.FLUX);
-
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity);
         assertNotNull(faReportDocumentEntity);
-        assertNotNull(faReportDocumentEntity.getFishingActivities());
-        FishingActivityEntity fishingActivityEntity = faReportDocumentEntity.getFishingActivities().iterator().next();
-        assertNotNull(fishingActivityEntity);
-        assertFaReportDocumentFields(faReportDocument, fishingActivityEntity.getFaReportDocument());
-
         assertNotNull(faReportDocumentEntity.getFluxReportDocument());
         assertFaReportDocumentFields(faReportDocument, faReportDocumentEntity.getFluxReportDocument().getFaReportDocument());
-
-        assertNotNull(faReportDocumentEntity.getVesselTransportMeans());
     }
 
     @Test
     public void testFaReportDocumentMapperNullReturns(){
-        Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity());
+        Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
         assertTrue(fishingActivityEntities.size() == 0);
-        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = FaReportDocumentMapper.INSTANCE.getVesselTransportMeansEntity(null, new FaReportDocumentEntity());
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = FaReportDocumentMapper.INSTANCE.mapVesselTransportMeansEntity(null, new FaReportDocumentEntity());
         assertNull(vesselTransportMeansEntityList);
-        Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity());
+        Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
         assertTrue(fishingActivityEntities1.size() == 0);
     }
 

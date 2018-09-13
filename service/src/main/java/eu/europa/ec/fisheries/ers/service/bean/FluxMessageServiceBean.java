@@ -39,10 +39,8 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Stateless
 @Transactional
@@ -53,8 +51,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private static final String NEXT = "NEXT";
     private static final String START_DATE = "START_DATE";
     private static final String END_DATE = "END_DATE";
-    private FaReportDocumentDao faReportDocumentDao;
 
+    private FaReportDocumentDao faReportDocumentDao;
     private FluxFaReportMessageDao fluxReportMessageDao;
 
     @EJB
@@ -104,7 +102,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         log.debug("[INFO] Fishing activity records to be saved : " + faReportDocuments.size());
         FluxFaReportMessageEntity entity = fluxReportMessageDao.createEntity(messageEntity);
         log.debug("[INFO] Saved partial FluxFaReportMessage before further processing");
-        updateFaReportCorrectionsOrCancellations(faReportMessage.getFAReportDocuments());
+        updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());
         log.debug("[INFO] Updating FaReport Corrections is complete.");
         updateFishingTripStartAndEndDate(faReportDocuments);
         log.info("[END] FluxFaReportMessage Saved successfully.");
@@ -134,26 +132,30 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
     }
 
-    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) throws ServiceException {
+    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
         Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
         if (CollectionUtils.isEmpty(identifierEntities)) {
             return;
         }
         for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-            List<FishingActivityEntity> fishingActivityEntityList = fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
-            if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
-                //Calculate trip start date
-                FishingActivityEntity firstFishingActivity = fishingActivityEntityList.get(0);
-                tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
-                // calculate trip end date
-                Date calculatedTripEndDate;
-                int totalActivities = fishingActivityEntityList.size();
-                if (totalActivities > 1) {
-                    calculatedTripEndDate = fishingActivityEntityList.get(totalActivities - 1).getCalculatedStartTime();
-                } else {
-                    calculatedTripEndDate = firstFishingActivity.getCalculatedStartTime();
+            try {
+                List<FishingActivityEntity> fishingActivityEntityList = fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
+                if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
+                    //Calculate trip start date
+                    FishingActivityEntity firstFishingActivity = fishingActivityEntityList.get(0);
+                    tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
+                    // calculate trip end date
+                    Date calculatedTripEndDate;
+                    int totalActivities = fishingActivityEntityList.size();
+                    if (totalActivities > 1) {
+                        calculatedTripEndDate = fishingActivityEntityList.get(totalActivities - 1).getCalculatedStartTime();
+                    } else {
+                        calculatedTripEndDate = firstFishingActivity.getCalculatedStartTime();
+                    }
+                    tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
                 }
-                tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
+            } catch (ServiceException e) {
+                log.error("Error while trying to calculate FishingTrip start and end Date",e);
             }
         }
     }
@@ -193,48 +195,74 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      *
      * @param
      */
-    private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) throws ServiceException {
+    private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) {
 
-        List<String> guids = assetModule.getAssetGuids(vesselTransport.getVesselIdentifiers());
-        if (CollectionUtils.isNotEmpty(guids)) {
-            vesselTransport.setGuid(guids.get(0));
+        try {
+            List<String> guids = assetModule.getAssetGuids(vesselTransport.getVesselIdentifiers());
+            if (CollectionUtils.isNotEmpty(guids)) {
+                vesselTransport.setGuid(guids.get(0));
+            }
         }
-
+        catch (ServiceException e) {
+            log.error("Error while trying to get guids from Assets Module {}", e);
+        }
     }
 
 
     /**
-     * If there is a reference Id exist for any of the FaReport Document, than it means this is an update to an existing report.
+     * If the reference Id (of the received report) exist for any of the FaReport Document, than it means that this is an update to an existing report.
      */
-    private void updateFaReportCorrectionsOrCancellations(List<FAReportDocument> faReportDocuments) throws ServiceException {
-        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
-        for (FAReportDocument faReportDocument : faReportDocuments) {
-            FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
-            IDType receivedRefId = relatedFLUXReportDocument.getReferencedID();
-            if (receivedRefId != null && relatedFLUXReportDocument.getPurposeCode() != null) {
-                FaReportDocumentEntity faReportDocumentEntity = faReportDocumentDao.findFaReportByIdAndScheme(receivedRefId.getValue(),
-                        receivedRefId.getSchemeID());
-                if (faReportDocumentEntity != null) {
-                    FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(relatedFLUXReportDocument.getPurposeCode().getValue()));
-                    log.debug("[INFO] Found FaReportDocument with id [" + receivedRefId + "] (same as the received message ReferencedID)! Going to modify its " +
-                            "purpose code from [" + faReportDocumentEntity.getStatus() + "] to [" + relatedFLUXReportDocument.getPurposeCode() + "] (aka " + faReportStatusEnum + ")...");
-                    faReportDocumentEntity.setStatus(faReportStatusEnum);
-                    faReportDocumentEntities.add(faReportDocumentEntity);
+    private void updateFaReportCorrectionsOrCancellations(Set<FaReportDocumentEntity> justReceivedAndSavedFaReports) {
+        List<FaReportDocumentEntity> newFaReportEntities = new ArrayList<>();
+        for (FaReportDocumentEntity justSavedReport : justReceivedAndSavedFaReports) {
+            FluxReportDocumentEntity justSavedFluxReport = justSavedReport.getFluxReportDocument();
+            String receivedRefId = justSavedFluxReport.getReferenceId();
+            String receivedRefSchemeId = justSavedFluxReport.getReferenceSchemeId();
+            // If it has a refId it means that it is a correction/deletion or cancellation message, so we should update the referred entity STATUS (FaReportDocument)..
+            if (StringUtils.isNotEmpty(receivedRefId) && justSavedFluxReport.getPurposeCode() != null) {
+                // Get the document(s) that have the same id as the just received msg's ReferenceId.
+                FaReportDocumentEntity foundRelatedFaReport = faReportDocumentDao.findFaReportByIdAndScheme(receivedRefId, receivedRefSchemeId);
+                if (foundRelatedFaReport != null) { // Means that the report we just received refers to an exising one (Correcting it/Deleting it/Cancelling it)
+
+                    FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(justSavedFluxReport.getPurposeCode()));
+
+                    // Change status with the new reports status (new report = report that refers to this one = the newly saved one)
+                    foundRelatedFaReport.setStatus(faReportStatusEnum);
+
                     // Correction (purposecode == 5) => set 'latest' to false (for each activitiy related to this report)
-                    checkAndUpdateActivitiesForCorrection(receivedRefId, faReportDocumentEntity.getFishingActivities(), faReportStatusEnum);
+                    checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(foundRelatedFaReport, faReportStatusEnum, justSavedReport.getId());
+
+                    // Add the changed reports to a list to be updated.
+                    newFaReportEntities.add(foundRelatedFaReport);
+                } else {
+                    log.warn("Received and saved a correction/cancellation or deletion message but couldn't find a message to apply it to!");
                 }
             }
         }
     }
 
-    private void checkAndUpdateActivitiesForCorrection(IDType receivedRefId, Set<FishingActivityEntity> fishingActivities, FaReportStatusType faReportStatusEnum) {
-        if (FaReportStatusType.UPDATED.equals(faReportStatusEnum)) {
-            if (CollectionUtils.isNotEmpty(fishingActivities)) {
-                for (FishingActivityEntity fishingActivity : fishingActivities) {
-                    fishingActivity.setLatest(false);
-                }
-            } else {
-                log.warn("[WARN] Didn't find any activities to correct related to FaReportDocument with ID [" + receivedRefId + "] ..");
+
+    private void checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(FaReportDocumentEntity faReportDocumentEntity, FaReportStatusType faReportStatusEnum, int idOfCfPotentiallyCancellingOrDeletingReport) {
+        Set<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities();
+        if(CollectionUtils.isNotEmpty(fishingActivities)){
+            switch(faReportStatusEnum){
+                case UPDATED:
+                    for (FishingActivityEntity fishingActivity : fishingActivities) {
+                        fishingActivity.setLatest(false);
+                    }
+                    break;
+                case CANCELED:
+                    for (FishingActivityEntity fishingActivity : fishingActivities) {
+                        //fishingActivity.setCanceledBy(idOfCfPotentiallyCancellingOrDeletingReport);
+                    }
+                    break;
+                case DELETED:
+                    for (FishingActivityEntity fishingActivity : fishingActivities) {
+                        //fishingActivity.setDeletedBy(idOfCfPotentiallyCancellingOrDeletingReport);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -269,6 +297,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         List<Geometry> multiPointForFaReport = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
+
+
                 List<Geometry> multiPointForFa = new ArrayList<>();
                 Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
                 Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
@@ -313,6 +343,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     /**
      * Find geometry for fluxLocation code in MDR
      *
+     *
      * @param fluxLocationIdentifier
      * @return
      */
@@ -342,11 +373,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 longitude = Double.parseDouble(longitudeStr);
             }
         }
-
-        geometry = GeometryUtils.createPoint(longitude, latitude);
-
-        return geometry;
-
+        return GeometryUtils.createPoint(longitude, latitude);
     }
 
     /**
@@ -373,10 +400,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     geometry = GeometryUtils.createPoint(x, y);
                 }
             }
+            log.debug(" Geometry received from Spatial for:" + fluxLocationIdentifier + " :" + geometryWkt);
 
-            log.debug(" Geometry received from Spatial for:" + fluxLocationIdentifier + "  :" + geometryWkt);
-        } catch (ParseException e) {
-            log.error("Exception while trying to get geometry from spatial", e);
+        } catch (ServiceException | ParseException e) {
+            log.error("Exception while trying to get geometry from spatial",e);
             throw new ServiceException(e.getMessage(), e);
         }
         return geometry;
