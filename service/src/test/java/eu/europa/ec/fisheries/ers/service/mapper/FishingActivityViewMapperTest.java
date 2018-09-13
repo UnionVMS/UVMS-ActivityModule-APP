@@ -37,7 +37,6 @@ import lombok.SneakyThrows;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
@@ -49,7 +48,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by kovian on 09/02/2017.
  */
-@Ignore // needs to be re-written
 public class FishingActivityViewMapperTest {
 
     FishingActivityEntity fishingActivity;
