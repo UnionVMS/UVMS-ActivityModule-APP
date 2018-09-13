@@ -51,7 +51,7 @@ public class ActivityErrorMessageServiceBean extends AbstractProducer {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ActivityMessageErrorEvent EventMessage message) {
     	try {
-            sendModuleResponseMessage(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(message.getFault()));
+            sendResponseMessageToSender(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(message.getFault()));
             log.info("Sending message back to recipient from Activity Module with correlationId {} on queue: {}", message.getJmsMessage().getJMSMessageID());
         } catch (ActivityModelMarshallException | JMSException | MessageException e) {
             log.error("[ Error when returning module activity request. ] {} {}", e);
