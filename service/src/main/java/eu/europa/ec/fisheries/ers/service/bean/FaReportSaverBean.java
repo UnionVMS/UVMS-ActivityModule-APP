@@ -45,6 +45,8 @@ public class FaReportSaverBean {
     private ExchangeServiceBean exchangeServiceBean;
 
     public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) throws ActivityModelMarshallException, ServiceException {
+    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
+
         try {
             FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
             deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
