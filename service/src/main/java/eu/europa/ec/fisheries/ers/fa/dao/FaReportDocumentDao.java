@@ -22,11 +22,12 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
-public class FaReportDocumentDao extends AbstractFaDao<FaReportDocumentEntity> {
+public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
 
     private static final String REPORT_ID = "reportId";
     private static final String SCHEME_ID = "schemeId";

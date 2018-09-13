@@ -107,6 +107,19 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         Set<VesselTransportMeansEntity> entities = new HashSet<>();
         VesselTransportMeansEntity vesselTransportMeansEntity = VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans);
         vesselTransportMeansEntity.setFaReportDocument(faReportDocumentEntity);
+
+        List<FLAPDocument> grantedFLAPDocuments = vesselTransportMeans.getGrantedFLAPDocuments();
+
+        if (CollectionUtils.isNotEmpty(grantedFLAPDocuments)){
+            Set<FlapDocumentEntity> flapDocumentEntities = new HashSet<>();
+            for (FLAPDocument grantedFLAPDocument : grantedFLAPDocuments) {
+                FlapDocumentEntity flapDocumentEntity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(grantedFLAPDocument);
+                flapDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
+                flapDocumentEntities.add(flapDocumentEntity);
+            }
+            vesselTransportMeansEntity.setFlapDocuments(flapDocumentEntities);
+
+        }
         entities.add(vesselTransportMeansEntity);
         return entities;
     }
@@ -145,6 +158,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             if (CollectionUtils.isNotEmpty(specifiedFLAPDocuments)){
                 for (FLAPDocument specifiedFLAPDocument : specifiedFLAPDocuments) {
                     FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
+                    entity.setFishingActivity(target);
+                    // FIXME want a link to vesseltransportmeans but we can have a flapdocument linked to activity but not necessarilly with a vesseltransportmeans
                     target.addFlapDocuments(entity);
                 }
             }
