@@ -158,7 +158,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                     FlapDocumentEntity flapDocumentEntity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
                     flapDocumentEntity.setFishingActivity(target);
                     flapDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
-                    // FIXME want a link to vesseltransportmeans but we can have a flapdocument linked to activity but not necessarilly with a vesseltransportmeans
                     target.addFlapDocuments(flapDocumentEntity);
                 }
             }
