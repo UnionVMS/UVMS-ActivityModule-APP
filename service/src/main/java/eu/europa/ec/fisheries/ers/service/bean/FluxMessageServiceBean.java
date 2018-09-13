@@ -132,26 +132,30 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
     }
 
-    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) throws ServiceException {
+    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
         Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
         if (CollectionUtils.isEmpty(identifierEntities)) {
             return;
         }
         for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-            List<FishingActivityEntity> fishingActivityEntityList = fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
-            if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
-                //Calculate trip start date
-                FishingActivityEntity firstFishingActivity = fishingActivityEntityList.get(0);
-                tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
-                // calculate trip end date
-                Date calculatedTripEndDate;
-                int totalActivities = fishingActivityEntityList.size();
-                if (totalActivities > 1) {
-                    calculatedTripEndDate = fishingActivityEntityList.get(totalActivities - 1).getCalculatedStartTime();
-                } else {
-                    calculatedTripEndDate = firstFishingActivity.getCalculatedStartTime();
+            try {
+                List<FishingActivityEntity> fishingActivityEntityList = fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
+                if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
+                    //Calculate trip start date
+                    FishingActivityEntity firstFishingActivity = fishingActivityEntityList.get(0);
+                    tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
+                    // calculate trip end date
+                    Date calculatedTripEndDate;
+                    int totalActivities = fishingActivityEntityList.size();
+                    if (totalActivities > 1) {
+                        calculatedTripEndDate = fishingActivityEntityList.get(totalActivities - 1).getCalculatedStartTime();
+                    } else {
+                        calculatedTripEndDate = firstFishingActivity.getCalculatedStartTime();
+                    }
+                    tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
                 }
-                tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
+            } catch (ServiceException e) {
+                log.error("Error while trying to calculate FishingTrip start and end Date",e);
             }
         }
     }
@@ -191,11 +195,16 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      *
      * @param
      */
-    private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) throws ServiceException {
+    private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) {
 
-        List<String> guids = assetModule.getAssetGuids(vesselTransport.getVesselIdentifiers());
-        if (CollectionUtils.isNotEmpty(guids)) {
-            vesselTransport.setGuid(guids.get(0));
+        try {
+            List<String> guids = assetModule.getAssetGuids(vesselTransport.getVesselIdentifiers());
+            if (CollectionUtils.isNotEmpty(guids)) {
+                vesselTransport.setGuid(guids.get(0));
+            }
+        }
+        catch (ServiceException e) {
+            log.error("Error while trying to get guids from Assets Module {}", e);
         }
     }
 
@@ -288,6 +297,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         List<Geometry> multiPointForFaReport = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
+
+
                 List<Geometry> multiPointForFa = new ArrayList<>();
                 Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
                 Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
@@ -389,9 +400,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     geometry = GeometryUtils.createPoint(x, y);
                 }
             }
-            log.debug(" Geometry received from Spatial for:" + fluxLocationIdentifier + "  :" + geometryWkt);
-        } catch (ParseException e) {
-            log.error("Exception while trying to get geometry from spatial", e);
+            log.debug(" Geometry received from Spatial for:" + fluxLocationIdentifier + " :" + geometryWkt);
+
+        } catch (ServiceException | ParseException e) {
+            log.error("Exception while trying to get geometry from spatial",e);
             throw new ServiceException(e.getMessage(), e);
         }
         return geometry;
