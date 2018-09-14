@@ -43,7 +43,7 @@
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.9</spatial.model.version>
-        <exchange.model>4.0.22-SNAPSHOT</exchange.model>
+        <exchange.model>4.0.22</exchange.model>
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.24</rules.model>
