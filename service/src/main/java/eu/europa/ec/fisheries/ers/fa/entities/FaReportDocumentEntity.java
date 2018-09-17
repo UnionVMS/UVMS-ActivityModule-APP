@@ -49,6 +49,12 @@ import org.hibernate.annotations.Type;
                         "WHERE identifier.fluxReportIdentifierId IN (lower(:reportId), upper(:reportId), :reportId) " +
                         "AND identifier.fluxReportIdentifierSchemeId = :schemeId"
         ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "WHERE fluxreport.referenceId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
+                        "AND fluxreport.referenceSchemeId = :schemeRefId"
+        ),
         @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
                         "LEFT JOIN FETCH rpt.fishingActivities act " +
@@ -74,6 +80,7 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
+    public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";;
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

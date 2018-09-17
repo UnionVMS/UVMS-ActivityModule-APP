@@ -31,6 +31,8 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
 
     private static final String REPORT_ID = "reportId";
     private static final String SCHEME_ID = "schemeId";
+    private static final String REPORT_REF_ID = "reportRefId";
+    private static final String SCHEME_REF_ID = "schemeRefId";
     private static final String TRIP_ID = "tripId";
     private static final String VESSEL_ID = "vesselId";
     private static final String STATUSES = "statuses";
@@ -60,6 +62,27 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
         query.setParameter(REPORT_ID, reportId);
         query.setParameter(SCHEME_ID, schemeId);
+        FaReportDocumentEntity singleResult;
+        try {
+            singleResult = (FaReportDocumentEntity) query.getSingleResult();
+        } catch (NoResultException ex){
+            singleResult = null; // no need to log this exception!
+        }
+        return singleResult;
+    }
+
+    /**
+     * Load FaReportDocument by one or more Report identifiers
+     *
+     * @param reportRefId
+     * @param schemeRefId
+     * @return FaReportDocumentEntity
+     * @throws ServiceException
+     */
+    public FaReportDocumentEntity findFaReportByRefIdAndRefScheme(String reportRefId, String schemeRefId) {
+        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
+        query.setParameter(REPORT_REF_ID, reportRefId);
+        query.setParameter(SCHEME_REF_ID, schemeRefId);
         FaReportDocumentEntity singleResult;
         try {
             singleResult = (FaReportDocumentEntity) query.getSingleResult();

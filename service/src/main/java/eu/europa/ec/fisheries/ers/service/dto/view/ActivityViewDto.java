@@ -19,8 +19,7 @@ import lombok.Data;
 public class ActivityViewDto {
 
     private String tripId;
-
     private Integer activityId;
-
     private Integer reportId;
+    private boolean withHistory;
 }

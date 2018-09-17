@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
@@ -185,7 +186,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * @throws ServiceException
      */
     @Override
-    public FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, Integer reportId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
+    public FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, Integer reportId, List<Dataset> datasets, ActivityViewEnum view, boolean withHistory) throws ServiceException {
         Geometry geom = getRestrictedAreaGeometry(datasets);
         FishingActivityEntity activityEntityFound = fishingActivityDao.getFishingActivityById(activityId, geom);
         if (activityEntityFound == null){
@@ -326,6 +327,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
                 fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getCancelingReportID());
             } else if(fishingActivityReportDTO.getDeletingReportID() != 0){
                 fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getDeletingReportID());
+            }
+            // If it is a correction then we need to switch back the purpose code to the one of the original report.
+            String correctionPurposeCode = FaReportStatusType.UPDATED.getPurposeCode().toString();
+            if(correctionPurposeCode.equals(entity.getFaReportDocument().getFluxReportDocument().getPurposeCode())){
+                fishingActivityReportDTO.setPurposeCode(correctionPurposeCode);
             }
             activityReportDTOList.add(fishingActivityReportDTO);
         }

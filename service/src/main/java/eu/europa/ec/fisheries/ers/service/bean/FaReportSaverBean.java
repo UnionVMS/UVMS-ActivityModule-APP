@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshal
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -44,9 +43,8 @@ public class FaReportSaverBean {
     @EJB
     private ExchangeServiceBean exchangeServiceBean;
 
-    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) throws ActivityModelMarshallException, ServiceException {
-    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
 
+    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
         try {
             FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
             deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
