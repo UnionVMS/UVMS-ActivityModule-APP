@@ -25,7 +25,9 @@ import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.*;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityHistoryDtoElement;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
@@ -396,18 +398,18 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * @param fishingActivity
      * @return
      */
-    private ActivityHistoryDto getActivityHistory(FishingActivityEntity fishingActivity) {
+    private List<ActivityHistoryDtoElement> getActivityHistory(FishingActivityEntity fishingActivity) {
         if (fishingActivity == null || fishingActivity.getFaReportDocument() == null) {
             log.error("fishingActivity or fishingActivityTime ");
-            return new ActivityHistoryDto();
+            return new ArrayList<>();
         }
         return mapFromReportsToActivityHistory(faReportDocumentDao.getHistoryOfFaReport(fishingActivity.getFaReportDocument(), new ArrayList<FaReportDocumentEntity>()), fishingActivity.getTypeCode());
     }
 
-    private ActivityHistoryDto mapFromReportsToActivityHistory(List<FaReportDocumentEntity> fullHistoryReportsList, String activityType) {
+    private List<ActivityHistoryDtoElement> mapFromReportsToActivityHistory(List<FaReportDocumentEntity> fullHistoryReportsList, String activityType) {
         List<ActivityHistoryDtoElement> dtoElements = new ArrayList<>();
         if(CollectionUtils.isEmpty(fullHistoryReportsList)){
-            return new ActivityHistoryDto();
+            return dtoElements;
         }
         for (FaReportDocumentEntity faRep : fullHistoryReportsList) {
             Integer purposeCode = Integer.valueOf(faRep.getFluxReportDocument().getPurposeCode());
@@ -433,7 +435,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDatetime(), purposeCode, acticityIds));
         }
         Collections.sort(dtoElements);
-        return new ActivityHistoryDto(dtoElements);
+        return dtoElements;
     }
 
     public int getPreviousFishingActivity(int fishingActivityId) {

@@ -80,7 +80,7 @@ public class FishingActivityViewDTO {
     private List<RelocationDto> relocations;
 
     @JsonView(CommonView.class)
-    private ActivityHistoryDto history;
+    private List<ActivityHistoryDtoElement> history;
 
     @Override
     public String toString() {
