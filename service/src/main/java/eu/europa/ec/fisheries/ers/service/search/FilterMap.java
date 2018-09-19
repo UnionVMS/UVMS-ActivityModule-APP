@@ -39,6 +39,7 @@ public class FilterMap {
     private static final String VESSEL_IDENTIFIRE = "vtSchemeId";
     private static final String VTM_GUIDS = "guids";
     private static final String PURPOSE_CODE = "purposeCode";
+    private static final String STATUS_LIST = "statusList";
     private static final String REPORT_TYPE_CODE = "faReportTypeCode";
     private static final String ACTIVITY_TYPE_CODE = "activityTypecode";
     private static final String AREA_ID = "fluxAreaId";
@@ -55,6 +56,7 @@ public class FilterMap {
     public static final String CONTACT_PARTY_TABLE_ALIAS = "vt.contactParty cparty";
     private static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
     public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
+    public static final String FA_REPORT_DOC_TABLE_ALIAS = " fa ";
     public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
     private static final String GEAR_TYPE_TABLE_ALIAS = " a.fishingGears fg ";
     private static final String FISHING_TRIP_TABLE_ALIAS = " a.fishingTrips fishingTrip ";
@@ -127,6 +129,7 @@ public class FilterMap {
         filterSortMappings.put(SearchFilter.ACTIVITY_TYPE, "a.typeCode");
         filterSortMappings.put(SearchFilter.OCCURRENCE, "a.occurence");
         filterSortMappings.put(SearchFilter.PURPOSE, "flux.purposeCode");
+        filterSortMappings.put(SearchFilter.FA_STATUS, "fa.status");
     }
 
     /**
@@ -143,6 +146,7 @@ public class FilterMap {
         filterQueryParameterMappings.put(SearchFilter.VESSEL_NAME, VESSEL_IDENTITY_NAME);
         filterQueryParameterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, VESSEL_IDENTIFIRE);
         filterQueryParameterMappings.put(SearchFilter.PURPOSE, PURPOSE_CODE);
+        filterQueryParameterMappings.put(SearchFilter.FA_STATUS, STATUS_LIST);
         filterQueryParameterMappings.put(SearchFilter.REPORT_TYPE, REPORT_TYPE_CODE);
         filterQueryParameterMappings.put(SearchFilter.ACTIVITY_TYPE, ACTIVITY_TYPE_CODE);
         filterQueryParameterMappings.put(SearchFilter.AREAS, AREA_ID);
@@ -230,6 +234,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, new FilterDetails("vt.vesselIdentifiers vi", "vi.vesselIdentifierId IN (:" + VESSEL_IDENTIFIRE + ")"));
         filterMappings.put(SearchFilter.VESSEL_GUIDS, new FilterDetails("fa.vesselTransportMeans vtMeans", "vtMeans.guid IN (:" + VTM_GUIDS + ")"));
         filterMappings.put(SearchFilter.PURPOSE, new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS, "flux.purposeCode IN (:" + PURPOSE_CODE + ")"));
+        filterMappings.put(SearchFilter.FA_STATUS, new FilterDetails(FA_REPORT_DOC_TABLE_ALIAS, "fa.status IN (:" + STATUS_LIST + ")"));
         filterMappings.put(SearchFilter.REPORT_TYPE, new FilterDetails(StringUtils.SPACE, "fa.typeCode IN (:" + REPORT_TYPE_CODE + ")"));
         filterMappings.put(SearchFilter.ACTIVITY_TYPE, new FilterDetails(StringUtils.SPACE, "a.typeCode IN (:" + ACTIVITY_TYPE_CODE + ")"));
         filterMappings.put(SearchFilter.AREAS, new FilterDetails("a.fluxLocations fluxLoc", "( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:" + AREA_ID + " )"));

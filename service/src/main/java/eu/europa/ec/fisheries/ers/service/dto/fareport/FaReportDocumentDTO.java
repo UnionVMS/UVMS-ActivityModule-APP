@@ -24,12 +24,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @JsonInclude(Include.NON_EMPTY)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class FaReportDocumentDTO {
 
     @JsonProperty("typeCode")
@@ -61,75 +63,4 @@ public class FaReportDocumentDTO {
     @JsonProperty("status")
     private String status;
 
-    public String getTypeCode() {
-        return typeCode;
-    }
-
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
-    }
-
-    public String getFmcMarker() {
-        return fmcMarker;
-    }
-
-    public void setFmcMarker(String fmcMarker) {
-        this.fmcMarker = fmcMarker;
-    }
-
-    public Date getAcceptedDateTime() {
-        return acceptedDateTime;
-    }
-
-    public void setAcceptedDateTime(Date acceptedDateTime) {
-        this.acceptedDateTime = acceptedDateTime;
-    }
-
-    public Date getCreationDateTime() {
-        return creationDateTime;
-    }
-
-    public void setCreationDateTime(Date creationDateTime) {
-        this.creationDateTime = creationDateTime;
-    }
-
-    public String getFluxReportDocumentId() {
-        return fluxReportDocumentId;
-    }
-
-    public void setFluxReportDocumentId(String fluxReportDocumentId) {
-        this.fluxReportDocumentId = fluxReportDocumentId;
-    }
-
-    public String getPurposeCode() {
-        return purposeCode;
-    }
-
-    public void setPurposeCode(String purposeCode) {
-        this.purposeCode = purposeCode;
-    }
-
-    public String getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(String referenceId) {
-        this.referenceId = referenceId;
-    }
-
-    public String getOwnerFluxPartyId() {
-        return ownerFluxPartyId;
-    }
-
-    public void setOwnerFluxPartyId(String ownerFluxPartyId) {
-        this.ownerFluxPartyId = ownerFluxPartyId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

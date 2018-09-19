@@ -156,7 +156,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
 
         // Create response object for JMS
-        FACatchSummaryReportResponse faCatchSummaryReportResponse =new FACatchSummaryReportResponse();
+        FACatchSummaryReportResponse faCatchSummaryReportResponse = new FACatchSummaryReportResponse();
         faCatchSummaryReportResponse.setSummaryRecords(faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs()));
         faCatchSummaryReportResponse.setTotal(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal()));
 

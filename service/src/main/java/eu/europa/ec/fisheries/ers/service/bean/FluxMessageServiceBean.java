@@ -139,7 +139,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
     }
 
-    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) throws ServiceException {
+    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
         Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
         if (CollectionUtils.isEmpty(identifierEntities)) {
             return;
@@ -239,7 +239,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                         log.error("Error while trying to get FaRepDoc from db.");
                         continue;
                     }
-                    persistentFaDoc.setStatus(faReportStatusEnumFromDb);
+                    persistentFaDoc.setStatus(faReportStatusEnumFromDb.name());
                     checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(persistentFaDoc, faReportStatusEnumFromDb, foundRelatedFaReportCorrOrDelOrCanc.getId());
                 }
             }
@@ -251,7 +251,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 if (foundRelatedFaReport != null) { // Means that the report we just received refers to an exising one (Correcting it/Deleting it/Cancelling it)
                     FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(justSavedPurposeCode));
                     // Change status with the new reports status (new report = report that refers to this one = the newly saved one)
-                    foundRelatedFaReport.setStatus(faReportStatusEnum);
+                    foundRelatedFaReport.setStatus(faReportStatusEnum.name());
                     // Correction (purposecode == 5) => set 'latest' to false (for each activitiy related to this report)
                     checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(foundRelatedFaReport, faReportStatusEnum, justSavedReport.getId());
                 } else {

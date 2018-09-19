@@ -48,7 +48,6 @@ public interface ActivityService {
      *
      * @param refReportId selected FA report Reference Id
      * @param refSchemeId selected FA scheme Reference Id
-     * @return List<FaReportCorrectionDTO> list of corrections made
      * @throws ServiceException Exception
      */
     List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException;
@@ -59,7 +58,7 @@ public interface ActivityService {
 
     GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException;
 
-    public int getPreviousFishingActivity(int fishingActivityId);
+    int getPreviousFishingActivity(int fishingActivityId);
 
-    public int getNextFishingActivity(int fishingActivityId);
+    int getNextFishingActivity(int fishingActivityId);
 }

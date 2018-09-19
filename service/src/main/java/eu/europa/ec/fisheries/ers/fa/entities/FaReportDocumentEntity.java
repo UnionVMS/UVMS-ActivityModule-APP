@@ -109,8 +109,7 @@ public class FaReportDocumentEntity implements Serializable {
     private String fmcMarkerListId;
 
     @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private FaReportStatusType status;
+    private String status;
 
     @Column(name = "source")
     private String source;

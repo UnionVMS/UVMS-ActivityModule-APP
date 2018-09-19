@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * Created by sanera on 16/11/2016.
  */
 public class FishingActivitySearchBuilder extends SearchQueryBuilder {
+
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivitySearchBuilder.class);
     private static final String FISHING_ACTIVITY_COUNT_JOIN = "SELECT COUNT(DISTINCT a) from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa ";
     private static final String FISHING_ACTIVITY_JOIN = "SELECT DISTINCT a from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa ";
@@ -44,7 +45,6 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
      */
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
-        // FilterMap.populateFilterMappings();
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
         sql.append(FISHING_ACTIVITY_JOIN); // Common Join for all filters
@@ -52,7 +52,7 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         createSortPartForQuery(sql, query); // Add Order by clause for only requested Sort field
-        LOG.info("sql :" + sql);
+        LOG.debug("sql :" + sql);
         return sql;
     }
 
@@ -62,7 +62,7 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
         sql.append(FISHING_ACTIVITY_COUNT_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.info("sql :" + sql);
+        LOG.debug("sql :" + sql);
         return sql;
     }
 

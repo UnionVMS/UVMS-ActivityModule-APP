@@ -20,10 +20,12 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -48,6 +50,40 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     @Override
     public EntityManager getEntityManager() {
         return em;
+    }
+
+    public List<FaReportDocumentEntity> getHistoryOfFaReport(FaReportDocumentEntity faReportEntity, List<FaReportDocumentEntity> reportsList) {
+        if(faReportEntity == null){
+            return null;
+        }
+        reportsList.add(faReportEntity);
+
+        // Find reports that refer to this report
+        FluxReportIdentifierEntity repId = faReportEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
+        FaReportDocumentEntity reportThatRefersToThisOne = findFaReportByRefIdAndRefScheme(repId.getFluxReportIdentifierId(), repId.getFluxReportIdentifierSchemeId());
+        if(reportThatRefersToThisOne != null && !alreadyExistsInList(reportsList, reportThatRefersToThisOne)){
+            getHistoryOfFaReport(reportThatRefersToThisOne, reportsList);
+        }
+
+        // Find reports that this report refers to
+        String repRefId = faReportEntity.getFluxReportDocument().getReferenceId();
+        String repRefSchemeId = faReportEntity.getFluxReportDocument().getReferenceSchemeId();
+        if(StringUtils.isNotEmpty(repRefId) && StringUtils.isNotEmpty(repRefSchemeId)){
+            FaReportDocumentEntity referredReport = findFaReportByIdAndScheme(repRefId, repRefSchemeId);
+            if(referredReport != null && !alreadyExistsInList(reportsList, referredReport)){
+                getHistoryOfFaReport(referredReport, reportsList);
+            }
+        }
+        return reportsList;
+    }
+
+    private boolean alreadyExistsInList(List<FaReportDocumentEntity> reportsList, FaReportDocumentEntity reportThatRefersToThisOne) {
+        for (FaReportDocumentEntity faReportDocumentEntity : reportsList) {
+            if(faReportDocumentEntity.equals(reportThatRefersToThisOne)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -75,14 +111,14 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
      * Load FaReportDocument by one or more Report identifiers
      *
      * @param reportRefId
-     * @param schemeRefId
+     * @param refSchemId
      * @return FaReportDocumentEntity
      * @throws ServiceException
      */
-    public FaReportDocumentEntity findFaReportByRefIdAndRefScheme(String reportRefId, String schemeRefId) {
+    public FaReportDocumentEntity findFaReportByRefIdAndRefScheme(String reportRefId, String refSchemId) {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
         query.setParameter(REPORT_REF_ID, reportRefId);
-        query.setParameter(SCHEME_REF_ID, schemeRefId);
+        query.setParameter(SCHEME_REF_ID, refSchemId);
         FaReportDocumentEntity singleResult;
         try {
             singleResult = (FaReportDocumentEntity) query.getSingleResult();

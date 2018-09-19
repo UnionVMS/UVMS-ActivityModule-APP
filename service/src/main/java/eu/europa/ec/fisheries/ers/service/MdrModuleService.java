@@ -17,7 +17,5 @@ public interface MdrModuleService {
      * @return list of vesselidentifiertype codes
      * @throws ServiceException
      */
-
-
-    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults, String... returnColumns) throws ServiceException;
+    Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults, String... returnColumns) throws ServiceException;
 }
