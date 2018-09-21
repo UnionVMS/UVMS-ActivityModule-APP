@@ -94,7 +94,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * {@inheritDoc}
      */
     @Override
-    public List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException {
+    public List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) {
         FaReportDocumentEntity faReport = faReportDocumentDao.findFaReportByIdAndScheme(refReportId, refSchemeId);
         List<FaReportDocumentEntity> historyOfFaReport = faReportDocumentDao.getHistoryOfFaReport(faReport, new ArrayList<FaReportDocumentEntity>());
         List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(historyOfFaReport);

@@ -50,7 +50,7 @@ public interface ActivityService {
      * @param refSchemeId selected FA scheme Reference Id
      * @throws ServiceException Exception
      */
-    List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException;
+    List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) throws ServiceException;
 
     boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
 

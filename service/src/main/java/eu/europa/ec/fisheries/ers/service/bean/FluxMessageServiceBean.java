@@ -17,7 +17,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
@@ -55,13 +54,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private FaReportDocumentDao faReportDocumentDao;
 
-    private FluxFaReportMessageDao fluxReportMessageDao;
-
     @EJB
     private MovementModuleService movementModule;
 
     @EJB
-    private AssetModuleService assetModule;
+    private AssetModuleService assetService;
 
     @EJB
     private PropertiesBean properties;
@@ -207,7 +204,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) throws ServiceException {
         try {
-            List<String> guids = assetModule.getAssetGuids(vesselTransport.getVesselIdentifiers());
+            List<String> guids = assetService.getAssetGuids(vesselTransport.getVesselIdentifiers());
             if (CollectionUtils.isNotEmpty(guids)) {
                 vesselTransport.setGuid(guids.get(0));
             }
@@ -471,7 +468,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date
             startDate, Date endDate) throws ServiceException {
-        List<String> assetGuids = assetModule.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
+        List<String> assetGuids = assetService.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
         return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
     }
 

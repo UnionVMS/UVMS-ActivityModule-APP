@@ -11,27 +11,22 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -42,8 +37,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBException;
-import java.util.Collections;
 import java.util.List;
 
 @Path("/fa")
@@ -122,7 +115,7 @@ public class FishingActivityResource extends UnionVMSResource {
                                       @PathParam("referenceId") String referenceId,
                                       @PathParam("schemeId") String schemeId) throws ServiceException {
 
-        return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
+        return createSuccessResponse(activityService.getFaReportHistory(referenceId, schemeId));
     }
 
     @GET
