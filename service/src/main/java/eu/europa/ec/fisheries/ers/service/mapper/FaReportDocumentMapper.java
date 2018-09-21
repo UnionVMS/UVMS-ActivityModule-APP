@@ -62,10 +62,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fmcMarkerListId", source = "faReportDocument.FMCMarkerCode.listID"),
             @Mapping(target = "status", constant = "NEW"),
             @Mapping(target = "source", source = "faReportSourceEnum.sourceType"),
-            @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(faReportDocument.getSpecifiedVesselTransportMeans(), faReportDocumentEntity))"),
             @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
             @Mapping(target = "faReportIdentifiers", ignore = true),
-            @Mapping(target = "fishingActivities", expression = "java(mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(),faReportDocumentEntity))")
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, FaReportSourceEnum faReportSourceEnum);
 
@@ -100,7 +98,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     })
     public abstract RelatedReportDto mapFaReportDocumentEntityToRelatedReportDto(FaReportIdentifierEntity entity);
 
-    Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
+    public static Set<VesselTransportMeansEntity> mapVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
         if (vesselTransportMeans == null) {
             return null;
         }
@@ -124,7 +122,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return entities;
     }
 
-    protected Set<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity) {
+    public static Set<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return Collections.emptySet();
         }
@@ -157,10 +155,10 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             List<FLAPDocument> specifiedFLAPDocuments = fishingActivity.getSpecifiedFLAPDocuments();
             if (CollectionUtils.isNotEmpty(specifiedFLAPDocuments)){
                 for (FLAPDocument specifiedFLAPDocument : specifiedFLAPDocuments) {
-                    FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
-                    entity.setFishingActivity(target);
-                    // FIXME want a link to vesseltransportmeans but we can have a flapdocument linked to activity but not necessarilly with a vesseltransportmeans
-                    target.addFlapDocuments(entity);
+                    FlapDocumentEntity flapDocumentEntity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
+                    flapDocumentEntity.setFishingActivity(target);
+                    flapDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
+                    target.addFlapDocuments(flapDocumentEntity);
                 }
             }
 

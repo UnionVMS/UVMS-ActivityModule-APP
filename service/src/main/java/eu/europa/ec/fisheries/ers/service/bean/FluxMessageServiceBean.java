@@ -55,6 +55,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private FaReportDocumentDao faReportDocumentDao;
 
+    private FluxFaReportMessageDao fluxReportMessageDao;
+
     @EJB
     private MovementModuleService movementModule;
 

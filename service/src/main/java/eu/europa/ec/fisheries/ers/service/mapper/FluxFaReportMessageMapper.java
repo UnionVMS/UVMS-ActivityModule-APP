@@ -15,13 +15,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 
 public class FluxFaReportMessageMapper {
 
@@ -31,31 +31,34 @@ public class FluxFaReportMessageMapper {
         }
 
         if (fluxfaReportMessage != null){
-            FluxReportDocumentEntity fluxReportDocument = getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage);
-            fluxFaReportMessage.setFluxReportDocument(fluxReportDocument);
-            fluxFaReportMessage.setFaReportDocuments(getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
+            FLUXReportDocument fluxReportDocument = fluxfaReportMessage.getFLUXReportDocument();
+            if(fluxReportDocument == null){
+                return null;
+            }
+            FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
+            fluxReportDocumentEntity.setFluxFaReportMessage(fluxFaReportMessage);
+            fluxFaReportMessage.setFluxReportDocument(fluxReportDocumentEntity);
+            fluxFaReportMessage.setFaReportDocuments(mapFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
         }
 
         return fluxFaReportMessage;
     }
 
-    private Set<FaReportDocumentEntity> getFaReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage){
+    private Set<FaReportDocumentEntity> mapFaReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage){
         Set<FaReportDocumentEntity> faReportDocumentEntities = new HashSet<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
             FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);
+            VesselTransportMeans specifiedVesselTransportMeans = faReportDocument.getSpecifiedVesselTransportMeans();
+            Set<VesselTransportMeansEntity> vesselTransportMeansEntities = FaReportDocumentMapper.mapVesselTransportMeansEntity(specifiedVesselTransportMeans, entity);
+            Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
+            if (CollectionUtils.isNotEmpty(vesselTransportMeansEntities)){
+                fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(), entity, vesselTransportMeansEntities.iterator().next());
+            }
+            entity.setFishingActivities(fishingActivityEntities);
             entity.setFluxFaReportMessage(fluxFaReportMessage);
             faReportDocumentEntities.add(entity);
         }
         return faReportDocumentEntities;
-    }
-
-    private FluxReportDocumentEntity getFluxReportDocument(FLUXReportDocument fluxReportDocument, FluxFaReportMessageEntity fluxFaReportMessage){
-        if(fluxReportDocument == null){
-            return null;
-        }
-        FluxReportDocumentEntity entity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
-        entity.setFluxFaReportMessage(fluxFaReportMessage);
-        return entity;
     }
 
 }
