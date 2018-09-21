@@ -134,12 +134,12 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
 
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, String startDate, String endDate){
 
-        Set<FaReportStatusType> statuses = new HashSet<>();
-        statuses.add(FaReportStatusType.NEW);
+        Set<String> statuses = new HashSet<>();
+        statuses.add(FaReportStatusType.NEW.name());
         if ("N".equals(consolidated) || consolidated == null){
-            statuses.add(FaReportStatusType.UPDATED);
-            statuses.add(FaReportStatusType.CANCELED);
-            statuses.add(FaReportStatusType.DELETED);
+            statuses.add(FaReportStatusType.UPDATED.name());
+            statuses.add(FaReportStatusType.CANCELED.name());
+            statuses.add(FaReportStatusType.DELETED.name());
         }
         Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.LOAD_REPORTS, FaReportDocumentEntity.class);
         query.setParameter(TRIP_ID, tripId);
