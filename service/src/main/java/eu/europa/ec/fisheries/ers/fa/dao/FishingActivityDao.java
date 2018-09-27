@@ -199,7 +199,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      */
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
 
-        if(query.getUseStatusInsteadOfPurposeCode() != null && query.getUseStatusInsteadOfPurposeCode() == true){
+        if(query.getUseStatusInsteadOfPurposeCode() != null && query.getUseStatusInsteadOfPurposeCode()){
             adaptForStatusInsteadOfPurpose(query);
         }
 
