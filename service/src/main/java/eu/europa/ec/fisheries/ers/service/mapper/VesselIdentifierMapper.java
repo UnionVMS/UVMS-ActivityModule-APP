@@ -54,6 +54,8 @@ public interface VesselIdentifierMapper {
             @ValueMapping(target = MappingConstants.NULL, source = "MAX_LENGTH"),
             @ValueMapping(target = MappingConstants.NULL, source = "MIN_POWER"),
             @ValueMapping(target = MappingConstants.NULL, source = "MAX_POWER"),
+            @ValueMapping(target = MappingConstants.NULL, source = "HIST_GUID"),
+            @ValueMapping(target = MappingConstants.NULL, source = "DATE")
     })
     VesselIdentifierSchemeIdEnum map(ConfigSearchField searchField);
 

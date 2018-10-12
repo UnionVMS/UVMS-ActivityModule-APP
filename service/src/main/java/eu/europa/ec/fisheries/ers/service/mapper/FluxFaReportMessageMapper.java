@@ -29,7 +29,6 @@ public class FluxFaReportMessageMapper {
         if ( fluxfaReportMessage == null && faReportSourceEnum == null ) {
             return null;
         }
-
         if (fluxfaReportMessage != null){
             FLUXReportDocument fluxReportDocument = fluxfaReportMessage.getFLUXReportDocument();
             if(fluxReportDocument == null){
@@ -40,7 +39,6 @@ public class FluxFaReportMessageMapper {
             fluxFaReportMessage.setFluxReportDocument(fluxReportDocumentEntity);
             fluxFaReportMessage.setFaReportDocuments(mapFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
         }
-
         return fluxFaReportMessage;
     }
 
@@ -52,10 +50,13 @@ public class FluxFaReportMessageMapper {
             Set<VesselTransportMeansEntity> vesselTransportMeansEntities = FaReportDocumentMapper.mapVesselTransportMeansEntity(specifiedVesselTransportMeans, entity);
             Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
             if (CollectionUtils.isNotEmpty(vesselTransportMeansEntities)){
-                fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(), entity, vesselTransportMeansEntities.iterator().next());
+                VesselTransportMeansEntity vessTraspMeans = vesselTransportMeansEntities.iterator().next();
+                fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(), entity, vessTraspMeans);
+                vessTraspMeans.setFaReportDocument(entity);
             }
             entity.setFishingActivities(fishingActivityEntities);
             entity.setFluxFaReportMessage(fluxFaReportMessage);
+            entity.setVesselTransportMeans(vesselTransportMeansEntities);
             faReportDocumentEntities.add(entity);
         }
         return faReportDocumentEntities;

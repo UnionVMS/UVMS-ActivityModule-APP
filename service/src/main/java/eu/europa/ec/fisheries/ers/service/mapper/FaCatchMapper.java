@@ -35,17 +35,13 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.FluxCharacteristicsViewDto
 import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 
 @Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class})
 public abstract class FaCatchMapper extends BaseMapper {
@@ -59,6 +55,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "speciesCodeListid", source = "speciesCode.listID"),
             @Mapping(target = "unitQuantity", source = "unitQuantity.value"),
             @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
+            @Mapping(target = "fishClassCode", expression = "java(mapToFishClassCode(faCatch.getSpecifiedSizeDistribution()))"),
             @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
             @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
             @Mapping(target = "usageCode", source = "faCatch.usageCode.value"),
@@ -99,6 +96,13 @@ public abstract class FaCatchMapper extends BaseMapper {
     public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
 
     public abstract List<RelocationDto> mapToRelocationDtoList(Set<FaCatchEntity> faCatches);
+
+    protected String mapToFishClassCode(SizeDistribution sizeDistrib){
+        if(sizeDistrib != null && CollectionUtils.isNotEmpty(sizeDistrib.getClassCodes())){
+            return sizeDistrib.getClassCodes().iterator().next().getValue();
+        }
+        return StringUtils.EMPTY;
+    }
 
     protected List<AssetIdentifierDto> mapToAssetIdentifiers(FaCatchEntity faCatch) {
         List<AssetIdentifierDto> assetIdentifierDtos = new ArrayList<>();
