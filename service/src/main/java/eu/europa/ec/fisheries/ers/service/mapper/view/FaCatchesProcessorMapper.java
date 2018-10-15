@@ -10,26 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.DestinationLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDetailsDto;
@@ -44,6 +25,8 @@ import eu.europa.ec.fisheries.ers.service.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 /**
  * Created by kovian on 03/03/2017.
@@ -202,19 +185,21 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             for (AapProcessEntity aapProc : aapProcesses) {
                 Double actConvFac = aapProc.getConversionFactor();
                 convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
-
-                Set<AapProductEntity> aapProducts = aapProc.getAapProducts();
-                if (CollectionUtils.isNotEmpty(aapProducts)) {
-                    for (AapProductEntity aapProd : aapProducts) {
-                        weightSum = Utils.addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
-                    }
-                }
+                addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
         }
         if (weightSum > 0.0) {
             totalWeight = convFc * weightSum;
         }
         return totalWeight;
+    }
+
+    private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
+        if (CollectionUtils.isNotEmpty(aapProducts)) {
+            for (AapProductEntity aapProd : aapProducts) {
+                Utils.addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
+            }
+        }
     }
 
     private static void setWeightsForSubGroup(FaCatchGroupDto groupDto, FaCatchGroupDetailsDto lscGroupDetailsDto, FaCatchGroupDetailsDto bmsGroupDetailsDto, Double lscGroupTotalWeight, Double lscGroupTotalUnits, Double bmsGroupTotalWeight, Double bmsGroupTotalUnits) {
