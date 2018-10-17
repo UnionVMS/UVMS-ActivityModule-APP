@@ -642,7 +642,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             query.setSorting(sortKey);
             List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
             if (collectFishingActivities) {
-                fishingActivitySummaries.addAll(getFishingActivitySummaryList(fishingActivityEntityList, uniqueActivityIdList));
+                List<FishingActivityEntity> cleanedList = cleanFromDeletionsAndCancelations(fishingActivityEntityList);
+                fishingActivitySummaries.addAll(getFishingActivitySummaryList(cleanedList, uniqueActivityIdList));
             }
 
             FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometryMapper().mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
@@ -654,6 +655,22 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         response.setFishingActivityLists(fishingActivitySummaries);
         response.setFishingTripIdLists(fishingTripIdLists);
         return response;
+    }
+
+    private List<FishingActivityEntity> cleanFromDeletionsAndCancelations(List<FishingActivityEntity> fishingActivityEntityList) {
+        List<FishingActivityEntity> cleanList = new ArrayList<>();
+        if(CollectionUtils.isEmpty(fishingActivityEntityList)){
+            return cleanList;
+        }
+        String DELETED_STR = FaReportStatusType.DELETED.name();
+        String CANCELLED_STR = FaReportStatusType.CANCELED.name();
+        for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
+            String status = fishingActivityEntity.getFaReportDocument().getStatus();
+            if(!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && fishingActivityEntity.getLatest()){
+                cleanList.add(fishingActivityEntity);
+            }
+        }
+        return cleanList;
     }
 
 
@@ -669,9 +686,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (CollectionUtils.isEmpty(uniqueActivityIdList)) {
             uniqueActivityIdList = new ArrayList<>();
         }
-
         for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
-
             if (fishingActivityEntity != null && uniqueActivityIdList.add(fishingActivityEntity.getId())) {
                 FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(fishingActivityEntity);
                 ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);

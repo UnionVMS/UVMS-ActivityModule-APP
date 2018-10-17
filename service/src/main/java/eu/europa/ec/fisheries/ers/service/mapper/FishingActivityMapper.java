@@ -160,6 +160,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "activityType", source = "typeCode"),
             @Mapping(target = "activityId", source = "id"),
+            @Mapping(target = "faReportID", source = "faReportDocument.id"),
             @Mapping(target = "geometry", source = "wkt"),
             @Mapping(target = "acceptedDateTime", source = "faReportDocument.acceptedDatetime"),
             @Mapping(target = "dataSource", source = "faReportDocument.source"),
