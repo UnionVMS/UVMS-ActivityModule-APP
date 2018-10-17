@@ -208,6 +208,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"), // FIXME entity method
             @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))"),
             @Mapping(target = "fluxLocations", ignore = true),
+            @Mapping(target = "faReportID", source = "faReportDocument.id")
     })
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
 

@@ -12,34 +12,16 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
@@ -66,6 +48,19 @@ import org.hibernate.annotations.Type;
                         "WHERE rpt.status IN (:statuses) " +
                         "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
                         "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate))))"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
+                query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
+                        "LEFT JOIN FETCH rpt.fishingActivities act " +
+                        "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
+                        "JOIN FETCH act.fishingTrips fshtrp " +
+                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
+                        "WHERE fshtrpids.tripId = :tripId " +
+                        "AND ((:area IS NULL) OR intersects(act.geom, :area) = true)"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_IDS_LIST,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "WHERE fareport.id IN (:ids)"
         )
 })
 @Entity
@@ -77,10 +72,12 @@ import org.hibernate.annotations.Type;
 public class FaReportDocumentEntity implements Serializable {
 
     public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
+    public static final String FIND_BY_FA_IDS_LIST = "findByFaIds";
     public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
-    public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";;
+    public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
+    ;
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -114,7 +111,7 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "source")
     private String source;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional=false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "flux_fa_report_message_id")
     private FluxFaReportMessageEntity fluxFaReportMessage;
 

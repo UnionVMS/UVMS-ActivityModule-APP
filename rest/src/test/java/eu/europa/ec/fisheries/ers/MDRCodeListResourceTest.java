@@ -1,26 +1,11 @@
-package eu.europa.ec.fisheries.uvms.activity.rest.resources;
-
-import eu.europa.ec.fisheries.mdr.repository.MdrRepository;
-import eu.europa.ec.fisheries.uvms.rest.dto.PaginatedResponse;
-import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
-import eu.europa.ec.fisheries.uvms.rest.dto.SearchRequestDto;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.reflection.Whitebox;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+package eu.europa.ec.fisheries.ers;
 
 /**
  * Created by georgige on 11/24/2016.
  */
 public class MDRCodeListResourceTest {
 
-    private MDRCodeListResource codeListResource;
+   /* private MDRCodeListResource codeListResource;
 
     @Mock
     private MdrRepository mdrRepositoryMock;
@@ -97,5 +82,5 @@ public class MDRCodeListResourceTest {
         requestDto.setCriteria(criteria);
 
         return requestDto;
-    }
+    }*/
 }

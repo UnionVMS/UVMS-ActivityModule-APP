@@ -19,7 +19,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.fa.utils.ActivityConstants;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.*;
@@ -47,6 +47,7 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mockito.internal.util.collections.Sets;
@@ -68,6 +69,8 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 @Slf4j
 public class FishingTripServiceBean extends BaseActivityBean implements FishingTripService {
 
+    private static final String DECLARATION ="Declaration";
+    private static final String NOTIFICATION ="Notification";
     private static final String PREVIOUS = "PREVIOUS";
     private static final String NEXT = "NEXT";
 
@@ -175,7 +178,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 FishingTripIdentifierEntity identifierEntity = fishingTripIdentifierDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId());
                 currentTrip = identifierEntity != null ? identifierEntity.getTripId() : null;
-                if (StringUtils.isEmpty(currentTrip)){
+                if (StringUtils.isEmpty(currentTrip)) {
                     break;
                 }
             }
@@ -356,24 +359,89 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                       Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
+        fishingActivityList.addAll(getReportsThatWereCancelledOrDeleted(fishingActivityList));
         if (CollectionUtils.isEmpty(fishingActivityList)) {
             return Collections.emptyMap();
         }
         Map<String, FishingActivityTypeDTO> tripSummary = new HashMap<>();
         for (FishingActivityEntity activityEntity : fishingActivityList) {
-
             if (!isOnlyTripSummary) {
                 ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
                 reportDTOList.add(reportDTO);
             }
-
-            if (activityEntity != null && activityEntity.getFaReportDocument() != null && ActivityConstants.DECLARATION.equalsIgnoreCase(activityEntity.getFaReportDocument().getTypeCode())) {
+            if (activityEntity != null && activityEntity.getFaReportDocument() != null && DECLARATION.equalsIgnoreCase(activityEntity.getFaReportDocument().getTypeCode())) {
                 // FA Report should be of type Declaration. And Fishing Activity type should be Either Departure,Arrival or Landing
                 populateFishingTripSummary(activityEntity, tripSummary);
             }
         }
-
         return tripSummary;
+    }
+
+    private List<FishingActivityEntity> getReportsThatWereCancelledOrDeleted(List<FishingActivityEntity> fishingActivityList) {
+        Map<FaReportDocumentEntity, FishingActivityEntity> responseMap = new HashMap<>();
+        List<Integer> cancelledByDeletedByList = new ArrayList<>();
+        List<FishingActivityEntity> cancelledOrDeletedActivities = new ArrayList<>();
+        if (CollectionUtils.isEmpty(fishingActivityList)) {
+            return new ArrayList<>();
+        }
+        for (FishingActivityEntity fishingActivityEntity : fishingActivityList) {
+            if (fishingActivityEntity.getCanceledBy() != null) {
+                cancelledByDeletedByList.add(fishingActivityEntity.getCanceledBy());
+                cancelledOrDeletedActivities.add(fishingActivityEntity);
+            }
+            if (fishingActivityEntity.getDeletedBy() != null) {
+                cancelledByDeletedByList.add(fishingActivityEntity.getDeletedBy());
+                cancelledOrDeletedActivities.add(fishingActivityEntity);
+            }
+        }
+        if (CollectionUtils.isNotEmpty(cancelledByDeletedByList)) {
+            List<FaReportDocumentEntity> reportsByIdsList = faReportDocumentDao.findReportsByIdsList(cancelledByDeletedByList);
+            if (CollectionUtils.isNotEmpty(reportsByIdsList)) {
+                mapFishActToFaReportCounterpart(responseMap, cancelledOrDeletedActivities, reportsByIdsList);
+            }
+        }
+        return mapToFishingActivitiesList(responseMap);
+    }
+
+    private List<FishingActivityEntity> mapToFishingActivitiesList(Map<FaReportDocumentEntity, FishingActivityEntity> fishActFaRepMap) {
+        List<FishingActivityEntity> fishingActivityEntities = new ArrayList<>();
+        if (MapUtils.isEmpty(fishActFaRepMap)) {
+            return fishingActivityEntities;
+        }
+        for(Map.Entry<FaReportDocumentEntity, FishingActivityEntity> entry : fishActFaRepMap.entrySet()){
+            FaReportDocumentEntity faRep = entry.getKey();
+            FishingActivityEntity fishAct = entry.getValue();
+            FishingActivityEntity cloneActivity = SerializationUtils.clone(fishAct);
+            cloneActivity.setFaReportDocument(faRep);
+            cloneActivity.setFishingGears(fishAct.getFishingGears());
+            cloneActivity.setFaCatchs(fishAct.getFaCatchs());
+            cloneActivity.setDelimitedPeriods(fishAct.getDelimitedPeriods());
+            cloneActivity.setAllRelatedFishingActivities(fishAct.getAllRelatedFishingActivities());
+            cloneActivity.setFisheryTypeCodeListId(fishAct.getFisheryTypeCodeListId());
+            cloneActivity.setFluxCharacteristics(fishAct.getFluxCharacteristics());
+            fishingActivityEntities.add(cloneActivity);
+        }
+        return fishingActivityEntities;
+    }
+
+    private void mapFishActToFaReportCounterpart(Map<FaReportDocumentEntity, FishingActivityEntity> responseMap, List<FishingActivityEntity> cancelledOrDeletedActivities, List<FaReportDocumentEntity> reportsByIdsList) {
+        for (FishingActivityEntity fishingActivityEntity : cancelledOrDeletedActivities) {
+            Integer canceledBy = fishingActivityEntity.getCanceledBy();
+            Integer deletedBy = fishingActivityEntity.getDeletedBy();
+            if (canceledBy != null) {
+                for (FaReportDocumentEntity faReportDocumentEntity : reportsByIdsList) {
+                    if (canceledBy.equals(faReportDocumentEntity.getId())) {
+                        responseMap.put(faReportDocumentEntity, fishingActivityEntity);
+                    }
+                }
+            } else {
+                for (FaReportDocumentEntity faReportDocumentEntity : reportsByIdsList) {
+                    if (deletedBy.equals(faReportDocumentEntity.getId())) {
+                        responseMap.put(faReportDocumentEntity, fishingActivityEntity);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -405,7 +473,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public MessageCountDTO getMessageCountersForTripId(String tripId) {
-        return createMessageCounter(faReportDocumentDao.loadReports(tripId, "N"));
+        List<FaReportDocumentEntity> reports = faReportDocumentDao.loadReports(tripId, "N");
+        if(CollectionUtils.isNotEmpty(reports)){
+            List<FaReportDocumentEntity> canceledDeletedReports = faReportDocumentDao.loadCanceledAndDeletedReports(reports);
+            if(CollectionUtils.isNotEmpty(canceledDeletedReports)){
+                reports.addAll(canceledDeletedReports);
+            }
+        }
+        return createMessageCounter(reports);
     }
 
     /**
@@ -425,12 +500,12 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
         for (FaReportDocumentEntity faReport : faReportDocumentList) {
             String faDocumentType = faReport.getTypeCode();
-            String purposeCode = faReport.getFluxReportDocument().getPurpose();
+            FaReportStatusType status = FaReportStatusType.valueOf(faReport.getStatus());
 
             // Declarations / Notifications
-            if (ActivityConstants.DECLARATION.equalsIgnoreCase(faDocumentType)) {
+            if (DECLARATION.equalsIgnoreCase(faDocumentType)) {
                 messagesCounter.setNoOfDeclarations(messagesCounter.getNoOfDeclarations() + 1);
-            } else if (ActivityConstants.NOTIFICATION.equalsIgnoreCase(faDocumentType)) {
+            } else if (NOTIFICATION.equalsIgnoreCase(faDocumentType)) {
                 messagesCounter.setNoOfNotifications(messagesCounter.getNoOfNotifications() + 1);
             }
 
@@ -445,11 +520,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
 
             // PurposeCode : Deletions / Cancellations / Corrections
-            if (ActivityConstants.DELETE.equalsIgnoreCase(purposeCode)) {
+            if (FaReportStatusType.DELETED.equals(status)) {
                 messagesCounter.setNoOfDeletions(messagesCounter.getNoOfDeletions() + 1);
-            } else if (ActivityConstants.CANCELLATION.equalsIgnoreCase(purposeCode)) {
+            } else if (FaReportStatusType.CANCELED.equals(status)) {
                 messagesCounter.setNoOfCancellations(messagesCounter.getNoOfCancellations() + 1);
-            } else if (ActivityConstants.CORRECTION.equalsIgnoreCase(purposeCode)) {
+            } else if (FaReportStatusType.UPDATED.equals(status)) {
                 messagesCounter.setNoOfCorrections(messagesCounter.getNoOfCorrections() + 1);
             }
         }
@@ -475,7 +550,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public ObjectNode getTripMapDetailsForTripId(String tripId) {
-
         log.info("Get GEO data for Fishing Trip for tripId:" + tripId);
         List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.loadReports(tripId, "Y");
         List<Geometry> geoList = new ArrayList<>();
@@ -502,7 +576,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             throw new ServiceException("Either PERIOD_START or PERIOD_END not present. Please provide values for both.");
         }
         Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
-       // checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
+        // checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
         log.debug("Fishing trips received from db:" + fishingTripIds.size());
         // build Fishing trip response from FishingTripEntityList and return
         return buildFishingTripSearchRespose(fishingTripIds, true);
@@ -782,7 +856,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     @Override
-    public String getOwnerFluxPartyFromTripId(String tripId){
+    public String getOwnerFluxPartyFromTripId(String tripId) {
         return fishingTripDao.getOwnerFluxPartyFromTripId(tripId);
     }
 

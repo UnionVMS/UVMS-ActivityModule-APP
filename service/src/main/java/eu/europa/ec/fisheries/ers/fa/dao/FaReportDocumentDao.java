@@ -15,16 +15,21 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.util.CollectionUtil;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -40,6 +45,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     private static final String STATUSES = "statuses";
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
+    private static final String AREA = "area";
 
     private EntityManager em;
 
@@ -158,4 +164,40 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return query.getResultList();
     }
 
+    public List<FaReportDocumentEntity> findReportsByTripId(String tripId, Geometry multipolygon){
+        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
+        query.setParameter(TRIP_ID, tripId);
+        query.setParameter(AREA, multipolygon);
+        return query.getResultList();
+    }
+
+    public List<FaReportDocumentEntity> findReportsByIdsList(List<Integer> ids){
+        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_IDS_LIST, FaReportDocumentEntity.class);
+        query.setParameter("ids", ids);
+        return query.getResultList();
+    }
+
+    public List<FaReportDocumentEntity> loadCanceledAndDeletedReports(List<FaReportDocumentEntity> reports) {
+        List<Integer> idsOfCancelledDeletedReports = new ArrayList<>();
+        for (FaReportDocumentEntity report : reports) {
+            populateDeletingAndCancellationIds(report.getFishingActivities(), idsOfCancelledDeletedReports);
+        }
+        if(CollectionUtils.isNotEmpty(idsOfCancelledDeletedReports)){
+            return findReportsByIdsList(idsOfCancelledDeletedReports);
+        }
+        return null;
+    }
+
+    private void populateDeletingAndCancellationIds(Set<FishingActivityEntity> fishingActivities, List<Integer> idsOfCancelledDeletedReports) {
+        if(CollectionUtils.isNotEmpty(fishingActivities)){
+            for (FishingActivityEntity fishingActivity : fishingActivities) {
+                if(fishingActivity.getCanceledBy() != null){
+                    idsOfCancelledDeletedReports.add(fishingActivity.getCanceledBy());
+                }
+                if(fishingActivity.getDeletedBy() != null){
+                    idsOfCancelledDeletedReports.add(fishingActivity.getDeletedBy());
+                }
+            }
+        }
+    }
 }
