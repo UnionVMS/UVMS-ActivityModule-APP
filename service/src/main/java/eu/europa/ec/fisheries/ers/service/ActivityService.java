@@ -48,18 +48,17 @@ public interface ActivityService {
      *
      * @param refReportId selected FA report Reference Id
      * @param refSchemeId selected FA scheme Reference Id
-     * @return List<FaReportCorrectionDTO> list of corrections made
      * @throws ServiceException Exception
      */
-    List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException;
+    List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) throws ServiceException;
 
     boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
 
-    FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException;
+    FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, Integer reportId, List<Dataset> datasets, ActivityViewEnum view, boolean withHistory) throws ServiceException;
 
     GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException;
 
-    public int getPreviousFishingActivity(int fishingActivityId);
+    int getPreviousFishingActivity(int fishingActivityId);
 
-    public int getNextFishingActivity(int fishingActivityId);
+    int getNextFishingActivity(int fishingActivityId);
 }

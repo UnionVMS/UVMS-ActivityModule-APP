@@ -10,10 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import java.util.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -26,6 +22,12 @@ import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessag
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import java.util.*;
+
 
 @Slf4j
 @Stateless
@@ -41,8 +43,8 @@ public class FaReportSaverBean {
     @EJB
     private ExchangeServiceBean exchangeServiceBean;
 
-    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
 
+    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
         try {
             FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
             deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);

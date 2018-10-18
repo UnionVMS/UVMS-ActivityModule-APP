@@ -111,7 +111,7 @@ public class FluxMessageServiceBeanTest {
 
         //Test
         List<FaReportDocumentEntity>  faReportDocumentEntities = captor.getValue();
-        assertEquals(FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(faReportDocuments.get(1).getRelatedFLUXReportDocument().getPurposeCode().getValue())),
+        assertEquals(FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(faReportDocuments.get(1).getRelatedFLUXReportDocument().getPurposeCode().getValue())).name(),
                 faReportDocumentEntities.get(0).getStatus());
     }
 

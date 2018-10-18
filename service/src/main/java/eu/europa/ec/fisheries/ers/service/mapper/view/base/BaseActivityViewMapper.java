@@ -189,7 +189,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return populateActivityDetails(faEntity, activityDetails);
     }
 
-    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
+    public ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
         return FaReportDocumentMapper.INSTANCE.mapFaReportDocumentToReportDocumentDto(faRepDocEntity);
     }
 

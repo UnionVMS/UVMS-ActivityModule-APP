@@ -86,7 +86,7 @@ public class ActivityDataUtil {
         faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
         faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
         faReportDocumentEntity.setVesselTransportMeans(new HashSet<>(Arrays.asList(vesselTransportMeansEntity)));
-        faReportDocumentEntity.setStatus(status);
+        faReportDocumentEntity.setStatus(status.name());
         return faReportDocumentEntity;
     }
 

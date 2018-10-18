@@ -29,7 +29,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -101,18 +100,22 @@ public class ActivityServiceBeanTest {
     public void testGetFaReportCorrections() {
 
         //Mock
-        FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
+        final FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
+        List<FaReportDocumentEntity> faRepsArraResp = new ArrayList<FaReportDocumentEntity>(){{
+            add(faReportDocumentEntity);
+        }};
         Mockito.doReturn(faReportDocumentEntity).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
+        Mockito.doReturn(faRepsArraResp).when(faReportDocumentDao).getHistoryOfFaReport(Mockito.any(FaReportDocumentEntity.class), Mockito.any(ArrayList.class));
 
         //Trigger
-        List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportCorrections("TEST ID", "SCHEME ID");
+        List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportHistory("TEST ID", "SCHEME ID");
 
         //Verify
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportByIdAndScheme("TEST ID", "SCHEME ID");
 
         //Test
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOList.get(0);
-        assertEquals(faReportDocumentEntity.getStatus(), FaReportStatusType.valueOf(faReportCorrectionDTO.getCorrectionType()));
+        assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
         assertEquals(faReportDocumentEntity.getAcceptedDatetime(), faReportCorrectionDTO.getAcceptedDate());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId(),

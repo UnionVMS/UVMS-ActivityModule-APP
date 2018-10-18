@@ -14,18 +14,23 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,18 +163,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
         if (fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
-
         String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
         if (multipolgon == null)
             queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
-
         Query query = getEntityManager().createNamedQuery(queryName);
-
         query.setParameter("fishingTripId", fishingTripId);
-
         if (multipolgon != null)
             query.setParameter("area", multipolgon);
-
         return query.getResultList();
     }
 
@@ -198,28 +198,38 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      Provide paginated data if user has asked for it
      */
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+
+        if(query.getUseStatusInsteadOfPurposeCode() != null && query.getUseStatusInsteadOfPurposeCode()){
+            adaptForStatusInsteadOfPurpose(query);
+        }
+
         LOG.info("Get Fishing Activity Report list by Query.");
         FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
-
         // Create Query dynamically based on filter and Sort criteria
         StringBuilder sqlToGetActivityList = search.createSQL(query);
-
         // Apply real values to Query built
         Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
-
-        // Agreed with frontend.
-        // Page size : Number of record to be retrieved in one page
-        // offSet : The position from where the result should be picked. Starts with 0
-
+        // Agreed with frontend : Page size : Number of record to be retrieved in one page; offSet : The position from where the result should be picked. Starts with 0
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
             LOG.debug("Pagination information getting applied to Query is: Offset :" + pagination.getOffset() + " PageSize:" + pagination.getPageSize());
-
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
-
         return listQuery.getResultList();
+    }
+
+    private void adaptForStatusInsteadOfPurpose(FishingActivityQuery query) {
+        Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
+        if(MapUtils.isNotEmpty(searchCriteriaMapMultipleValues)){
+            List<String> purposes = searchCriteriaMapMultipleValues.get(SearchFilter.PURPOSE);
+            List<String> statuses = new ArrayList<>();
+            for (String purpose : purposes) {
+                statuses.add(FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(purpose)).name());
+            }
+            searchCriteriaMapMultipleValues.remove(SearchFilter.PURPOSE);
+            searchCriteriaMapMultipleValues.put(SearchFilter.FA_STATUS, statuses);
+        }
     }
 
     /**
@@ -291,4 +301,5 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
         return sb.toString();
     }
+
 }

@@ -183,6 +183,12 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name="latest")
 	private Boolean latest;
 
+	@Column(name="canceled_by")
+	private Integer canceledBy;
+
+	@Column(name="deleted_by")
+	private Integer deletedBy;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_start_time", length = 29)
 	private Date calculatedStartTime;

@@ -239,7 +239,7 @@ public class MapperUtil {
 
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        faReportDocumentEntity.setStatus(FaReportStatusType.UPDATED);
+        faReportDocumentEntity.setStatus(FaReportStatusType.UPDATED.name());
         faReportDocumentEntity.setTypeCode("FISHING_OPERATION");
         faReportDocumentEntity.setTypeCodeListId("FLUX_FA_REPORT_TYPE");
         faReportDocumentEntity.setAcceptedDatetime(new Date());

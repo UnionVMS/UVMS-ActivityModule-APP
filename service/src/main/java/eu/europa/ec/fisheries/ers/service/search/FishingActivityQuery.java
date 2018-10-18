@@ -34,5 +34,6 @@ public class FishingActivityQuery {
     private SortKey sorting;
     private List<GroupCriteria> groupByFields;
     private Boolean showOnlyLatest;
+    private Boolean useStatusInsteadOfPurposeCode;
 
 }

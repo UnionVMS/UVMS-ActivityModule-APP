@@ -26,7 +26,7 @@ import java.util.List;
  * Created by sanera on 04/08/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ReportDTO extends FishingActivityDTO{
+public class ReportDTO extends FishingActivityDTO {
 
     @JsonProperty("faReportAcceptedDateTime")
     @JsonSerialize(using = CustomDateSerializer.class)

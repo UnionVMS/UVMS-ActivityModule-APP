@@ -48,11 +48,9 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
             String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym, filter, filterColumns, nrOfResults);
             String correlationId = mdrProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage message = activityConsumer.getMessage(correlationId, TextMessage.class);
-
             if (null != message) {
                 String messageStr = message.getText();
                 MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(messageStr, MdrGetCodeListResponse.class);
-
                 for (ObjectRepresentation objectRep : response.getDataSets()) {
                     for (ColumnDataType nameVal : objectRep.getFields()) {
                         if (columnNameValuesMap.containsKey(nameVal.getColumnName())) {
@@ -60,7 +58,6 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
                         }
                     }
                 }
-
                 return columnNameValuesMap;
             } else {
                 throw new ServiceException("Unable to get data from MDR Module");
