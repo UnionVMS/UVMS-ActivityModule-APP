@@ -81,4 +81,17 @@ public class FluxReportDocumentEntity implements Serializable {
         }
         return null;
     }
+
+    public String getReportOwner() {
+        Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = fluxParty.getFluxPartyIdentifiers();
+        if (CollectionUtils.isNotEmpty(fluxPartyIdentifiers)) {
+            for (FluxPartyIdentifierEntity fluxReportIdentifierEntity : fluxPartyIdentifiers) {
+                if (fluxReportIdentifierEntity.getFluxPartyIdentifierSchemeId().equalsIgnoreCase("FLUX_GP_PARTY")) {
+                    return fluxReportIdentifierEntity.getFluxPartyIdentifierId();
+                }
+            }
+        }
+        return null;
+    }
+
 }

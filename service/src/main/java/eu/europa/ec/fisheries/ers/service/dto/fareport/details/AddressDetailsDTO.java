@@ -44,10 +44,14 @@ public class AddressDetailsDTO {
     @JsonIgnore
     private String citySubdivisionName;
 
-    @JsonProperty("countryCode")
-    private String country;
-
+    @JsonProperty("countryName")
     private String countryName;
+
+    @JsonProperty("countryCode")
+    private String countryIDValue;
+
+    @JsonProperty("postCode")
+    private String postalAreaValue;
 
     @JsonIgnore
     private String countrySubdivisionName;
@@ -94,14 +98,6 @@ public class AddressDetailsDTO {
 
     public void setCitySubdivisionName(String citySubdivisionName) {
         this.citySubdivisionName = citySubdivisionName;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public String getCountryName() {
@@ -158,6 +154,22 @@ public class AddressDetailsDTO {
 
     public void setStreetName(String streetName) {
         this.streetName = streetName;
+    }
+
+    public String getPostalAreaValue() {
+        return postalAreaValue;
+    }
+
+    public void setPostalAreaValue(String postalAreaValue) {
+        this.postalAreaValue = postalAreaValue;
+    }
+
+    public String getCountryIDValue() {
+        return countryIDValue;
+    }
+
+    public void setCountryIDValue(String countryIDValue) {
+        this.countryIDValue = countryIDValue;
     }
 
     @JsonProperty("characteristics")

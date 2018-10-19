@@ -11,35 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
@@ -62,20 +34,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+
+import java.util.*;
 
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class, XMLDateUtils.class,
@@ -112,7 +76,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingActivityIdentifiers", expression = "java(mapToFishingActivityIdentifierEntities(fishingActivity.getIDS(), fishingActivityEntity))"),
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
             @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(fishingActivity.getSpecifiedFishingTrip(), fishingActivityEntity))"),
-            @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(fishingActivity.getSpecifiedFishingGears(), fishingActivityEntity))"),
+            @Mapping(target = "fishingGears", ignore = true),
             @Mapping(target = "fluxCharacteristics", ignore = true),
             @Mapping(target = "gearProblems", expression = "java(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), fishingActivityEntity))"),
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), fishingActivityEntity))"),
@@ -217,6 +181,9 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "occurrence", source = "occurence"),
             @Mapping(target = "identifiers", source = "fishingActivityIdentifiers"),
+            @Mapping(target = "nrOfOperation", source = "operationsQuantity.value"),
+            @Mapping(target = "reason", source = "reasonCode"),
+            @Mapping(target = "vesselActivity", source = "vesselActivityCode")
     })
     public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
 
@@ -666,19 +633,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             gearProblemEntities.add(gearProblemEntity);
         }
         return gearProblemEntities;
-    }
-
-    protected Set<FishingGearEntity> getFishingGearEntities(List<FishingGear> fishingGears, FishingActivityEntity fishingActivityEntity) {
-        if (fishingGears == null || fishingGears.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
-        for (FishingGear fishingGear : fishingGears) {
-            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
-            fishingGearEntity.setFishingActivity(fishingActivityEntity);
-            fishingGearEntities.add(fishingGearEntity);
-        }
-        return fishingGearEntities;
     }
 
     protected String getFishingTripId(FishingActivityEntity fishingActivityEntity) {

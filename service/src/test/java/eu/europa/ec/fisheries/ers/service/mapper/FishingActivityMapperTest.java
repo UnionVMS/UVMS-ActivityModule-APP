@@ -47,11 +47,6 @@ public class FishingActivityMapperTest {
         assertFishingActivityFields(fishingActivity, fishingActivityEntity);
         assertNull(fishingActivityEntity.getFaReportDocument());
 
-        assertNotNull(fishingActivityEntity.getFishingGears());
-        FishingGearEntity fishingGearEntity = fishingActivityEntity.getFishingGears().iterator().next();
-        assertNotNull(fishingGearEntity);
-        assertFishingActivityFields(fishingActivity, fishingGearEntity.getFishingActivity());
-
         assertNotNull(fishingActivityEntity.getFishingTrips());
         FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrips().iterator().next();
         assertNotNull(fishingTripEntity);

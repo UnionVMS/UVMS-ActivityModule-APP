@@ -40,7 +40,7 @@ public abstract class AapProductMapper {
     @Mappings({
             @Mapping(target = "packagingTypeCode", source = "packagingTypeCode.value"),
             @Mapping(target = "packagingTypeCodeListId", source = "packagingTypeCode.listID"),
-            @Mapping(target = "packagingUnitAvarageWeight", source = "packagingUnitAverageWeightMeasure.value"),
+            @Mapping(target = "packagingUnitAverageWeight", source = "packagingUnitAverageWeightMeasure.value"),
             @Mapping(target = "packagingWeightUnitCode", source = "packagingUnitAverageWeightMeasure.unitCode"),
             @Mapping(target = "packagingUnitCount", source = "packagingUnitQuantity.value"),
             @Mapping(target = "packagingUnitCountCode", source = "packagingUnitQuantity.unitCode"),
@@ -69,9 +69,9 @@ public abstract class AapProductMapper {
             @Mapping(target = "preservation", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_PRESERVATION))"),
             @Mapping(target = "freshness", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_FRESHNESS))"),
             @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactor"),
-            @Mapping(target = "weight", source = "calculatedWeightMeasure"),
+            @Mapping(target = "weight", source = "weightMeasure"),
             @Mapping(target = "quantity", source = "unitQuantity"),
-            @Mapping(target = "packageWeight", source = "calculatedPackagingWeight"),
+            @Mapping(target = "packageWeight", source = "packagingUnitAverageWeight"),
             @Mapping(target = "packageQuantity", source = "packagingUnitCount"),
             @Mapping(target = "packagingType", source = "packagingTypeCode")
     })

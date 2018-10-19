@@ -737,7 +737,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                             break;
                         }
                     }
-
                 }
                 // VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
                 // tripWidgetDto.setVesselDetails(detailsDTO);
@@ -839,6 +838,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                         List<TripIdDto> tripIdList = new ArrayList<>();
                         tripIdList.add(tripIdDto);
                         tripOverviewDto.setTripId(tripIdList);
+                        tripOverviewDto.setTypeCode(fishingTripEntity.getTypeCode());
                         break;
                     }
                 }

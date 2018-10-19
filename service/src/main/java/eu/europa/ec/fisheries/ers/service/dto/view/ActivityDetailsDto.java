@@ -64,7 +64,7 @@ public class ActivityDetailsDto {
     @JsonIgnore
     private Geometry geom;
 
-    @JsonView({Arrival.class, NotificationOfArrival.class, AreaEntry.class, Discard.class})
+    @JsonView({Arrival.class, NotificationOfArrival.class, AreaEntry.class, Discard.class, Departure.class})
     private String reason;
 
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -93,14 +93,13 @@ public class ActivityDetailsDto {
     @JsonView({Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, JointFishingOperation.class})
     private String speciesTarget;
 
-    @JsonView({FishingOperation.class, JointFishingOperation.class})
+    @JsonView({FishingOperation.class, JointFishingOperation.class, Departure.class})
     private String vesselActivity;
 
-    @JsonView(FishingOperation.class)
+    @JsonView({FishingOperation.class, Departure.class})
     private Integer nrOfOperation;
 
-    @JsonView({FishingOperation.class, Discard.class, Transhipment.class, JointFishingOperation.class
-            , Relocation.class})
+    @JsonView({FishingOperation.class, Discard.class, Transhipment.class, JointFishingOperation.class, Relocation.class})
     private Set<IdentifierDto> identifiers;
 
     @JsonView({FishingOperation.class, JointFishingOperation.class})
