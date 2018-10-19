@@ -83,7 +83,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "type" , source = "typeCode"),
             @Mapping(target = "acceptedDate" , source = "acceptedDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
             @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
-            @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"FLUX_GP_PARTY\"))"),
+            @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getReportOwner())"),
             @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
             @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),
             @Mapping(target = "fmcMark" , source = "fmcMarker"),
@@ -129,7 +129,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
         for (FishingActivity fishingActivity : fishingActivities) {
             List<FishingGear> specifiedFishingGears = fishingActivity.getSpecifiedFishingGears();
-            FishingActivityEntity target = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
+            FishingActivityEntity fishActEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
             if (CollectionUtils.isNotEmpty(specifiedFishingGears)){
                 Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
                 for (FishingGear fishingGear : specifiedFishingGears) {
@@ -146,32 +146,32 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                             fishingGearEntity.addGearCharacteristic(GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(applicableGearCharacteristic));
                         }
                     }
+                    fishingGearEntity.setFishingActivity(fishActEntity);
                     fishingGearEntitySet.add(fishingGearEntity);
                 }
-                target.setFishingGears(fishingGearEntitySet);
-
+                fishActEntity.setFishingGears(fishingGearEntitySet);
             }
 
             List<FLAPDocument> specifiedFLAPDocuments = fishingActivity.getSpecifiedFLAPDocuments();
             if (CollectionUtils.isNotEmpty(specifiedFLAPDocuments)){
                 for (FLAPDocument specifiedFLAPDocument : specifiedFLAPDocuments) {
                     FlapDocumentEntity flapDocumentEntity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
-                    flapDocumentEntity.setFishingActivity(target);
+                    flapDocumentEntity.setFishingActivity(fishActEntity);
                     flapDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
-                    target.addFlapDocuments(flapDocumentEntity);
+                    fishActEntity.addFlapDocuments(flapDocumentEntity);
                 }
             }
 
             List<IDType> ids = fishingActivity.getIDS();
             if (CollectionUtils.isNotEmpty(ids)){
                 for (IDType id : ids) {
-                    target.addFishingActivityIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToFishingActivityIdentifierEntity(id));
+                    fishActEntity.addFishingActivityIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToFishingActivityIdentifierEntity(id));
                 }
             }
 
-            fishingActivityEntities.add(target);
+            fishingActivityEntities.add(fishActEntity);
             if (CollectionUtils.isNotEmpty(fishingActivity.getRelatedFishingActivities())) {
-                fishingActivityEntities.addAll(target.getAllRelatedFishingActivities());
+                fishingActivityEntities.addAll(fishActEntity.getAllRelatedFishingActivities());
             }
 
             List<FLUXCharacteristic> specifiedFLUXCharacteristics = fishingActivity.getSpecifiedFLUXCharacteristics();
@@ -183,10 +183,10 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                         for (FLUXLocation specifiedFLUXLocation : specifiedFLUXLocations) {
                             FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(specifiedFLUXLocation);
                             fluxCharacteristicEntity.setFluxLocation(fluxLocationEntity);
-                            fluxCharacteristicEntity.setFishingActivity(target);
+                            fluxCharacteristicEntity.setFishingActivity(fishActEntity);
                         }
                     }
-                    target.addFluxCharacteristics(fluxCharacteristicEntity);
+                    fishActEntity.addFluxCharacteristics(fluxCharacteristicEntity);
                 }
             }
         }

@@ -43,6 +43,12 @@ public class FluxLocationDto {
     @JsonView(CommonView.class)
     private String geometry;
 
+    @JsonView(CommonView.class)
+    private String sovereignCountry;
+
+    @JsonView(CommonView.class)
+    private String jurisdictionCountry;
+
     @JsonIgnore
     private String fluxLocationIdentifier;
 
@@ -131,6 +137,22 @@ public class FluxLocationDto {
 
     public void setPortDescription(String portDescription) {
         this.portDescription = portDescription;
+    }
+
+    public String getSovereignCountry() {
+        return sovereignCountry;
+    }
+
+    public void setSovereignCountry(String sovereignCountry) {
+        this.sovereignCountry = sovereignCountry;
+    }
+
+    public String getJurisdictionCountry() {
+        return jurisdictionCountry;
+    }
+
+    public void setJurisdictionCountry(String jurisdictionCountry) {
+        this.jurisdictionCountry = jurisdictionCountry;
     }
 
     @JsonProperty("characteristics")

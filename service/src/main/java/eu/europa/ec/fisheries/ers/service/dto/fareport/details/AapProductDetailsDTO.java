@@ -26,7 +26,7 @@ public class AapProductDetailsDTO {
     @JsonProperty("packagingTypeCode")
     private String packagingTypeCode;
 
-    @JsonProperty("packagingUnitAvarageWeight")
+    @JsonProperty("packagingUnitAverageWeight")
     private Double packagingUnitAvarageWeight;
 
     @JsonProperty("packagingUnitCount")
@@ -52,12 +52,12 @@ public class AapProductDetailsDTO {
         this.packagingTypeCode = packagingTypeCode;
     }
 
-    @JsonProperty("packagingUnitAvarageWeight")
+    @JsonProperty("packagingUnitAverageWeight")
     public Double getPackagingUnitAvarageWeight() {
         return packagingUnitAvarageWeight;
     }
 
-    @JsonProperty("packagingUnitAvarageWeight")
+    @JsonProperty("packagingUnitAverageWeight")
     public void setPackagingUnitAvarageWeight(Double packagingUnitAvarageWeight) {
         this.packagingUnitAvarageWeight = packagingUnitAvarageWeight;
     }

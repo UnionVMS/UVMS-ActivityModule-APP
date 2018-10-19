@@ -11,9 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import org.mapstruct.InheritInverseConfiguration;
@@ -22,6 +19,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+
+import java.util.List;
+import java.util.Set;
 
 @Mapper(imports = BaseMapper.class, uses = {FluxCharacteristicsMapper.class,
         StructuredAddressMapper.class, FluxCharacteristicsMapper.class, CodeTypeMapper.class})
@@ -57,7 +57,9 @@ public interface FluxLocationMapper {
     List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
 
     @Mappings({
-            @Mapping(target = "geometry", source = "wkt")
+            @Mapping(target = "geometry", source = "wkt"),
+            @Mapping(target = "sovereignCountry", source = "sovereignRightsCountryCode"),
+            @Mapping(target = "jurisdictionCountry", source = "jurisdictionCountryCode"),
     })
     FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
 
