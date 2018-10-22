@@ -6,7 +6,7 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.17</version>
+        <version>1.18</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -39,12 +39,12 @@
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
         <activity.model>1.0.8</activity.model>
-        <activity.model>1.0.9-SNAPSHOT</activity.model>
+        <activity.model>1.0.9</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.9</spatial.model.version>
-        <exchange.model>4.0.22</exchange.model>
+        <exchange.model>4.0.23</exchange.model>
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
@@ -55,7 +55,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <javaee.version>8.0</javaee.version>
+        <javaee.version>7.0</javaee.version>
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
