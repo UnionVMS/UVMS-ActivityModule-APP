@@ -65,6 +65,7 @@
         <movement.model.version>4.0.9</movement.model.version>
         <asset.model.version>4.0.18</asset.model.version>
         <movement.model.version>4.0.16</movement.model.version>
+        <audit.model.version>4.0.10</audit.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
@@ -590,19 +591,6 @@
 
             <properties>
                 <scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</scm.connection>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>belgium-local</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>lv-snapshots</id>
-                    <url>https://apjenp01.dg3.be/nexus/repository/maven-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-            <properties>
-                <focus-pom.java.version>1.8</focus-pom.java.version>
             </properties>
         </profile>
 
