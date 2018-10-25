@@ -60,8 +60,8 @@ public class FluxLocationEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_loc_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+	@SequenceGenerator(name = "SEQ_GEN_activity_flux_location", sequenceName = "flux_loc_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_flux_location")
 	private int id;
 
 	@Type(type = "org.hibernate.spatial.GeometryType")

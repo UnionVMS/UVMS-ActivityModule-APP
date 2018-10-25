@@ -6,7 +6,7 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.18</version>
+        <version>1.21</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -387,28 +387,24 @@
                 <artifactId>jts2geojson</artifactId>
                 <version>0.7.0</version>
             </dependency>
+
+
            	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.14</version>
+				<version>1.21</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.14</version>
+				<version>1.21</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.14</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.14</version>
+				<version>1.21</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>

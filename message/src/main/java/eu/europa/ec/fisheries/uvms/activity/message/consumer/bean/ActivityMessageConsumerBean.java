@@ -75,11 +75,8 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
-
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(Message message) {
-
         TextMessage textMessage = null;
         try {
             textMessage = (TextMessage) message;

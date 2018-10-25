@@ -41,8 +41,8 @@ public class RegistrationEventEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "reg_event_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+	@SequenceGenerator(name = "SEQ_GEN_activity_registration_event", sequenceName = "reg_event_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_registration_event")
 	private int id;
 
 	@Column(columnDefinition = "text")
