@@ -18,7 +18,8 @@
             <property name="use_sql_comments" value="false"/>
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.generate_statistics" value="true"/>
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
+            <property name="hibernate.physical_naming_strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
+            <property name="hibernate.implicit_naming_strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"/>
         </properties>
 
     </persistence-unit>

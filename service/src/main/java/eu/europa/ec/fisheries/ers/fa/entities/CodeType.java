@@ -10,10 +10,10 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import lombok.Data;
+
 import javax.persistence.Embeddable;
 import java.io.Serializable;
-
-import lombok.Data;
 
 @Embeddable
 @Data
