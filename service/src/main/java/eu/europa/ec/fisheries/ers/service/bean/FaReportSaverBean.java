@@ -51,7 +51,7 @@ public class FaReportSaverBean {
             if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
                 fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
             } else {
-                log.error("[ERROR] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+                log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
             }
         } catch (Exception e){
             exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
