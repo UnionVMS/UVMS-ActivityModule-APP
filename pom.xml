@@ -90,7 +90,7 @@
         <geotools.version>14.4</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
-		
+
 		<scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
 
