@@ -1,0 +1,83 @@
+bplist00Ñ_WebMainResourceÕ	
+^WebResourceURL_WebResourceFrameName_WebResourceData_WebResourceMIMEType_WebResourceTextEncodingName_file:///index.htmlPO+•<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1671">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 14.0px; font: 13.0px Courier; color: #0e0083; -webkit-text-stroke: #0e0083}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 15.0px; font: 13.0px Courier; color: #0e0083; -webkit-text-stroke: #0e0083}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 15.0px; font: 13.0px Courier; color: #5e005a; -webkit-text-stroke: #5e005a}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 15.0px; font: 13.0px Courier; color: #000000; -webkit-text-stroke: #000000}
+    span.s1 {font-kerning: none; color: #5e005a; -webkit-text-stroke: 0px #5e005a}
+    span.s2 {font-kerning: none; color: #722506; -webkit-text-stroke: 0px #722506}
+    span.s3 {font-kerning: none}
+    span.s4 {font-kerning: none; color: #0e0083; -webkit-text-stroke: 0px #0e0083}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;xsd:schema </span><span class="s2">xmlns:xsd</span><span class="s1">="</span><span class="s3">http://www.w3.org/2001/XMLSchema</span><span class="s1">" </span><span class="s2">xmlns</span><span class="s1">="</span><span class="s3">http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial</span><span class="s1">" </span><span class="s2">xmlns:lb</span><span class="s1">="</span><span class="s3">http://www.liquibase.org/xml/ns/dbchangelog</span><span class="s1">" </span><span class="s2">xmlns:xsi</span><span class="s1">="</span><span class="s3">http://www.w3.org/2001/XMLSchema-instance</span><span class="s1">" </span><span class="s2">targetNamespace</span><span class="s1">="</span><span class="s3">http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial</span><span class="s1">" </span><span class="s2">xsi:schemaLocation</span><span class="s1">="</span><span class="s3">http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd</span><span class="s1">" </span><span class="s2">elementFormDefault</span><span class="s1">="</span><span class="s3">qualified</span><span class="s1">"&gt;</span></p>
+<p class="p2"><span class="s1">&lt;xsd:import </span><span class="s2">namespace</span><span class="s1">="</span><span class="s3">http://www.liquibase.org/xml/ns/dbchangelog</span><span class="s1">" </span><span class="s2">schemaLocation</span><span class="s1">="</span><span class="s3">http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd</span><span class="s1">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attributeGroup </span><span class="s2">name</span><span class="s3">="</span><span class="s4">indexName</span><span class="s3">"&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:documentation&gt;</span></p>
+<p class="p4"><span class="s3">The index name attribute group is similar to the Liquibase attribute group except that the index name is optional. GeoDB doesn't use the index name as the index is stored in a separate table that Hatbox names.</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:documentation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">indexName</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">" </span><span class="s2">use</span><span class="s3">="</span><span class="s4">optional</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:attributeGroup&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attributeGroup </span><span class="s2">name</span><span class="s3">="</span><span class="s4">createSpatialIndex</span><span class="s3">"&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:documentation&gt;</span></p>
+<p class="p4"><span class="s3">These are the attributes for creating a spatial index. These resemble the normal createIndex attributes except that there are optional geometry type and SRID attributes. Also, GeoDB (using Hatbox) cannot name the index so the index name is optional.</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:documentation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attributeGroup </span><span class="s2">ref</span><span class="s3">="</span><span class="s4">lb:tableNameAttribute</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attributeGroup </span><span class="s2">ref</span><span class="s3">="</span><span class="s4">indexName</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">tablespace</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">geometryType</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:documentation&gt;</span></p>
+<p class="p4"><span class="s3">Specifies the geometry type of the indexed data. The geometry should be one of GEOMETRY, POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON or GEOMETRYCOLLECTION. Use GEOMETRY for either unknown or varying geometry types.</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:documentation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:attribute&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">srid</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:documentation&gt;</span></p>
+<p class="p4"><span class="s3">Specifies the Spatial Reference System Identifier for the index. The value is treated as the numeric code in EPSG SRIDs such as "4326" from EPSG:4326.</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:documentation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:annotation&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:attribute&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:attributeGroup&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:element </span><span class="s2">name</span><span class="s3">="</span><span class="s4">spatialSupported</span><span class="s3">"/&gt;</span></p>
+<p class="p2"><span class="s1">&lt;xsd:element </span><span class="s2">name</span><span class="s1">="</span><span class="s3">spatialIndexExists</span><span class="s1">"&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:complexType&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">catalogName</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">schemaName</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">indexName</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">tableName</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attribute </span><span class="s2">name</span><span class="s3">="</span><span class="s4">columnNames</span><span class="s3">" </span><span class="s2">type</span><span class="s3">="</span><span class="s4">xsd:string</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:complexType&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:element&gt;</span></p>
+<p class="p2"><span class="s1">&lt;xsd:element </span><span class="s2">name</span><span class="s1">="</span><span class="s3">createSpatialIndex</span><span class="s1">"&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:complexType&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:sequence&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:element </span><span class="s2">ref</span><span class="s3">="</span><span class="s4">lb:column</span><span class="s3">" </span><span class="s2">minOccurs</span><span class="s3">="</span><span class="s4">0</span><span class="s3">" </span><span class="s2">maxOccurs</span><span class="s3">="</span><span class="s4">unbounded</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:sequence&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attributeGroup </span><span class="s2">ref</span><span class="s3">="</span><span class="s4">createSpatialIndex</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:complexType&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:element&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:element </span><span class="s2">name</span><span class="s3">="</span><span class="s4">dropSpatialIndex</span><span class="s3">"&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:complexType&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attributeGroup </span><span class="s2">ref</span><span class="s3">="</span><span class="s4">lb:tableNameAttribute</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;xsd:attributeGroup </span><span class="s2">ref</span><span class="s3">="</span><span class="s4">indexName</span><span class="s3">"/&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:complexType&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:element&gt;</span></p>
+<p class="p3"><span class="s3">&lt;/xsd:schema&gt;</span></p>
+</body>
+</html>
+Ytext/htmlUutf-8    ( 7 N ` v ” © ª,C,M                           ,S
