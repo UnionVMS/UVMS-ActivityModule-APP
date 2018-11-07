@@ -48,7 +48,7 @@
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
-        <uvms.config.version>4.0.2-SNAPSHOT</uvms.config.version>
+        <uvms.config.version>4.0.2</uvms.config.version>
         <mdr.model.version>1.0.1</mdr.model.version>
         <mockito.version>1.10.19</mockito.version>
 
@@ -81,7 +81,7 @@
         <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
-        <usm4uvms.version>4.0.13-SNAPSHOT</usm4uvms.version>
+        <usm4uvms.version>4.0.13</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
