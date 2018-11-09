@@ -55,7 +55,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <javaee.version>7.0</javaee.version>
+        <javaee.version>8.0</javaee.version>
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
