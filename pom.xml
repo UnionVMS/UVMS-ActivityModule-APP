@@ -90,8 +90,9 @@
         <geotools.version>14.4</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
-		
-		<scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
+        <uvms.config.version>4.0.1</uvms.config.version>
+
+        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
 
     <dependencyManagement>
@@ -327,6 +328,18 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>20.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                <artifactId>uvms-config</artifactId>
+                <version>${uvms.config.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                        <artifactId>uvms-commons</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
