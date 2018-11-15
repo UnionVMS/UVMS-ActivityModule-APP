@@ -72,6 +72,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms</groupId>
+			<artifactId>uvms-config</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
 		</dependency>
