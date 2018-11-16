@@ -90,8 +90,9 @@
         <geotools.version>14.4</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
+        <uvms.config.version>4.0.2-W14-J8</uvms.config.version>
 
-		<scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
+        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
 
     <dependencyManagement>
@@ -330,6 +331,18 @@
             </dependency>
 
             <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                <artifactId>config-library</artifactId>
+                <version>${uvms.config.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                        <artifactId>uvms-commons</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxb-provider</artifactId>
                 <version>3.0.11.Final</version>
@@ -387,8 +400,6 @@
                 <artifactId>jts2geojson</artifactId>
                 <version>0.7.0</version>
             </dependency>
-
-
            	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
