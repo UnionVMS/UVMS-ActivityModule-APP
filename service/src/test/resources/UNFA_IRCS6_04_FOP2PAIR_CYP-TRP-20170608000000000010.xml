@@ -79,12 +79,12 @@
 				<ram:TypeCode listID="GEAR_TYPE">PTB</ram:TypeCode>
 				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
 				<ram:ApplicableGearCharacteristic>
-					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
-					<ram:ValueMeasure unitCode="MMT">80</ram:ValueMeasure>
-				</ram:ApplicableGearCharacteristic>
-				<ram:ApplicableGearCharacteristic>
 					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">GM</ram:TypeCode>
 					<ram:ValueMeasure unitCode="MTR">200</ram:ValueMeasure>
+				</ram:ApplicableGearCharacteristic>
+				<ram:ApplicableGearCharacteristic>
+					<ram:TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</ram:TypeCode>
+					<ram:ValueMeasure unitCode="MMT">80</ram:ValueMeasure>
 				</ram:ApplicableGearCharacteristic>
 			</ram:SpecifiedFishingGear>
 			<ram:RelatedFishingActivity>
@@ -95,8 +95,8 @@
 				<ram:RelatedFLUXLocation>
 					<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
 					<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-						<ram:LongitudeMeasure>-14.070</ram:LongitudeMeasure>
-						<ram:LatitudeMeasure>43.090</ram:LatitudeMeasure>
+						<ram:LongitudeMeasure>-14.07</ram:LongitudeMeasure>
+						<ram:LatitudeMeasure>43.09</ram:LatitudeMeasure>
 					</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
 				</ram:RelatedFLUXLocation>
 			</ram:RelatedFishingActivity>
@@ -148,7 +148,15 @@
 			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
 			<ram:SpeciesTargetCode listID="FAO_SPECIES">COD</ram:SpeciesTargetCode>
 			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
-			<ram:SpecifiedFACatch>
+            <ram:SpecifiedFACatch>
+                <ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+                <ram:WeightMeasure unitCode="KGM">50</ram:WeightMeasure>
+                <ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+                <ram:SpecifiedSizeDistribution>
+                    <ram:ClassCode listID="FISH_SIZE_CLASS">BMS</ram:ClassCode>
+                </ram:SpecifiedSizeDistribution>
+            </ram:SpecifiedFACatch>
+            <ram:SpecifiedFACatch>
 				<ram:SpeciesCode listID="FAO_SPECIES">POK</ram:SpeciesCode>
 				<ram:WeightMeasure unitCode="KGM">30</ram:WeightMeasure>
 				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
@@ -164,27 +172,19 @@
 					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
 				</ram:SpecifiedSizeDistribution>
 			</ram:SpecifiedFACatch>
-			<ram:SpecifiedFACatch>
-				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
-				<ram:WeightMeasure unitCode="KGM">50</ram:WeightMeasure>
-				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
-				<ram:SpecifiedSizeDistribution>
-					<ram:ClassCode listID="FISH_SIZE_CLASS">BMS</ram:ClassCode>
-				</ram:SpecifiedSizeDistribution>
-			</ram:SpecifiedFACatch>
 			<ram:RelatedFLUXLocation>
 				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
 				<ram:ID schemeID="MANAGEMENT_AREA">NEAFC_RA</ram:ID>
 			</ram:RelatedFLUXLocation>
 			<ram:RelatedFLUXLocation>
 				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
-				<ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
-				<ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
-			</ram:RelatedFLUXLocation>
-			<ram:RelatedFLUXLocation>
-				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
 				<ram:ID schemeID="ICES_STAT_RECTANGLE">17D5</ram:ID>
 			</ram:RelatedFLUXLocation>
+            <ram:RelatedFLUXLocation>
+                <ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+                <ram:ID schemeID="FAO_AREA">27.8.e.1</ram:ID>
+                <ram:RegionalFisheriesManagementOrganizationCode listID="RFMO">NEAFC</ram:RegionalFisheriesManagementOrganizationCode>
+            </ram:RelatedFLUXLocation>
 			<ram:SpecifiedFLUXCharacteristic>
 				<ram:TypeCode listID="FA_CHARACTERISTIC">FISHING_DEPTH</ram:TypeCode>
 				<ram:ValueMeasure unitCode="MTR">200</ram:ValueMeasure>

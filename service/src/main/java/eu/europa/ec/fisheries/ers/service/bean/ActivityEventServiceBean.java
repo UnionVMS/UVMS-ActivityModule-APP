@@ -109,16 +109,17 @@ public class ActivityEventServiceBean implements EventService {
             TextMessage jmsMessage = message.getJmsMessage();
             String jmsCorrelationID = jmsMessage.getJMSMessageID();
             String messageReceived = jmsMessage.getText();
+            boolean incoming = jmsMessage.getBooleanProperty("incoming");
             SubscriptionDataRequest subscriptionDataRequest = null;
             MapToSubscriptionRequest baseRequest = JAXBUtils.unMarshallMessage(messageReceived, MapToSubscriptionRequest.class);
             switch (baseRequest.getMessageType()){
                 case FLUX_FA_QUERY_MESSAGE:
                     FLUXFAQueryMessage fluxfaQueryMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAQueryMessage.class);
-                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
+                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery(), incoming);
                     break;
                 case FLUX_FA_REPORT_MESSAGE:
                     FLUXFAReportMessage fluxFAReportMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAReportMessage.class);
-                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxFAReportMessage);
+                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxFAReportMessage, incoming);
                     break;
                     default:
                         sendError(message, new IllegalArgumentException("VERBODEN VRUCHT"));

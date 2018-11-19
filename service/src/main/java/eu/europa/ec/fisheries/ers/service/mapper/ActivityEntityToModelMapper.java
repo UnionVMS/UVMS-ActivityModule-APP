@@ -10,32 +10,11 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static java.util.Collections.singletonList;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import java.util.*;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -43,27 +22,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+import static java.util.Collections.singletonList;
 
 @Slf4j
 public class ActivityEntityToModelMapper {
@@ -137,28 +101,28 @@ public class ActivityEntityToModelMapper {
         mapFishingActivities(target, source.getFishingActivities());
     }
 
-    private void mapFishingActivities(FAReportDocument faReportDocument, Set<FishingActivityEntity> fishingActivityEntities) {
+    private void mapFishingActivities(FAReportDocument faReportDocument, List<FishingActivityEntity> fishingActivityEntities) {
 
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)){
 
-            List<FishingActivity> fishingActivityList = new ArrayList<>();
+            List<FishingActivity> collectedFishingActivityList = new ArrayList<>();
 
             for (FishingActivityEntity source : fishingActivityEntities) {
 
-                FishingActivity target = new FishingActivity();
-                mapPurposeCode(target, source);
-                mapReasonCode(target, source);
-                mapOperationsQuantity(target, source);
-                mapFisheryTypeCode(target, source);
-                mapSpeciesTargetCode(target, source);
-                mapFishingDurationMeasure(target, source);
-                mapVesselRelatedActivityCode(target, source);
-                mapOccurrenceDateTime(target, source.getOccurence());
-                mapSourceVesselStorageCharacteristic(target, source.getSourceVesselCharId());
-                mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
+                FishingActivity fishingActivity = new FishingActivity();
+                mapPurposeCode(fishingActivity, source);
+                mapReasonCode(fishingActivity, source);
+                mapOperationsQuantity(fishingActivity, source);
+                mapFisheryTypeCode(fishingActivity, source);
+                mapSpeciesTargetCode(fishingActivity, source);
+                mapFishingDurationMeasure(fishingActivity, source);
+                mapVesselRelatedActivityCode(fishingActivity, source);
+                mapOccurrenceDateTime(fishingActivity, source.getOccurence());
+                mapSourceVesselStorageCharacteristic(fishingActivity, source.getSourceVesselCharId());
+                mapDestinationVesselStorageCharacteristic(fishingActivity, source.getDestVesselCharId());
 
-                target.setIDS(FishingActivityIdentifierMapper.INSTANCE.mapToIDTypeList(source.getFishingActivityIdentifiers()));
-                target.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
+                fishingActivity.setIDS(FishingActivityIdentifierMapper.INSTANCE.mapToIDTypeList(source.getFishingActivityIdentifiers()));
+                fishingActivity.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
 
                 Set<FluxCharacteristicEntity> fluxCharacteristics = source.getFluxCharacteristics();
                 if (CollectionUtils.isNotEmpty(fluxCharacteristics)){
@@ -172,17 +136,17 @@ public class ActivityEntityToModelMapper {
                         }
                         fluxCharacteristicList.add(fLUXCharacteristic);
                     }
-                    target.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
+                    fishingActivity.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
                 }
 
-                target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
+                fishingActivity.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
 
                 List<FishingTrip> fishingTrips = FishingTripMapper.INSTANCE.mapToFishingTripList(source.getFishingTrips());
                 if (CollectionUtils.isNotEmpty(fishingTrips)){
-                    target.setSpecifiedFishingTrip(fishingTrips.get(0));
+                    fishingActivity.setSpecifiedFishingTrip(fishingTrips.get(0));
                 }
 
-                target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
+                fishingActivity.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
 
                 Set<FaCatchEntity> faCatchs = source.getFaCatchs();
 
@@ -208,19 +172,101 @@ public class ActivityEntityToModelMapper {
                         faCatch.setRelatedFishingTrips(FishingTripMapper.INSTANCE.mapToFishingTripList(faCatchEntity.getFishingTrips()));
                         faCatchList.add(faCatch);
                     }
-                    target.setSpecifiedFACatches(faCatchList);
+                    fishingActivity.setSpecifiedFACatches(faCatchList);
                 }
 
-                mapRelatedVesselTransportMeans(target, source.getVesselTransportMeans());
+                mapRelatedVesselTransportMeans(fishingActivity, source.getVesselTransportMeans());
 
-                target.setSpecifiedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
+                fishingActivity.setSpecifiedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
 
                 source.getFlagState(); // TODO MAP
 
-                fishingActivityList.add(target);
+                List<FishingActivityEntity> relatedFishingActivities = source.getAllRelatedFishingActivities();
+
+                List<FishingActivity> collectedRelatedFishingActivityList = new ArrayList<>();
+
+                for (FishingActivityEntity relatedFishingActivity : relatedFishingActivities) {
+
+                    FishingActivity relatedActivitytarget = new FishingActivity();
+                    mapPurposeCode(relatedActivitytarget, relatedFishingActivity);
+                    mapReasonCode(relatedActivitytarget, relatedFishingActivity);
+                    mapOperationsQuantity(relatedActivitytarget, relatedFishingActivity);
+                    mapFisheryTypeCode(relatedActivitytarget, relatedFishingActivity);
+                    mapSpeciesTargetCode(relatedActivitytarget, relatedFishingActivity);
+                    mapFishingDurationMeasure(relatedActivitytarget, relatedFishingActivity);
+                    mapVesselRelatedActivityCode(relatedActivitytarget, relatedFishingActivity);
+                    mapOccurrenceDateTime(relatedActivitytarget, relatedFishingActivity.getOccurence());
+                    mapSourceVesselStorageCharacteristic(relatedActivitytarget, relatedFishingActivity.getSourceVesselCharId());
+                    mapDestinationVesselStorageCharacteristic(relatedActivitytarget, relatedFishingActivity.getDestVesselCharId());
+
+                    relatedActivitytarget.setIDS(FishingActivityIdentifierMapper.INSTANCE.mapToIDTypeList(relatedFishingActivity.getFishingActivityIdentifiers()));
+                    relatedActivitytarget.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(relatedFishingActivity.getFluxLocations()));
+
+                    Set<FluxCharacteristicEntity> relatedActivityfluxCharacteristics = relatedFishingActivity.getFluxCharacteristics();
+                    if (CollectionUtils.isNotEmpty(relatedActivityfluxCharacteristics)){
+                        List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
+                        for (FluxCharacteristicEntity fluxCharacteristicEntity : relatedActivityfluxCharacteristics) {
+                            FLUXCharacteristic fLUXCharacteristic = FluxCharacteristicsMapper.INSTANCE.mapToFLUXCharacteristic(fluxCharacteristicEntity);
+                            FluxLocationEntity fluxLocation = fluxCharacteristicEntity.getFluxLocation();
+                            FLUXLocation location = FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation);
+                            if (fluxLocation != null){
+                                fLUXCharacteristic.setSpecifiedFLUXLocations(Collections.singletonList(location));
+                            }
+                            fluxCharacteristicList.add(fLUXCharacteristic);
+                        }
+                        relatedActivitytarget.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
+                    }
+
+                    relatedActivitytarget.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(relatedFishingActivity.getDelimitedPeriods()));
+
+                    List<FishingTrip> relatedActivityFishingTrips = FishingTripMapper.INSTANCE.mapToFishingTripList(relatedFishingActivity.getFishingTrips());
+                    if (CollectionUtils.isNotEmpty(relatedActivityFishingTrips)){
+                        relatedActivitytarget.setSpecifiedFishingTrip(relatedActivityFishingTrips.get(0));
+                    }
+
+                    relatedActivitytarget.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(relatedFishingActivity.getFishingGears()));
+
+                    Set<FaCatchEntity> relatedFaCatchs = relatedFishingActivity.getFaCatchs();
+
+                    if (CollectionUtils.isNotEmpty(relatedFaCatchs)) {
+                        List<FACatch> faCatchList = new ArrayList<>();
+                        for (FaCatchEntity faCatchEntity : relatedFaCatchs) {
+                            FACatch faCatch = FaCatchMapper.INSTANCE.mapToFaCatch(faCatchEntity);
+                            Set<FluxLocationEntity> fluxLocations = faCatchEntity.getFluxLocations();
+                            List<FLUXLocation> specified = new ArrayList<>();
+                            List<FLUXLocation> destination = new ArrayList<>();
+                            if (CollectionUtils.isNotEmpty(fluxLocations)) {
+                                for (FluxLocationEntity fluxLocation : fluxLocations) {
+                                    if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType().equals(fluxLocation.getFluxLocationType())) {
+                                        specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+                                    }
+                                    if (FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType().equals(fluxLocation.getFluxLocationType())) {
+                                        destination.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+                                    }
+                                }
+                                faCatch.setSpecifiedFLUXLocations(specified);
+                                faCatch.setDestinationFLUXLocations(destination);
+                            }
+                            faCatch.setRelatedFishingTrips(FishingTripMapper.INSTANCE.mapToFishingTripList(faCatchEntity.getFishingTrips()));
+                            faCatchList.add(faCatch);
+                        }
+                        relatedActivitytarget.setSpecifiedFACatches(faCatchList);
+                    }
+
+                    mapRelatedVesselTransportMeans(relatedActivitytarget, relatedFishingActivity.getVesselTransportMeans());
+
+                    relatedActivitytarget.setSpecifiedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(relatedFishingActivity.getFlapDocuments()));
+
+                    relatedFishingActivity.getFlagState(); // TODO MAP
+
+                    collectedRelatedFishingActivityList.add(relatedActivitytarget);
+                }
+
+                fishingActivity.setRelatedFishingActivities(collectedRelatedFishingActivityList);
+                collectedFishingActivityList.add(fishingActivity);
             }
 
-            faReportDocument.setSpecifiedFishingActivities(fishingActivityList);
+            faReportDocument.setSpecifiedFishingActivities(collectedFishingActivityList);
         }
     }
 

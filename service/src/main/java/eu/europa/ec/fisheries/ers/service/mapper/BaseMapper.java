@@ -11,38 +11,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static com.google.common.collect.Sets.newHashSet;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import java.util.*;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
@@ -66,6 +45,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+import static com.google.common.collect.Sets.newHashSet;
 
 @Slf4j
 @NoArgsConstructor
@@ -287,7 +267,7 @@ public class BaseMapper {
         return recordMap;
     }
 
-    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
+    protected FishingActivityEntity extractSubFishingActivity(List<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
         if (CollectionUtils.isEmpty(fishingActivityList)) {
             return null;
         }

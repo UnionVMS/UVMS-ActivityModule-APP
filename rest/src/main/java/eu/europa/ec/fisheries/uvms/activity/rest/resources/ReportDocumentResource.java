@@ -43,7 +43,7 @@ public class ReportDocumentResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_XML})
     @Consumes(value = {MediaType.APPLICATION_XML})
     public Object test(FLUXFAQueryMessage fluxfaQueryMessage){
-        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
+        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery(), true);//TODO incoming variable
         List<SubscriptionDataCriteria> queryCriteria = subscriptionDataRequest.getQuery().getCriteria();
         return faQueryService.getReportsByCriteria(queryCriteria);
     }

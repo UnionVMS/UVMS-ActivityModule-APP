@@ -10,26 +10,10 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.SENDER;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VALIDITY_PERIOD;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.END_DATE;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.ORGANISATION;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.START_DATE;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.SCHEME_ID;
-import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ;
-
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
-
-import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
-import eu.europa.ec.fisheries.wsdl.subscription.module.MessageType;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataQuery;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
-import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
+import eu.europa.ec.fisheries.wsdl.subscription.module.*;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
@@ -39,30 +23,45 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.SENDER;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType.VALIDITY_PERIOD;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.END_DATE;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.ORGANISATION;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType.START_DATE;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.SCHEME_ID;
+import static eu.europa.ec.fisheries.wsdl.subscription.module.ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ;
 
 @Slf4j
 public class SubscriptionMapper {
 
     private SubscriptionMapper(){}
 
-    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage) {
+    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage, boolean incoming) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
         request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
-        SubscriptionDataQuery query = new SubscriptionDataQuery();
-        query.setMessageType(MessageType.FLUX_FA_REPORT_MESSAGE);
+
+        SubscriptionDataQuery subscriptionDataQuery = new SubscriptionDataQuery();
+        subscriptionDataQuery.setMessageType(incoming ? MessageType.FA_REPORT_MESSAGE_PULL : MessageType.FA_REPORT_MESSAGE_PUSH);
+
+        List<SubscriptionDataCriteria> criteria = subscriptionDataQuery.getCriteria();
+
+        DateTimeType creationDateTime = fluxfaReportMessage.getFLUXReportDocument().getCreationDateTime();
+
+        criteria.addAll(mapDelimitedPeriodToSubscriptionCriteria(creationDateTime));
+
         // TODO implement mapping
-        request.setQuery(query);
+        request.setQuery(subscriptionDataQuery);
         return request;
     }
 
-    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FAQuery faQuery) {
+    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FAQuery faQuery, boolean incoming) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
         request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
         SubscriptionDataQuery query = new SubscriptionDataQuery();
-        query.setMessageType(MessageType.FLUX_FA_QUERY_MESSAGE);
+        query.setMessageType(incoming ? MessageType.FA_QUERY_MESSAGE_PULL : MessageType.FA_QUERY_MESSAGE_PUSH);
         query.getCriteria().addAll(mapFluxPartyToSenderSubscriptionCriteria(faQuery.getSubmitterFLUXParty()));
         query.getCriteria().addAll(mapFAQueryParametersToSubscriptionCriteria(faQuery.getSimpleFAQueryParameters()));
-        query.getCriteria().addAll(mapDelimitedPeriodToFaQuerySubscriptionCriteria(faQuery.getSpecifiedDelimitedPeriod()));
+        query.getCriteria().addAll(mapDelimitedPeriodToSubscriptionCriteria(faQuery.getSpecifiedDelimitedPeriod()));
         request.setQuery(query);
         return request;
     }
@@ -79,7 +78,13 @@ public class SubscriptionMapper {
         return dataCriteriaList;
     }
 
-    private static List<SubscriptionDataCriteria> mapDelimitedPeriodToFaQuerySubscriptionCriteria(DelimitedPeriod period){
+    private static List<SubscriptionDataCriteria> mapDelimitedPeriodToSubscriptionCriteria(DateTimeType creationDateTime) {
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setStartDateTime(creationDateTime);
+        return mapDelimitedPeriodToSubscriptionCriteria(delimitedPeriod);
+    }
+
+    private static List<SubscriptionDataCriteria> mapDelimitedPeriodToSubscriptionCriteria(DelimitedPeriod period){
         List<SubscriptionDataCriteria> dataCriteriaList = new ArrayList<>();
         if (period != null) {
             DateTimeType startDateTime = period.getStartDateTime();

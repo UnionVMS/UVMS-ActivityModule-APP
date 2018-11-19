@@ -77,11 +77,11 @@ public class FaReportDocumentMapperTest {
 
     @Test
     public void testFaReportDocumentMapperNullReturns(){
-        Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
+        List<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
         assertTrue(fishingActivityEntities.size() == 0);
         Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = FaReportDocumentMapper.INSTANCE.mapVesselTransportMeansEntity(null, new FaReportDocumentEntity());
         assertNull(vesselTransportMeansEntityList);
-        Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
+        List<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
         assertTrue(fishingActivityEntities1.size() == 0);
     }
 

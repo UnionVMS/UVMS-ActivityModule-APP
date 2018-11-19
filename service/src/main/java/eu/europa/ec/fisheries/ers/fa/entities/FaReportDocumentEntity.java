@@ -11,17 +11,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
@@ -123,7 +123,7 @@ public class FaReportDocumentEntity implements Serializable {
     private Set<FaReportIdentifierEntity> faReportIdentifiers;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
-    private Set<FishingActivityEntity> fishingActivities;
+    private List<FishingActivityEntity> fishingActivities;
 
     /**
      * From XML we will always receive only One VesselTreansportMeans per FaReportDocument.

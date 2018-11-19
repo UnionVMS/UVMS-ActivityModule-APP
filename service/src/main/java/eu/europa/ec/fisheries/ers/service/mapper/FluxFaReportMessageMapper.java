@@ -11,10 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,7 +48,7 @@ public class FluxFaReportMessageMapper {
             FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);
             VesselTransportMeans specifiedVesselTransportMeans = faReportDocument.getSpecifiedVesselTransportMeans();
             Set<VesselTransportMeansEntity> vesselTransportMeansEntities = FaReportDocumentMapper.mapVesselTransportMeansEntity(specifiedVesselTransportMeans, entity);
-            Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
+            List<FishingActivityEntity> fishingActivityEntities = new ArrayList<>();
             if (CollectionUtils.isNotEmpty(vesselTransportMeansEntities)){
                 VesselTransportMeansEntity vessTraspMeans = vesselTransportMeansEntities.iterator().next();
                 fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(), entity, vessTraspMeans);

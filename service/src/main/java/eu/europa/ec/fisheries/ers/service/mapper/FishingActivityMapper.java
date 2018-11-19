@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -38,8 +39,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
-import java.util.*;
 
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class, XMLDateUtils.class,
@@ -471,11 +470,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return new ArrayList<>(ports);
     }
 
-    protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
+    protected List<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
         if (fishingActivity == null || fishingActivity.isEmpty()) {
-            return Collections.emptySet();
+            return new ArrayList<>();
         }
-        Set<FishingActivityEntity> relatedFishingActivityEntities = new HashSet<>();
+        List<FishingActivityEntity> relatedFishingActivityEntities = new ArrayList<>();
         for (FishingActivity relatedFishingActivity : fishingActivity) {
             FishingActivityEntity relatedFishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(relatedFishingActivity, faReportDocumentEntity, new FishingActivityEntity());
             relatedFishingActivityEntity.setRelatedFishingActivity(parentFishingActivity);

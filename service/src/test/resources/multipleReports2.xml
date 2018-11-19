@@ -1,0 +1,91 @@
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<rsm:FLUXFAReportMessage
+	xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3"
+	xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
+	xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20">
+	<rsm:FLUXReportDocument>
+		<ram:ID schemeID="UUID">16370fc7-d220-4355-936b-a4707a108a8c</ram:ID>
+		<ram:CreationDateTime>
+			<udt:DateTime>2018-11-16T13:12:33.172863Z</udt:DateTime>
+		</ram:CreationDateTime>
+		<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+		<ram:OwnerFLUXParty>
+			<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+		</ram:OwnerFLUXParty>
+	</rsm:FLUXReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:07:36Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">f8e410cd-c8f2-44ff-9c78-ae585492ae18</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:08:36Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T12:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+            <ram:RelatedFLUXLocation>
+                <ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+                <ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+            </ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>5.3167</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>40.0</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+</rsm:FLUXFAReportMessage>

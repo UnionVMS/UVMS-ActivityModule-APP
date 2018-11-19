@@ -10,15 +10,12 @@
 
 package eu.europa.ec.fisheries.ers.mapper.subscription;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
@@ -37,6 +34,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+import static org.junit.Assert.assertEquals;
 
 public class ActivityToSubscriptionMapperTest {
 
@@ -71,33 +69,6 @@ public class ActivityToSubscriptionMapperTest {
         endDateTime.setDateTime(xmlDate2);
         delimitedPeriod.setEndDateTime(endDateTime);
 
-        FAQueryParameter faQueryParameter = new FAQueryParameter();
-        CodeType codeType = new CodeType();
-        codeType.setValue(SubCriteriaType.VESSELID.value());
-        faQueryParameter.setTypeCode(codeType);
-        IDType idType0 = new IDType();
-        idType0.setValue("PD2438");
-        idType0.setSchemeID("IRCS");
-        faQueryParameter.setValueID(idType0);
-
-        FAQueryParameter faQueryParameter2 = new FAQueryParameter();
-        CodeType codeType2 = new CodeType();
-        codeType2.setValue(SubCriteriaType.VESSELID.value());
-        faQueryParameter2.setTypeCode(codeType2);
-        IDType idType2 = new IDType();
-        idType2.setValue("SVN123456789");
-        idType2.setSchemeID("CFR");
-        faQueryParameter2.setValueID(idType2);
-
-        FAQueryParameter faQueryParameter3 = new FAQueryParameter();
-        CodeType codeType3 = new CodeType();
-        codeType3.setValue(SubCriteriaType.TRIPID.value());
-        faQueryParameter3.setTypeCode(codeType3);
-        IDType idType3 = new IDType();
-        idType3.setValue("FRA-TRP-2016122102030");
-        idType3.setSchemeID("EU_TRIP_ID");
-        faQueryParameter3.setValueID(idType3);
-
         FAQueryParameter faQueryParameter4 = new FAQueryParameter();
         CodeType codeType4 = new CodeType();
         codeType4.setValue("CONSOLIDATED");
@@ -109,9 +80,6 @@ public class ActivityToSubscriptionMapperTest {
         faQueryParameter4.setValueCode(valueCode);
 
         List<FAQueryParameter> faQueryParameters = new ArrayList<>();
-        faQueryParameters.add(faQueryParameter);
-        faQueryParameters.add(faQueryParameter2);
-        faQueryParameters.add(faQueryParameter3);
         faQueryParameters.add(faQueryParameter4);
 
         FAQuery faQuery = new FAQuery();
@@ -125,7 +93,7 @@ public class ActivityToSubscriptionMapperTest {
     @Test
     public void testMapToSubscriptionDataRequest(){
 
-        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
+        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery(), true);
 
         assertEquals(CriteriaType.SENDER, request.getQuery().getCriteria().get(0).getCriteria());
         assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(1).getCriteria());
@@ -136,10 +104,6 @@ public class ActivityToSubscriptionMapperTest {
         assertEquals(CriteriaType.VALIDITY_PERIOD, request.getQuery().getCriteria().get(6).getCriteria());
 
         assertEquals(SubCriteriaType.ORGANISATION, request.getQuery().getCriteria().get(0).getSubCriteria());
-        assertEquals(SubCriteriaType.VESSELID, request.getQuery().getCriteria().get(1).getSubCriteria());
-        assertEquals(SubCriteriaType.VESSELID, request.getQuery().getCriteria().get(2).getSubCriteria());
-        assertEquals(SubCriteriaType.TRIPID, request.getQuery().getCriteria().get(3).getSubCriteria());
-        assertEquals(SubCriteriaType.CONSOLIDATED, request.getQuery().getCriteria().get(4).getSubCriteria());
         assertEquals(SubCriteriaType.START_DATE, request.getQuery().getCriteria().get(5).getSubCriteria());
         assertEquals(SubCriteriaType.END_DATE, request.getQuery().getCriteria().get(6).getSubCriteria());
 

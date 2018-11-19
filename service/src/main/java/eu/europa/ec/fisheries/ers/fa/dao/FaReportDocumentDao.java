@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.util.CollectionUtil;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
@@ -188,7 +186,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return null;
     }
 
-    private void populateDeletingAndCancellationIds(Set<FishingActivityEntity> fishingActivities, List<Integer> idsOfCancelledDeletedReports) {
+    private void populateDeletingAndCancellationIds(List<FishingActivityEntity> fishingActivities, List<Integer> idsOfCancelledDeletedReports) {
         if(CollectionUtils.isNotEmpty(fishingActivities)){
             for (FishingActivityEntity fishingActivity : fishingActivities) {
                 if(fishingActivity.getCanceledBy() != null){

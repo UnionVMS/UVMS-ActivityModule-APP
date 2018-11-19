@@ -11,6 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
+import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import org.mapstruct.InheritInverseConfiguration;
@@ -19,9 +21,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-
-import java.util.List;
-import java.util.Set;
 
 @Mapper(imports = BaseMapper.class, uses = {FluxCharacteristicsMapper.class,
         StructuredAddressMapper.class, FluxCharacteristicsMapper.class, CodeTypeMapper.class})
@@ -34,7 +33,6 @@ public interface FluxLocationMapper {
             @Mapping(target = "fluxLocationType", source = "typeCode.value"), // Why is this duplicated?
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "countryId", source = "countryID.value"),
-            @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode.value"),
             @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value"),
             @Mapping(target = "latitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value"),
             @Mapping(target = "altitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.altitudeMeasure.value"),

@@ -87,16 +87,6 @@ public class FAQueryServiceBean implements FaQueryService {
                     startDate = value;
                 }
 
-                else if (subCriteria == SubCriteriaType.TRIPID) {
-                    tripID = value;
-
-                } else if (subCriteria == SubCriteriaType.CONSOLIDATED) {
-                    consolidated = value;
-
-                } else if (subCriteria == SubCriteriaType.VESSELID) {
-                    schemeId = valueType;
-                    vesselId = value;
-                }
             }
 
             List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(tripID, consolidated, vesselId, schemeId, startDate, endDate);

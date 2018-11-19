@@ -11,6 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.*;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -35,12 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.*;
 
 @Stateless
 @Transactional
@@ -122,7 +121,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument) throws
             ServiceException {
-        Set<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
+        List<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
         if (CollectionUtils.isEmpty(fishingActivities)) {
             log.error("Could not find FishingActivities for faReportDocument.");
             return;
@@ -173,7 +172,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 vesselTransportMeansEntity.setFaReportDocument(faReportDocument);
             }
         }
-        Set<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
+        List<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return;
         }
@@ -263,7 +262,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private void checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(FaReportDocumentEntity faReportDocumentEntity, FaReportStatusType faReportStatusEnum,
                                                                                     int idOfCfPotentiallyCancellingOrDeletingReport) {
-        Set<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities();
+        List<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities();
         if (CollectionUtils.isNotEmpty(fishingActivities)) {
             switch (faReportStatusEnum) {
                 case UPDATED:
@@ -309,13 +308,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
         List<MovementType> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
-        Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
+        List<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
         List<Geometry> multiPointForFaReport = populateGeometriesForFishingActivities(movements, fishingActivityEntities);
         faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport));
     }
 
     private List<Geometry> populateGeometriesForFishingActivities
-            (List<MovementType> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
+            (List<MovementType> movements, List<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
         List<Geometry> multiPointForFaReport = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
