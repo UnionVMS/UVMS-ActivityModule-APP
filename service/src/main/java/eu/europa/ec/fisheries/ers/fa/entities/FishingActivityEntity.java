@@ -67,7 +67,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 @NoArgsConstructor
 @Data
 @ToString(of = {"id", "typeCode", "reasonCode", "occurence"})
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = "id")
 public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
@@ -171,9 +171,6 @@ public class FishingActivityEntity implements Serializable {
 	@JoinColumn(name = "related_fishing_activity_id")
 	private FishingActivityEntity relatedFishingActivity;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relatedFishingActivity", cascade = CascadeType.ALL)
-	private List<FishingActivityEntity> allRelatedFishingActivities;
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs;
 
@@ -197,6 +194,9 @@ public class FishingActivityEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FluxLocationEntity> fluxLocations;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relatedFishingActivity", cascade = CascadeType.ALL)
+	private List<FishingActivityEntity> allRelatedFishingActivities;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments = new HashSet<>();
