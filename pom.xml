@@ -45,7 +45,7 @@
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.9</spatial.model.version>
         <exchange.model>4.0.23</exchange.model>
-        <subscription.model>1.4-SNAPSHOT</subscription.model>
+        <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
         <uvms.config.version>4.0.0</uvms.config.version>

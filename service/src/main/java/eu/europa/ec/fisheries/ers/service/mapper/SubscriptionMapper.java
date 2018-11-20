@@ -41,7 +41,7 @@ public class SubscriptionMapper {
         request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
 
         SubscriptionDataQuery subscriptionDataQuery = new SubscriptionDataQuery();
-        subscriptionDataQuery.setMessageType(incoming ? MessageType.FA_REPORT_MESSAGE_PULL : MessageType.FA_REPORT_MESSAGE_PUSH);
+        subscriptionDataQuery.setMessageType(MessageType.FLUX_FA_REPORT_MESSAGE);
 
         List<SubscriptionDataCriteria> criteria = subscriptionDataQuery.getCriteria();
 
@@ -58,7 +58,7 @@ public class SubscriptionMapper {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
         request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
         SubscriptionDataQuery query = new SubscriptionDataQuery();
-        query.setMessageType(incoming ? MessageType.FA_QUERY_MESSAGE_PULL : MessageType.FA_QUERY_MESSAGE_PUSH);
+        query.setMessageType(MessageType.FLUX_FA_QUERY_MESSAGE);
         query.getCriteria().addAll(mapFluxPartyToSenderSubscriptionCriteria(faQuery.getSubmitterFLUXParty()));
         query.getCriteria().addAll(mapFAQueryParametersToSubscriptionCriteria(faQuery.getSimpleFAQueryParameters()));
         query.getCriteria().addAll(mapDelimitedPeriodToSubscriptionCriteria(faQuery.getSpecifiedDelimitedPeriod()));
