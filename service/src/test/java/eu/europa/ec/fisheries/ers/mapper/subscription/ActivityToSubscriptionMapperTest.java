@@ -97,34 +97,24 @@ public class ActivityToSubscriptionMapperTest {
 
         assertEquals(CriteriaType.SENDER, request.getQuery().getCriteria().get(0).getCriteria());
         assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(1).getCriteria());
-        assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(2).getCriteria());
-        assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(3).getCriteria());
-        assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(4).getCriteria());
-        assertEquals(CriteriaType.VALIDITY_PERIOD, request.getQuery().getCriteria().get(5).getCriteria());
-        assertEquals(CriteriaType.VALIDITY_PERIOD, request.getQuery().getCriteria().get(6).getCriteria());
+        assertEquals(CriteriaType.VALIDITY_PERIOD, request.getQuery().getCriteria().get(2).getCriteria());
 
         assertEquals(SubCriteriaType.ORGANISATION, request.getQuery().getCriteria().get(0).getSubCriteria());
-        assertEquals(SubCriteriaType.START_DATE, request.getQuery().getCriteria().get(5).getSubCriteria());
-        assertEquals(SubCriteriaType.END_DATE, request.getQuery().getCriteria().get(6).getSubCriteria());
+        assertEquals(SubCriteriaType.START_DATE, request.getQuery().getCriteria().get(2).getSubCriteria());
+        assertEquals(SubCriteriaType.END_DATE, request.getQuery().getCriteria().get(3).getSubCriteria());
 
         assertEquals(ValueType.SCHEME_ID, request.getQuery().getCriteria().get(0).getValueType());
-        assertEquals(ValueType.IRCS, request.getQuery().getCriteria().get(1).getValueType());
-        assertEquals(ValueType.CFR, request.getQuery().getCriteria().get(2).getValueType());
-        assertEquals(ValueType.EU_TRIP_ID, request.getQuery().getCriteria().get(3).getValueType());
-        assertEquals(ValueType.BOOLEAN_VALUE, request.getQuery().getCriteria().get(4).getValueType());
-        assertEquals(ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ, request.getQuery().getCriteria().get(5).getValueType());
-        assertEquals(ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ, request.getQuery().getCriteria().get(6).getValueType());
+        assertEquals(ValueType.BOOLEAN_VALUE, request.getQuery().getCriteria().get(1).getValueType());
+        assertEquals(ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ, request.getQuery().getCriteria().get(2).getValueType());
+        assertEquals(ValueType.YYYY_MM_DD_T_HH_MM_SS_SSSZ, request.getQuery().getCriteria().get(3).getValueType());
 
         assertEquals("BEL", request.getQuery().getCriteria().get(0).getValue());
-        assertEquals("PD2438", request.getQuery().getCriteria().get(1).getValue());
-        assertEquals("SVN123456789", request.getQuery().getCriteria().get(2).getValue());
-        assertEquals("FRA-TRP-2016122102030", request.getQuery().getCriteria().get(3).getValue());
-        assertEquals("Y", request.getQuery().getCriteria().get(4).getValue());
-        //assertEquals("2016-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(5).getValue());
-        //assertEquals("2017-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(6).getValue());
+        assertEquals("Y", request.getQuery().getCriteria().get(1).getValue());
+        assertEquals("2016-07-01T11:14:00.000+02:00", request.getQuery().getCriteria().get(2).getValue());
+        assertEquals("2017-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(3).getValue());
 
-        DateUtils.parseToUTCDate("2016-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(5).getValueType().value());
-        DateUtils.parseToUTCDate("2017-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(6).getValueType().value());
+        DateUtils.parseToUTCDate("2016-07-01T11:14:00.000+02:00", request.getQuery().getCriteria().get(2).getValueType().value());
+        DateUtils.parseToUTCDate("2017-07-01T02:00:00.000+02:00", request.getQuery().getCriteria().get(3).getValueType().value());
 
     }
 }
