@@ -13,17 +13,16 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class FluxLocationMapperTest {
 
@@ -35,7 +34,7 @@ public class FluxLocationMapperTest {
         assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode());
         assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());
         assertEquals(fluxLocation.getCountryID().getSchemeID(), fluxLocationEntity.getCountryIdSchemeId());
-        assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getValue(), fluxLocationEntity.getRfmoCode());
+        assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getValue(), fluxLocationEntity.getRegionalFisheriesManagementOrganizationCode().getValue());
         assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().intValue(), fluxLocationEntity.getLongitude().intValue());
         assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().intValue(), fluxLocationEntity.getLatitude().intValue());
         assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure().getValue().intValue(), fluxLocationEntity.getAltitude().intValue());
