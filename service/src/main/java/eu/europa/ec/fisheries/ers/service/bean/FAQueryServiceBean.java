@@ -35,6 +35,7 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 @Stateless
 @Slf4j
@@ -62,7 +63,7 @@ public class FAQueryServiceBean implements FaQueryService {
     }
 
     @Override
-    public Object getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria) {
+    public FLUXFAReportMessage getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria) {
 
         if (CollectionUtils.isNotEmpty(subscriptionDataCriteria)){
 
