@@ -67,7 +67,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 @NoArgsConstructor
 @Data
 @ToString(of = {"id", "typeCode", "reasonCode", "occurence"})
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = {"occurence", "geom"})
 public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
