@@ -109,7 +109,7 @@ public class ActivityEntityToModelMapperTest {
                 $("UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml"),
                 $("multipleReports.xml"),
                 $("multipleReports2.xml")
-                
+
         );
     }
 
