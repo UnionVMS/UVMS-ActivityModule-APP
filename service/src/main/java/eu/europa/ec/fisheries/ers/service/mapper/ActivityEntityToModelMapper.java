@@ -101,11 +101,11 @@ public class ActivityEntityToModelMapper {
         mapFishingActivities(target, source.getFishingActivities());
     }
 
-    private void mapFishingActivities(FAReportDocument faReportDocument, List<FishingActivityEntity> fishingActivityEntities) {
+    private void mapFishingActivities(FAReportDocument faReportDocument, Set<FishingActivityEntity> fishingActivityEntities) {
 
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)){
 
-            List<FishingActivity> collectedFishingActivityList = new ArrayList<>();
+            Set<FishingActivity> fishingActivityList = new HashSet<>();
 
             for (FishingActivityEntity source : fishingActivityEntities) {
 
@@ -181,7 +181,7 @@ public class ActivityEntityToModelMapper {
 
                 source.getFlagState(); // TODO MAP
 
-                List<FishingActivityEntity> relatedFishingActivities = source.getAllRelatedFishingActivities();
+                Set<FishingActivityEntity> relatedFishingActivities = source.getAllRelatedFishingActivities();
 
                 List<FishingActivity> collectedRelatedFishingActivityList = new ArrayList<>();
 
@@ -263,10 +263,12 @@ public class ActivityEntityToModelMapper {
                 }
 
                 fishingActivity.setRelatedFishingActivities(collectedRelatedFishingActivityList);
-                collectedFishingActivityList.add(fishingActivity);
+                fishingActivityList.add(fishingActivity);
             }
 
-            faReportDocument.setSpecifiedFishingActivities(collectedFishingActivityList);
+            if (CollectionUtils.isNotEmpty(fishingActivityList)){
+                faReportDocument.setSpecifiedFishingActivities(new ArrayList<>(fishingActivityList));
+            }
         }
     }
 

@@ -186,7 +186,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return null;
     }
 
-    private void populateDeletingAndCancellationIds(List<FishingActivityEntity> fishingActivities, List<Integer> idsOfCancelledDeletedReports) {
+    private void populateDeletingAndCancellationIds(Set<FishingActivityEntity> fishingActivities, List<Integer> idsOfCancelledDeletedReports) {
         if(CollectionUtils.isNotEmpty(fishingActivities)){
             for (FishingActivityEntity fishingActivity : fishingActivities) {
                 if(fishingActivity.getCanceledBy() != null){

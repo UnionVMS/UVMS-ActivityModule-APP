@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
@@ -123,7 +122,7 @@ public class FaReportDocumentEntity implements Serializable {
     private Set<FaReportIdentifierEntity> faReportIdentifiers;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
-    private List<FishingActivityEntity> fishingActivities;
+    private Set<FishingActivityEntity> fishingActivities;
 
     /**
      * From XML we will always receive only One VesselTreansportMeans per FaReportDocument.

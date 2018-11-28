@@ -119,11 +119,12 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return entities;
     }
 
-    public static List<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity) {
+    public static Set<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity) {
+        Set<FishingActivityEntity> specifiedFishingActivityEntities = new HashSet<>();
+
         if (CollectionUtils.isEmpty(fishingActivities)) {
-            return new ArrayList<>();
+            return specifiedFishingActivityEntities;
         }
-        List<FishingActivityEntity> specifiedFishingActivityEntities = new ArrayList<>();
 
         for (FishingActivity fishingActivity : fishingActivities) {
             List<FishingGear> specifiedFishingGears = fishingActivity.getSpecifiedFishingGears();
@@ -168,9 +169,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             }
 
             specifiedFishingActivityEntities.add(fishActEntity);
-            if (CollectionUtils.isNotEmpty(fishingActivity.getRelatedFishingActivities())) {
-                specifiedFishingActivityEntities.addAll(fishActEntity.getAllRelatedFishingActivities());
-            }
 
             List<FLUXCharacteristic> specifiedFLUXCharacteristics = fishingActivity.getSpecifiedFLUXCharacteristics();
             if (CollectionUtils.isNotEmpty(specifiedFLUXCharacteristics)) {

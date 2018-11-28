@@ -411,7 +411,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
         for (FaReportDocumentEntity faRep : fullHistoryReportsList) {
             Integer purposeCode = Integer.valueOf(faRep.getFluxReportDocument().getPurposeCode());
-            List<FishingActivityEntity> fishingActivities = faRep.getFishingActivities();
+            Set<FishingActivityEntity> fishingActivities = faRep.getFishingActivities();
             List<Integer> acticityIds = new ArrayList<>();
             if(CollectionUtils.isNotEmpty(fishingActivities)){ // In case of deletion or cancellation report this list is empty..
                 for (FishingActivityEntity fishingActivity : fishingActivities) {

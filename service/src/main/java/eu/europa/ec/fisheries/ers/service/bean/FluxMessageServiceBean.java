@@ -121,7 +121,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument) throws
             ServiceException {
-        List<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
+        Set<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
         if (CollectionUtils.isEmpty(fishingActivities)) {
             log.error("Could not find FishingActivities for faReportDocument.");
             return;
@@ -172,7 +172,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 vesselTransportMeansEntity.setFaReportDocument(faReportDocument);
             }
         }
-        List<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
+        Set<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return;
         }
@@ -262,7 +262,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private void checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(FaReportDocumentEntity faReportDocumentEntity, FaReportStatusType faReportStatusEnum,
                                                                                     int idOfCfPotentiallyCancellingOrDeletingReport) {
-        List<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities();
+        Set<FishingActivityEntity> fishingActivities = faReportDocumentEntity.getFishingActivities();
         if (CollectionUtils.isNotEmpty(fishingActivities)) {
             switch (faReportStatusEnum) {
                 case UPDATED:
@@ -308,13 +308,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
         List<MovementType> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
-        List<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
+        Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
         List<Geometry> multiPointForFaReport = populateGeometriesForFishingActivities(movements, fishingActivityEntities);
         faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport));
     }
 
     private List<Geometry> populateGeometriesForFishingActivities
-            (List<MovementType> movements, List<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
+            (List<MovementType> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
         List<Geometry> multiPointForFaReport = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {

@@ -38,6 +38,9 @@
 			</ram:OwnerFLUXParty>
 		</ram:RelatedFLUXReportDocument>
 		<ram:SpecifiedFishingActivity>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2017-06-09T04:30:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
 			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
 			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
 			<ram:SpeciesTargetCode listID="FAO_SPECIES">COD</ram:SpeciesTargetCode>
@@ -88,19 +91,6 @@
 				</ram:ApplicableGearCharacteristic>
 			</ram:SpecifiedFishingGear>
 			<ram:RelatedFishingActivity>
-				<ram:TypeCode listID="FLUX_FA_TYPE">GEAR_SHOT</ram:TypeCode>
-				<ram:OccurrenceDateTime>
-					<udt:DateTime>2017-06-09T07:00:00Z</udt:DateTime>
-				</ram:OccurrenceDateTime>
-				<ram:RelatedFLUXLocation>
-					<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
-					<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-						<ram:LongitudeMeasure>-14.07</ram:LongitudeMeasure>
-						<ram:LatitudeMeasure>43.09</ram:LatitudeMeasure>
-					</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-				</ram:RelatedFLUXLocation>
-			</ram:RelatedFishingActivity>
-			<ram:RelatedFishingActivity>
 				<ram:TypeCode listID="FLUX_FA_TYPE">GEAR_RETRIEVAL</ram:TypeCode>
 				<ram:OccurrenceDateTime>
 					<udt:DateTime>2017-06-09T11:30:00Z</udt:DateTime>
@@ -113,6 +103,19 @@
 					</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
 				</ram:RelatedFLUXLocation>
 			</ram:RelatedFishingActivity>
+            <ram:RelatedFishingActivity>
+                <ram:TypeCode listID="FLUX_FA_TYPE">GEAR_SHOT</ram:TypeCode>
+                <ram:OccurrenceDateTime>
+                    <udt:DateTime>2017-06-09T07:00:00Z</udt:DateTime>
+                </ram:OccurrenceDateTime>
+                <ram:RelatedFLUXLocation>
+                    <ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+                    <ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+                        <ram:LongitudeMeasure>-14.07</ram:LongitudeMeasure>
+                        <ram:LatitudeMeasure>43.09</ram:LatitudeMeasure>
+                    </ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+                </ram:RelatedFLUXLocation>
+            </ram:RelatedFishingActivity>
 			<ram:SpecifiedDelimitedPeriod>
 				<ram:DurationMeasure unitCode="MIN">270</ram:DurationMeasure>
 			</ram:SpecifiedDelimitedPeriod>
@@ -120,8 +123,8 @@
 				<ram:ID schemeID="EU_TRIP_ID">CYP-TRP-20170608000000000010</ram:ID>
 			</ram:SpecifiedFishingTrip>
 			<ram:RelatedVesselTransportMeans>
-				<ram:ID schemeID="CFR">EST123456789</ram:ID>
-				<ram:ID schemeID="IRCS">IRCS5</ram:ID>
+                <ram:ID schemeID="IRCS">IRCS5</ram:ID>
+                <ram:ID schemeID="CFR">EST123456789</ram:ID>
 				<ram:ID schemeID="EXT_MARK">XR005</ram:ID>
 				<ram:Name>Foxtrot</ram:Name>
 				<ram:RoleCode listID="FA_VESSEL_ROLE">PAIR_FISHING_PARTNER</ram:RoleCode>
@@ -140,14 +143,25 @@
 						<ram:FamilyName>F</ram:FamilyName>
 						<ram:Alias>Master F</ram:Alias>
 					</ram:SpecifiedContactPerson>
-				</ram:SpecifiedContactParty>	
+				</ram:SpecifiedContactParty>
 			</ram:RelatedVesselTransportMeans>
 		</ram:SpecifiedFishingActivity>
 		<ram:SpecifiedFishingActivity>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2017-06-09T05:30:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
 			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
 			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
 			<ram:SpeciesTargetCode listID="FAO_SPECIES">COD</ram:SpeciesTargetCode>
 			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">700</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+			</ram:SpecifiedFACatch>
             <ram:SpecifiedFACatch>
                 <ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
                 <ram:WeightMeasure unitCode="KGM">50</ram:WeightMeasure>
@@ -156,17 +170,9 @@
                     <ram:ClassCode listID="FISH_SIZE_CLASS">BMS</ram:ClassCode>
                 </ram:SpecifiedSizeDistribution>
             </ram:SpecifiedFACatch>
-            <ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
 				<ram:SpeciesCode listID="FAO_SPECIES">POK</ram:SpeciesCode>
 				<ram:WeightMeasure unitCode="KGM">30</ram:WeightMeasure>
-				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
-				<ram:SpecifiedSizeDistribution>
-					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
-				</ram:SpecifiedSizeDistribution>
-			</ram:SpecifiedFACatch>
-			<ram:SpecifiedFACatch>
-				<ram:SpeciesCode listID="FAO_SPECIES">COD</ram:SpeciesCode>
-				<ram:WeightMeasure unitCode="KGM">700</ram:WeightMeasure>
 				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
 				<ram:SpecifiedSizeDistribution>
 					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
@@ -202,19 +208,6 @@
 				</ram:ApplicableGearCharacteristic>
 			</ram:SpecifiedFishingGear>
 			<ram:RelatedFishingActivity>
-				<ram:TypeCode listID="FLUX_FA_TYPE">GEAR_SHOT</ram:TypeCode>
-				<ram:OccurrenceDateTime>
-					<udt:DateTime>2017-06-09T16:00:00Z</udt:DateTime>
-				</ram:OccurrenceDateTime>
-				<ram:RelatedFLUXLocation>
-					<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
-					<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-						<ram:LongitudeMeasure>-14.56</ram:LongitudeMeasure>
-						<ram:LatitudeMeasure>43.92</ram:LatitudeMeasure>
-					</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
-				</ram:RelatedFLUXLocation>
-			</ram:RelatedFishingActivity>
-			<ram:RelatedFishingActivity>
 				<ram:TypeCode listID="FLUX_FA_TYPE">GEAR_RETRIEVAL</ram:TypeCode>
 				<ram:OccurrenceDateTime>
 					<udt:DateTime>2017-06-09T19:55:00Z</udt:DateTime>
@@ -227,6 +220,19 @@
 					</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
 				</ram:RelatedFLUXLocation>
 			</ram:RelatedFishingActivity>
+            <ram:RelatedFishingActivity>
+                <ram:TypeCode listID="FLUX_FA_TYPE">GEAR_SHOT</ram:TypeCode>
+                <ram:OccurrenceDateTime>
+                    <udt:DateTime>2017-06-09T16:00:00Z</udt:DateTime>
+                </ram:OccurrenceDateTime>
+                <ram:RelatedFLUXLocation>
+                    <ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+                    <ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+                        <ram:LongitudeMeasure>-14.56</ram:LongitudeMeasure>
+                        <ram:LatitudeMeasure>43.92</ram:LatitudeMeasure>
+                    </ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+                </ram:RelatedFLUXLocation>
+            </ram:RelatedFishingActivity>
 			<ram:SpecifiedDelimitedPeriod>
 				<ram:DurationMeasure unitCode="MIN">235</ram:DurationMeasure>
 			</ram:SpecifiedDelimitedPeriod>
@@ -235,9 +241,9 @@
 			</ram:SpecifiedFishingTrip>
 		</ram:SpecifiedFishingActivity>
 		<ram:SpecifiedVesselTransportMeans>
-			<ram:ID schemeID="CFR">CYP123456789</ram:ID>
-			<ram:ID schemeID="IRCS">IRCS6</ram:ID>
-			<ram:ID schemeID="EXT_MARK">XR006</ram:ID>
+            <ram:ID schemeID="IRCS">IRCS6</ram:ID>
+            <ram:ID schemeID="EXT_MARK">XR006</ram:ID>
+            <ram:ID schemeID="CFR">CYP123456789</ram:ID>
 			<ram:Name>Golf</ram:Name>
 			<ram:RegistrationVesselCountry>
 				<ram:ID schemeID="TERRITORY">CYP</ram:ID>

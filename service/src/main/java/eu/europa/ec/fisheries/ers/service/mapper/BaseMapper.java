@@ -267,7 +267,7 @@ public class BaseMapper {
         return recordMap;
     }
 
-    protected FishingActivityEntity extractSubFishingActivity(List<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
+    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
         if (CollectionUtils.isEmpty(fishingActivityList)) {
             return null;
         }

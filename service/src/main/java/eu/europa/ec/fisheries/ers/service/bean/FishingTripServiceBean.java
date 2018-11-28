@@ -510,7 +510,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
 
             // Fishing operations
-            List<FishingActivityEntity> faEntitiyList = faReport.getFishingActivities();
+            Set<FishingActivityEntity> faEntitiyList = faReport.getFishingActivities();
             if (isNotEmpty(faEntitiyList)) {
                 for (FishingActivityEntity faEntity : faEntitiyList) {
                     if (FishingActivityTypeEnum.FISHING_OPERATION.toString().equalsIgnoreCase(faEntity.getTypeCode())) {

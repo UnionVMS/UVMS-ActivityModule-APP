@@ -133,7 +133,9 @@ public class FishingActivityViewMapperTest {
     @Test
     @SneakyThrows
     public void testGearShotAndRetrieval(){
-        List<FishingActivityEntity> fishingActivityEntity = Arrays.asList(getFishingActivityEntity());
+        FishingActivityEntity fishingActivityEntity1 = getFishingActivityEntity();
+        Set<FishingActivityEntity> fishingActivityEntity = new HashSet<>();
+        fishingActivityEntity.add(fishingActivityEntity1);
         List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntity);
         // printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
     }

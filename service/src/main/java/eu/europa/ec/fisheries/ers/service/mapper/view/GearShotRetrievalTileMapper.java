@@ -58,7 +58,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
         return mapEntityListToDtoList(fatherFishAct.getAllRelatedFishingActivities());
     }
 
-    public abstract List<GearShotRetrievalDto> mapEntityListToDtoList(List<FishingActivityEntity> entity);
+    public abstract List<GearShotRetrievalDto> mapEntityListToDtoList(Set<FishingActivityEntity> entity);
 
     public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
 

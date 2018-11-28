@@ -47,17 +47,9 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return areaDto;
     }
 
-    public Set<FluxLocationDto> getSortedLocations(FishingActivityEntity faEntity, Comparator<FluxLocationDto> comparator) {
-        Set<FluxLocationDto> fluxLocationDtos = faEntity.getLocations_();
-        TreeSet<FluxLocationDto> fluxLocationDtoTreeSet = new TreeSet<FluxLocationDto>(comparator);
-        fluxLocationDtoTreeSet.addAll(fluxLocationDtos);
-
-        return fluxLocationDtoTreeSet;
-    }
-
     public List<RelocationDto> getRelocations(FishingActivityEntity fishingActivityEntity) {
         List<RelocationDto> relocationDtos = new ArrayList<>();
-        List<FishingActivityEntity> relatedActivities = fishingActivityEntity.getAllRelatedFishingActivities();
+        Set<FishingActivityEntity> relatedActivities = fishingActivityEntity.getAllRelatedFishingActivities();
         for (FishingActivityEntity fishingActivity : relatedActivities) {
             if (fishingActivity.getTypeCode().toUpperCase().equalsIgnoreCase(ActivityViewEnum.RELOCATION.name())) {
                 relocationDtos.addAll(FaCatchMapper.INSTANCE.mapToRelocationDtoList(fishingActivity.getFaCatchs()));

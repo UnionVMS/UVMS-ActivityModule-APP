@@ -470,11 +470,12 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return new ArrayList<>(ports);
     }
 
-    protected List<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
+    protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
+        Set<FishingActivityEntity> relatedFishingActivityEntities = new HashSet<>();
+
         if (fishingActivity == null || fishingActivity.isEmpty()) {
-            return new ArrayList<>();
+            return relatedFishingActivityEntities;
         }
-        List<FishingActivityEntity> relatedFishingActivityEntities = new ArrayList<>();
         for (FishingActivity relatedFishingActivity : fishingActivity) {
             FishingActivityEntity relatedFishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(relatedFishingActivity, faReportDocumentEntity, new FishingActivityEntity());
             relatedFishingActivityEntity.setRelatedFishingActivity(parentFishingActivity);

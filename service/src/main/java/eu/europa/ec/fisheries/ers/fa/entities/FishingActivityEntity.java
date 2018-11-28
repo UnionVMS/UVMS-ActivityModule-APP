@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
@@ -196,7 +195,7 @@ public class FishingActivityEntity implements Serializable {
 	private Set<FluxLocationEntity> fluxLocations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relatedFishingActivity", cascade = CascadeType.ALL)
-	private List<FishingActivityEntity> allRelatedFishingActivities;
+	private Set<FishingActivityEntity> allRelatedFishingActivities;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FlapDocumentEntity> flapDocuments = new HashSet<>();
