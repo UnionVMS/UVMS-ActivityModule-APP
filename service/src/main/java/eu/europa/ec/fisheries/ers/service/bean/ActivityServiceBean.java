@@ -191,7 +191,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
         log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
         addPortDescriptions(fishingActivityViewDTO, "LOCATION");
-        fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
         if(withHistory){
             Stopwatch stopwatch = Stopwatch.createStarted();
             fishingActivityViewDTO.setHistory(getActivityHistory(activityEntityFound));
