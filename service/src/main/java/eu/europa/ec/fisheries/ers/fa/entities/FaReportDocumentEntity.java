@@ -66,7 +66,7 @@ import org.hibernate.annotations.Type;
 @Table(name = "activity_fa_report_document")
 @Data
 @ToString(of = "id")
-@EqualsAndHashCode(of = "fluxReportDocument")
+@EqualsAndHashCode(of = {"acceptedDatetime"})
 @NoArgsConstructor
 public class FaReportDocumentEntity implements Serializable {
 
@@ -76,13 +76,16 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
-    ;
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_rep_doc_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "flux_report_document_id", nullable = false)
+    private FluxReportDocumentEntity fluxReportDocument;
 
     @Type(type = "org.hibernate.spatial.GeometryType")
     @Column(name = "geom")
@@ -113,10 +116,6 @@ public class FaReportDocumentEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "flux_fa_report_message_id")
     private FluxFaReportMessageEntity fluxFaReportMessage;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "flux_report_document_id", nullable = false)
-    private FluxReportDocumentEntity fluxReportDocument;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<FaReportIdentifierEntity> faReportIdentifiers;

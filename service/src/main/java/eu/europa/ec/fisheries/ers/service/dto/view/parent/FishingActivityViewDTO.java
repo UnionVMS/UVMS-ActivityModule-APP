@@ -43,7 +43,7 @@ public class FishingActivityViewDTO {
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)
-    private List<FaCatchGroupDto> catches;
+    private Set<FaCatchGroupDto> catches;
 
     @JsonView({FishingOperation.class, GearShotAndRetrieval.class})
     private List<GearShotRetrievalDto> gearShotRetrievalList;

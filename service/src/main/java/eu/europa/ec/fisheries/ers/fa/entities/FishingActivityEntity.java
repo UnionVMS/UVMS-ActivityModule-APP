@@ -65,8 +65,8 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(of = {"occurence"})
 @ToString(of = {"id", "typeCode", "reasonCode", "occurence"})
-@EqualsAndHashCode(of = {"occurence", "typeCode"})
 public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
@@ -79,13 +79,13 @@ public class FishingActivityEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
 	private int id;
 
-	@Type(type = "org.hibernate.spatial.GeometryType")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fa_report_document_id")
+    private FaReportDocumentEntity faReportDocument;
+
+    @Type(type = "org.hibernate.spatial.GeometryType")
 	@Column(name = "geom")
 	private Geometry geom;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fa_report_document_id")
-	private FaReportDocumentEntity faReportDocument;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "source_vessel_char_id")
