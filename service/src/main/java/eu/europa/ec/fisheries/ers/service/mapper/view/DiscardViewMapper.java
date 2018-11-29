@@ -11,7 +11,6 @@
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;

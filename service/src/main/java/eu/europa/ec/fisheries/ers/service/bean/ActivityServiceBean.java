@@ -10,6 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import com.google.common.base.Stopwatch;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -48,14 +55,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -192,7 +191,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
         log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
         addPortDescriptions(fishingActivityViewDTO, "LOCATION");
-        fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
         if(withHistory){
             Stopwatch stopwatch = Stopwatch.createStarted();
             fishingActivityViewDTO.setHistory(getActivityHistory(activityEntityFound));
@@ -403,7 +401,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             log.error("fishingActivity or fishingActivityTime ");
             return new ArrayList<>();
         }
-        return mapFromReportsToActivityHistory(faReportDocumentDao.getHistoryOfFaReport(fishingActivity.getFaReportDocument(), new ArrayList<FaReportDocumentEntity>()), fishingActivity.getTypeCode());
+        return mapFromReportsToActivityHistory(faReportDocumentDao.getHistoryOfFaReport(fishingActivity.getFaReportDocument(), new ArrayList<>()), fishingActivity.getTypeCode());
     }
 
     private List<ActivityHistoryDtoElement> mapFromReportsToActivityHistory(List<FaReportDocumentEntity> fullHistoryReportsList, String activityType) {

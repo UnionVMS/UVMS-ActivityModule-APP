@@ -1,3 +1,4 @@
+
 /*
 Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
 
@@ -14,7 +15,6 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import org.apache.commons.collections.CollectionUtils;

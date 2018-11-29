@@ -48,7 +48,7 @@ public class ActivitySubscriptionPermissionChecker {
     private Destination activityReplyToQueue;
 
     public SubscriptionPermissionResponse checkPermissionForFaQuery(FAQuery faQuery) throws ActivityModuleException {
-        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(faQuery);
+        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(faQuery, true);
         String subscrPermissionRequest;
         try {
             subscrPermissionRequest = JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest);
@@ -59,7 +59,7 @@ public class ActivitySubscriptionPermissionChecker {
     }
 
     public SubscriptionPermissionResponse checkPermissionForFaReport(FLUXFAReportMessage faReport) throws ActivityModuleException {
-        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(faReport);
+        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(faReport, true);
         String subscrPermissionRequest;
         try {
             subscrPermissionRequest = JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest);

@@ -38,8 +38,7 @@
 
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
-        <activity.model>1.0.8</activity.model>
-        <activity.model>1.0.9</activity.model>
+        <activity.model>1.0.10-SNAPSHOT</activity.model>
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
@@ -48,7 +47,7 @@
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
-        <uvms.config.version>4.0.0</uvms.config.version>
+        <uvms.config.version>4.0.1</uvms.config.version>
         <mdr.model.version>1.0.1</mdr.model.version>
         <mockito.version>1.10.19</mockito.version>
 
@@ -90,7 +89,6 @@
         <geotools.version>14.4</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
-        <uvms.config.version>4.0.1</uvms.config.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
@@ -104,7 +102,6 @@
                 <artifactId>mdr-model</artifactId>
                 <version>${mdr.model.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -328,18 +325,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>20.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-config</artifactId>
-                <version>${uvms.config.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                        <artifactId>uvms-commons</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>

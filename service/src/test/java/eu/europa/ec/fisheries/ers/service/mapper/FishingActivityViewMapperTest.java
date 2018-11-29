@@ -133,7 +133,9 @@ public class FishingActivityViewMapperTest {
     @Test
     @SneakyThrows
     public void testGearShotAndRetrieval(){
-        Set<FishingActivityEntity> fishingActivityEntity = new HashSet(Arrays.asList(getFishingActivityEntity()));
+        FishingActivityEntity fishingActivityEntity1 = getFishingActivityEntity();
+        Set<FishingActivityEntity> fishingActivityEntity = new HashSet<>();
+        fishingActivityEntity.add(fishingActivityEntity1);
         List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntity);
         // printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
     }
@@ -145,7 +147,7 @@ public class FishingActivityViewMapperTest {
         FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, new FishingActivityEntity());
         fishingActivityEntity.setTypeCode("JOINT_FISHING_OPERATION");
         fishingActivityEntity.getAllRelatedFishingActivities().iterator().next().setTypeCode("RELOCATION");
-
+        fishingActivityEntity.getFaCatchs().iterator().next().setId(1);
         JointFishingOperationViewMapper mapper = new JointFishingOperationViewMapper();
         FishingActivityViewDTO dto = mapper.mapFaEntityToFaDto(fishingActivityEntity);
         assertNotNull(dto);
