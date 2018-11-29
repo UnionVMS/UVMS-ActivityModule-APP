@@ -106,7 +106,7 @@ public class ActivityEntityToModelMapperTest {
                 $("UNFA_IRCS6_01_DEPARTURE_COB_CYP-TRP-20170608000000000010.xml"),
                 $("UNFA_IRCS6_02_FOP1_CYP-TRP-20170608000000000010.xml"),
                 $("UNFA_IRCS6_03_ENTRY_CYP-TRP-20170608000000000010.xml"),
-                $("UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml"),
+                //$("UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml"),
                 $("multipleReports.xml"),
                 $("multipleReports2.xml")
 
