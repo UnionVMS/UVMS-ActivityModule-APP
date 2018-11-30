@@ -252,30 +252,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
 
-    // need confirmation for removal of this method
-    private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
-        if (vesselDetailsDTO != null && vesselDetailsDTO.hasEmptyIdentifierValues()) {
-            try {
-                Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
-                List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapToAssetListCriteriaPairList(vesselIdentifiers);
-                AssetListCriteria criteria = new AssetListCriteria();
-                criteria.getCriterias().addAll(assetListCriteriaPairs);
-                AssetListQuery query = new AssetListQuery();
-                query.setAssetSearchCriteria(criteria);
-                List<Asset> assetList = assetModuleService.getAssetListResponse(query);
-                vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
-            } catch (ServiceException e) {
-                log.error("Error while trying to send message to Assets module.", e);
-            }
-        }
-    }
-
-
     //To process MDR code list and compare with  database:vesselTransportMeansDao and then enrich with asset module
     private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
         final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
         final String filter = "*";
-        final List<String> columnsList = new ArrayList<String>();
+        final List<String> columnsList = new ArrayList<>();
         Integer nrOfResults = 9999999;
         if (vesselDetailsDTO != null) {
             List<String> codeList;
@@ -286,7 +267,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers, codeList);
                 log.info("Asset Criteria Pair List size is :" + assetListCriteriaPairs.size());
                 log.info("Got code list of size from mdr:" + codeList.size());
-                if (null != assetListCriteriaPairs && !CollectionUtils.isEmpty(assetListCriteriaPairs)) {
+                if (!CollectionUtils.isEmpty(assetListCriteriaPairs)) {
                     AssetListCriteria criteria = new AssetListCriteria();
                     criteria.setIsDynamic(false); // need to set this
                     criteria.getCriterias().addAll(assetListCriteriaPairs);

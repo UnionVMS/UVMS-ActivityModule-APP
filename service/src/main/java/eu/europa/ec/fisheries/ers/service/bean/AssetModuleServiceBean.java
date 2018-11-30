@@ -51,21 +51,16 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
 
     @Override
     public List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException {
-
         List<Asset> assetList;
-
         try {
-
             String assetsRequest = AssetModuleRequestMapper.createAssetListModuleRequest(assetListQuery);
             String correlationID = assetProducer.sendModuleMessage(assetsRequest, activityConsumer.getDestination());
             TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
             assetList = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationID);
-
         } catch (AssetModelMapperException | MessageException e) {
             log.error("Error while trying to send message to Assets module.", e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }
-
         return assetList;
     }
 

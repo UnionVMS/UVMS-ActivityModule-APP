@@ -48,7 +48,7 @@
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
-        <mdr.model.version>1.0.1</mdr.model.version>
+        <mdr.model.version>1.0.4</mdr.model.version>
         <mockito.version>1.10.19</mockito.version>
 
 
