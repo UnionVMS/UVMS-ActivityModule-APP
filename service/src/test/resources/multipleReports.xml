@@ -1,0 +1,1981 @@
+<!--
+  Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
+
+  This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
+  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<rsm:FLUXFAReportMessage
+	xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3"
+	xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
+	xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20">
+	<rsm:FLUXReportDocument>
+		<ram:ID schemeID="UUID">16370fc7-d220-4355-936b-a4707a108a8c</ram:ID>
+		<ram:CreationDateTime>
+			<udt:DateTime>2018-11-16T13:12:33.172863Z</udt:DateTime>
+		</ram:CreationDateTime>
+		<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+		<ram:OwnerFLUXParty>
+			<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+		</ram:OwnerFLUXParty>
+	</rsm:FLUXReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:01:06Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">cf527533-4225-4640-8703-73aa75ef3aaf</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:02:06Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">DEPARTURE</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T11:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</ram:TypeCode>
+				<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+				<ram:ID schemeID="LOCATION">ESVLC</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">ONBOARD</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<!--
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:07:36Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">f8e410cd-c8f2-44ff-9c78-ae585492ae18</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:08:36Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T12:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>5.3167</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>40.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:07:39Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">25ab58b2-b5e0-4ec7-97e8-d2eb548f039a</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:08:39Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T13:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
+			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">1000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedDelimitedPeriod>
+				<ram:StartDateTime>
+					<udt:DateTime>2018-11-14T13:00:00Z</udt:DateTime>
+				</ram:StartDateTime>
+				<ram:EndDateTime>
+					<udt:DateTime>2018-11-14T14:00:00Z</udt:DateTime>
+				</ram:EndDateTime>
+				<ram:DurationMeasure unitCode="MIN">60</ram:DurationMeasure>
+			</ram:SpecifiedDelimitedPeriod>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:07:43Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">48d249d2-d299-423c-94f8-c350aeff6e52</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:08:43Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">DISCARD</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T14:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:ReasonCode listID="FA_REASON_DISCARD">PDM</ram:ReasonCode>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">10.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">DISCARDED</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>5.3000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>40.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:08:19Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">056b4d65-bb61-44b5-9985-50e03f780168</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:09:19Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_EXIT</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T15:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">1000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>5.3000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>40.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:39:35Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">3c57d176-4bf2-4253-93af-96a0a44af9f5</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:40:35Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T16:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">1000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>5.3000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>40.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:39:38Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">174b50fa-f192-4118-9621-6e26b3c3753a</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:40:38Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T17:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
+			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">2000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedDelimitedPeriod>
+				<ram:StartDateTime>
+					<udt:DateTime>2018-11-14T17:00:00Z</udt:DateTime>
+				</ram:StartDateTime>
+				<ram:EndDateTime>
+					<udt:DateTime>2018-11-14T19:00:00Z</udt:DateTime>
+				</ram:EndDateTime>
+				<ram:DurationMeasure unitCode="MIN">120</ram:DurationMeasure>
+			</ram:SpecifiedDelimitedPeriod>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:39:40Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">9d842a4b-27b1-4d00-a950-231c1e696dcb</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:40:40Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T18:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
+			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">3000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedDelimitedPeriod>
+				<ram:StartDateTime>
+					<udt:DateTime>2018-11-14T18:00:00Z</udt:DateTime>
+				</ram:StartDateTime>
+				<ram:EndDateTime>
+					<udt:DateTime>2018-11-14T20:30:00Z</udt:DateTime>
+				</ram:EndDateTime>
+				<ram:DurationMeasure unitCode="MIN">150</ram:DurationMeasure>
+			</ram:SpecifiedDelimitedPeriod>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:39:43Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">7ba65ba4-648f-4c7d-84b1-adcfc4f2d3a1</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:40:43Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">DISCARD</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T19:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:ReasonCode listID="FA_REASON_DISCARD">PDM</ram:ReasonCode>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">5.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">DISCARDED</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>4.0000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>39.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:40:23Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">8736f689-5c54-4989-98da-9f1b3d8a2eb2</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:41:23Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_EXIT</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-14T20:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">2000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">5</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>5.3000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>40.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:55:10Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">622c7c6a-cbd8-4a30-a945-457b4c952b3d</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:56:10Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-15T01:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">2000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">11.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>6.0000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>41.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:55:12Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">e16f402d-f8da-48f1-b5ab-8ad6eafeab15</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:56:12Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-15T02:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
+			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">11.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">11.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedDelimitedPeriod>
+				<ram:StartDateTime>
+					<udt:DateTime>2018-11-15T02:00:00Z</udt:DateTime>
+				</ram:StartDateTime>
+				<ram:EndDateTime>
+					<udt:DateTime>2018-11-15T03:35:00Z</udt:DateTime>
+				</ram:EndDateTime>
+				<ram:DurationMeasure unitCode="MIN">95</ram:DurationMeasure>
+			</ram:SpecifiedDelimitedPeriod>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:55:15Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">1fadfdc7-97ca-4171-b5de-eaa28dd22b64</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:56:15Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-15T03:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
+			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">500.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">11.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">11.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedDelimitedPeriod>
+				<ram:StartDateTime>
+					<udt:DateTime>2018-11-15T03:00:00Z</udt:DateTime>
+				</ram:StartDateTime>
+				<ram:EndDateTime>
+					<udt:DateTime>2018-11-15T03:36:00Z</udt:DateTime>
+				</ram:EndDateTime>
+				<ram:DurationMeasure unitCode="MIN">36</ram:DurationMeasure>
+			</ram:SpecifiedDelimitedPeriod>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:55:17Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">2892a6da-203f-43e8-b929-ae0bae4e2996</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:56:17Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">DISCARD</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-15T04:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:ReasonCode listID="FA_REASON_DISCARD">PDM</ram:ReasonCode>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">50.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">DISCARDED</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">11.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>6.0000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>41.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T12:56:04Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">551a583e-87f5-42d1-a534-d234242d9110</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T12:57:04Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_EXIT</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-15T23:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">2000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">500.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">11.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>6.0000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>41.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T13:09:03Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">7a8e5cbc-c179-47e9-bbca-9eee19b99fff</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T13:10:03Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-16T01:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">2000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">500.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>2.0000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>37.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T13:09:06Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">934b1de8-4bbb-4ccc-86ec-a03eda8951ee</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T13:10:06Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-16T02:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
+			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">5000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedDelimitedPeriod>
+				<ram:StartDateTime>
+					<udt:DateTime>2018-11-16T02:00:00Z</udt:DateTime>
+				</ram:StartDateTime>
+				<ram:EndDateTime>
+					<udt:DateTime>2018-11-16T04:56:00Z</udt:DateTime>
+				</ram:EndDateTime>
+				<ram:DurationMeasure unitCode="MIN">176</ram:DurationMeasure>
+			</ram:SpecifiedDelimitedPeriod>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T13:09:09Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">45d614f0-aa8c-413e-b8c0-c7a9a5721527</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T13:10:09Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-16T03:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</ram:VesselRelatedActivityCode>
+			<ram:OperationsQuantity unitCode="C62">1</ram:OperationsQuantity>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4123.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingGear>
+				<ram:TypeCode listID="GEAR_TYPE">LLD</ram:TypeCode>
+				<ram:RoleCode listID="FA_GEAR_ROLE">DEPLOYED</ram:RoleCode>
+			</ram:SpecifiedFishingGear>
+			<ram:SpecifiedDelimitedPeriod>
+				<ram:StartDateTime>
+					<udt:DateTime>2018-11-16T03:00:00Z</udt:DateTime>
+				</ram:StartDateTime>
+				<ram:EndDateTime>
+					<udt:DateTime>2018-11-16T05:45:00Z</udt:DateTime>
+				</ram:EndDateTime>
+				<ram:DurationMeasure unitCode="MIN">165</ram:DurationMeasure>
+			</ram:SpecifiedDelimitedPeriod>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T13:09:11Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">4873fb9e-06ab-4ead-a8c0-b1624778a73c</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T13:10:11Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">DISCARD</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-16T04:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:ReasonCode listID="FA_REASON_DISCARD">PDM</ram:ReasonCode>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">45.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">DISCARDED</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>2.0000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>37.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>
+	<rsm:FAReportDocument>
+		<ram:TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</ram:TypeCode>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2018-11-16T13:09:55Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">99cf54ad-004d-413d-a72f-e55d3a17457b</ram:ID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2018-11-16T13:10:55Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">ESP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+		<ram:SpecifiedFishingActivity>
+			<ram:TypeCode listID="FLUX_FA_TYPE">AREA_EXIT</ram:TypeCode>
+			<ram:OccurrenceDateTime>
+				<udt:DateTime>2018-11-16T05:00:00Z</udt:DateTime>
+			</ram:OccurrenceDateTime>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4123.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">2000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">ANF</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">4000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">5000.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:SpecifiedFACatch>
+				<ram:SpeciesCode listID="FAO_SPECIES">AAB</ram:SpeciesCode>
+				<ram:WeightMeasure unitCode="KGM">500.00</ram:WeightMeasure>
+				<ram:TypeCode listID="FA_CATCH_TYPE">ONBOARD</ram:TypeCode>
+				<ram:RelatedFishingTrip>
+					<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+				</ram:RelatedFishingTrip>
+				<ram:SpecifiedSizeDistribution>
+					<ram:ClassCode listID="FISH_SIZE_CLASS">LSC</ram:ClassCode>
+				</ram:SpecifiedSizeDistribution>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="TERRITORY">ITA</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+				<ram:SpecifiedFLUXLocation>
+					<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+					<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+				</ram:SpecifiedFLUXLocation>
+			</ram:SpecifiedFACatch>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="TERRITORY">DZA</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="FAO_AREA">37.1.1</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">AREA</ram:TypeCode>
+				<ram:ID schemeID="GFCM_GSA">4</ram:ID>
+			</ram:RelatedFLUXLocation>
+			<ram:RelatedFLUXLocation>
+				<ram:TypeCode listID="FLUX_LOCATION_TYPE">POSITION</ram:TypeCode>
+				<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+					<ram:LongitudeMeasure>2.0000</ram:LongitudeMeasure>
+					<ram:LatitudeMeasure>37.0000</ram:LatitudeMeasure>
+				</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>
+			</ram:RelatedFLUXLocation>
+			<ram:SpecifiedFishingTrip>
+				<ram:ID schemeID="EU_TRIP_ID">ESP-TRP-08191620181116120206</ram:ID>
+			</ram:SpecifiedFishingTrip>
+		</ram:SpecifiedFishingActivity>
+		<ram:SpecifiedVesselTransportMeans>
+			<ram:ID schemeID="CFR">ESP796081916</ram:ID>
+			<ram:ID schemeID="IRCS">NORADIO</ram:ID>
+			<ram:ID schemeID="EXT_MARK">AA-20</ram:ID>
+			<ram:Name>BUQUE CURSO 20</ram:Name>
+			<ram:RegistrationVesselCountry>
+				<ram:ID schemeID="TERRITORY">ESP</ram:ID>
+			</ram:RegistrationVesselCountry>
+			<ram:SpecifiedContactParty>
+				<ram:RoleCode listID="FLUX_CONTACT_ROLE">MASTER</ram:RoleCode>
+				<ram:SpecifiedStructuredAddress>
+					<ram:StreetName>TEST</ram:StreetName>
+					<ram:CityName>TEST</ram:CityName>
+					<ram:CountryID schemeID="TERRITORY">ESP</ram:CountryID>
+					<ram:PlotIdentification>NA</ram:PlotIdentification>
+					<ram:PostalArea>NA</ram:PostalArea>
+				</ram:SpecifiedStructuredAddress>
+				<ram:SpecifiedContactPerson>
+					<ram:Alias>manuel pérez</ram:Alias>
+				</ram:SpecifiedContactPerson>
+			</ram:SpecifiedContactParty>
+		</ram:SpecifiedVesselTransportMeans>
+	</rsm:FAReportDocument>-->
+</rsm:FLUXFAReportMessage>

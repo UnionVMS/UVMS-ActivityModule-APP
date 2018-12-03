@@ -10,15 +10,11 @@
 
 package eu.europa.ec.fisheries.ers.mapper.subscription;
 
-import static junit.framework.TestCase.assertFalse;
-import static junitparams.JUnitParamsRunner.$;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.ArrayList;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
@@ -29,7 +25,6 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.xmlunit.builder.DiffBuilder;
@@ -37,8 +32,9 @@ import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.ElementSelectors;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import static junit.framework.TestCase.assertFalse;
+import static junitparams.JUnitParamsRunner.$;
 
-@Ignore
 @RunWith(JUnitParamsRunner.class)
 public class ActivityEntityToModelMapperTest {
 
@@ -69,6 +65,9 @@ public class ActivityEntityToModelMapperTest {
 
         String clearControlSource = clearEmptyTags(controlSource);
         String clearTestSource = clearEmptyTags(testSource);
+
+        System.out.println(clearControlSource);
+        System.out.println(clearTestSource);
 
         org.xmlunit.diff.Diff myDiffSimilar = DiffBuilder
                 .compare(clearControlSource)
@@ -106,14 +105,22 @@ public class ActivityEntityToModelMapperTest {
                 $("UNFA_IRCS6_08A_TRA-UNL_CYP-TRP-20170608000000000010.xml"),
                 $("UNFA_IRCS6_01_DEPARTURE_COB_CYP-TRP-20170608000000000010.xml"),
                 $("UNFA_IRCS6_02_FOP1_CYP-TRP-20170608000000000010.xml"),
-                $("UNFA_IRCS6_03_ENTRY_CYP-TRP-20170608000000000010.xml")
-                //$("UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml")
+                $("UNFA_IRCS6_03_ENTRY_CYP-TRP-20170608000000000010.xml"),
+                //$("UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml"),
+                $("multipleReports.xml"),
+                $("multipleReports2.xml")
 
         );
     }
 
     private String clearEmptyTags(String testSource) {
-        testSource = testSource.replace("<ValueIndicator>\n" + "                    <ns2:IndicatorString/>\n" + "                </ValueIndicator>", "").replace("<ValueIndicator>\n" + "                <ns2:IndicatorString/>\n" + "            </ValueIndicator>", "").replace("<TypeCode listID=\"\"></TypeCode>","");
+        testSource = testSource
+                .replaceAll("<([a-zA-Z][a-zA-Z0-9]*)[^>]*/>", "") // clear tags like  <udt:IndicatorString/>
+                .replaceAll("\n?\\s*<(\\w+)></\\1>", "")
+                .replaceAll("<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>\\s*</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>", "")
+                .replaceAll("<ram:ValueIndicator>\\s*</ram:ValueIndicator>","")
+                .replaceAll("(?m)^[ \t]*\r?\n", "");// clear empty lines
+
         return testSource;
     }
 

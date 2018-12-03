@@ -11,13 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import lombok.*;
-import org.apache.commons.collections.CollectionUtils;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import lombok.*;
+import org.apache.commons.collections.CollectionUtils;
 
 @Entity
 @Table(name = "activity_flux_report_document")
@@ -83,11 +82,13 @@ public class FluxReportDocumentEntity implements Serializable {
     }
 
     public String getReportOwner() {
-        Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = fluxParty.getFluxPartyIdentifiers();
-        if (CollectionUtils.isNotEmpty(fluxPartyIdentifiers)) {
-            for (FluxPartyIdentifierEntity fluxReportIdentifierEntity : fluxPartyIdentifiers) {
-                if (fluxReportIdentifierEntity.getFluxPartyIdentifierSchemeId().equalsIgnoreCase("FLUX_GP_PARTY")) {
-                    return fluxReportIdentifierEntity.getFluxPartyIdentifierId();
+        if (fluxParty != null){
+            Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = fluxParty.getFluxPartyIdentifiers();
+            if (CollectionUtils.isNotEmpty(fluxPartyIdentifiers)) {
+                for (FluxPartyIdentifierEntity fluxReportIdentifierEntity : fluxPartyIdentifiers) {
+                    if (fluxReportIdentifierEntity.getFluxPartyIdentifierSchemeId().equalsIgnoreCase("FLUX_GP_PARTY")) {
+                        return fluxReportIdentifierEntity.getFluxPartyIdentifierId();
+                    }
                 }
             }
         }

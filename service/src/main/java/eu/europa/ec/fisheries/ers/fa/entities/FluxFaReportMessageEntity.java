@@ -33,7 +33,7 @@ import lombok.ToString;
 @Table(name = "activity_flux_fa_report_message")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "faReportDocuments")
+@EqualsAndHashCode(of = "fluxReportDocument")
 @ToString(exclude = "faReportDocuments")
 public class FluxFaReportMessageEntity implements Serializable {
 

@@ -70,9 +70,9 @@
 			</ram:SpecifiedFishingTrip>
 		</ram:SpecifiedFishingActivity>
 		<ram:SpecifiedVesselTransportMeans>
-			<ram:ID schemeID="CFR">CYP123456789</ram:ID>
 			<ram:ID schemeID="IRCS">IRCS6</ram:ID>
 			<ram:ID schemeID="EXT_MARK">XR006</ram:ID>
+			<ram:ID schemeID="CFR">CYP123456789</ram:ID>
 			<ram:Name>Golf</ram:Name>			
 			<ram:RegistrationVesselCountry>
 				<ram:ID schemeID="TERRITORY">CYP</ram:ID>

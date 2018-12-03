@@ -56,7 +56,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
         viewDTO.setReportDetails(this.getReportDocsFromEntity(faEntity.getFaReportDocument()));
 
-        viewDTO.setCatches(this.mapCatchesToGroupDto(faEntity));
+        viewDTO.setCatches(mapCatchesToGroupDto(faEntity));
 
         viewDTO.setProcessingProducts(this.getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
 

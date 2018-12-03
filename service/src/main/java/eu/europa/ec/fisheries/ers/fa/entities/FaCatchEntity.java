@@ -11,32 +11,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @NamedQueries({
 		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
@@ -55,8 +40,8 @@ import lombok.ToString;
 @Table(name = "activity_fa_catch")
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrips", "sizeDistribution"})
-@ToString(exclude = {"aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrips", "fishingActivity"})
+@EqualsAndHashCode(of = {"typeCode", "speciesCode", "typeCodeListId", "speciesCodeListid", "unitQuantity", "unitQuantityCode", "calculatedUnitQuantity", "weightMeasureUnitCode", "weightMeasure", "usageCode", "territory", "fishClassCode"})
+@ToString(exclude = {"fishingActivity", "aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrips", "fishingActivity"})
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
@@ -65,7 +50,7 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN_activity_fa_catch", sequenceName = "fa_catch_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_fa_catch")
-    private int id;
+    private Integer id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_activity_id")
