@@ -467,10 +467,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return set.first();
     }
 
-    private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date
-            startDate, Date endDate) throws ServiceException {
+    private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date startDate, Date endDate) throws ServiceException {
         List<String> assetGuids = assetService.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
-        return Collections.emptyList();//movementService.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
+        return movementService.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
     }
 
     private Geometry interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws
