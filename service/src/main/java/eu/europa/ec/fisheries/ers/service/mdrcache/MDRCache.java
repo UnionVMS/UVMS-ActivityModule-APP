@@ -76,12 +76,15 @@ public class MDRCache {
     public void loadAllMdrCodeLists() {
         try {
             if (!alreadyLoadedOnce) {
-                log.info("MDR Cache was never loaded, loading now..");
+                log.info("[START] MDR Cache was never loaded, loading now..");
                 populateMdrCacheDateAndCheckIfRefreshDateChanged();
                 populateAllMdrOneByOne();
+                log.info("[END] MDR Cache was loaded..");
             } else if (oneMinuteHasPassed() && populateMdrCacheDateAndCheckIfRefreshDateChanged()) { // We fetch MdrCacheDate only once per minute.
                 log.info("MDR Cache in MDR was updated.. Going to refresh Rules mdr cahce now...");
                 populateAllMdrOneByOne();
+            } else {
+                log.info("No need to load MDR Cache..");
             }
         } catch (MdrLoadingException e) {
             log.error("Exception while trying to loadAllMdrCodeLists...", e);
@@ -110,7 +113,7 @@ public class MDRCache {
     }
 
     @AccessTimeout(value = 10, unit = MINUTES)
-    @Lock(LockType.READ)
+    @Lock(LockType.WRITE)
     public List<ObjectRepresentation> getEntry(MDRAcronymType acronymType) {
         List<ObjectRepresentation> result;
         if (acronymType != null) {

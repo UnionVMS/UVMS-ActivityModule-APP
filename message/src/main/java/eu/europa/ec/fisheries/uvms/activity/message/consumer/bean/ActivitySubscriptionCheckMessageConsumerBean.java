@@ -16,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.jms.Message;
@@ -29,6 +27,10 @@ import javax.jms.TextMessage;
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY_NAME),
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector = 'SubscriptionCheck'"),
+        @ActivationConfigProperty(propertyName = "maxMessagesPerSessions", propertyValue = "10"),
+        @ActivationConfigProperty(propertyName = "initialRedeliveryDelay", propertyValue = "60000"),
+        @ActivationConfigProperty(propertyName = "maximumRedeliveries", propertyValue = "3"),
+        @ActivationConfigProperty(propertyName = "maxSessions", propertyValue = "10")
 })
 @Slf4j
 public class ActivitySubscriptionCheckMessageConsumerBean implements MessageListener {

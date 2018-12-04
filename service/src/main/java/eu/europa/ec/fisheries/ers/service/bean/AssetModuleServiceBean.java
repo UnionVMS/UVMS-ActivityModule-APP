@@ -22,8 +22,8 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
@@ -127,7 +127,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
                 throw new ServiceException("FAILED TO GET DATA FROM ASSET");
             }
         } catch (ServiceException | MessageException | AssetModelMapperException e) {
-            log.error("Exception in communication with movements", e);
+            log.error("Exception in communication with assets", e);
             throw new ServiceException(e.getMessage(), e);
         }
     }

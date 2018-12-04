@@ -59,7 +59,6 @@
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.2.3</logback.core.version>
-        <asset.model.version>4.0.18</asset.model.version>
         <movement.model.version>4.0.9</movement.model.version>
         <asset.model.version>4.0.18</asset.model.version>
         <movement.model.version>4.0.16</movement.model.version>

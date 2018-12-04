@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public interface MdrModuleService {
 
+    void loadCache();
+
     /**
      * API to call MDR Module by JMS and get the VesselIdentifier type code
      *

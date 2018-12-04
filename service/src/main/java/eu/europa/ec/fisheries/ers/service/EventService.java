@@ -30,8 +30,6 @@ public interface EventService {
 
     void getFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage message);
 
-    void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message);
-
     void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException;
 
     void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException;
