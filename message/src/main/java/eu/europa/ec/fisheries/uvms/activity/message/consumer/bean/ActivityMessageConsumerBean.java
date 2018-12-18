@@ -43,10 +43,10 @@ import lombok.extern.slf4j.Slf4j;
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY_NAME),
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector IS NULL"),
-        @ActivationConfigProperty(propertyName = "maxMessagesPerSessions", propertyValue = "10"),
+        @ActivationConfigProperty(propertyName = "maxMessagesPerSessions", propertyValue = "5"),
         @ActivationConfigProperty(propertyName = "initialRedeliveryDelay", propertyValue = "60000"),
         @ActivationConfigProperty(propertyName = "maximumRedeliveries", propertyValue = "3"),
-        @ActivationConfigProperty(propertyName = "maxSessions", propertyValue = "10")
+        @ActivationConfigProperty(propertyName = "maxSessions", propertyValue = "5")
 })
 @Slf4j
 public class ActivityMessageConsumerBean implements MessageListener {
