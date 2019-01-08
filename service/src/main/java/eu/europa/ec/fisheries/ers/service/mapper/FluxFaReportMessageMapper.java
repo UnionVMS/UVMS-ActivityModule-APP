@@ -12,9 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import org.apache.commons.collections.CollectionUtils;
@@ -23,23 +20,33 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class FluxFaReportMessageMapper {
 
     public FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage) {
-        if ( fluxfaReportMessage == null && faReportSourceEnum == null ) {
+        if (fluxfaReportMessage == null && faReportSourceEnum == null) {
             return null;
         }
-        if (fluxfaReportMessage != null){
+        if (fluxfaReportMessage != null) {
             FLUXReportDocument fluxReportDocument = fluxfaReportMessage.getFLUXReportDocument();
-            if(fluxReportDocument == null){
+            if(fluxReportDocument == null) {
                 return null;
             }
-            FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
+            FluxReportDocumentEntity fluxReportDocumentEntity = mapFluxReportDocumentEntity(fluxReportDocument);
             fluxReportDocumentEntity.setFluxFaReportMessage(fluxFaReportMessage);
             fluxFaReportMessage.setFluxReportDocument(fluxReportDocumentEntity);
             fluxFaReportMessage.setFaReportDocuments(mapFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
         }
         return fluxFaReportMessage;
+    }
+
+    private FluxReportDocumentEntity mapFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument) {
+        FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
+        fluxReportDocumentEntity.getFluxReportIdentifiers().forEach(id -> id.setFluxReportDocument(fluxReportDocumentEntity));
+        return fluxReportDocumentEntity;
     }
 
     private Set<FaReportDocumentEntity> mapFaReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage){
