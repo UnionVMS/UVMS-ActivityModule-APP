@@ -10,10 +10,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityEventQueueConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
@@ -21,9 +17,13 @@ import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshal
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.ExchangeModuleRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.ejb.*;
+import javax.transaction.Transactional;
+
 @Stateless
 @LocalBean
 @Slf4j
+@Transactional
 public class ExchangeServiceBean {
 
     @EJB
@@ -32,6 +32,7 @@ public class ExchangeServiceBean {
     @EJB
     private ActivityEventQueueConsumerBean eventQueueConsumerBean;
 
+    @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
     public void updateExchangeMessage(String exchangeLogGuid, Exception exception) {
        try {
            String statusMsg = ExchangeModuleRequestMapper.createUpdateLogStatusRequest(exchangeLogGuid, exception);

@@ -42,7 +42,7 @@ import javax.jms.TextMessage;
 @Slf4j
 public class ActivityEventServiceBean implements EventService {
 
-    private static final String GOT_JMS_INSIDE_ACTIVITY_TO_GET = "Got JMS inside Activity to get ";
+    private static final String GOT_JMS_INSIDE_ACTIVITY_TO_GET = "\n\nGot JMS inside Activity to get ";
 
     @Inject
     @ActivityMessageErrorEvent
@@ -73,7 +73,7 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     @Override
-    public void getFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
+    public void receiveFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "SetFLUXFAReportOrQueryMessageRequest");
         try {
             TextMessage jmsMessage = eventMessage.getJmsMessage();

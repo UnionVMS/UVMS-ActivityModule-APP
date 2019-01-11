@@ -58,7 +58,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
             assetList = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationID);
         } catch (AssetModelMapperException | MessageException e) {
-            log.error("Error while trying to send message to Assets module.", e);
+            log.error("Error while trying to get Asset List..");
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return assetList;
@@ -73,7 +73,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         try {
             request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselIdentifiers));
         } catch (AssetModelMapperException e) {
-            log.error("Error while mapping vesselIdentifiers to create AssetListQuery!", e);
+            log.error("Error while mapping vesselIdentifiers to create AssetListQuery!");
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return getGuidsFromAssets(request);
@@ -90,7 +90,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             try {
                 request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselSearchStr));
             } catch (AssetModelMapperException e) {
-                log.error("Error while trying to map the request for assets Module.", e);
+                log.error("Error while trying to map the request for assets Module.");
                 throw new ServiceException(e.getMessage(), e.getCause());
             }
             guidsFromVesselSearchStr = getGuidsFromAssets(request);
@@ -102,7 +102,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             try {
                 request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetGroupQuery(vesselGroupSearch));
             } catch (AssetModelMapperException e) {
-                log.error("Error while trying to map the request for assets Module.", e);
+                log.error("Error while trying to map the request for assets Module.");
                 throw new ServiceException(e.getMessage(), e.getCause());
             }
             guidsFromVesselGroup = getGuidsFromAssets(request);
@@ -115,8 +115,8 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     protected List<String> getGuidsFromAssets(String request) throws ServiceException {
         try {
             String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
-            TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class);
-            if (response != null && isNotUserFault(response)) {
+            TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class, 120000L);
+            if (response != null) {
                 List<Asset> assets = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationId);
                 List<String> assetGuids = new ArrayList<>();
                 for (Asset asset : assets) {
@@ -127,7 +127,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
                 throw new ServiceException("FAILED TO GET DATA FROM ASSET");
             }
         } catch (ServiceException | MessageException | AssetModelMapperException e) {
-            log.error("Exception in communication with assets", e);
+            log.error("Exception in communication with assets");
             throw new ServiceException(e.getMessage(), e);
         }
     }

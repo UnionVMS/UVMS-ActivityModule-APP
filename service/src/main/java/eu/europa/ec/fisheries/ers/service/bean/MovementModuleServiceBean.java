@@ -84,7 +84,7 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
                 throw new ServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
         } catch (MovementDuplicateException | MovementFaultException | ServiceException | MessageException | JMSException | ModelMapperException e) {
-            log.error("Exception in communication with movements", e);
+            log.error("Exception in communication with movements! Enrichment failed!");
             throw new ServiceException(e.getMessage(), e);
         }
     }

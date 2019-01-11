@@ -28,7 +28,7 @@ import javax.enterprise.event.Observes;
 @Local
 public interface EventService {
 
-    void getFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage message);
+    void receiveFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage message);
 
     void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException;
 

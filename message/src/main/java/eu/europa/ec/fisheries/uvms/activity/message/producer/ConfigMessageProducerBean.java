@@ -42,7 +42,7 @@ public class ConfigMessageProducerBean extends AbstractProducer {
         try {
             return sendModuleMessage(text, activityQueue);
         } catch (MessageException e) {
-            LOG.error("[ Error when sending config message. ] {}", e.getMessage());
+            LOG.error("[ Error when sending config message. ] {}");
             throw e;
         }
     }

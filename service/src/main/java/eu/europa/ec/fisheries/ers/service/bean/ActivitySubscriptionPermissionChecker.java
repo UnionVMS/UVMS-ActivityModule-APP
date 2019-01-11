@@ -72,7 +72,7 @@ public class ActivitySubscriptionPermissionChecker {
     public SubscriptionPermissionResponse getPermissionFromSubscription(String subscrPermissionRequest, Destination activityReplyToQueue) throws ActivityModuleException {
         try {
             String corrID = subscriptionProducerBean.sendModuleMessage(subscrPermissionRequest, activityReplyToQueue);
-            TextMessage message = activityConsumerBean.getMessage(corrID, TextMessage.class);
+            TextMessage message = activityConsumerBean.getMessage(corrID, TextMessage.class, 240000L);
             return SubscriptionModuleResponseMapper.mapToSubscriptionPermissionResponse(message.getText());
         } catch (MessageException | JMSException | JAXBException e) {
             throw new ActivityModuleException("Error while trying to check permissions from Subscription Module!", e);

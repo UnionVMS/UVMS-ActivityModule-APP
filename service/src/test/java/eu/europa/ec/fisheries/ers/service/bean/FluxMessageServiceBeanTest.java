@@ -102,7 +102,6 @@ public class FluxMessageServiceBeanTest {
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
-        fluxMessageService.setDialect(new Postgres());
         fluxMessageService.saveFishingActivityReportDocuments(fluxFaReportMessage, FaReportSourceEnum.FLUX);
 
         //Verify

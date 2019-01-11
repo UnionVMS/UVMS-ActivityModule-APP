@@ -87,7 +87,7 @@ public class MDRCache {
                 log.info("No need to load MDR Cache..");
             }
         } catch (MdrLoadingException e) {
-            log.error("Exception while trying to loadAllMdrCodeLists...", e);
+            log.error("Exception while trying to loadAllMdrCodeLists...");
         }
     }
 
@@ -112,8 +112,6 @@ public class MDRCache {
         log.info("MDR refresh Date {}", mdrRefreshDate);
     }
 
-    @AccessTimeout(value = 10, unit = MINUTES)
-    @Lock(LockType.WRITE)
     public List<ObjectRepresentation> getEntry(MDRAcronymType acronymType) {
         List<ObjectRepresentation> result;
         if (acronymType != null) {
@@ -200,13 +198,6 @@ public class MDRCache {
         } catch (MdrModelMarshallException | JAXBException | JMSException e) {
             throw new MessageException("[FATAL-ERROR] Couldn't get LastRefreshDate from MDR Module! Mdr is deployed?", e);
         }
-    }
-
-
-    @AccessTimeout(value = 10, unit = MINUTES)
-    @Lock(LockType.READ)
-    public boolean isMdrCacheLoaded() {
-        return cache.size() > 10;
     }
 
 }

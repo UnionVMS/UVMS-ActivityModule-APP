@@ -22,11 +22,10 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-@MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
+@MessageDriven(mappedName = "jms/queue/UVMSActivitySubscriptionsEvent", activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY_NAME),
-        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector = 'SubscriptionCheck'"),
+        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = "UVMSActivitySubscriptionsEvent"),
         @ActivationConfigProperty(propertyName = "maxMessagesPerSessions", propertyValue = "10"),
         @ActivationConfigProperty(propertyName = "initialRedeliveryDelay", propertyValue = "60000"),
         @ActivationConfigProperty(propertyName = "maximumRedeliveries", propertyValue = "3"),
@@ -49,8 +48,7 @@ public class ActivitySubscriptionCheckMessageConsumerBean implements MessageList
         try {
             textMessage = (TextMessage) message;
             MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
-            ActivityModuleRequest request;
-            request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
+            ActivityModuleRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
             log.debug("Message unmarshalled successfully in activity");
             if (request == null) {
                 log.error("[ Request is null ]");

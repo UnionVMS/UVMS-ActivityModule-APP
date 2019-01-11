@@ -10,8 +10,11 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
@@ -26,12 +29,14 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 import java.util.*;
 
 
 @Slf4j
 @Stateless
 @LocalBean
+@Transactional
 public class FaReportSaverBean {
 
     @EJB
@@ -43,17 +48,43 @@ public class FaReportSaverBean {
     @EJB
     private ExchangeServiceBean exchangeServiceBean;
 
+    @EJB
+    private MdrModuleService mdrModuleServiceBean;
+
+    @EJB
+    private FishingActivityEnricherBean activityEnricher;
 
     public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
+        mdrModuleServiceBean.loadCache();
+        FLUXFAReportMessage fluxFAReportMessage;
         try {
-            FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
-            deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
+            fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
+        } catch (ActivityModelMarshallException e) {
+            log.error("[ERROR] Error while trying to unmarshall FLUXFAReportMessage! Cannot continue, message will be lost!");
+            exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
+            return;
+        }
+        deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
+        FluxFaReportMessageEntity messageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxFAReportMessage, extractPluginType(request.getPluginType()), new FluxFaReportMessageEntity());
+        try {
             if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
-                fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
+                // Enriches with asset and movement data before saving
+                activityEnricher.enrichFaReportDocuments(messageEntity.getFaReportDocuments());
             } else {
                 log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
             }
         } catch (Exception e){
+            log.error("[ERROR] Error while trying to Enrich faReportDocuments, the saving will continue!");
+        }
+        try {
+            if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
+                // Saves Reports and updates FaReport Corrections Or Cancellations and fish trip start end dates
+                fluxMessageService.saveFishingActivityReportDocuments(messageEntity);
+            } else {
+                log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+            }
+        } catch (Exception e){
+            log.error("[ERROR] Error while trying to FaReportSaverBean.handleFaReportSaving(...). Failed to save it! Going to change the state in exchange log!", e);
             exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
         }
     }

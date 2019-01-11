@@ -61,15 +61,15 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
                 throw new ServiceException("FAILED TO GET DATA FROM SPATIAL");
             }
         } catch (ServiceException | MessageException | SpatialModelMapperException e) {
-            log.error("Exception in communication with spatial while retrieving filtered area", e);
+            log.error("Exception in communication with spatial while retrieving filtered area!");
             throw new ServiceException(e.getMessage(), e);
         }
     }
 
     @Override
     public String getGeometryForPortCode(String portCode) throws ServiceException {
-        log.info("Inside getGeometryForPortCode :"+portCode);
-       try {
+        log.debug("Inside getGeometryForPortCode :" + portCode);
+        try {
             String request = SpatialModuleRequestMapper.mapToGeometryByPortCodeRequest(portCode);
             String correlationId = spatialProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage message = activityConsumer.getMessage(correlationId, TextMessage.class);
@@ -80,7 +80,7 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
                 throw new ServiceException("FAILED TO GET GEOMETRY FROM SPATIAL");
             }
         } catch (ServiceException | MessageException | SpatialModelMapperException e) {
-            log.error("Exception in communication with spatial while retrieving GEOMETRY", e);
+            log.error("Exception in communication with spatial while retrieving GEOMETRY!");
             throw new ServiceException(e.getMessage(), e);
         }
     }
