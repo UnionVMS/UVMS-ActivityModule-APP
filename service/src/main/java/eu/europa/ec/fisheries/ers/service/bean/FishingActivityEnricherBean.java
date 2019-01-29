@@ -75,8 +75,10 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             try {
                 log.info("[INFO] Enriching with guids from assets module..");
                 List<String> nextRepVessGuids = enrichFishingActivityWithGuiID(faReportDocument);
+                log.info("[END] Finished enriching with guids from assets module..");
                 log.info("[INFO] Updating geometry with movements module..");
                 updateGeometry(faReportDocument, nextRepVessGuids);
+                log.info("[END] Finished updating geometry with movements module..");
             } catch (Exception e) {
                 log.error("[ERROR ENRICHMENT-FAILED] Could not update Geometry OR enrich Activities for faReportDocument (asset/movement modules):" + faReportDocument.getId());
             }

@@ -44,7 +44,7 @@
         <reporting.model>1.0.2</reporting.model>
         <spatial.model.version>1.0.9</spatial.model.version>
         <exchange.model>4.0.23</exchange.model>
-        <subscription.model>1.2</subscription.model>
+        <subscription.model>1.4.2-W14J8</subscription.model>
 
         <rules.model>3.0.43</rules.model>
         <mdr.model.version>1.0.4</mdr.model.version>
@@ -86,7 +86,7 @@
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
 
-        <uvms.commons.version>3.0.31-W14J8</uvms.commons.version>
+        <uvms.commons.version>3.3-W14J8</uvms.commons.version>
         <uvms.config.version>4.0.3-W14J8</uvms.config.version>
         <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
 
