@@ -71,8 +71,8 @@
         </application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
         </application.logfile.boot>
-        <!-- hibernate.version>4.3.11.Final</hibernate.version -->
-        <hibernate.version>5.1.9.Final</hibernate.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
+        <!--hibernate.version>5.1.9.Final</hibernate.version-->
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
