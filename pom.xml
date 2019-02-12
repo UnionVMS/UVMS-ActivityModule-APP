@@ -71,7 +71,8 @@
         </application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
         </application.logfile.boot>
-        <hibernate.version>4.3.11.Final</hibernate.version>
+        <!-- hibernate.version>4.3.11.Final</hibernate.version -->
+        <hibernate.version>5.1.9.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
@@ -87,7 +88,7 @@
         <dom4j.version>1.6.1</dom4j.version>
 
         <uvms.commons.version>3.3-W14J8</uvms.commons.version>
-        <uvms.config.version>4.0.3-W14J8</uvms.config.version>
+        <uvms.config.version>4.1-W14J8</uvms.config.version>
         <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>

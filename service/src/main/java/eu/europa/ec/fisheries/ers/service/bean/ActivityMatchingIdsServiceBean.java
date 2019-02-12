@@ -10,15 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.ec.fisheries.ers.fa.dao.FluxReportIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
@@ -27,6 +18,17 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by kovian on 12/07/2017.
@@ -46,7 +48,7 @@ public class ActivityMatchingIdsServiceBean extends BaseActivityBean {
         fluxRepIdentDao = new FluxReportIdentifierDao(entityManager);
     }
 
-
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public GetNonUniqueIdsResponse getMatchingIdsResponse(List<ActivityUniquinessList> activityUniquinessLists) {
         if(CollectionUtils.isEmpty(activityUniquinessLists)){
             return null;

@@ -26,9 +26,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import javax.ejb.*;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -54,6 +52,7 @@ public class FaReportSaverBean {
     @EJB
     private FishingActivityEnricherBean activityEnricher;
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
         mdrModuleServiceBean.loadCache();
         FLUXFAReportMessage fluxFAReportMessage;
