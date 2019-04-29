@@ -31,7 +31,6 @@ import java.util.Date;
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "activity_vessel_position_event")
@@ -71,7 +70,7 @@ public class VesselPositionEventEntity implements Serializable {
     @Column(name = "activity_type_code")
     private String activityTypeCode;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
+    @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;
 
 }

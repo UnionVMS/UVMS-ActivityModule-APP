@@ -10,6 +10,7 @@
         <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
         </properties>
     </persistence-unit>
 
@@ -28,11 +29,15 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.generate_statistics" value="true"/>
             <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
+            <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
         </properties>
 
     </persistence-unit>
 
     <persistence-unit name="activityPUoracle" transaction-type="JTA">
+        <properties>
+            <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
+        </properties>
         <!--	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
             <jta-data-source>jdbc/uvms_reporting</jta-data-source>
             <properties>

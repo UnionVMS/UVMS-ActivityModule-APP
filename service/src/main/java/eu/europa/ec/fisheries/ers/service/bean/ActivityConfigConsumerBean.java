@@ -31,8 +31,6 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
@@ -45,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ActivityConfigConsumerBean extends AbstractConsumer implements ConfigMessageConsumer {
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public <T> T getConfigMessage(String correlationId, Class type) throws ConfigMessageException {
         try {
             return getMessage(correlationId, type);

@@ -24,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.geometry.jts.GeometryBuilder;
-import org.hibernate.annotations.Type;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 @Entity
@@ -43,7 +42,7 @@ public class FluxLocationEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
 	private int id;
 
-	@Type(type = "org.hibernate.spatial.GeometryType")
+	@Column(name = "geom", columnDefinition = "Geometry")
 	private Geometry geom;
 
 	@Transient

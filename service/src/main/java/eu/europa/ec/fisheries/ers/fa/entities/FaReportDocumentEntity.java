@@ -20,7 +20,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
@@ -46,7 +45,7 @@ import org.hibernate.annotations.Type;
                         "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
                         "WHERE rpt.status IN (:statuses) " +
                         "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
-                        "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate))))"
+                        "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate)))"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
@@ -87,8 +86,7 @@ public class FaReportDocumentEntity implements Serializable {
     @JoinColumn(name = "flux_report_document_id", nullable = false)
     private FluxReportDocumentEntity fluxReportDocument;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
-    @Column(name = "geom")
+    @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;
 
     @Column(name = "type_code")

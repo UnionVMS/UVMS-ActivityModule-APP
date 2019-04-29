@@ -6,7 +6,7 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.18</version>
+        <version>1.23</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -42,14 +42,23 @@
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
-        <spatial.model.version>1.0.9</spatial.model.version>
-        <exchange.model>4.0.23</exchange.model>
+        <spatial.model.version>1.0.12</spatial.model.version>
+        <exchange.model>5.0.0-UVMS</exchange.model>
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
-        <uvms.config.version>4.0.1</uvms.config.version>
+        <uvms.config.version>4.0.3</uvms.config.version>
         <mdr.model.version>1.0.1</mdr.model.version>
         <mockito.version>1.10.19</mockito.version>
+        <asset.model.version>4.0.18</asset.model.version>
+        <asset.model.version>4.0.18</asset.model.version>
+        <movement.model.version>4.0.9</movement.model.version>
+        <!--<movement.model.version>5.1.23-UVMS</movement.model.version>-->
+        <audit.model.version>4.0.10</audit.model.version>
+        <uvms.commons.version>3.0.25</uvms.commons.version>
+        <uvms.test.version>0.0.4</uvms.test.version>
+        <usm4uvms.version>4.0.12</usm4uvms.version>
+        <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -60,11 +69,6 @@
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.2.3</logback.core.version>
-        <asset.model.version>4.0.18</asset.model.version>
-        <movement.model.version>4.0.9</movement.model.version>
-        <asset.model.version>4.0.18</asset.model.version>
-        <movement.model.version>4.0.16</movement.model.version>
-        <audit.model.version>4.0.10</audit.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
@@ -73,15 +77,13 @@
         </application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
         </application.logfile.boot>
+        <!--
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate-spatial.version>4.3</hibernate-spatial.version>
-        <geotools.version>14.4</geotools.version>
-        <uvms.commons.version>3.0.25</uvms.commons.version>
-        <uvms.test.version>0.0.4</uvms.test.version>
         <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
         <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
-        <usm4uvms.version>4.0.12</usm4uvms.version>
-        <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
+        -->
+        <geotools.version>14.4</geotools.version>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
@@ -239,11 +241,13 @@
                 <version>${project.parent.version}</version>
             </dependency>
 
+            <!--
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate.validator.version}</version>
             </dependency>
+            -->
 
             <dependency>
                 <groupId>org.mapstruct</groupId>
@@ -388,31 +392,31 @@
            	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.14</version>
+				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.14</version>
+				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.14</version>
+				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.14</version>
+				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.14</version>
+				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
 

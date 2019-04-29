@@ -17,7 +17,6 @@ import javax.ejb.Stateless;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityEventQueueConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.exchange.model.exception.ExchangeModelMarshallException;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.ExchangeModuleRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +36,7 @@ public class ExchangeServiceBean {
            String statusMsg = ExchangeModuleRequestMapper.createUpdateLogStatusRequest(exchangeLogGuid, exception);
            log.debug("Message to exchange to update status : {}", statusMsg);
            exchangeProducerBean.sendModuleMessage(statusMsg, eventQueueConsumerBean.getDestination());
-        } catch (ExchangeModelMarshallException | MessageException e) {
+        } catch (MessageException e) {
             log.error("Could not update message status to technical business error with exchangeLogGuid {}", exchangeLogGuid, e);
         }
     }

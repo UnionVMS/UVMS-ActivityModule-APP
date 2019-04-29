@@ -15,8 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
 import javax.jms.JMSException;
 
@@ -48,7 +46,6 @@ public class ActivityErrorMessageServiceBean extends AbstractProducer {
         return MessageConstants.QUEUE_MODULE_ACTIVITY;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ActivityMessageErrorEvent EventMessage message) {
     	try {
             sendResponseMessageToSender(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(message.getFault()));

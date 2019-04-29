@@ -25,7 +25,6 @@ import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.*;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.annotations.Type;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
@@ -83,8 +82,7 @@ public class FishingActivityEntity implements Serializable {
     @JoinColumn(name = "fa_report_document_id")
     private FaReportDocumentEntity faReportDocument;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
-	@Column(name = "geom")
+	@Column(name = "geom", columnDefinition = "Geometry")
 	private Geometry geom;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -91,7 +91,7 @@
             <artifactId>uvms-pom-monitoring-deps</artifactId>
             <type>pom</type>
         </dependency>
-
+<!--
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
@@ -102,7 +102,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+-->
          <dependency>
 			 <groupId>org.jboss.resteasy</groupId>
     		<artifactId>resteasy-jaxb-provider</artifactId>
