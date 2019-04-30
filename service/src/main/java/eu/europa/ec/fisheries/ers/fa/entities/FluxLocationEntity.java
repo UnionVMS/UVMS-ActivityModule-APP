@@ -100,6 +100,18 @@ public class FluxLocationEntity implements Serializable {
 	private String nameLanguageId;
 
 	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride( name = "value", column = @Column(name = "codetype_value")),
+			@AttributeOverride( name = "listID", column = @Column(name = "codetype_listID")),
+			@AttributeOverride( name = "listAgencyID", column = @Column(name = "codetype_listAgencyID")),
+			@AttributeOverride( name = "listAgencyName", column = @Column(name = "codetype_listAgencyName")),
+			@AttributeOverride( name = "listName", column = @Column(name = "codetype_listName")),
+			@AttributeOverride( name = "listVersionID", column = @Column(name = "codetype_listVersionID")),
+			@AttributeOverride( name = "name", column = @Column(name = "codetype_name")),
+			@AttributeOverride( name = "languageID", column = @Column(name = "codetype_languageID")),
+			@AttributeOverride( name = "listURI", column = @Column(name = "codetype_listURI")),
+			@AttributeOverride( name = "listSchemeURI", column = @Column(name = "codetype_listSchemeURI"))
+	})
 	private CodeType regionalFisheriesManagementOrganizationCode;
 
 	@Column(name = "sovereign_rights_country_code")

@@ -128,6 +128,11 @@ public class FishingActivityEntity implements Serializable {
 	private String speciesTargetCodeListId;
 
 	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride( name = "value", column = @Column(name = "operationsquantity_value")),
+			@AttributeOverride( name = "unitCode", column = @Column(name = "operationsquantity_unitCode")),
+			@AttributeOverride( name = "unitCodeListID", column = @Column(name = "operationsquantity_unitCodeListID"))
+	})
 	private QuantityType operationsQuantity;
 
 	@Column(name = "calculated_operation_quantity")
