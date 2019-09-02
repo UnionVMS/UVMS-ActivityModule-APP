@@ -12,16 +12,22 @@ package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
 @Stateless
 @LocalBean
 public class ActivityResponseQueueProducerBean extends AbstractProducer {
 
-    @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_ACTIVITY;
-    }
+    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_ACTIVITY)
+    private Queue destination;
 
+    @Override
+    public Destination getDestination() {
+        return destination;
+    }
 }

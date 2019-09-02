@@ -19,11 +19,7 @@ import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
-import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
@@ -34,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -52,8 +47,10 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     @Override
     public List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException {
 
-        List<Asset> assetList;
+        List<Asset> assetList = new ArrayList<>();
 
+        //TODO: Implement call to new Asset Module!
+        /*
         try {
 
             String assetsRequest = AssetModuleRequestMapper.createAssetListModuleRequest(assetListQuery);
@@ -65,6 +62,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             log.error("Error while trying to send message to Assets module.", e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }
+        */
 
         return assetList;
     }
@@ -74,6 +72,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
      */
     @Override
     public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
+        /*
         String request;
         try {
             request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselIdentifiers));
@@ -82,10 +81,15 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return getGuidsFromAssets(request);
+
+         */
+        return new ArrayList<>();
     }
 
     @Override
     public List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearch) throws ServiceException {
+        return new ArrayList<>();
+        /*
         List<String> guidsFromVesselSearchStr = null;
         List<String> guidsFromVesselGroup     = null;
         String request;
@@ -114,10 +118,14 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         }
 
         return joinResults(guidsFromVesselSearchStr, guidsFromVesselGroup);
+
+         */
     }
 
     @NotNull
     protected List<String> getGuidsFromAssets(String request) throws ServiceException {
+        return new ArrayList<>();
+        /*
         try {
             String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class);
@@ -135,6 +143,8 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             log.error("Exception in communication with movements", e);
             throw new ServiceException(e.getMessage(), e);
         }
+
+         */
     }
 
     private List<String> joinResults(List<String> guidsFromVesselSearchStr, List<String> guidsFromVesselGroup) {

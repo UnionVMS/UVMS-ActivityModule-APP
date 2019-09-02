@@ -13,8 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
@@ -23,8 +26,11 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 @LocalBean
 public class MovementProducerBean extends AbstractProducer {
 
+    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_MODULE_MOVEMENT)
+    private Queue destination;
+
     @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_MODULE_MOVEMENT;
+    public Destination getDestination() {
+        return destination;
     }
 }

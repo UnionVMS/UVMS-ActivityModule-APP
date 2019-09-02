@@ -34,6 +34,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -49,13 +50,13 @@ public class ActivityDataUtil {
     private static List<Object[]> faCatches;
     private static List<FaCatchEntity> faCatchesEntities;
 
-    public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID, Date creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName) {
+    public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID, Instant creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName) {
         FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
 
         FluxReportIdentifierEntity entity = new FluxReportIdentifierEntity();
         entity.setFluxReportIdentifierId(fluxDocumentID);
         fluxReportDocumentEntity.setFluxReportIdentifiers(new HashSet<>(Arrays.asList(entity)));
-        fluxReportDocumentEntity.setCreationDatetime(creationDateTime);
+        fluxReportDocumentEntity.setCreationDatetime(Date.from(creationDateTime));
 
         FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
         fluxPartyEntity.setFluxPartyName(ownerFluxPartyName);
@@ -79,22 +80,22 @@ public class ActivityDataUtil {
         return vesselTransportMeansEntity;
     }
 
-    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Date acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportStatusType status) {
+    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Instant acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportStatusType status) {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setTypeCode(typeCode);
         faReportDocumentEntity.setTypeCodeListId(typeCodeListId);
-        faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
+        faReportDocumentEntity.setAcceptedDatetime(Date.from(acceptedDatetime));
         faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
         faReportDocumentEntity.setVesselTransportMeans(new HashSet<>(Arrays.asList(vesselTransportMeansEntity)));
         faReportDocumentEntity.setStatus(status.name());
         return faReportDocumentEntity;
     }
 
-    public static FishingActivityEntity getFishingActivityEntity(String typeCode, String typeCodeListId, Date occurence, String reasonCode, String reasonCodeListId, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity relatedfishingActivityEntity) {
+    public static FishingActivityEntity getFishingActivityEntity(String typeCode, String typeCodeListId, Instant occurence, String reasonCode, String reasonCodeListId, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity relatedfishingActivityEntity) {
         FishingActivityEntity fishingActivityEntity = new FishingActivityEntity();
         fishingActivityEntity.setTypeCode(typeCode);
         fishingActivityEntity.setTypeCodeListid(typeCodeListId);
-        fishingActivityEntity.setOccurence(occurence);
+        fishingActivityEntity.setOccurence(Date.from(occurence));
         fishingActivityEntity.setReasonCode(reasonCode);
         fishingActivityEntity.setReasonCodeListId(reasonCodeListId);
         fishingActivityEntity.setFaReportDocument(faReportDocumentEntity);

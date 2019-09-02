@@ -17,7 +17,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
@@ -26,12 +25,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MovementProducerBean;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -73,6 +67,8 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             String request = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
             String moduleMessage = movementProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage response = activityConsumer.getMessage(moduleMessage, TextMessage.class);
+            //TODO: Implement this call against new Movement Module!
+            /*
             if (response != null && isNotUserFault(response)) {
                 List<MovementMapResponseType> mapResponseTypes = MovementModuleResponseMapper.mapToMovementMapResponse(response);
                 List<MovementType> movements = new ArrayList<>();
@@ -83,7 +79,11 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             } else {
                 throw new ServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
-        } catch (MovementDuplicateException | MovementFaultException | ServiceException | MessageException | JMSException | ModelMapperException e) {
+            */
+
+            return new ArrayList<>();
+
+        } catch (JMSException e) {
             log.error("Exception in communication with movements", e);
             throw new ServiceException(e.getMessage(), e);
         }

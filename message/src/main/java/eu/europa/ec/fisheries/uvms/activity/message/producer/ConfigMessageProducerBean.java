@@ -12,15 +12,17 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.Queue;
+
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,25 +32,24 @@ public class ConfigMessageProducerBean extends AbstractProducer {
 
     final static Logger LOG = LoggerFactory.getLogger(ConfigMessageProducerBean.class);
 
-    private Queue activityQueue;
+    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_CONFIG)
+    private Queue destination;
 
-    @PostConstruct
-    public void init() {
-        activityQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY);
-    }
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_ACTIVITY)
+    private Queue replyToQueue;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public String sendConfigMessage(String text) throws MessageException {
+    public String sendConfigMessage(String text) throws ConfigMessageException {
         try {
-            return sendModuleMessage(text, activityQueue);
-        } catch (MessageException e) {
-            LOG.error("[ Error when sending config message. ] {}", e.getMessage());
-            throw e;
+            return sendModuleMessage(text, replyToQueue);
+        } catch (RuntimeException | JMSException e) {
+            LOG.error("[ Error when sending config message. ] {}", e);
+            throw new ConfigMessageException("[ Error when sending config message. ]");
         }
     }
 
     @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_CONFIG;
+    public Destination getDestination() {
+        return destination;
     }
 }

@@ -12,10 +12,12 @@ package eu.europa.ec.fisheries.ers.mapper.subscription;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.wsdl.subscription.module.CriteriaType;
@@ -23,7 +25,6 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ValueType;
 import lombok.SneakyThrows;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
@@ -40,6 +41,12 @@ public class ActivityToSubscriptionMapperTest {
 
     private FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage();
 
+    private Date parseToUTCDate(String value) {
+        LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_XML_FORMAT));
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
+        return Date.from(zonedDateTime.toInstant());
+    }
+
     @Before
     @SneakyThrows
     public void before(){
@@ -54,8 +61,7 @@ public class ActivityToSubscriptionMapperTest {
         DateTimeType startDateTime = new DateTimeType();
 
         GregorianCalendar cal = new GregorianCalendar();
-        DateTime dateTime = DateUtils.XML_FORMATTER.parseDateTime("2016-07-01T11:14:00Z");
-        cal.setTime(dateTime.toDate());
+        cal.setTime(parseToUTCDate("2016-07-01T11:14:00Z"));
         XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
         startDateTime.setDateTime(xmlDate);
         delimitedPeriod.setStartDateTime(startDateTime);
@@ -63,8 +69,7 @@ public class ActivityToSubscriptionMapperTest {
         DateTimeType endDateTime = new DateTimeType();
 
         GregorianCalendar cal2 = new GregorianCalendar();
-        DateTime dateTime2 = DateUtils.XML_FORMATTER.parseDateTime("2017-07-01T02:00:00Z");
-        cal2.setTime(dateTime2.toDate());
+        cal2.setTime(parseToUTCDate("2017-07-01T02:00:00Z"));
         XMLGregorianCalendar xmlDate2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal2);
         endDateTime.setDateTime(xmlDate2);
         delimitedPeriod.setEndDateTime(endDateTime);

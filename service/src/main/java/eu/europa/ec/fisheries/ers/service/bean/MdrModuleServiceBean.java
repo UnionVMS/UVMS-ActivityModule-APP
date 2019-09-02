@@ -6,7 +6,6 @@ import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsum
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MdrProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mdr.model.exception.MdrModelMarshallException;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
@@ -62,7 +61,7 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
             } else {
                 throw new ServiceException("Unable to get data from MDR Module");
             }
-        } catch (JMSException | MessageException | MdrModelMarshallException | ActivityModelMarshallException e) {
+        } catch (JMSException | MdrModelMarshallException | ActivityModelMarshallException e) {
             log.error("MdrModelMarshallException in communication with mdr", e.getCause());
             throw new ServiceException("Exception caught in mdrModuleServiceBean", e.getCause());
         }

@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SpatialProducerBean;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
@@ -60,7 +60,7 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
             } else {
                 throw new ServiceException("FAILED TO GET DATA FROM SPATIAL");
             }
-        } catch (ServiceException | MessageException | SpatialModelMapperException e) {
+        } catch (ServiceException | JMSException | SpatialModelMapperException e) {
             log.error("Exception in communication with spatial while retrieving filtered area", e);
             throw new ServiceException(e.getMessage(), e);
         }
@@ -79,7 +79,7 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
             } else {
                 throw new ServiceException("FAILED TO GET GEOMETRY FROM SPATIAL");
             }
-        } catch (ServiceException | MessageException | SpatialModelMapperException e) {
+        } catch (ServiceException | JMSException | SpatialModelMapperException e) {
             log.error("Exception in communication with spatial while retrieving GEOMETRY", e);
             throw new ServiceException(e.getMessage(), e);
         }

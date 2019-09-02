@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.jms.JMSException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -27,7 +28,6 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProduc
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionParameter;
@@ -101,7 +101,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             } else {
                 throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + tripId + "," + sendTo + ",consolidated : " + consolidated + "] doesn't match to any subscription!");
             }
-        } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
+        } catch (RulesModelMapperException | ActivityModelMarshallException | JMSException e) {
             log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
         }
@@ -136,14 +136,14 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 final String sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(faReportXMLStr, "FLUX",
                         logId, dataFlow, "BEL", onValue, isEmptyReportMessage(faReportXMLObj));
                 if(SyncAsyncRequestType.SYNC.equals(type)){
-                    activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest, activityConsumerBean.getDestination(), null, null, jmsMessageCorrId);
+                    activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest, activityConsumerBean.getDestination(), null, jmsMessageCorrId);
                 } else {
                     rulesProducerBean.sendModuleMessage(sendFLUXFAReportMessageRequest, activityConsumerBean.getDestination());
                 }
             } else {
                 throw new ActivityModuleException("Error while trying to prepare the transmission of FaReportMessage!");
             }
-        } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
+        } catch (JMSException | RulesModelMapperException | ActivityModelMarshallException e) {
             log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
         }

@@ -14,11 +14,9 @@
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -370,13 +368,17 @@ public abstract class SearchQueryBuilder {
         }
     }
 
+    private Date parseToUTCDate(String value) {
+        LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT));
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
+        return Date.from(zonedDateTime.toInstant());
+    }
+
     private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
         switch (key) {
             case PERIOD_START:
-                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value, DateUtils.DATE_TIME_UI_FORMAT));
-                break;
             case PERIOD_END:
-                typedQuery.setParameter(queryParameterMappings.get(key), DateUtils.parseToUTCDate(value, DateUtils.DATE_TIME_UI_FORMAT));
+                typedQuery.setParameter(queryParameterMappings.get(key), parseToUTCDate(value));
                 break;
             case QUANTITY_MIN:
                 typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));

@@ -10,12 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
@@ -55,9 +57,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRespons
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +102,10 @@ public class ActivityEventServiceBean implements EventService {
     @EJB
     private FaReportSaverBean saveReportBean;
 
+
+    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_RULES)
+    private Destination rulesQueue;
+
     @Override
     public void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message) {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "MapToSubscriptionRequestEvent");
@@ -124,9 +128,8 @@ public class ActivityEventServiceBean implements EventService {
                     default:
                         sendError(message, new IllegalArgumentException("VERBODEN VRUCHT"));
             }
-            subscriptionProducer.sendMessageWithSpecificIds(JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest),
-                    subscriptionProducer.getDestination(), JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES),null, jmsCorrelationID);
-        } catch ( JAXBException | MessageException | JMSException e) {
+            subscriptionProducer.sendMessageWithSpecificIds(JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest), rulesQueue , null, jmsCorrelationID);
+        } catch ( JAXBException | JMSException e) {
             sendError(message, e);
         }
     }
@@ -172,7 +175,7 @@ public class ActivityEventServiceBean implements EventService {
             log.debug("FishingTriId response marshalled");
             producer.sendResponseMessageToSender(message.getJmsMessage(), response, 3_600_000L);
             log.debug("Response sent back.");
-        } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
+        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
     }
@@ -187,7 +190,7 @@ public class ActivityEventServiceBean implements EventService {
             FACatchSummaryReportResponse faCatchSummaryReportResponse= faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
             producer.sendResponseMessageToSender(message.getJmsMessage(), response);
-        } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
+        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
 
@@ -202,7 +205,7 @@ public class ActivityEventServiceBean implements EventService {
             GetNonUniqueIdsResponse faCatchSummaryReportResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest.getActivityUniquinessLists());
             String response = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
             producer.sendResponseMessageToSender(message.getJmsMessage(), response);
-        } catch (ActivityModelMarshallException | JMSException | MessageException e) {
+        } catch (ActivityModelMarshallException | JMSException e) {
             sendError(message, e);
         }
     }
@@ -216,7 +219,7 @@ public class ActivityEventServiceBean implements EventService {
             GetFishingActivitiesForTripResponse response = activityServiceBean.getFaAndTripIdsFromTripIds(request.getFaAndTripIds());
             String responseStr = JAXBMarshaller.marshallJaxBObjectToString(response);
             producer.sendResponseMessageToSender(message.getJmsMessage(), responseStr);
-        } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
+        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
     }
