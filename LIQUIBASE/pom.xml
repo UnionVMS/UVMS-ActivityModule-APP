@@ -71,7 +71,7 @@
             </activation>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc:postgresql://localhost:5432/db71u</db.url>
+                <db.url>jdbc:postgresql://localhost:25432/db71u</db.url>
                 <db.user>activity</db.user>
                 <db.passwd>activity</db.passwd>
                 <db.defaultSchema>activity</db.defaultSchema>
@@ -89,6 +89,11 @@
                     <artifactId>${driver.artifactId}</artifactId>
                     <version>${driver.version}</version>
                 </dependency>
+				<dependency>
+					<groupId>org.liquibase.ext</groupId>
+					<artifactId>liquibase-hibernate4</artifactId>
+					<version>3.5</version>
+				</dependency>
             </dependencies>
         </profile>
 
@@ -280,6 +285,14 @@
 						<defaultSchemaName>${db.defaultSchema}</defaultSchemaName>
 						<outputChangeLogFile>${db.outputFile}</outputChangeLogFile>
 						<diffTypes>${db.diffTypes}</diffTypes>
+                        <!-- Remove l8er or use for diffing db:s
+						<referenceUrl>jdbc:postgresql://localhost:25432/db71u</referenceUrl>
+						<referenceDriver>${db.driver}</referenceDriver>
+						<referenceUsername>activity</referenceUsername>
+						<referencePassword>activity</referencePassword>
+						<referenceDefaultSchemaName>activity_new</referenceDefaultSchemaName>
+						<diffChangeLogFile>postgres/changelog/liquibase-diff-changeLog.xml</diffChangeLogFile>
+						-->
 					</configuration>
 				</plugin>
 			</plugins>
