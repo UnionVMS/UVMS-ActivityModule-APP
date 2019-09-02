@@ -10,5 +10,6 @@
   <include file="postgres\changelog\1.1.5\db-changelog-UNIONVMS-3381.xml"/>
   <include file="postgres\changelog\1.1.6\db-changelog-UNIONVMS.xml"/>
   <include file="postgres\changelog\1.1.7\db-changelog-UNIONVMS.xml"/>
+  <include file="postgres\changelog\1.1.13\db-liquibase-diff.xml"/>
 
 </databaseChangeLog>

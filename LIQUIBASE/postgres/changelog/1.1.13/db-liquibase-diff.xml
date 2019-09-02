@@ -1,0 +1,757 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+        <changeSet author="anwall (generated)" id="1566992597989-38">
+        <addColumn tableName="activity_delimited_period">
+            <column name="durationmeasure_unitcodelistid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-39">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_languageid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-40">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_listagencyid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-41">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_listagencyname" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-42">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_listid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-43">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_listname" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-44">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_listschemeuri" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-45">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_listuri" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-46">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_listversionid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-47">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_languageid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-48">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_name" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-49">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_listagencyid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-50">
+        <addColumn tableName="activity_flux_report_document">
+            <column name="codetype_value" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-51">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_listagencyname" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-52">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_listid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-53">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_listname" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-54">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_listschemeuri" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-55">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_listuri" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-56">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_listversionid" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-57">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_name" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-58">
+        <addColumn tableName="activity_flux_location">
+            <column name="codetype_value" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-59">
+        <addForeignKeyConstraint baseColumnNames="flux_fa_report_message_id" baseTableName="activity_fa_report_document" constraintName="fk5p354fg9eckrxhh1vpca5fhn0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_flux_fa_report_message"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-60">
+        <addForeignKeyConstraint baseColumnNames="fa_report_document_id" baseTableName="activity_vessel_transport_means" constraintName="fkb5ikgg3fstg46n96o6ftdum4i" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fa_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-61">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_vessel_transport_means" constraintName="fki0cl6nxvnqg19bm6cp18p1p85" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-62">
+        <addForeignKeyConstraint baseColumnNames="fishing_trip_id" baseTableName="activity_delimited_period" constraintName="fki7m8n1umcyq0m5xcmwl5n79r2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_trip"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-63">
+        <addForeignKeyConstraint baseColumnNames="vessel_transport_mean_id" baseTableName="activity_vessel_identifier" constraintName="fklfpxxw4g8cdp1wf5n7pmee054" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-64">
+        <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_flap_document" constraintName="fktbn3ol742rkhmcnb7cmu0evh2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-65">
+        <dropTable tableName="activity_configuration"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-66">
+        <dropColumn columnName="country" tableName="activity_structured_address"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-67">
+        <dropColumn columnName="durationmeasure_unitcodelistversionid" tableName="activity_delimited_period"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-68">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_languageid" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-69">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_listagencyid" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-70">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_listagencyname" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-71">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_listid" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-72">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_listname" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-73">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_listschemeuri" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-74">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_listuri" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-75">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_listversionid" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-76">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_name" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-77">
+        <dropColumn columnName="regionalfisheriesmanagementorganizationcode_value" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-78">
+        <dropColumn columnName="typecode_languageid" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-79">
+        <dropColumn columnName="typecode_listagencyid" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-80">
+        <dropColumn columnName="typecode_listagencyname" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-81">
+        <dropColumn columnName="typecode_listid" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-82">
+        <dropColumn columnName="typecode_listname" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-83">
+        <dropColumn columnName="typecode_listschemeuri" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-84">
+        <dropColumn columnName="typecode_listuri" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-85">
+        <dropColumn columnName="typecode_listversionid" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-86">
+        <dropColumn columnName="typecode_name" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-87">
+        <dropColumn columnName="typecode_value" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-88">
+        <dropColumn columnName="unit_code_list_version_id" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-89">
+        <dropIndex indexName="activity_aap_process_code_i_1" tableName="activity_aap_process_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-90">
+        <dropIndex indexName="activity_aap_process_i_1" tableName="activity_aap_process"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-91">
+        <dropIndex indexName="activity_aap_product_i_1" tableName="activity_aap_product"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-92">
+        <dropIndex indexName="activity_aap_stock_i_1" tableName="activity_aap_stock"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-93">
+        <dropIndex indexName="activity_contact_party_i_1" tableName="activity_contact_party"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-94">
+        <dropIndex indexName="activity_contact_party_i_2" tableName="activity_contact_party"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-95">
+        <dropIndex indexName="activity_contact_party_role_i_1" tableName="activity_contact_party_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-96">
+        <dropIndex indexName="activity_delimited_period_i_1" tableName="activity_delimited_period"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-97">
+        <dropIndex indexName="activity_fa_catch_i_1" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-98">
+        <dropIndex indexName="activity_fa_catch_i_2" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-99">
+        <dropIndex indexName="activity_fa_report_document_i_1" tableName="activity_fa_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-100">
+        <dropIndex indexName="activity_fishing_activity_i_1" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-101">
+        <dropIndex indexName="activity_fishing_activity_i_2" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-102">
+        <dropIndex indexName="activity_fishing_activity_i_3" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-103">
+        <dropIndex indexName="activity_fishing_activity_i_4" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-104">
+        <dropIndex indexName="activity_fishing_activity_identifier_i_1" tableName="activity_fishing_activity_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-105">
+        <dropIndex indexName="activity_fishing_gear_i_1" tableName="activity_fishing_gear"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-106">
+        <dropIndex indexName="activity_fishing_gear_i_2" tableName="activity_fishing_gear"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-107">
+        <dropIndex indexName="activity_fishing_gear_i_3" tableName="activity_fishing_gear"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-108">
+        <dropIndex indexName="activity_fishing_gear_role_i_1" tableName="activity_fishing_gear_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-109">
+        <dropIndex indexName="activity_fishing_trip_i_1" tableName="activity_fishing_trip"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-110">
+        <dropIndex indexName="activity_fishing_trip_i_2" tableName="activity_fishing_trip"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-111">
+        <dropIndex indexName="activity_fishing_trip_identifier_i_1" tableName="activity_fishing_trip_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-112">
+        <dropIndex indexName="activity_flap_document_i_1" tableName="activity_flap_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-113">
+        <dropIndex indexName="activity_flap_document_i_2" tableName="activity_flap_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-114">
+        <dropIndex indexName="activity_flux_characteristic_i_1" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-115">
+        <dropIndex indexName="activity_flux_characteristic_i_2" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-116">
+        <dropIndex indexName="activity_flux_characteristic_i_3" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-117">
+        <dropIndex indexName="activity_flux_characteristic_i_4" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-118">
+        <dropIndex indexName="activity_flux_location_i_1" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-119">
+        <dropIndex indexName="activity_flux_location_i_2" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-120">
+        <dropIndex indexName="activity_flux_location_i_3" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-121">
+        <dropIndex indexName="activity_flux_party_identifier_i_1" tableName="activity_flux_party_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-122">
+        <dropIndex indexName="activity_flux_report_document_i_2" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-123">
+        <dropIndex indexName="activity_flux_report_identifier_i_1" tableName="activity_flux_report_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-124">
+        <dropIndex indexName="activity_gear_characteristic_i_1" tableName="activity_gear_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-125">
+        <dropIndex indexName="activity_gear_problem_i_1" tableName="activity_gear_problem"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-126">
+        <dropIndex indexName="activity_gear_problem_recovery_i_1" tableName="activity_gear_problem_recovery"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-127">
+        <dropIndex indexName="activity_registration_event_i_1" tableName="activity_registration_event"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-128">
+        <dropIndex indexName="activity_size_distribution_classcode_i_1" tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-129">
+        <dropIndex indexName="activity_structured_address_i_1" tableName="activity_structured_address"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-130">
+        <dropIndex indexName="activity_structured_address_i_2" tableName="activity_structured_address"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-131">
+        <dropIndex indexName="activity_vessel_position_event_i_1" tableName="activity_vessel_position_event"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-132">
+        <dropIndex indexName="activity_vessel_storage_char_code_i_1" tableName="activity_vessel_storage_char_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-133">
+        <dropIndex indexName="activity_vessel_transport_means_i_1" tableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-134">
+        <dropIndex indexName="activity_vessel_transport_means_i_2" tableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-135">
+        <dropIndex indexName="activity_vessel_transport_means_i_3" tableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-136">
+        <modifyDataType columnName="aap_process_id" newDataType="int" tableName="activity_aap_process_code"/>
+        <dropNotNullConstraint columnDataType="int" columnName="aap_process_id" tableName="activity_aap_process_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-137">
+        <modifyDataType columnName="aap_process_id" newDataType="int" tableName="activity_aap_product"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-138">
+        <setColumnRemarks columnName="calculated_start_time" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-139">
+        <setColumnRemarks columnName="calculated_trip_end_date" tableName="activity_fishing_trip_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-140">
+        <setColumnRemarks columnName="calculated_trip_start_date" tableName="activity_fishing_trip_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-141">
+        <modifyDataType columnName="canceled_by" newDataType="int" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-142">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="class_code" tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-143">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="class_code_list_id" tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-144">
+        <modifyDataType columnName="contact_party_id" newDataType="int" tableName="activity_contact_party_role"/>
+        <dropNotNullConstraint columnDataType="int" columnName="contact_party_id" tableName="activity_contact_party_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-145">
+        <modifyDataType columnName="contact_party_id" newDataType="int" tableName="activity_structured_address"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-146">
+        <modifyDataType columnName="contact_person_id" newDataType="int" tableName="activity_contact_party"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-147">
+        <modifyDataType columnName="deleted_by" newDataType="int" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-148">
+        <modifyDataType columnName="description" newDataType="varchar(255)" tableName="activity_gear_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-149">
+        <modifyDataType columnName="dest_vessel_char_id" newDataType="int" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-150">
+        <setColumnRemarks columnName="effort_zone" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-151">
+        <modifyDataType columnName="fa_catch_id" newDataType="int" tableName="activity_aap_process"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-152">
+        <modifyDataType columnName="fa_catch_id" newDataType="int" tableName="activity_aap_stock"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-153">
+        <modifyDataType columnName="fa_catch_id" newDataType="int" tableName="activity_fishing_gear"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-154">
+        <modifyDataType columnName="fa_catch_id" newDataType="int" tableName="activity_fishing_trip"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-155">
+        <modifyDataType columnName="fa_catch_id" newDataType="int" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-156">
+        <modifyDataType columnName="fa_catch_id" newDataType="int" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-157">
+        <modifyDataType columnName="fa_report_document_id" newDataType="int" tableName="activity_fa_report_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-158">
+        <modifyDataType columnName="fa_report_document_id" newDataType="int" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-159">
+        <modifyDataType columnName="fa_report_document_id" newDataType="int" tableName="activity_vessel_transport_means"/>
+        <setColumnRemarks columnName="fa_report_document_id" tableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-160">
+        <setColumnRemarks columnName="fao_area" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-161">
+        <setColumnRemarks columnName="fish_class_code" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-162">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_delimited_period"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-163">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-164">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_fishing_activity_identifier"/>
+        <addNotNullConstraint columnDataType="int" columnName="fishing_activity_id" tableName="activity_fishing_activity_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-165">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_fishing_gear"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-166">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_fishing_trip"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-167">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_flap_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-168">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-169">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-170">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_gear_problem"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-171">
+        <modifyDataType columnName="fishing_activity_id" newDataType="int" tableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-172">
+        <modifyDataType columnName="fishing_gear_id" newDataType="int" tableName="activity_fishing_gear_role"/>
+        <dropNotNullConstraint columnDataType="int" columnName="fishing_gear_id" tableName="activity_fishing_gear_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-173">
+        <modifyDataType columnName="fishing_gear_id" newDataType="int" tableName="activity_gear_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-174">
+        <modifyDataType columnName="fishing_trip_id" newDataType="int" tableName="activity_delimited_period"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-175">
+        <modifyDataType columnName="fishing_trip_id" newDataType="int" tableName="activity_fishing_trip_identifier"/>
+        <addNotNullConstraint columnDataType="int" columnName="fishing_trip_id" tableName="activity_fishing_trip_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-176">
+        <setColumnRemarks columnName="flag_state" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-177">
+        <modifyDataType columnName="flux_location_id" newDataType="int" tableName="activity_structured_address"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-178">
+        <modifyDataType columnName="flux_party_id" newDataType="int" tableName="activity_flux_party_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-179">
+        <modifyDataType columnName="flux_party_id" newDataType="int" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-180">
+        <modifyDataType columnName="flux_report_document_id" newDataType="int" tableName="activity_fa_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-181">
+        <modifyDataType columnName="flux_report_document_id" newDataType="int" tableName="activity_flux_report_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-182">
+        <modifyDataType columnName="gear_problem_id" newDataType="int" tableName="activity_fishing_gear"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-183">
+        <modifyDataType columnName="gear_problem_id" newDataType="int" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-184">
+        <modifyDataType columnName="gear_problem_id" newDataType="int" tableName="activity_gear_problem_recovery"/>
+        <dropNotNullConstraint columnDataType="int" columnName="gear_problem_id" tableName="activity_gear_problem_recovery"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-185">
+        <setColumnRemarks columnName="gear_type_code" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-186">
+        <setColumnRemarks columnName="gfcm_gsa" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-187">
+        <setColumnRemarks columnName="gfcm_stat_rectangle" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-188">
+        <setColumnRemarks columnName="ices_stat_rectangle" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-189">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_aap_process"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_aap_process"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-190">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_aap_process_code"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_aap_process_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-191">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_aap_product"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_aap_product"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-192">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_aap_stock"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_aap_stock"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-193">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_contact_party"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_contact_party"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-194">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_contact_party_role"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_contact_party_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-195">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_contact_person"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_contact_person"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-196">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_delimited_period"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_delimited_period"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-197">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fa_catch"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-198">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fa_report_document"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fa_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-199">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fa_report_identifier"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fa_report_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-200">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fishing_activity"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-201">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fishing_activity_identifier"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fishing_activity_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-202">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fishing_gear"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fishing_gear"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-203">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fishing_gear_role"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fishing_gear_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-204">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fishing_trip"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fishing_trip"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-205">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_fishing_trip_identifier"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_fishing_trip_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-206">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flap_document"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flap_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-207">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flux_characteristic"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-208">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flux_fa_report_message"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flux_fa_report_message"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-209">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flux_location"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-210">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flux_party"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flux_party"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-211">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flux_party_identifier"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flux_party_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-212">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flux_report_document"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flux_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-213">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_flux_report_identifier"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_flux_report_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-214">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_gear_characteristic"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_gear_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-215">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_gear_problem"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_gear_problem"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-216">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_gear_problem_recovery"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_gear_problem_recovery"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-217">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_registration_event"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_registration_event"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-218">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_registration_location"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_registration_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-219">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_size_distribution"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_size_distribution"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-220">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_size_distribution_classcode"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-221">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_structured_address"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_structured_address"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-222">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_vessel_identifier"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_vessel_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-223">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_vessel_position_event"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_vessel_position_event"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-224">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_vessel_storage_char_code"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_vessel_storage_char_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-225">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_vessel_storage_characteristics"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_vessel_storage_characteristics"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-226">
+        <modifyDataType columnName="id" newDataType="int" tableName="activity_vessel_transport_means"/>
+        <dropDefaultValue columnDataType="int" columnName="id" tableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-227">
+        <dropDefaultValue columnDataType="boolean" columnName="latest" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-228">
+        <setColumnRemarks columnName="presentation" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-229">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="recovery_measure_code" tableName="activity_gear_problem_recovery"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-230">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="recovery_measure_code_list_id" tableName="activity_gear_problem_recovery"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-231">
+        <modifyDataType columnName="registration_event_id" newDataType="int" tableName="activity_vessel_transport_means"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-232">
+        <modifyDataType columnName="registration_location_id" newDataType="int" tableName="activity_registration_event"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-233">
+        <modifyDataType columnName="related_fishing_activity_id" newDataType="int" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-234">
+        <setColumnRemarks columnName="rfmo" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-235">
+        <modifyDataType columnName="rfmo_code" newDataType="varchar(255)" tableName="activity_flux_location"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-236">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="role_code" tableName="activity_contact_party_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-237">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="role_code" tableName="activity_fishing_gear_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-238">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="role_code_list_id" tableName="activity_contact_party_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-239">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="role_code_list_id" tableName="activity_fishing_gear_role"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-240">
+        <modifyDataType columnName="size_distribution_id" newDataType="int" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-241">
+        <modifyDataType columnName="size_distribution_id" newDataType="int" tableName="activity_size_distribution_classcode"/>
+        <dropNotNullConstraint columnDataType="int" columnName="size_distribution_id" tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-242">
+        <modifyDataType columnName="source" newDataType="varchar(255)" tableName="activity_fa_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-243">
+        <modifyDataType columnName="source_vessel_char_id" newDataType="int" tableName="activity_fishing_activity"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-244">
+        <modifyDataType columnName="specified_flap_document_id" newDataType="int" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-245">
+        <modifyDataType columnName="specified_flux_location_id" newDataType="int" tableName="activity_flux_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-246">
+        <modifyDataType columnName="status" newDataType="varchar(255)" tableName="activity_fa_report_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-247">
+        <setColumnRemarks columnName="territory" tableName="activity_fa_catch"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-248">
+        <modifyDataType columnName="title" newDataType="varchar(255)" tableName="activity_contact_person"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-249">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="type_code" tableName="activity_aap_process_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-250">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="type_code_list_id" tableName="activity_aap_process_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-251">
+        <modifyDataType columnName="value_text" newDataType="varchar(255)" tableName="activity_gear_characteristic"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-252">
+        <modifyDataType columnName="vessel_storage_char_id" newDataType="int" tableName="activity_vessel_storage_char_code"/>
+        <dropNotNullConstraint columnDataType="int" columnName="vessel_storage_char_id" tableName="activity_vessel_storage_char_code"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-253">
+        <modifyDataType columnName="vessel_transport_mean_id" newDataType="int" tableName="activity_vessel_identifier"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-254">
+        <modifyDataType columnName="vessel_transport_means_id" newDataType="int" tableName="activity_contact_party"/>
+        <addNotNullConstraint columnDataType="int" columnName="vessel_transport_means_id" tableName="activity_contact_party"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-255">
+        <modifyDataType columnName="vessel_transport_means_id" newDataType="int" tableName="activity_flap_document"/>
+        <dropNotNullConstraint columnDataType="int" columnName="vessel_transport_means_id" tableName="activity_flap_document"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-256">
+        <modifyDataType columnName="vessel_transport_means_id" newDataType="int" tableName="activity_vessel_position_event"/>
+        <dropNotNullConstraint columnDataType="int" columnName="vessel_transport_means_id" tableName="activity_vessel_position_event"/>
+    </changeSet>
+    <changeSet author="anwall (generated)" id="1566992597989-257">
+        <createIndex indexName="uk_58x2dbmh036mhw664sfc1b63e" tableName="activity_flux_report_document" unique="true">
+            <column name="flux_party_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
