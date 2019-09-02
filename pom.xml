@@ -47,17 +47,16 @@
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
-        <uvms.config.version>4.0.3</uvms.config.version>
+        <uvms.config.version>4.0.4</uvms.config.version>
         <mdr.model.version>1.0.1</mdr.model.version>
         <mockito.version>1.10.19</mockito.version>
-        <asset.model.version>4.0.18</asset.model.version>
-        <asset.model.version>4.0.18</asset.model.version>
-        <movement.model.version>4.0.9</movement.model.version>
-        <!--<movement.model.version>5.1.23-UVMS</movement.model.version>-->
+        <asset.model.version>6.0.65</asset.model.version>
+        <!--movement.model.version>4.0.9</movement.model.version-->
+        <movement.model.version>5.1.23-UVMS</movement.model.version>
         <audit.model.version>4.0.10</audit.model.version>
-        <uvms.commons.version>3.0.25</uvms.commons.version>
+        <uvms.commons.version>4.0.4</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <usm4uvms.version>4.0.12</usm4uvms.version>
+        <usm4uvms.version>4.0.21</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
 
 

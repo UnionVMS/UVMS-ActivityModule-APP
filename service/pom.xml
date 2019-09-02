@@ -74,6 +74,12 @@
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
 			<artifactId>uvms-config</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>config-model</artifactId>
+					<groupId>eu.europa.ec.fisheries.uvms.config</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
