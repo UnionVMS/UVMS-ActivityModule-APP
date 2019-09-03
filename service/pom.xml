@@ -85,11 +85,13 @@
 		<dependency>
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
+			<scope>test</scope>
 		</dependency>
 
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
+			<scope>test</scope>
         </dependency>
 
 		<dependency>
@@ -133,11 +135,23 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>activity-model</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>jaxb-impl</artifactId>
+					<groupId>com.sun.xml.bind</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
 			<artifactId>exchange-model</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>jaxb2-basics</artifactId>
+					<groupId>org.jvnet.jaxb2_commons</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -148,7 +162,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>message</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -179,6 +192,10 @@
 				<exclusion>
 					<groupId>com.vividsolutions</groupId>
 					<artifactId>jts</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -216,11 +233,6 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations-java5</artifactId>
-			<version>RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains</groupId>

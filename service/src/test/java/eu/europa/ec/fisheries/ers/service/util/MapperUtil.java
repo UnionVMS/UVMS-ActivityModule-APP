@@ -19,6 +19,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -55,7 +57,6 @@ import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.ers.service.dto.config.SummaryReportDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
@@ -140,13 +141,13 @@ public class MapperUtil {
     public static FishingTripEntity getFishingTripEntity(){
         FishingTripEntity entity = new FishingTripEntity();
 
-        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, parseDate("2016-06-27 07:47:31"),
                 "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
-        FluxReportDocumentEntity fluxReportDocumentEntity2=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT2",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+        FluxReportDocumentEntity fluxReportDocumentEntity2=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT2",null, parseDate("2016-06-27 07:47:31"),
                 "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID2","flux2");
-        FluxReportDocumentEntity fluxReportDocumentEntity3=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT3",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+        FluxReportDocumentEntity fluxReportDocumentEntity3=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT3",null, parseDate("2016-06-27 07:47:31"),
                 "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID3","flux3");
-        FluxReportDocumentEntity fluxReportDocumentEntity4=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT4",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+        FluxReportDocumentEntity fluxReportDocumentEntity4=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT4",null, parseDate("2016-06-27 07:47:31"),
                 "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID4","flux4");
 
         VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
@@ -155,16 +156,16 @@ public class MapperUtil {
 
         vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1", "CFR"));
 
-        FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
+        FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2016-06-27 07:47:31"), fluxReportDocumentEntity1,
                 vesselTransportMeansEntity1, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity2=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2015-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity2,
+        FaReportDocumentEntity faReportDocumentEntity2=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity2,
                 vesselTransportMeansEntity2, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2015-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity3,
+        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity3,
                 vesselTransportMeansEntity3, FaReportStatusType.NEW);
 
-        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE" , DateUtils.parseToUTCDate("2014-05-27 07:47:31","yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS",faReportDocumentEntity1,null);
-        FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , DateUtils.parseToUTCDate("2014-05-27 07:47:31","yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS",faReportDocumentEntity2,null);
-        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE" , DateUtils.parseToUTCDate("2014-05-27 07:47:31","yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS",faReportDocumentEntity3,null);
+        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity1,null);
+        FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
+        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity3,null);
 
         SizeDistributionEntity sizeDistributionEntity= ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
         FaCatchEntity faCatchEntity =ActivityDataUtil.getFaCatchEntity(fishingActivityEntity1,"DEPARTURE","FA_CATCH_TYPE", "beagle2", "FAO_SPECIES",
@@ -205,27 +206,27 @@ public class MapperUtil {
     public static List<FishingActivityEntity> getFishingActivityEntityList(){
         FishingTripEntity entity = new FishingTripEntity();
 
-        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, parseDate("2016-06-27 07:47:31"),
                 "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
-        FluxReportDocumentEntity fluxReportDocumentEntity2=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT2",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+        FluxReportDocumentEntity fluxReportDocumentEntity2=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT2",null, parseDate("2016-06-27 07:47:31"),
                 "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID2","flux2");
-        FluxReportDocumentEntity fluxReportDocumentEntity3=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT3",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+        FluxReportDocumentEntity fluxReportDocumentEntity3=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT3",null, parseDate("2016-06-27 07:47:31"),
                 "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID3","flux3");
 
         VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
         VesselTransportMeansEntity vesselTransportMeansEntity2= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
         VesselTransportMeansEntity vesselTransportMeansEntity3= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
 
-        FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
+        FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2016-06-27 07:47:31"), fluxReportDocumentEntity1,
                 vesselTransportMeansEntity1, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity2=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2015-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity2,
+        FaReportDocumentEntity faReportDocumentEntity2=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity2,
                 vesselTransportMeansEntity2, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration", "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2015-06-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity3,
+        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration", "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity3,
                 vesselTransportMeansEntity3, FaReportStatusType.NEW);
 
-        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity1, null);
-        FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , DateUtils.parseToUTCDate("2014-05-27 07:47:31","yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS",faReportDocumentEntity2,null);
-        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE", DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity3, null);
+        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", parseDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity1, null);
+        FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
+        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE", parseDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity3, null);
 
         List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>();
         fishingActivityEntityList.add(fishingActivityEntity1);
@@ -235,7 +236,10 @@ public class MapperUtil {
       return fishingActivityEntityList;
     }
 
-
+    public static Instant parseDate(String dateStr) {
+        LocalDateTime localDateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return localDateTime.toInstant(ZoneOffset.UTC);
+    }
 
     public static FaReportDocumentEntity getFaReportDocumentEntity() {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
