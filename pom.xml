@@ -28,7 +28,10 @@
     </developers>
 
     <properties>
-
+        <docker.dev.version>3.38.6.w17</docker.dev.version>
+        <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
+        <docker.liquibase.db.user>activity</docker.liquibase.db.user>
+        <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
         <!-- sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
