@@ -12,37 +12,45 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
-import javax.annotation.PostConstruct;
+
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+
+import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.Queue;
+
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
+import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Stateless
 @Slf4j
-public class ConfigMessageConsumerBean extends AbstractConsumer {
+public class ConfigMessageConsumerBean extends AbstractConsumer implements ConfigMessageConsumer {
 
-    private Queue activityQueue;
+    private static final long CONFIG_TIMEOUT = 600000L;
 
-    @PostConstruct
-    public void init() {
-        activityQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY);
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
+
+
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_ACTIVITY)
+    private Queue destination;
 
     @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_ACTIVITY;
-    }
-    
-    public <T> T getConfigMessage(String correlationId, Class type) throws MessageException {
+    public <T> T getConfigMessage(String correlationId, Class<T> type) throws ConfigMessageException {
         try {
-            return getMessage(correlationId, type);
-        } catch (MessageException e) {
-            log.error("[ Error when getting config message. ] {}", e.getMessage());
-            throw e;
+            return getMessage(correlationId, type, CONFIG_TIMEOUT);
+        } catch (JMSException e) {
+            LOG.error("[ Error when getting message ] {}", e.getMessage());
+            throw new ConfigMessageException("Error when retrieving message: ");
         }
     }
 
+    @Override
+    public Destination getDestination() {
+        return destination;
+    }
 }

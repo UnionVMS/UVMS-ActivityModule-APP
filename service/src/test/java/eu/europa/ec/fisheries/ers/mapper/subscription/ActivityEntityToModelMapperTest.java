@@ -66,9 +66,6 @@ public class ActivityEntityToModelMapperTest {
         String clearControlSource = clearEmptyTags(controlSource);
         String clearTestSource = clearEmptyTags(testSource);
 
-        System.out.println(clearControlSource);
-        System.out.println(clearTestSource);
-
         org.xmlunit.diff.Diff myDiffSimilar = DiffBuilder
                 .compare(clearControlSource)
                 .withTest(clearTestSource)

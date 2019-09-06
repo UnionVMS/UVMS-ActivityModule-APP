@@ -11,14 +11,15 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+import javax.ejb.Local;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -29,8 +30,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 
 public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
 
@@ -46,6 +45,8 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     private static final String AREA = "area";
 
     private EntityManager em;
+
+    private DateTimeFormatter patternFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public FaReportDocumentDao(EntityManager em) {
         this.em = em;
@@ -150,13 +151,14 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         query.setParameter(STATUSES, statuses);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(SCHEME_ID, schemeId);
-        query.setParameter(START_DATE, DateUtils.START_OF_TIME.toDate());
-        query.setParameter(END_DATE, DateUtils.END_OF_TIME.toDate());
+
+        query.setParameter(START_DATE, java.sql.Date.valueOf(LocalDateTime.MIN.toLocalDate()));
+        query.setParameter(END_DATE, java.sql.Date.valueOf(LocalDateTime.MAX.toLocalDate()));
         if (startDate != null){
-            query.setParameter(START_DATE, DateTime.parse(startDate, ISODateTimeFormat.dateTimeParser()).toDate());
+            query.setParameter(START_DATE, patternFormat.parse(startDate));
         }
         if (endDate != null){
-            query.setParameter(END_DATE,  DateTime.parse(endDate, ISODateTimeFormat.dateTimeParser()).toDate());
+            query.setParameter(END_DATE,  patternFormat.parse(endDate));
 
         }
         return query.getResultList();

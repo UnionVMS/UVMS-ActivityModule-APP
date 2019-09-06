@@ -24,7 +24,6 @@ import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
@@ -74,7 +73,7 @@ public class ActivitySubscriptionPermissionChecker {
             String corrID = subscriptionProducerBean.sendModuleMessage(subscrPermissionRequest, activityReplyToQueue);
             TextMessage message = activityConsumerBean.getMessage(corrID, TextMessage.class);
             return SubscriptionModuleResponseMapper.mapToSubscriptionPermissionResponse(message.getText());
-        } catch (MessageException | JMSException | JAXBException e) {
+        } catch (JMSException | JAXBException e) {
             throw new ActivityModuleException("Error while trying to check permissions from Subscription Module!", e);
         }
 

@@ -10,8 +10,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
+import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
@@ -20,8 +23,11 @@ import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 @Local
 public class ExchangeProducerBean extends AbstractProducer {
 
+    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_EXCHANGE_EVENT)
+    private Queue destination;
+
     @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_EXCHANGE_EVENT;
+    public Destination getDestination() {
+        return destination;
     }
 }

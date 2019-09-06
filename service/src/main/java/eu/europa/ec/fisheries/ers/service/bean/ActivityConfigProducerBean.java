@@ -10,15 +10,15 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.Queue;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -27,27 +27,27 @@ import org.apache.commons.lang.StringUtils;
 @Slf4j
 public class ActivityConfigProducerBean extends AbstractProducer implements ConfigMessageProducer {
 
-    private Queue activityINQueue;
+    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_CONFIG)
+    private Queue destination;
 
-    @PostConstruct
-    public void init(){
-        activityINQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY);
-    }
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_ACTIVITY)
+    private Queue replyToQueue;
+
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendConfigMessage(String textMsg) {
         try {
-            return sendModuleMessage(textMsg, activityINQueue);
-        } catch (MessageException e) {
+            return sendModuleMessage(textMsg, replyToQueue);
+        } catch (JMSException e) {
             log.error("[ERROR] Error while trying to send message to Config! Check ActivityConfigProducerBeanImpl..");
         }
         return StringUtils.EMPTY;
     }
 
     @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_CONFIG;
+    public Destination getDestination() {
+        return destination;
     }
 }
 

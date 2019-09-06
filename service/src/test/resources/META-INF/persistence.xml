@@ -6,7 +6,6 @@
 	<persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-		<class>eu.europa.ec.fisheries.uvms.domain.BaseEntity</class>
 		<!-- ERS Activity entities -->
 		<class>eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity</class>
 		<class>eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharCodeEntity</class>
@@ -57,7 +56,7 @@
 			<property name="javax.persistence.schema-generation.scripts.drop-target" value="scripts/drop-table.ddl"/>
 			<property name="javax.persistence.schema-generation.create-source" value="metadata" />
 			<property name="javax.persistence.schema-generation.scripts.create-target" value="scripts/create-table.ddl" />
-			<property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS activity;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=2;" />
+			<property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS activity;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=0;" />
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
@@ -67,9 +66,9 @@
 			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
 			<property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
 
-			<property name="show_sql" value="true" />
-			<property name="format_sql" value="true" />
-			<property name="use_sql_comments" value="true" />
+			<property name="show_sql" value="false" />
+			<property name="format_sql" value="false" />
+			<property name="use_sql_comments" value="false" />
 
 			<!--HIBERNATE SEARCH PROPS-->
 			<property name="hibernate.search.default.directory_provider"

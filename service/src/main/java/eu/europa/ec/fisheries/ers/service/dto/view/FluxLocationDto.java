@@ -27,7 +27,6 @@ import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
 
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
@@ -172,7 +171,8 @@ public class FluxLocationDto {
             stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
             stringStringHashMap.put("typeCode", fluxCharacteristic.getTypeCode());
             stringStringHashMap.put("typeCodeListId", fluxCharacteristic.getTypeCodeListId());
-            stringStringHashMap.put("valueDateTime", DateUtils.UI_FORMATTER.print(new DateTime((fluxCharacteristic.getValueDateTime()))));
+            //TODO: Fix this
+            stringStringHashMap.put("valueDateTime", fluxCharacteristic.getValueDateTime().toString());
             stringStringHashMap.values().removeAll(Collections.singleton(null));
         }
 

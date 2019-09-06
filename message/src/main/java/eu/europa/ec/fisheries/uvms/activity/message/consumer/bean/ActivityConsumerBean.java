@@ -10,8 +10,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
+import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
@@ -20,8 +23,11 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 @Local
 public class ActivityConsumerBean extends AbstractConsumer {
 
+    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_ACTIVITY)
+    private Queue destination;
+
     @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_ACTIVITY;
+    public Destination getDestination() {
+        return destination;
     }
 }

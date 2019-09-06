@@ -28,7 +28,10 @@
     </developers>
 
     <properties>
-
+        <docker.dev.version>3.38.6.w17</docker.dev.version>
+        <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
+        <docker.liquibase.db.user>activity</docker.liquibase.db.user>
+        <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
         <!-- sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -47,17 +50,16 @@
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
-        <uvms.config.version>4.0.3</uvms.config.version>
+        <uvms.config.version>4.0.5</uvms.config.version>
         <mdr.model.version>1.0.1</mdr.model.version>
         <mockito.version>1.10.19</mockito.version>
-        <asset.model.version>4.0.18</asset.model.version>
-        <asset.model.version>4.0.18</asset.model.version>
-        <movement.model.version>4.0.9</movement.model.version>
-        <!--<movement.model.version>5.1.23-UVMS</movement.model.version>-->
+        <asset.model.version>6.0.65</asset.model.version>
+        <!--movement.model.version>4.0.9</movement.model.version-->
+        <movement.model.version>5.1.23-UVMS</movement.model.version>
         <audit.model.version>4.0.10</audit.model.version>
-        <uvms.commons.version>3.0.25</uvms.commons.version>
+        <uvms.commons.version>4.0.4</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <usm4uvms.version>4.0.12</usm4uvms.version>
+        <usm4uvms.version>4.0.21</usm4uvms.version>
         <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
 
 
@@ -77,12 +79,6 @@
         </application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
         </application.logfile.boot>
-        <!--
-        <hibernate.version>4.3.11.Final</hibernate.version>
-        <hibernate-spatial.version>4.3</hibernate-spatial.version>
-        <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
-        <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
-        -->
         <geotools.version>14.4</geotools.version>
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
@@ -91,6 +87,11 @@
         <geotools.version>14.4</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
+        <xmlunit.version>1.6</xmlunit.version>
+        <xmlunit-core.version>2.1.0</xmlunit-core.version>
+        <focus-pom.maven.compiler.plugin.version>3.8.0</focus-pom.maven.compiler.plugin.version>
+        <focus-pom.maven.surefire.plugin.version>2.22.2</focus-pom.maven.surefire.plugin.version>
+
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
@@ -162,18 +163,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<dependency>
-			    <groupId>net.sf.ehcache.internal</groupId>
-			    <artifactId>ehcache-core</artifactId>
-	            <version>2.10.4</version>
-	            <exclusions>
-	            	<exclusion>
-	            		 <groupId>org.slf4j</groupId>
-	    				 <artifactId>slf4j-api</artifactId>
-	            	</exclusion>
-	            </exclusions>
-	        </dependency>
-            
+
 	        <dependency>
 	            <groupId>eu.europa.ec.fisheries.uvms</groupId>
 	            <artifactId>uvms-config</artifactId>
@@ -241,14 +231,6 @@
                 <version>${project.parent.version}</version>
             </dependency>
 
-            <!--
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.validator.version}</version>
-            </dependency>
-            -->
-
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
@@ -268,22 +250,9 @@
             </dependency>
 
             <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2.2</version>
-            </dependency>
-
-            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.6</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>${javaee.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -308,17 +277,16 @@
             <dependency>
                 <groupId>org.xmlunit</groupId>
                 <artifactId>xmlunit-core</artifactId>
-                <version>2.1.0</version>
+                <version>${xmlunit-core.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>xmlunit</groupId>
                 <artifactId>xmlunit</artifactId>
-                <version>1.6</version>
+                <version>${xmlunit.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -378,41 +346,34 @@
                 <scope>provided</scope>
             </dependency>
 
-            <dependency>
-                <groupId>ojdbc</groupId>
-                <artifactId>ojdbc</artifactId>
-                <version>14</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.wololo</groupId>
-                <artifactId>jts2geojson</artifactId>
-                <version>0.7.0</version>
-            </dependency>
            	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
 				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
+
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
 				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
+
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
 				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
+
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-test-deps</artifactId>
 				<version>1.23</version>
 				<type>pom</type>
 			</dependency>
+
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-arquillian-deps</artifactId>
@@ -421,20 +382,17 @@
 			</dependency>
 
             <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-plugin-api</artifactId>
-                <version>${mave.plugin.api.version}</version>
-            </dependency>
-            <dependency>
     			<groupId>ch.qos.logback</groupId>
     			<artifactId>logback-core</artifactId>
-    			<version>1.2.3</version>
+    			<version>${logback.core.version}</version>
     		</dependency>
+
     		<dependency>
     			<groupId>ch.qos.logback</groupId>
     			<artifactId>logback-classic</artifactId>
-    			<version>1.2.3</version>
+    			<version>${logback.version}</version>
     		</dependency>
+
     		<dependency>
     		  <groupId>org.slf4j</groupId>
   			  <artifactId>slf4j-api</artifactId>
@@ -450,13 +408,6 @@
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 		</dependency>
-        
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
 
@@ -540,7 +491,6 @@
             </plugin>
         </plugins>
     </build>
-
     <!-- add repositories for JTS and Hibernate Spatial and Hibernate (JBoss) -->
     <repositories>
         <repository>

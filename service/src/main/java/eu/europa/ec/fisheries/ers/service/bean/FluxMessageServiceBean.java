@@ -231,12 +231,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     String purposeCodeFromDb = foundRelatedFaReportCorrOrDelOrCanc.getFluxReportDocument().getPurposeCode();
                     FaReportStatusType faReportStatusEnumFromDb = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(purposeCodeFromDb));
                     FaReportDocumentEntity persistentFaDoc;
-                    try {
-                        persistentFaDoc = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, justSavedReport.getId());
-                    } catch (ServiceException e) {
-                        log.error("Error while trying to get FaRepDoc from db.");
-                        continue;
-                    }
+                    persistentFaDoc = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, justSavedReport.getId());
                     persistentFaDoc.setStatus(faReportStatusEnumFromDb.name());
                     checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(persistentFaDoc, faReportStatusEnumFromDb, foundRelatedFaReportCorrOrDelOrCanc.getId());
                 }
