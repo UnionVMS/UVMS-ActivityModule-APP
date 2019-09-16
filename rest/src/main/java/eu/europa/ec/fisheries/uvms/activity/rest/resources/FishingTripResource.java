@@ -14,7 +14,6 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
@@ -61,9 +60,6 @@ public class FishingTripResource extends UnionVMSResource {
 
     @Context
     private UriInfo context;
-
-    @EJB
-    private ActivityService activityService;
 
     @EJB
     private FishingTripService fishingTripService;

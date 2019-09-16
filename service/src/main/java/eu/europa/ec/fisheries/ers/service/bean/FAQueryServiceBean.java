@@ -77,7 +77,6 @@ public class FAQueryServiceBean implements FaQueryService {
             for (SubscriptionDataCriteria dataCriteria : subscriptionDataCriteria){
 
                 SubCriteriaType subCriteria = dataCriteria.getSubCriteria();
-                String valueType = dataCriteria.getValueType().value();
                 String value = dataCriteria.getValue();
 
                 if (subCriteria == SubCriteriaType.END_DATE) {

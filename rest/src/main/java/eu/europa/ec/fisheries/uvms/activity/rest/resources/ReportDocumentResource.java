@@ -21,7 +21,6 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 
 import eu.europa.ec.fisheries.ers.service.FaQueryService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
@@ -36,9 +35,6 @@ import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessag
 @Slf4j
 @Stateless
 public class ReportDocumentResource extends UnionVMSResource {
-
-    @EJB
-    private FishingTripService fishingTripService;
 
     @EJB
     private FaQueryService faQueryService;

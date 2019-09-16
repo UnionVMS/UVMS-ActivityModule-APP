@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityViewDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
@@ -53,9 +52,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
 @Slf4j
 @Stateless
 public class FishingActivityViewsResource extends UnionVMSResource {
-
-    @EJB
-    private FluxMessageService fluxResponseMessageService;
 
     @EJB
     private ActivityService activityService;

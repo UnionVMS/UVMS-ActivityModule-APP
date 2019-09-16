@@ -27,7 +27,6 @@ import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
@@ -74,9 +73,6 @@ public class ActivityEventServiceBean implements EventService {
     @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
-
-    @EJB
-    private FluxMessageService fluxMessageService;
 
     @EJB
     private FishingTripService fishingTripService;

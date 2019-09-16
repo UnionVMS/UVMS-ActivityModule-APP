@@ -44,8 +44,6 @@ public class ActivitySubscriptionPermissionChecker {
     @EJB
     private ActivityConsumerBean activityConsumerBean;
 
-    private Destination activityReplyToQueue;
-
     public SubscriptionPermissionResponse checkPermissionForFaQuery(FAQuery faQuery) throws ActivityModuleException {
         SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(faQuery, true);
         String subscrPermissionRequest;

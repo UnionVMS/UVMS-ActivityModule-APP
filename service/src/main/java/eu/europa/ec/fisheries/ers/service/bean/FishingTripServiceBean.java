@@ -31,7 +31,6 @@ import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripIdDto;
@@ -43,7 +42,6 @@ import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -57,7 +55,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import org.mockito.internal.util.collections.Sets;
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
@@ -79,9 +76,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @EJB
     private ActivityService activityServiceBean;
-
-    @EJB
-    private AssetProducerBean assetProducerBean;
 
     @EJB
     private AssetModuleService assetModuleService;
@@ -755,7 +749,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException {
         CatchEvolutionDTO catchEvolution = new CatchEvolutionDTO();
         List<FishingActivityEntity> fishingActivities = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
-        List<Object[]> faCatches = faCatchDao.findFaCatchesByFishingTrip(fishingTripId);
         catchEvolution.setTripDetails(getTripWidgetDto(fishingActivities.get(0), fishingTripId));
         catchEvolution.setCatchEvolutionProgress(prepareCatchEvolutionProgress(fishingActivities));
 
@@ -770,14 +763,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         return catchEvolutionProgress;
-    }
-
-    private void setFlapDocuments(VesselDetailsDTO detailsDTO, FishingActivityEntity parent, TripWidgetDto tripWidgetDto) {
-        FlapDocumentDto flapDocumentDto = FlapDocumentMapper.INSTANCE.mapToFlapDocumentDto(parent.getFirstFlapDocument());
-        if (flapDocumentDto != null) {
-            tripWidgetDto.setFlapDocuments(Sets.newSet(flapDocumentDto));
-        }
-        tripWidgetDto.setVesselDetails(detailsDTO);
     }
 
     public TripWidgetDto createTripWidgetDtoWithFishingActivity(FishingActivityEntity activityEntity) throws ServiceException {
