@@ -11,10 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.*;
 import com.google.common.base.Predicate;
@@ -216,21 +212,6 @@ public class BaseMapper {
         return fluxReportDocument.getReferenceId() != null && fluxReportDocument.getReferenceId().length() != 0;
     }
 
-    protected static XMLGregorianCalendar convertToXMLGregorianCalendar(Date dateTime, boolean includeTimeZone) {
-        XMLGregorianCalendar calendar = null;
-        try {
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTimeInMillis(dateTime.getTime());
-            calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-            if (!includeTimeZone) {
-                calendar.setTimezone(DatatypeConstants.FIELD_UNDEFINED); //If we do not want timeZone to be included, set this
-            }
-        } catch (DatatypeConfigurationException e) {
-            log.error(e.getMessage(), e);
-        }
-        return calendar;
-    }
-
     public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
         FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
         return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
@@ -310,26 +291,4 @@ public class BaseMapper {
         }
         return positionDto;
     }
-
-    /**
-     * return fishing trip start and end time
-     * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time
-     * fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
-     *
-     * @param fishingActivities
-     * @param fishingActivityType
-     * @return
-     */
-    public Date getFishingTripDateTimeFromFishingActivities(List<FishingActivityEntity> fishingActivities, String fishingActivityType) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivityType == null) {
-            return null;
-        }
-        for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
-            if (fishingActivityEntity != null && fishingActivityType.equals(fishingActivityEntity.getTypeCode()) && fishingActivityEntity.getCalculatedStartTime() != null) {
-                return fishingActivityEntity.getCalculatedStartTime();
-            }
-        }
-        return null;
-    }
-
 }

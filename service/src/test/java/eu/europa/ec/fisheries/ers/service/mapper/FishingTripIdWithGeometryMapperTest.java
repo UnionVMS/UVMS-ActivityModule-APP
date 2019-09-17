@@ -32,7 +32,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         // Given
 
         // When
-        FishingTripIdWithGeometry response = (new FishingTripIdWithGeometryMapper()).mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
+        FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
         assertEquals(0.0, response.getTripDuration(), 1);
@@ -44,7 +44,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         addFishingActivity(FishingActivityTypeEnum.DEPARTURE);
 
         // When
-        FishingTripIdWithGeometry response = (new FishingTripIdWithGeometryMapper()).mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
+        FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
         assertEquals(3600005, response.getTripDuration(), 100);
@@ -58,7 +58,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         addFishingActivity(FishingActivityTypeEnum.AREA_ENTRY);
 
         // When
-        FishingTripIdWithGeometry response = (new FishingTripIdWithGeometryMapper()).mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
+        FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
        assertEquals(20000, response.getTripDuration(), 100);
@@ -74,7 +74,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         addFishingActivity(FishingActivityTypeEnum.LANDING); // shouldn't count
 
         // When
-        FishingTripIdWithGeometry response = (new FishingTripIdWithGeometryMapper()).mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
+        FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
         assertEquals(30000, response.getTripDuration(), 100);
