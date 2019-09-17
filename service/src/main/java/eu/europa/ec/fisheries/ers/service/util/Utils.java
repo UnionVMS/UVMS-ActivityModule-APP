@@ -23,20 +23,18 @@ public class Utils {
      * Furthermore if the value calculated up until now is different then null then it returns this value instead of null
      *
      * @param actualMeasureToAdd
-     * @param meausureSubTotalToAddTo
+     * @param measureSubTotalToAddTo
      * @return
      */
-    public static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
-        Double returnValue = null;
+    public static Double addDoubles(Double actualMeasureToAdd, Double measureSubTotalToAddTo) {
         if (actualMeasureToAdd != null && !(Math.abs(actualMeasureToAdd - 0.0) < 0.00000001)) {
-            if (meausureSubTotalToAddTo == null) {
-                meausureSubTotalToAddTo = 0.0;
+            if (measureSubTotalToAddTo == null) {
+                return actualMeasureToAdd;
             }
-            returnValue = actualMeasureToAdd + meausureSubTotalToAddTo;
-        } else if (meausureSubTotalToAddTo != null) {
-            returnValue = meausureSubTotalToAddTo;
-        }
-        return returnValue;
-    }
 
+            return actualMeasureToAdd + measureSubTotalToAddTo;
+        }
+
+        return measureSubTotalToAddTo;
+    }
 }
