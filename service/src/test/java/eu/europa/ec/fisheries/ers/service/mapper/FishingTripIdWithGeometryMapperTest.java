@@ -39,7 +39,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
     }
 
     @Test
-    public void tripDuration_noArrival_noSecondDeparture() {
+    public void tripDuration_hasDeparture_noOtherActivity() {
         // Given
         addFishingActivity(FishingActivityTypeEnum.DEPARTURE);
 
@@ -51,29 +51,33 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
     }
 
     @Test
-    public void tripDuration_noArrival_hasSecondDeparture() {
+    public void tripDuration_noArrival_countToLatestOtherActivity() {
         // Given
         addFishingActivity(FishingActivityTypeEnum.DEPARTURE);
-        addFishingActivity(FishingActivityTypeEnum.DEPARTURE);
+        addFishingActivity(FishingActivityTypeEnum.AREA_ENTRY); // shouldn't count
+        addFishingActivity(FishingActivityTypeEnum.AREA_ENTRY);
 
         // When
         FishingTripIdWithGeometry response = (new FishingTripIdWithGeometryMapper()).mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
-       assertEquals(10000, response.getTripDuration(), 100);
+       assertEquals(20000, response.getTripDuration(), 100);
     }
 
     @Test
     public void tripDuration_hasArrival() {
         // Given
         addFishingActivity(FishingActivityTypeEnum.DEPARTURE);
+        addFishingActivity(FishingActivityTypeEnum.AREA_ENTRY); // shouldn't count
+        addFishingActivity(FishingActivityTypeEnum.AREA_ENTRY); // shouldn't count
         addFishingActivity(FishingActivityTypeEnum.ARRIVAL);
+        addFishingActivity(FishingActivityTypeEnum.LANDING); // shouldn't count
 
         // When
         FishingTripIdWithGeometry response = (new FishingTripIdWithGeometryMapper()).mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
-        assertEquals(10000, response.getTripDuration(), 100);
+        assertEquals(30000, response.getTripDuration(), 100);
     }
 
     private void addFishingActivity(FishingActivityTypeEnum type) {
