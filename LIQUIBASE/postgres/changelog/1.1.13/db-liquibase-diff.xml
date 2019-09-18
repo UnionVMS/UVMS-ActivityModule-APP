@@ -123,9 +123,6 @@
     <changeSet author="anwall (generated)" id="1566992597989-64">
         <addForeignKeyConstraint baseColumnNames="fishing_activity_id" baseTableName="activity_flap_document" constraintName="fktbn3ol742rkhmcnb7cmu0evh2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_fishing_activity"/>
     </changeSet>
-    <changeSet author="anwall (generated)" id="1566992597989-65">
-        <dropTable tableName="activity_configuration"/>
-    </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-66">
         <dropColumn columnName="country" tableName="activity_structured_address"/>
     </changeSet>
