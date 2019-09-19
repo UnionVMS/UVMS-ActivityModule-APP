@@ -463,7 +463,7 @@
                                 <goal>jar</goal>
                             </goals>
                             <configuration>
-                                <additionalparam>${javadoc.opts}</additionalparam>
+                                <doclint>${javadoc.doclint}</doclint>
                             </configuration>
                         </execution>
                     </executions>
@@ -521,7 +521,7 @@
                 <jdk>[1.8,)</jdk>
             </activation>
             <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+                <javadoc.doclint>none</javadoc.doclint>
             </properties>
         </profile>
 		<profile>
