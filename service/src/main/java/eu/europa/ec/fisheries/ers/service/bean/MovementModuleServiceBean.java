@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -37,14 +36,17 @@ import javax.ejb.TransactionAttributeType;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Stateless
 @Transactional
 @Slf4j
 public class MovementModuleServiceBean extends ModuleService implements MovementModuleService {
+
+    private static final long ONE_DAY_IN_MILLIS = 24L * 60L * 60L * 1000L;
+    private static final String RANGE_CRITERIA_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss Z";
 
     @EJB
     private MovementProducerBean movementProducer;
@@ -57,7 +59,7 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException {
+    public List<MovementType> getMovement(List<String> vesselIds, Instant startDate, Instant endDate) throws ServiceException {
         try {
             MovementQuery movementQuery = new MovementQuery();
             addListCriteria(vesselIds, movementQuery);
@@ -89,11 +91,11 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
         }
     }
 
-    private void addRangeCriteria(Date startDate, Date endDate, MovementQuery movementQuery) {
+    private void addRangeCriteria(Instant startDate, Instant endDate, MovementQuery movementQuery) {
         RangeCriteria rangeCriteria = new RangeCriteria();
         rangeCriteria.setKey(RangeKeyType.DATE);
-        rangeCriteria.setFrom(DateFormatUtils.format(DateUtils.addDays(startDate, -1), "yyyy-MM-dd HH:mm:ss Z"));
-        rangeCriteria.setTo(DateFormatUtils.format(DateUtils.addDays(endDate, 1), "yyyy-MM-dd HH:mm:ss Z"));
+        rangeCriteria.setFrom(DateFormatUtils.format(startDate.toEpochMilli() - ONE_DAY_IN_MILLIS, RANGE_CRITERIA_DATE_FORMAT));
+        rangeCriteria.setTo(DateFormatUtils.format(endDate.toEpochMilli() + ONE_DAY_IN_MILLIS, RANGE_CRITERIA_DATE_FORMAT));
         movementQuery.getMovementRangeSearchCriteria().add(rangeCriteria);
     }
 

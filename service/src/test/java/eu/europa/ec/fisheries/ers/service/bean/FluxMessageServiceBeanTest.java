@@ -17,9 +17,9 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FluxFaReportMessageDao;
@@ -98,7 +98,7 @@ public class FluxMessageServiceBeanTest {
         Mockito.doReturn(Mockito.anyList()).when(fluxFaReportMessageDao).createEntity(Mockito.any(FluxFaReportMessageEntity.class));
 
         Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
-        Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Date.class), Mockito.any(Date.class));
+        Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Instant.class), Mockito.any(Instant.class));
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger

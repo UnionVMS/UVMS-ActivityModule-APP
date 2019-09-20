@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.*;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -119,8 +120,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      *
      * @param faReportDocument
      */
-    public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument) throws
-            ServiceException {
+    private void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument) {
         Set<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
         if (CollectionUtils.isEmpty(fishingActivities)) {
             log.error("Could not find FishingActivities for faReportDocument.");
@@ -165,7 +165,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
     }
 
-    private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument) throws ServiceException {
+    private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument) {
         if (CollectionUtils.isNotEmpty(faReportDocument.getVesselTransportMeans())) {
             for (VesselTransportMeansEntity vesselTransportMeansEntity : faReportDocument.getVesselTransportMeans()) {
                 enrichWithGuidFromAssets(vesselTransportMeansEntity);
@@ -183,8 +183,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
     }
 
-    private void enrichFishingActivityVesselWithGuiId(FishingActivityEntity fishingActivityEntity) throws
-            ServiceException {
+    private void enrichFishingActivityVesselWithGuiId(FishingActivityEntity fishingActivityEntity) {
         Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = fishingActivityEntity.getVesselTransportMeans();
         if (CollectionUtils.isEmpty(vesselTransportMeansEntityList)) {
             return;
@@ -201,7 +200,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      *
      * @param
      */
-    private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) throws ServiceException {
+    private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) {
         try {
             List<String> guids = assetService.getAssetGuids(vesselTransport.getVesselIdentifiers());
             if (CollectionUtils.isNotEmpty(guids)) {
@@ -281,8 +280,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
     }
 
-    private void updateFishingTripStartAndEndDate(Set<FaReportDocumentEntity> faReportDocuments) throws
-            ServiceException {
+    private void updateFishingTripStartAndEndDate(Set<FaReportDocumentEntity> faReportDocuments) {
         log.debug("Start  update of FishingTrip Start And End Date");
         if (CollectionUtils.isEmpty(faReportDocuments)) {
             log.error("FaReportDocuments List is EMPTY or NULL in updateFishingTripStartAndEndDate");
@@ -314,7 +312,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
                 List<Geometry> multiPointForFa = new ArrayList<>();
-                Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+                Instant activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence().toInstant() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
                 Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
                 for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
                     Geometry point = null;
@@ -360,7 +358,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * @param fluxLocationIdentifier
      * @return
      */
-    private Geometry getGeometryFromMdr(String fluxLocationIdentifier) throws ServiceException {
+    private Geometry getGeometryFromMdr(String fluxLocationIdentifier) {
         log.debug("[INFO] Get Geometry from MDR for : " + fluxLocationIdentifier);
         if (fluxLocationIdentifier == null) {
             return null;
@@ -429,30 +427,30 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             return Collections.emptyList();
         }
         Set<VesselIdentifierEntity> vesselIdentifiers = faReportDocumentEntity.getVesselTransportMeans().iterator().next().getVesselIdentifiers();
-        Map<String, Date> dateMap = findStartAndEndDate(faReportDocumentEntity);
+        Map<String, Instant> dateMap = findStartAndEndDate(faReportDocumentEntity);
         return getAllMovementsForDateRange(vesselIdentifiers, dateMap.get(START_DATE), dateMap.get(END_DATE));
     }
 
-    private Map<String, Date> findStartAndEndDate(FaReportDocumentEntity faReportDocumentEntity) {
-        TreeSet<Date> dates = new TreeSet<>();
+    private Map<String, Instant> findStartAndEndDate(FaReportDocumentEntity faReportDocumentEntity) {
+        TreeSet<Instant> dates = new TreeSet<>();
         for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
             if (fishingActivity.getOccurence() != null) {
-                dates.add(fishingActivity.getOccurence());
+                dates.add(fishingActivity.getOccurence().toInstant());
             } else if (CollectionUtils.isNotEmpty(fishingActivity.getDelimitedPeriods())) {
-                Date firstDate = getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+                Instant firstDate = getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
                 if (firstDate != null) {
                     dates.add(firstDate);
                 }
             }
         }
-        return ImmutableMap.<String, Date>builder().put(START_DATE, dates.first()).put(END_DATE, dates.last()).build();
+        return ImmutableMap.<String, Instant>builder().put(START_DATE, dates.first()).put(END_DATE, dates.last()).build();
     }
 
-    private Date getFirstDateFromDelimitedPeriods(Collection<DelimitedPeriodEntity> delimitedPeriods) {
-        TreeSet<Date> set = new TreeSet<>();
+    private Instant getFirstDateFromDelimitedPeriods(Collection<DelimitedPeriodEntity> delimitedPeriods) {
+        TreeSet<Instant> set = new TreeSet<>();
         for (DelimitedPeriodEntity delimitedPeriodEntity : delimitedPeriods) {
             if (delimitedPeriodEntity.getStartDate() != null)
-                set.add(delimitedPeriodEntity.getStartDate());
+                set.add(delimitedPeriodEntity.getStartDate().toInstant());
         }
         if (CollectionUtils.isEmpty(set)) {
             return null;
@@ -460,13 +458,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return set.first();
     }
 
-    private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date
-            startDate, Date endDate) throws ServiceException {
+    private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Instant
+            startDate, Instant endDate) throws ServiceException {
         List<String> assetGuids = assetService.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
         return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
     }
 
-    private Geometry interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws
+    private Geometry interpolatePointFromMovements(List<MovementType> movements, Instant activityDate) throws
             ServiceException {
 
         if (movements == null || movements.isEmpty()) {
@@ -498,13 +496,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return faReportGeom;
     }
 
-    private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date
+    private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Instant
             acceptedDate) throws ServiceException {
         Geometry point;
 
-        Long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
-        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().getTime();
-        Long durationBC = nextMovement.getPositionTime().getTime() - acceptedDate.getTime();
+        long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
+        long durationAC = acceptedDate.toEpochMilli() - previousMovement.getPositionTime().getTime();
+        long durationBC = nextMovement.getPositionTime().getTime() - acceptedDate.toEpochMilli();
 
         try {
 
@@ -527,12 +525,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return point;
     }
 
-    private Map<String, MovementType> getPreviousAndNextMovement(List<MovementType> movements, Date inputDate) {
+    private Map<String, MovementType> getPreviousAndNextMovement(List<MovementType> movements, Instant inputDate) {
         Map<String, MovementType> movementMap = new HashMap<>();
         for (MovementType movement : movements) {
-            if (movement.getPositionTime().compareTo(inputDate) <= 0) {
+            if (movement.getPositionTime().toInstant().compareTo(inputDate) <= 0) {
                 movementMap.put(PREVIOUS, movement);
-            } else if (movement.getPositionTime().compareTo(inputDate) > 0) {
+            } else if (movement.getPositionTime().toInstant().compareTo(inputDate) > 0) {
                 movementMap.put(NEXT, movement);
                 break;
             }
