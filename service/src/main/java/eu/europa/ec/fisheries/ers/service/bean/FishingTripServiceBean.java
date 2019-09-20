@@ -636,7 +636,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             query.setSorting(sortKey);
             List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
             if (collectFishingActivities) {
-                List<FishingActivityEntity> cleanedList = cleanFromDeletionsAndCancelations(fishingActivityEntityList);
+                List<FishingActivityEntity> cleanedList = cleanFromDeletionsAndCancellations(fishingActivityEntityList);
                 fishingActivitySummaries.addAll(getFishingActivitySummaryList(cleanedList, uniqueActivityIdList));
             }
 
@@ -651,19 +651,17 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return response;
     }
 
-    private List<FishingActivityEntity> cleanFromDeletionsAndCancelations(List<FishingActivityEntity> fishingActivityEntityList) {
+    private List<FishingActivityEntity> cleanFromDeletionsAndCancellations(List<FishingActivityEntity> fishingActivityEntityList) {
         List<FishingActivityEntity> cleanList = new ArrayList<>();
-        if(CollectionUtils.isEmpty(fishingActivityEntityList)){
-            return cleanList;
-        }
         String DELETED_STR = FaReportStatusType.DELETED.name();
         String CANCELLED_STR = FaReportStatusType.CANCELED.name();
         for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
             String status = fishingActivityEntity.getFaReportDocument().getStatus();
-            if(!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && fishingActivityEntity.getLatest()){
+            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && fishingActivityEntity.getLatest()) {
                 cleanList.add(fishingActivityEntity);
             }
         }
+
         return cleanList;
     }
 

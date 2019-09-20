@@ -37,10 +37,6 @@ import org.apache.commons.collections.CollectionUtils;
 public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
     public static FishingTripIdWithGeometry mapToFishingTripIdWithDetails(FishingTripId dto, List<FishingActivityEntity> fishingActivities) {
-        if ( dto == null && fishingActivities == null ) {
-            return null;
-        }
-
         FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometry();
 
         if ( dto != null ) {
@@ -63,11 +59,10 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
     }
 
     private static String getGeometryMultiPointForAllFishingActivities(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null) {
+        if (CollectionUtils.isEmpty(fishingActivities)) {
             return null;
         }
 
-        String GeometryWkt = null;
         List<Geometry> activityGeomList = new ArrayList<>();
         for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
             if (fishingActivityEntity.getGeom() != null) {
@@ -83,18 +78,18 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             }
         }
 
-        return GeometryWkt;
+        return null;
     }
 
     private static String getFirstFishingActivityType(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null) {
+        if (CollectionUtils.isEmpty(fishingActivities)) {
             return null;
         }
         return fishingActivities.get(0).getTypeCode();
     }
 
     private static XMLGregorianCalendar getFirstFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null || fishingActivities.get(0).getCalculatedStartTime() == null) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0).getCalculatedStartTime() == null) {
             return null;
         }
 
@@ -102,7 +97,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
     }
 
     private static String getLastFishingActivityType(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null) {
+        if (CollectionUtils.isEmpty(fishingActivities)) {
             return null;
         }
         int totalFishingActivityCount = fishingActivities.size();
@@ -110,7 +105,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
     }
 
     private static XMLGregorianCalendar getLastFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null || fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime() == null) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime() == null) {
             return null;
         }
         int totalFishingActivityCount = fishingActivities.size();
@@ -118,7 +113,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
     }
 
     private static List<VesselIdentifierType> getVesselIdListsForFishingActivity(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument() == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument().getVesselTransportMeans() == null) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument() == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument().getVesselTransportMeans() == null) {
             return Collections.emptyList();
         }
         int totalFishingActivityCount = fishingActivities.size();
@@ -143,7 +138,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
     }
 
     private static String getFlagStateFromActivityList(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument() == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument().getVesselTransportMeans() == null) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument() == null || fishingActivities.get(fishingActivities.size() - 1).getFaReportDocument().getVesselTransportMeans() == null) {
             return null;
         }
         int totalFishingActivityCount = fishingActivities.size();
@@ -156,9 +151,6 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
     }
 
     private static int getNumberOfCorrectionsForFishingActivities(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities)) {
-            return 0;
-        }
         int noOfCorrections = 0;
         for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
             if (getCorrection(fishingActivityEntity)) {
