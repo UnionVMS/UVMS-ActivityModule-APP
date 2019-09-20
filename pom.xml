@@ -11,7 +11,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>1.1.15-SNAPSHOT</version>
+    <version>1.1.16-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
     <url>http://www.your.site.com/</url>
@@ -59,9 +59,8 @@
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.2.3</logback.core.version>
-        <movement.model.version>4.0.9</movement.model.version>
-        <asset.model.version>4.0.18</asset.model.version>
-        <movement.model.version>4.0.16</movement.model.version>
+    <movement.model.version>5.1.8-SNAPSHOT</movement.model.version>
+    <asset.model.version>4.0.24-SNAPSHOT</asset.model.version>
         <audit.model.version>4.0.10</audit.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
@@ -87,10 +86,10 @@
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
 
-        <uvms.commons.version>3.3-W14J8</uvms.commons.version>
-        <uvms.config.version>4.1-W14J8</uvms.config.version>
-        <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
 
+    <uvms.commons.version>3.4-SNAPSHOT</uvms.commons.version>
+    <uvms.config.version>4.2-SNAPSHOT</uvms.config.version>
+    <usm4uvms.version>4.0.15.1-SNAPSHOT</usm4uvms.version>
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
 
