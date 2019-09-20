@@ -25,6 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.Instant;
 import java.util.List;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
@@ -65,33 +66,32 @@ public class FAQueryServiceBean implements FaQueryService {
     @Override
     public FLUXFAReportMessage getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria) {
 
-        if (CollectionUtils.isNotEmpty(subscriptionDataCriteria)){
+        if (CollectionUtils.isNotEmpty(subscriptionDataCriteria)) {
 
             String consolidated = "N";
             String tripID = null;
             String vesselId = null;
             String schemeId = null;
-            String endDate = null;
-            String startDate = null;
+            Instant endDate = null;
+            Instant startDate = null;
 
-            for (SubscriptionDataCriteria dataCriteria : subscriptionDataCriteria){
+            for (SubscriptionDataCriteria dataCriteria : subscriptionDataCriteria) {
 
                 SubCriteriaType subCriteria = dataCriteria.getSubCriteria();
                 String value = dataCriteria.getValue();
 
                 if (subCriteria == SubCriteriaType.END_DATE) {
-                    endDate = value;
+                    endDate = Instant.parse(value);
                 }
 
                 else if (subCriteria == SubCriteriaType.START_DATE) {
-                    startDate = value;
+                    startDate = Instant.parse(value);
                 }
 
             }
 
             List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(tripID, consolidated, vesselId, schemeId, startDate, endDate);
             return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
-
         }
 
         return null;
