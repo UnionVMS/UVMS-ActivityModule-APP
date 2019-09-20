@@ -19,12 +19,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityLandingViewMapperImpl;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 
 public class ActivityLandingViewMapperTest {
 
-    private ActivityLandingViewMapper mapper = new ActivityLandingViewMapperImpl();
+    private ActivityLandingViewMapper mapper = Mappers.getMapper(ActivityLandingViewMapper.class);
 
     @Test
     public void testMapToDelimitedPeriodDtoTestWithEmptyObject() {

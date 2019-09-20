@@ -26,6 +26,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMap
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.mapstruct.factory.Mappers;
 
 public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
@@ -62,7 +63,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
         viewDTO.setGearProblems(GearShotRetrievalTileMapper.INSTANCE.mapGearProblemsToGearsDto(faEntity.getGearProblems()));
 
-        viewDTO.setGearShotRetrievalList(GearShotRetrievalTileMapperImpl.INSTANCE.mapFromRelatedFishingActivities(faEntity));
+        viewDTO.setGearShotRetrievalList(Mappers.getMapper(GearShotRetrievalTileMapper.class).INSTANCE.mapFromRelatedFishingActivities(faEntity));
 
         Set<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations());
 

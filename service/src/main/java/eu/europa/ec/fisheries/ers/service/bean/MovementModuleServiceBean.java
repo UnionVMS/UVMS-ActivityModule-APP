@@ -27,9 +27,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsum
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MovementProducerBean;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementModelException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -83,10 +81,10 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             } else {
                 throw new ServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
-        } catch (MovementDuplicateException | MovementFaultException | ServiceException | MessageException | JMSException | ModelMapperException e) {
+        } catch (MovementModelException | ServiceException | MessageException | JMSException e) {
             log.error("Exception in communication with movements! Enrichment failed!");
             throw new ServiceException(e.getMessage(), e);
-        }
+        } 
     }
 
     private void addRangeCriteria(Date startDate, Date endDate, MovementQuery movementQuery) {
