@@ -45,7 +45,7 @@ public class ActivityConfiguration implements Serializable {
     @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "act_config_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    private int id;
+    private long id;
 
     @Column(name = "config_name")
     private String configName;
