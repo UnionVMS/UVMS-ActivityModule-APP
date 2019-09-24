@@ -229,20 +229,20 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return fishingGearTypecodeList;
     }
 
-    protected Date getCalculatedStartTime(FishingActivity fishingActivity) {
+    protected Instant getCalculatedStartTime(FishingActivity fishingActivity) {
         if (fishingActivity == null) {
             return null;
         }
         DateTimeType dateTimeType;
         DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
         if (occurrenceDateTime != null && occurrenceDateTime.getDateTime() != null) {
-            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime());
+            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
         }
         if (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())) {
             List<DelimitedPeriod> delimitedPeriodEntities = fishingActivity.getSpecifiedDelimitedPeriods();
             dateTimeType = delimitedPeriodEntities.iterator().next().getStartDateTime();
             if (dateTimeType != null && dateTimeType.getDateTime() != null) {
-                return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime());
+                return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime()).toInstant();
             }
         }
         // We reached till this point of code means FishingActivity has neither occurrence date or startDate for DelimitedPeriod.
@@ -258,7 +258,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
                         dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
                     }
                     if (dateTimeType != null && dateTimeType.getDateTime() != null) {
-                        return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime());
+                        return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime()).toInstant();
                     }
                 }
             }

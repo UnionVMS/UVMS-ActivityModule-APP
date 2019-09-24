@@ -93,7 +93,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             return null;
         }
 
-        return convertToXMLGregorianCalendar(fishingActivities.get(0).getCalculatedStartTime().toInstant());
+        return convertToXMLGregorianCalendar(fishingActivities.get(0).getCalculatedStartTime());
     }
 
     private static String getLastFishingActivityType(List<FishingActivityEntity> fishingActivities) {
@@ -109,7 +109,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             return null;
         }
         int totalFishingActivityCount = fishingActivities.size();
-        return convertToXMLGregorianCalendar(fishingActivities.get(totalFishingActivityCount - 1).getCalculatedStartTime().toInstant());
+        return convertToXMLGregorianCalendar(fishingActivities.get(totalFishingActivityCount - 1).getCalculatedStartTime());
     }
 
     private static List<VesselIdentifierType> getVesselIdListsForFishingActivity(List<FishingActivityEntity> fishingActivities) {
@@ -184,9 +184,9 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             log.info("ARRIVAL is not yet received for the trip");
 
             // find out date of last activity for the trip
-            Date lastActivityDate = fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime();
+            Instant lastActivityDate = fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime();
             if (lastActivityDate != null) {
-                Instant lastActivityInstant = lastActivityDate.toInstant();
+                Instant lastActivityInstant = lastActivityDate;
                 if (lastActivityInstant.isAfter(startDate)) { // If last activity date is later than start date
                     return Duration.between(startDate, lastActivityInstant);
                 }
@@ -237,7 +237,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             }
 
             if (activityTypeAsString.equals(fishingActivityEntity.getTypeCode()) && fishingActivityEntity.getCalculatedStartTime() != null) {
-                return Optional.of(fishingActivityEntity.getCalculatedStartTime().toInstant());
+                return Optional.of(fishingActivityEntity.getCalculatedStartTime());
             }
         }
 

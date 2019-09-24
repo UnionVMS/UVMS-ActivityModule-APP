@@ -439,7 +439,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public int getPreviousFishingActivity(int fishingActivityId) {
         log.info(" Retrieve fishing activity from db:" + fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime().toInstant()));
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
         return fishingActivityDao.getPreviousFishingActivityId(activityEntity);
     }
 
@@ -447,7 +447,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public int getNextFishingActivity(int fishingActivityId) {
         log.info(" Retrieve fishing activity from db:" + fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime().toInstant()));
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
         return fishingActivityDao.getNextFishingActivityId(activityEntity);
     }
 }

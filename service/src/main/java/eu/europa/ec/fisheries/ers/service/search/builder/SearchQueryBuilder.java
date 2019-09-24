@@ -374,9 +374,17 @@ public abstract class SearchQueryBuilder {
         return Date.from(zonedDateTime.toInstant());
     }
 
+    private Instant parseToInstant(String value) {
+        LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT));
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
+        return zonedDateTime.toInstant();
+    }
+
     private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
         switch (key) {
             case PERIOD_START:
+                typedQuery.setParameter(queryParameterMappings.get(key), parseToInstant(value));
+                break;
             case PERIOD_END:
                 typedQuery.setParameter(queryParameterMappings.get(key), parseToUTCDate(value));
                 break;

@@ -90,10 +90,10 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
             startTime = Instant.now().minus(1, ChronoUnit.HOURS);
         } else {
             FishingActivityEntity lastActivity = fishingActivities.get(fishingActivities.size() - 1);
-            startTime = lastActivity.getCalculatedStartTime().toInstant().plus(10, ChronoUnit.SECONDS);
+            startTime = lastActivity.getCalculatedStartTime().plus(10, ChronoUnit.SECONDS);
         }
 
-        activity.setCalculatedStartTime(new Date(startTime.toEpochMilli()));
+        activity.setCalculatedStartTime(startTime);
 
         fishingActivities.add(activity);
     }

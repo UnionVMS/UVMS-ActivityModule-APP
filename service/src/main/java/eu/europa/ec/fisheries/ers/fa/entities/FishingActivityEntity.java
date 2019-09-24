@@ -166,9 +166,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name="deleted_by")
 	private Integer deletedBy;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_start_time", length = 29)
-	private Date calculatedStartTime;
+	private Instant calculatedStartTime;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
@@ -307,5 +306,13 @@ public class FishingActivityEntity implements Serializable {
 		}
 
     	return Optional.of(new Date(occurence.toEpochMilli()));
+	}
+
+	public Optional<Date> getCalculatedStartTimeAsDate() {
+    	if (calculatedStartTime == null) {
+    		return Optional.empty();
+		}
+
+		return Optional.of(new Date(calculatedStartTime.toEpochMilli()));
 	}
 }
