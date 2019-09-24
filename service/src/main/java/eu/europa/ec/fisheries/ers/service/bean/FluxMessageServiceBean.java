@@ -312,7 +312,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
                 List<Geometry> multiPointForFa = new ArrayList<>();
-                Instant activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence().toInstant() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+                Instant activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
                 Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
                 for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
                     Geometry point = null;
@@ -435,7 +435,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         TreeSet<Instant> dates = new TreeSet<>();
         for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
             if (fishingActivity.getOccurence() != null) {
-                dates.add(fishingActivity.getOccurence().toInstant());
+                dates.add(fishingActivity.getOccurence());
             } else if (CollectionUtils.isNotEmpty(fishingActivity.getDelimitedPeriods())) {
                 Instant firstDate = getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
                 if (firstDate != null) {

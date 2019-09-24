@@ -89,7 +89,7 @@ public class FishingActivityMapperTest {
     private void assertFishingActivityFields(FishingActivity fishingActivity, FishingActivityEntity fishingActivityEntity) {
         assertEquals(fishingActivity.getTypeCode().getValue(), fishingActivityEntity.getTypeCode());
         assertEquals(fishingActivity.getTypeCode().getListID(), fishingActivityEntity.getTypeCodeListid());
-        assertEquals(fishingActivity.getOccurrenceDateTime().getDateTime().toGregorianCalendar().getTime(), fishingActivityEntity.getOccurence());
+        assertEquals(fishingActivity.getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant(), fishingActivityEntity.getOccurence());
         assertEquals(fishingActivity.getReasonCode().getValue(), fishingActivityEntity.getReasonCode());
         assertEquals(fishingActivity.getReasonCode().getListID(), fishingActivityEntity.getReasonCodeListId());
         assertEquals(fishingActivity.getVesselRelatedActivityCode().getValue(), fishingActivityEntity.getVesselActivityCode());

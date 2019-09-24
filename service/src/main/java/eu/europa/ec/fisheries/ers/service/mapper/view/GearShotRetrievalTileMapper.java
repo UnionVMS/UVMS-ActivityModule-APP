@@ -11,6 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +48,8 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
 
     public static final GearShotRetrievalTileMapper INSTANCE = Mappers.getMapper(GearShotRetrievalTileMapper.class);
 
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT).withZone(ZoneId.of("UTC"));
+
     /**
      * This should be the entry point of this mapper.
      * As a input parameter it will take the "father" fishingActivity from which we need to get the list of
@@ -72,7 +77,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "id", expression = "java(mapListToSingleIdentifier(entity.getFishingActivityIdentifiers()))"),
-            @Mapping(target = "occurrence", source = "occurence", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "occurrence", source = "occurence"),
             @Mapping(target = "gear", expression = "java(mapToFirstFishingGear(entity.getFishingGears()))"),
             @Mapping(target = "characteristics", expression = "java(getFluxCharacteristicsTypeCodeValue(entity.getFluxCharacteristics()))"),
             @Mapping(target = "location", expression = "java(mapSingleFluxLocationFromEntity(entity.getFluxLocations()))")
@@ -123,4 +128,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
         return probRecoveryMeasure;
     }
 
+    protected String map(Instant value) {
+        return formatter.format(value);
+    }
 }

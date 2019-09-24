@@ -14,8 +14,10 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
@@ -99,9 +101,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "type_code_listid", nullable = false)
 	private String typeCodeListid;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "occurence", length = 29)
-	private Date occurence;
+	private Instant occurence;
 
 	@Column(name = "reason_code")
 	private String reasonCode;
@@ -299,4 +300,12 @@ public class FishingActivityEntity implements Serializable {
         }
         return locationDtos;
     }
+
+    public Optional<Date> getOccurrenceAsDate() {
+    	if (occurence == null) {
+    		return Optional.empty();
+		}
+
+    	return Optional.of(new Date(occurence.toEpochMilli()));
+	}
 }

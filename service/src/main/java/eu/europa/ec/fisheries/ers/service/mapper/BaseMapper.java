@@ -282,7 +282,7 @@ public class BaseMapper {
             return null;
         }
         PositionDto positionDto = new PositionDto();
-        positionDto.setOccurence(faEntity.getOccurence());
+        positionDto.setOccurence(faEntity.getOccurrenceAsDate().orElse(null));
         if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
             FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
             if (locationEntity != null && locationEntity.getGeom() != null) {

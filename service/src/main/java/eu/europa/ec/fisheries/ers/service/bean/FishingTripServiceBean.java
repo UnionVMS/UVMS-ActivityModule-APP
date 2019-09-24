@@ -19,6 +19,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
@@ -439,21 +440,21 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
 
-    public void populateFishingTripSummary(FishingActivityEntity activityEntity, Map<String, FishingActivityTypeDTO> summary) {
+    private void populateFishingTripSummary(FishingActivityEntity activityEntity, Map<String, FishingActivityTypeDTO> summary) {
         String activityTypeCode = activityEntity.getTypeCode();
         if (DEPARTURE.toString().equalsIgnoreCase(activityTypeCode)
                 || ARRIVAL.toString().equalsIgnoreCase(activityTypeCode)
                 || LANDING.toString().equalsIgnoreCase(activityTypeCode)) {
-            Date occurrence = activityEntity.getOccurence();
+            Instant occurrence = activityEntity.getOccurence();
             Boolean isCorrection = BaseMapper.getCorrection(activityEntity);
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
             if (fishingActivityTypeDTO == null
                     || (isCorrection
                     && fishingActivityTypeDTO.getDate() != null
                     && occurrence != null
-                    && occurrence.compareTo(fishingActivityTypeDTO.getDate()) > 0)) {
+                    && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0)) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
-                fishingActivityTypeDTO.setDate(occurrence);
+                fishingActivityTypeDTO.setDate(new Date(occurrence.toEpochMilli()));
                 summary.put(activityTypeCode, fishingActivityTypeDTO);
             }
         }

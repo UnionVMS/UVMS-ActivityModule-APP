@@ -48,7 +48,7 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
 
     @Override
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails){
-        activityDetails.setArrivalTime(faEntity.getOccurence());
+        activityDetails.setArrivalTime(faEntity.getOccurrenceAsDate().orElse(null));
         activityDetails.setIntendedLandingTime(extractLandingTime(faEntity.getFluxCharacteristics()));
         activityDetails.setReason(faEntity.getReasonCode());
         return activityDetails;

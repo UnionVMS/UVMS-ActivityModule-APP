@@ -95,7 +95,7 @@ public class ActivityDataUtil {
         FishingActivityEntity fishingActivityEntity = new FishingActivityEntity();
         fishingActivityEntity.setTypeCode(typeCode);
         fishingActivityEntity.setTypeCodeListid(typeCodeListId);
-        fishingActivityEntity.setOccurence(Date.from(occurence));
+        fishingActivityEntity.setOccurence(occurence);
         fishingActivityEntity.setReasonCode(reasonCode);
         fishingActivityEntity.setReasonCodeListId(reasonCodeListId);
         fishingActivityEntity.setFaReportDocument(faReportDocumentEntity);

@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -400,10 +401,10 @@ public class ActivityEntityToModelMapper {
         }
     }
 
-    private void mapOccurrenceDateTime(FishingActivity target, Date source) {
+    private void mapOccurrenceDateTime(FishingActivity target, Instant source) {
         if (ObjectUtils.allNotNull(target, source)){
             DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
+            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(new Date(source.toEpochMilli())));
             target.setOccurrenceDateTime(dateTimeType);
         }
     }

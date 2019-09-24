@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.time.Instant;
 import java.util.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
@@ -40,6 +41,8 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class, XMLDateUtils.class,
         FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
@@ -50,13 +53,13 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 public abstract class FishingActivityMapper extends BaseMapper {
 
     public static final FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
-    public static final String LOCATION_AREA = FluxLocationEnum.AREA.toString();
-    public static final String LOCATION_PORT = FluxLocationEnum.LOCATION.toString();
+    private static final String LOCATION_AREA = FluxLocationEnum.AREA.toString();
+    private static final String LOCATION_PORT = FluxLocationEnum.LOCATION.toString();
 
     @Mappings({
             @Mapping(target = "typeCode", source = "fishingActivity.typeCode.value"),
             @Mapping(target = "typeCodeListid", expression = "java(getCodeTypeListId(fishingActivity.getTypeCode()))"),
-            @Mapping(target = "occurence", source = "fishingActivity.occurrenceDateTime.dateTime"),
+            @Mapping(target = "occurence", source = "fishingActivity.occurrenceDateTime"),
             @Mapping(target = "reasonCode", source = "fishingActivity.reasonCode.value"),
             @Mapping(target = "reasonCodeListId", expression = "java(getCodeTypeListId(fishingActivity.getReasonCode()))"),
             @Mapping(target = "vesselActivityCode", expression = "java(getCodeType(fishingActivity.getVesselRelatedActivityCode()))"),
@@ -178,7 +181,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
-            @Mapping(target = "occurrence", source = "occurence"),
+            @Mapping(target = "occurrence", source = "entity.occurence"),
             @Mapping(target = "identifiers", source = "fishingActivityIdentifiers"),
             @Mapping(target = "nrOfOperation", source = "operationsQuantity.value"),
             @Mapping(target = "reason", source = "reasonCode"),
@@ -747,6 +750,27 @@ public abstract class FishingActivityMapper extends BaseMapper {
             }
         }
         return null;
+    }
+
+    protected Instant map(DateTimeType value) {
+        if (value == null) {
+            return null;
+        }
+
+        XMLGregorianCalendar dateTime = value.getDateTime();
+        if (dateTime == null) {
+            return null;
+        }
+
+        return dateTime.toGregorianCalendar().toInstant();
+    }
+
+    protected Date map(Instant value) {
+        if (value == null) {
+            return null;
+        }
+
+        return new Date(value.toEpochMilli());
     }
 
 }
