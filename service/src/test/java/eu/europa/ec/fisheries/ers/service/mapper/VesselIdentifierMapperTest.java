@@ -20,7 +20,7 @@ import java.util.Set;
 
 import static eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity.builder;
 import static eu.europa.ec.fisheries.ers.service.mapper.VesselIdentifierMapper.INSTANCE;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.unitils.util.CollectionUtils.asSet;
 
 public class VesselIdentifierMapperTest extends BaseUnitilsTest {
