@@ -12,13 +12,10 @@ package eu.europa.ec.fisheries.ers.service.facatch;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,6 +45,12 @@ import org.jetbrains.annotations.NotNull;
 public abstract class FACatchSummaryHelper {
     protected String faCatchSummaryCustomClassName;
 
+    private DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
+    private DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
+    private DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("yyyy", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
+    private DateTimeFormatter defaultFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
+
     public static String printJsonstructure(Object obj) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -69,11 +72,6 @@ public abstract class FACatchSummaryHelper {
      * @param isLanding
      * @return
      * @throws ServiceException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
      */
     public FaCatchSummaryCustomProxy mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList, boolean isLanding) throws ServiceException {
 
@@ -83,9 +81,8 @@ public abstract class FACatchSummaryHelper {
         if (objectArrSize != groupList.size())  // do not include count field from object array
             throw new ServiceException("selected number of SQL fields do not match with grouping criterias asked by user ");
 
-        Class cls = null;
         try {
-            cls = Class.forName(faCatchSummaryCustomClassName);
+            Class cls = Class.forName(faCatchSummaryCustomClassName);
 
 
         Object faCatchSummaryCustomEntityObj = cls.newInstance();
@@ -95,17 +92,24 @@ public abstract class FACatchSummaryHelper {
         for (int i = 0; i < objectArrSize; i++) {
             GroupCriteria criteria = groupList.get(i);
             Object value = catchSummaryArr[i];
-            if(value ==null){
+            if (value == null) {
                 continue;
             }
 
             if (GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
                     GroupCriteria.DATE_YEAR.equals(criteria) || GroupCriteria.DATE.equals(criteria)) {
 
-                value = extractValueFromDate((Date) value, criteria);
+                Instant instant;
+                if (value instanceof Instant) {
+                    instant = (Instant)value;
+                } else if (value instanceof Date) {
+                    instant = ((Date)value).toInstant();
+                } else {
+                    throw new ServiceException("Object is not a supported time/date class");
+                }
+
+                value = instantToString(instant, criteria);
             }
-
-
 
             GroupCriteriaMapper mapper = groupMappings.get(criteria);
             Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
@@ -125,23 +129,19 @@ public abstract class FACatchSummaryHelper {
         return null;
     }
 
-    // This method parses the date to extract either day, month or year
-    private Object extractValueFromDate(Date date, GroupCriteria criteria) {
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
-        if (GroupCriteria.DATE_DAY.equals(criteria)) {
-            SimpleDateFormat day = new SimpleDateFormat("dd");
-            return day.format(date);
-        } else if (GroupCriteria.DATE_MONTH.equals(criteria)) {
-            SimpleDateFormat day = new SimpleDateFormat("MMM");
-            return day.format(date);
-        } else if (GroupCriteria.DATE_YEAR.equals(criteria)) {
-            SimpleDateFormat day = new SimpleDateFormat("yyyy");
-            return day.format(date);
-        }else if(GroupCriteria.DATE.equals(criteria)){
-            return (new SimpleDateFormat("yyyy-MM-dd")).format(date);
+    private String instantToString(Instant instant, GroupCriteria criteria) {
+        switch(criteria) {
+            case DATE_DAY:
+                return dayFormatter.format(instant);
+            case DATE_MONTH:
+                return monthFormatter.format(instant);
+            case DATE_YEAR:
+                return yearFormatter.format(instant);
+            case DATE:
+                return dateFormatter.format(instant);
+            default:
+                return defaultFormatter.format(instant);
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
-        return sdf.format(date);
     }
 
     /**
