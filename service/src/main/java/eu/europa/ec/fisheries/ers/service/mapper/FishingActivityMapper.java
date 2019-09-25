@@ -270,7 +270,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
             return null;
         }
-        return entity.getDelimitedPeriods().iterator().next().getEndDate();
+
+        return entity.getDelimitedPeriods().iterator().next().getEndDateAsDate().orElse(null);
     }
 
     protected List<DelimitedPeriodDTO> getDelimitedPeriodDTOList(FishingActivityEntity entity) {

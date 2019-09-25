@@ -450,7 +450,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         TreeSet<Instant> set = new TreeSet<>();
         for (DelimitedPeriodEntity delimitedPeriodEntity : delimitedPeriods) {
             if (delimitedPeriodEntity.getStartDate() != null)
-                set.add(delimitedPeriodEntity.getStartDate().toInstant());
+                set.add(delimitedPeriodEntity.getStartDate());
         }
         if (CollectionUtils.isEmpty(set)) {
             return null;

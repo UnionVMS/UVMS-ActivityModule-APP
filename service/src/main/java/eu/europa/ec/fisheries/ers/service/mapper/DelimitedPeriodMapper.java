@@ -11,12 +11,15 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -24,6 +27,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 @Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class})
 public interface DelimitedPeriodMapper {
@@ -44,4 +49,19 @@ public interface DelimitedPeriodMapper {
 
     DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
 
+    default Instant map(XMLGregorianCalendar value) {
+        if (value ==  null) {
+            return null;
+        }
+
+        return value.toGregorianCalendar().toInstant();
+    }
+
+    default XMLGregorianCalendar map(Instant value) {
+        if (value == null) {
+            return null;
+        }
+
+        return DateUtils.dateToXmlGregorian(new Date(value.toEpochMilli()));
+    }
 }

@@ -368,12 +368,6 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    private Date parseToUTCDate(String value) {
-        LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT));
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
-        return Date.from(zonedDateTime.toInstant());
-    }
-
     private Instant parseToInstant(String value) {
         LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT));
         ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
@@ -383,14 +377,10 @@ public abstract class SearchQueryBuilder {
     private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
         switch (key) {
             case PERIOD_START:
+            case PERIOD_END:
                 typedQuery.setParameter(queryParameterMappings.get(key), parseToInstant(value));
                 break;
-            case PERIOD_END:
-                typedQuery.setParameter(queryParameterMappings.get(key), parseToUTCDate(value));
-                break;
             case QUANTITY_MIN:
-                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
-                break;
             case QUANTITY_MAX:
                 typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                 break;

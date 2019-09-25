@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -115,27 +116,30 @@ public class BaseMapper {
         return fishingTripEntity;
     }
 
-    public static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
+    protected static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
         BigDecimal fishingTime = BigDecimal.ZERO;
-        Date startDate = null;
-        Date endDate = null;
+        Instant startInstant = null;
+        Instant endInstant = null;
         String unitCode = null;
         for (DelimitedPeriodEntity period : periodEntities) {
             Double calcDur = period.getCalculatedDuration();
-            Date start = period.getStartDate();
-            Date end = period.getEndDate();
+            Instant start = period.getStartDate();
+            Instant end = period.getEndDate();
 
-            if (startDate == null || start.before(startDate)) {
-                startDate = start;
+            if (startInstant == null || start.isBefore(startInstant)) {
+                startInstant = start;
             }
-            if (endDate == null || end.after(endDate)) {
-                endDate = end;
+            if (endInstant == null || end.isAfter(endInstant)) {
+                endInstant = end;
             }
             if (calcDur != null) {
                 fishingTime = fishingTime.add(new BigDecimal(calcDur));
             }
             unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode() : unitCode;
         }
+
+        Date startDate = new Date(startInstant.toEpochMilli());
+        Date endDate =  new Date(endInstant.toEpochMilli());
 
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
                 .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).unitCode(unitCode).build();

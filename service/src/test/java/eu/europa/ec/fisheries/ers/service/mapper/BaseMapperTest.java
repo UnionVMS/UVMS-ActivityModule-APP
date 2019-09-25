@@ -18,7 +18,7 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +44,7 @@ import org.junit.Test;
 public class BaseMapperTest extends BaseUnitilsTest {
 
     @Test
-    public void testMapFromFluxLocation() {
+    public void mapFromFluxLocation() {
 
         FluxLocationEntity locationEntity_1 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
         FluxLocationEntity locationEntity_2 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
@@ -61,7 +61,7 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
     @Test
     @SneakyThrows
-    public void testMapFluxLocations() {
+    public void mapFluxLocations() {
 
         FluxLocationEntity entity1 = new FluxLocationEntity();
         entity1.setTypeCode("LOCATION");
@@ -79,32 +79,29 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
     @Test
     @SneakyThrows
-    public void testCalculateFishingActivity() {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
+    public void calculateFishingActivity() {
         DelimitedPeriodEntity period1 = new DelimitedPeriodEntity();
-        period1.setStartDate(sdf.parse("21/12/2011"));
-        period1.setEndDate(sdf.parse("21/12/2013"));
+        period1.setStartDate(Instant.parse("2011-12-21T12:00:00Z"));
+        period1.setEndDate(Instant.parse("2013-12-21T12:00:00Z"));
         period1.setCalculatedDuration(22.22d);
         period1.getDurationMeasure().setUnitCode("MIN");
 
         DelimitedPeriodEntity period2 = new DelimitedPeriodEntity();
-        period2.setStartDate(sdf.parse("21/11/2010"));
-        period2.setEndDate(sdf.parse("21/11/2012"));
+        period2.setStartDate(Instant.parse("2010-11-21T12:00:00Z"));
+        period2.setEndDate(Instant.parse("2012-11-21T12:00:00Z"));
         period2.setCalculatedDuration(2.24d);
         period2.getDurationMeasure().setUnitCode("HOU");
 
         DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
 
         assertEquals(24.46d, periodDTO.getDuration());
-        assertEquals(period2.getStartDate(), periodDTO.getStartDate());
-        assertEquals(period1.getEndDate(), periodDTO.getEndDate());
+        assertEquals(period2.getStartDate(), periodDTO.getStartDate().toInstant());
+        assertEquals(period1.getEndDate(), periodDTO.getEndDate().toInstant());
         assertEquals(UnitCodeEnum.MIN.getUnit(), periodDTO.getUnitCode());
     }
 
     @Test
-    public void testMapToAssetListCriteriaPairList() {
+    public void mapToAssetListCriteriaPairList() {
 
         AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
         cfr.setFaIdentifierId("cfrValue");
@@ -143,7 +140,7 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
 
     @Test
-   public void testmapMdrCodeListToAssetListCriteriaPairList(){
+   public void mapMdrCodeListToAssetListCriteriaPairList() {
 
         AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
         cfr.setFaIdentifierId("cfrValue");
