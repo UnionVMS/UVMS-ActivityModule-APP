@@ -15,7 +15,7 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
 import java.text.SimpleDateFormat;
@@ -97,7 +97,7 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
         DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
 
-        assertEquals(24.46d, periodDTO.getDuration());
+        assertEquals(24.46d, (double)periodDTO.getDuration(), 0.01d);
         assertEquals(period2.getStartDate(), periodDTO.getStartDate());
         assertEquals(period1.getEndDate(), periodDTO.getEndDate());
         assertEquals(UnitCodeEnum.MIN.getUnit(), periodDTO.getUnitCode());
