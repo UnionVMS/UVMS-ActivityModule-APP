@@ -5,16 +5,20 @@
 	<artifactId>service</artifactId>
 	<name>${project.parent.artifactId}-service</name>
 	<packaging>ejb</packaging>
-	
-	<properties>
-		<jts.version>1.13</jts.version>
-	</properties>
 
 	<parent>
 		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
 		<artifactId>activity</artifactId>
 		<version>1.1.13-SNAPSHOT</version>
 	</parent>
+
+	<properties>
+		<jts.version>1.13</jts.version>
+
+		<docker.dev.start.phase>test-compile</docker.dev.start.phase>
+		<docker.liquibase.phase>test-compile</docker.liquibase.phase>
+		<docker.dev.prestop.phase>validate</docker.dev.prestop.phase>
+	</properties>
 
 	<dependencies>
 
@@ -23,7 +27,7 @@
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
@@ -116,14 +120,14 @@
 					<groupId>com.vividsolutions</groupId>
 					<artifactId>jts</artifactId>
 				</exclusion>
-			</exclusions>			
+			</exclusions>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-rest</artifactId>
             <version>${uvms.commons.version}</version>
         </dependency>
-        
+
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -262,7 +266,7 @@
             <type>pom</type>
         </dependency>
 
- 		
+
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>

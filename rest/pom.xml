@@ -11,6 +11,11 @@
         <version>1.1.13-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <docker.dev.stop.phase>verify</docker.dev.stop.phase>
+        <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
+    </properties>
+
     <dependencies>
 
         <dependency>
