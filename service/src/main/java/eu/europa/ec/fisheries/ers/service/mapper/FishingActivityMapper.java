@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
@@ -44,11 +43,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
-@Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class, XMLDateUtils.class,
-        FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
-        FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class, FlapDocumentMapper.class},
-        imports = {FaReportStatusType.class}
-)
+@Mapper(imports = {FaReportStatusType.class})
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
 
