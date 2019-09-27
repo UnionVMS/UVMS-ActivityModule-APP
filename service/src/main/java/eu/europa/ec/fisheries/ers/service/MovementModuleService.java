@@ -14,8 +14,8 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 
 import java.util.Date;
 import java.util.List;
@@ -31,5 +31,5 @@ public interface MovementModuleService {
      * @return list of Movements
      * @throws ServiceException
      */
-    List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException;
+    List<MicroMovement> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException;
 }

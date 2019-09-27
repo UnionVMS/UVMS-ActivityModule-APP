@@ -52,14 +52,39 @@
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+			<groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
+			<artifactId>mdr-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
 			<artifactId>spatial-model</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+			<artifactId>spatial-client</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
 			<artifactId>movement-model</artifactId>
-        </dependency>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+			<artifactId>movement-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+			<artifactId>asset-model</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+			<artifactId>asset-client</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
@@ -234,15 +259,13 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations-java5</artifactId>
 			<version>16.0.3</version>
 		</dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-            <artifactId>asset-model</artifactId>
-        </dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

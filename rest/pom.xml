@@ -91,58 +91,6 @@
             <artifactId>uvms-pom-monitoring-deps</artifactId>
             <type>pom</type>
         </dependency>
-<!--
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jboss.logging</groupId>
-    				<artifactId>jboss-logging</artifactId>					
-				</exclusion>
-			</exclusions>
-		</dependency>
--->
-         <dependency>
-			 <groupId>org.jboss.resteasy</groupId>
-    		<artifactId>resteasy-jaxb-provider</artifactId>
-    		<exclusions>
-    			<exclusion>
-    				    <groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>   				
-    			</exclusion>
-    		</exclusions>    		
-		</dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <exclusions>
-            	<exclusion>
-            		<groupId>commons-logging</groupId>
-            		<artifactId>commons-logging</artifactId>
-            	</exclusion>
-            	<exclusion>
-				    <groupId>javax.mail</groupId>
-				    <artifactId>mail</artifactId>            		
-            	</exclusion>
-            	<exclusion>            	
-            		<groupId>org.jboss.resteasy</groupId>
-    				<artifactId>resteasy-jaxrs</artifactId>
-            	</exclusion>
-            	<exclusion>            	
-            	    <groupId>org.jboss.resteasy</groupId>
-    				<artifactId>resteasy-client</artifactId>
-            	</exclusion>            	
-            </exclusions>
-        </dependency>
-
-		<dependency>
-		    <groupId>org.jboss.resteasy</groupId>
-		    <artifactId>jaxrs-api</artifactId>
-		    <scope>provided</scope>
-		</dependency>
-
     </dependencies>
 
     <build>

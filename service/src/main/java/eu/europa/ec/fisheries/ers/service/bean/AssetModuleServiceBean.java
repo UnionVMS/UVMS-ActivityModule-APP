@@ -19,6 +19,9 @@ import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
+import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
@@ -30,8 +33,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -44,10 +49,21 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     @EJB
     private ActivityConsumerBean activityConsumer;
 
+    @EJB
+    private AssetClient assetClient;
+
+    public AssetModuleServiceBean() {
+    }
+
+    @Inject
+    public AssetModuleServiceBean(AssetProducerBean assetProducerBean, ActivityConsumerBean activityConsumerBean, AssetClient assetClient) {
+        this.assetProducer = assetProducerBean;
+        this.activityConsumer = activityConsumerBean;
+        this.assetClient = assetClient;
+    }
+
     @Override
     public List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException {
-
-        List<Asset> assetList = new ArrayList<>();
 
         //TODO: Implement call to new Asset Module!
         /*
@@ -64,26 +80,64 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         }
         */
 
-        return assetList;
+        return new ArrayList<>();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
-        /*
-        String request;
-        try {
-            request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselIdentifiers));
-        } catch (AssetModelMapperException e) {
-            log.error("Error while mapping vesselIdentifiers to create AssetListQuery!", e);
-            throw new ServiceException(e.getMessage(), e.getCause());
-        }
-        return getGuidsFromAssets(request);
+    public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) {
+        AssetQuery assetQuery = new AssetQuery();
 
-         */
-        return new ArrayList<>();
+        Map<VesselTypeAssetQueryEnum, List<String>> identifierMap = new HashMap<>();
+
+        for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
+            VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(vesselIdentifier.getVesselIdentifierSchemeId());
+            if (queryEnum != null && queryEnum.getConfigSearchField() != null && StringUtils.isNotEmpty(vesselIdentifier.getVesselIdentifierId())) {
+                List<String> queryEnumValues = identifierMap.get(queryEnum);
+                if (queryEnumValues == null) {
+                    queryEnumValues = new ArrayList<>();
+                    identifierMap.put(queryEnum, queryEnumValues);
+                }
+                queryEnumValues.add(vesselIdentifier.getVesselIdentifierId());
+            }
+        }
+
+        Set<VesselTypeAssetQueryEnum> vesselTypeAssetQueryEnums = identifierMap.keySet();
+        for (VesselTypeAssetQueryEnum vesselTypeAssetQueryEnum : vesselTypeAssetQueryEnums) {
+            switch (vesselTypeAssetQueryEnum) {
+                case CFR:
+                    assetQuery.setCfr(identifierMap.get(vesselTypeAssetQueryEnum));
+                    break;
+                case IRCS:
+                    assetQuery.setIrcs(identifierMap.get(vesselTypeAssetQueryEnum));
+                    break;
+                case EXT_MARK:
+                    assetQuery.setExternalMarking(identifierMap.get(vesselTypeAssetQueryEnum));
+                    break;
+                case FLAG_STATE:
+                    assetQuery.setFlagState(identifierMap.get(vesselTypeAssetQueryEnum));
+                    break;
+                case NAME:
+                    assetQuery.setName(identifierMap.get(vesselTypeAssetQueryEnum));
+                    break;
+                case ICCAT:
+                    assetQuery.setIccat(identifierMap.get(vesselTypeAssetQueryEnum));
+                    break;
+                case UVI:
+                    assetQuery.setUvi(identifierMap.get(vesselTypeAssetQueryEnum));
+                    break;
+            }
+        }
+
+        List<AssetDTO> assetList = assetClient.getAssetList(assetQuery);
+
+        return assetList
+                .stream()
+                .map(AssetDTO::getId)
+                .map(UUID::toString)
+                .collect(Collectors.toList());
     }
 
     @Override
