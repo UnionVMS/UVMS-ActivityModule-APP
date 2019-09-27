@@ -28,7 +28,7 @@
     </developers>
 
     <properties>
-        <docker.dev.version>3.38.6.w17</docker.dev.version>
+        <docker.dev.version>3.39.10.w17-ers-SNAPSHOT</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
@@ -65,7 +65,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <javaee.version>7.0</javaee.version>
+        <javaee.version>8.0</javaee.version>
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
@@ -83,7 +83,7 @@
         <release.branch.name>uvms-1.0.0</release.branch.name>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-        <database.dialect>oracle</database.dialect>
+        <database.dialect>postgres</database.dialect>
         <geotools.version>14.4</geotools.version>
         <mave.plugin.api.version>2.0</mave.plugin.api.version>
         <dom4j.version>1.6.1</dom4j.version>
@@ -92,6 +92,8 @@
         <focus-pom.maven.compiler.plugin.version>3.8.0</focus-pom.maven.compiler.plugin.version>
         <focus-pom.maven.surefire.plugin.version>2.22.2</focus-pom.maven.surefire.plugin.version>
 
+        <jts.version>1.13</jts.version>
+        <resteasy.version>3.0.11.Final</resteasy.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
     </properties>
@@ -222,13 +224,13 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>service</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>message</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -302,7 +304,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxb-provider</artifactId>
-                <version>3.0.11.Final</version>
+                <version>${resteasy.version}</version>
                 <exclusions>
                 	<exclusion>
                     	<groupId>commons-logging</groupId>
@@ -322,7 +324,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-multipart-provider</artifactId>
-                <version>3.0.11.Final</version>
+                <version>${resteasy.version}</version>
                 <exclusions>
                 	<exclusion>
                     	<groupId>commons-logging</groupId>
@@ -342,11 +344,11 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>jaxrs-api</artifactId>
-                <version>3.0.11.Final</version>
+                <version>${resteasy.version}</version>
                 <scope>provided</scope>
             </dependency>
 
-           	<dependency>
+            <dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
 				<version>1.23</version>
@@ -379,6 +381,7 @@
 				<artifactId>uvms-pom-arquillian-deps</artifactId>
 				<version>1.23</version>
 				<type>pom</type>
+                <scope>test</scope>
 			</dependency>
 
             <dependency>
