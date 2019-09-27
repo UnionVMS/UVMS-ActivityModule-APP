@@ -32,8 +32,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,12 +148,8 @@ public class ActivityDataUtil {
         fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
         fishingTripIdentifierEntity.setTripId(tripId);
         fishingTripIdentifierEntity.setTripSchemeId(tripSchemeId);
-        try {
-            fishingTripIdentifierEntity.setCalculatedTripEndDate(new SimpleDateFormat("dd/MM/yyyy").parse("12/01/2016"));
-            fishingTripIdentifierEntity.setCalculatedTripStartDate(new SimpleDateFormat("dd/MM/yyyy").parse("12/01/2013"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        fishingTripIdentifierEntity.setCalculatedTripEndDate(Instant.parse("2016-01-12T00:00:00Z"));
+        fishingTripIdentifierEntity.setCalculatedTripStartDate(Instant.parse("2013-01-12T00:00:00Z"));
         return fishingTripIdentifierEntity;
     }
 

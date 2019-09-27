@@ -148,7 +148,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
                     //Calculate trip start date
                     FishingActivityEntity firstFishingActivity = fishingActivityEntityList.get(0);
-                    tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTimeAsDate().orElse(null));
+                    tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
                     // calculate trip end date
                     Instant calculatedTripEndDate;
                     int totalActivities = fishingActivityEntityList.size();
@@ -157,7 +157,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     } else {
                         calculatedTripEndDate = firstFishingActivity.getCalculatedStartTime();
                     }
-                    tripIdentifierEntity.setCalculatedTripEndDate(new Date(calculatedTripEndDate.toEpochMilli()));
+                    tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
                 }
             } catch (Exception e) {
                 log.error("Error while trying to calculate FishingTrip start and end Date", e);
