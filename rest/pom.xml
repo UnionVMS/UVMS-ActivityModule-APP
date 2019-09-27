@@ -12,13 +12,13 @@
     </parent>
 
     <dependencies>
-    
+
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -29,7 +29,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
@@ -52,17 +52,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>message</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-test</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vividsolutions</groupId>
-                    <artifactId>jts</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -91,27 +80,15 @@
             <artifactId>uvms-pom-monitoring-deps</artifactId>
             <type>pom</type>
         </dependency>
-<!--
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jboss.logging</groupId>
-    				<artifactId>jboss-logging</artifactId>					
-				</exclusion>
-			</exclusions>
-		</dependency>
--->
          <dependency>
 			 <groupId>org.jboss.resteasy</groupId>
     		<artifactId>resteasy-jaxb-provider</artifactId>
     		<exclusions>
     			<exclusion>
     				    <groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>   				
+    					<artifactId>jaxb-impl</artifactId>
     			</exclusion>
-    		</exclusions>    		
+    		</exclusions>
 		</dependency>
 
         <dependency>
@@ -124,16 +101,16 @@
             	</exclusion>
             	<exclusion>
 				    <groupId>javax.mail</groupId>
-				    <artifactId>mail</artifactId>            		
+				    <artifactId>mail</artifactId>
             	</exclusion>
-            	<exclusion>            	
+            	<exclusion>
             		<groupId>org.jboss.resteasy</groupId>
     				<artifactId>resteasy-jaxrs</artifactId>
             	</exclusion>
-            	<exclusion>            	
+            	<exclusion>
             	    <groupId>org.jboss.resteasy</groupId>
     				<artifactId>resteasy-client</artifactId>
-            	</exclusion>            	
+            	</exclusion>
             </exclusions>
         </dependency>
 
@@ -143,6 +120,11 @@
 		    <scope>provided</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-arquillian-deps</artifactId>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 
     <build>

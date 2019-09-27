@@ -402,15 +402,16 @@
     		  <version>1.7.25</version>
     		</dependency>
 
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
-
     </dependencyManagement>
 
 	<dependencies>
-        <dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-		</dependency>
     </dependencies>
 
 
