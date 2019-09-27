@@ -311,6 +311,17 @@ public class BaseMapper {
         return dateTimeFormatter.format(value);
     }
 
+    protected DateTimeType instantToDateTimeType(Instant value) {
+        if (value == null) {
+            return null;
+        }
+
+        XMLGregorianCalendar xmlGregorianCalendar = DateUtils.dateToXmlGregorian(new Date(value.toEpochMilli()));
+        DateTimeType result = new DateTimeType();
+        result.setDateTime(xmlGregorianCalendar);
+        return result;
+    }
+
     protected Instant map(DateTimeType value) {
         if (value == null) {
             return null;

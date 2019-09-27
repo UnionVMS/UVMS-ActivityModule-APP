@@ -115,7 +115,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             if (fluxCharacteristic.getValueMeasure() != null) {
                 value = String.valueOf(fluxCharacteristic.getValueMeasure());
             } else if (fluxCharacteristic.getValueDateTime() != null) {
-                value = DateUtils.dateToString(fluxCharacteristic.getValueDateTime().toInstant());
+                value = DateUtils.dateToString(fluxCharacteristic.getValueDateTime());
             } else if (fluxCharacteristic.getValueIndicator() != null) {
                 value = fluxCharacteristic.getValueIndicator();
             } else if (fluxCharacteristic.getValueCode() != null) {

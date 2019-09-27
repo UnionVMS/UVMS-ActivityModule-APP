@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.mapper.view;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FluxCharacteristicsViewDto;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -22,11 +23,11 @@ import java.util.Set;
  * Created by kovian on 06/03/2017.
  */
 @Mapper
-public interface FluxCharacteristicsViewDtoMapper {
+public abstract class FluxCharacteristicsViewDtoMapper extends BaseMapper {
 
-    FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
+    public static FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
 
-    FluxCharacteristicsViewDto mapFluxCharacteristicsEntityListToDtoList(FluxCharacteristicEntity firstCatchEntity);
+    public abstract FluxCharacteristicsViewDto mapFluxCharacteristicsEntityListToDtoList(FluxCharacteristicEntity firstCatchEntity);
 
-    List<FluxCharacteristicsViewDto> mapFluxCharacteristicsList(Set<FluxCharacteristicEntity> fluxCharacteristicEntities);
+    public abstract List<FluxCharacteristicsViewDto> mapFluxCharacteristicsList(Set<FluxCharacteristicEntity> fluxCharacteristicEntities);
 }
