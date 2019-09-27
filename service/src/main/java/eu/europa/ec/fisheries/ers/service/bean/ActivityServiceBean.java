@@ -430,7 +430,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
                 }
 
             }
-            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDatetime(), purposeCode, acticityIds));
+            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDateTimeAsDate().orElse(null), purposeCode, acticityIds));
         }
         Collections.sort(dtoElements);
         return dtoElements;

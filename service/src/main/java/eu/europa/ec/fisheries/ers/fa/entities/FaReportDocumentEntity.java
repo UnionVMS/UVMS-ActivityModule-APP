@@ -13,7 +13,9 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
@@ -101,9 +103,8 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "type_code_list_id")
     private String typeCodeListId;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "accepted_datetime", length = 29)
-    private Date acceptedDatetime;
+    private Instant acceptedDatetime;
 
     @Column(name = "fmc_marker")
     private String fmcMarker;
@@ -133,4 +134,11 @@ public class FaReportDocumentEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
+    public Optional<Date> getAcceptedDateTimeAsDate() {
+        if (acceptedDatetime == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new Date(acceptedDatetime.toEpochMilli()));
+    }
 }

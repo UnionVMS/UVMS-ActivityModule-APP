@@ -246,7 +246,7 @@ public class MapperUtil {
         faReportDocumentEntity.setStatus(FaReportStatusType.UPDATED.name());
         faReportDocumentEntity.setTypeCode("FISHING_OPERATION");
         faReportDocumentEntity.setTypeCodeListId("FLUX_FA_REPORT_TYPE");
-        faReportDocumentEntity.setAcceptedDatetime(new Date());
+        faReportDocumentEntity.setAcceptedDatetime(Instant.now());
         faReportDocumentEntity.setFmcMarker("FMC Marker");
         faReportDocumentEntity.setFmcMarkerListId("FMC Marker list Id");
         Geometry geometry =null;

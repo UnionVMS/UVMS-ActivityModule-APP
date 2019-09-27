@@ -13,7 +13,10 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import javax.xml.datatype.XMLGregorianCalendar;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -28,6 +31,7 @@ import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -40,6 +44,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 import static com.google.common.collect.Sets.newHashSet;
@@ -47,6 +52,8 @@ import static com.google.common.collect.Sets.newHashSet;
 @Slf4j
 @NoArgsConstructor
 public class BaseMapper {
+
+    protected static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT, Locale.ROOT).withZone(ZoneId.of("UTC"));
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
@@ -294,5 +301,34 @@ public class BaseMapper {
             }
         }
         return positionDto;
+    }
+
+    protected String instantToDateUtilsStringFormat(Instant value) {
+        if (value == null) {
+            return null;
+        }
+
+        return dateTimeFormatter.format(value);
+    }
+
+    protected Instant map(DateTimeType value) {
+        if (value == null) {
+            return null;
+        }
+
+        XMLGregorianCalendar dateTime = value.getDateTime();
+        if (dateTime == null) {
+            return null;
+        }
+
+        return dateTime.toGregorianCalendar().toInstant();
+    }
+
+    protected Date map(Instant value) {
+        if (value == null) {
+            return null;
+        }
+
+        return new Date(value.toEpochMilli());
     }
 }

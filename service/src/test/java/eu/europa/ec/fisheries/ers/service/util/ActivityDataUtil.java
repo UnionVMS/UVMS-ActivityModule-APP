@@ -84,7 +84,7 @@ public class ActivityDataUtil {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setTypeCode(typeCode);
         faReportDocumentEntity.setTypeCodeListId(typeCodeListId);
-        faReportDocumentEntity.setAcceptedDatetime(Date.from(acceptedDatetime));
+        faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
         faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
         faReportDocumentEntity.setVesselTransportMeans(new HashSet<>(Arrays.asList(vesselTransportMeansEntity)));
         faReportDocumentEntity.setStatus(status.name());

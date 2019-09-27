@@ -652,10 +652,10 @@ public class ActivityEntityToModelMapper {
         }
     }
 
-    private void mapAcceptanceDateTime(FAReportDocument target, Date source) {
+    private void mapAcceptanceDateTime(FAReportDocument target, Instant source) {
         if (ObjectUtils.allNotNull(target, source)) {
             DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
+            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(new Date(source.toEpochMilli())));
             target.setAcceptanceDateTime(dateTimeType);
         }
     }

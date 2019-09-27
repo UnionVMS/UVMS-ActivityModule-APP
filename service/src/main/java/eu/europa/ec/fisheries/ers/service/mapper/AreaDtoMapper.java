@@ -43,15 +43,16 @@ public class AreaDtoMapper extends BaseMapper {
         }
         PositionDto positionDto = new PositionDto();
 
-        if(faEntity.getFaReportDocument()!=null && faEntity.getFaReportDocument().getVesselTransportMeans()!=null
+        if (faEntity.getFaReportDocument() != null
+                && faEntity.getFaReportDocument().getVesselTransportMeans() != null
                 && CollectionUtils.isNotEmpty(faEntity.getFaReportDocument().getVesselTransportMeans())
                 && CollectionUtils.isNotEmpty(faEntity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselPositionEvents()))
         {
             VesselPositionEventEntity vesselPositionEventEntity = faEntity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselPositionEvents().iterator().next();
             positionDto.setOccurence(vesselPositionEventEntity.getObtainedOccurrenceDateTime());            ;
             positionDto.setGeometry(extractGeometryWkt(vesselPositionEventEntity.getLongitude(),vesselPositionEventEntity.getLatitude()));
-        }else if(faEntity.getFaReportDocument()!=null){
-            positionDto.setOccurence(faEntity.getFaReportDocument().getAcceptedDatetime());
+        } else if (faEntity.getFaReportDocument() != null) {
+            positionDto.setOccurence(faEntity.getFaReportDocument().getAcceptedDateTimeAsDate().orElse(null));
         }
 
         return positionDto;

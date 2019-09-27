@@ -113,7 +113,7 @@ public class FaReportDocumentMapperTest {
     private void assertFaReportDocumentFields(FAReportDocument faReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
         assertEquals(faReportDocument.getTypeCode().getValue(), faReportDocumentEntity.getTypeCode());
         assertEquals(faReportDocument.getTypeCode().getListID(), faReportDocumentEntity.getTypeCodeListId());
-        assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().getTime(), faReportDocumentEntity.getAcceptedDatetime());
+        assertEquals(faReportDocument.getAcceptanceDateTime().getDateTime().toGregorianCalendar().toInstant(), faReportDocumentEntity.getAcceptedDatetime());
         assertEquals(faReportDocument.getFMCMarkerCode().getValue(), faReportDocumentEntity.getFmcMarker());
         assertEquals(faReportDocument.getFMCMarkerCode().getListID(), faReportDocumentEntity.getFmcMarkerListId());
         assertEquals(FaReportStatusType.NEW.name(), faReportDocumentEntity.getStatus());

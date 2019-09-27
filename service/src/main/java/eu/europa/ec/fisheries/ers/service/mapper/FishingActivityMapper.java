@@ -40,9 +40,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-
-
 @Mapper(imports = {FaReportStatusType.class})
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
@@ -747,26 +744,4 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         return null;
     }
-
-    protected Instant map(DateTimeType value) {
-        if (value == null) {
-            return null;
-        }
-
-        XMLGregorianCalendar dateTime = value.getDateTime();
-        if (dateTime == null) {
-            return null;
-        }
-
-        return dateTime.toGregorianCalendar().toInstant();
-    }
-
-    protected Date map(Instant value) {
-        if (value == null) {
-            return null;
-        }
-
-        return new Date(value.toEpochMilli());
-    }
-
 }
