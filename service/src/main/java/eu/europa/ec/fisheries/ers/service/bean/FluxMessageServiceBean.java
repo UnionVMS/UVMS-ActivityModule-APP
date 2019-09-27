@@ -82,6 +82,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private DatabaseDialect dialect;
 
+    private GeometryFactory geometryFactory = new GeometryFactory();
+
     @PostConstruct
     public void init() {
         initEntityManager();
@@ -483,7 +485,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         MicroMovement previousMovement = movementTypeMap.get(PREVIOUS);
 
         if (previousMovement == null && nextMovement == null) {
-            faReportGeom = null;
+            return null;
         } else if (nextMovement == null) {
             faReportGeom = convertToPoint(previousMovement);
             faReportGeom.setSRID(dialect.defaultSRID());
@@ -499,7 +501,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private Point convertToPoint(MicroMovement microMovement) {
         MovementPoint location = microMovement.getLocation();
         Coordinate coordinate = new Coordinate(location.getLongitude(), location.getLatitude());
-        GeometryFactory geometryFactory = new GeometryFactory();
         return geometryFactory.createPoint(coordinate);
     }
 

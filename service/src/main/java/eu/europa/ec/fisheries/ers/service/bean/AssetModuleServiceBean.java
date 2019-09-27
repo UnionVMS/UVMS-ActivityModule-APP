@@ -106,27 +106,28 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
 
         Set<VesselTypeAssetQueryEnum> vesselTypeAssetQueryEnums = identifierMap.keySet();
         for (VesselTypeAssetQueryEnum vesselTypeAssetQueryEnum : vesselTypeAssetQueryEnums) {
+            List<String> vesselIdentifier = identifierMap.get(vesselTypeAssetQueryEnum);
             switch (vesselTypeAssetQueryEnum) {
                 case CFR:
-                    assetQuery.setCfr(identifierMap.get(vesselTypeAssetQueryEnum));
+                    assetQuery.setCfr(vesselIdentifier);
                     break;
                 case IRCS:
-                    assetQuery.setIrcs(identifierMap.get(vesselTypeAssetQueryEnum));
+                    assetQuery.setIrcs(vesselIdentifier);
                     break;
                 case EXT_MARK:
-                    assetQuery.setExternalMarking(identifierMap.get(vesselTypeAssetQueryEnum));
+                    assetQuery.setExternalMarking(vesselIdentifier);
                     break;
                 case FLAG_STATE:
-                    assetQuery.setFlagState(identifierMap.get(vesselTypeAssetQueryEnum));
+                    assetQuery.setFlagState(vesselIdentifier);
                     break;
                 case NAME:
-                    assetQuery.setName(identifierMap.get(vesselTypeAssetQueryEnum));
+                    assetQuery.setName(vesselIdentifier);
                     break;
                 case ICCAT:
-                    assetQuery.setIccat(identifierMap.get(vesselTypeAssetQueryEnum));
+                    assetQuery.setIccat(vesselIdentifier);
                     break;
                 case UVI:
-                    assetQuery.setUvi(identifierMap.get(vesselTypeAssetQueryEnum));
+                    assetQuery.setUvi(vesselIdentifier);
                     break;
             }
         }

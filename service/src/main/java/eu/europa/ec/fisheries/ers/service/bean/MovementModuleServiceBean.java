@@ -44,9 +44,9 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List<MicroMovement> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException {
+    public List<MicroMovement> getMovement(List<String> vesselIds, Date startDate, Date endDate) {
         List<MicroMovementExtended> positionsForVessels = movementClient.getMicroMovementsForConnectIdsBetweenDates(vesselIds, startDate.toInstant(), endDate.toInstant());
-        log.info("Vessel positions: " + positionsForVessels.toString());
+        log.debug("Vessel positions: " + positionsForVessels.toString());
         return positionsForVessels
                 .stream()
                 .map(MicroMovementExtended::getMicroMove)
