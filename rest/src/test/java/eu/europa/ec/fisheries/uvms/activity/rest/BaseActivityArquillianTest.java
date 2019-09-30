@@ -43,8 +43,7 @@ public abstract class BaseActivityArquillianTest {
                 .withTransitivity().asFile());
 
         testWar.addPackages(true,
-                "eu.europa.ec.fisheries.uvms.activity.rest",
-                "eu.europa.ec.fisheries.uvms.activity.message");
+                "eu.europa.ec.fisheries.uvms.activity.rest");
 
         testWar.addAsResource("logback-test.xml");
         System.out.println(testWar.toString(true));
