@@ -454,7 +454,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                     && occurrence != null
                     && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0)) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
-                fishingActivityTypeDTO.setDate(new Date(occurrence.toEpochMilli()));
+                fishingActivityTypeDTO.setDate(Date.from(occurrence));
                 summary.put(activityTypeCode, fishingActivityTypeDTO);
             }
         }

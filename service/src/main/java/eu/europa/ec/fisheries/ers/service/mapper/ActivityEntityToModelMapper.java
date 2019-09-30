@@ -404,7 +404,7 @@ public class ActivityEntityToModelMapper {
     private void mapOccurrenceDateTime(FishingActivity target, Instant source) {
         if (ObjectUtils.allNotNull(target, source)){
             DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(new Date(source.toEpochMilli())));
+            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(Date.from(source)));
             target.setOccurrenceDateTime(dateTimeType);
         }
     }
@@ -655,7 +655,7 @@ public class ActivityEntityToModelMapper {
     private void mapAcceptanceDateTime(FAReportDocument target, Instant source) {
         if (ObjectUtils.allNotNull(target, source)) {
             DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(new Date(source.toEpochMilli())));
+            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(Date.from(source)));
             target.setAcceptanceDateTime(dateTimeType);
         }
     }

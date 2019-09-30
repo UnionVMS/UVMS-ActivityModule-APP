@@ -62,6 +62,6 @@ public interface DelimitedPeriodMapper {
             return null;
         }
 
-        return DateUtils.dateToXmlGregorian(new Date(value.toEpochMilli()));
+        return DateUtils.dateToXmlGregorian(Date.from(value));
     }
 }

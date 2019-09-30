@@ -139,6 +139,6 @@ public class FaReportDocumentEntity implements Serializable {
             return Optional.empty();
         }
 
-        return Optional.of(new Date(acceptedDatetime.toEpochMilli()));
+        return Optional.of(Date.from(acceptedDatetime));
     }
 }

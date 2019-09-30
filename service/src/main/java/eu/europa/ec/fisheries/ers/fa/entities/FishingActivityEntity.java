@@ -305,7 +305,7 @@ public class FishingActivityEntity implements Serializable {
     		return Optional.empty();
 		}
 
-    	return Optional.of(new Date(occurence.toEpochMilli()));
+    	return Optional.of(Date.from(occurence));
 	}
 
 	public Optional<Date> getCalculatedStartTimeAsDate() {
@@ -313,6 +313,6 @@ public class FishingActivityEntity implements Serializable {
     		return Optional.empty();
 		}
 
-		return Optional.of(new Date(calculatedStartTime.toEpochMilli()));
+		return Optional.of(Date.from(calculatedStartTime));
 	}
 }

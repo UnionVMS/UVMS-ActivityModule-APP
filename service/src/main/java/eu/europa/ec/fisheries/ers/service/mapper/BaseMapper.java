@@ -145,8 +145,8 @@ public class BaseMapper {
             unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode() : unitCode;
         }
 
-        Date startDate = new Date(startInstant.toEpochMilli());
-        Date endDate =  new Date(endInstant.toEpochMilli());
+        Date startDate = Date.from(startInstant);
+        Date endDate = Date.from(endInstant);
 
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
                 .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).unitCode(unitCode).build();
@@ -316,7 +316,7 @@ public class BaseMapper {
             return null;
         }
 
-        XMLGregorianCalendar xmlGregorianCalendar = DateUtils.dateToXmlGregorian(new Date(value.toEpochMilli()));
+        XMLGregorianCalendar xmlGregorianCalendar = DateUtils.dateToXmlGregorian(Date.from(value));
         DateTimeType result = new DateTimeType();
         result.setDateTime(xmlGregorianCalendar);
         return result;
@@ -340,6 +340,6 @@ public class BaseMapper {
             return null;
         }
 
-        return new Date(value.toEpochMilli());
+        return Date.from(value);
     }
 }

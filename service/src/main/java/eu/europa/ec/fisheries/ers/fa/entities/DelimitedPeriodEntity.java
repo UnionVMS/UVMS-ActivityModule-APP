@@ -74,7 +74,7 @@ public class DelimitedPeriodEntity implements Serializable {
             return  Optional.empty();
         }
 
-        return Optional.of(new Date(startDate.toEpochMilli()));
+        return Optional.of(Date.from(startDate));
     }
 
     public Optional<Date> getEndDateAsDate() {
@@ -82,6 +82,6 @@ public class DelimitedPeriodEntity implements Serializable {
             return Optional.empty();
         }
 
-        return Optional.of(new Date(endDate.toEpochMilli()));
+        return Optional.of(Date.from(endDate));
     }
 }

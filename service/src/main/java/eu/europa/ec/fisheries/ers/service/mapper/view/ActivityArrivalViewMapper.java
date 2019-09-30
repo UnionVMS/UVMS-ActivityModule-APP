@@ -62,7 +62,7 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
                         && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())) {
                     Instant valueDateTime = charact.getValueDateTime();
                     if (valueDateTime != null) {
-                        return new Date(valueDateTime.toEpochMilli());
+                        return Date.from(valueDateTime);
                     }
                 }
             }
