@@ -39,7 +39,7 @@ public abstract class BaseActivityArquillianTest {
         testWar.addAsLibraries(dependencyFiles);
 
         testWar.addAsLibraries(Maven.configureResolver().loadPomFromFile("pom.xml")
-                .resolve("eu.europa.ec.fisheries.uvms.activity:service")
+                .resolve("eu.europa.ec.fisheries.uvms.activity:service", "eu.europa.ec.fisheries.uvms.activity:message")
                 .withTransitivity().asFile());
 
         testWar.addPackages(true,
