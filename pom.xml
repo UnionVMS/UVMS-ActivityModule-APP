@@ -45,17 +45,17 @@
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
-        <spatial.model.version>1.0.12</spatial.model.version>
+        <spatialSwe.model.version>2.0.6-UVMS-SNAPSHOT</spatialSwe.model.version>
         <exchange.model>5.0.0-UVMS</exchange.model>
         <subscription.model>1.2</subscription.model>
 
         <rules.model>3.0.43</rules.model>
         <uvms.config.version>4.0.5</uvms.config.version>
-        <mdr.model.version>1.0.1</mdr.model.version>
+        <mdr.model.version>1.0.5</mdr.model.version>
+        <mdrSwe.client.version>1.0.18-SNAPSHOT</mdrSwe.client.version>
         <mockito.version>1.10.19</mockito.version>
-        <asset.model.version>6.0.65</asset.model.version>
-        <!--movement.model.version>4.0.9</movement.model.version-->
-        <movement.model.version>5.1.23-UVMS</movement.model.version>
+        <asset.version>6.0.67</asset.version>
+        <movement.version>5.2.26-UVMS-SNAPSHOT</movement.version>
         <audit.model.version>4.0.10</audit.model.version>
         <uvms.commons.version>4.0.4</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
@@ -111,6 +111,12 @@
             </dependency>
 
             <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
+                <artifactId>mdr-client</artifactId>
+                <version>${mdrSwe.client.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
@@ -129,9 +135,15 @@
             </dependency>
 
             <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+                <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
                 <artifactId>spatial-model</artifactId>
-                <version>${spatial.model.version}</version>
+                <version>${spatialSwe.model.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+                <artifactId>spatial-client</artifactId>
+                <version>${spatialSwe.model.version}</version>
             </dependency>
 
             <dependency>
@@ -143,7 +155,13 @@
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
-                <version>${movement.model.version}</version>
+                <version>${movement.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+                <artifactId>movement-client</artifactId>
+                <version>${movement.version}</version>
             </dependency>
 
             <dependency>
@@ -152,33 +170,33 @@
                 <version>${activity.model}</version>
             </dependency>
 
-			<dependency>
-				<groupId>eu.europa.ec.fisheries.uvms</groupId>
-				<artifactId>usm4uvms</artifactId>
-				<version>${usm4uvms.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.jboss.resteasy</groupId>
-						<artifactId>resteasy-jaxrs</artifactId>
-					</exclusion>
-					<exclusion>
-					    <groupId>net.sf.ehcache</groupId>
-	  					<artifactId>ehcache</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+            <dependency>
+              <groupId>eu.europa.ec.fisheries.uvms</groupId>
+              <artifactId>usm4uvms</artifactId>
+              <version>${usm4uvms.version}</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>org.jboss.resteasy</groupId>
+                  <artifactId>resteasy-jaxrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
 
-	        <dependency>
-	            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-	            <artifactId>uvms-config</artifactId>
-	            <version>${uvms.config.version}</version>
-	            <exclusions>
-	            	<exclusion>
-	            		<groupId>eu.europa.ec.fisheries.uvms</groupId>
-            			<artifactId>uvms-commons</artifactId>
-	            	</exclusion>
-	            </exclusions>
-	        </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                <artifactId>uvms-config</artifactId>
+                <version>${uvms.config.version}</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                    <artifactId>uvms-commons</artifactId>
+                  </exclusion>
+                </exclusions>
+            </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
@@ -195,7 +213,13 @@
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-model</artifactId>
-                <version>${asset.model.version}</version>
+                <version>${asset.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+                <artifactId>asset-client</artifactId>
+                <version>${asset.version}</version>
             </dependency>
 
             <dependency>
@@ -303,117 +327,70 @@
                 <version>20.0</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxb-provider</artifactId>
-                <version>${resteasy.version}</version>
-                <exclusions>
-                	<exclusion>
-                    	<groupId>commons-logging</groupId>
-                    	<artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>javax.xml.bind</groupId>
-    					<artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+           	<dependency>
 
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-multipart-provider</artifactId>
-                <version>${resteasy.version}</version>
-                <exclusions>
-                	<exclusion>
-                    	<groupId>commons-logging</groupId>
-                    	<artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>javax.xml.bind</groupId>
-    					<artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-gis-deps</artifactId>
+                <version>1.23</version>
+                <type>pom</type>
+              </dependency>
 
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>jaxrs-api</artifactId>
-                <version>${resteasy.version}</version>
-                <scope>provided</scope>
-            </dependency>
+              <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-logging-deps</artifactId>
+                <version>1.23</version>
+                <type>pom</type>
+              </dependency>
 
-            <dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.23</version>
-				<type>pom</type>
-			</dependency>
+              <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-monitoring-deps</artifactId>
+                <version>1.23</version>
+                <type>pom</type>
+              </dependency>
 
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.23</version>
-				<type>pom</type>
-			</dependency>
+              <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-test-deps</artifactId>
+                <version>1.23</version>
+                <type>pom</type>
+              </dependency>
 
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.23</version>
-				<type>pom</type>
-			</dependency>
-
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.23</version>
-				<type>pom</type>
-			</dependency>
-
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.23</version>
-				<type>pom</type>
+              <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-arquillian-deps</artifactId>
+                <version>1.23</version>
+                <type>pom</type>
                 <scope>test</scope>
-			</dependency>
+              </dependency>
 
-            <dependency>
-    			<groupId>ch.qos.logback</groupId>
-    			<artifactId>logback-core</artifactId>
-    			<version>${logback.core.version}</version>
-    		</dependency>
+              <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.core.version}</version>
+              </dependency>
 
-    		<dependency>
-    			<groupId>ch.qos.logback</groupId>
-    			<artifactId>logback-classic</artifactId>
-    			<version>${logback.version}</version>
-    		</dependency>
+              <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+              </dependency>
 
-    		<dependency>
-    		  <groupId>org.slf4j</groupId>
-  			  <artifactId>slf4j-api</artifactId>
-    		  <version>1.7.25</version>
-    		</dependency>
-
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>${javaee.version}</version>
-                <scope>provided</scope>
-            </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.25</version>
+              </dependency>
         </dependencies>
     </dependencyManagement>
 
 	<dependencies>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 

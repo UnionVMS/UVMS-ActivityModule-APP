@@ -11,35 +11,41 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.*;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTWriter;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
+import eu.europa.ec.fisheries.ers.fa.utils.MicroMovementComparator;
 import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
 import eu.europa.ec.fisheries.ers.service.util.Postgres;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
+import eu.europa.ec.fisheries.uvms.movement.client.model.MovementPoint;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.*;
 
 @Stateless
 @Transactional
@@ -75,6 +81,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private FaMessageSaverBean faMessageSaverBean;
 
     private DatabaseDialect dialect;
+
+    private GeometryFactory geometryFactory = new GeometryFactory();
 
     @PostConstruct
     public void init() {
@@ -119,8 +127,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      *
      * @param faReportDocument
      */
-    public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument) throws
-            ServiceException {
+    public void calculateFishingTripStartAndEndDate(FaReportDocumentEntity faReportDocument) {
         Set<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
         if (CollectionUtils.isEmpty(fishingActivities)) {
             log.error("Could not find FishingActivities for faReportDocument.");
@@ -302,20 +309,20 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * @param faReportDocumentEntity
      */
     private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
-        List<MovementType> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
+        List<MicroMovement> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
         Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
         List<Geometry> multiPointForFaReport = populateGeometriesForFishingActivities(movements, fishingActivityEntities);
         faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport));
     }
 
     private List<Geometry> populateGeometriesForFishingActivities
-            (List<MovementType> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
+            (List<MicroMovement> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
         List<Geometry> multiPointForFaReport = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
                 List<Geometry> multiPointForFa = new ArrayList<>();
                 Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
-                Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
+                Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate.toInstant());
                 for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
                     Geometry point = null;
                     String fluxLocationStr = fluxLocation.getTypeCode();
@@ -423,7 +430,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return geometry;
     }
 
-    private List<MovementType> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws
+    private List<MicroMovement> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws
             ServiceException {
         if (CollectionUtils.isEmpty(faReportDocumentEntity.getVesselTransportMeans())) {
             return Collections.emptyList();
@@ -460,79 +467,78 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return set.first();
     }
 
-    private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date
+    private List<MicroMovement> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date
             startDate, Date endDate) throws ServiceException {
         List<String> assetGuids = assetService.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
         return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
     }
 
-    private Geometry interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws
-            ServiceException {
-
+    private Geometry interpolatePointFromMovements(List<MicroMovement> movements, Instant activityDate) throws ServiceException {
         if (movements == null || movements.isEmpty()) {
             return null;
         }
 
         Geometry faReportGeom;
-        Collections.sort(movements, new MovementTypeComparator());
-        Map<String, MovementType> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
-        MovementType nextMovement = movementTypeMap.get(NEXT);
-        MovementType previousMovement = movementTypeMap.get(PREVIOUS);
+        movements.sort(new MicroMovementComparator());
+        Map<String, MicroMovement> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
+        MicroMovement nextMovement = movementTypeMap.get(NEXT);
+        MicroMovement previousMovement = movementTypeMap.get(PREVIOUS);
 
-        try {
-
-            if (previousMovement == null && nextMovement == null) {
-                faReportGeom = null;
-            } else if (nextMovement == null) {
-                faReportGeom = GeometryMapper.INSTANCE.wktToGeometry(previousMovement.getWkt()).getValue();
-                faReportGeom.setSRID(dialect.defaultSRID());
-            } else if (previousMovement == null) {
-                faReportGeom = GeometryMapper.INSTANCE.wktToGeometry(nextMovement.getWkt()).getValue();
-                faReportGeom.setSRID(dialect.defaultSRID());
-            } else {
-                faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
-            }
-        } catch (ParseException e) {
-            throw new ServiceException(e.getMessage(), e);
+        if (previousMovement == null && nextMovement == null) {
+            return null;
+        } else if (nextMovement == null) {
+            faReportGeom = convertToPoint(previousMovement);
+            faReportGeom.setSRID(dialect.defaultSRID());
+        } else if (previousMovement == null) {
+            faReportGeom = convertToPoint(nextMovement);
+            faReportGeom.setSRID(dialect.defaultSRID());
+        } else {
+            faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
         }
         return faReportGeom;
     }
 
-    private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date
-            acceptedDate) throws ServiceException {
+    private Point convertToPoint(MicroMovement microMovement) {
+        MovementPoint location = microMovement.getLocation();
+        Coordinate coordinate = new Coordinate(location.getLongitude(), location.getLatitude());
+        return geometryFactory.createPoint(coordinate);
+    }
+
+    private Geometry calculateIntermediatePoint(MicroMovement previousMovement, MicroMovement nextMovement, Instant acceptedDate) throws ServiceException {
         Geometry point;
 
-        Long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
-        Long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().getTime();
-        Long durationBC = nextMovement.getPositionTime().getTime() - acceptedDate.getTime();
+        long durationAB = nextMovement.getTimestamp().toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
+        long durationAC = acceptedDate.toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
+        long durationBC = nextMovement.getTimestamp().toEpochMilli() - acceptedDate.toEpochMilli();
 
-        try {
+        Point previousPoint = convertToPoint(previousMovement);
+        Point nextPoint = convertToPoint(nextMovement);
 
-            if (durationAC == 0) {
-                log.info("The point is same as the start point");
-                point = GeometryMapper.INSTANCE.wktToGeometry(previousMovement.getWkt()).getValue();
-            } else if (durationBC == 0) {
-                log.info("The point is the same as end point");
-                point = GeometryMapper.INSTANCE.wktToGeometry(nextMovement.getWkt()).getValue();
-            } else {
-                log.info("The point is between start and end point");
-                LengthIndexedLine lengthIndexedLine = GeometryUtils.createLengthIndexedLine(previousMovement.getWkt(), nextMovement.getWkt());
-                Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB;
-                point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
-            }
-        } catch (ParseException e) {
-            throw new ServiceException(e.getMessage(), e);
+        if (durationAC == 0) {
+            log.info("The point is same as the start point");
+            point = previousPoint;
+        } else if (durationBC == 0) {
+            log.info("The point is the same as end point");
+            point = nextPoint;
+        } else {
+            log.info("The point is between start and end point");
+            String nextWkt = WKTWriter.toPoint(nextPoint.getCoordinate());
+            String previousWkt = WKTWriter.toPoint(previousPoint.getCoordinate());
+
+            LengthIndexedLine lengthIndexedLine = GeometryUtils.createLengthIndexedLine(previousWkt, nextWkt);
+            Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB;
+            point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
         }
         point.setSRID(dialect.defaultSRID());
         return point;
     }
 
-    private Map<String, MovementType> getPreviousAndNextMovement(List<MovementType> movements, Date inputDate) {
-        Map<String, MovementType> movementMap = new HashMap<>();
-        for (MovementType movement : movements) {
-            if (movement.getPositionTime().compareTo(inputDate) <= 0) {
+    private Map<String, MicroMovement> getPreviousAndNextMovement(List<MicroMovement> movements, Instant inputDate) {
+        Map<String, MicroMovement> movementMap = new HashMap<>();
+        for (MicroMovement movement : movements) {
+            if (movement.getTimestamp().compareTo(inputDate) <= 0) {
                 movementMap.put(PREVIOUS, movement);
-            } else if (movement.getPositionTime().compareTo(inputDate) > 0) {
+            } else if (movement.getTimestamp().compareTo(inputDate) > 0) {
                 movementMap.put(NEXT, movement);
                 break;
             }

@@ -39,12 +39,11 @@ public abstract class BaseActivityArquillianTest {
         testWar.addAsLibraries(dependencyFiles);
 
         testWar.addAsLibraries(Maven.configureResolver().loadPomFromFile("pom.xml")
-                .resolve("eu.europa.ec.fisheries.uvms.activity:service")
+                .resolve("eu.europa.ec.fisheries.uvms.activity:service", "eu.europa.ec.fisheries.uvms.activity:message")
                 .withTransitivity().asFile());
 
         testWar.addPackages(true,
-                "eu.europa.ec.fisheries.uvms.activity.rest",
-                "eu.europa.ec.fisheries.uvms.activity.message");
+                "eu.europa.ec.fisheries.uvms.activity.rest");
 
         testWar.addAsResource("logback-test.xml");
         System.out.println(testWar.toString(true));

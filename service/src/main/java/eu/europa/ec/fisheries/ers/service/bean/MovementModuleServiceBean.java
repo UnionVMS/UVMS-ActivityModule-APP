@@ -16,30 +16,20 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.MovementProducerBean;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.movement.client.MovementRestClient;
+import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
+import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovementExtended;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -47,62 +37,19 @@ import java.util.List;
 public class MovementModuleServiceBean extends ModuleService implements MovementModuleService {
 
     @EJB
-    private MovementProducerBean movementProducer;
-
-    @EJB
-    private ActivityConsumerBean activityConsumer;
+    private MovementRestClient movementClient;
 
     /**
      * {@inheritDoc}
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException {
-        try {
-            MovementQuery movementQuery = new MovementQuery();
-            addListCriteria(vesselIds, movementQuery);
-            addRangeCriteria(startDate, endDate, movementQuery);
-            movementQuery.setExcludeFirstAndLastSegment(true);
-
-            String request = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
-            String moduleMessage = movementProducer.sendModuleMessage(request, activityConsumer.getDestination());
-            TextMessage response = activityConsumer.getMessage(moduleMessage, TextMessage.class);
-            //TODO: Implement this call against new Movement Module!
-            /*
-            if (response != null && isNotUserFault(response)) {
-                List<MovementMapResponseType> mapResponseTypes = MovementModuleResponseMapper.mapToMovementMapResponse(response);
-                List<MovementType> movements = new ArrayList<>();
-                for (MovementMapResponseType movementMap : mapResponseTypes) {
-                    movements.addAll(movementMap.getMovements());
-                }
-                return movements;
-            } else {
-                throw new ServiceException("FAILED TO GET DATA FROM MOVEMENT");
-            }
-            */
-
-            return new ArrayList<>();
-
-        } catch (JMSException e) {
-            log.error("Exception in communication with movements", e);
-            throw new ServiceException(e.getMessage(), e);
-        }
-    }
-
-    private void addRangeCriteria(Date startDate, Date endDate, MovementQuery movementQuery) {
-        RangeCriteria rangeCriteria = new RangeCriteria();
-        rangeCriteria.setKey(RangeKeyType.DATE);
-        rangeCriteria.setFrom(DateFormatUtils.format(DateUtils.addDays(startDate, -1), "yyyy-MM-dd HH:mm:ss Z"));
-        rangeCriteria.setTo(DateFormatUtils.format(DateUtils.addDays(endDate, 1), "yyyy-MM-dd HH:mm:ss Z"));
-        movementQuery.getMovementRangeSearchCriteria().add(rangeCriteria);
-    }
-
-    private void addListCriteria(List<String> vesselIds, MovementQuery movementQuery) {
-        for (String vesselId : vesselIds) {
-            ListCriteria listCriteria = new ListCriteria();
-            listCriteria.setKey(SearchKey.CONNECT_ID);
-            listCriteria.setValue(vesselId);
-            movementQuery.getMovementSearchCriteria().add(listCriteria);
-        }
+    public List<MicroMovement> getMovement(List<String> vesselIds, Date startDate, Date endDate) {
+        List<MicroMovementExtended> positionsForVessels = movementClient.getMicroMovementsForConnectIdsBetweenDates(vesselIds, startDate.toInstant(), endDate.toInstant());
+        log.debug("Vessel positions: " + positionsForVessels.toString());
+        return positionsForVessels
+                .stream()
+                .map(MicroMovementExtended::getMicroMove)
+                .collect(Collectors.toList());
     }
 }
