@@ -96,6 +96,8 @@
         <resteasy.version>3.0.11.Final</resteasy.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
+
+        <installAtEnd>false</installAtEnd> <!-- Maven install plugin property -->
     </properties>
 
     <dependencyManagement>
