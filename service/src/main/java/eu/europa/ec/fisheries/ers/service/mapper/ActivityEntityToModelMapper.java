@@ -31,7 +31,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import static java.util.Collections.singletonList;
 
 @Slf4j
-public class ActivityEntityToModelMapper {
+public class ActivityEntityToModelMapper extends BaseMapper {
 
     public static final ActivityEntityToModelMapper INSTANCE = new ActivityEntityToModelMapper();
   
@@ -402,9 +402,8 @@ public class ActivityEntityToModelMapper {
     }
 
     private void mapOccurrenceDateTime(FishingActivity target, Instant source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(Date.from(source)));
+        if (ObjectUtils.allNotNull(target, source)) {
+            DateTimeType dateTimeType = instantToDateTimeTypeUTC(source);
             target.setOccurrenceDateTime(dateTimeType);
         }
     }
@@ -501,7 +500,7 @@ public class ActivityEntityToModelMapper {
     private void mapRegistrationEvent(VesselTransportMeans target, RegistrationEventEntity source) {
         if (ObjectUtils.allNotNull(target, source)){
             RegistrationEvent registrationEvent = new RegistrationEvent();
-            mapOccurrenceDateTime(registrationEvent, source.getOccurrenceDatetime());
+            mapOccurrenceDateTime(registrationEvent, source.getOccurrenceDatetime().toInstant());
             mapDescription(registrationEvent, source.getDescription(), source.getDescLanguageId());
             mapRelatedRegistrationLocation(registrationEvent, source.getRegistrationLocation());
             target.setSpecifiedRegistrationEvents(singletonList(registrationEvent));
@@ -578,10 +577,9 @@ public class ActivityEntityToModelMapper {
         }
     }
 
-    private void mapOccurrenceDateTime(RegistrationEvent target, Date source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
+    private void mapOccurrenceDateTime(RegistrationEvent target, Instant source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            DateTimeType dateTimeType = instantToDateTimeTypeUTC(source);
             target.setOccurrenceDateTime(dateTimeType);
         }
     }
@@ -654,8 +652,7 @@ public class ActivityEntityToModelMapper {
 
     private void mapAcceptanceDateTime(FAReportDocument target, Instant source) {
         if (ObjectUtils.allNotNull(target, source)) {
-            DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(Date.from(source)));
+            DateTimeType dateTimeType = instantToDateTimeTypeUTC(source);
             target.setAcceptanceDateTime(dateTimeType);
         }
     }

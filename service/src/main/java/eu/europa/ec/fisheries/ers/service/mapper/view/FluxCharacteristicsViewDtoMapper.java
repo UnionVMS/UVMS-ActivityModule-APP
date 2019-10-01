@@ -14,6 +14,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FluxCharacteristicsViewDto;
 import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -27,6 +29,9 @@ public abstract class FluxCharacteristicsViewDtoMapper extends BaseMapper {
 
     public static FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
 
+    @Mappings(
+            @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "instantToDate")
+    )
     public abstract FluxCharacteristicsViewDto mapFluxCharacteristicsEntityListToDtoList(FluxCharacteristicEntity firstCatchEntity);
 
     public abstract List<FluxCharacteristicsViewDto> mapFluxCharacteristicsList(Set<FluxCharacteristicEntity> fluxCharacteristicEntities);

@@ -15,14 +15,11 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
@@ -39,9 +36,20 @@ import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
+import org.junit.Before;
 import org.junit.Test;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class BaseMapperTest extends BaseUnitilsTest {
+
+    BaseMapper baseMapper;
+
+    @Before
+    public void setUp() {
+        baseMapper = new BaseMapper();
+    }
 
     @Test
     public void mapFromFluxLocation() {
@@ -94,7 +102,7 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
         DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
 
-        assertEquals(24.46d, periodDTO.getDuration());
+        assertEquals(24.46d, periodDTO.getDuration(), 0.001d);
         assertEquals(period2.getStartDate(), periodDTO.getStartDate().toInstant());
         assertEquals(period1.getEndDate(), periodDTO.getEndDate().toInstant());
         assertEquals(UnitCodeEnum.MIN.getUnit(), periodDTO.getUnitCode());
@@ -177,5 +185,73 @@ public class BaseMapperTest extends BaseUnitilsTest {
         assertEquals(ConfigSearchField.IRCS, ircsPair.getKey());
         assertEquals("ircsValue", ircsPair.getValue());
 
+    }
+
+    @Test
+    public void instantToDate() {
+        // Given
+        Instant instant = Instant.now();
+
+        // When
+        Date date = baseMapper.instantToDate(instant);
+
+        // Then
+        // note: It seems to be impossible to create a Date that is reliably always UTC
+        assertEquals(instant.toEpochMilli(), date.getTime());
+    }
+
+    @Test
+    public void instantToDateUtilsStringFormat() {
+        // Given
+        Instant instant = Instant.ofEpochSecond(1_000_000);
+
+        // When
+        String formattedString = baseMapper.instantToDateUtilsStringFormat(instant);
+
+        // Then
+        assertEquals("1970-01-12T13:46:40", formattedString);
+    }
+
+    @Test
+    public void instantToXMLGregorianCalendarUTC() {
+        // Given
+        Instant instant = Instant.now();
+
+        // When
+        XMLGregorianCalendar calendar = baseMapper.instantToXMLGregorianCalendarUTC(instant);
+
+        // Then
+        // Make sure there where has been no funny business with timezones
+        assertEquals(0, calendar.getTimezone());
+        assertEquals(instant.getEpochSecond(), calendar.toGregorianCalendar().toInstant().getEpochSecond());
+    }
+
+    @Test
+    public void instantToDateTimeTypeUTC() {
+        // Given
+        Instant instant = Instant.now();
+
+        // When
+        DateTimeType dateTimeType = baseMapper.instantToDateTimeTypeUTC(instant);
+
+        // Then
+        XMLGregorianCalendar calendar = dateTimeType.getDateTime();
+        // Make sure there where has been no funny business with timezones
+        assertEquals(0, calendar.getTimezone());
+        assertEquals(instant.getEpochSecond(), calendar.toGregorianCalendar().toInstant().getEpochSecond());
+    }
+
+    @Test
+    public void dateTimeTypeToInstant() {
+        // Given
+        XMLGregorianCalendar xmlGregorianCalendar = baseMapper.instantToXMLGregorianCalendarUTC(Instant.now());
+        DateTimeType dateTimeType = new DateTimeType();
+        dateTimeType.setDateTime(xmlGregorianCalendar);
+
+        // When
+        Instant instant = baseMapper.dateTimeTypeToInstant(dateTimeType);
+
+        // Then
+        assertEquals(dateTimeType.getDateTime().toGregorianCalendar().toInstant(), instant);
     }
 }

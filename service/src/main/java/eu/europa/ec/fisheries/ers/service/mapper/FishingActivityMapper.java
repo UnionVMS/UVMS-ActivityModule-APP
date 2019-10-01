@@ -30,10 +30,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
@@ -51,7 +48,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", source = "fishingActivity.typeCode.value"),
             @Mapping(target = "typeCodeListid", expression = "java(getCodeTypeListId(fishingActivity.getTypeCode()))"),
-            @Mapping(target = "occurence", source = "fishingActivity.occurrenceDateTime"),
+            @Mapping(target = "occurence", source = "fishingActivity.occurrenceDateTime", qualifiedByName = "dateTimeTypeToInstant"),
             @Mapping(target = "reasonCode", source = "fishingActivity.reasonCode.value"),
             @Mapping(target = "reasonCodeListId", expression = "java(getCodeTypeListId(fishingActivity.getReasonCode()))"),
             @Mapping(target = "vesselActivityCode", expression = "java(getCodeType(fishingActivity.getVesselRelatedActivityCode()))"),
@@ -105,13 +102,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "delimitedPeriod", expression = "java(null)"),
             @Mapping(target = "dataSource", source = "faReportDocument.source"),
             @Mapping(target = "vesselIdTypes", expression = "java(getVesselIdType(entity))"),
-            @Mapping(target = "startDate", source = "calculatedStartTime"),
+            @Mapping(target = "startDate", source = "calculatedStartTime", qualifiedByName = "instantToDate"),
             @Mapping(target = "endDate", expression = "java(getEndDate(entity))"),
             @Mapping(target = "hasCorrection", expression = "java(getCorrection(entity))"),
             @Mapping(target = "fluxReportReferenceId", source = "faReportDocument.fluxReportDocument.referenceId"),
             @Mapping(target = "fluxReportReferenceSchemeId", source = "faReportDocument.fluxReportDocument.referenceSchemeId"),
             @Mapping(target = "cancelingReportID", source = "canceledBy"),
-            @Mapping(target = "deletingReportID", source = "deletedBy")
+            @Mapping(target = "deletingReportID", source = "deletedBy"),
+            @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
     })
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
 
@@ -120,7 +118,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "activityId", source = "id"),
             @Mapping(target = "faReportID", source = "faReportDocument.id"),
             @Mapping(target = "geometry", source = "wkt"),
-            @Mapping(target = "acceptedDateTime", source = "faReportDocument.acceptedDatetime"),
+            @Mapping(target = "acceptedDateTime", source = "faReportDocument.acceptedDatetime", qualifiedByName = "dateTimeTypeToInstant"),
             @Mapping(target = "dataSource", source = "faReportDocument.source"),
             @Mapping(target = "reportType", source = "faReportDocument.typeCode"),
             @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
@@ -136,6 +134,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "flagState", expression = "java(getFlagState(entity))"),
             @Mapping(target = "landingReferencedID", expression = "java(getFluxReportIdentifierId(entity))"),
             @Mapping(target = "landingState", expression = "java(getLandingCountryId(entity))"),
+            @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToXMLGregorianCalendar")
     })
     public abstract FishingActivitySummary mapToFishingActivitySummary(FishingActivityEntity entity);
 
@@ -163,17 +162,18 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "reason", source = "reasonCode"),
             @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument.purposeCode"),
             @Mapping(target = "faReportDocumentType", source = "faReportDocument.typeCode"),
-            @Mapping(target = "faReportAcceptedDateTime", source = "faReportDocument.acceptedDatetime"),
+            @Mapping(target = "faReportAcceptedDateTime", source = "faReportDocument.acceptedDatetime", qualifiedByName = "instantToDate"),
             @Mapping(target = "correction", expression = "java(getCorrection(entity))"), // FIXME entity method
             @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))"),
             @Mapping(target = "fluxLocations", ignore = true),
-            @Mapping(target = "faReportID", source = "faReportDocument.id")
+            @Mapping(target = "faReportID", source = "faReportDocument.id"),
+            @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
     })
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
-            @Mapping(target = "occurrence", source = "entity.occurence"),
+            @Mapping(target = "occurrence", source = "entity.occurence", qualifiedByName = "instantToDate"),
             @Mapping(target = "identifiers", source = "fishingActivityIdentifiers"),
             @Mapping(target = "nrOfOperation", source = "operationsQuantity.value"),
             @Mapping(target = "reason", source = "reasonCode"),

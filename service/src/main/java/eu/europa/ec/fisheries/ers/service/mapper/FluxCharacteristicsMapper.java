@@ -31,7 +31,7 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "valueMeasure", source = "valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", source = "valueMeasure.unitCode"),
-            @Mapping(target = "valueDateTime", source = "valueDateTime"),
+            @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "dateTimeTypeToInstant"),
             @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value"),
             @Mapping(target = "valueCode", source = "valueCode.value"),
             @Mapping(target = "valueText", expression = "java(BaseMapper.getTextFromList(fluxCharacteristic.getValues()))"),
@@ -46,8 +46,14 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic);
 
     @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "instantToDateTimeType")
+    })
     public abstract FLUXCharacteristic mapToFLUXCharacteristic(FluxCharacteristicEntity fluxCharacteristicEntity);
 
+    @Mappings({
+            @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "instantToDate")
+    })
     public abstract FluxCharacteristicsDto mapToFluxCharacteristicsDto(FluxCharacteristicEntity fluxCharacteristicEntity);
 
 }

@@ -54,7 +54,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", source = "faReportDocument.typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "faReportDocument.typeCode.listID"),
-            @Mapping(target = "acceptedDatetime", source = "faReportDocument.acceptanceDateTime"),
+            @Mapping(target = "acceptedDatetime", source = "faReportDocument.acceptanceDateTime", qualifiedByName = "dateTimeTypeToInstant"),
             @Mapping(target = "fmcMarker", source = "faReportDocument.FMCMarkerCode.value"),
             @Mapping(target = "fmcMarkerListId", source = "faReportDocument.FMCMarkerCode.listID"),
             @Mapping(target = "status", constant = "NEW"),

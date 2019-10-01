@@ -16,6 +16,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -39,6 +41,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.mapstruct.Named;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
@@ -303,6 +306,16 @@ public class BaseMapper {
         return positionDto;
     }
 
+    @Named("instantToDate")
+    protected Date instantToDate(Instant value) {
+        if (value == null) {
+            return null;
+        }
+
+        return Date.from(value);
+    }
+
+    @Named("instantToDateUtilsStringFormat")
     protected String instantToDateUtilsStringFormat(Instant value) {
         if (value == null) {
             return null;
@@ -311,18 +324,44 @@ public class BaseMapper {
         return dateTimeFormatter.format(value);
     }
 
-    protected DateTimeType instantToDateTimeType(Instant value) {
+    /**
+     * Converts an Instant to an XMLGregorianCalendar that uses the UTC time zone.
+     * The precision is seconds, not milliseconds. This is done in order to preserve backwards compatibility of the format for outgoing FLUX messages.
+     * Otherwise, the timestamp in the FLUX XML will contain milliseconds, which it hasn't previously.
+     * XMLDateUtils.dateToXmlGregorian() (which this method is intended to replace) also doesn't have millisecond precision.
+     *
+     * @param instant Instant to convert
+     * @return XMLGregorianCalendar set to the same epoch second with UTC time zone
+     */
+    @Named("instantToXMLGregorianCalendarUTC")
+    protected XMLGregorianCalendar instantToXMLGregorianCalendarUTC(Instant instant) {
+        GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ROOT);
+        calendar.setTimeInMillis(instant.toEpochMilli());
+        try {
+            XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+            // no millisecond precision, see Javadoc
+            xmlGregorianCalendar.setFractionalSecond(null);
+            return xmlGregorianCalendar;
+        } catch (DatatypeConfigurationException e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Named("instantToDateTimeTypeUTC")
+    protected DateTimeType instantToDateTimeTypeUTC(Instant value) {
         if (value == null) {
             return null;
         }
 
-        XMLGregorianCalendar xmlGregorianCalendar = DateUtils.dateToXmlGregorian(Date.from(value));
+        XMLGregorianCalendar xmlGregorianCalendar = instantToXMLGregorianCalendarUTC(value);
         DateTimeType result = new DateTimeType();
         result.setDateTime(xmlGregorianCalendar);
         return result;
     }
 
-    protected Instant map(DateTimeType value) {
+    @Named("dateTimeTypeToInstant")
+    protected Instant dateTimeTypeToInstant(DateTimeType value) {
         if (value == null) {
             return null;
         }
@@ -335,11 +374,12 @@ public class BaseMapper {
         return dateTime.toGregorianCalendar().toInstant();
     }
 
-    protected Date map(Instant value) {
-        if (value == null) {
+    @Named("xmlGregorianCalendarToInstant")
+    protected Instant xmlGregorianCalendarToInstant(XMLGregorianCalendar value) {
+        if (value ==  null) {
             return null;
         }
 
-        return Date.from(value);
+        return value.toGregorianCalendar().toInstant();
     }
 }
