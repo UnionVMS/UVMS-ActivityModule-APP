@@ -12,7 +12,7 @@
     </parent>
 
     <properties>
-        <docker.dev.stop.phase>verify</docker.dev.stop.phase>
+        <docker.dev.start.phase>test-compile</docker.dev.start.phase>
         <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
     </properties>
 
