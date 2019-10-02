@@ -30,10 +30,7 @@ import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
@@ -42,9 +39,10 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 
 @Mapper(uses = {FishingActivityIdentifierMapper.class, FaCatchMapper.class, DelimitedPeriodMapper.class, XMLDateUtils.class,
-        FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
-        FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class, FlapDocumentMapper.class},
-        imports = {FaReportStatusType.class}
+                FishingGearMapper.class, GearProblemMapper.class, FishingTripMapper.class,
+                FluxCharacteristicsMapper.class, FaReportDocumentMapper.class, GeometryMapper.class, FlapDocumentMapper.class},
+        imports = {FaReportStatusType.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {

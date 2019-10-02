@@ -15,10 +15,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = BaseMapper.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RegistrationEventMapper {
 
     RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);

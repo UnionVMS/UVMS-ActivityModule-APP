@@ -29,12 +29,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = BaseMapper.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class FluxPartyMapper {
 
     public static final FluxPartyMapper INSTANCE = Mappers.getMapper(FluxPartyMapper.class);

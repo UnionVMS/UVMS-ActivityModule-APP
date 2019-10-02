@@ -15,14 +15,11 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FishingActivityIdentifierMapper {
 
     FishingActivityIdentifierMapper INSTANCE = Mappers.getMapper(FishingActivityIdentifierMapper.class);

@@ -36,14 +36,13 @@ import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 
-@Mapper(imports = BaseMapper.class, uses = CustomBigDecimal.class)
+@Mapper(imports = BaseMapper.class,
+        uses = CustomBigDecimal.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class GearCharacteristicsMapper {
 
     public static final GearCharacteristicsMapper INSTANCE = Mappers.getMapper(GearCharacteristicsMapper.class);

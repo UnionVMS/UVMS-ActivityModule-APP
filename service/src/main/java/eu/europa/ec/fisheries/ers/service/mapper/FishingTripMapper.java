@@ -15,14 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 
-@Mapper(uses = {FishingTripIdentifierMapper.class, DelimitedPeriodMapper.class})
+@Mapper(uses = {FishingTripIdentifierMapper.class, DelimitedPeriodMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FishingTripMapper {
 
     FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);

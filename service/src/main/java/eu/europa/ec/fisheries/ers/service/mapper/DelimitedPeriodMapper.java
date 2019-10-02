@@ -18,14 +18,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
-@Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class})
+@Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DelimitedPeriodMapper {
 
     DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);

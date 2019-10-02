@@ -33,6 +33,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {VesselTransportMeansMapper.class}, imports = FluxLocationCatchTypeEnum.class)
+@Mapper(uses = {VesselTransportMeansMapper.class}, imports = FluxLocationCatchTypeEnum.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityTranshipmentViewMapper INSTANCE = Mappers.getMapper(ActivityTranshipmentViewMapper.class);

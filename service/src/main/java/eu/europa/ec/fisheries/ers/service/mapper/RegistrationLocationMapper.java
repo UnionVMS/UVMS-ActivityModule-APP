@@ -15,10 +15,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = BaseMapper.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RegistrationLocationMapper {
 
     RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);

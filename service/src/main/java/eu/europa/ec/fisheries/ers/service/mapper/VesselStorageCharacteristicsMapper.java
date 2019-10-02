@@ -22,11 +22,13 @@ import eu.europa.ec.fisheries.ers.service.dto.StorageDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(uses = {VesselStorageCharCodeMapper.class})
+@Mapper(uses = {VesselStorageCharCodeMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class VesselStorageCharacteristicsMapper {
 
     public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);

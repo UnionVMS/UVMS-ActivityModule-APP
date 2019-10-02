@@ -21,12 +21,14 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMappe
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 /**
  * Created by padhyad on 3/7/2017.
  */
-@Mapper(imports = FluxLocationCatchTypeEnum.class)
+@Mapper(imports = FluxLocationCatchTypeEnum.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class ActivityDepartureViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityDepartureViewMapper INSTANCE = Mappers.getMapper(ActivityDepartureViewMapper.class);

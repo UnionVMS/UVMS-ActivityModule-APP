@@ -18,9 +18,10 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMappe
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class ActivityAreaEntryViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityAreaEntryViewMapper INSTANCE = Mappers.getMapper(ActivityAreaEntryViewMapper.class);

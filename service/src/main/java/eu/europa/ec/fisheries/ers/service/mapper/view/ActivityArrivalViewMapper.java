@@ -25,12 +25,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 /**
  * Created by kovian on 09/02/2017.
  */
-@Mapper(imports = FluxLocationCatchTypeEnum.class)
+@Mapper(imports = FluxLocationCatchTypeEnum.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityArrivalViewMapper INSTANCE = Mappers.getMapper(ActivityArrivalViewMapper.class);

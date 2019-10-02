@@ -17,15 +17,13 @@ import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FishingGearDTO;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(uses = {GearCharacteristicsMapper.class})
+@Mapper(uses = {GearCharacteristicsMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FishingGearMapper {
 
     FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);

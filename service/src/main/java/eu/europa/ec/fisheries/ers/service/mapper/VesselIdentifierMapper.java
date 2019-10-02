@@ -16,16 +16,11 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.Mappings;
-import org.mapstruct.ValueMapping;
-import org.mapstruct.ValueMappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = BaseMapper.class)
+@Mapper(uses = BaseMapper.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface VesselIdentifierMapper {
 
     VesselIdentifierMapper INSTANCE = Mappers.getMapper(VesselIdentifierMapper.class);

@@ -36,14 +36,12 @@ import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 
-@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class})
+@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
