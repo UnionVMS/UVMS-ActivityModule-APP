@@ -11,14 +11,11 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FishingTripIdentifierMapper {
 
     FishingTripIdentifierMapper INSTANCE = Mappers.getMapper(FishingTripIdentifierMapper.class);

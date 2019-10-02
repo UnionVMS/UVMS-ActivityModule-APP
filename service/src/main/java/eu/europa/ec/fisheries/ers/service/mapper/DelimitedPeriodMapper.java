@@ -21,10 +21,12 @@ import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
-@Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class})
+@Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class DelimitedPeriodMapper extends BaseMapper {
 
     public static DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);

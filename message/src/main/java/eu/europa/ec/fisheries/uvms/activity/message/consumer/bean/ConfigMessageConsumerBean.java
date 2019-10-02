@@ -31,10 +31,9 @@ import org.slf4j.LoggerFactory;
 @Slf4j
 public class ConfigMessageConsumerBean extends AbstractConsumer implements ConfigMessageConsumer {
 
-    private static final long CONFIG_TIMEOUT = 600000L;
-
     private static final Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
 
+    private static final long CONFIG_TIMEOUT = 600000L;
 
     @Resource(mappedName = "java:/" + MessageConstants.QUEUE_ACTIVITY)
     private Queue destination;

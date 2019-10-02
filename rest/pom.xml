@@ -11,14 +11,19 @@
         <version>1.1.13-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <docker.dev.start.phase>test-compile</docker.dev.start.phase>
+        <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
+    </properties>
+
     <dependencies>
-    
+
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -29,7 +34,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
@@ -55,25 +60,9 @@
         </dependency>
 
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-test</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vividsolutions</groupId>
-                    <artifactId>jts</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
         </dependency>
 
         <dependency>
@@ -91,58 +80,12 @@
             <artifactId>uvms-pom-monitoring-deps</artifactId>
             <type>pom</type>
         </dependency>
-<!--
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jboss.logging</groupId>
-    				<artifactId>jboss-logging</artifactId>					
-				</exclusion>
-			</exclusions>
-		</dependency>
--->
-         <dependency>
-			 <groupId>org.jboss.resteasy</groupId>
-    		<artifactId>resteasy-jaxb-provider</artifactId>
-    		<exclusions>
-    			<exclusion>
-    				    <groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>   				
-    			</exclusion>
-    		</exclusions>    		
-		</dependency>
 
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <exclusions>
-            	<exclusion>
-            		<groupId>commons-logging</groupId>
-            		<artifactId>commons-logging</artifactId>
-            	</exclusion>
-            	<exclusion>
-				    <groupId>javax.mail</groupId>
-				    <artifactId>mail</artifactId>            		
-            	</exclusion>
-            	<exclusion>            	
-            		<groupId>org.jboss.resteasy</groupId>
-    				<artifactId>resteasy-jaxrs</artifactId>
-            	</exclusion>
-            	<exclusion>            	
-            	    <groupId>org.jboss.resteasy</groupId>
-    				<artifactId>resteasy-client</artifactId>
-            	</exclusion>            	
-            </exclusions>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-arquillian-deps</artifactId>
+            <type>pom</type>
         </dependency>
-
-		<dependency>
-		    <groupId>org.jboss.resteasy</groupId>
-		    <artifactId>jaxrs-api</artifactId>
-		    <scope>provided</scope>
-		</dependency>
-
     </dependencies>
 
     <build>

@@ -81,8 +81,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
         try {
             textMessage = (TextMessage) message;
             MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
-            ActivityModuleRequest request;
-            request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
+            ActivityModuleRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
             log.debug("Message unmarshalled successfully in activity");
             if (request == null) {
                 log.error("[ Request is null ]");

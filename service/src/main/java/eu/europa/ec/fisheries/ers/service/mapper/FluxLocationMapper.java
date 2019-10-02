@@ -15,15 +15,13 @@ import java.util.List;
 import java.util.Set;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
-@Mapper(imports = BaseMapper.class, uses = {FluxCharacteristicsMapper.class,
-        StructuredAddressMapper.class, FluxCharacteristicsMapper.class, CodeTypeMapper.class})
+@Mapper(imports = BaseMapper.class,
+        uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class, FluxCharacteristicsMapper.class, CodeTypeMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FluxLocationMapper {
 
     FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);

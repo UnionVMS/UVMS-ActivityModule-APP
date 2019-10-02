@@ -25,13 +25,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(uses = {FishingGearMapper.class, FluxLocationMapper.class})
+@Mapper(uses = {FishingGearMapper.class, FluxLocationMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class GearProblemMapper extends BaseMapper {
 
     public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);

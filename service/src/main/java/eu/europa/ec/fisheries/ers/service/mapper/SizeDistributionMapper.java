@@ -13,15 +13,13 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(imports = BaseMapper.class)
+@Mapper(imports = BaseMapper.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SizeDistributionMapper {
 
     SizeDistributionMapper INSTANCE = Mappers.getMapper(SizeDistributionMapper.class);

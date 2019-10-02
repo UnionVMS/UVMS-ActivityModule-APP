@@ -5,16 +5,20 @@
 	<artifactId>service</artifactId>
 	<name>${project.parent.artifactId}-service</name>
 	<packaging>ejb</packaging>
-	
-	<properties>
-		<jts.version>1.13</jts.version>
-	</properties>
 
 	<parent>
 		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
 		<artifactId>activity</artifactId>
 		<version>1.1.13-SNAPSHOT</version>
 	</parent>
+
+	<properties>
+		<jts.version>1.13</jts.version>
+
+<!--		<docker.dev.start.phase>test-compile</docker.dev.start.phase>-->
+<!--		<docker.liquibase.phase>test-compile</docker.liquibase.phase>-->
+<!--		<docker.dev.prestop.phase>validate</docker.dev.prestop.phase>-->
+	</properties>
 
 	<dependencies>
 
@@ -23,13 +27,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 		</dependency>
-	
-	  	<dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-            <version>${jts.version}</version>
-            <scope>provided</scope>
-        </dependency>        
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -52,14 +49,39 @@
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+			<groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
+			<artifactId>mdr-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
 			<artifactId>spatial-model</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+			<artifactId>spatial-client</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
 			<artifactId>movement-model</artifactId>
-        </dependency>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+			<artifactId>movement-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+			<artifactId>asset-model</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+			<artifactId>asset-client</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
@@ -123,14 +145,14 @@
 					<groupId>com.vividsolutions</groupId>
 					<artifactId>jts</artifactId>
 				</exclusion>
-			</exclusions>			
+			</exclusions>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-rest</artifactId>
             <version>${uvms.commons.version}</version>
         </dependency>
-        
+
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -162,6 +184,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>message</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -234,15 +257,13 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations-java5</artifactId>
 			<version>16.0.3</version>
 		</dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-            <artifactId>asset-model</artifactId>
-        </dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -268,7 +289,7 @@
             <type>pom</type>
         </dependency>
 
- 		
+
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>

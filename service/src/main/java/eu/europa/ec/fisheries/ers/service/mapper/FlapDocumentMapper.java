@@ -18,14 +18,12 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 
-@Mapper(uses = BaseMapper.class)
+@Mapper(uses = BaseMapper.class,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FlapDocumentMapper {
 
     FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);

@@ -37,7 +37,9 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper(imports = {FaReportStatusType.class})
+
+@Mapper(imports = {FaReportStatusType.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 @Slf4j
 public abstract class FishingActivityMapper extends BaseMapper {
 

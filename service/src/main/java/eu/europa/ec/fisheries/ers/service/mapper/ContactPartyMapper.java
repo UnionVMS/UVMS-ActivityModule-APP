@@ -27,13 +27,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class})
+@Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class ContactPartyMapper extends BaseMapper {
 
     public static final ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);

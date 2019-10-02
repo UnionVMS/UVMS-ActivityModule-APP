@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd"
+                   logicalFilePath="changelog/v0.3/db-changelog-createTables_0.3.xml">
 
     <!-- Add canceledBy and deletedBy columns to activity fishing activity table -->
-    <include file="\postgres\schema\tables\v0.3\add_correctedby_deletedby_to_activity_table.xml"/>
+    <include file="..\..\schema\tables\v0.3\add_correctedby_deletedby_to_activity_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

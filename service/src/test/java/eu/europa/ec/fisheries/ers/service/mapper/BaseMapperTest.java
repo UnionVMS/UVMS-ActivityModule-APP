@@ -102,7 +102,7 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
         DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
 
-        assertEquals(24.46d, periodDTO.getDuration(), 0.001d);
+        assertEquals(24.46d, (double)periodDTO.getDuration(), 0.01d);
         assertEquals(period2.getStartDate(), periodDTO.getStartDate().toInstant());
         assertEquals(period1.getEndDate(), periodDTO.getEndDate().toInstant());
         assertEquals(UnitCodeEnum.MIN.getUnit(), periodDTO.getUnitCode());

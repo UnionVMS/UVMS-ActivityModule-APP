@@ -1,108 +1,112 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd"
+                   logicalFilePath="changelog/1.1.13/db-liquibase-diff.xml">
         <changeSet author="anwall (generated)" id="1566992597989-38">
         <addColumn tableName="activity_delimited_period">
-            <column name="durationmeasure_unitcodelistid" type="varchar(255 BYTE)"/>
+            <column name="durationmeasure_unitcodelistid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-39">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_languageid" type="varchar(255 BYTE)"/>
+            <column name="codetype_languageid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-40">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_listagencyid" type="varchar(255 BYTE)"/>
+            <column name="codetype_listagencyid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-41">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_listagencyname" type="varchar(255 BYTE)"/>
+            <column name="codetype_listagencyname" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-42">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_listid" type="varchar(255 BYTE)"/>
+            <column name="codetype_listid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-43">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_listname" type="varchar(255 BYTE)"/>
+            <column name="codetype_listname" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-44">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_listschemeuri" type="varchar(255 BYTE)"/>
+            <column name="codetype_listschemeuri" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-45">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_listuri" type="varchar(255 BYTE)"/>
+            <column name="codetype_listuri" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-46">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_listversionid" type="varchar(255 BYTE)"/>
+            <column name="codetype_listversionid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-47">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_languageid" type="varchar(255 BYTE)"/>
+            <column name="codetype_languageid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-48">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_name" type="varchar(255 BYTE)"/>
+            <column name="codetype_name" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-49">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_listagencyid" type="varchar(255 BYTE)"/>
+            <column name="codetype_listagencyid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-50">
         <addColumn tableName="activity_flux_report_document">
-            <column name="codetype_value" type="varchar(255 BYTE)"/>
+            <column name="codetype_value" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-51">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_listagencyname" type="varchar(255 BYTE)"/>
+            <column name="codetype_listagencyname" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-52">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_listid" type="varchar(255 BYTE)"/>
+            <column name="codetype_listid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-53">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_listname" type="varchar(255 BYTE)"/>
+            <column name="codetype_listname" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-54">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_listschemeuri" type="varchar(255 BYTE)"/>
+            <column name="codetype_listschemeuri" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-55">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_listuri" type="varchar(255 BYTE)"/>
+            <column name="codetype_listuri" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-56">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_listversionid" type="varchar(255 BYTE)"/>
+            <column name="codetype_listversionid" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-57">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_name" type="varchar(255 BYTE)"/>
+            <column name="codetype_name" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-58">
         <addColumn tableName="activity_flux_location">
-            <column name="codetype_value" type="varchar(255 BYTE)"/>
+            <column name="codetype_value" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="anwall (generated)" id="1566992597989-59">
