@@ -46,13 +46,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.time.Instant;
-import java.util.*;
-
 @Stateless
 @Transactional
 @Slf4j
@@ -471,13 +464,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return set.first();
     }
 
-    private List<MovementType> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers, Date
-            startDate, Instant endDate) throws ServiceException {
+    private List<MicroMovement> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers,
+                                                            Instant startDate, Instant endDate) throws ServiceException {
         List<String> assetGuids = assetService.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
         return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
     }
 
-    private Geometry interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws ServiceException {
+    private Geometry interpolatePointFromMovements(List<MicroMovement> movements, Instant activityDate) throws ServiceException {
         if (movements == null || movements.isEmpty()) {
             return null;
         }
@@ -511,9 +504,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private Geometry calculateIntermediatePoint(MicroMovement previousMovement, MicroMovement nextMovement, Instant acceptedDate) throws ServiceException {
         Geometry point;
 
-        long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getTimestamp().toEpochMilli();
+        long durationAB = nextMovement.getTimestamp().toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
         long durationAC = acceptedDate.toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
-        long durationBC = nextMovement.getPositionTime().getTime() - acceptedDate.toEpochMilli();
+        long durationBC = nextMovement.getTimestamp().toEpochMilli() - acceptedDate.toEpochMilli();
 
         Point previousPoint = convertToPoint(previousMovement);
         Point nextPoint = convertToPoint(nextMovement);
