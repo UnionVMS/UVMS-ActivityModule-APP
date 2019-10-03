@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -405,6 +406,9 @@ public abstract class SearchQueryBuilder {
                 typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                 break;
             case MASTER:
+            case SPECIES:
+            case PORT:
+            case OWNER:
                 typedQuery.setParameter(queryParameterMappings.get(key), value.toUpperCase());
                 break;
             case FA_REPORT_ID:
@@ -449,10 +453,10 @@ public abstract class SearchQueryBuilder {
             }
             switch (key) {
                 case MASTER:
-                    List<String> uppperCaseValList = new ArrayList<>();
-                    for (String val : valueList) {
-                        uppperCaseValList.add(val.toUpperCase());
-                    }
+                case SPECIES:
+                case PORT:
+                case OWNER:
+                    List<String> uppperCaseValList = valueList.stream().map(String::toUpperCase).collect(Collectors.toList());
                     typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
                     break;
                 default:

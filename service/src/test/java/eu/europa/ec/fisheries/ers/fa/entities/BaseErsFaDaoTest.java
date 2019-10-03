@@ -424,6 +424,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "title", "given_name", "middle_name", "family_name", "family_name_prefix", "name_suffix", "gender", "alias")
                     .values(1, "Mr", "MARK", "DAVID", "BOSE", "ARR", "PI", "MALE", null)
                     .values(2, "Mrs", "TIA", "DAVID", "BOSE", "ARR", "PI", "FEMALE", null)
+                    .values(3, "Mrs", "LEA", "OTHER", "BOSE", "ARR", "PI", "FEMALE", null)
                     .build()
 
     );

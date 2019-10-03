@@ -66,9 +66,9 @@
 			<property name="javax.persistence.schema-generation.create-database-schemas" value="true" />
 			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
 
-			<property name="show_sql" value="true" />
-			<property name="format_sql" value="true" />
-			<property name="use_sql_comments" value="true" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.use_sql_comments" value="true" />
 
 			<!--HIBERNATE SEARCH PROPS-->
 			<property name="hibernate.search.default.directory_provider" value="filesystem"/>
