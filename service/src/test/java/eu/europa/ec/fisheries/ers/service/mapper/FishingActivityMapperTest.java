@@ -121,7 +121,7 @@ public class FishingActivityMapperTest {
         FaCatchEntity faCatchEntity = new FaCatchEntity();
         faCatchEntity.setSpeciesCode(null);
 
-        FishingActivityEntity fa = FishingActivityEntity.builder().build();
+        FishingActivityEntity fa = new FishingActivityEntity();
         fa.setFaCatchs(newSet(faCatchEntity));
 
         List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
@@ -144,7 +144,7 @@ public class FishingActivityMapperTest {
 
         faCatchEntity.setAapProcesses(newSet(aapProcessEntity));
 
-        FishingActivityEntity fa = FishingActivityEntity.builder().build();
+        FishingActivityEntity fa = new FishingActivityEntity();
         fa.setFaCatchs(newSet(faCatchEntity));
 
         List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);

@@ -58,7 +58,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Groups the faCatches List matching those that have in common all the properties but BMS, SLC and size;
      *
      * @param faCatches
-     * @return
      */
     private static Map<String, Set<FaCatchEntity>> groupCatches(Set<FaCatchEntity> faCatches) {
         Map<String, Set<FaCatchEntity>> groups = new HashMap<>();
@@ -74,7 +73,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Extracts a group that has the needed properties in common with the catchesIteratorExt.next()
      *
      * @param faCatchesSet Set<FaCatchEntity>
-     * @return
      */
     private static Set<FaCatchEntity> extractOneGroup(Set<FaCatchEntity> faCatchesSet) {
         Set<FaCatchEntity> group = new HashSet<>();
@@ -95,7 +93,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Subgroups and fills the List<FaCatchGroupDto> mapping the required properties.
      *
      * @param faCatchGroups
-     * @return
      */
     private static Set<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, Set<FaCatchEntity>> faCatchGroups) {
         Set<FaCatchGroupDto> faCatchGroupsDtoList = new HashSet<>();
@@ -109,7 +106,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Maps a list of CatchEntities (rappresenting a froup) to a  FaCatchGroupDto;
      *
      * @param groupCatchList
-     * @return
      */
     private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(Set<FaCatchEntity> groupCatchList) {
         FaCatchGroupDto groupDto = new FaCatchGroupDto();

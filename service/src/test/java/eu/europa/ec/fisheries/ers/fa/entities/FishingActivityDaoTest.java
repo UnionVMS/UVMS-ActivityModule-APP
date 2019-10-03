@@ -50,7 +50,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testGetFishingActivityForTrip(){
         dbSetupTracker.skipNextLaunch();
 
@@ -228,9 +227,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testGetFishingActivityListForFishingTrip() throws Exception {
-
         dbSetupTracker.skipNextLaunch();
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null);
         assertNotNull(finishingActivityList);

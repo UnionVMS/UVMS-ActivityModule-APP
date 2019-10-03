@@ -71,7 +71,6 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * Create List of Group Criterias. Add only those groups which have some value associated with them.
      *
      * @param customEntity
-     * @return
      */
     public List<GroupCriteriaWithValue> populateGroupCriteriaWithValue(FaCatchSummaryCustomProxy customEntity) {
         List<GroupCriteriaWithValue> groups = new ArrayList<>();
@@ -203,7 +202,6 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param summaryTable - Add to this object new calculations.
      * @param customEntity - Process this entity to extract FishSize data
      * @param speciesCnt - Add this count to existing count
-     * @return
      */
     @NotNull
     private Map<FishSizeClassEnum, Object> getFishSizeClassMap(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
@@ -239,7 +237,6 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param summaryTable - Add to this object new calculations.
      * @param customEntity - Process this entity to extract FishSize data
      * @param speciesCnt - Add this count to existing count
-     * @return
      */
     @NotNull
     private Map<FishSizeClassEnum, Object> getFishSizeClassMapWithPresentation(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
@@ -272,7 +269,6 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param summaryTable - Add to this object new calculations.
      * @param customEntity - Process this entity to extract FishSize data
      * @param speciesCnt - Add this count to existing count
-     * @return
      */
     @NotNull
     private Map<FaCatchTypeEnum, Object> getFaCatchTypeEnumMapWithPresentation(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
@@ -320,7 +316,6 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param summaryTable - Add to this object new calculations.
      * @param customEntity - Process this entity to extract FishSize data
      * @param speciesCnt - Add this count to existing count
-     * @return
      */
     @NotNull
     private Map<FaCatchTypeEnum, Object> getFaCatchTypeEnumMap(SummaryTableDTO summaryTable, FaCatchSummaryCustomProxy customEntity, Double speciesCnt) {
@@ -355,7 +350,6 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      * @param customEntity
      * @param speciesCnt
      * @param faCatchSummaryMap
-     * @return
      */
     @NotNull
     private Map<FaCatchTypeEnum, Object> populateFaCatchTypeMapOnlyForCatchType(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FaCatchTypeEnum, Object> faCatchSummaryMap) {

@@ -108,7 +108,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @param fishingActivityId
      * @param activityTypeCode
      * @param activityCalculatedStartTime
-     * @return
      */
     public int getNextFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
         int nextFishingActivity = 0;
@@ -157,7 +156,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * so that we know which are corrected activities received.
      * @param fishingTripId
      * @param multipolgon
-     * @return
      * @throws ServiceException
      */
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
@@ -237,7 +235,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      *
      * @param activityId
      * @param geom
-     * @return
      */
     public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) {
         String s = fillQueryConditions(geom);

@@ -34,16 +34,17 @@ public class GearCharacteristicsMapperTest {
     public void testMapGearDtoToFishingGearEntityWithTypeCodeDG(GearCharacteristicEntity entity, String typeCode, GearDto expectedDto) {
 
         entity.setTypeCode(typeCode);
-        FishingGearEntity build = FishingGearEntity.builder().gearCharacteristics(newSet(entity)).build();
-        GearDto mappedDto = GearCharacteristicsMapper.INSTANCE.mapGearDtoToFishingGearEntity(build);
+        FishingGearEntity fishingGearEntity = new FishingGearEntity();
+        fishingGearEntity.setGearCharacteristics(newSet(entity));
+        GearDto mappedDto = GearCharacteristicsMapper.INSTANCE.mapGearDtoToFishingGearEntity(fishingGearEntity);
         assertTrue(expectedDto.equals(mappedDto));
 
     }
 
     protected Object[] methodName(){
 
-        GearCharacteristicEntity entity = GearCharacteristicEntity
-                .builder().
+        GearCharacteristicEntity entity = new GearCharacteristicEntity().
+                toBuilder(). // weird way of creating the builder, but otherwise Lombok removes field initializers
                         valueMeasure(20.25).
                         valueMeasureUnitCode("kg").
                         typeCode(ViewConstants.GEAR_CHARAC_TYPE_CODE_GD).

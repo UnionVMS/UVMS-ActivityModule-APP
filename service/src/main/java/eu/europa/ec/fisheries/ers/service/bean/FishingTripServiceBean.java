@@ -463,7 +463,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * Gets the counters for the trip with this tripId.
      *
      * @param tripId
-     * @return
      */
     @Override
     public MessageCountDTO getMessageCountersForTripId(String tripId) {
@@ -529,7 +528,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * Retrieves all the catches for the given fishing trip;
      *
      * @param fishingTripId
-     * @return
      */
     @Override
     public Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId) {
@@ -540,7 +538,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * Retrieve GEO data for fishing trip Map for tripID
      *
      * @param tripId
-     * @return
      */
     @Override
     public ObjectNode getTripMapDetailsForTripId(String tripId) {
@@ -673,7 +670,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      *
      * @param uniqueActivityIdList      This method helps parent function to collect FishingActivities for all the fishingTrips. In order to avoid duplicate fishing Activities, we need to maintain uniqueActivityIdList
      * @param fishingActivityEntityList
-     * @return
      */
     public List<FishingActivitySummary> getFishingActivitySummaryList(List<FishingActivityEntity> fishingActivityEntityList, List<Integer> uniqueActivityIdList) {
         List<FishingActivitySummary> fishingActivitySummaryList = new ArrayList<>();

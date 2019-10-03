@@ -66,7 +66,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
      *
      * @param faEntity
      * @param activityDetails
-     * @return
      */
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
         return activityDetails;
@@ -135,7 +134,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
      * other fields to the specific (the class that extends BaseActivityViewMapper) implementation of  populateActivityDetails(faEntity, activityDetails).
      *
      * @param faEntity
-     * @return
      */
     protected ActivityDetailsDto mapActivityDetails(FishingActivityEntity faEntity) {
         ActivityDetailsDto activityDetails = FishingActivityMapper.INSTANCE.mapFishingActivityEntityToActivityDetailsDto(faEntity);

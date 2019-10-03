@@ -139,7 +139,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * there were no matches in ASSET module.
      *
      * @param query
-     * @return
      * @throws ServiceException
      */
     @Override
@@ -171,7 +170,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      *
      * @param activityId
      * @param datasets
-     * @return
      * @throws ServiceException
      */
     @Override
@@ -394,7 +392,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      *  Return the full history of this activity.
      *
      * @param fishingActivity
-     * @return
      */
     private List<ActivityHistoryDtoElement> getActivityHistory(FishingActivityEntity fishingActivity) {
         if (fishingActivity == null || fishingActivity.getFaReportDocument() == null) {

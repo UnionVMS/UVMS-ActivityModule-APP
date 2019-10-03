@@ -220,7 +220,6 @@ public abstract class FaCatchMapper extends BaseMapper {
      * LANDED fishQuantity and species.
      *
      * @param faCatches
-     * @return
      */
     public Map<String, CatchSummaryListDTO> mapCatchesToSummaryDTO(List<Object[]> faCatches) {
         Map<String, CatchSummaryListDTO> catchSummary = new HashMap<>();

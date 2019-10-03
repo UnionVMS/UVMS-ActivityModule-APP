@@ -68,7 +68,6 @@ public interface FishingTripService {
      * get Vessel Details for Perticular fishing trip (this is for fishing trip summary view)
      *
      * @param fishingTripId
-     * @return
      */
     VesselDetailsDTO getVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException;
 
@@ -85,7 +84,6 @@ public interface FishingTripService {
      * Retrieves all the catches for the given fishing trip;
      *
      * @param fishingTripId
-     * @return
      */
     Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId);
 
@@ -93,7 +91,6 @@ public interface FishingTripService {
      * Retrieve GEO data for Fishing Trip MAp
      *
      * @param tripId
-     * @return
      */
     ObjectNode getTripMapDetailsForTripId(String tripId);
 

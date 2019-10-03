@@ -24,7 +24,6 @@ public class Utils {
      *
      * @param actualMeasureToAdd
      * @param meausureSubTotalToAddTo
-     * @return
      */
     public static Double addDoubles(Double actualMeasureToAdd, Double meausureSubTotalToAddTo) {
         Double returnValue = null;

@@ -36,7 +36,6 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "activity_fishing_gear")
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

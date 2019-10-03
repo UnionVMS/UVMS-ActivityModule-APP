@@ -66,7 +66,6 @@ public abstract class SearchQueryBuilder {
      * Create SQL dynamically based on Filter criteria
      *
      * @param query
-     * @return
      * @throws ServiceException
      */
     public abstract StringBuilder createSQL(FishingActivityQuery query) throws ServiceException;
@@ -76,7 +75,6 @@ public abstract class SearchQueryBuilder {
      *
      * @param sql
      * @param query
-     * @return
      */
     void createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
@@ -179,7 +177,6 @@ public abstract class SearchQueryBuilder {
      *
      * @param sql
      * @param query
-     * @return
      */
     private StringBuilder getJoinPartForSortingOptions(StringBuilder sql, FishingActivityQuery query) {
         SortKey sort = query.getSorting();
@@ -283,7 +280,6 @@ public abstract class SearchQueryBuilder {
      *
      * @param sql
      * @param query
-     * @return
      */
     public abstract void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query);
 
@@ -292,7 +288,6 @@ public abstract class SearchQueryBuilder {
      *
      * @param sql
      * @param query
-     * @return
      * @throws ServiceException
      */
     void createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) throws ServiceException {
@@ -323,7 +318,6 @@ public abstract class SearchQueryBuilder {
      * @param sql
      * @param filter
      * @param query
-     * @return
      */
     private void getSqlForStartAndEndDateSorting(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
         Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
@@ -413,7 +407,6 @@ public abstract class SearchQueryBuilder {
      *
      * @param searchCriteriaMap
      * @param typedQuery
-     * @return
      * @throws ServiceException
      */
     private void applyListValuesToQuery(Map<SearchFilter, List<String>> searchCriteriaMap, Query typedQuery) throws ServiceException {

@@ -39,7 +39,7 @@ import org.apache.commons.lang.StringUtils;
 @Entity
 @Table(name = "activity_gear_characteristic")
 @ToString
-@Builder
+@Builder(toBuilder = true, builderMethodName = "") // Prevents Lombok from creating builder that removes field initializers
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

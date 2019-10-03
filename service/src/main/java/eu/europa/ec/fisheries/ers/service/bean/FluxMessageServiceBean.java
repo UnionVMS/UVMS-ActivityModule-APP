@@ -365,7 +365,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * Find geometry for fluxLocation code in MDR
      *
      * @param fluxLocationIdentifier
-     * @return
      */
     private Geometry getGeometryFromMdr(String fluxLocationIdentifier) throws ServiceException {
         log.debug("[INFO] Get Geometry from MDR for : " + fluxLocationIdentifier);
@@ -402,7 +401,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * Get Geometry information from spatial for FLUXLocation code
      *
      * @param fluxLocationIdentifier
-     * @return
      */
     private Geometry getGeometryFromSpatial(String fluxLocationIdentifier) throws ServiceException {
         log.info("Get Geometry from Spatial for:" + fluxLocationIdentifier);

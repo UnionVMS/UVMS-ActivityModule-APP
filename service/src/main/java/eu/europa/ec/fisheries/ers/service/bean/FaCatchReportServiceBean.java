@@ -55,7 +55,6 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
     /**
      * This method gets DTO representing catch details screen. It will hve 2 summary tables for catches and landing
      * @param tripId data for this trip should be returned
-     * @return
      * @throws ServiceException
      */
 
@@ -73,7 +72,6 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
      * This method gets you table structure for Catch details summary on TRIP SUMMARY VIEW
      * @param tripId data will be returned for this tripId
      * @param isLanding If landing then summary structure will include PRESENTATION information otherwise only species information will be included
-     * @return
      * @throws ServiceException
      */
     public FACatchSummaryDTO getCatchDetailsScreenTable(String tripId,boolean isLanding) throws ServiceException {
@@ -113,7 +111,6 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
      *  isReporting : TRUE indicates that the method should be used to generate result for REPORTING module
      *                FALSE indicates that the method should be used to generate result from TRIP SUMMARY VIEW
      * @param query
-     * @return
      * @throws ServiceException
      */
     @Override
@@ -141,7 +138,6 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
      * So, To display summary  of catches, we need to consider all fishing Activity filters as well as aggregation factors specified by user .
      * Aggregation factors could be dynamically selected by user like veesel,period,area etc.
      * @param query
-     * @return
      * @throws ServiceException
      */
     @Override
