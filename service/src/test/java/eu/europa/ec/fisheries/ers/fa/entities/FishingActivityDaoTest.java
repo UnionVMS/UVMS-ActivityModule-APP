@@ -96,16 +96,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
         searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
 
-        query.setSearchCriteriaMap(searchCriteriaMap);
-        PaginationDto pagination = new PaginationDto();
-        pagination.setPageSize(2);
-        pagination.setOffset(1);
-        query.setPagination(pagination);
-
-        SortKey sortingDto = new SortKey();
-        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
-        sortingDto.setReversed(false);
-        query.setSorting(sortingDto);
+        paginate(query, searchCriteriaMap);
+        sort(query, SearchFilter.OCCURRENCE);
 
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
         System.out.println("done:" + finishingActivityList.size());
@@ -162,6 +154,33 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     
     @Test
     @SneakyThrows
+    public void testGetFishingActivityListByQueryForUpperCase() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+        FishingActivityQuery query = new FishingActivityQuery();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues = new ArrayList<>();
+        activityTypeValues.add("FISHING_OPERATION");
+        activityTypeValues.add("DEPARTURE");
+        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        searchCriteriaMap.put(SearchFilter.SPECIES, "anf");
+        searchCriteriaMap.put(SearchFilter.PORT, "gbr");
+        searchCriteriaMap.put(SearchFilter.MASTER, "mark");
+
+        sort(query, SearchFilter.OCCURRENCE);
+
+        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
+        System.out.println("done:" + finishingActivityList.size());
+
+        assertNotEquals(0, finishingActivityList.size());
+    }
+
+    @Test
+    @SneakyThrows
     public void testGetFishingActivityListByQuery_GetByFaReportID() throws Exception {
 
         dbSetupTracker.skipNextLaunch();
@@ -195,17 +214,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
         searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, "1");
 
-        query.setSearchCriteriaMap(searchCriteriaMap);
-
-        PaginationDto pagination = new PaginationDto();
-        pagination.setPageSize(2);
-        pagination.setOffset(1);
-        query.setPagination(pagination);
-
-        SortKey sortingDto = new SortKey();
-        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
-        sortingDto.setReversed(false);
-        query.setSorting(sortingDto);
+        paginate(query, searchCriteriaMap);
+        sort(query, SearchFilter.OCCURRENCE);
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
         assertNotNull(finishingActivityList);
     }
@@ -250,27 +260,31 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
         searchCriteriaMap.put(SearchFilter.SOURCE, "FLUX");
 
-        SortKey sortingDto = new SortKey();
-        sortingDto.setSortBy(SearchFilter.PURPOSE);
-        sortingDto.setReversed(false);
-        query.setSorting(sortingDto);
+        sort(query, SearchFilter.PURPOSE);
 
-        query.setSearchCriteriaMap(searchCriteriaMap);
-        PaginationDto pagination = new PaginationDto();
-        pagination.setPageSize(2);
-        pagination.setOffset(1);
-        query.setPagination(pagination);
+        paginate(query, searchCriteriaMap);
 
-        SortKey sortingDto2 = new SortKey();
-        sortingDto2.setSortBy(SearchFilter.OCCURRENCE);
-        sortingDto2.setReversed(false);
-        query.setSorting(sortingDto2);
+        sort(query, SearchFilter.OCCURRENCE);
 
         int size = dao.getCountForFishingActivityListByQuery(query);
 
         System.out.println("done:" + size);
      //   assertNotEquals(0, size);
+    }
 
+    private void paginate(FishingActivityQuery query, Map<SearchFilter, String> searchCriteriaMap) {
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        PaginationDto pagination = new PaginationDto();
+        pagination.setPageSize(2);
+        pagination.setOffset(1);
+        query.setPagination(pagination);
+    }
+
+    private void sort(FishingActivityQuery query, SearchFilter searchFilter) {
+        SortKey sortingDto2 = new SortKey();
+        sortingDto2.setSortBy(searchFilter);
+        sortingDto2.setReversed(false);
+        query.setSorting(sortingDto2);
     }
 
     @Test
@@ -283,5 +297,4 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertNotNull(finishingActivityList);
         assertNotEquals(0, finishingActivityList.size());
     }
-
 }
