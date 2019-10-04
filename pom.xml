@@ -52,7 +52,7 @@
         <rules.model>3.0.43</rules.model>
         <uvms.config.version>4.0.5</uvms.config.version>
         <mdr.model.version>1.0.5</mdr.model.version>
-        <mdrSwe.client.version>1.0.18-SNAPSHOT</mdrSwe.client.version>
+        <mdrSwe.client.version>1.0.18</mdrSwe.client.version>
         <mockito.version>1.10.19</mockito.version>
         <asset.version>6.0.67</asset.version>
         <movement.version>5.2.28-UVMS</movement.version>
