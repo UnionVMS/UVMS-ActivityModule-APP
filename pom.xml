@@ -28,7 +28,7 @@
     </developers>
 
     <properties>
-        <docker.dev.version>3.39.10.w17-ers-SNAPSHOT</docker.dev.version>
+        <docker.dev.version>3.39.11.w17-ers-SNAPSHOT</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
@@ -45,7 +45,7 @@
 
         <!-- Other modules dependencies -->
         <reporting.model>1.0.2</reporting.model>
-        <spatialSwe.model.version>2.0.6-UVMS-SNAPSHOT</spatialSwe.model.version>
+        <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
         <exchange.model>5.0.0-UVMS</exchange.model>
         <subscription.model>1.2</subscription.model>
 
@@ -55,7 +55,7 @@
         <mdrSwe.client.version>1.0.18-SNAPSHOT</mdrSwe.client.version>
         <mockito.version>1.10.19</mockito.version>
         <asset.version>6.0.67</asset.version>
-        <movement.version>5.2.26-UVMS-SNAPSHOT</movement.version>
+        <movement.version>5.2.28-UVMS</movement.version>
         <audit.model.version>4.0.10</audit.model.version>
         <uvms.commons.version>4.0.4</uvms.commons.version>
         <uvms.test.version>0.0.4</uvms.test.version>
