@@ -244,6 +244,22 @@
                     	<groupId>commons-logging</groupId>
                     	<artifactId>commons-logging</artifactId>
                     </exclusion>
+                	<exclusion>
+                    	<groupId>org.jboss.slf4j</groupId>
+                    	<artifactId>slf4j-jboss-logmanager</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.vividsolutions</groupId>
+                        <artifactId>jts</artifactId>
+                    </exclusion>
+                	<exclusion>
+                    	<groupId>xerces</groupId>
+                    	<artifactId>xercesImpl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -318,7 +334,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.18</version>
+                <version>1.18.10</version>
             </dependency>
 
             <dependency>

@@ -60,7 +60,6 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 })
 @Entity
 @Table(name = "activity_fishing_activity")
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

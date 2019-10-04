@@ -318,7 +318,6 @@ public class BaseMapper {
      *
      * @param fishingActivities
      * @param fishingActivityType
-     * @return
      */
     public Date getFishingTripDateTimeFromFishingActivities(List<FishingActivityEntity> fishingActivities, String fishingActivityType) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivityType == null) {

@@ -388,7 +388,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
      * This method will calculate sum of all the weights of FACatches
      *
      * @param entity
-     * @return
      */
     protected Double getQuantity(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {

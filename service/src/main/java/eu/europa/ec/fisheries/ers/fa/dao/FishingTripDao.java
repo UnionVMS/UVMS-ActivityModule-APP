@@ -88,7 +88,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * Get all the Fishing Trip entities for matching Filters
      *
      * @param query FishingActivityQuery
-     * @return
      * @throws ServiceException
      */
     public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
@@ -110,7 +109,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * Get all the Fishing Trip entities for matching Filters
      *
      * @param query FishingActivityQuery
-     * @return
      * @throws ServiceException
      */
     public Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
@@ -146,7 +144,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * Get total number of records for matching criteria without considering pagination
      *
      * @param queryDto
-     * @return
      * @throws ServiceException
      */
     public Integer getCountOfFishingTripsForMatchingFilterCriteria(FishingActivityQuery queryDto) throws ServiceException {

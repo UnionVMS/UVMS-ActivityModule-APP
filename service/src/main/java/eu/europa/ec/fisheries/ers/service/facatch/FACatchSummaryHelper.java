@@ -67,7 +67,6 @@ public abstract class FACatchSummaryHelper {
      * @param catchSummaryArr
      * @param groupList
      * @param isLanding
-     * @return
      * @throws ServiceException
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
@@ -214,7 +213,6 @@ public abstract class FACatchSummaryHelper {
     /**
      * Creates Summary table structure for provided DTO list
      * @param catchSummaryDTOList list of records to be processed to create summary structure
-     * @return
      */
     public SummaryTableDTO populateSummaryTableWithTotal(List<FACatchSummaryRecordDTO> catchSummaryDTOList) {
         SummaryTableDTO summaryTableWithTotals = new SummaryTableDTO();
@@ -269,7 +267,6 @@ public abstract class FACatchSummaryHelper {
      *  This method tries to add the species into resultMap
      * @param valueSpeciesMap This map will be processed and the values will be added into result map
      * @param resultTotalspeciesMap values will be added to this map
-     * @return
      */
     @NotNull
     protected Map<String, Double> extractSpeciesCountMap(Map<String, Double> valueSpeciesMap, Map<String, Double> resultTotalspeciesMap) {

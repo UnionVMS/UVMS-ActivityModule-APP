@@ -126,7 +126,6 @@ public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
      *
      * We have modified equals method to use parent class to make it work in GroupBy
      * @param o
-     * @return
      */
 
     @Override

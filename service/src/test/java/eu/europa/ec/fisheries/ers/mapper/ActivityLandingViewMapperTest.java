@@ -31,7 +31,7 @@ public class ActivityLandingViewMapperTest {
 
         FishingActivityEntity entity = new FishingActivityEntity();
         DelimitedPeriodEntity delimitedPeriodEntity = new DelimitedPeriodEntity();
-        Set delimitedPeriods = new HashSet();
+        Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
         delimitedPeriods.add(delimitedPeriodEntity);
         entity.setDelimitedPeriods(delimitedPeriods);
         FishingActivityViewDTO fishingActivityViewDTO = mapper.mapFaEntityToFaDto(entity);

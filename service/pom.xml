@@ -211,16 +211,6 @@
 		<dependency>
 			<groupId>eu.europa.ec.fisheries.uvms</groupId>
 			<artifactId>uvms-test</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
