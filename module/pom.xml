@@ -51,6 +51,25 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>2.0.1.Final</version>
+
+                    <configuration>
+                        <filename>${project.build.finalName}.${project.packaging}</filename>
+                        <targetDir>${targetDir}</targetDir>
+                        <hostname>${hostname}</hostname>
+                        <port>${port}</port>
+                        <username>${wildfly-username}</username>
+                        <password>${wildfly-password}</password>
+                        <force>true</force>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <dependencies>
@@ -79,29 +98,29 @@
             <type>war</type>
         </dependency>
         <dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>usm4uvms</artifactId>
-			<version>${usm4uvms.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jboss.resteasy</groupId>
-					<artifactId>resteasy-jaxrs</artifactId>
-				</exclusion>
-				<exclusion>
-				    <groupId>net.sf.ehcache</groupId>
-  					<artifactId>ehcache</artifactId>				
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-		    <groupId>net.sf.ehcache.internal</groupId>
-		    <artifactId>ehcache-core</artifactId>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>usm4uvms</artifactId>
+            <version>${usm4uvms.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache</artifactId>				
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache.internal</groupId>
+            <artifactId>ehcache-core</artifactId>
             <version>2.10.4</version>
             <exclusions>
-            	<exclusion>
-            		 <groupId>org.slf4j</groupId>
-    				 <artifactId>slf4j-api</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>		        
     </dependencies>
@@ -115,36 +134,33 @@
                     <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
-                        <version>1.1.0.Alpha11</version>
                         <executions>
-                            <!-- Undeploy the application on clean -->
-		                    <execution>
-		                        <id>undeploy</id>
-		                        <phase>clean</phase>
-		                        <goals>
-		                            <goal>undeploy</goal>
-		                        </goals>
-		                        <configuration>
-		                            <ignoreMissingDeployment>true</ignoreMissingDeployment>
-		                        </configuration>
-                    		</execution>
-                    		<execution>
-		                        <id>deploy</id>
-		                        <phase>install</phase>
-		                        <goals>
-		                            <goal>deploy</goal>
-		                        </goals>
-                    		</execution>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
                         </executions>
-                        <configuration>
-                            <filename>${project.build.finalName}.${project.packaging}</filename>
-                            <targetDir>${project.build.directory}</targetDir>
-                            <hostname>${hostname}</hostname>
-                            <port>${port}</port>
-                            <username>${username}</username>
-                            <password>${password}</password>
-                            <force>true</force>
-                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>wildfly-undeploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>undeploy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
