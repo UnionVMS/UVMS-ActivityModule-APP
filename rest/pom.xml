@@ -19,6 +19,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+            <artifactId>client-model</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
             <scope>provided</scope>
