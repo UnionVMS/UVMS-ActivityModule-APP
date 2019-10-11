@@ -182,6 +182,12 @@
             </dependency>
 
             <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
+                <artifactId>audit-model</artifactId>
+                <version>${audit.model.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
                 <artifactId>subscription-model</artifactId>
                 <version>${subscription.model.version}</version>
