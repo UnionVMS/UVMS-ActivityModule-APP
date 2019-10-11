@@ -69,7 +69,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
-            <version>${activity.model}</version>
+            <version>${activity.model.version}</version>
             <type>ejb</type>
         </dependency>
         <dependency>

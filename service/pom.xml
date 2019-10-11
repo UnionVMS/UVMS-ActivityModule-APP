@@ -13,8 +13,6 @@
 	</parent>
 
 	<properties>
-		<jts.version>1.13</jts.version>
-
 <!--		<docker.dev.start.phase>test-compile</docker.dev.start.phase>-->
 <!--		<docker.liquibase.phase>test-compile</docker.liquibase.phase>-->
 <!--		<docker.dev.prestop.phase>validate</docker.dev.prestop.phase>-->
@@ -304,7 +302,7 @@
         <profile>
             <id>postgres</id>
             <properties>
-                <database.dialect>postgres</database.dialect>
+                <database.dialect>${application.database.dialect}</database.dialect>
             </properties>
         </profile>
 		<profile>
