@@ -73,10 +73,10 @@
         <lombok.version>1.18.10</lombok.version>
         <guava.version>20.0</guava.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
+        <jetbrains.annotations.java5.version>16.0.3</jetbrains.annotations.java5.version>
 
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
-        <mockito.version>1.10.19</mockito.version>
 
         <!-- Sonar (used invisibly)-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -106,6 +106,51 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>client-model</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+
+            <!-- UVMS COMMONS DEPENDENCIES -->
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-message</artifactId>
+                <version>${uvms.commons.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-date</artifactId>
+                <version>${uvms.commons.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-service</artifactId>
+                <version>${uvms.commons.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-dao</artifactId>
+                <version>${uvms.commons.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-geometry</artifactId>
+                <version>${uvms.commons.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.vividsolutions</groupId>
+                        <artifactId>jts</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-rest</artifactId>
+                <version>${uvms.commons.version}</version>
             </dependency>
 
 
@@ -193,12 +238,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-client</artifactId>
                 <version>${asset.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-                <artifactId>uvms-commons-message</artifactId>
-                <version>${uvms.commons.version}</version>
             </dependency>
 
             <dependency>
@@ -328,6 +367,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations-java5</artifactId>
+                <version>${jetbrains.annotations.java5.version}</version>
             </dependency>
 
 

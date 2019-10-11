@@ -21,13 +21,8 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NL;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NN;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_QG;
-import static org.mockito.internal.util.collections.Sets.newSet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
@@ -68,7 +63,9 @@ public abstract class GearCharacteristicsMapper {
 
     public GearDto mapGearDtoToFishingGearEntity(FishingGearEntity fishingGearEntity) {
         GearDto gearDto = null;
-        List<GearDto> gearDtos = mapFishingGearEntitiesToGearDtos(newSet(fishingGearEntity));
+        Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
+        fishingGearEntitySet.add(fishingGearEntity);
+        List<GearDto> gearDtos = mapFishingGearEntitiesToGearDtos(fishingGearEntitySet);
         if (!CollectionUtils.isEmpty(gearDtos)){
             gearDto = gearDtos.get(0);
 
