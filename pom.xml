@@ -77,6 +77,7 @@
 
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
+        <activemq.artemis.version>1.1.0.wildfly-008</activemq.artemis.version>
 
         <!-- Sonar (used invisibly)-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -419,6 +420,13 @@
                 <groupId>xmlunit</groupId>
                 <artifactId>xmlunit</artifactId>
                 <version>${xmlunit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-jms-client</artifactId>
+                <version>${activemq.artemis.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
