@@ -2,44 +2,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+        <artifactId>activity</artifactId>
+        <version>1.1.13-SWE-SNAPSHOT</version>
+    </parent>
+
     <artifactId>message</artifactId>
     <name>${project.parent.artifactId}-message</name>
     <packaging>ejb</packaging>
 
-    <parent>
-        <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-        <artifactId>activity</artifactId>
-        <version>1.1.13-SNAPSHOT</version>
-    </parent>
-    
     <dependencies>
 
-		<dependency>
-		    <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
-    		<artifactId>audit-model</artifactId>
-    		<version>${audit.model.version}</version>
-		</dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
+        <!-- UVMS COMMONS DEPENDENCIES -->
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vividsolutions</groupId>
-                    <artifactId>jts</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
+
+
+        <!-- UVMS DEPENDENCIES -->
+
+		<dependency>
+		    <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
+    		<artifactId>audit-model</artifactId>
+		</dependency>
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -56,7 +44,24 @@
             <artifactId>activity-model</artifactId>
             <scope>provided</scope>
         </dependency>
-		
+
+
+        <!-- THIRD-PARTY DEPENDENCIES -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>uvms-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

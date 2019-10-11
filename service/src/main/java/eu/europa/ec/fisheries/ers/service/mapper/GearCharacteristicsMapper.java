@@ -11,6 +11,28 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_Q_CODE_C62;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GM;
@@ -21,24 +43,6 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NL;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NN;
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_QG;
-import static org.mockito.internal.util.collections.Sets.newSet;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 
 @Mapper(imports = BaseMapper.class,
         uses = CustomBigDecimal.class,
@@ -68,7 +72,9 @@ public abstract class GearCharacteristicsMapper {
 
     public GearDto mapGearDtoToFishingGearEntity(FishingGearEntity fishingGearEntity) {
         GearDto gearDto = null;
-        List<GearDto> gearDtos = mapFishingGearEntitiesToGearDtos(newSet(fishingGearEntity));
+        Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
+        fishingGearEntitySet.add(fishingGearEntity);
+        List<GearDto> gearDtos = mapFishingGearEntitiesToGearDtos(fishingGearEntitySet);
         if (!CollectionUtils.isEmpty(gearDtos)){
             gearDto = gearDtos.get(0);
 

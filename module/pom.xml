@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>1.1.13-SNAPSHOT</version>
+        <version>1.1.13-SWE-SNAPSHOT</version>
     </parent> 
 
     <build>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
-            <version>${activity.model}</version>
+            <version>${activity.model.version}</version>
             <type>ejb</type>
         </dependency>
         <dependency>
