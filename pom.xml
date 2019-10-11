@@ -60,8 +60,6 @@
         <audit.model.version>4.0.10</audit.model.version>
 
         <!-- Third-party dependency versions -->
-        <logback.version>1.2.3</logback.version>
-        <logback.core.version>1.2.3</logback.core.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <jackson.version>2.10.0</jackson.version>
         <geotools.version>14.4</geotools.version>
@@ -356,18 +354,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.core.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
             </dependency>
 
             <dependency>
