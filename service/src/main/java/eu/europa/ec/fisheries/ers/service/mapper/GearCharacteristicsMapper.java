@@ -26,10 +26,6 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -71,29 +67,10 @@ public abstract class GearCharacteristicsMapper {
     public abstract GearCharacteristic mapToGearCharacteristic(GearCharacteristicEntity gearCharacteristic);
 
     public GearDto mapGearDtoToFishingGearEntity(FishingGearEntity fishingGearEntity) {
-        GearDto gearDto = null;
-        Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
-        fishingGearEntitySet.add(fishingGearEntity);
-        List<GearDto> gearDtos = mapFishingGearEntitiesToGearDtos(fishingGearEntitySet);
-        if (!CollectionUtils.isEmpty(gearDtos)){
-            gearDto = gearDtos.get(0);
-
-        }
+        GearDto gearDto = new GearDto();
+        gearDto.setType(fishingGearEntity.getTypeCode());
+        fillRoleAndCharacteristics(gearDto, fishingGearEntity);
         return gearDto;
-    }
-
-    public List<GearDto> mapFishingGearEntitiesToGearDtos(Set<FishingGearEntity> fishingGearEntities) {
-        if (CollectionUtils.isEmpty(fishingGearEntities)) {
-            return Collections.emptyList();
-        }
-        List<GearDto> gearDtoList = new ArrayList<>();
-        for (FishingGearEntity gearEntity : fishingGearEntities) {
-            GearDto gearDto = new GearDto();
-            gearDto.setType(gearEntity.getTypeCode());
-            fillRoleAndCharacteristics(gearDto, gearEntity);
-            gearDtoList.add(gearDto);
-        }
-        return gearDtoList;
     }
 
     private void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
