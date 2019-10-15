@@ -20,7 +20,7 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface ContactPersonMapper {
 
     ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
@@ -33,15 +33,29 @@ public interface ContactPersonMapper {
             @Mapping(target = "familyNamePrefix", source = "familyNamePrefix.value"),
             @Mapping(target = "nameSuffix", source = "nameSuffix.value"),
             @Mapping(target = "gender", source = "genderCode.value"),
-            @Mapping(target = "alias", source = "alias.value")
+            @Mapping(target = "alias", source = "alias.value"),
             // TODO map gender
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "contactParty", ignore = true),
     })
     ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
 
     @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "birthDateTime", ignore = true),
+            @Mapping(target = "birthplaceName", ignore = true),
+            @Mapping(target = "telephoneTelecommunicationCommunication", ignore = true),
+            @Mapping(target = "faxTelecommunicationCommunication", ignore = true),
+            @Mapping(target = "emailURIEmailCommunication", ignore = true),
+            @Mapping(target = "websiteURIWebsiteCommunication", ignore = true),
+            @Mapping(target = "specifiedUniversalCommunications", ignore = true)
+    })
     ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
 
     List<ContactPerson> mapToContactPersonList(Set<ContactPersonEntity> contactPerson);
 
+    @Mappings({
+            @Mapping(target = "characteristicsMap", ignore = true)
+    })
     ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 }

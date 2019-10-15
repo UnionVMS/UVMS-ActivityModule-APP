@@ -48,7 +48,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Mapper(uses = {FAReportIdentifierMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaReportDocumentMapper extends BaseMapper {
 
     public static final FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
@@ -62,7 +62,12 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "status", constant = "NEW"),
             @Mapping(target = "source", source = "faReportSourceEnum.sourceType"),
             @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
-            @Mapping(target = "faReportIdentifiers", source = "faReportDocument.relatedReportIDs")
+            @Mapping(target = "faReportIdentifiers", source = "faReportDocument.relatedReportIDs"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "geom", ignore = true),
+            @Mapping(target = "fluxFaReportMessage", ignore = true),
+            @Mapping(target = "fishingActivities", ignore = true),
+            @Mapping(target = "vesselTransportMeans", ignore = true),
     })
     public abstract FaReportDocumentEntity mapToFAReportDocumentEntity(FAReportDocument faReportDocument, FaReportSourceEnum faReportSourceEnum);
 

@@ -18,7 +18,7 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-@Mapper(imports = BaseMapper.class, uses = CustomBigDecimal.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(imports = BaseMapper.class, uses = CustomBigDecimal.class, unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FluxCharacteristicsMapper {
 
     FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);
@@ -38,11 +38,23 @@ public interface FluxCharacteristicsMapper {
             @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "descriptionLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "fluxLocation", ignore = true),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "calculatedValueMeasure", ignore = true),
+            @Mapping(target = "calculatedValueQuantity", ignore = true),
+            @Mapping(target = "faCatch", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
+            @Mapping(target = "flapDocument", ignore = true)
 
     })
     FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic);
 
     @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "descriptions", ignore = true),
+            @Mapping(target = "values", ignore = true),
+            @Mapping(target = "specifiedFLUXLocations", ignore = true),
+            @Mapping(target = "relatedFLAPDocuments", ignore = true)
+    })
     FLUXCharacteristic mapToFLUXCharacteristic(FluxCharacteristicEntity fluxCharacteristicEntity);
 
     FluxCharacteristicsDto mapToFluxCharacteristicsDto(FluxCharacteristicEntity fluxCharacteristicEntity);

@@ -32,7 +32,7 @@ import org.mapstruct.factory.Mappers;
  * Created by kovian on 14/02/2017.
  */
 @Mapper(imports = FluxLocationCatchTypeEnum.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityLandingViewMapper INSTANCE = Mappers.getMapper(ActivityLandingViewMapper.class);
@@ -44,7 +44,14 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
-            @Mapping(target = "gearProblems", ignore = true)
+            @Mapping(target = "gears", ignore = true),
+            @Mapping(target = "gearProblems", ignore = true),
+            @Mapping(target = "gearShotRetrievalList", ignore = true),
+            @Mapping(target = "areas", ignore = true),
+            @Mapping(target = "tripDetails", ignore = true),
+            @Mapping(target = "vesselDetails", ignore = true),
+            @Mapping(target = "relocations", ignore = true),
+            @Mapping(target = "history", ignore = true)
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 

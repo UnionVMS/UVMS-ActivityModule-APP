@@ -16,17 +16,28 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FluxReportIdentifierMapper {
 
     FluxReportIdentifierMapper INSTANCE = Mappers.getMapper(FluxReportIdentifierMapper.class);
 
     @Mappings({
             @Mapping(target = "fluxReportIdentifierId", source = "value"),
-            @Mapping(target = "fluxReportIdentifierSchemeId", source = "schemeID")
+            @Mapping(target = "fluxReportIdentifierSchemeId", source = "schemeID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fluxReportDocument", ignore = true)
     })
     FluxReportIdentifierEntity mapToFluxReportIdentifierEntity(IDType idType);
 
+
+    @Mappings({
+            @Mapping(target = "schemeName", ignore = true),
+            @Mapping(target = "schemeAgencyID", ignore = true),
+            @Mapping(target = "schemeAgencyName", ignore = true),
+            @Mapping(target = "schemeVersionID", ignore = true),
+            @Mapping(target = "schemeDataURI", ignore = true),
+            @Mapping(target = "schemeURI", ignore = true),
+    })
     @InheritInverseConfiguration
     IDType mapToFluxReportIdentifier(FluxReportIdentifierEntity idType);
 

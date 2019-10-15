@@ -28,7 +28,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(uses = {VesselStorageCharCodeMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselStorageCharacteristicsMapper {
 
     public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
@@ -37,12 +37,17 @@ public abstract class VesselStorageCharacteristicsMapper {
             @Mapping(target = "vesselId", source = "vesselStorageCharacteristic.ID.value"),
             @Mapping(target = "vesselSchemaId", source = "vesselStorageCharacteristic.ID.schemeID"),
             @Mapping(target = "vesselStorageCharCode", expression = "java(mapToVesselStorageCharCodes(vesselStorageCharacteristic.getTypeCodes(), vesselStorageCharacteristicsEntity))"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fishingActivitiesForDestVesselCharId", ignore = true),
+            @Mapping(target = "fishingActivitiesForSourceVesselCharId", ignore = true)
     })
     public abstract VesselStorageCharacteristicsEntity mapToDestVesselStorageCharEntity(VesselStorageCharacteristic vesselStorageCharacteristic);
 
     @Mappings({
             @Mapping(target = "vesselTypeCode", source = "value"),
-            @Mapping(target = "vesselTypeCodeListId", source = "listID")
+            @Mapping(target = "vesselTypeCodeListId", source = "listID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "vesselStorageCharacteristics", ignore = true)
     })
     protected abstract VesselStorageCharCodeEntity mapToVesselStorageCharCodeEntity(CodeType codeType);
 
@@ -63,6 +68,7 @@ public abstract class VesselStorageCharacteristicsMapper {
             @Mapping(target = "identifier.faIdentifierId", source = "vesselId"),
             @Mapping(target = "identifier.faIdentifierSchemeId", source = "vesselSchemaId"),
             @Mapping(target = "vesselStorageCharCodeDto", source = "firstVesselStorageCharCode"),
+            @Mapping(target = "identifiers", ignore = true),
     })
     public abstract StorageDto mapToStorageDto(VesselStorageCharacteristicsEntity entity);
 

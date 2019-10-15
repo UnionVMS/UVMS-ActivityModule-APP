@@ -29,7 +29,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @Mapper(uses = {FaReportDocumentMapper.class, VesselIdentifierMapper.class, ContactPartyMapper.class, FlapDocumentMapper.class,VesselStorageCharacteristicsMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public static final VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
@@ -43,19 +43,28 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
             @Mapping(target = "vesselIdentifiers", expression = "java(mapToVesselIdentifierEntities(vesselTransportMeans.getIDS(), vesselTransportMeansEntity))"),
             @Mapping(target = "contactParty", expression = "java(getContactPartyEntity(vesselTransportMeans.getSpecifiedContactParties(), vesselTransportMeansEntity))"),
             @Mapping(target = "registrationEvent", expression = "java(getRegistrationEventEntity(vesselTransportMeans.getSpecifiedRegistrationEvents(), vesselTransportMeansEntity))"),
-            @Mapping(target = "vesselPositionEvents", expression = "java(getVesselPositionEventEntities(vesselTransportMeans.getSpecifiedVesselPositionEvents(),vesselTransportMeansEntity))")
+            @Mapping(target = "vesselPositionEvents", expression = "java(getVesselPositionEventEntities(vesselTransportMeans.getSpecifiedVesselPositionEvents(),vesselTransportMeansEntity))"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "guid", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
+            @Mapping(target = "faReportDocument", ignore = true),
+            @Mapping(target = "flapDocuments", ignore = true),
+            @Mapping(target = "vesselIdentifiersMap", ignore = true)
     })
     public abstract VesselTransportMeansEntity mapToVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans);
 
 
     @Mappings({
             @Mapping(target = "vesselIdentifierId", source = "value"),
-            @Mapping(target = "vesselIdentifierSchemeId", source = "schemeID")
+            @Mapping(target = "vesselIdentifierSchemeId", source = "schemeID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "vesselTransportMeans", ignore = true)
     })
     protected abstract VesselIdentifierEntity mapToVesselIdentifierEntity(IDType idType);
 
     @Mappings({
-           @Mapping(target = "contactPartyDetailsDTOSet", source = "contactParty")
+           @Mapping(target = "contactPartyDetailsDTOSet", source = "contactParty"),
+            @Mapping(target = "storageDto", ignore = true)
     })
     public abstract VesselDetailsDTO map(VesselTransportMeansEntity entity);
 
