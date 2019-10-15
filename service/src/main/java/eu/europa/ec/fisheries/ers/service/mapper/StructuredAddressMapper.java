@@ -61,9 +61,6 @@ public interface StructuredAddressMapper {
 
     Set<StructuredAddressEntity> mapToStructuredAddressEntitySet(List<StructuredAddress> structuredAddress);
 
-    @Mappings({
-            @Mapping(target = "characteristicsMap", ignore = true)
-    })
     AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
     Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
