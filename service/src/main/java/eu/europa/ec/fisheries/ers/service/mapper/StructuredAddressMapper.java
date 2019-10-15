@@ -20,7 +20,7 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface StructuredAddressMapper {
 
     StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
@@ -46,7 +46,11 @@ public interface StructuredAddressMapper {
             @Mapping(target = "streetName", source = "streetName.value"),
             @Mapping(target = "staircaseNumberValue", source = "staircaseNumber.value"),
             @Mapping(target = "floorIdentificationValue", source = "floorIdentification.value"),
-            @Mapping(target = "roomIdentificationValue", source = "roomIdentification.value")
+            @Mapping(target = "roomIdentificationValue", source = "roomIdentification.value"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "structuredAddressType", ignore = true),
+            @Mapping(target = "contactParty", ignore = true),
+            @Mapping(target = "fluxLocation", ignore = true)
     })
     StructuredAddressEntity mapToStructuredAddressEntity(StructuredAddress structuredAddress);
 
@@ -57,6 +61,9 @@ public interface StructuredAddressMapper {
 
     Set<StructuredAddressEntity> mapToStructuredAddressEntitySet(List<StructuredAddress> structuredAddress);
 
+    @Mappings({
+            @Mapping(target = "characteristicsMap", ignore = true)
+    })
     AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
     Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);

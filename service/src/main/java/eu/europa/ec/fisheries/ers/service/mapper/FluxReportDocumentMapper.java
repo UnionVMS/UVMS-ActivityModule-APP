@@ -19,7 +19,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(uses = {XMLDateUtils.class, FluxReportIdentifierMapper.class, FluxPartyMapper.class, CodeTypeMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FluxReportDocumentMapper {
 
     FluxReportDocumentMapper INSTANCE = Mappers.getMapper(FluxReportDocumentMapper.class);
@@ -33,12 +33,26 @@ public interface FluxReportDocumentMapper {
             @Mapping(target = "purpose", source = "purpose.value"),
             @Mapping(target = "fluxReportIdentifiers", source = "IDS"),
             @Mapping(target = "fluxParty", source = "ownerFLUXParty"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fluxFaReportMessage", ignore = true),
+            @Mapping(target = "faReportDocument", ignore = true)
     })
     FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument);
 
     @InheritInverseConfiguration
     FLUXReportDocument mapToFluxReportDocument(FluxReportDocumentEntity fluxReportDocument);
 
+    @Mappings({
+            @Mapping(target = "listID", ignore = true),
+            @Mapping(target = "listAgencyID", ignore = true),
+            @Mapping(target = "listAgencyName", ignore = true),
+            @Mapping(target = "listName", ignore = true),
+            @Mapping(target = "listVersionID", ignore = true),
+            @Mapping(target = "name", ignore = true),
+            @Mapping(target = "languageID", ignore = true),
+            @Mapping(target = "listURI", ignore = true),
+            @Mapping(target = "listSchemeURI", ignore = true)
+    })
     CodeType map(java.lang.String value);
 
 }

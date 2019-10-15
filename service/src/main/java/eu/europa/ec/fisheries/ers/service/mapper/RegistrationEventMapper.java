@@ -20,7 +20,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 
 @Mapper(imports = BaseMapper.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface RegistrationEventMapper {
 
     RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
@@ -30,6 +30,8 @@ public interface RegistrationEventMapper {
             @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationEvent.getDescriptions()))"),
             @Mapping(target = "occurrenceDatetime", source = "occurrenceDateTime.dateTime"),
             @Mapping(target = "registrationLocation", expression = "java(BaseMapper.mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "vesselTransportMeanses", ignore = true),
     })
     RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);
 }

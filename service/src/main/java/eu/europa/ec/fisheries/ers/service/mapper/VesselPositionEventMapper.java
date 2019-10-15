@@ -22,7 +22,7 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselPositionEvent;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface VesselPositionEventMapper {
 
     VesselPositionEventMapper INSTANCE = Mappers.getMapper(VesselPositionEventMapper.class);
@@ -36,7 +36,8 @@ public interface VesselPositionEventMapper {
             @Mapping(target = "altitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.altitudeMeasure.value"),
             @Mapping(target = "longitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.longitudeMeasure.value"),
             @Mapping(target = "activityTypeCode", source = "vesselPositionEvent.activityTypeCode.value"),
-            @Mapping(target = "vesselTransportMeans", source = "vesselTransportMeansEntity")
+            @Mapping(target = "vesselTransportMeans", source = "vesselTransportMeansEntity"),
+            @Mapping(target = "geom", ignore = true),
     })
     VesselPositionEventEntity mapToVesselPositionEventEntity(VesselPositionEvent vesselPositionEvent,VesselTransportMeansEntity vesselTransportMeansEntity);
 

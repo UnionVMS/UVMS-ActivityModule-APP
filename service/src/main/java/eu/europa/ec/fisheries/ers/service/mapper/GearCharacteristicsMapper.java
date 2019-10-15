@@ -42,7 +42,7 @@ import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.
 
 @Mapper(imports = BaseMapper.class,
         uses = CustomBigDecimal.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class GearCharacteristicsMapper {
 
     public static final GearCharacteristicsMapper INSTANCE = Mappers.getMapper(GearCharacteristicsMapper.class);
@@ -60,10 +60,18 @@ public abstract class GearCharacteristicsMapper {
             @Mapping(target = "valueText", source = "value.value"),
             @Mapping(target = "valueQuantity", source = "valueQuantity.value"),
             @Mapping(target = "valueQuantityCode", source = "valueQuantity.unitCode"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "calculatedValueMeasure", ignore = true),
+            @Mapping(target = "calculatedValueQuantity", ignore = true),
+            @Mapping(target = "fishingGear", ignore = true)
     })
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic);
 
     @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "descriptions", ignore = true),
+            @Mapping(target = "specifiedFLUXLocations", ignore = true),
+    })
     public abstract GearCharacteristic mapToGearCharacteristic(GearCharacteristicEntity gearCharacteristic);
 
     public GearDto mapGearDtoToFishingGearEntity(FishingGearEntity fishingGearEntity) {
