@@ -14,14 +14,18 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -31,6 +35,7 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +43,64 @@ import org.slf4j.LoggerFactory;
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
+
+    /**
+     * Compare {@link FishingActivityEntity} objects by the explicit weight of their {@link FishingActivityEntity#getTypeCode()} property.
+     */
+    private static final Comparator<FishingActivityEntity> BY_ACTIVITY_TYPE = new Comparator<FishingActivityEntity>() {
+        @Override
+        public int compare(FishingActivityEntity o1, FishingActivityEntity o2) {
+            return Integer.compare(activityTypeWeight(o1), activityTypeWeight(o2));
+        }
+
+        /**
+         * Extract the type code of a potentially {@code null} activity and calculate its weight.
+         * Null code yields a large weight, so goes at the end, if in ascending order.
+         * <p>
+         * We implement this with a {@code switch} statement so as to guard from any changes of the default ordinal.
+         * @param activity
+         * @return
+         */
+        private int activityTypeWeight(FishingActivityEntity activity) {
+            return Optional.ofNullable(activity)
+                    .map(FishingActivityEntity::getTypeCode)
+                    .map(codeAsString -> EnumUtils.getEnum(FishingActivityTypeEnum.class, codeAsString))
+                    .map(code -> {
+                        switch (code) {
+                            case DEPARTURE:
+                                return 1;
+                            case ARRIVAL:
+                                return 2;
+                            case AREA_ENTRY:
+                                return 3;
+                            case AREA_EXIT:
+                                return 4;
+                            case FISHING_OPERATION:
+                                return 5;
+                            case LANDING:
+                                return 6;
+                            case TRANSHIPMENT:
+                                return 7;
+                            case RELOCATION:
+                                return 8;
+                            case GEAR_SHOT:
+                                return 9;
+                            case GEAR_RETRIEVAL:
+                                return 10;
+                            case START_FISHING:
+                                return 11;
+                            case JOINED_FISHING_OPERATION:
+                                return 12;
+                            case START_ACTIVITY:
+                                return 13;
+                            case DISCARD:
+                                return 14;
+                        }
+                        throw new IllegalArgumentException();
+                    })
+                    .orElse(100);
+        }
+    };
 
     private EntityManager em;
 
@@ -166,11 +229,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
         if (multipolgon == null)
             queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
-        Query query = getEntityManager().createNamedQuery(queryName);
+        TypedQuery<FishingActivityEntity> query = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
         query.setParameter("fishingTripId", fishingTripId);
         if (multipolgon != null)
             query.setParameter("area", multipolgon);
-        return query.getResultList();
+        List<FishingActivityEntity> results = query.getResultList();
+        results.sort(BY_ACTIVITY_TYPE.thenComparing(activity -> activity.getFaReportDocument().getAcceptedDatetime()));
+        return results;
     }
 
     public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
