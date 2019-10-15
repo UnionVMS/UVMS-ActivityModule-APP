@@ -24,19 +24,9 @@
 
         <!-- UVMS DEPENDENCIES -->
 
-		<dependency>
-		    <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
-    		<artifactId>audit-model</artifactId>
-		</dependency>
-
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>uvms-config</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
-            <artifactId>subscription-model</artifactId>
         </dependency>
 
         <dependency>
@@ -55,12 +45,6 @@
 
 
         <!-- TEST DEPENDENCIES -->
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-test</artifactId>
-            <scope>test</scope>
-        </dependency>
 
     </dependencies>
 
