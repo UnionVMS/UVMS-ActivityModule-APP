@@ -19,7 +19,7 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FishingActivityIdentifierMapper {
 
     FishingActivityIdentifierMapper INSTANCE = Mappers.getMapper(FishingActivityIdentifierMapper.class);
@@ -30,11 +30,21 @@ public interface FishingActivityIdentifierMapper {
 
     @Mappings({
             @Mapping(target = "faIdentifierId", source = "value"),
-            @Mapping(target = "faIdentifierSchemeId", source = "schemeID")
+            @Mapping(target = "faIdentifierSchemeId", source = "schemeID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true)
     })
     FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
 
     @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "schemeName", ignore = true),
+            @Mapping(target = "schemeAgencyID", ignore = true),
+            @Mapping(target = "schemeAgencyName", ignore = true),
+            @Mapping(target = "schemeVersionID", ignore = true),
+            @Mapping(target = "schemeDataURI", ignore = true),
+            @Mapping(target = "schemeURI", ignore = true)
+    })
     IDType mapToIDType(FishingActivityIdentifierEntity identifierEntity);
 
     List<IDType> mapToIDTypeList(Set<FishingActivityIdentifierEntity> identifierEntities);
