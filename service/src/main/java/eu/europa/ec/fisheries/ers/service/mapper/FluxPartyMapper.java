@@ -36,7 +36,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 @Mapper(imports = BaseMapper.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxPartyMapper {
 
     public static final FluxPartyMapper INSTANCE = Mappers.getMapper(FluxPartyMapper.class);
@@ -45,12 +45,16 @@ public abstract class FluxPartyMapper {
             @Mapping(target = "fluxPartyName", expression = "java(BaseMapper.getTextFromList(fluxParty.getNames()))"),
             @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxParty.getNames()))"),
             @Mapping(target = "fluxPartyIdentifiers", expression = "java(mapToFluxPartyIdentifierEntities(fluxParty.getIDS(), fluxPartyEntity))"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fluxReportDocument", ignore = true)
     })
     public abstract FluxPartyEntity mapToFluxPartyEntity(FLUXParty fluxParty);
 
     @Mappings({
             @Mapping(target = "fluxPartyIdentifierId", source = "value"),
-            @Mapping(target = "fluxPartyIdentifierSchemeId", source = "schemeID")
+            @Mapping(target = "fluxPartyIdentifierSchemeId", source = "schemeID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fluxParty", ignore = true)
     })
     public abstract FluxPartyIdentifierEntity mapToFluxPartyIdentifierEntity(IDType idType);
 
