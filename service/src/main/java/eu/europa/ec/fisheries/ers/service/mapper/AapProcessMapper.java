@@ -17,7 +17,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 
 @Mapper(uses = {AapProcessCodeMapper.class, AapProductMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AapProcessMapper {
 
     AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
@@ -26,6 +26,8 @@ public interface AapProcessMapper {
             @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value"),
             @Mapping(target = "aapProcessCode", ignore = true),
             @Mapping(target = "aapProducts", ignore = true),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "faCatch", ignore = true)
     })
     AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
 
@@ -33,6 +35,7 @@ public interface AapProcessMapper {
     @Mappings({
             @Mapping(source = "aapProducts", target = "resultAAPProducts"),
             @Mapping(source = "aapProcessCode", target = "typeCodes"),
+            @Mapping(target = "usedFACatches", ignore = true)
     })
     AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
 

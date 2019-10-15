@@ -23,7 +23,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 
 @Mapper(uses = BaseMapper.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FlapDocumentMapper {
 
     FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
@@ -32,10 +32,34 @@ public interface FlapDocumentMapper {
             @Mapping(target = "flapDocumentId", source = "ID.value"),
             @Mapping(target = "flapDocumentSchemeId", source = "ID.schemeID"),
             @Mapping(target = "flapTypeCode", source = "typeCode.value"),
-            @Mapping(target = "flapTypeCodeListId", source = "typeCode.listID")
+            @Mapping(target = "flapTypeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
+            @Mapping(target = "vesselTransportMeans", ignore = true),
+            @Mapping(target = "fluxCharacteristic", ignore = true)
     })
     FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument);
 
+    @Mappings({
+            @Mapping(target = "name", ignore = true),
+            @Mapping(target = "firstApplicationIndicator", ignore = true),
+            @Mapping(target = "remarks", ignore = true),
+            @Mapping(target = "decisionDateTime", ignore = true),
+            @Mapping(target = "entryIntoForceDelimitedPeriod", ignore = true),
+            @Mapping(target = "vesselIDs", ignore = true),
+            @Mapping(target = "joinedVesselIDs", ignore = true),
+            @Mapping(target = "specifiedFLUXCharacteristics", ignore = true),
+            @Mapping(target = "specifiedVesselCrews", ignore = true),
+            @Mapping(target = "applicableDelimitedPeriods", ignore = true),
+            @Mapping(target = "specifiedVesselTransportCharters", ignore = true),
+            @Mapping(target = "specifiedContactParties", ignore = true),
+            @Mapping(target = "specifiedTargetedQuotas", ignore = true),
+            @Mapping(target = "attachedFLUXBinaryFiles", ignore = true),
+            @Mapping(target = "specifiedFLUXLocations", ignore = true),
+            @Mapping(target = "relatedValidationResultDocuments", ignore = true),
+            @Mapping(target = "relatedFLAPRequestDocuments", ignore = true),
+            @Mapping(target = "specifiedAuthorizationStatuses", ignore = true)
+    })
     @InheritInverseConfiguration
     FLAPDocument mapToFlapDocument(FlapDocumentEntity flapDocument);
 

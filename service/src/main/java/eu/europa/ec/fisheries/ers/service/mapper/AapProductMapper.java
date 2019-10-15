@@ -24,7 +24,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
 @Mapper(uses = CustomBigDecimal.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class AapProductMapper {
 
     public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
@@ -52,9 +52,22 @@ public abstract class AapProductMapper {
             @Mapping(target = "weighingMeansCodeListId", source = "weighingMeansCode.listID"),
             @Mapping(target = "usageCode", source = "usageCode.value"),
             @Mapping(target = "usageCodeListId", source = "usageCode.listID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "calculatedPackagingWeight", ignore = true),
+            @Mapping(target = "calculatedPackagingUnitCount", ignore = true),
+            @Mapping(target = "calculatedUnitQuantity", ignore = true),
+            @Mapping(target = "calculatedWeightMeasure", ignore = true),
+            @Mapping(target = "aapProcess", ignore = true)
     })
     public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct);
 
+    @Mappings({
+            @Mapping(target = "totalSalesPrice", ignore = true),
+            @Mapping(target = "specifiedSizeDistribution", ignore = true),
+            @Mapping(target = "originFishingActivity", ignore = true),
+            @Mapping(target = "appliedAAPProcesses", ignore = true),
+            @Mapping(target = "originFLUXLocations", ignore = true)
+    })
     @InheritInverseConfiguration
     public abstract AAPProduct mapToAapProduct(AapProductEntity aapProductEntity);
 
