@@ -12,17 +12,26 @@ package eu.europa.ec.fisheries.ers.mapper;
 
 import com.google.common.collect.Ordering;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import org.fest.util.Collections;
+import eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -30,9 +39,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Gregory Rinaldi
+ * Tests for the {@link BaseActivityViewMapper}.
  */
 public class BaseActivityViewMapperTest {
+
+    /**
+     * A dummy implementation for testing.
+     */
+    static class DummyActivityViewMapper extends BaseActivityViewMapper {
+        @Override
+        public FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity) {
+            return null;
+        }
+    }
+
 
     @Test
     public void testGetAreas() {
@@ -44,7 +64,7 @@ public class BaseActivityViewMapperTest {
         fluxLocationEntity.setFluxLocationIdentifierSchemeId("schemeId");
         fluxLocationEntity.setTypeCode("AREA");
 
-        entity.setFluxLocations(Collections.set(fluxLocationEntity));
+        entity.setFluxLocations(Collections.singleton(fluxLocationEntity));
 
         AreaDto areas = BaseActivityViewMapper.getAreas(entity);
 
@@ -73,5 +93,65 @@ public class BaseActivityViewMapperTest {
         assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.GFCM_GSA));
         assertTrue(fluxLocationSchemeIdIterator.next().equals(FluxLocationSchemeId.ICES_STAT_RECTANGLE));
         assertTrue(fluxLocationSchemeIdIterator.next() == null);
+    }
+
+    @Test
+    public void testGetGearsFromEntity() {
+        Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
+        FishingGearEntity fishingGearEntity0 = addFishingGearEntity(fishingGearEntities, "TC", "RC");
+        addGearCharacteristic(fishingGearEntity0, ViewConstants.GEAR_CHARAC_TYPE_CODE_ME, 10.1, "U1");
+        addGearCharacteristic(fishingGearEntity0, ViewConstants.GEAR_CHARAC_TYPE_CODE_GM, 20.2, "U2");
+        addGearCharacteristic(fishingGearEntity0, ViewConstants.GEAR_CHARAC_TYPE_CODE_GN, 30.3, "U3");
+
+        BaseActivityViewMapper sut = new DummyActivityViewMapper();
+        List<GearDto> result = sut.getGearsFromEntity(fishingGearEntities);
+
+        assertEquals(1, result.size());
+        GearDto result0 = result.get(0);
+        assertEquals("TC", result0.getType());
+        assertEquals("RC", result0.getRole());
+        assertEquals("10.1U1", result0.getMeshSize());
+        assertEquals("20.2U2", result0.getLengthWidth());
+        assertEquals(Integer.valueOf(30), result0.getNumberOfGears());
+    }
+
+    /**
+     * Regression guard for UNIONVMS-4199.
+     */
+    @Test
+    public void testGetGearsFromEntityForNullNumberOfGears() {
+        Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
+        FishingGearEntity fishingGearEntity0 = addFishingGearEntity(fishingGearEntities, "TC", "RC");
+        addGearCharacteristic(fishingGearEntity0, ViewConstants.GEAR_CHARAC_TYPE_CODE_GN, null, null);
+
+        BaseActivityViewMapper sut = new DummyActivityViewMapper();
+        GearDto result = sut.getGearsFromEntity(fishingGearEntities).get(0);
+
+        assertEquals(Integer.valueOf(0), result.getNumberOfGears());
+    }
+
+    private FishingGearEntity addFishingGearEntity(Set<FishingGearEntity> fishingGearEntities, String typeCode, String fishingGearRoleCode) {
+        FishingGearEntity result = new FishingGearEntity();
+        result.setTypeCode(typeCode);
+        result.setFishingGearRole(Optional.ofNullable(fishingGearRoleCode)
+                .map(code -> {
+                    FishingGearRoleEntity role = new FishingGearRoleEntity();
+                    role.setRoleCode(fishingGearRoleCode);
+                    return role;
+                })
+                .map(Collections::singleton)
+                .orElse(Collections.emptySet())
+        );
+        result.setGearCharacteristics(new HashSet<>());
+        fishingGearEntities.add(result);
+        return result;
+    }
+
+    private void addGearCharacteristic(FishingGearEntity fishingGearEntity, String typeCode, Double valueMeasure, String unitCode) {
+        GearCharacteristicEntity gch = new GearCharacteristicEntity();
+        gch.setTypeCode(typeCode);
+        gch.setValueMeasure(valueMeasure);
+        gch.setValueMeasureUnitCode(unitCode);
+        fishingGearEntity.getGearCharacteristics().add(gch);
     }
 }
