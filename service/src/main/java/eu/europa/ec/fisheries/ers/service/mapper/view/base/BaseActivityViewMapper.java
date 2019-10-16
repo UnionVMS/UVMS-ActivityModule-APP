@@ -196,7 +196,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
                 gearDto.setLengthWidth(quantityWithUnit);
                 break;
             case GEAR_CHARAC_TYPE_CODE_GN:
-                gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
+                gearDto.setNumberOfGears(StringUtils.isEmpty(quantityOnly) ? 0 : charac.getValueMeasure().intValue());
                 break;
             case GEAR_CHARAC_TYPE_CODE_HE:
                 gearDto.setHeight(quantityWithUnit);
