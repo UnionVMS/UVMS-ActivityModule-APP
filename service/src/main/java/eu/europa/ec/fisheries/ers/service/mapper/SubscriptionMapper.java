@@ -36,7 +36,7 @@ public class SubscriptionMapper {
 
     private SubscriptionMapper(){}
 
-    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage, boolean incoming) {
+    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FLUXFAReportMessage fluxfaReportMessage) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
         request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
 
@@ -54,7 +54,7 @@ public class SubscriptionMapper {
         return request;
     }
 
-    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FAQuery faQuery, boolean incoming) {
+    public static SubscriptionDataRequest mapToSubscriptionDataRequest(FAQuery faQuery) {
         SubscriptionDataRequest request = new SubscriptionDataRequest();
         request.setMethod(SubscriptionModuleMethod.MODULE_ACCESS_PERMISSION_REQUEST);
         SubscriptionDataQuery query = new SubscriptionDataQuery();

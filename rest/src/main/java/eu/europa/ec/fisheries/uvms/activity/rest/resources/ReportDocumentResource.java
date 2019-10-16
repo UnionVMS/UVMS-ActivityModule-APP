@@ -43,7 +43,7 @@ public class ReportDocumentResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_XML})
     @Consumes(value = {MediaType.APPLICATION_XML})
     public Object getReport(FLUXFAQueryMessage fluxfaQueryMessage) throws JAXBException {
-        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery(), true);
+        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
         List<SubscriptionDataCriteria> queryCriteria = subscriptionDataRequest.getQuery().getCriteria();
         log.info(queryCriteria.toString());
         FLUXFAReportMessage reportsByCriteria = faQueryService.getReportsByCriteria(queryCriteria);
