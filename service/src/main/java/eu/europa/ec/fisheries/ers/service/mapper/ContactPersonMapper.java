@@ -34,7 +34,6 @@ public interface ContactPersonMapper {
             @Mapping(target = "nameSuffix", source = "nameSuffix.value"),
             @Mapping(target = "gender", source = "genderCode.value"),
             @Mapping(target = "alias", source = "alias.value"),
-            // TODO map gender
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "contactParty", ignore = true),
     })
