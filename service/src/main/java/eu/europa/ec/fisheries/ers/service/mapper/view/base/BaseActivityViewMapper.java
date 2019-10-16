@@ -36,7 +36,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return areaDto;
     }
 
-    public AreaDto getSortedAreas(FishingActivityEntity faEntity, Comparator<FluxLocationDto> comparator) {
+    protected AreaDto getSortedAreas(FishingActivityEntity faEntity, Comparator<FluxLocationDto> comparator) {
         AreaDto areaDto = getAreas(faEntity);
         final List<FluxLocationDto> fluxLocationDtos = new ArrayList<>(areaDto.getFluxLocations());
 
@@ -47,7 +47,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return areaDto;
     }
 
-    public List<RelocationDto> getRelocations(FishingActivityEntity fishingActivityEntity) {
+    protected List<RelocationDto> getRelocations(FishingActivityEntity fishingActivityEntity) {
         List<RelocationDto> relocationDtos = new ArrayList<>();
         Set<FishingActivityEntity> relatedActivities = fishingActivityEntity.getAllRelatedFishingActivities();
         for (FishingActivityEntity fishingActivity : relatedActivities) {
@@ -82,7 +82,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return productsDtos;
     }
 
-    protected List<ProcessingProductsDto> getProcessingProductByAapProcess(Collection<AapProcessEntity> aapProcesses) {
+    private List<ProcessingProductsDto> getProcessingProductByAapProcess(Collection<AapProcessEntity> aapProcesses) {
         if (aapProcesses == null) {
             return Collections.emptyList();
         }
@@ -93,7 +93,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return productsDtos;
     }
 
-    protected List<ProcessingProductsDto> getPPByAapProduct(Collection<AapProductEntity> aapProducts) {
+    private List<ProcessingProductsDto> getPPByAapProduct(Collection<AapProductEntity> aapProducts) {
         if (aapProducts == null) {
             return Collections.emptyList();
         }

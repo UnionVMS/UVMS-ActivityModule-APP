@@ -59,23 +59,23 @@ public class JointFishingOperationViewMapper extends BaseActivityViewMapper {
      * @param faEntity
      * @return VesselDetailsDTO
      */
-    protected List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
+    private List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
         if(faEntity==null)
             return null;
 
         List<VesselDetailsDTO> vesselDetailsDTOs = new ArrayList<>();
-        Set<VesselTransportMeansEntity> entities=  faEntity.getVesselTransportMeans();
-        if(CollectionUtils.isEmpty(entities)){
+        Set<VesselTransportMeansEntity> entities = faEntity.getVesselTransportMeans();
+        if (CollectionUtils.isEmpty(entities)) {
             entities = new HashSet<>();
         }
 
-        if(CollectionUtils.isNotEmpty(faEntity.getAllRelatedFishingActivities())){
-            for(FishingActivityEntity fishingActivityEntity : faEntity.getAllRelatedFishingActivities()){
+        if (CollectionUtils.isNotEmpty(faEntity.getAllRelatedFishingActivities())) {
+            for (FishingActivityEntity fishingActivityEntity : faEntity.getAllRelatedFishingActivities()) {
                 entities.addAll(fishingActivityEntity.getVesselTransportMeans());
             }
         }
 
-        for(VesselTransportMeansEntity vesselTransportMeansEntity : entities) {
+        for (VesselTransportMeansEntity vesselTransportMeansEntity : entities) {
             VesselDetailsDTO vesselDetails = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
             if (vesselDetails != null && faEntity.getDestVesselCharId() != null) {
                 vesselDetails.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));

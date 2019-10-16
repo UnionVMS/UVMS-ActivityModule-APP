@@ -175,12 +175,12 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
         Double convFc = 1d;
-        Double weightSum = 0.0;
+        double weightSum = 0.0d;
         if (CollectionUtils.isNotEmpty(aapProcesses)) {
             for (AapProcessEntity aapProc : aapProcesses) {
                 Double actConvFac = aapProc.getConversionFactor();
                 convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
-                addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
+                weightSum += getTotalWeightFromSetOfAapProduct(aapProc.getAapProducts());
             }
         }
         if (weightSum > 0.0) {
@@ -189,12 +189,16 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         return totalWeight;
     }
 
-    private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
-        if (CollectionUtils.isNotEmpty(aapProducts)) {
-            for (AapProductEntity aapProd : aapProducts) {
-                Utils.addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
+    private static double getTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts) {
+        double sum = 0.0d;
+        for (AapProductEntity aapProd : aapProducts) {
+            Double calculatedWeightMeasure = aapProd.getCalculatedWeightMeasure();
+            if (calculatedWeightMeasure != null) {
+                sum += aapProd.getCalculatedWeightMeasure();
             }
         }
+
+        return sum;
     }
 
     private static void setWeightsForSubGroup(FaCatchGroupDto groupDto, FaCatchGroupDetailsDto lscGroupDetailsDto, FaCatchGroupDetailsDto bmsGroupDetailsDto, Double lscGroupTotalWeight, Double lscGroupTotalUnits, Double bmsGroupTotalWeight, Double bmsGroupTotalUnits) {
