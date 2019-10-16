@@ -32,9 +32,8 @@ public class FishingActivityMapperTest {
     @Test
     public void testFishingActivityMapper() {
         FishingActivity fishingActivity = MapperUtil.getFishingActivity();
-        FishingActivityEntity fishingActivityEntity = new FishingActivityEntity();
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, fishingActivityEntity);
+        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
 
         assertFishingActivityFields(fishingActivity, fishingActivityEntity);
         assertEquals(faReportDocumentEntity, fishingActivityEntity.getFaReportDocument());

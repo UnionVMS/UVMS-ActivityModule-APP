@@ -85,7 +85,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "latest", constant = "true"),
             @Mapping(target = "flapDocuments", ignore = true)
     })
-    public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, @MappingTarget FishingActivityEntity fishingActivityEntity);// FIXME
+    public abstract FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity);
 
     @Mappings({
             @Mapping(target = "fishingActivityId", source = "id"),
@@ -474,7 +474,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return relatedFishingActivityEntities;
         }
         for (FishingActivity relatedFishingActivity : fishingActivity) {
-            FishingActivityEntity relatedFishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(relatedFishingActivity, faReportDocumentEntity, new FishingActivityEntity());
+            FishingActivityEntity relatedFishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(relatedFishingActivity, faReportDocumentEntity);
             relatedFishingActivityEntity.setRelatedFishingActivity(parentFishingActivity);
             relatedFishingActivityEntities.add(relatedFishingActivityEntity);
         }
