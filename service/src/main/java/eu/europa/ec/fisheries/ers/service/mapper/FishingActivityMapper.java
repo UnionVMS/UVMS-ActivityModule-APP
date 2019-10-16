@@ -67,7 +67,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fishingDurationMeasure", source = "fishingActivity.fishingDurationMeasure.value"),
             @Mapping(target = "fishingDurationMeasureCode", source = "fishingActivity.fishingDurationMeasure.unitCode"),
             @Mapping(target = "fishingDurationMeasureUnitCodeListVersionID", source = "fishingActivity.fishingDurationMeasure.unitCodeListVersionID"),
-            @Mapping(target = "faReportDocument", expression = "java(faReportDocumentEntity)"),// FIXME
+            @Mapping(target = "faReportDocument", source = "faReportDocumentEntity"),
             @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "fishingActivityIdentifiers", expression = "java(mapToFishingActivityIdentifierEntities(fishingActivity.getIDS(), fishingActivityEntity))"),
