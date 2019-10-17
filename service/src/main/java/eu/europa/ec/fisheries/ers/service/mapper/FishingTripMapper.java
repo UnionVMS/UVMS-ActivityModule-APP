@@ -20,7 +20,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 
 @Mapper(uses = {FishingTripIdentifierMapper.class, DelimitedPeriodMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FishingTripMapper {
 
     FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
@@ -30,6 +30,9 @@ public interface FishingTripMapper {
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "delimitedPeriods", ignore = true),
             @Mapping(target = "fishingTripIdentifiers", ignore = true),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "faCatch", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
     })
     FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
 

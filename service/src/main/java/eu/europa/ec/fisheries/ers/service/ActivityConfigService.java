@@ -67,7 +67,6 @@ public interface ActivityConfigService {
      *
      * @param resetConfig
      * @param userConfig
-     * @return
      * @throws ServiceException
      */
     String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) throws ServiceException;

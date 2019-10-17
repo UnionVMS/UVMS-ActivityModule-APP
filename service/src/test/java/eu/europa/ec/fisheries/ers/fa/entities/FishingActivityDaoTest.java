@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
@@ -50,7 +49,6 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testGetFishingActivityForTrip(){
         dbSetupTracker.skipNextLaunch();
 
@@ -228,9 +226,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testGetFishingActivityListForFishingTrip() throws Exception {
-
         dbSetupTracker.skipNextLaunch();
         List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null);
         assertNotNull(finishingActivityList);

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>rest</artifactId>
-    <name>${project.parent.artifactId}-rest</name>
-    <packaging>war</packaging>
 
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>1.1.13-SNAPSHOT</version>
+        <version>1.1.14-SWE-SNAPSHOT</version>
     </parent>
+
+    <artifactId>rest</artifactId>
+    <name>${project.parent.artifactId}-rest</name>
+    <packaging>war</packaging>
 
     <properties>
         <docker.dev.start.phase>test-compile</docker.dev.start.phase>
@@ -18,33 +19,11 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>usm4uvms</artifactId>
-            <scope>provided</scope>
-        </dependency>
+        <!-- PROJECT DEPENDENCIES -->
 
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>activity-model</artifactId>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vividsolutions</groupId>
-                    <artifactId>jts</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+            <artifactId>client-model</artifactId>
         </dependency>
 
         <dependency>
@@ -59,20 +38,13 @@
             <scope>provided</scope>
         </dependency>
 
+
+        <!-- UVMS COMMONS DEPENDENCIES -->
+
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
         </dependency>
 
         <dependency>
@@ -81,10 +53,30 @@
             <type>pom</type>
         </dependency>
 
+        <!-- UVMS DEPENDENCIES -->
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>usm4uvms</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>activity-model</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- THIRD-PARTY DEPENDENCIES -->
+
+        <!-- TEST DEPENDENCIES -->
+
         <dependency>
             <groupId>fish.focus.uvms.maven</groupId>
             <artifactId>uvms-pom-arquillian-deps</artifactId>
             <type>pom</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

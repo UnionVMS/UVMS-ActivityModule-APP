@@ -92,10 +92,10 @@ public class FluxMessageServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testSaveFishingActivityReportDocuments() throws ServiceException, ParseException, DatatypeConfigurationException {
+    public void testSaveFishingActivityReportDocuments() {
 
         //Mock the APIs
-        Mockito.doReturn(Mockito.anyList()).when(fluxFaReportMessageDao).createEntity(Mockito.any(FluxFaReportMessageEntity.class));
+        Mockito.doReturn(new FluxFaReportMessageEntity()).when(fluxFaReportMessageDao).createEntity(Mockito.any(FluxFaReportMessageEntity.class));
 
         Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
         Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Instant.class), Mockito.any(Instant.class));

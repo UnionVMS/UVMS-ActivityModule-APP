@@ -20,7 +20,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 
 @Mapper(imports = BaseMapper.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface RegistrationLocationMapper {
 
     RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);
@@ -36,6 +36,8 @@ public interface RegistrationLocationMapper {
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "locationCountryId", source = "countryID.value"),
             @Mapping(target = "locationCountrySchemeId", source = "countryID.schemeID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "registrationEvent", ignore = true),
     })
     RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation);
 }

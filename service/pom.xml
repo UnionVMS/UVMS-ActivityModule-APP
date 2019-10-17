@@ -1,389 +1,318 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>service</artifactId>
-	<name>${project.parent.artifactId}-service</name>
-	<packaging>ejb</packaging>
+    <parent>
+        <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+        <artifactId>activity</artifactId>
+        <version>1.1.14-SWE-SNAPSHOT</version>
+    </parent>
 
-	<parent>
-		<groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-		<artifactId>activity</artifactId>
-		<version>1.1.13-SNAPSHOT</version>
-	</parent>
+    <artifactId>service</artifactId>
+    <name>${project.parent.artifactId}-service</name>
+    <packaging>ejb</packaging>
 
-	<properties>
-		<jts.version>1.13</jts.version>
+    <properties>
+        <!--		<docker.dev.start.phase>test-compile</docker.dev.start.phase>-->
+        <!--		<docker.liquibase.phase>test-compile</docker.liquibase.phase>-->
+        <!--		<docker.dev.prestop.phase>validate</docker.dev.prestop.phase>-->
+    </properties>
 
-<!--		<docker.dev.start.phase>test-compile</docker.dev.start.phase>-->
-<!--		<docker.liquibase.phase>test-compile</docker.liquibase.phase>-->
-<!--		<docker.dev.prestop.phase>validate</docker.dev.prestop.phase>-->
-	</properties>
+    <dependencies>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
-			<artifactId>mdr-model</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
-			<artifactId>mdr-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
-			<artifactId>spatial-model</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
-			<artifactId>spatial-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-			<artifactId>movement-model</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-			<artifactId>movement-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-			<artifactId>asset-model</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-			<artifactId>asset-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
-			<artifactId>subscription-model</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>usm4uvms</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>uvms-config</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>config-model</artifactId>
-					<groupId>eu.europa.ec.fisheries.uvms.config</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>xmlunit</groupId>
-			<artifactId>xmlunit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <!-- PROJECT DEPENDENCIES -->
 
         <dependency>
-            <groupId>org.xmlunit</groupId>
-            <artifactId>xmlunit-core</artifactId>
-			<scope>test</scope>
+            <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+            <artifactId>client-model</artifactId>
         </dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>message</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- UVMS COMMONS DEPENDENCIES -->
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
-			<version>${uvms.commons.version}</version>
         </dependency>
-		<dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-date</artifactId>
-			<version>${uvms.commons.version}</version>
         </dependency>
-		<dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-service</artifactId>
-			<version>${uvms.commons.version}</version>
         </dependency>
-		<dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-dao</artifactId>
-			<version>${uvms.commons.version}</version>
         </dependency>
-		<dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-geometry</artifactId>
-			<version>${uvms.commons.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
-				</exclusion>
-			</exclusions>
         </dependency>
+
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-rest</artifactId>
-            <version>${uvms.commons.version}</version>
         </dependency>
 
+        <!-- UVMS DEPENDENCIES -->
 
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>activity-model</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>jaxb-impl</artifactId>
-					<groupId>com.sun.xml.bind</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>activity-model</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
-			<artifactId>exchange-model</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>jaxb2-basics</artifactId>
-					<groupId>org.jvnet.jaxb2_commons</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-gis-deps</artifactId>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
-			<artifactId>rules-model</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>message</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-geojson</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-shapefile</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-epsg-hsql</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>uvms-test</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-processor</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations-java5</artifactId>
-			<version>16.0.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-
- 		<dependency>
-			<groupId>fish.focus.uvms.maven</groupId>
-			<artifactId>uvms-pom-gis-deps</artifactId>
-			<type>pom</type>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
         <dependency>
             <groupId>fish.focus.uvms.maven</groupId>
             <artifactId>uvms-pom-monitoring-deps</artifactId>
             <type>pom</type>
         </dependency>
 
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
+            <artifactId>exchange-model</artifactId>
+        </dependency>
 
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>3.2.2</version>
+            <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+            <artifactId>rules-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+            <artifactId>mdr-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
+            <artifactId>mdr-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+            <artifactId>spatial-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+            <artifactId>spatial-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+            <artifactId>movement-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+            <artifactId>movement-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+            <artifactId>subscription-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>usm4uvms</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>uvms-config</artifactId>
+        </dependency>
+
+
+        <!-- JACKSON DEPENDENCIES -->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+
+        <!-- THIRD-PARTY DEPENDENCIES -->
+
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations-java5</artifactId>
+        </dependency>
+
+
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>uvms-test</artifactId>
             <scope>test</scope>
         </dependency>
 
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>artemis-jms-client</artifactId>
-			<version>1.1.0.wildfly-008</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-jms-client</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-	<profiles>
+    <profiles>
         <profile>
             <id>postgres</id>
             <properties>
-                <database.dialect>postgres</database.dialect>
+                <database.dialect>${application.database.dialect}</database.dialect>
             </properties>
         </profile>
-		<profile>
-			<id>dev</id>
-			<properties>
-				<usm_deployment_descriptor_force_update>true</usm_deployment_descriptor_force_update>
-			</properties>
-		</profile>
-	</profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <usm_deployment_descriptor_force_update>true</usm_deployment_descriptor_force_update>
+            </properties>
+        </profile>
+    </profiles>
 
-	<build>
+    <build>
 
-		<finalName>${project.name}-${project.version}</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
 
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ejb-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<ejbVersion>3.1</ejbVersion>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>properties-maven-plugin</artifactId>
-				<version>1.0-alpha-2</version>
-				<executions>
-					<execution>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>write-project-properties</goal>
-						</goals>
-						<configuration>
-							<outputFile>${basedir}/src/main/resources/logging.properties</outputFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.pitest</groupId>
-				<artifactId>pitest-maven</artifactId>
-				<version>1.1.6</version>
-				<configuration>
-					<targetClasses>
-						<param>eu.europa.ec.fisheries.uvms.spatial.service.mapper.*</param>
-					</targetClasses>
-					<targetTests>
-						<param>eu.europa.ec.fisheries.uvms.spatial.service.mapper.*</param>
-					</targetTests>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <ejbVersion>3.1</ejbVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>write-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>${basedir}/src/main/resources/logging.properties</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.1.6</version>
+                <configuration>
+                    <targetClasses>
+                        <param>eu.europa.ec.fisheries.uvms.spatial.service.mapper.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>eu.europa.ec.fisheries.uvms.spatial.service.mapper.*</param>
+                    </targetTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

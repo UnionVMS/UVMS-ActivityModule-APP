@@ -35,7 +35,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class ContactPartyMapper extends BaseMapper {
 
     public static final ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
@@ -50,7 +50,9 @@ public abstract class ContactPartyMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "roleCode", source = "value"),
-            @Mapping(target = "roleCodeListId", source = "listID")
+            @Mapping(target = "roleCodeListId", source = "listID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "contactParty", ignore = true),
     })
     public abstract ContactPartyRoleEntity mapToContactPartyRoleEntity(CodeType codeType);
 

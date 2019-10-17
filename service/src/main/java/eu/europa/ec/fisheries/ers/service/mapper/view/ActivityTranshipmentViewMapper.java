@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {VesselTransportMeansMapper.class}, imports = FluxLocationCatchTypeEnum.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(uses = {VesselTransportMeansMapper.class}, imports = FluxLocationCatchTypeEnum.class, unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityTranshipmentViewMapper INSTANCE = Mappers.getMapper(ActivityTranshipmentViewMapper.class);
@@ -55,7 +55,13 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
             @Mapping(target = "vesselDetails", expression = "java(getVesselDetailsDTO(faEntity))"),
-            @Mapping(target = "gearProblems", ignore = true)
+            @Mapping(target = "gearProblems", ignore = true),
+            @Mapping(target = "gears", ignore = true),
+            @Mapping(target = "gearShotRetrievalList", ignore = true),
+            @Mapping(target = "areas", ignore = true),
+            @Mapping(target = "tripDetails", ignore = true),
+            @Mapping(target = "relocations", ignore = true),
+            @Mapping(target = "history", ignore = true)
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
@@ -85,10 +91,6 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
 
 
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
-        Map<String, String> idMap = new HashMap<>();
-        for (FishingActivityIdentifierEntity idEntity : faEntity.getFishingActivityIdentifiers()) {
-            idMap.put(idEntity.getFaIdentifierId(), idEntity.getFaIdentifierSchemeId());
-        }
         Set<IdentifierDto> identifierDtos = FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(faEntity.getFishingActivityIdentifiers());
         activityDetails.setIdentifiers(identifierDtos);
         Set<DelimitedPeriodEntity> delimitedPeriodEntitySet = faEntity.getDelimitedPeriods();

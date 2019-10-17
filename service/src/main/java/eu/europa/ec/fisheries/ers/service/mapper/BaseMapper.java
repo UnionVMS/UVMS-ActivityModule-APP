@@ -19,6 +19,10 @@ import java.util.*;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -31,7 +35,11 @@ import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
@@ -42,6 +50,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Named;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
@@ -50,7 +60,9 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
-import static com.google.common.collect.Sets.newHashSet;
+
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
 
 @Slf4j
 @NoArgsConstructor
@@ -60,30 +72,21 @@ public class BaseMapper {
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
-        if (locationDtos != null) {
-            return locationDtos;
-        }
-        return Sets.newHashSet();
+        return locationDtos != null ? locationDtos : Sets.newHashSet();
     }
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationCatchTypeEnum typeCode) {
-        Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
-            @Override
-            public boolean apply(FluxLocationEntity p) {
-                return typeCode.name().equals(p.getFluxLocationType());
-            }
-        });
-        return mapFromFluxLocation(newHashSet(filtered.iterator()));
+        Set<FluxLocationEntity> filtered = fLocEntities.stream()
+                .filter(p -> typeCode.name().equals(p.getFluxLocationType()))
+                .collect(Collectors.toSet());
+        return mapFromFluxLocation(filtered);
     }
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationEnum typeCode) {
-        Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
-            @Override
-            public boolean apply(FluxLocationEntity p) {
-                return typeCode.name().equals(p.getTypeCode());
-            }
-        });
-        return mapFromFluxLocation(newHashSet(filtered.iterator()));
+        Set<FluxLocationEntity> filtered = fLocEntities.stream()
+                .filter(p -> typeCode.name().equals(p.getTypeCode()))
+                .collect(Collectors.toSet());
+        return mapFromFluxLocation(filtered);
     }
 
     public static Set<FishingTripEntity> mapToFishingTripEntitySet(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
@@ -92,7 +95,7 @@ public class BaseMapper {
         }
         FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
         fishingTripEntity.setFishingActivity(fishingActivityEntity);
-        return new HashSet<>(Collections.singletonList(fishingTripEntity));
+        return Sets.newHashSet(fishingTripEntity);
     }
 
     public static Set<FishingTripEntity> mapToFishingTripEntitySet(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {
@@ -112,17 +115,15 @@ public class BaseMapper {
     private static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();
-        if (CollectionUtils.isNotEmpty(ids)){
-            for (IDType idType : ids){
-                fishingTripEntity.addFishingTripIdentifiers(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
-            }
+        for (IDType idType : Utils.safeIterable(ids)) {
+            fishingTripEntity.addFishingTripIdentifiers(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
         }
+
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
-        if (CollectionUtils.isNotEmpty(specifiedDelimitedPeriods)){
-            for (DelimitedPeriod delimitedPeriod : specifiedDelimitedPeriods){
-                fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
-            }
+        for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {
+            fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
         }
+
         return fishingTripEntity;
     }
 
@@ -187,17 +188,15 @@ public class BaseMapper {
 
     public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(identifierDtoSet)) {
-            for (AssetIdentifierDto identifierDto : identifierDtoSet) {
-                VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-                ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
-                if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
-                    String identifierId = identifierDto.getFaIdentifierId();
-                    AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-                    criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
-                    criteriaPair.setValue(identifierId);
-                    criteriaList.add(criteriaPair);
-                }
+        for (AssetIdentifierDto identifierDto : Utils.safeIterable(identifierDtoSet)) {
+            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
+            ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+            if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
+                String identifierId = identifierDto.getFaIdentifierId();
+                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+                criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
+                criteriaPair.setValue(identifierId);
+                criteriaList.add(criteriaPair);
             }
         }
         return criteriaList;
@@ -322,6 +321,62 @@ public class BaseMapper {
         }
 
         return dateTimeFormatter.format(value);
+    }
+
+    protected void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
+        Set<FishingGearRoleEntity> fishingGearRole = gearEntity.getFishingGearRole();
+        if (CollectionUtils.isNotEmpty(fishingGearRole)) {
+            FishingGearRoleEntity role = fishingGearRole.iterator().next();
+            gearDto.setRole(role.getRoleCode());
+        }
+        Set<GearCharacteristicEntity> gearCharacteristics = gearEntity.getGearCharacteristics();
+        for (GearCharacteristicEntity charac : Utils.safeIterable(gearCharacteristics)) {
+            fillCharacteristicField(charac, gearDto);
+        }
+    }
+
+    private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {
+        String quantityOnly = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
+        String quantityWithUnit = new StringBuilder(quantityOnly).append(charac.getValueMeasureUnitCode()).toString();
+        switch (charac.getTypeCode()) {
+            case GEAR_CHARAC_TYPE_CODE_ME:
+                gearDto.setMeshSize(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_GM:
+                gearDto.setLengthWidth(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_GN:
+                gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
+                break;
+            case GEAR_CHARAC_TYPE_CODE_HE:
+                gearDto.setHeight(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_NI:
+                gearDto.setNrOfLines(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_NN:
+                gearDto.setNrOfNets(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_NL:
+                gearDto.setNominalLengthOfNet(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_QG:
+                if (!Objects.equals(charac.getValueQuantityCode(), GEAR_CHARAC_Q_CODE_C62)) {
+                    gearDto.setQuantity(quantityWithUnit);
+                }
+                break;
+            case GEAR_CHARAC_TYPE_CODE_GD:
+                String description = charac.getDescription();
+                if (StringUtils.isNoneEmpty(description)){
+                    gearDto.setDescription(charac.getDescription());
+                }
+                else {
+                    gearDto.setDescription(charac.getValueText());
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**

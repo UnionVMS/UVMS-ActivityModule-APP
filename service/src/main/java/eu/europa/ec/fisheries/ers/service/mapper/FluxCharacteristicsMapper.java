@@ -18,8 +18,7 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-@Mapper(uses = CustomBigDecimal.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(uses = CustomBigDecimal.class, unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
     public static FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);
@@ -29,7 +28,7 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "valueMeasure", source = "valueMeasure.value"),
             @Mapping(target = "valueMeasureUnitCode", source = "valueMeasure.unitCode"),
-            @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "dateTimeTypeToInstant"),
+            @Mapping(target = "valueDateTime", source = "valueDateTime.dateTime"),
             @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value"),
             @Mapping(target = "valueCode", source = "valueCode.value"),
             @Mapping(target = "valueText", expression = "java(BaseMapper.getTextFromList(fluxCharacteristic.getValues()))"),
@@ -39,19 +38,25 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
             @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "descriptionLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxCharacteristic.getDescriptions()))"),
             @Mapping(target = "fluxLocation", ignore = true),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "calculatedValueMeasure", ignore = true),
+            @Mapping(target = "calculatedValueQuantity", ignore = true),
+            @Mapping(target = "faCatch", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
+            @Mapping(target = "flapDocument", ignore = true)
 
     })
     public abstract FluxCharacteristicEntity mapToFluxCharEntity(FLUXCharacteristic fluxCharacteristic);
 
     @InheritInverseConfiguration
     @Mappings({
-            @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "instantToDateTimeType")
+            @Mapping(target = "descriptions", ignore = true),
+            @Mapping(target = "values", ignore = true),
+            @Mapping(target = "specifiedFLUXLocations", ignore = true),
+            @Mapping(target = "relatedFLAPDocuments", ignore = true)
     })
     public abstract FLUXCharacteristic mapToFLUXCharacteristic(FluxCharacteristicEntity fluxCharacteristicEntity);
 
-    @Mappings({
-            @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "instantToDate")
-    })
     public abstract FluxCharacteristicsDto mapToFluxCharacteristicsDto(FluxCharacteristicEntity fluxCharacteristicEntity);
 
 }

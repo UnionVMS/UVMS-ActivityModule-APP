@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.FaQueryFactory;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
@@ -157,8 +158,8 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
         String owner = null;
         if (fluxReportDocument != null) {
             final FLUXParty ownerFLUXParty = fluxReportDocument.getOwnerFLUXParty();
-            if (ownerFLUXParty != null && CollectionUtils.isNotEmpty(ownerFLUXParty.getIDS())) {
-                for (IDType idType : ownerFLUXParty.getIDS()) {
+            if (ownerFLUXParty != null) {
+                for (IDType idType : Utils.safeIterable(ownerFLUXParty.getIDS())) {
                     if ("FLUX_GP_PARTY".equals(idType.getSchemeID())) {
                         owner = idType.getValue();
                         break;

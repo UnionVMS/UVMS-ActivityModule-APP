@@ -14,14 +14,27 @@
 package eu.europa.ec.fisheries.ers.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@Data
 public class FishingGearDTO {
 
     private String gearTypeCode;
 
     private String gearRoleCode;
 
+    public String getGearTypeCode() {
+        return gearTypeCode;
+    }
+
+    public void setGearTypeCode(String gearTypeCode) {
+        this.gearTypeCode = gearTypeCode;
+    }
+
+    public String getGearRoleCode() {
+        return gearRoleCode;
+    }
+
+    public void setGearRoleCode(String gearRoleCode) {
+        this.gearRoleCode = gearRoleCode;
+    }
 }

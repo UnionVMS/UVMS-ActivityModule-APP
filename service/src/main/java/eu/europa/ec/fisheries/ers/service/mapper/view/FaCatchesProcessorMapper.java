@@ -58,7 +58,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Groups the faCatches List matching those that have in common all the properties but BMS, SLC and size;
      *
      * @param faCatches
-     * @return
      */
     private static Map<String, Set<FaCatchEntity>> groupCatches(Set<FaCatchEntity> faCatches) {
         Map<String, Set<FaCatchEntity>> groups = new HashMap<>();
@@ -74,7 +73,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Extracts a group that has the needed properties in common with the catchesIteratorExt.next()
      *
      * @param faCatchesSet Set<FaCatchEntity>
-     * @return
      */
     private static Set<FaCatchEntity> extractOneGroup(Set<FaCatchEntity> faCatchesSet) {
         Set<FaCatchEntity> group = new HashSet<>();
@@ -95,7 +93,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Subgroups and fills the List<FaCatchGroupDto> mapping the required properties.
      *
      * @param faCatchGroups
-     * @return
      */
     private static Set<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, Set<FaCatchEntity>> faCatchGroups) {
         Set<FaCatchGroupDto> faCatchGroupsDtoList = new HashSet<>();
@@ -109,7 +106,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * Maps a list of CatchEntities (rappresenting a froup) to a  FaCatchGroupDto;
      *
      * @param groupCatchList
-     * @return
      */
     private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(Set<FaCatchEntity> groupCatchList) {
         FaCatchGroupDto groupDto = new FaCatchGroupDto();
@@ -179,13 +175,11 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
         Double convFc = 1d;
-        Double weightSum = 0.0;
-        if (CollectionUtils.isNotEmpty(aapProcesses)) {
-            for (AapProcessEntity aapProc : aapProcesses) {
-                Double actConvFac = aapProc.getConversionFactor();
-                convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
-                addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
-            }
+        double weightSum = 0.0d;
+        for (AapProcessEntity aapProc : Utils.safeIterable(aapProcesses)) {
+            Double actConvFac = aapProc.getConversionFactor();
+            convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
+            weightSum += getTotalWeightFromSetOfAapProduct(aapProc.getAapProducts());
         }
         if (weightSum > 0.0) {
             totalWeight = convFc * weightSum;
@@ -193,12 +187,16 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         return totalWeight;
     }
 
-    private static void addToTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts, Double weightSum) {
-        if (CollectionUtils.isNotEmpty(aapProducts)) {
-            for (AapProductEntity aapProd : aapProducts) {
-                Utils.addDoubles(aapProd.getCalculatedWeightMeasure(), weightSum);
+    private static double getTotalWeightFromSetOfAapProduct(Set<AapProductEntity> aapProducts) {
+        double sum = 0.0d;
+        for (AapProductEntity aapProd : aapProducts) {
+            Double calculatedWeightMeasure = aapProd.getCalculatedWeightMeasure();
+            if (calculatedWeightMeasure != null) {
+                sum += aapProd.getCalculatedWeightMeasure();
             }
         }
+
+        return sum;
     }
 
     private static void setWeightsForSubGroup(FaCatchGroupDto groupDto, FaCatchGroupDetailsDto lscGroupDetailsDto, FaCatchGroupDetailsDto bmsGroupDetailsDto, Double lscGroupTotalWeight, Double lscGroupTotalUnits, Double bmsGroupTotalWeight, Double bmsGroupTotalUnits) {

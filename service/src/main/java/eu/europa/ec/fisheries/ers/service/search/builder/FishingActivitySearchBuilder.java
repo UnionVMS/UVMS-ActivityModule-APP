@@ -40,7 +40,6 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
      * Creates an SQL String query parsing all the entries found in FishingActivityQuery query parameter.
      *
      * @param query
-     * @return
      * @throws ServiceException
      */
     @Override

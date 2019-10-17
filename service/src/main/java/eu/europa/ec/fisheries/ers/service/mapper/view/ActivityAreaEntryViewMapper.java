@@ -21,7 +21,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class ActivityAreaEntryViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityAreaEntryViewMapper INSTANCE = Mappers.getMapper(ActivityAreaEntryViewMapper.class);
@@ -34,7 +34,13 @@ public abstract class ActivityAreaEntryViewMapper extends BaseActivityViewMapper
             @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
             @Mapping(target = "areas", expression = "java(getSortedAreas(faEntity, new eu.europa.ec.fisheries.ers.service.mapper.view.base.FluxLocationDTOSchemeIdComparator()))"),
-            @Mapping(target = "gearProblems", ignore = true)
+            @Mapping(target = "gears", ignore = true),
+            @Mapping(target = "gearProblems", ignore = true),
+            @Mapping(target = "gearShotRetrievalList", ignore = true),
+            @Mapping(target = "tripDetails", ignore = true),
+            @Mapping(target = "vesselDetails", ignore = true),
+            @Mapping(target = "relocations", ignore = true),
+            @Mapping(target = "history", ignore = true),
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 

@@ -21,7 +21,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import org.apache.commons.collections.CollectionUtils;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,7 +33,7 @@ import org.mapstruct.factory.Mappers;
  * Created by kovian on 09/02/2017.
  */
 @Mapper(imports = FluxLocationCatchTypeEnum.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
 
     public static final ActivityArrivalViewMapper INSTANCE = Mappers.getMapper(ActivityArrivalViewMapper.class);
@@ -45,7 +45,14 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
             @Mapping(target = "gears", expression = "java(getGearsFromEntity(faEntity.getFishingGears()))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
             @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
-            @Mapping(target = "gearProblems", ignore = true)
+            @Mapping(target = "gearProblems", ignore = true),
+            @Mapping(target = "catches", ignore = true),
+            @Mapping(target = "gearShotRetrievalList", ignore = true),
+            @Mapping(target = "areas", ignore = true),
+            @Mapping(target = "tripDetails", ignore = true),
+            @Mapping(target = "vesselDetails", ignore = true),
+            @Mapping(target = "relocations", ignore = true),
+            @Mapping(target = "history", ignore = true),
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
@@ -58,17 +65,16 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
     }
 
     private Date extractLandingTime(Set<FluxCharacteristicEntity> fluxCharacteristics) {
-        if (CollectionUtils.isNotEmpty(fluxCharacteristics)) {
-            for (FluxCharacteristicEntity charact : fluxCharacteristics) {
-                if (StringUtils.equals("FA_CHARACTERISTIC", charact.getTypeCodeListId())
-                        && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())) {
-                    Instant valueDateTime = charact.getValueDateTime();
-                    if (valueDateTime != null) {
-                        return Date.from(valueDateTime);
-                    }
+        for(FluxCharacteristicEntity charact : Utils.safeIterable(fluxCharacteristics)) {
+            if(StringUtils.equals("FA_CHARACTERISTIC", charact.getTypeCodeListId())
+                    && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())){
+                Instant valueDateTime = charact.getValueDateTime();
+                if (valueDateTime != null) {
+                    return Date.from(valueDateTime);
                 }
             }
         }
+
         return null;
     }
 

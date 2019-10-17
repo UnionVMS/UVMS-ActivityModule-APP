@@ -21,10 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripIdSearchBuilder;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
@@ -88,7 +88,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * Get all the Fishing Trip entities for matching Filters
      *
      * @param query FishingActivityQuery
-     * @return
      * @throws ServiceException
      */
     public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
@@ -110,7 +109,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * Get all the Fishing Trip entities for matching Filters
      *
      * @param query FishingActivityQuery
-     * @return
      * @throws ServiceException
      */
     public Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
@@ -146,7 +144,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * Get total number of records for matching criteria without considering pagination
      *
      * @param queryDto
-     * @return
      * @throws ServiceException
      */
     public Integer getCountOfFishingTripsForMatchingFilterCriteria(FishingActivityQuery queryDto) throws ServiceException {

@@ -10,30 +10,46 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.search;
 
-import java.util.List;
-import java.util.Map;
-
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * This class is used to define Filters to be applied on Fishing Activities
- * It also contains list of grouping Criteria to be applied
- * Created by sanera on 24/06/2016.
+ * Created by sanera on 01/07/2016.
  */
-@NoArgsConstructor
-@Data
-public class FishingActivityQuery {
+public class SortKey {
 
-    private PaginationDto pagination;
-    private Map<SearchFilter, String> searchCriteriaMap;
-    private Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues;
-    private SortKey sorting;
-    private List<GroupCriteria> groupByFields;
-    private Boolean showOnlyLatest;
-    private Boolean useStatusInsteadOfPurposeCode;
+    private SearchFilter sortBy;
+    private boolean isReversed;
 
+    public SortKey(){
+        super();
+    }
+
+    public SearchFilter getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(SearchFilter sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public SortKey(SearchFilter field, boolean order) {
+        this.sortBy = field;
+        this.isReversed = order;
+    }
+
+    public boolean isReversed() {
+        return isReversed;
+    }
+
+    public void setReversed(boolean reversed) {
+        isReversed = reversed;
+    }
+
+    @Override
+    public String toString() {
+        return "SortKey{" +
+                "field=" + sortBy +
+
+                '}';
+    }
 }

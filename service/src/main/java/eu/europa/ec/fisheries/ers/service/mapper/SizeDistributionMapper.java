@@ -19,27 +19,39 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(imports = BaseMapper.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface SizeDistributionMapper {
 
     SizeDistributionMapper INSTANCE = Mappers.getMapper(SizeDistributionMapper.class);
 
     @Mappings({
             @Mapping(target = "categoryCode", source = "categoryCode.value"),
-            @Mapping(target = "categoryCodeListId", source = "categoryCode.listID")
+            @Mapping(target = "categoryCodeListId", source = "categoryCode.listID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "faCatch", ignore = true),
+            @Mapping(target = "sizeDistributionClassCodeEntities", ignore = true)
     })
     SizeDistributionEntity mapToSizeDistributionEntity(SizeDistribution sizeDistribution);
 
-    @InheritInverseConfiguration
-    SizeDistribution mapToSizeDistribution(SizeDistributionEntity sizeDistributionEntity);
-
     @Mappings({
             @Mapping(target = "classCode", source = "value"),
-            @Mapping(target = "classCodeListId", source = "listID")
+            @Mapping(target = "classCodeListId", source = "listID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "sizeDistribution", ignore = true),
     })
     SizeDistributionClassCodeEntity mapToSizeDistributionClassCodeEntity(CodeType codeType);
 
     @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "listAgencyID", ignore = true),
+            @Mapping(target = "listAgencyName", ignore = true),
+            @Mapping(target = "listName", ignore = true),
+            @Mapping(target = "listVersionID", ignore = true),
+            @Mapping(target = "name", ignore = true),
+            @Mapping(target = "languageID", ignore = true),
+            @Mapping(target = "listURI", ignore = true),
+            @Mapping(target = "listSchemeURI", ignore = true)
+    })
     CodeType mapToSizeDistributionClassCode(SizeDistributionClassCodeEntity classCodeEntity);
 
 }

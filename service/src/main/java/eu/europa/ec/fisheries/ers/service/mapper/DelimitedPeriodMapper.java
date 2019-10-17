@@ -18,38 +18,36 @@ import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 
 @Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class DelimitedPeriodMapper extends BaseMapper {
 
     public static DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
 
     @Mappings({
-            @Mapping(target = "startDate", source = "startDateTime", qualifiedByName = "dateTimeTypeToInstant"),
-            @Mapping(target = "endDate", source = "endDateTime", qualifiedByName = "dateTimeTypeToInstant"),
-            @Mapping(target = "durationMeasure", source = "durationMeasure")
+            @Mapping(target = "startDate", source = "startDateTime.dateTime"),
+            @Mapping(target = "endDate", source = "endDateTime.dateTime"),
+            @Mapping(target = "durationMeasure", source = "durationMeasure"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
+            @Mapping(target = "fishingTrip", ignore = true),
+            @Mapping(target = "calculatedDuration", ignore = true)
     })
     public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
 
-    @Mappings({
-            @Mapping(target = "startDateTime", source = "startDate", qualifiedByName = "instantToDateTimeTypeUTC"),
-            @Mapping(target = "endDateTime", source = "endDate", qualifiedByName = "instantToDateTimeTypeUTC"),
-            @Mapping(target = "durationMeasure", source = "durationMeasure")
-    })
+    @InheritInverseConfiguration
     public abstract DelimitedPeriod mapToDelimitedPeriod(DelimitedPeriodEntity delimitedPeriod);
 
     public abstract List<DelimitedPeriod> mapToDelimitedPeriodList(Set<DelimitedPeriodEntity> delimitedPeriod);
 
     @Mappings({
-            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "dateTimeTypeToInstant"),
-            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "dateTimeTypeToInstant"),
+            @Mapping(target = "duration", ignore = true),
+            @Mapping(target = "unitCode", ignore = true)
     })
     public abstract DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
+
 }

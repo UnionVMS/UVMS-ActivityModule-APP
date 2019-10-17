@@ -15,6 +15,8 @@ import static lombok.AccessLevel.PRIVATE;
 
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
+
 @NoArgsConstructor(access = PRIVATE)
 public class Utils {
 
@@ -36,5 +38,9 @@ public class Utils {
         }
 
         return measureSubTotalToAddTo;
+    }
+
+    public static <T> Iterable<T> safeIterable(Iterable<T> iterable) {
+        return iterable == null ? Collections.<T>emptyList() : iterable;
     }
 }

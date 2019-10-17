@@ -33,7 +33,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(uses = {FishingGearMapper.class, FluxLocationMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class GearProblemMapper extends BaseMapper {
 
     public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
@@ -44,13 +44,17 @@ public abstract class GearProblemMapper extends BaseMapper {
             @Mapping(target = "affectedQuantity", source = "affectedQuantity.value"),
             @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))"),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))"),
-            @Mapping(target = "locations", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations(), gearProblemEntity))")
+            @Mapping(target = "locations", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations(), gearProblemEntity))"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
     })
     public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem);
 
     @Mappings({
             @Mapping(target = "recoveryMeasureCode", source = "value"),
-            @Mapping(target = "recoveryMeasureCodeListId", source = "listID")
+            @Mapping(target = "recoveryMeasureCodeListId", source = "listID"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "gearProblem", ignore = true),
     })
     public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
 

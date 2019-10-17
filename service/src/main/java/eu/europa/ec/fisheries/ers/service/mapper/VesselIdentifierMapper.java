@@ -20,14 +20,16 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = BaseMapper.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface VesselIdentifierMapper {
 
     VesselIdentifierMapper INSTANCE = Mappers.getMapper(VesselIdentifierMapper.class);
 
     @Mappings({
             @Mapping(target = "identifierSchemeId", source = "vesselIdentifierSchemeId"),
-            @Mapping(target = "faIdentifierId", source = "vesselIdentifierId")
+            @Mapping(target = "faIdentifierId", source = "vesselIdentifierId"),
+            @Mapping(target = "faIdentifierSchemeId", ignore = true),
+            @Mapping(target = "fromAssets", ignore = true),
     })
     AssetIdentifierDto mapToIdentifierDto(VesselIdentifierEntity entity);
 

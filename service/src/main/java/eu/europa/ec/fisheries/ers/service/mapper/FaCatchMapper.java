@@ -41,7 +41,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 
 @Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
@@ -66,7 +66,20 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))"),
             @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))"),
-            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(faCatch.getRelatedFishingTrips(), faCatchEntity))")
+            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(faCatch.getRelatedFishingTrips(), faCatchEntity))"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "fishingActivity", ignore = true),
+            @Mapping(target = "calculatedUnitQuantity", ignore = true),
+            @Mapping(target = "calculatedWeightMeasure", ignore = true),
+            @Mapping(target = "territory", ignore = true),
+            @Mapping(target = "faoArea", ignore = true),
+            @Mapping(target = "icesStatRectangle", ignore = true),
+            @Mapping(target = "effortZone", ignore = true),
+            @Mapping(target = "rfmo", ignore = true),
+            @Mapping(target = "gfcmGsa", ignore = true),
+            @Mapping(target = "gfcmStatRectangle", ignore = true),
+            @Mapping(target = "presentation", ignore = true),
+            @Mapping(target = "gearTypeCode", ignore = true)
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
@@ -74,10 +87,28 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "appliedAAPProcesses", source = "aapProcesses"),
             @Mapping(target = "specifiedSizeDistribution", source = "sizeDistribution"),
-            @Mapping(target = "specifiedSizeDistribution.classCodes", source = "sizeDistribution.sizeDistributionClassCodeEntities")
+            @Mapping(target = "specifiedSizeDistribution.classCodes", source = "sizeDistribution.sizeDistributionClassCodeEntities"),
+            @Mapping(target = "relatedFishingTrips", ignore = true),
+            @Mapping(target = "relatedAAPStocks", ignore = true),
+            @Mapping(target = "relatedSalesBatches", ignore = true),
+            @Mapping(target = "specifiedFLUXLocations", ignore = true),
+            @Mapping(target = "usedFishingGears", ignore = true),
+            @Mapping(target = "applicableFLUXCharacteristics", ignore = true),
+            @Mapping(target = "destinationFLUXLocations", ignore = true)
     })
     public abstract FACatch mapToFaCatch(FaCatchEntity faCatch);
 
+    @Mappings({
+            @Mapping(target = "listID", ignore = true),
+            @Mapping(target = "listAgencyID", ignore = true),
+            @Mapping(target = "listAgencyName", ignore = true),
+            @Mapping(target = "listName", ignore = true),
+            @Mapping(target = "listVersionID", ignore = true),
+            @Mapping(target = "name", ignore = true),
+            @Mapping(target = "languageID", ignore = true),
+            @Mapping(target = "listURI", ignore = true),
+            @Mapping(target = "listSchemeURI", ignore = true)
+    })
     public abstract un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType map(java.lang.String value);
 
     @Mappings({
@@ -220,7 +251,6 @@ public abstract class FaCatchMapper extends BaseMapper {
      * LANDED fishQuantity and species.
      *
      * @param faCatches
-     * @return
      */
     public Map<String, CatchSummaryListDTO> mapCatchesToSummaryDTO(List<Object[]> faCatches) {
         Map<String, CatchSummaryListDTO> catchSummary = new HashMap<>();

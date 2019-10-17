@@ -31,7 +31,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 /**
@@ -68,7 +67,6 @@ public interface FishingTripService {
      * get Vessel Details for Perticular fishing trip (this is for fishing trip summary view)
      *
      * @param fishingTripId
-     * @return
      */
     VesselDetailsDTO getVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException;
 
@@ -85,7 +83,6 @@ public interface FishingTripService {
      * Retrieves all the catches for the given fishing trip;
      *
      * @param fishingTripId
-     * @return
      */
     Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId);
 
@@ -93,7 +90,6 @@ public interface FishingTripService {
      * Retrieve GEO data for Fishing Trip MAp
      *
      * @param tripId
-     * @return
      */
     ObjectNode getTripMapDetailsForTripId(String tripId);
 

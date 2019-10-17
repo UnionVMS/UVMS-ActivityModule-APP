@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
@@ -125,13 +126,11 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         Set<VesselIdentifierEntity> vesselIdentifierEntities = vesselTransportMeansEntityList.iterator().next().getVesselIdentifiers();
         List<VesselIdentifierType> vesselIdentifierTypes = new ArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(vesselIdentifierEntities)) {
-            for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifierEntities) {
-                VesselIdentifierType vesselIdentifierType = new VesselIdentifierType();
-                vesselIdentifierType.setKey(VesselIdentifierSchemeIdEnum.valueOf(vesselIdentifierEntity.getVesselIdentifierSchemeId()));
-                vesselIdentifierType.setValue(vesselIdentifierEntity.getVesselIdentifierId());
-                vesselIdentifierTypes.add(vesselIdentifierType);
-            }
+        for (VesselIdentifierEntity vesselIdentifierEntity : Utils.safeIterable(vesselIdentifierEntities)) {
+            VesselIdentifierType vesselIdentifierType = new VesselIdentifierType();
+            vesselIdentifierType.setKey(VesselIdentifierSchemeIdEnum.valueOf(vesselIdentifierEntity.getVesselIdentifierSchemeId()));
+            vesselIdentifierType.setValue(vesselIdentifierEntity.getVesselIdentifierId());
+            vesselIdentifierTypes.add(vesselIdentifierType);
         }
 
         return vesselIdentifierTypes;

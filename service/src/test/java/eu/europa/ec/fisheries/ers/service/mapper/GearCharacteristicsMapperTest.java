@@ -13,10 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import static junitparams.JUnitParamsRunner.$;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.internal.util.collections.Sets.newSet;
-
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
@@ -26,24 +22,26 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static junitparams.JUnitParamsRunner.$;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.internal.util.collections.Sets.newSet;
+
 @RunWith(JUnitParamsRunner.class)
 public class GearCharacteristicsMapperTest {
 
     @Test
     @Parameters(method = "methodName")
     public void testMapGearDtoToFishingGearEntityWithTypeCodeDG(GearCharacteristicEntity entity, String typeCode, GearDto expectedDto) {
-
         entity.setTypeCode(typeCode);
-        FishingGearEntity build = FishingGearEntity.builder().gearCharacteristics(newSet(entity)).build();
-        GearDto mappedDto = GearCharacteristicsMapper.INSTANCE.mapGearDtoToFishingGearEntity(build);
-        assertTrue(expectedDto.equals(mappedDto));
-
+        FishingGearEntity fishingGearEntity = new FishingGearEntity();
+        fishingGearEntity.setGearCharacteristics(newSet(entity));
+        GearDto mappedDto = GearCharacteristicsMapper.INSTANCE.mapGearDtoToFishingGearEntity(fishingGearEntity);
+        assertEquals(expectedDto, mappedDto);
     }
 
     protected Object[] methodName(){
-
-        GearCharacteristicEntity entity = GearCharacteristicEntity
-                .builder().
+        GearCharacteristicEntity entity = new GearCharacteristicEntity().
+                toBuilder(). // weird way of creating the builder, but otherwise Lombok removes field initializers
                         valueMeasure(20.25).
                         valueMeasureUnitCode("kg").
                         typeCode(ViewConstants.GEAR_CHARAC_TYPE_CODE_GD).

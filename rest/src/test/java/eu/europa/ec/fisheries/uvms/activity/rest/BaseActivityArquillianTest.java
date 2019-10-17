@@ -46,7 +46,6 @@ public abstract class BaseActivityArquillianTest {
                 "eu.europa.ec.fisheries.uvms.activity.rest");
 
         testWar.addAsResource("logback-test.xml");
-        System.out.println(testWar.toString(true));
 
         return testWar;
     }
