@@ -40,7 +40,7 @@ public class Utils {
         return returnValue;
     }
 
-    public static <T> Iterable<T> safeIterate(Iterable<T> iterable) {
+    public static <T> Iterable<T> safeIterable(Iterable<T> iterable) {
         return iterable == null ? Collections.<T>emptyList() : iterable;
     }
 }

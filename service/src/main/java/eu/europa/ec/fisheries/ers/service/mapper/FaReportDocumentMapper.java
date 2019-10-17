@@ -142,12 +142,12 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 for (FishingGear fishingGear : specifiedFishingGears) {
                     FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
                     List<CodeType> roleCodes = fishingGear.getRoleCodes();
-                    for (CodeType roleCode : Utils.safeIterate(roleCodes)) {
+                    for (CodeType roleCode : Utils.safeIterable(roleCodes)) {
                         fishingGearEntity.addFishingGearRole(FishingGearMapper.INSTANCE.mapToFishingGearRoleEntity(roleCode));
                     }
 
                     List<GearCharacteristic> applicableGearCharacteristics = fishingGear.getApplicableGearCharacteristics();
-                    for (GearCharacteristic applicableGearCharacteristic : Utils.safeIterate(applicableGearCharacteristics)) {
+                    for (GearCharacteristic applicableGearCharacteristic : Utils.safeIterable(applicableGearCharacteristics)) {
                         fishingGearEntity.addGearCharacteristic(GearCharacteristicsMapper.INSTANCE.mapToGearCharacteristicEntity(applicableGearCharacteristic));
                     }
 
@@ -158,7 +158,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             }
 
             List<FLAPDocument> specifiedFLAPDocuments = fishingActivity.getSpecifiedFLAPDocuments();
-            for (FLAPDocument specifiedFLAPDocument : Utils.safeIterate(specifiedFLAPDocuments)) {
+            for (FLAPDocument specifiedFLAPDocument : Utils.safeIterable(specifiedFLAPDocuments)) {
                 FlapDocumentEntity flapDocumentEntity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(specifiedFLAPDocument);
                 flapDocumentEntity.setFishingActivity(fishActEntity);
                 flapDocumentEntity.setVesselTransportMeans(vesselTransportMeansEntity);
@@ -166,17 +166,17 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             }
 
             List<IDType> ids = fishingActivity.getIDS();
-            for (IDType id : Utils.safeIterate(ids)) {
+            for (IDType id : Utils.safeIterable(ids)) {
                 fishActEntity.addFishingActivityIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToFishingActivityIdentifierEntity(id));
             }
 
             specifiedFishingActivityEntities.add(fishActEntity);
 
             List<FLUXCharacteristic> specifiedFLUXCharacteristics = fishingActivity.getSpecifiedFLUXCharacteristics();
-            for (FLUXCharacteristic specifiedFLUXCharacteristic : Utils.safeIterate(specifiedFLUXCharacteristics)) {
+            for (FLUXCharacteristic specifiedFLUXCharacteristic : Utils.safeIterable(specifiedFLUXCharacteristics)) {
                 FluxCharacteristicEntity fluxCharacteristicEntity = FluxCharacteristicsMapper.INSTANCE.mapToFluxCharEntity(specifiedFLUXCharacteristic);
                 List<FLUXLocation> specifiedFLUXLocations = specifiedFLUXCharacteristic.getSpecifiedFLUXLocations();
-                for (FLUXLocation specifiedFLUXLocation : Utils.safeIterate(specifiedFLUXLocations)) {
+                for (FLUXLocation specifiedFLUXLocation : Utils.safeIterable(specifiedFLUXLocations)) {
                     FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(specifiedFLUXLocation);
                     fluxCharacteristicEntity.setFluxLocation(fluxLocationEntity);
                     fluxCharacteristicEntity.setFishingActivity(fishActEntity);
@@ -198,7 +198,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             fluxReportDocumentEntity.setFluxParty(fluxPartyEntity);
         }
         Set<FluxReportIdentifierEntity> reportIdentifierEntitySet = new HashSet<>();
-        for (IDType idType : Utils.safeIterate(fluxReportDocument.getIDS())) {
+        for (IDType idType : Utils.safeIterable(fluxReportDocument.getIDS())) {
             FluxReportIdentifierEntity fluxReportIdentifierEntity = FluxReportIdentifierMapper.INSTANCE.mapToFluxReportIdentifierEntity(idType);
             fluxReportIdentifierEntity.setFluxReportDocument(fluxReportDocumentEntity);
             reportIdentifierEntitySet.add(fluxReportIdentifierEntity);

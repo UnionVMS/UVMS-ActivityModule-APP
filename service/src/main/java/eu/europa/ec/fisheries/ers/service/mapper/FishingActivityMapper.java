@@ -243,7 +243,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         // In such cases, we need to check if its subactivities have date mentioned.
         // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
         List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
-        for (FishingActivity subFishingActivity : Utils.safeIterate(relatedFishingActivities)) {
+        for (FishingActivity subFishingActivity : Utils.safeIterable(relatedFishingActivities)) {
             if (subFishingActivity.getOccurrenceDateTime() != null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
                     fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime() != null)) {
                 dateTimeType = subFishingActivity.getOccurrenceDateTime();
@@ -493,13 +493,13 @@ public abstract class FishingActivityMapper extends BaseMapper {
         for (FACatch faCatch : faCatches) {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
-            for (AAPProcess aapProcess : Utils.safeIterate(faCatch.getAppliedAAPProcesses())) {
+            for (AAPProcess aapProcess : Utils.safeIterable(faCatch.getAppliedAAPProcesses())) {
                 AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
-                for (AAPProduct aapProduct : Utils.safeIterate(aapProcess.getResultAAPProducts())) {
+                for (AAPProduct aapProduct : Utils.safeIterable(aapProcess.getResultAAPProducts())) {
                     aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
                 }
 
-                for (CodeType codeType : Utils.safeIterate(aapProcess.getTypeCodes())) {
+                for (CodeType codeType : Utils.safeIterable(aapProcess.getTypeCodes())) {
                     aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
                 }
                 faCatchEntity.addAAPProcess(aapProcessEntity);
@@ -510,7 +510,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
                 SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(specifiedSizeDistribution);
                 sizeDistributionEntity.setFaCatch(faCatchEntity);
                 List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
-                for (CodeType classCode : Utils.safeIterate(classCodes)) {
+                for (CodeType classCode : Utils.safeIterable(classCodes)) {
                     SizeDistributionClassCodeEntity sizeDistributionClassCodeEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(classCode);
                     sizeDistributionEntity.addSizeDistribution(sizeDistributionClassCodeEntity);
                 }

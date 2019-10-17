@@ -176,7 +176,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         Double totalWeight = null;
         Double convFc = 1d;
         double weightSum = 0.0d;
-        for (AapProcessEntity aapProc : Utils.safeIterate(aapProcesses)) {
+        for (AapProcessEntity aapProc : Utils.safeIterable(aapProcesses)) {
             Double actConvFac = aapProc.getConversionFactor();
             convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
             weightSum += getTotalWeightFromSetOfAapProduct(aapProc.getAapProducts());

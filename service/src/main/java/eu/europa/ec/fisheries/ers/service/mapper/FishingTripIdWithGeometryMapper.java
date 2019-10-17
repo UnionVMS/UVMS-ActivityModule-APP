@@ -131,7 +131,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         Set<VesselIdentifierEntity> vesselIdentifierEntities = vesselTransportMeansEntityList.iterator().next().getVesselIdentifiers();
         List<VesselIdentifierType> vesselIdentifierTypes = new ArrayList<>();
 
-        for (VesselIdentifierEntity vesselIdentifierEntity : Utils.safeIterate(vesselIdentifierEntities)) {
+        for (VesselIdentifierEntity vesselIdentifierEntity : Utils.safeIterable(vesselIdentifierEntities)) {
             VesselIdentifierType vesselIdentifierType = new VesselIdentifierType();
             vesselIdentifierType.setKey(VesselIdentifierSchemeIdEnum.valueOf(vesselIdentifierEntity.getVesselIdentifierSchemeId()));
             vesselIdentifierType.setValue(vesselIdentifierEntity.getVesselIdentifierId());

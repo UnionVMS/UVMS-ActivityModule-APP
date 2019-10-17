@@ -36,7 +36,7 @@ public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
             viewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
             viewDTO.setVesselDetails(VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans()));
 
-            for (VesselDetailsDTO detailsDTO : Utils.safeIterate(viewDTO.getVesselDetails())) {
+            for (VesselDetailsDTO detailsDTO : Utils.safeIterable(viewDTO.getVesselDetails())) {
                 detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
              }
         }

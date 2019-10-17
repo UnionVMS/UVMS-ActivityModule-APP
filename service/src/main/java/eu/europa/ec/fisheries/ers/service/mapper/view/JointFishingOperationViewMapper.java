@@ -70,7 +70,7 @@ public class JointFishingOperationViewMapper extends BaseActivityViewMapper {
             entities = new HashSet<>();
         }
 
-        for (FishingActivityEntity fishingActivityEntity : Utils.safeIterate(faEntity.getAllRelatedFishingActivities())) {
+        for (FishingActivityEntity fishingActivityEntity : Utils.safeIterable(faEntity.getAllRelatedFishingActivities())) {
             entities.addAll(fishingActivityEntity.getVesselTransportMeans());
         }
 

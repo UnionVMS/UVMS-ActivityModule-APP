@@ -64,7 +64,7 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
     }
 
     private Date extractLandingTime(Set<FluxCharacteristicEntity> fluxCharacteristics) {
-        for(FluxCharacteristicEntity charact : Utils.safeIterate(fluxCharacteristics)) {
+        for(FluxCharacteristicEntity charact : Utils.safeIterable(fluxCharacteristics)) {
             if(StringUtils.equals("FA_CHARACTERISTIC", charact.getTypeCodeListId())
                     && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())){
                 return charact.getValueDateTime();

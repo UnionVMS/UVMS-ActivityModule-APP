@@ -96,12 +96,12 @@ public class BaseMapper {
     private static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();
-        for (IDType idType : Utils.safeIterate(ids)) {
+        for (IDType idType : Utils.safeIterable(ids)) {
             fishingTripEntity.addFishingTripIdentifiers(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
         }
 
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
-        for (DelimitedPeriod delimitedPeriod : Utils.safeIterate(specifiedDelimitedPeriods)) {
+        for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {
             fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
         }
 
@@ -166,7 +166,7 @@ public class BaseMapper {
 
     public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
-        for (AssetIdentifierDto identifierDto : Utils.safeIterate(identifierDtoSet)) {
+        for (AssetIdentifierDto identifierDto : Utils.safeIterable(identifierDtoSet)) {
             VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
             ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
             if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {

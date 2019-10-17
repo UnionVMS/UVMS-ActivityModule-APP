@@ -177,7 +177,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             gearDto.setRole(role.getRoleCode());
         }
         Set<GearCharacteristicEntity> gearCharacteristics = gearEntity.getGearCharacteristics();
-        for (GearCharacteristicEntity charac : Utils.safeIterate(gearCharacteristics)) {
+        for (GearCharacteristicEntity charac : Utils.safeIterable(gearCharacteristics)) {
             fillCharacteristicField(charac, gearDto);
         }
     }

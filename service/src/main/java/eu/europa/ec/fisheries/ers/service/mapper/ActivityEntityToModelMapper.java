@@ -377,7 +377,7 @@ public class ActivityEntityToModelMapper {
 
     private void mapSpecifiedContactParties(VesselTransportMeans target, Set<ContactPartyEntity> contactPartyEntities) {
         ArrayList<ContactParty> contactParties = new ArrayList<>();
-        for (ContactPartyEntity source : Utils.safeIterate(contactPartyEntities)) {
+        for (ContactPartyEntity source : Utils.safeIterable(contactPartyEntities)) {
             ContactParty contactParty = new ContactParty();
 
             ContactPerson contactPerson = ContactPersonMapper.INSTANCE.mapToContactPerson(source.getContactPerson());
@@ -395,7 +395,7 @@ public class ActivityEntityToModelMapper {
 
     private void mapRoles(ContactParty target, Set<ContactPartyRoleEntity> contactPartyRoleEntities) {
         List<CodeType> codeTypeList = new ArrayList<>();
-        for (ContactPartyRoleEntity source : Utils.safeIterate(contactPartyRoleEntities)) {
+        for (ContactPartyRoleEntity source : Utils.safeIterable(contactPartyRoleEntities)) {
             CodeType codeType = new CodeType();
             codeType.setValue(source.getRoleCode());
             codeType.setListID(source.getRoleCodeListId());
