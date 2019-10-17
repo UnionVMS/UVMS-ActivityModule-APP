@@ -19,7 +19,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO
 import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import org.apache.commons.collections.CollectionUtils;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 
 public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
 
@@ -29,7 +29,6 @@ public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
         FishingActivityViewDTO viewDTO = new FishingActivityViewDTO();
 
         if (faEntity != null) {
-
             viewDTO.setActivityDetails(mapActivityDetails(faEntity));
             viewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));
             viewDTO.setReportDetails(getReportDocsFromEntity(faEntity.getFaReportDocument()));
@@ -37,13 +36,9 @@ public class ActivityRelocationViewMapper extends BaseActivityViewMapper {
             viewDTO.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
             viewDTO.setVesselDetails(VesselTransportMeansMapper.INSTANCE.map(faEntity.getVesselTransportMeans()));
 
-
-            if (CollectionUtils.isNotEmpty(viewDTO.getVesselDetails())) {
-                for (VesselDetailsDTO detailsDTO : viewDTO.getVesselDetails()){
-                    detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
-                 }
-            }
-
+            for (VesselDetailsDTO detailsDTO : Utils.safeIterable(viewDTO.getVesselDetails())) {
+                detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));
+             }
         }
 
         return viewDTO;

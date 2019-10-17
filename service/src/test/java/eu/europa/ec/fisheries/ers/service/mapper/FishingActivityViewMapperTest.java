@@ -144,7 +144,7 @@ public class FishingActivityViewMapperTest {
     @SneakyThrows
     public void testActivityJointFishingOperationViewMapper() {
         FishingActivity fishingActivity = getFishingActivity();
-        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, new FishingActivityEntity());
+        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null);
         fishingActivityEntity.setTypeCode("JOINT_FISHING_OPERATION");
         fishingActivityEntity.getAllRelatedFishingActivities().iterator().next().setTypeCode("RELOCATION");
         fishingActivityEntity.getFaCatchs().iterator().next().setId(1);

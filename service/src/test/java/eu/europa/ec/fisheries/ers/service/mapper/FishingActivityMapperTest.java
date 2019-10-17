@@ -15,20 +15,11 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
 import java.util.List;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
@@ -41,11 +32,11 @@ public class FishingActivityMapperTest {
     @Test
     public void testFishingActivityMapper() {
         FishingActivity fishingActivity = MapperUtil.getFishingActivity();
-        FishingActivityEntity fishingActivityEntity = new FishingActivityEntity();
-        FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, fishingActivityEntity);
+        FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
+        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
 
         assertFishingActivityFields(fishingActivity, fishingActivityEntity);
-        assertNull(fishingActivityEntity.getFaReportDocument());
+        assertEquals(faReportDocumentEntity, fishingActivityEntity.getFaReportDocument());
 
         assertNotNull(fishingActivityEntity.getFishingTrips());
         FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrips().iterator().next();

@@ -42,6 +42,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -504,11 +505,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
             // Fishing operations
             Set<FishingActivityEntity> faEntitiyList = faReport.getFishingActivities();
-            if (isNotEmpty(faEntitiyList)) {
-                for (FishingActivityEntity faEntity : faEntitiyList) {
-                    if (FishingActivityTypeEnum.FISHING_OPERATION.toString().equalsIgnoreCase(faEntity.getTypeCode())) {
-                        messagesCounter.setNoOfFishingOperations(messagesCounter.getNoOfFishingOperations() + 1);
-                    }
+            for (FishingActivityEntity faEntity : Utils.safeIterable(faEntitiyList)) {
+                if (FishingActivityTypeEnum.FISHING_OPERATION.toString().equalsIgnoreCase(faEntity.getTypeCode())) {
+                    messagesCounter.setNoOfFishingOperations(messagesCounter.getNoOfFishingOperations() + 1);
                 }
             }
 
@@ -808,20 +807,18 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
         TripOverviewDto tripOverviewDto = new TripOverviewDto();
         Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips(); // Find out fishingTrip schemeId matching to tripId from fishingActivity object.
-        if (CollectionUtils.isNotEmpty(fishingTripEntities)) {
-            for (FishingTripEntity fishingTripEntity : fishingTripEntities) {
-                Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
-                for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-                    if (tripId.equalsIgnoreCase(tripIdentifierEntity.getTripId())) {
-                        TripIdDto tripIdDto = new TripIdDto();
-                        tripIdDto.setId(tripId);
-                        tripIdDto.setSchemeId(tripIdentifierEntity.getTripSchemeId());
-                        List<TripIdDto> tripIdList = new ArrayList<>();
-                        tripIdList.add(tripIdDto);
-                        tripOverviewDto.setTripId(tripIdList);
-                        tripOverviewDto.setTypeCode(fishingTripEntity.getTypeCode());
-                        break;
-                    }
+        for (FishingTripEntity fishingTripEntity : Utils.safeIterable(fishingTripEntities)) {
+            Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
+            for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
+                if (tripId.equalsIgnoreCase(tripIdentifierEntity.getTripId())) {
+                    TripIdDto tripIdDto = new TripIdDto();
+                    tripIdDto.setId(tripId);
+                    tripIdDto.setSchemeId(tripIdentifierEntity.getTripSchemeId());
+                    List<TripIdDto> tripIdList = new ArrayList<>();
+                    tripIdList.add(tripIdDto);
+                    tripOverviewDto.setTripId(tripIdList);
+                    tripOverviewDto.setTypeCode(fishingTripEntity.getTypeCode());
+                    break;
                 }
             }
         }

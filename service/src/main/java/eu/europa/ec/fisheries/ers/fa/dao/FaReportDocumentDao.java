@@ -25,6 +25,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -189,14 +190,12 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     }
 
     private void populateDeletingAndCancellationIds(Set<FishingActivityEntity> fishingActivities, List<Integer> idsOfCancelledDeletedReports) {
-        if(CollectionUtils.isNotEmpty(fishingActivities)){
-            for (FishingActivityEntity fishingActivity : fishingActivities) {
-                if(fishingActivity.getCanceledBy() != null){
-                    idsOfCancelledDeletedReports.add(fishingActivity.getCanceledBy());
-                }
-                if(fishingActivity.getDeletedBy() != null){
-                    idsOfCancelledDeletedReports.add(fishingActivity.getDeletedBy());
-                }
+        for (FishingActivityEntity fishingActivity : Utils.safeIterable(fishingActivities)) {
+            if(fishingActivity.getCanceledBy() != null){
+                idsOfCancelledDeletedReports.add(fishingActivity.getCanceledBy());
+            }
+            if(fishingActivity.getDeletedBy() != null){
+                idsOfCancelledDeletedReports.add(fishingActivity.getDeletedBy());
             }
         }
     }

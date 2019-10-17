@@ -91,10 +91,6 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
 
 
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
-        Map<String, String> idMap = new HashMap<>();
-        for (FishingActivityIdentifierEntity idEntity : faEntity.getFishingActivityIdentifiers()) {
-            idMap.put(idEntity.getFaIdentifierId(), idEntity.getFaIdentifierSchemeId());
-        }
         Set<IdentifierDto> identifierDtos = FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(faEntity.getFishingActivityIdentifiers());
         activityDetails.setIdentifiers(identifierDtos);
         Set<DelimitedPeriodEntity> delimitedPeriodEntitySet = faEntity.getDelimitedPeriods();

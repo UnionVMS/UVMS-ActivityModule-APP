@@ -70,20 +70,6 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
 
     public abstract List<VesselDetailsDTO> map(Set<VesselTransportMeansEntity> entity);
 
-    protected Set<FlapDocumentEntity> getFlapDocumentEntities(List<FLAPDocument> flapDocuments, VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity activity) {
-        if (flapDocuments == null || flapDocuments.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FlapDocumentEntity> flapDocumentEntities = new HashSet<>();
-        for (FLAPDocument flapDocument : flapDocuments) {
-            FlapDocumentEntity entity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(flapDocument);
-            entity.setVesselTransportMeans(vesselTransportMeansEntity);
-            entity.setFishingActivity(activity);
-            flapDocumentEntities.add(entity);
-        }
-        return flapDocumentEntities;
-    }
-
     protected Set<VesselPositionEventEntity> getVesselPositionEventEntities(List<VesselPositionEvent> specifiedVesselPositionEvents, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (specifiedVesselPositionEvents == null || specifiedVesselPositionEvents.isEmpty()) {
             return Collections.emptySet();

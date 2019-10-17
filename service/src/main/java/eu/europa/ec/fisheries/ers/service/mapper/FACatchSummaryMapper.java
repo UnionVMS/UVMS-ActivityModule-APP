@@ -296,16 +296,16 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
     @NotNull
     private Map<FishSizeClassEnum, Object> populateFishSizeClassMapForOnlyForFishClass(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FishSizeClassEnum, Object> fishSizeSummaryMap) {
+        String fishClass = customEntity.getFishClass().toUpperCase();
         if (MapUtils.isEmpty(fishSizeSummaryMap)) {
-            fishSizeSummaryMap = new EnumMap<>(FishSizeClassEnum.class); // FIXME squid:S1226 introduce a new variable instead of reusing
-            fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), speciesCnt);
+            fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(fishClass), speciesCnt);
         } else {
-            Object count = fishSizeSummaryMap.get(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()));
-            if (count != null && count instanceof Double) {
+            Object count = fishSizeSummaryMap.get(FishSizeClassEnum.valueOf(fishClass));
+            if (count instanceof Double) {
                 count = (Double) count + speciesCnt;
-                fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), count);
+                fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(fishClass), count);
             } else {
-                fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(customEntity.getFishClass().toUpperCase()), speciesCnt);
+                fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(fishClass), speciesCnt);
             }
         }
         return fishSizeSummaryMap;
@@ -353,22 +353,20 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
      */
     @NotNull
     private Map<FaCatchTypeEnum, Object> populateFaCatchTypeMapOnlyForCatchType(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FaCatchTypeEnum, Object> faCatchSummaryMap) {
+        String typeCode = customEntity.getTypeCode().toUpperCase();
         if (MapUtils.isEmpty(faCatchSummaryMap)) {
-            faCatchSummaryMap = new EnumMap<>(FaCatchTypeEnum.class); // do not reuse
-            faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), speciesCnt);
-        }else {
-
-            Object count = faCatchSummaryMap.get(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()));
-            if (count != null && count instanceof Double) {
+            faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(typeCode), speciesCnt);
+        } else {
+            Object count = faCatchSummaryMap.get(FaCatchTypeEnum.valueOf(typeCode));
+            if (count instanceof Double) {
                 count = (Double) count + speciesCnt;
-                faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), count);
+                faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(typeCode), count);
             } else {
-                faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(customEntity.getTypeCode().toUpperCase()), speciesCnt);
+                faCatchSummaryMap.put(FaCatchTypeEnum.valueOf(typeCode), speciesCnt);
             }
         }
         return faCatchSummaryMap;
     }
-
 
   protected List<SummaryFishSize> getSummaryFishSizeList(Map<FishSizeClassEnum,Object> summaryFishSizeMap){
         if(MapUtils.isEmpty(summaryFishSizeMap)){

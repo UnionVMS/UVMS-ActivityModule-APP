@@ -98,7 +98,7 @@ public class ActivityToSubscriptionMapperTest {
     @Test
     public void testMapToSubscriptionDataRequest(){
 
-        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery(), true);
+        SubscriptionDataRequest request = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
 
         assertEquals(CriteriaType.SENDER, request.getQuery().getCriteria().get(0).getCriteria());
         assertEquals(CriteriaType.VESSEL, request.getQuery().getCriteria().get(1).getCriteria());

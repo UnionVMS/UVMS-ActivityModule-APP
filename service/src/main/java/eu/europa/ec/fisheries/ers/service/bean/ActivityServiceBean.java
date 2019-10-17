@@ -43,6 +43,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
@@ -369,20 +370,18 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         String filter;
         final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
         Integer nrOfResults = 1;
-        if (CollectionUtils.isNotEmpty(fishingActivityViewDTO.getLocations())) {
-            for (FluxLocationDto fluxLocationDto : fishingActivityViewDTO.getLocations()) {
-                if (fluxLocationIdSchemeId.equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
-                    try {
-                        filter = fluxLocationDto.getFluxLocationIdentifier();
-                        List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "description").get("description");
-                        String codeDescription = codeDescriptions.get(0);
-                        fluxLocationDto.setPortDescription(codeDescription);
-                    } catch (ServiceException e) {
-                        log.error("Error while trying to set port description on FluxLocationDto.", e);
-                    } catch (IndexOutOfBoundsException iobe) {
-                        log.error("Error while trying to set port description on FluxLocationDto! Description for code: " + fluxLocationDto.getTypeCode() +
-                                " doesn't exist", iobe);
-                    }
+        for (FluxLocationDto fluxLocationDto : Utils.safeIterable(fishingActivityViewDTO.getLocations())) {
+            if (fluxLocationIdSchemeId.equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
+                try {
+                    filter = fluxLocationDto.getFluxLocationIdentifier();
+                    List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "description").get("description");
+                    String codeDescription = codeDescriptions.get(0);
+                    fluxLocationDto.setPortDescription(codeDescription);
+                } catch (ServiceException e) {
+                    log.error("Error while trying to set port description on FluxLocationDto.", e);
+                } catch (IndexOutOfBoundsException iobe) {
+                    log.error("Error while trying to set port description on FluxLocationDto! Description for code: " + fluxLocationDto.getTypeCode() +
+                            " doesn't exist", iobe);
                 }
             }
         }

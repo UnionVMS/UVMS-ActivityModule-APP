@@ -48,7 +48,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
         Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers = faEntity.getFishingActivityIdentifiers();
         detailsDto.setIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(fishingActivityIdentifiers));
 
-        detailsDto.setFishingTime(this.calculateFishingTime(faEntity.getDelimitedPeriods()));
+        detailsDto.setFishingTime(calculateFishingTime(faEntity.getDelimitedPeriods()));
 
         viewDTO.setActivityDetails(detailsDto);
 
@@ -77,7 +77,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
      * @param faEntity
      * @return VesselDetailsDTO
      */
-    protected List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
+    private List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
         if(faEntity==null || CollectionUtils.isEmpty(faEntity.getVesselTransportMeans()))
             return null;
 

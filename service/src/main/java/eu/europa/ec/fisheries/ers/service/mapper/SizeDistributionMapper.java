@@ -33,12 +33,6 @@ public interface SizeDistributionMapper {
     })
     SizeDistributionEntity mapToSizeDistributionEntity(SizeDistribution sizeDistribution);
 
-    @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "classCodes", ignore = true)
-    })
-    SizeDistribution mapToSizeDistribution(SizeDistributionEntity sizeDistributionEntity);
-
     @Mappings({
             @Mapping(target = "classCode", source = "value"),
             @Mapping(target = "classCodeListId", source = "listID"),
