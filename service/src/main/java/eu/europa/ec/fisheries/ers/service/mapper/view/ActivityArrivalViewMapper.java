@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import org.apache.commons.collections.CollectionUtils;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -64,14 +64,13 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
     }
 
     private Date extractLandingTime(Set<FluxCharacteristicEntity> fluxCharacteristics) {
-        if(CollectionUtils.isNotEmpty(fluxCharacteristics)){
-            for(FluxCharacteristicEntity charact : fluxCharacteristics){
-                if(StringUtils.equals("FA_CHARACTERISTIC", charact.getTypeCodeListId())
-                        && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())){
-                    return charact.getValueDateTime();
-                }
+        for(FluxCharacteristicEntity charact : Utils.safeIterate(fluxCharacteristics)) {
+            if(StringUtils.equals("FA_CHARACTERISTIC", charact.getTypeCodeListId())
+                    && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())){
+                return charact.getValueDateTime();
             }
         }
+
         return null;
     }
 

@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritInverseConfiguration;
@@ -88,10 +89,8 @@ public abstract class GearCharacteristicsMapper {
             gearDto.setRole(role.getRoleCode());
         }
         Set<GearCharacteristicEntity> gearCharacteristics = gearEntity.getGearCharacteristics();
-        if (CollectionUtils.isNotEmpty(gearCharacteristics)) {
-            for (GearCharacteristicEntity charac : gearCharacteristics) {
-                fillCharacteristicField(charac, gearDto);
-            }
+        for (GearCharacteristicEntity charac : Utils.safeIterate(gearCharacteristics)) {
+            fillCharacteristicField(charac, gearDto);
         }
     }
 

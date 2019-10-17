@@ -25,6 +25,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO
 import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -69,10 +70,8 @@ public class JointFishingOperationViewMapper extends BaseActivityViewMapper {
             entities = new HashSet<>();
         }
 
-        if (CollectionUtils.isNotEmpty(faEntity.getAllRelatedFishingActivities())) {
-            for (FishingActivityEntity fishingActivityEntity : faEntity.getAllRelatedFishingActivities()) {
-                entities.addAll(fishingActivityEntity.getVesselTransportMeans());
-            }
+        for (FishingActivityEntity fishingActivityEntity : Utils.safeIterate(faEntity.getAllRelatedFishingActivities())) {
+            entities.addAll(fishingActivityEntity.getVesselTransportMeans());
         }
 
         for (VesselTransportMeansEntity vesselTransportMeansEntity : entities) {

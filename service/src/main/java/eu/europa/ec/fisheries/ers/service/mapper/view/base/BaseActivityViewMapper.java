@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -176,10 +177,8 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             gearDto.setRole(role.getRoleCode());
         }
         Set<GearCharacteristicEntity> gearCharacteristics = gearEntity.getGearCharacteristics();
-        if (CollectionUtils.isNotEmpty(gearCharacteristics)) {
-            for (GearCharacteristicEntity charac : gearCharacteristics) {
-                fillCharacteristicField(charac, gearDto);
-            }
+        for (GearCharacteristicEntity charac : Utils.safeIterate(gearCharacteristics)) {
+            fillCharacteristicField(charac, gearDto);
         }
     }
 

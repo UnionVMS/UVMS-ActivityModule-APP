@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -376,33 +377,29 @@ public class ActivityEntityToModelMapper {
 
     private void mapSpecifiedContactParties(VesselTransportMeans target, Set<ContactPartyEntity> contactPartyEntities) {
         ArrayList<ContactParty> contactParties = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(contactPartyEntities)) {
-            for (ContactPartyEntity source : contactPartyEntities){
-                ContactParty contactParty = new ContactParty();
+        for (ContactPartyEntity source : Utils.safeIterate(contactPartyEntities)) {
+            ContactParty contactParty = new ContactParty();
 
-                ContactPerson contactPerson = ContactPersonMapper.INSTANCE.mapToContactPerson(source.getContactPerson());
+            ContactPerson contactPerson = ContactPersonMapper.INSTANCE.mapToContactPerson(source.getContactPerson());
 
-                if (contactPerson != null){
-                    contactParty.setSpecifiedContactPersons(Collections.singletonList(contactPerson)); // TODO @Greg mapstruct add non-iterable type
-                }
-                mapRoles(contactParty, source.getContactPartyRole());
-
-                contactParty.setSpecifiedStructuredAddresses(StructuredAddressMapper.INSTANCE.mapToStructuredAddressList(source.getStructuredAddresses()));
-                contactParties.add(contactParty);
+            if (contactPerson != null){
+                contactParty.setSpecifiedContactPersons(Collections.singletonList(contactPerson)); // TODO @Greg mapstruct add non-iterable type
             }
+            mapRoles(contactParty, source.getContactPartyRole());
+
+            contactParty.setSpecifiedStructuredAddresses(StructuredAddressMapper.INSTANCE.mapToStructuredAddressList(source.getStructuredAddresses()));
+            contactParties.add(contactParty);
         }
         target.setSpecifiedContactParties(contactParties);
     }
 
     private void mapRoles(ContactParty target, Set<ContactPartyRoleEntity> contactPartyRoleEntities) {
         List<CodeType> codeTypeList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(contactPartyRoleEntities)){
-            for (ContactPartyRoleEntity source : contactPartyRoleEntities){
-                CodeType codeType = new CodeType();
-                codeType.setValue(source.getRoleCode());
-                codeType.setListID(source.getRoleCodeListId());
-                codeTypeList.add(codeType);
-            }
+        for (ContactPartyRoleEntity source : Utils.safeIterate(contactPartyRoleEntities)) {
+            CodeType codeType = new CodeType();
+            codeType.setValue(source.getRoleCode());
+            codeType.setListID(source.getRoleCodeListId());
+            codeTypeList.add(codeType);
         }
         target.setRoleCodes(codeTypeList);
     }

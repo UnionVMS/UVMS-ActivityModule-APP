@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -242,20 +243,19 @@ public abstract class FishingActivityMapper extends BaseMapper {
         // In such cases, we need to check if its subactivities have date mentioned.
         // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
         List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
-        if (CollectionUtils.isNotEmpty(relatedFishingActivities)) {
-            for (FishingActivity subFishingActivity : relatedFishingActivities) {
-                if (subFishingActivity.getOccurrenceDateTime() != null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
-                        fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime() != null)) {
-                    dateTimeType = subFishingActivity.getOccurrenceDateTime();
-                    if (dateTimeType == null) {
-                        dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
-                    }
-                    if (dateTimeType != null && dateTimeType.getDateTime() != null) {
-                        return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime());
-                    }
+        for (FishingActivity subFishingActivity : Utils.safeIterate(relatedFishingActivities)) {
+            if (subFishingActivity.getOccurrenceDateTime() != null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
+                    fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime() != null)) {
+                dateTimeType = subFishingActivity.getOccurrenceDateTime();
+                if (dateTimeType == null) {
+                    dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
+                }
+                if (dateTimeType != null && dateTimeType.getDateTime() != null) {
+                    return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime());
                 }
             }
         }
+
         return null;
     }
 
@@ -492,24 +492,17 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FaCatchEntity> faCatchEntities = new HashSet<>();
         for (FACatch faCatch : faCatches) {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
-            List<AAPProcess> appliedAAPProcesses = faCatch.getAppliedAAPProcesses();
-            if (CollectionUtils.isNotEmpty(appliedAAPProcesses)) {
-                for (AAPProcess aapProcess : appliedAAPProcesses) {
-                    AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
-                    List<AAPProduct> resultAAPProducts = aapProcess.getResultAAPProducts();
-                    if (CollectionUtils.isNotEmpty(resultAAPProducts)) {
-                        for (AAPProduct aapProduct : resultAAPProducts) {
-                            aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
-                        }
-                    }
-                    List<CodeType> codeTypeList = aapProcess.getTypeCodes();
-                    if (CollectionUtils.isNotEmpty(codeTypeList)) {
-                        for (CodeType codeType : codeTypeList) {
-                            aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
-                        }
-                    }
-                    faCatchEntity.addAAPProcess(aapProcessEntity);
+
+            for (AAPProcess aapProcess : Utils.safeIterate(faCatch.getAppliedAAPProcesses())) {
+                AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+                for (AAPProduct aapProduct : Utils.safeIterate(aapProcess.getResultAAPProducts())) {
+                    aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
                 }
+
+                for (CodeType codeType : Utils.safeIterate(aapProcess.getTypeCodes())) {
+                    aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
+                }
+                faCatchEntity.addAAPProcess(aapProcessEntity);
             }
 
             SizeDistribution specifiedSizeDistribution = faCatch.getSpecifiedSizeDistribution();
@@ -517,13 +510,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
                 SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(specifiedSizeDistribution);
                 sizeDistributionEntity.setFaCatch(faCatchEntity);
                 List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
-                if (CollectionUtils.isNotEmpty(classCodes)) {
-                    for (CodeType classCode : classCodes) {
-                        SizeDistributionClassCodeEntity sizeDistributionClassCodeEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(classCode);
-                        sizeDistributionEntity.addSizeDistribution(sizeDistributionClassCodeEntity);
-                    }
-
+                for (CodeType classCode : Utils.safeIterate(classCodes)) {
+                    SizeDistributionClassCodeEntity sizeDistributionClassCodeEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(classCode);
+                    sizeDistributionEntity.addSizeDistribution(sizeDistributionClassCodeEntity);
                 }
+
                 faCatchEntity.setSizeDistribution(sizeDistributionEntity);
             }
 

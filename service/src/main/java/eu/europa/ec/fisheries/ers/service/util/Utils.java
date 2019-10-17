@@ -15,6 +15,8 @@ import static lombok.AccessLevel.PRIVATE;
 
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
+
 @NoArgsConstructor(access = PRIVATE)
 public class Utils {
 
@@ -38,4 +40,7 @@ public class Utils {
         return returnValue;
     }
 
+    public static <T> Iterable<T> safeIterate(Iterable<T> iterable) {
+        return iterable == null ? Collections.<T>emptyList() : iterable;
+    }
 }

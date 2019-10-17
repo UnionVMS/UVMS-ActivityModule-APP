@@ -30,6 +30,7 @@ import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -95,17 +96,15 @@ public class BaseMapper {
     private static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();
-        if (CollectionUtils.isNotEmpty(ids)){
-            for (IDType idType : ids){
-                fishingTripEntity.addFishingTripIdentifiers(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
-            }
+        for (IDType idType : Utils.safeIterate(ids)) {
+            fishingTripEntity.addFishingTripIdentifiers(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
         }
+
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
-        if (CollectionUtils.isNotEmpty(specifiedDelimitedPeriods)){
-            for (DelimitedPeriod delimitedPeriod : specifiedDelimitedPeriods){
-                fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
-            }
+        for (DelimitedPeriod delimitedPeriod : Utils.safeIterate(specifiedDelimitedPeriods)) {
+            fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
         }
+
         return fishingTripEntity;
     }
 
@@ -167,17 +166,15 @@ public class BaseMapper {
 
     public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(identifierDtoSet)) {
-            for (AssetIdentifierDto identifierDto : identifierDtoSet) {
-                VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-                ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
-                if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
-                    String identifierId = identifierDto.getFaIdentifierId();
-                    AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-                    criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
-                    criteriaPair.setValue(identifierId);
-                    criteriaList.add(criteriaPair);
-                }
+        for (AssetIdentifierDto identifierDto : Utils.safeIterate(identifierDtoSet)) {
+            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
+            ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+            if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
+                String identifierId = identifierDto.getFaIdentifierId();
+                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+                criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
+                criteriaPair.setValue(identifierId);
+                criteriaList.add(criteriaPair);
             }
         }
         return criteriaList;
