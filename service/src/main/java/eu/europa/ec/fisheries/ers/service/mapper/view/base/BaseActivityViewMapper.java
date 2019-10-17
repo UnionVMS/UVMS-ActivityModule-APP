@@ -18,11 +18,8 @@ import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
-import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
 
 /**
  * Created by kovian on 14/02/2017.
@@ -168,62 +165,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
             return null;
         }
         return mapSingleGearToDto(fishingGearEntities.iterator().next());
-    }
-
-    private void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
-        Set<FishingGearRoleEntity> fishingGearRole = gearEntity.getFishingGearRole();
-        if (CollectionUtils.isNotEmpty(fishingGearRole)) {
-            FishingGearRoleEntity role = fishingGearRole.iterator().next();
-            gearDto.setRole(role.getRoleCode());
-        }
-        Set<GearCharacteristicEntity> gearCharacteristics = gearEntity.getGearCharacteristics();
-        for (GearCharacteristicEntity charac : Utils.safeIterable(gearCharacteristics)) {
-            fillCharacteristicField(charac, gearDto);
-        }
-    }
-
-    private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {
-        String quantityOnly = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
-        String quantityWithUnit = new StringBuilder(quantityOnly).append(charac.getValueMeasureUnitCode()).toString();
-        switch (charac.getTypeCode()) {
-            case GEAR_CHARAC_TYPE_CODE_ME:
-                gearDto.setMeshSize(quantityWithUnit);
-                break;
-            case GEAR_CHARAC_TYPE_CODE_GM:
-                gearDto.setLengthWidth(quantityWithUnit);
-                break;
-            case GEAR_CHARAC_TYPE_CODE_GN:
-                gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
-                break;
-            case GEAR_CHARAC_TYPE_CODE_HE:
-                gearDto.setHeight(quantityWithUnit);
-                break;
-            case GEAR_CHARAC_TYPE_CODE_NI:
-                gearDto.setNrOfLines(quantityWithUnit);
-                break;
-            case GEAR_CHARAC_TYPE_CODE_NN:
-                gearDto.setNrOfNets(quantityWithUnit);
-                break;
-            case GEAR_CHARAC_TYPE_CODE_NL:
-                gearDto.setNominalLengthOfNet(quantityWithUnit);
-                break;
-            case GEAR_CHARAC_TYPE_CODE_QG:
-                if (!Objects.equals(charac.getValueQuantityCode(), GEAR_CHARAC_Q_CODE_C62)) {
-                    gearDto.setQuantity(quantityWithUnit);
-                }
-                break;
-            case GEAR_CHARAC_TYPE_CODE_GD:
-                String description = charac.getDescription();
-                if (StringUtils.isNoneEmpty(description)){
-                    gearDto.setDescription(charac.getDescription());
-                }
-                else {
-                    gearDto.setDescription(charac.getValueText());
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     protected Set<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity) {

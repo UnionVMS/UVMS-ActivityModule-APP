@@ -59,8 +59,6 @@ public interface StructuredAddressMapper {
 
     List<StructuredAddress> mapToStructuredAddressList(Set<StructuredAddressEntity> structuredAddress);
 
-    Set<StructuredAddressEntity> mapToStructuredAddressEntitySet(List<StructuredAddress> structuredAddress);
-
     AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
     Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);

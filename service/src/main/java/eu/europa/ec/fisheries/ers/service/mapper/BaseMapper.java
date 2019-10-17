@@ -29,6 +29,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -39,6 +40,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
@@ -46,6 +48,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
 
 @Slf4j
 @NoArgsConstructor
@@ -318,4 +323,59 @@ public class BaseMapper {
         return null;
     }
 
+    protected void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
+        Set<FishingGearRoleEntity> fishingGearRole = gearEntity.getFishingGearRole();
+        if (CollectionUtils.isNotEmpty(fishingGearRole)) {
+            FishingGearRoleEntity role = fishingGearRole.iterator().next();
+            gearDto.setRole(role.getRoleCode());
+        }
+        Set<GearCharacteristicEntity> gearCharacteristics = gearEntity.getGearCharacteristics();
+        for (GearCharacteristicEntity charac : Utils.safeIterable(gearCharacteristics)) {
+            fillCharacteristicField(charac, gearDto);
+        }
+    }
+
+    private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {
+        String quantityOnly = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
+        String quantityWithUnit = new StringBuilder(quantityOnly).append(charac.getValueMeasureUnitCode()).toString();
+        switch (charac.getTypeCode()) {
+            case GEAR_CHARAC_TYPE_CODE_ME:
+                gearDto.setMeshSize(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_GM:
+                gearDto.setLengthWidth(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_GN:
+                gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
+                break;
+            case GEAR_CHARAC_TYPE_CODE_HE:
+                gearDto.setHeight(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_NI:
+                gearDto.setNrOfLines(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_NN:
+                gearDto.setNrOfNets(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_NL:
+                gearDto.setNominalLengthOfNet(quantityWithUnit);
+                break;
+            case GEAR_CHARAC_TYPE_CODE_QG:
+                if (!Objects.equals(charac.getValueQuantityCode(), GEAR_CHARAC_Q_CODE_C62)) {
+                    gearDto.setQuantity(quantityWithUnit);
+                }
+                break;
+            case GEAR_CHARAC_TYPE_CODE_GD:
+                String description = charac.getDescription();
+                if (StringUtils.isNoneEmpty(description)){
+                    gearDto.setDescription(charac.getDescription());
+                }
+                else {
+                    gearDto.setDescription(charac.getValueText());
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }
