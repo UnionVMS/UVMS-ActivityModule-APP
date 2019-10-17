@@ -17,8 +17,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.*;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
@@ -45,7 +45,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
-import static com.google.common.collect.Sets.newHashSet;
 
 @Slf4j
 @NoArgsConstructor
@@ -53,30 +52,21 @@ public class BaseMapper {
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
-        if (locationDtos != null) {
-            return locationDtos;
-        }
-        return Sets.newHashSet();
+        return locationDtos != null ? locationDtos : Sets.newHashSet();
     }
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationCatchTypeEnum typeCode) {
-        Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
-            @Override
-            public boolean apply(FluxLocationEntity p) {
-                return typeCode.name().equals(p.getFluxLocationType());
-            }
-        });
-        return mapFromFluxLocation(newHashSet(filtered.iterator()));
+        Set<FluxLocationEntity> filtered = fLocEntities.stream()
+                .filter(p -> typeCode.name().equals(p.getFluxLocationType()))
+                .collect(Collectors.toSet());
+        return mapFromFluxLocation(filtered);
     }
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationEnum typeCode) {
-        Iterable<FluxLocationEntity> filtered = Iterables.filter(fLocEntities, new Predicate<FluxLocationEntity>() {
-            @Override
-            public boolean apply(FluxLocationEntity p) {
-                return typeCode.name().equals(p.getTypeCode());
-            }
-        });
-        return mapFromFluxLocation(newHashSet(filtered.iterator()));
+        Set<FluxLocationEntity> filtered = fLocEntities.stream()
+                .filter(p -> typeCode.name().equals(p.getTypeCode()))
+                .collect(Collectors.toSet());
+        return mapFromFluxLocation(filtered);
     }
 
     public static Set<FishingTripEntity> mapToFishingTripEntitySet(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
@@ -85,7 +75,7 @@ public class BaseMapper {
         }
         FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
         fishingTripEntity.setFishingActivity(fishingActivityEntity);
-        return new HashSet<>(Collections.singletonList(fishingTripEntity));
+        return Sets.newHashSet(fishingTripEntity);
     }
 
     public static Set<FishingTripEntity> mapToFishingTripEntitySet(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {

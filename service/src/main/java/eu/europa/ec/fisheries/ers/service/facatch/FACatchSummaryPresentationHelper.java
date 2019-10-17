@@ -128,25 +128,21 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
     }
 
     @NotNull
-    protected Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String,Double>> speciesMap, Map<String, Map<String,Double>> resultTotalPresentationMap) {
-        if (MapUtils.isEmpty(resultTotalPresentationMap)) {
-            resultTotalPresentationMap = new HashMap<>(); // do not introduce a new variable instead of reusing. Here reusing is required.
-        }
-
-        for (Map.Entry<String, Map<String,Double>> speciesEntry : speciesMap.entrySet()) {
+    private Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String, Double>> speciesMap, Map<String, Map<String, Double>> resultTotalPresentationMap) {
+        for (Map.Entry<String, Map<String, Double>> speciesEntry : speciesMap.entrySet()) {
             String speciesCode = speciesEntry.getKey();
-            Map<String,Double> valuePresentationCountMap = speciesEntry.getValue();
+            Map<String, Double> valuePresentationCountMap = speciesEntry.getValue();
 
             // check in the totals map if the species exist.If yes, add
             if (resultTotalPresentationMap.containsKey(speciesCode)) {
-                Map<String,Double> resultPresentationCount = resultTotalPresentationMap.get(speciesCode);
-                resultPresentationCount= extractSpeciesCountMap(valuePresentationCountMap,resultPresentationCount);
-                resultTotalPresentationMap.put(speciesCode,resultPresentationCount);
+                Map<String, Double> resultPresentationCount = resultTotalPresentationMap.get(speciesCode);
+                resultPresentationCount = extractSpeciesCountMap(valuePresentationCountMap, resultPresentationCount);
+                resultTotalPresentationMap.put(speciesCode, resultPresentationCount);
             } else {
-                 Map totalValueMap = new HashMap(valuePresentationCountMap);
-                resultTotalPresentationMap.put(speciesCode,totalValueMap );
+                resultTotalPresentationMap.put(speciesCode, valuePresentationCountMap);
             }
         }
+
         return resultTotalPresentationMap;
     }
 

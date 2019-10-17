@@ -48,8 +48,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 public abstract class FishingActivityMapper extends BaseMapper {
 
     public static final FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
-    public static final String LOCATION_AREA = FluxLocationEnum.AREA.toString();
-    public static final String LOCATION_PORT = FluxLocationEnum.LOCATION.toString();
 
     @Mappings({
             @Mapping(target = "typeCode", source = "fishingActivity.typeCode.value"),
@@ -328,8 +326,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected Map<String, String> getVesselIdType(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() == null
-                || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans()) || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers())) {
+        if (entity == null ||
+                entity.getFaReportDocument() == null ||
+                entity.getFaReportDocument().getVesselTransportMeans() == null ||
+                CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans()) ||
+                CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers())) {
             return Collections.emptyMap();
         }
         Map<String, String> vesselTransportIdList = new HashMap<>();
@@ -345,8 +346,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected List<VesselIdentifierType> getVesselIdentifierTypeList(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() == null
-                || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans()) || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers())) {
+        if (entity == null ||
+                entity.getFaReportDocument() == null ||
+                entity.getFaReportDocument().getVesselTransportMeans() == null ||
+                CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans()) ||
+                CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers())) {
             return Collections.emptyList();
         }
         List<VesselIdentifierType> identifiers = new ArrayList<>();
@@ -371,7 +375,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return new ArrayList<>(speciesCode);
     }
 
-    protected void getSpeciesCodeFromAapProduct(FaCatchEntity faCatch, HashSet<String> speciesCode) {
+    private void getSpeciesCodeFromAapProduct(FaCatchEntity faCatch, HashSet<String> speciesCode) {
         if (faCatch.getAapProcesses() == null)
             return;
         for (AapProcessEntity aapProcessEntity : faCatch.getAapProcesses()) {
@@ -391,10 +395,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
      */
     protected Double getQuantity(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {
-            return new Double(0);
+            return 0d;
         }
 
-        Double quantity = new Double(0);
+        Double quantity = 0d;
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
@@ -407,7 +411,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return quantity;
     }
 
-    protected void getQuantityFromAapProduct(FaCatchEntity faCatch, Double quantity) {
+    private void getQuantityFromAapProduct(FaCatchEntity faCatch, Double quantity) {
         if (faCatch.getAapProcesses() == null)
             return;
 
@@ -444,7 +448,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
 
         for (FluxLocationEntity location : fluxLocations) {
-            if (LOCATION_AREA.equalsIgnoreCase(location.getTypeCode())) {
+            if (FluxLocationEnum.AREA.toString().equalsIgnoreCase(location.getTypeCode())) {
                 areas.add(location.getFluxLocationIdentifier());
             }
         }
@@ -459,7 +463,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<String> ports = new HashSet<>();
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
         for (FluxLocationEntity location : fluxLocations) {
-            if (LOCATION_PORT.equalsIgnoreCase(location.getTypeCode())) {
+            if (FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(location.getTypeCode())) {
                 ports.add(location.getFluxLocationIdentifier());
             }
         }
