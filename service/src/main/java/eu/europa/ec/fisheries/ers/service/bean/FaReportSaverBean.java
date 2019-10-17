@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
@@ -68,10 +69,8 @@ public class FaReportSaverBean {
         GetNonUniqueIdsResponse matchingIdsResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest != null ? getNonUniqueIdsRequest.getActivityUniquinessLists() : null);
         List<ActivityUniquinessList> activityUniquinessLists = matchingIdsResponse.getActivityUniquinessLists();
         final List<FAReportDocument> faReportDocuments = repMsg.getFAReportDocuments();
-        if(CollectionUtils.isNotEmpty(activityUniquinessLists)){
-            for(ActivityUniquinessList unique : activityUniquinessLists){
-                deleteBranchesThatMatchWithTheIdsList(unique.getIds(), faReportDocuments);
-            }
+        for(ActivityUniquinessList unique : Utils.safeIterable(activityUniquinessLists)) {
+            deleteBranchesThatMatchWithTheIdsList(unique.getIds(), faReportDocuments);
         }
     }
 
@@ -82,15 +81,13 @@ public class FaReportSaverBean {
             return idsmap;
         }
         List<FAReportDocument> faReportDocuments = faRepMessage.getFAReportDocuments();
-        if (CollectionUtils.isNotEmpty(faReportDocuments)) {
-            for (FAReportDocument faRepDoc : faReportDocuments) {
-                FLUXReportDocument relatedFLUXReportDocument = faRepDoc.getRelatedFLUXReportDocument();
-                if (relatedFLUXReportDocument != null) {
-                    List<IDType> idTypes = new ArrayList<>(relatedFLUXReportDocument.getIDS());
-                    idTypes.add(relatedFLUXReportDocument.getReferencedID());
-                    idTypes.removeAll(Collections.singletonList(null));
-                    idsmap.get(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY).addAll(idTypes);
-                }
+        for (FAReportDocument faRepDoc : Utils.safeIterable(faReportDocuments)) {
+            FLUXReportDocument relatedFLUXReportDocument = faRepDoc.getRelatedFLUXReportDocument();
+            if (relatedFLUXReportDocument != null) {
+                List<IDType> idTypes = new ArrayList<>(relatedFLUXReportDocument.getIDS());
+                idTypes.add(relatedFLUXReportDocument.getReferencedID());
+                idTypes.removeAll(Collections.singletonList(null));
+                idsmap.get(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY).addAll(idTypes);
             }
         }
         return idsmap;

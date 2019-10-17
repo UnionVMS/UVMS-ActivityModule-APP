@@ -30,6 +30,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
 import eu.europa.ec.fisheries.ers.service.util.Postgres;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -173,12 +174,11 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument) throws ServiceException {
-        if (CollectionUtils.isNotEmpty(faReportDocument.getVesselTransportMeans())) {
-            for (VesselTransportMeansEntity vesselTransportMeansEntity : faReportDocument.getVesselTransportMeans()) {
-                enrichWithGuidFromAssets(vesselTransportMeansEntity);
-                vesselTransportMeansEntity.setFaReportDocument(faReportDocument);
-            }
+        for (VesselTransportMeansEntity vesselTransportMeansEntity : Utils.safeIterable(faReportDocument.getVesselTransportMeans())) {
+            enrichWithGuidFromAssets(vesselTransportMeansEntity);
+            vesselTransportMeansEntity.setFaReportDocument(faReportDocument);
         }
+
         Set<FishingActivityEntity> fishingActivities = faReportDocument.getFishingActivities();
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return;
@@ -318,32 +318,30 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private List<Geometry> populateGeometriesForFishingActivities
             (List<MicroMovement> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
         List<Geometry> multiPointForFaReport = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
-            for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
-                List<Geometry> multiPointForFa = new ArrayList<>();
-                Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
-                Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate.toInstant());
-                for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
-                    Geometry point = null;
-                    String fluxLocationStr = fluxLocation.getTypeCode();
-                    if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) {
-                        point = interpolatedPoint;
-                        fluxLocation.setGeom(point);
-                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) {
-                        point = getGeometryForLocation(fluxLocation);
-                        log.debug("[INFO] Geometry calculated for location is : " + point);
-                        fluxLocation.setGeom(point);
-                    } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) {
-                        point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
-                        fluxLocation.setGeom(point);
-                    }
-                    if (point != null) {
-                        multiPointForFa.add(point);
-                        multiPointForFaReport.add(point);
-                    }
+        for (FishingActivityEntity fishingActivity : Utils.safeIterable(fishingActivityEntities)) {
+            List<Geometry> multiPointForFa = new ArrayList<>();
+            Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+            Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate.toInstant());
+            for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
+                Geometry point = null;
+                String fluxLocationStr = fluxLocation.getTypeCode();
+                if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) {
+                    point = interpolatedPoint;
+                    fluxLocation.setGeom(point);
+                } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) {
+                    point = getGeometryForLocation(fluxLocation);
+                    log.debug("[INFO] Geometry calculated for location is : " + point);
+                    fluxLocation.setGeom(point);
+                } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) {
+                    point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                    fluxLocation.setGeom(point);
                 }
-                fishingActivity.setGeom(GeometryUtils.createMultipoint(multiPointForFa));
+                if (point != null) {
+                    multiPointForFa.add(point);
+                    multiPointForFaReport.add(point);
+                }
             }
+            fishingActivity.setGeom(GeometryUtils.createMultipoint(multiPointForFa));
         }
         return multiPointForFaReport;
     }

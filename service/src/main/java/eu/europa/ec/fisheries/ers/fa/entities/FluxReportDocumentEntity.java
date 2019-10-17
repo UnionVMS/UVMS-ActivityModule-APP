@@ -15,6 +15,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+
+import eu.europa.ec.fisheries.ers.service.util.Utils;
 import lombok.*;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -83,11 +85,9 @@ public class FluxReportDocumentEntity implements Serializable {
     private Set<FluxReportIdentifierEntity> fluxReportIdentifiers;
 
     public String getFluxPartyIdentifierBySchemeId(String schemeId) {
-        if (CollectionUtils.isNotEmpty(fluxReportIdentifiers)) {
-            for (FluxReportIdentifierEntity fluxReportIdentifierEntity : fluxReportIdentifiers) {
-                if (fluxReportIdentifierEntity.getFluxReportIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
-                    return fluxReportIdentifierEntity.getFluxReportIdentifierId();
-                }
+        for (FluxReportIdentifierEntity fluxReportIdentifierEntity : Utils.safeIterable(fluxReportIdentifiers)) {
+            if (fluxReportIdentifierEntity.getFluxReportIdentifierSchemeId().equalsIgnoreCase(schemeId)) {
+                return fluxReportIdentifierEntity.getFluxReportIdentifierId();
             }
         }
         return null;
@@ -96,11 +96,9 @@ public class FluxReportDocumentEntity implements Serializable {
     public String getReportOwner() {
         if (fluxParty != null){
             Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = fluxParty.getFluxPartyIdentifiers();
-            if (CollectionUtils.isNotEmpty(fluxPartyIdentifiers)) {
-                for (FluxPartyIdentifierEntity fluxReportIdentifierEntity : fluxPartyIdentifiers) {
-                    if (fluxReportIdentifierEntity.getFluxPartyIdentifierSchemeId().equalsIgnoreCase("FLUX_GP_PARTY")) {
-                        return fluxReportIdentifierEntity.getFluxPartyIdentifierId();
-                    }
+            for (FluxPartyIdentifierEntity fluxReportIdentifierEntity : Utils.safeIterable(fluxPartyIdentifiers)) {
+                if (fluxReportIdentifierEntity.getFluxPartyIdentifierSchemeId().equalsIgnoreCase("FLUX_GP_PARTY")) {
+                    return fluxReportIdentifierEntity.getFluxPartyIdentifierId();
                 }
             }
         }

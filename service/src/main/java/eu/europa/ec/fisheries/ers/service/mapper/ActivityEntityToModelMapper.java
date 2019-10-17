@@ -170,7 +170,7 @@ public class ActivityEntityToModelMapper {
                 List<FLUXLocation> specified = new ArrayList<>();
                 List<FLUXLocation> destination = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(fluxLocations)) {
-                    for (FluxLocationEntity fluxLocation : fluxLocations) {
+                    for (FluxLocationEntity fluxLocation : Utils.safeIterable(fluxLocations)) {
                         if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType().equals(fluxLocation.getFluxLocationType())) {
                             specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
                         }
