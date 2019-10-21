@@ -1,634 +1,619 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
+  <parent>
+    <groupId>eu.europa.ec.fisheries.uvms</groupId>
+    <artifactId>mare-pom</artifactId>
+    <version>1.6.0-MARE</version>
+    <relativePath />
+  </parent>
+
+  <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+  <artifactId>activity</artifactId>
+  <version>${uvms.activity.module.version}</version>
+  <packaging>pom</packaging>
+
+
+  <properties>
+
+    <!-- sonar -->
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <sonar.jacoco.reportPath>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPath>
+    <sonar.language>java</sonar.language>
+    <sonar.exclusions>**/FACatchSummaryHelper.java</sonar.exclusions>
+
+    <!-- The activity name is used as a common point to rename the application 
+      alias visible in USM -->
+    <activity.name>Activity</activity.name>
+    <activity.model>${uvms.activity.model.version}</activity.model>
+
+    <!-- Other modules dependencies -->
+    <reporting.model>${uvms.reporting.model.version}</reporting.model>
+    <spatial.model.version>${uvms.spatial.model.version}</spatial.model.version>
+    <exchange.model>${uvms.exchange.model.version}</exchange.model>
+    <!-- TODO: isn't this a circular dependency? get model out of module for subscription?  -->
+    <subscription.model>1.4.2-W14J8</subscription.model>
+    <!-- TODO: isn't this a circular dependency? get model out of module for rules?  -->
+    <rules.model>${uvms.rules.module.version}</rules.model>
+    <mdr.model.version>${uvms.mdr.model.version}</mdr.model.version>
+
+    <movement.model.version>${uvms.movement.module.version}</movement.model.version>
+    <asset.model.version>${uvms.asset.module.version}</asset.model.version>
+    <audit.model.version>${uvms.audit.module.version}</audit.model.version>
+    <!-- TODO: is this needed? -->
+    <uvms.test.version>0.0.4</uvms.test.version>
+
+    <uvms.commons.version>${uvms.commonsLibrary.version}</uvms.commons.version>
+    <uvms.config.version>${uvms.config.library.version}</uvms.config.version>
+    <usm4uvms.version>${uvms.uvms4usm.version}</usm4uvms.version>
+
+    <mockito.version>1.10.19</mockito.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <javaee.version>8.0</javaee.version>
+    <sl4j.version>1.7.25</sl4j.version>
+    <logback.version>1.2.3</logback.version>
+    <mapstruct.version>1.2.0.Final</mapstruct.version>
+    <jackson.version>2.7.3</jackson.version>
+    <logback.core.version>1.2.3</logback.core.version>
+
+    <application.name>${project.parent.artifactId}</application.name>
+    <application.version>${project.parent.version}</application.version>
+    <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
+    </application.logfile>
+    <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log
+    </application.error.logfile>
+    <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
+    </application.logfile.boot>
+    <hibernate.version>4.3.11.Final</hibernate.version>
+    <!--hibernate.version>5.1.9.Final</hibernate.version -->
+    <hibernate-spatial.version>4.3</hibernate-spatial.version>
+    <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
+    <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
+    <geotools.version>14.4</geotools.version>
+    <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
+    <release.branch.name>uvms-1.0.0</release.branch.name>
+    <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
+    <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
+    <database.dialect>oracle</database.dialect>
+    <geotools.version>14.4</geotools.version>
+    <mave.plugin.api.version>2.0</mave.plugin.api.version>
+    <dom4j.version>1.6.1</dom4j.version>
+
+    <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
+  </properties>
+
+  <dependencyManagement>
+
+    <dependencies>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+        <artifactId>mdr-model</artifactId>
+        <version>${mdr.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+        <artifactId>spatial-model</artifactId>
+        <version>${spatial.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+        <artifactId>subscription-model</artifactId>
+        <version>${subscription.model}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+        <artifactId>movement-model</artifactId>
+        <version>${movement.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+        <artifactId>activity-model</artifactId>
+        <version>${activity.model}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+        <artifactId>usm4uvms</artifactId>
+        <version>${usm4uvms.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.ehcache.internal</groupId>
+        <artifactId>ehcache-core</artifactId>
+        <version>2.10.4</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+        <artifactId>config-library</artifactId>
+        <version>${uvms.config.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>uvms-commons</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
+        <artifactId>exchange-model</artifactId>
+        <version>${exchange.model}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+        <artifactId>rules-model</artifactId>
+        <version>${rules.model}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+        <artifactId>asset-model</artifactId>
+        <version>${asset.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt</artifactId>
+        <version>0.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+        <artifactId>uvms-commons-message</artifactId>
+        <version>${uvms.commons.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+        <artifactId>uvms-test</artifactId>
+        <version>${uvms.test.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>service</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>message</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${hibernate.validator.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${mapstruct.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-processor</artifactId>
+        <version>${mapstruct.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.7</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.6</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax</groupId>
+        <artifactId>javaee-api</artifactId>
+        <version>${javaee.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-geojson</artifactId>
+        <version>${geotools.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-shapefile</artifactId>
+        <version>${geotools.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-epsg-hsql</artifactId>
+        <version>${geotools.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>2.1.0</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>xmlunit</groupId>
+        <artifactId>xmlunit</artifactId>
+        <version>1.6</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.16.18</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>20.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxb-provider</artifactId>
+        <version>3.0.11.Final</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-multipart-provider</artifactId>
+        <version>3.0.11.Final</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>jaxrs-api</artifactId>
+        <version>3.0.11.Final</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>ojdbc</groupId>
+        <artifactId>ojdbc</artifactId>
+        <version>14</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wololo</groupId>
+        <artifactId>jts2geojson</artifactId>
+        <version>0.7.0</version>
+      </dependency>
+      <dependency>
         <groupId>fish.focus.uvms.maven</groupId>
-        <artifactId>uvms-pom</artifactId>
-        <relativePath />
+        <artifactId>uvms-pom-gis-deps</artifactId>
         <version>1.21</version>
-    </parent>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>fish.focus.uvms.maven</groupId>
+        <artifactId>uvms-pom-logging-deps</artifactId>
+        <version>1.21</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>fish.focus.uvms.maven</groupId>
+        <artifactId>uvms-pom-monitoring-deps</artifactId>
+        <version>1.21</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>fish.focus.uvms.maven</groupId>
+        <artifactId>uvms-pom-arquillian-deps</artifactId>
+        <version>1.14</version>
+        <type>pom</type>
+      </dependency>
 
-    <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-    <artifactId>activity</artifactId>
-    <version>1.1.16-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <description>Maven project-archetype for UnionVms modules</description>
-    <url>http://www.your.site.com/</url>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mave.plugin.api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>1.2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.25</version>
+      </dependency>
 
-    <developers>
-        <developer>
-            <name>Gregory Rinaldi</name>
-            <email>rinaldi.gregory@gmail.com</email>
-        </developer>
-        <developer>
-            <name>Andi Kovi</name>
-            <email>andi.kovi@cegeka.com</email>
-        </developer>
-    </developers>
-
-    <properties>
-
-        <!-- sonar -->
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.jacoco.reportPath>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPath>
-        <sonar.language>java</sonar.language>
-		<sonar.exclusions>**/FACatchSummaryHelper.java</sonar.exclusions>
-
-        <!-- The activity name is used as a common point to rename the application alias visible in USM-->
-        <activity.name>Activity</activity.name>
-        <activity.model>1.0.10</activity.model>
-
-        <!-- Other modules dependencies -->
-        <reporting.model>1.0.2</reporting.model>
-        <spatial.model.version>1.0.9</spatial.model.version>
-        <exchange.model>4.0.23</exchange.model>
-        <subscription.model>1.4.2-W14J8</subscription.model>
-
-        <rules.model>3.0.43</rules.model>
-        <mdr.model.version>1.0.4</mdr.model.version>
-        <mockito.version>1.10.19</mockito.version>
-
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <javaee.version>8.0</javaee.version>
-        <sl4j.version>1.7.25</sl4j.version>
-        <logback.version>1.2.3</logback.version>
-        <mapstruct.version>1.2.0.Final</mapstruct.version>
-        <jackson.version>2.7.3</jackson.version>
-        <logback.core.version>1.2.3</logback.core.version>
-    <movement.model.version>5.1.8-SNAPSHOT</movement.model.version>
-    <asset.model.version>4.0.24-SNAPSHOT</asset.model.version>
-        <audit.model.version>4.0.10</audit.model.version>
-        <application.name>${project.parent.artifactId}</application.name>
-        <application.version>${project.parent.version}</application.version>
-        <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
-        </application.logfile>
-        <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log
-        </application.error.logfile>
-        <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
-        </application.logfile.boot>
-        <hibernate.version>4.3.11.Final</hibernate.version>
-        <!--hibernate.version>5.1.9.Final</hibernate.version-->
-        <hibernate-spatial.version>4.3</hibernate-spatial.version>
-        <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
-        <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
-        <geotools.version>14.4</geotools.version>
-        <uvms.test.version>0.0.4</uvms.test.version>
-        <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
-        <release.branch.name>uvms-1.0.0</release.branch.name>
-        <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
-        <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-        <database.dialect>oracle</database.dialect>
-        <geotools.version>14.4</geotools.version>
-        <mave.plugin.api.version>2.0</mave.plugin.api.version>
-        <dom4j.version>1.6.1</dom4j.version>
-
-
-    <uvms.commons.version>3.4-SNAPSHOT</uvms.commons.version>
-    <uvms.config.version>4.2-SNAPSHOT</uvms.config.version>
-    <usm4uvms.version>4.0.15.1-SNAPSHOT</usm4uvms.version>
-        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
-    </properties>
-
-    <dependencyManagement>
-
-        <dependencies>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
-                <artifactId>mdr-model</artifactId>
-                <version>${mdr.model.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
-                <artifactId>spatial-model</artifactId>
-                <version>${spatial.model.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
-                <artifactId>subscription-model</artifactId>
-                <version>${subscription.model}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-                <artifactId>movement-model</artifactId>
-                <version>${movement.model.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
-                <artifactId>activity-model</artifactId>
-                <version>${activity.model}</version>
-            </dependency>
-
-			<dependency>
-				<groupId>eu.europa.ec.fisheries.uvms</groupId>
-				<artifactId>usm4uvms</artifactId>
-				<version>${usm4uvms.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.jboss.resteasy</groupId>
-						<artifactId>resteasy-jaxrs</artifactId>
-					</exclusion>
-					<exclusion>
-					    <groupId>net.sf.ehcache</groupId>
-	  					<artifactId>ehcache</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-			    <groupId>net.sf.ehcache.internal</groupId>
-			    <artifactId>ehcache-core</artifactId>
-	            <version>2.10.4</version>
-	            <exclusions>
-	            	<exclusion>
-	            		 <groupId>org.slf4j</groupId>
-	    				 <artifactId>slf4j-api</artifactId>
-	            	</exclusion>
-	            </exclusions>
-	        </dependency>
-            
-	        <dependency>
-	            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-	            <artifactId>config-library</artifactId>
-	            <version>${uvms.config.version}</version>
-	            <exclusions>
-	            	<exclusion>
-	            		<groupId>eu.europa.ec.fisheries.uvms</groupId>
-            			<artifactId>uvms-commons</artifactId>
-	            	</exclusion>
-	            </exclusions>
-	        </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
-                <artifactId>exchange-model</artifactId>
-                <version>${exchange.model}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
-                <artifactId>rules-model</artifactId>
-                <version>${rules.model}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
-                <artifactId>asset-model</artifactId>
-                <version>${asset.model.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
-                <version>0.4</version>
-            </dependency>
-
-            <dependency>
-	            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-	            <artifactId>uvms-commons-message</artifactId>
-                <version>${uvms.commons.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-test</artifactId>
-                <version>${uvms.test.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                	<exclusion>
-                    	<groupId>commons-logging</groupId>
-                    	<artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>service</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>message</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.validator.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.7</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2.2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>${javaee.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.geotools</groupId>
-                <artifactId>gt-geojson</artifactId>
-                <version>${geotools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.geotools</groupId>
-                <artifactId>gt-shapefile</artifactId>
-                <version>${geotools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.geotools</groupId>
-                <artifactId>gt-epsg-hsql</artifactId>
-                <version>${geotools.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.xmlunit</groupId>
-                <artifactId>xmlunit-core</artifactId>
-                <version>2.1.0</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>xmlunit</groupId>
-                <artifactId>xmlunit</artifactId>
-                <version>1.6</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>1.16.18</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>20.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxb-provider</artifactId>
-                <version>3.0.11.Final</version>
-                <exclusions>
-                	<exclusion>
-                    	<groupId>commons-logging</groupId>
-                    	<artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>javax.xml.bind</groupId>
-    					<artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-multipart-provider</artifactId>
-                <version>3.0.11.Final</version>
-                <exclusions>
-                	<exclusion>
-                    	<groupId>commons-logging</groupId>
-                    	<artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>javax.xml.bind</groupId>
-    					<artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>com.sun.xml.bind</groupId>
-    					<artifactId>jaxb-impl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>jaxrs-api</artifactId>
-                <version>3.0.11.Final</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>ojdbc</groupId>
-                <artifactId>ojdbc</artifactId>
-                <version>14</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.wololo</groupId>
-                <artifactId>jts2geojson</artifactId>
-                <version>0.7.0</version>
-            </dependency>
-           	<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.21</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.21</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.21</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.14</version>
-				<type>pom</type>
-			</dependency>
-
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-plugin-api</artifactId>
-                <version>${mave.plugin.api.version}</version>
-            </dependency>
-            <dependency>
-    			<groupId>ch.qos.logback</groupId>
-    			<artifactId>logback-core</artifactId>
-    			<version>1.2.3</version>
-    		</dependency>
-    		<dependency>
-    			<groupId>ch.qos.logback</groupId>
-    			<artifactId>logback-classic</artifactId>
-    			<version>1.2.3</version>
-    		</dependency>
-    		<dependency>
-    		  <groupId>org.slf4j</groupId>
-  			  <artifactId>slf4j-api</artifactId>
-    		  <version>1.7.25</version>
-    		</dependency>
-
-        </dependencies>
-
-    </dependencyManagement>
-
-	<dependencies>
-        <dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-		</dependency>
-        
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
+  </dependencyManagement>
 
-    <distributionManagement>
+  <dependencies>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>${dom4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+
+  <distributionManagement>
+    <repository>
+      <id>focus-releases</id>
+      <name>UnionVms Repository</name>
+      <url>http://nexus.focus.fish/nexus/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>focus-snapshots</id>
+      <name>UnionVms Snapshot Repository</name>
+      <url>http://nexus.focus.fish/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <scm>
+    <connection>${scm.connection}</connection>
+    <tag>activity-1.1.3</tag>
+  </scm>
+
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-ejb-plugin</artifactId>
+          <configuration>
+            <ejbVersion>3.1</ejbVersion>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <executions>
+            <execution>
+              <!-- This id must match the -Prelease-profile id value or else 
+                sources will be "uploaded" twice, which causes Nexus to fail -->
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
+          <executions> <execution> <id>attach-javadocs</id> <goals> <goal>jar</goal> 
+          </goals> <configuration> <additionalparam>${javadoc.opts}</additionalparam> 
+          </configuration> </execution> </executions> </plugin> -->
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>3.4</version>
+        <configuration>
+          <goalPrefix>plugin</goalPrefix>
+          <outputDirectory>target/dir</outputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/*ITest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- add repositories for JTS and Hibernate Spatial and Hibernate (JBoss) -->
+  <repositories>
+    <repository>
+      <id>OSGEO GeoTools repo</id>
+      <url>http://download.osgeo.org/webdav/geotools</url>
+    </repository>
+    <repository>
+      <id>Hibernate Spatial Repo</id>
+      <url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>
+    </repository>
+    <repository>
+      <id>JBOSS</id>
+      <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+    </repository>
+  </repositories>
+
+  <profiles>
+    <profile>
+      <id>postgres</id>
+      <properties>
+        <database.dialect>postgres</database.dialect>
+        <!-- the record -->
+      </properties>
+    </profile>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
+    <profile>
+      <id>dg-mare</id>
+      <distributionManagement>
         <repository>
-            <id>focus-releases</id>
-            <name>UnionVms Repository</name>
-            <url>http://nexus.focus.fish/nexus/content/repositories/releases/</url>
+          <id>digit-releases</id>
+          <name>DG DIGIT Repository</name>
+          <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
         </repository>
         <snapshotRepository>
-            <id>focus-snapshots</id>
-            <name>UnionVms Snapshot Repository</name>
-            <url>http://nexus.focus.fish/nexus/content/repositories/snapshots/</url>
+          <id>digit-snapshots</id>
+          <name>DG DIGIT Snapshot Repository</name>
+          <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+      </distributionManagement>
 
-    <scm>
-        <connection>${scm.connection}</connection>
-        <tag>activity-1.1.3</tag>
-    </scm>
+      <properties>
+        <scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</scm.connection>
+      </properties>
+    </profile>
 
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-ejb-plugin</artifactId>
-                    <configuration>
-                        <ejbVersion>3.1</ejbVersion>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <!-- This id must match the -Prelease-profile id value or else sources will be "uploaded" twice, which causes Nexus to fail -->
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-<!--                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <configuration>
-                                <additionalparam>${javadoc.opts}</additionalparam>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>-->
-            </plugins>
-        </pluginManagement>
+    <!-- enforce-jdk-version -->
+    <profile>
+      <id>enforce-jdk-version</id>
+      <activation>
+        <!-- To disable profile, define property -Dfocus-pom.enforce.jdk.version.disabled=true -->
+        <property>
+          <name>!focus-pom.enforce.jdk.version.disabled</name>
+        </property>
+      </activation>
+      <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.4</version>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>enforce-jdk-version</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
                 <configuration>
-                    <goalPrefix>plugin</goalPrefix>
-                    <outputDirectory>target/dir</outputDirectory>
+                  <rules>
+                    <enforceBytecodeVersion>
+                      <maxJdkVersion>${focus-pom.java.version}</maxJdkVersion>
+                      <!-- NOTE: xstream do contain support for multiple 
+                        jdk:s -->
+                      <excludes>
+                        <exclude>com.thoughtworks.xstream:xstream</exclude>
+                      </excludes>
+                    </enforceBytecodeVersion>
+                  </rules>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*ITest.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
+      </build>
+    </profile>
+  </profiles>
 
-    <!-- add repositories for JTS and Hibernate Spatial and Hibernate (JBoss) -->
-    <repositories>
-        <repository>
-            <id>OSGEO GeoTools repo</id>
-            <url>http://download.osgeo.org/webdav/geotools</url>
-        </repository>
-        <repository>
-            <id>Hibernate Spatial Repo</id>
-            <url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>
-        </repository>
-        <repository>
-            <id>JBOSS</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-        </repository>
-    </repositories>
-
-    <profiles>
-        <profile>
-            <id>postgres</id>
-            <properties>
-                <database.dialect>postgres</database.dialect>
-                <!-- the record -->
-            </properties>
-        </profile>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
-            </properties>
-        </profile>
-		<profile>
-            <id>dg-mare</id>
-            <distributionManagement>
-                <repository>
-                    <id>digit-releases</id>
-                    <name>DG DIGIT Repository</name>
-                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>digit-snapshots</id>
-                    <name>DG DIGIT Snapshot Repository</name>
-                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-
-            <properties>
-                <scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/UVMS-Activity-APP.git</scm.connection>
-            </properties>
-        </profile>
-
-        <!-- enforce-jdk-version -->
-        <profile>
-            <id>enforce-jdk-version</id>
-            <activation>
-                <!-- To disable profile, define property -Dfocus-pom.enforce.jdk.version.disabled=true -->
-                <property>
-                    <name>!focus-pom.enforce.jdk.version.disabled</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-enforcer-plugin</artifactId>
-                        <inherited>false</inherited>
-                        <executions>
-                            <execution>
-                                <id>enforce-jdk-version</id>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <enforceBytecodeVersion>
-                                            <maxJdkVersion>${focus-pom.java.version}</maxJdkVersion>
-                                            <!-- NOTE: xstream do contain support for multiple jdk:s -->
-                                            <excludes>
-                                                <exclude>com.thoughtworks.xstream:xstream</exclude>
-                                            </excludes>
-                                        </enforceBytecodeVersion>
-                                    </rules>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <modules>
-        <module>LIQUIBASE</module>
-        <module>rest</module>
-        <module>service</module>
-        <module>message</module>
-        <module>module</module>
-    </modules>
+  <modules>
+    <module>LIQUIBASE</module>
+    <module>rest</module>
+    <module>service</module>
+    <module>message</module>
+    <module>module</module>
+  </modules>
 </project>

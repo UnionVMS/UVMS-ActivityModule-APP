@@ -113,6 +113,53 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertNotNull(finishingActivityList);
     }
 
+
+    @Test
+    @SneakyThrows
+    public void testGetFishingActivityListByQuerySpecies() throws Exception {
+
+        dbSetupTracker.skipNextLaunch();
+        FishingActivityQuery query = new FishingActivityQuery();
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues = new ArrayList<>();
+        activityTypeValues.add("ARRIVAL");
+        activityTypeValues.add("FISHING_OPERATION");
+        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        //searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
+        //searchCriteriaMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
+        //searchCriteriaMap.put(SearchFilter.PERIOD_END, "2015-05-27T07:47:31");
+        //searchCriteriaMap.put(SearchFilter.VESSEL_NAME, "vessel1");
+        //searchCriteriaMap.put(SearchFilter.VESSEL_IDENTIFIRE, "CFR123");
+        //searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        //searchCriteriaMap.put(SearchFilter.GEAR, "GEAR_TYPE");
+        //searchCriteriaMap.put(SearchFilter.SPECIES, "ANF");
+        //searchCriteriaMap.put(SearchFilter.MASTER, "MARK");
+        //searchCriteriaMap.put(SearchFilter.AREAS, "27.4.b");
+       // searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+        //searchCriteriaMap.put(SearchFilter.QUANTITY_MIN, "0");
+        //searchCriteriaMap.put(SearchFilter.QUANTITY_MAX, "25");
+
+        query.setSearchCriteriaMap(searchCriteriaMap);
+        PaginationDto pagination = new PaginationDto();
+        pagination.setPageSize(10);
+        pagination.setOffset(0);
+        query.setPagination(pagination);
+
+        SortKey sortingDto = new SortKey();
+        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
+        sortingDto.setReversed(false);
+        query.setSorting(sortingDto);
+
+        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListByQuery(query);
+        System.out.println("done:" + finishingActivityList.size());
+        assertTrue("No mathcing Activity found", finishingActivityList.size()>0);
+        //assertNotNull(finishingActivityList);
+    }
+    
     @Test
     @SneakyThrows
     public void testGetFishingActivityListByQuery_GetByFaReportID() throws Exception {

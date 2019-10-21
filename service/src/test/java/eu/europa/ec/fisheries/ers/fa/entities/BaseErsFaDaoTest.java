@@ -432,6 +432,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "vessel_transport_means_id", "contact_person_id")
                     .values(1, 1, 1)
                     .values(2, 2, 2)
+                    .values(3, 5, 1)
                     .build()
 
     );
@@ -440,6 +441,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "contact_party_id", "role_code", "role_code_list_id")
                     .values(1, 1, "MASTER", "FLUX_CONTACT_ROLE")
                     .values(2, 1, "AGENT", "FLUX_CONTACT_ROLE")
+                    .values(3, 3, "MASTER", "FLUX_CONTACT_ROLE")
                     .build()
     );
     protected static final Operation INSERT_DELIMITED_PERIOD = sequenceOf(
