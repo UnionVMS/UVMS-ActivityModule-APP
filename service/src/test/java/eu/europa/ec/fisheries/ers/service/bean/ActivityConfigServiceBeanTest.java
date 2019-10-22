@@ -13,11 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.io.IOException;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.ers.service.dto.config.ActivityConfigDTO;
@@ -26,6 +21,11 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ActivityConfigServiceBeanTest {
 
@@ -92,41 +92,59 @@ public class ActivityConfigServiceBeanTest {
             "                }";
 
     @Test
-    public void TestGetAdminConfig() throws Exception {
+    public void getAdminConfig() throws Exception {
+        // Given
         ActivityConfigDTO source = getConfiguration(adminConfig);
+
+        // When
         ActivityConfigDTO adminConfigDto = preferenceConfigService.getAdminConfig(adminConfig);
 
+        // THen
         assertEquals(source.getFishingActivityConfig().getSummaryReport().getValues(), adminConfigDto.getFishingActivityConfig().getSummaryReport().getValues());
         assertEquals(source.getFishingActivityConfig().getSummaryReport().getOrder(), adminConfigDto.getFishingActivityConfig().getSummaryReport().getOrder());
     }
 
     @Test
-    public void testGetUserConfig() throws Exception {
+    public void getUserConfig() throws Exception {
+        // Given
         ActivityConfigDTO userConfigDto = preferenceConfigService.getUserConfig(userConfig, adminConfig);
-        ActivityConfigDTO admin = getConfiguration(adminConfig);
+
+        // When
         ActivityConfigDTO user = getConfiguration(userConfig);
 
+        // Then
         assertEquals(user.getFishingActivityConfig().getSummaryReport().getValues(), userConfigDto.getFishingActivityConfig().getSummaryReport().getValues());
         assertEquals(user.getFishingActivityConfig().getSummaryReport().getOrder(), userConfigDto.getFishingActivityConfig().getSummaryReport().getOrder());
     }
 
     @Test
-    public void testSaveAdminConfig() throws Exception {
+    public void saveAdminConfig() throws Exception {
+        // Given
         ActivityConfigDTO adminConfigDto = getConfiguration(adminConfig);
+
+        // When
         String adminJson = preferenceConfigService.saveAdminConfig(adminConfigDto);
+
+        // Then
         assertEquals(getJson(adminConfigDto), adminJson);
     }
 
     @Test
-    public void testSaveUserConfig() throws Exception {
+    public void saveUserConfig() throws Exception {
+        // Given
         String updatedConfig = adminConfig;
         ActivityConfigDTO updatedConfigDto = getConfiguration(updatedConfig);
+
+        // When
         String userJson = preferenceConfigService.saveUserConfig(updatedConfigDto, userConfig);
+
+        // Then
         assertEquals(getJson(updatedConfigDto), userJson);
     }
 
     @Test
-    public void testResetUserConfig() throws Exception {
+    public void resetUserConfig() throws Exception {
+        // Given
         String resetConfig = "{\n" +
                 "                    \"fishingActivityConfig\": {\n" +
                 "                        \"summaryReport\": {\n" +
@@ -135,15 +153,16 @@ public class ActivityConfigServiceBeanTest {
                 "                    }\n" +
                 "                }";
         ActivityConfigDTO activityConfigDTO = getConfiguration(resetConfig);
+
+        // When
         String userJson = preferenceConfigService.resetUserConfig(activityConfigDTO, userConfig);
+
+        // Then
         ActivityConfigDTO updated = getConfiguration(userJson);
         assertNull(updated.getFishingActivityConfig().getSummaryReport());
     }
 
     private ActivityConfigDTO getConfiguration(String configString) throws IOException {
-        if (configString == null || configString.isEmpty()) {
-            return new ActivityConfigDTO();
-        }
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         return mapper.readValue(configString, ActivityConfigDTO.class);
