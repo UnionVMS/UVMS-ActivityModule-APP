@@ -1,13 +1,9 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -25,30 +21,17 @@ public class FishingActivityServiceBeanTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    FishingActivityDao fishingActivityDao;
-
-    @Mock
-    VesselIdentifierDao vesselIdentifiersDao;
-
-    @Mock
-    MdrModuleServiceBean mdrModuleServiceBean;
+    MdrModuleServiceBean mdrModuleServiceBeanMock;
 
     @Test
     @SneakyThrows
-    public void getFishingActivityReportAndRelatedDataForFishingTrip() {
-        when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
-        when(vesselIdentifiersDao.getLatestVesselIdByTrip(Mockito.anyString())).thenReturn(MapperUtil.getVesselIdentifiersList());
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetAcronymFromMdrCodeDescription() {
+    public void getAcronymFromMdrCodeDescription() {
         String portDescription = "PORT VICTORIA";
         Map<String, List<String>> returnMap = new HashMap<>();
         returnMap.put("description",Arrays.asList(portDescription));
-        when(mdrModuleServiceBean.getAcronymFromMdr("LOCATION", "SCPOV", Arrays.asList("code"), 1, "description")).thenReturn(returnMap);
+        when(mdrModuleServiceBeanMock.getAcronymFromMdr("LOCATION", "SCPOV", Arrays.asList("code"), 1, "description")).thenReturn(returnMap);
 
-        List<String> portDescriptionList = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", "SCPOV",
+        List<String> portDescriptionList = mdrModuleServiceBeanMock.getAcronymFromMdr("LOCATION", "SCPOV",
                 Arrays.asList("code"), 1, "description").get("description");
 
         assertEquals(1, portDescriptionList.size());
