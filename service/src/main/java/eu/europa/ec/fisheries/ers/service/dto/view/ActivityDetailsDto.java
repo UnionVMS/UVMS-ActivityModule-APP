@@ -18,21 +18,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Maps;
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.*;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Discard;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.ToString;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.*;
 
 @JsonInclude(Include.NON_NULL)
 @ToString
