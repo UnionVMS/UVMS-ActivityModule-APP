@@ -13,6 +13,10 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Geometry;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,10 +31,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
-
-import com.vividsolutions.jts.geom.Geometry;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "activity_vessel_position_event")
