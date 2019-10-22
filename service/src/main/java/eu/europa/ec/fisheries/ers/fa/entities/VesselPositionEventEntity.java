@@ -19,7 +19,9 @@ import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 @Entity
 @Table(name = "activity_vessel_position_event")
@@ -37,9 +39,8 @@ public class VesselPositionEventEntity implements Serializable {
     @JoinColumn(name = "vessel_transport_means_id")
     private VesselTransportMeansEntity vesselTransportMeans;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "obtained_occurrence_date_time", length = 29)
-    private Date obtainedOccurrenceDateTime;
+    private Instant obtainedOccurrenceDateTime;
 
     @Column(name = "type_code")
     private String typeCode;
@@ -62,4 +63,11 @@ public class VesselPositionEventEntity implements Serializable {
     @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;
 
+    public Optional<Date> getObtainedOccurrenceAsDate() {
+        if (obtainedOccurrenceDateTime == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(Date.from(obtainedOccurrenceDateTime));
+    }
 }
