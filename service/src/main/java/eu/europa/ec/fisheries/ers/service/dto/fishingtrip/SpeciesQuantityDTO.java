@@ -13,7 +13,6 @@
 package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.List;

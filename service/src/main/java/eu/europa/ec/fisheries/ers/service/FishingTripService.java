@@ -13,11 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
@@ -32,6 +28,10 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import org.locationtech.jts.geom.Geometry;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
