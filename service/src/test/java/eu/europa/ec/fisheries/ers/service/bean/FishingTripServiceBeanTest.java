@@ -13,31 +13,10 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.dao.ActivityConfigurationDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
@@ -53,11 +32,21 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
+import org.locationtech.jts.geom.Geometry;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import javax.persistence.EntityManager;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by padhyad on 9/29/2016.

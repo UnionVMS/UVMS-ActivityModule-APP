@@ -10,16 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 import com.google.common.base.Stopwatch;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
@@ -56,6 +47,16 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**

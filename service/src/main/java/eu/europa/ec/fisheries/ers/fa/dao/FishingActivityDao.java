@@ -11,14 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
@@ -30,8 +22,16 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {

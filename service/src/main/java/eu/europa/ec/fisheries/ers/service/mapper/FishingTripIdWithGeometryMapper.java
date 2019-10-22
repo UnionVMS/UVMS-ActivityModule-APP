@@ -11,14 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
@@ -33,6 +25,14 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.locationtech.jts.geom.Geometry;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
 @Slf4j
 public class FishingTripIdWithGeometryMapper extends BaseMapper {

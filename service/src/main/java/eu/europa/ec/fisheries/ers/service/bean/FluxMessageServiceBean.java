@@ -11,20 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.time.Instant;
-import java.util.*;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTWriter;
-import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
@@ -45,7 +32,21 @@ import eu.europa.ec.fisheries.uvms.movement.client.model.MovementPoint;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTWriter;
+import org.locationtech.jts.linearref.LengthIndexedLine;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.*;
 
 @Stateless
 @Transactional

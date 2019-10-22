@@ -11,22 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -36,9 +21,7 @@ import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
-import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
@@ -49,9 +32,9 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Named;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
@@ -61,8 +44,17 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
 
 @Slf4j
 @NoArgsConstructor

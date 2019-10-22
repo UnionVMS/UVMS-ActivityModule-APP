@@ -11,20 +11,21 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
+import lombok.*;
+import org.apache.commons.lang3.StringUtils;
+import org.geotools.geometry.jts.GeometryBuilder;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
-import lombok.*;
-import org.apache.commons.lang3.StringUtils;
-import org.geotools.geometry.jts.GeometryBuilder;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 @Entity
 @Table(name = "activity_flux_location")

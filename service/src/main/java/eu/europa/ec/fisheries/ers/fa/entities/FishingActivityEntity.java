@@ -11,6 +11,15 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
+import eu.europa.ec.fisheries.ers.service.util.Utils;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import lombok.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.locationtech.jts.geom.Geometry;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,14 +28,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import com.vividsolutions.jts.geom.Geometry;
-import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
-import eu.europa.ec.fisheries.ers.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import lombok.*;
-import org.apache.commons.collections.CollectionUtils;
+
 import static com.google.common.collect.Sets.newHashSet;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;

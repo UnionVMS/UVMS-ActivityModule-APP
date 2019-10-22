@@ -13,18 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.math.BigInteger;
-import java.time.Instant;
-import java.util.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
@@ -57,10 +47,19 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.math.BigInteger;
+import java.time.Instant;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.*;
 
 @Stateless
 @Local(FishingTripService.class)

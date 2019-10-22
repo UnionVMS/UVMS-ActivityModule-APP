@@ -11,22 +11,27 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.*;
-
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.locationtech.jts.geom.Geometry;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
 

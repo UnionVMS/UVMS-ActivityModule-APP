@@ -11,17 +11,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.locationtech.jts.geom.Geometry;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
-import com.vividsolutions.jts.geom.Geometry;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
