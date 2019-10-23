@@ -19,11 +19,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.AssetModuleService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.MdrModuleService;
-import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -39,11 +35,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFac
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityWithIdentifiers;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -63,14 +55,7 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -442,7 +427,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
                 }
 
             }
-            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDatetime(), purposeCode, acticityIds));
+            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDateTimeAsDate().orElse(null), purposeCode, acticityIds));
         }
         Collections.sort(dtoElements);
         return dtoElements;
@@ -451,15 +436,15 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public int getPreviousFishingActivity(int fishingActivityId) {
         log.info(" Retrieve fishing activity from db:" + fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime().toInstant()));
-        return fishingActivityDao.getPreviousFishingActivityId(activityEntity.getId(), activityEntity.getTypeCode(), activityEntity.getCalculatedStartTime());
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getPreviousFishingActivityId(activityEntity);
     }
 
 
     public int getNextFishingActivity(int fishingActivityId) {
         log.info(" Retrieve fishing activity from db:" + fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime().toInstant()));
-        return fishingActivityDao.getNextFishingActivityId(activityEntity.getId(), activityEntity.getTypeCode(), activityEntity.getCalculatedStartTime());
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getNextFishingActivityId(activityEntity);
     }
 }

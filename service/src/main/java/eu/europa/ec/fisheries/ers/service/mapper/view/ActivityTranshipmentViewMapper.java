@@ -101,7 +101,7 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             activityDetails.setTranshipmentTime(delimitedPeriodDTO);
 
             //Override occurrence date from delimited period
-            activityDetails.setOccurrence(delimitedPeriod.getStartDate());
+            activityDetails.setOccurrence(delimitedPeriod.getStartDateAsDate().orElse(null));
         }
 
         return activityDetails;

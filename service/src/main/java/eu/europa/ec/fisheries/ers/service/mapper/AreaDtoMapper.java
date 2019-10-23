@@ -60,7 +60,7 @@ public class AreaDtoMapper extends BaseMapper {
             positionDto.setOccurence(vesselPositionEventEntity.getObtainedOccurrenceDateTime());
             positionDto.setGeometry(extractGeometryWkt(vesselPositionEventEntity.getLongitude(), vesselPositionEventEntity.getLatitude()));
         } else {
-            positionDto.setOccurence(faReportDocument.getAcceptedDatetime());
+            positionDto.setOccurence(faEntity.getFaReportDocument().getAcceptedDateTimeAsDate().orElse(null));
         }
 
         return positionDto;

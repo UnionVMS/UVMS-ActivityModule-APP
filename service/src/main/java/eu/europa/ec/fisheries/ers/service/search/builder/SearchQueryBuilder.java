@@ -30,16 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
@@ -369,21 +365,19 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    private Date parseToUTCDate(String value) {
+    private Instant parseToInstant(String value) {
         LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT));
         ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
-        return Date.from(zonedDateTime.toInstant());
+        return zonedDateTime.toInstant();
     }
 
     private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
         switch (key) {
             case PERIOD_START:
             case PERIOD_END:
-                typedQuery.setParameter(queryParameterMappings.get(key), parseToUTCDate(value));
+                typedQuery.setParameter(queryParameterMappings.get(key), parseToInstant(value));
                 break;
             case QUANTITY_MIN:
-                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
-                break;
             case QUANTITY_MAX:
                 typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                 break;

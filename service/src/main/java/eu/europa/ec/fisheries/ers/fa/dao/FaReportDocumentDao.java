@@ -26,8 +26,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,8 +47,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     private static final String AREA = "area";
 
     private EntityManager em;
-
-    private DateTimeFormatter patternFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public FaReportDocumentDao(EntityManager em) {
         this.em = em;
@@ -129,7 +127,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         FaReportDocumentEntity singleResult;
         try {
             singleResult = (FaReportDocumentEntity) query.getSingleResult();
-        } catch (NoResultException ex){
+        } catch (NoResultException ex) {
             singleResult = null; // no need to log this exception!
         }
         return singleResult;
@@ -139,11 +137,11 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return loadReports(tripId, consolidated, null, null, null, null);
     }
 
-    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, String startDate, String endDate){
+    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, Instant startDate, Instant endDate) {
 
         Set<String> statuses = new HashSet<>();
         statuses.add(FaReportStatusType.NEW.name());
-        if ("N".equals(consolidated) || consolidated == null){
+        if ("N".equals(consolidated) || consolidated == null) {
             statuses.add(FaReportStatusType.UPDATED.name());
             statuses.add(FaReportStatusType.CANCELED.name());
             statuses.add(FaReportStatusType.DELETED.name());
@@ -154,15 +152,16 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(SCHEME_ID, schemeId);
 
-        query.setParameter(START_DATE, java.sql.Date.valueOf(LocalDateTime.MIN.toLocalDate()));
-        query.setParameter(END_DATE, java.sql.Date.valueOf(LocalDateTime.MAX.toLocalDate()));
-        if (startDate != null){
-            query.setParameter(START_DATE, patternFormat.parse(startDate));
-        }
-        if (endDate != null){
-            query.setParameter(END_DATE,  patternFormat.parse(endDate));
+        query.setParameter(START_DATE, Timestamp.from(Instant.ofEpochSecond(-253_370_764_800L))); // The year 8029 B.C.
+        query.setParameter(END_DATE, Timestamp.from(Instant.ofEpochSecond(253_370_764_800L))); // The year 9999
 
+        if (startDate != null) {
+            query.setParameter(START_DATE, Timestamp.from(startDate));
         }
+        if (endDate != null) {
+            query.setParameter(END_DATE, Timestamp.from(endDate));
+        }
+
         return query.getResultList();
     }
 
@@ -184,7 +183,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         for (FaReportDocumentEntity report : reports) {
             populateDeletingAndCancellationIds(report.getFishingActivities(), idsOfCancelledDeletedReports);
         }
-        if(CollectionUtils.isNotEmpty(idsOfCancelledDeletedReports)){
+        if (CollectionUtils.isNotEmpty(idsOfCancelledDeletedReports)) {
             return findReportsByIdsList(idsOfCancelledDeletedReports);
         }
         return null;

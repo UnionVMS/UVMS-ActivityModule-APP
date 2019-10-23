@@ -24,9 +24,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 
 @Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface DelimitedPeriodMapper {
+public abstract class DelimitedPeriodMapper extends BaseMapper {
 
-    DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
+    public static DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
 
     @Mappings({
             @Mapping(target = "startDate", source = "startDateTime.dateTime"),
@@ -37,17 +37,17 @@ public interface DelimitedPeriodMapper {
             @Mapping(target = "fishingTrip", ignore = true),
             @Mapping(target = "calculatedDuration", ignore = true)
     })
-    DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
+    public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
 
     @InheritInverseConfiguration
-    DelimitedPeriod mapToDelimitedPeriod(DelimitedPeriodEntity delimitedPeriod);
+    public abstract DelimitedPeriod mapToDelimitedPeriod(DelimitedPeriodEntity delimitedPeriod);
 
-    List<DelimitedPeriod> mapToDelimitedPeriodList(Set<DelimitedPeriodEntity> delimitedPeriod);
+    public abstract List<DelimitedPeriod> mapToDelimitedPeriodList(Set<DelimitedPeriodEntity> delimitedPeriod);
 
     @Mappings({
             @Mapping(target = "duration", ignore = true),
             @Mapping(target = "unitCode", ignore = true)
     })
-    DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
+    public abstract DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
 
 }

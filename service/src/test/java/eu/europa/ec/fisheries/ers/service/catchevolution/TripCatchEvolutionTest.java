@@ -44,11 +44,11 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
     @Test
     public void testFishingActivityCalculatedDateComparator() {
         FishingActivityEntity fishingActivityEntity1 = new FishingActivityEntity();
-        fishingActivityEntity1.setCalculatedStartTime(new Date(1000002));
+        fishingActivityEntity1.setCalculatedStartTime(Instant.ofEpochMilli(1000002));
         FishingActivityEntity fishingActivityEntity2 = new FishingActivityEntity();
-        fishingActivityEntity2.setCalculatedStartTime(new Date(1000000));
+        fishingActivityEntity2.setCalculatedStartTime(Instant.ofEpochMilli(1000000));
         FishingActivityEntity fishingActivityEntity3 = new FishingActivityEntity();
-        fishingActivityEntity3.setCalculatedStartTime(new Date(1000001));
+        fishingActivityEntity3.setCalculatedStartTime(Instant.ofEpochMilli(1000001));
         FishingActivityEntity fishingActivityEntity4 = new FishingActivityEntity();
         fishingActivityEntity4.setCalculatedStartTime(null);
 
@@ -56,8 +56,8 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
 
         Collections.sort(fishingActivities, new FishingActivityCalculatedDateComparator());
 
-        Assert.assertEquals(fishingActivities.get(0).getCalculatedStartTime().getTime(), fishingActivityEntity2.getCalculatedStartTime().getTime());
-        Assert.assertEquals(fishingActivities.get(2).getCalculatedStartTime().getTime(), fishingActivityEntity1.getCalculatedStartTime().getTime());
+        Assert.assertEquals(fishingActivities.get(0).getCalculatedStartTime(), fishingActivityEntity2.getCalculatedStartTime());
+        Assert.assertEquals(fishingActivities.get(2).getCalculatedStartTime(), fishingActivityEntity1.getCalculatedStartTime());
         Assert.assertEquals(fishingActivities.get(3).getCalculatedStartTime(), null);
     }
 

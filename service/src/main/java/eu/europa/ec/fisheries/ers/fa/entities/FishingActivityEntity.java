@@ -16,41 +16,17 @@ import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Geometry;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -126,9 +102,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "type_code_listid", nullable = false)
 	private String typeCodeListid;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "occurence", length = 29)
-	private Date occurence;
+	private Instant occurence;
 
 	@Column(name = "reason_code")
 	private String reasonCode;
@@ -192,9 +167,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name="deleted_by")
 	private Integer deletedBy;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_start_time", length = 29)
-	private Date calculatedStartTime;
+	private Instant calculatedStartTime;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
@@ -326,4 +300,20 @@ public class FishingActivityEntity implements Serializable {
         }
         return locationDtos;
     }
+
+    public Optional<Date> getOccurrenceAsDate() {
+    	if (occurence == null) {
+    		return Optional.empty();
+		}
+
+    	return Optional.of(Date.from(occurence));
+	}
+
+	public Optional<Date> getCalculatedStartTimeAsDate() {
+    	if (calculatedStartTime == null) {
+    		return Optional.empty();
+		}
+
+		return Optional.of(Date.from(calculatedStartTime));
+	}
 }

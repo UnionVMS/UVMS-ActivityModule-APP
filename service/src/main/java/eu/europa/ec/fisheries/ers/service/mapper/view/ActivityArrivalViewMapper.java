@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 
@@ -57,7 +58,7 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
 
     @Override
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails){
-        activityDetails.setArrivalTime(faEntity.getOccurence());
+        activityDetails.setArrivalTime(faEntity.getOccurrenceAsDate().orElse(null));
         activityDetails.setIntendedLandingTime(extractLandingTime(faEntity.getFluxCharacteristics()));
         activityDetails.setReason(faEntity.getReasonCode());
         return activityDetails;
@@ -67,7 +68,10 @@ public abstract class ActivityArrivalViewMapper extends BaseActivityViewMapper {
         for(FluxCharacteristicEntity charact : Utils.safeIterable(fluxCharacteristics)) {
             if(StringUtils.equals("FA_CHARACTERISTIC", charact.getTypeCodeListId())
                     && StringUtils.equals("START_DATETIME_LANDING", charact.getTypeCode())){
-                return charact.getValueDateTime();
+                Instant valueDateTime = charact.getValueDateTime();
+                if (valueDateTime != null) {
+                    return Date.from(valueDateTime);
+                }
             }
         }
 

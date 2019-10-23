@@ -16,7 +16,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.movement.client.MovementRestClient;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovementExtended;
@@ -27,7 +26,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.transaction.Transactional;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +34,9 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class MovementModuleServiceBean extends ModuleService implements MovementModuleService {
+
+    private static final long ONE_DAY_IN_MILLIS = 24L * 60L * 60L * 1000L;
+    private static final String RANGE_CRITERIA_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss Z";
 
     @EJB
     private MovementRestClient movementClient;
@@ -44,8 +46,8 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List<MicroMovement> getMovement(List<String> vesselIds, Date startDate, Date endDate) {
-        List<MicroMovementExtended> positionsForVessels = movementClient.getMicroMovementsForConnectIdsBetweenDates(vesselIds, startDate.toInstant(), endDate.toInstant());
+    public List<MicroMovement> getMovement(List<String> vesselIds, Instant startDate, Instant endDate) {
+        List<MicroMovementExtended> positionsForVessels = movementClient.getMicroMovementsForConnectIdsBetweenDates(vesselIds, startDate, endDate);
         log.debug("Vessel positions: " + positionsForVessels.toString());
         return positionsForVessels
                 .stream()

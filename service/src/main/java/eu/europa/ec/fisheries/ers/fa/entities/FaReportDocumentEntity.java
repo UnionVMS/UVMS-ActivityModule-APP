@@ -17,25 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 @NamedQueries({
@@ -62,7 +48,13 @@ import java.util.Set;
                         "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
                         "WHERE rpt.status IN (:statuses) " +
                         "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
-                        "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate)))"
+                        "AND (" +
+                                "(:vesselId IS NULL OR :schemeId IS NULL) " +
+                            "OR (" +
+                                    "vtmids.vesselIdentifierId = :vesselId " +
+                                "AND vtmids.vesselIdentifierSchemeId = :schemeId " +
+                                "AND :startDate <= flxrep.creationDatetime " +
+                                "AND flxrep.creationDatetime <= :endDate))"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
@@ -112,9 +104,8 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "type_code_list_id")
     private String typeCodeListId;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "accepted_datetime", length = 29)
-    private Date acceptedDatetime;
+    private Instant acceptedDatetime;
 
     @Column(name = "fmc_marker")
     private String fmcMarker;
@@ -144,4 +135,11 @@ public class FaReportDocumentEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
+    public Optional<Date> getAcceptedDateTimeAsDate() {
+        if (acceptedDatetime == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(Date.from(acceptedDatetime));
+    }
 }

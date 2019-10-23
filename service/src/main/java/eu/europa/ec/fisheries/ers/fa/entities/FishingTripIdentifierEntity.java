@@ -23,10 +23,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -106,13 +104,11 @@ public class FishingTripIdentifierEntity implements Serializable {
 	@Column(name = "trip_scheme_id", nullable = false)
 	private String tripSchemeId;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_trip_start_date", length = 29)
-	private Date calculatedTripStartDate;
+	private Instant calculatedTripStartDate;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_trip_end_date", length = 29)
-	private Date calculatedTripEndDate;
+	private Instant calculatedTripEndDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fishing_trip_id")

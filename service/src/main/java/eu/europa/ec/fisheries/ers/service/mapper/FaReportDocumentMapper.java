@@ -57,7 +57,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "typeCode", source = "faReportDocument.typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "faReportDocument.typeCode.listID"),
-            @Mapping(target = "acceptedDatetime", source = "faReportDocument.acceptanceDateTime.dateTime"),
+            @Mapping(target = "acceptedDatetime", source = "faReportDocument.acceptanceDateTime", qualifiedByName = "dateTimeTypeToInstant"),
             @Mapping(target = "fmcMarker", source = "faReportDocument.FMCMarkerCode.value"),
             @Mapping(target = "fmcMarkerListId", source = "faReportDocument.FMCMarkerCode.listID"),
             @Mapping(target = "status", constant = "NEW"),
@@ -86,7 +86,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "type" , source = "typeCode"),
-            @Mapping(target = "acceptedDate" , source = "acceptedDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "acceptedDate" , expression = "java(instantToDateUtilsStringFormat(faReportDocument.getAcceptedDatetime()))"),
             @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
             @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getReportOwner())"),
             @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
