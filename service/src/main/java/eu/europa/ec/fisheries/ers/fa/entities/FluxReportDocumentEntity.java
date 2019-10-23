@@ -56,7 +56,7 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(name = "reference_scheme_id")
     private String referenceSchemeId;
 
-    @Column(name = "creation_datetime", nullable = false, length = 29)
+    @Column(name = "creation_datetime", nullable = false)
     private Instant creationDatetime;
 
     @Column(name = "purpose_code", nullable = false)

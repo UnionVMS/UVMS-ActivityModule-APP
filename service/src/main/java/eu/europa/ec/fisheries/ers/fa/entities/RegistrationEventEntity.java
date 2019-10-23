@@ -40,7 +40,7 @@ public class RegistrationEventEntity implements Serializable {
 	@Column(name = "desc_language_id")
 	private String descLanguageId;
 
-	@Column(name = "occurrence_datetime", length = 29)
+	@Column(name = "occurrence_datetime")
 	private Instant occurrenceDatetime;
 
 	@OneToOne(mappedBy = "registrationEvent")

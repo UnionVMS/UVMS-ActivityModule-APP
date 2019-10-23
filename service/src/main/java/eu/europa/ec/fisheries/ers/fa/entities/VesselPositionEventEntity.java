@@ -39,7 +39,7 @@ public class VesselPositionEventEntity implements Serializable {
     @JoinColumn(name = "vessel_transport_means_id")
     private VesselTransportMeansEntity vesselTransportMeans;
 
-    @Column(name = "obtained_occurrence_date_time", length = 29)
+    @Column(name = "obtained_occurrence_date_time")
     private Instant obtainedOccurrenceDateTime;
 
     @Column(name = "type_code")

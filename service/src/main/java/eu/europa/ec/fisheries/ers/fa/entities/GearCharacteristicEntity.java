@@ -71,7 +71,7 @@ public class GearCharacteristicEntity implements Serializable {
 	@Column(name = "calculated_value_measure")
 	private Double calculatedValueMeasure;
 
-	@Column(name = "value_date_time", length = 29)
+	@Column(name = "value_date_time")
 	private Instant valueDateTime;
 
 	@Column(name = "value_indicator")
