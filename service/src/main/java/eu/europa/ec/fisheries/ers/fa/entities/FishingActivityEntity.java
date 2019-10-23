@@ -11,13 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
@@ -25,6 +18,17 @@ import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.locationtech.jts.geom.Geometry;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import static com.google.common.collect.Sets.newHashSet;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
@@ -98,9 +102,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "type_code_listid", nullable = false)
 	private String typeCodeListid;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "occurence", length = 29)
-	private Date occurence;
+	private Instant occurence;
 
 	@Column(name = "reason_code")
 	private String reasonCode;
@@ -164,9 +167,8 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name="deleted_by")
 	private Integer deletedBy;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_start_time", length = 29)
-	private Date calculatedStartTime;
+	private Instant calculatedStartTime;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
@@ -298,4 +300,20 @@ public class FishingActivityEntity implements Serializable {
         }
         return locationDtos;
     }
+
+    public Optional<Date> getOccurrenceAsDate() {
+    	if (occurence == null) {
+    		return Optional.empty();
+		}
+
+    	return Optional.of(Date.from(occurence));
+	}
+
+	public Optional<Date> getCalculatedStartTimeAsDate() {
+    	if (calculatedStartTime == null) {
+    		return Optional.empty();
+		}
+
+		return Optional.of(Date.from(calculatedStartTime));
+	}
 }

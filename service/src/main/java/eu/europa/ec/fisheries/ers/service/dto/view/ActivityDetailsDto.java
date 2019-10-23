@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Maps;
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
@@ -26,13 +25,12 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.*;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.ToString;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.*;
 
 @JsonInclude(Include.NON_NULL)
 @ToString

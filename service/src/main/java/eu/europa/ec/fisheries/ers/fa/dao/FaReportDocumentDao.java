@@ -11,26 +11,27 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import javax.ejb.Local;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.locationtech.jts.geom.Geometry;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
 
@@ -46,8 +47,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     private static final String AREA = "area";
 
     private EntityManager em;
-
-    private DateTimeFormatter patternFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public FaReportDocumentDao(EntityManager em) {
         this.em = em;
@@ -128,7 +127,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         FaReportDocumentEntity singleResult;
         try {
             singleResult = (FaReportDocumentEntity) query.getSingleResult();
-        } catch (NoResultException ex){
+        } catch (NoResultException ex) {
             singleResult = null; // no need to log this exception!
         }
         return singleResult;
@@ -138,11 +137,11 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return loadReports(tripId, consolidated, null, null, null, null);
     }
 
-    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, String startDate, String endDate){
+    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, Instant startDate, Instant endDate) {
 
         Set<String> statuses = new HashSet<>();
         statuses.add(FaReportStatusType.NEW.name());
-        if ("N".equals(consolidated) || consolidated == null){
+        if ("N".equals(consolidated) || consolidated == null) {
             statuses.add(FaReportStatusType.UPDATED.name());
             statuses.add(FaReportStatusType.CANCELED.name());
             statuses.add(FaReportStatusType.DELETED.name());
@@ -153,15 +152,16 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(SCHEME_ID, schemeId);
 
-        query.setParameter(START_DATE, java.sql.Date.valueOf(LocalDateTime.MIN.toLocalDate()));
-        query.setParameter(END_DATE, java.sql.Date.valueOf(LocalDateTime.MAX.toLocalDate()));
-        if (startDate != null){
-            query.setParameter(START_DATE, patternFormat.parse(startDate));
-        }
-        if (endDate != null){
-            query.setParameter(END_DATE,  patternFormat.parse(endDate));
+        query.setParameter(START_DATE, Timestamp.from(Instant.ofEpochSecond(-30_610_224_000L))); // The year 1000
+        query.setParameter(END_DATE, Timestamp.from(Instant.ofEpochSecond(32_503_680_000L))); // The year 3000
 
+        if (startDate != null) {
+            query.setParameter(START_DATE, Timestamp.from(startDate));
         }
+        if (endDate != null) {
+            query.setParameter(END_DATE, Timestamp.from(endDate));
+        }
+
         return query.getResultList();
     }
 
@@ -183,7 +183,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         for (FaReportDocumentEntity report : reports) {
             populateDeletingAndCancellationIds(report.getFishingActivities(), idsOfCancelledDeletedReports);
         }
-        if(CollectionUtils.isNotEmpty(idsOfCancelledDeletedReports)){
+        if (CollectionUtils.isNotEmpty(idsOfCancelledDeletedReports)) {
             return findReportsByIdsList(idsOfCancelledDeletedReports);
         }
         return null;

@@ -13,17 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.math.BigInteger;
-import java.util.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
@@ -56,10 +47,19 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.math.BigInteger;
+import java.time.Instant;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.*;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -440,21 +440,21 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
 
-    public void populateFishingTripSummary(FishingActivityEntity activityEntity, Map<String, FishingActivityTypeDTO> summary) {
+    private void populateFishingTripSummary(FishingActivityEntity activityEntity, Map<String, FishingActivityTypeDTO> summary) {
         String activityTypeCode = activityEntity.getTypeCode();
         if (DEPARTURE.toString().equalsIgnoreCase(activityTypeCode)
                 || ARRIVAL.toString().equalsIgnoreCase(activityTypeCode)
                 || LANDING.toString().equalsIgnoreCase(activityTypeCode)) {
-            Date occurrence = activityEntity.getOccurence();
+            Instant occurrence = activityEntity.getOccurence();
             Boolean isCorrection = BaseMapper.getCorrection(activityEntity);
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
             if (fishingActivityTypeDTO == null
                     || (isCorrection
                     && fishingActivityTypeDTO.getDate() != null
                     && occurrence != null
-                    && occurrence.compareTo(fishingActivityTypeDTO.getDate()) > 0)) {
+                    && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0)) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
-                fishingActivityTypeDTO.setDate(occurrence);
+                fishingActivityTypeDTO.setDate(Date.from(occurrence));
                 summary.put(activityTypeCode, fishingActivityTypeDTO);
             }
         }
@@ -632,11 +632,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             query.setSorting(sortKey);
             List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
             if (collectFishingActivities) {
-                List<FishingActivityEntity> cleanedList = cleanFromDeletionsAndCancelations(fishingActivityEntityList);
+                List<FishingActivityEntity> cleanedList = cleanFromDeletionsAndCancellations(fishingActivityEntityList);
                 fishingActivitySummaries.addAll(getFishingActivitySummaryList(cleanedList, uniqueActivityIdList));
             }
 
-            FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometryMapper().mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
+            FishingTripIdWithGeometry fishingTripIdWithGeometry = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
             fishingTripIdLists.add(fishingTripIdWithGeometry);
         }
 
@@ -647,19 +647,17 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return response;
     }
 
-    private List<FishingActivityEntity> cleanFromDeletionsAndCancelations(List<FishingActivityEntity> fishingActivityEntityList) {
+    private List<FishingActivityEntity> cleanFromDeletionsAndCancellations(List<FishingActivityEntity> fishingActivityEntityList) {
         List<FishingActivityEntity> cleanList = new ArrayList<>();
-        if(CollectionUtils.isEmpty(fishingActivityEntityList)){
-            return cleanList;
-        }
         String DELETED_STR = FaReportStatusType.DELETED.name();
         String CANCELLED_STR = FaReportStatusType.CANCELED.name();
         for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
             String status = fishingActivityEntity.getFaReportDocument().getStatus();
-            if(!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && fishingActivityEntity.getLatest()){
+            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && fishingActivityEntity.getLatest()) {
                 cleanList.add(fishingActivityEntity);
             }
         }
+
         return cleanList;
     }
 

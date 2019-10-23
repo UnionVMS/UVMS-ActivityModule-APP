@@ -13,13 +13,6 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
-import javax.persistence.Query;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.service.search.FilterDetails;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
@@ -31,8 +24,18 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public abstract class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
@@ -362,21 +365,19 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    private Date parseToUTCDate(String value) {
+    private Instant parseToInstant(String value) {
         LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT));
         ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
-        return Date.from(zonedDateTime.toInstant());
+        return zonedDateTime.toInstant();
     }
 
     private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
         switch (key) {
             case PERIOD_START:
             case PERIOD_END:
-                typedQuery.setParameter(queryParameterMappings.get(key), parseToUTCDate(value));
+                typedQuery.setParameter(queryParameterMappings.get(key), parseToInstant(value));
                 break;
             case QUANTITY_MIN:
-                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
-                break;
             case QUANTITY_MAX:
                 typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                 break;

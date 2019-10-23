@@ -69,8 +69,8 @@ public abstract class ActivityLandingViewMapper extends BaseActivityViewMapper {
         String unitCode = null;
         if (CollectionUtils.isNotEmpty(delimitedPeriods)) {
             DelimitedPeriodEntity delimPeriod = delimitedPeriods.iterator().next();
-            startDate = delimPeriod.getStartDate();
-            endDate = delimPeriod.getEndDate();
+            startDate = delimPeriod.getStartDateAsDate().orElse(null);
+            endDate = delimPeriod.getEndDateAsDate().orElse(null);
             MeasureType durationMeasure = delimPeriod.getDurationMeasure();
             if (durationMeasure != null){
                 duration = delimPeriod.getDurationMeasure().getValue();

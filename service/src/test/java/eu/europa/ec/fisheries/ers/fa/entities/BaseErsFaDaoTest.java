@@ -20,6 +20,7 @@ import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.BaseDAOTest;
 
+import java.sql.Timestamp;
 
 public abstract class BaseErsFaDaoTest extends BaseDAOTest {
 
@@ -337,13 +338,13 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     protected static final Operation INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA = sequenceOf(
             insertInto("activity.activity_flux_report_document")
                     .columns("id", "reference_id", "creation_datetime", "purpose_code", "purpose_code_list_id", "purpose", "flux_party_id", "flux_fa_report_message_id")
-                    .values(1, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 1, 1)
-                    .values(2, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 2, 2)
-                    .values(3, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 3, 3)
-                    .values(4, null, "2016-06-27 07:47:31.711", "5", "PURPOSE_CODE_LIST", null, 4, 4)
-                    .values(5, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 5, 5)
-                    .values(6, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 6, 6)
-                    .values(7, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 7, 7)
+                    .values(1, null, Timestamp.valueOf("2016-06-27 07:47:31.711"), "9", "PURPOSE_CODE_LIST", null, 1, 1)
+                    .values(2, null, Timestamp.valueOf("2016-06-27 08:00:00.000"), "5", "PURPOSE_CODE_LIST", null, 2, 2)
+                    .values(3, null, Timestamp.valueOf("2016-06-27 09:00:00.000"), "9", "PURPOSE_CODE_LIST", null, 3, 3)
+                    .values(4, null, Timestamp.valueOf("2016-06-27 10:00:00.000"), "5", "PURPOSE_CODE_LIST", null, 4, 4)
+                    .values(5, null, Timestamp.valueOf("2016-07-01 07:00:00.000"), "9", "PURPOSE_CODE_LIST", null, 5, 5)
+                    .values(6, null, Timestamp.valueOf("2016-07-01 08:00:00.000"), "9", "PURPOSE_CODE_LIST", null, 6, 6)
+                    .values(7, null, Timestamp.valueOf("2016-07-02 09:00:00.000"), "9", "PURPOSE_CODE_LIST", null, 7, 7)
                     .build()
     );
     protected static final Operation INSERT_ERS_FLUX_REPORT_IDENTIFIER_DATA = sequenceOf(

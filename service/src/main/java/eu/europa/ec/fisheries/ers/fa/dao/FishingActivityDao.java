@@ -11,15 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
@@ -31,8 +22,16 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
@@ -55,9 +54,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * Use referenceId to find our previous FishingActivityReportDocument.
      * Then choose all the fishingActivities from that document with same FishingActivity Type and having date less than or equal to current fishingActivity
      */
-    public int getPreviousFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
+    public int getPreviousFishingActivityId(FishingActivityEntity fishingActivityEntity) {
         int previousActivityId = 0;
-        if (activityTypeCode == null || activityCalculatedStartTime == null) {
+        if (fishingActivityEntity.getTypeCode() == null || fishingActivityEntity.getCalculatedStartTime() == null) {
             LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
             return previousActivityId;
         }
@@ -78,9 +77,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 "ORDER BY a.calculatedStartTime desc";
 
         Query typedQuery = getEntityManager().createQuery(query);
-        typedQuery.setParameter("fishingActivityId", fishingActivityId);
-        typedQuery.setParameter("activityTypeCode", activityTypeCode);
-        typedQuery.setParameter("activityStartTime", activityCalculatedStartTime);
+        typedQuery.setParameter("fishingActivityId", fishingActivityEntity.getId());
+        typedQuery.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
+        typedQuery.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
 
         typedQuery.setMaxResults(1); // There could be multiple fishing Activities matching the condition, but we need just one.
 
@@ -88,7 +87,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityEntity.getId());
         }
 
         LOG.debug("Previous Fishing Activity : " + result);
@@ -109,9 +108,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @param activityTypeCode
      * @param activityCalculatedStartTime
      */
-    public int getNextFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
+    public int getNextFishingActivityId(FishingActivityEntity fishingActivityEntity) {
         int nextFishingActivity = 0;
-        if (activityTypeCode == null || activityCalculatedStartTime == null) {
+        if (fishingActivityEntity.getTypeCode() == null || fishingActivityEntity.getCalculatedStartTime() == null) {
             LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
             return nextFishingActivity;
         }
@@ -131,9 +130,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 "ORDER BY a.calculatedStartTime asc";
         
         Query typedQuery = getEntityManager().createQuery(query);
-        typedQuery.setParameter("fishingActivityId", fishingActivityId);
-        typedQuery.setParameter("activityTypeCode", activityTypeCode);
-        typedQuery.setParameter("activityStartTime", activityCalculatedStartTime);
+        typedQuery.setParameter("fishingActivityId", fishingActivityEntity.getId());
+        typedQuery.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
+        typedQuery.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
 
         typedQuery.setMaxResults(1);
 
@@ -141,7 +140,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityEntity.getId());
         }
 
         LOG.info("Next Fishing Activity : " + result);
@@ -155,19 +154,19 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * This method will retrieve all the fishingActivities received for the trip order by Activity type and then by FAReport accepted date.
      * so that we know which are corrected activities received.
      * @param fishingTripId
-     * @param multipolgon
+     * @param multipolygon
      * @throws ServiceException
      */
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolygon) throws ServiceException {
         if (fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
         String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
-        if (multipolgon == null)
+        if (multipolygon == null)
             queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
         Query query = getEntityManager().createNamedQuery(queryName);
         query.setParameter("fishingTripId", fishingTripId);
-        if (multipolgon != null)
-            query.setParameter("area", multipolgon);
+        if (multipolygon != null)
+            query.setParameter("area", multipolygon);
         return query.getResultList();
     }
 

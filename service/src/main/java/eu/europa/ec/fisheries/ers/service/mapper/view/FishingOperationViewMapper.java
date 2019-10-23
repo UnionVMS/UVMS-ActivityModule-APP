@@ -35,7 +35,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
         FishingActivityViewDTO viewDTO = new FishingActivityViewDTO();
 
         ActivityDetailsDto detailsDto = mapActivityDetails(faEntity);
-        detailsDto.setOccurrence(faEntity.getOccurence());
+        detailsDto.setOccurrence(faEntity.getOccurrenceAsDate().orElse(null));
         detailsDto.setVesselActivity(faEntity.getVesselActivityCode());
 
         if (faEntity.getOperationsQuantity() != null && faEntity.getOperationsQuantity().getValue() != null) {
