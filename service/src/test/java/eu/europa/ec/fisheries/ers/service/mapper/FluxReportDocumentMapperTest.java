@@ -35,7 +35,7 @@ public class FluxReportDocumentMapperTest {
         assertEquals(fluxReportDocument.getIDS().get(0).getValue(), entity.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId());
         assertEquals(fluxReportDocument.getIDS().get(0).getSchemeID(), entity.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId());
         assertEquals(fluxReportDocument.getReferencedID().getValue(), entity.getReferenceId());
-        assertEquals(fluxReportDocument.getCreationDateTime().getDateTime().toGregorianCalendar().getTime(), entity.getCreationDatetime());
+        assertEquals(fluxReportDocument.getCreationDateTime().getDateTime().toGregorianCalendar().toInstant(), entity.getCreationDatetime());
         assertEquals(fluxReportDocument.getPurposeCode().getValue(), entity.getPurposeCode());
         assertEquals(fluxReportDocument.getPurposeCode().getListID(), entity.getPurposeCodeListId());
         assertTrue(entity.getPurpose().startsWith(fluxReportDocument.getPurpose().getValue()));

@@ -152,14 +152,14 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(SCHEME_ID, schemeId);
 
-        query.setParameter(START_DATE, Timestamp.from(Instant.ofEpochSecond(-253_370_764_800L))); // The year 8029 B.C.
-        query.setParameter(END_DATE, Timestamp.from(Instant.ofEpochSecond(253_370_764_800L))); // The year 9999
+        query.setParameter(START_DATE, Instant.ofEpochSecond(-253_370_764_800L)); // The year 8029 B.C.
+        query.setParameter(END_DATE, Instant.ofEpochSecond(253_370_764_800L)); // The year 9999
 
         if (startDate != null) {
-            query.setParameter(START_DATE, Timestamp.from(startDate));
+            query.setParameter(START_DATE, startDate);
         }
         if (endDate != null) {
-            query.setParameter(END_DATE, Timestamp.from(endDate));
+            query.setParameter(END_DATE, endDate);
         }
 
         return query.getResultList();
