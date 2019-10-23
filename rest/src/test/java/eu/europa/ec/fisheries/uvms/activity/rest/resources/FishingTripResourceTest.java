@@ -2,7 +2,11 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
@@ -18,6 +22,7 @@ import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -88,6 +93,59 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertActivityReport(activityReports.get(16), "2017-01-09T12:52:00.00Z", 70, 40, "FISHING_OPERATION");
     }
 
+    @Test
+    public void getTripMapData() throws JsonProcessingException {
+        // Given
+        String token = getToken();
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("mapData")
+                .path("ESP-TRP-20160630000003")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<ObjectNode> responseDto =
+                objectMapper.readValue(responseAsString,
+                        new TypeReference<ResponseDto<ObjectNode>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        ObjectNode response = responseDto.getData();
+
+        ArrayNode featureCollection = (ArrayNode) response.get("features");
+
+        assertEquals(17, featureCollection.size());
+
+        List<JsonNode> geometryNodes = new ArrayList<>(17);
+        for (JsonNode jsonNode : featureCollection) {
+            geometryNodes.add(jsonNode);
+        }
+
+        assertGeometryNode(geometryNodes.get(0), 60.75, -15.4167);
+        assertGeometryNode(geometryNodes.get(1), 10.42, 58.247);
+        assertGeometryNode(geometryNodes.get(2), 11.232, 58.359);
+        assertGeometryNode(geometryNodes.get(3), 10.3, 58.004);
+        assertGeometryNode(geometryNodes.get(4), 11.9733, 57.7153);
+        assertGeometryNode(geometryNodes.get(5), 11.257, 57.808);
+        assertGeometryNode(geometryNodes.get(6), 11.271, 58.356);
+        assertGeometryNode(geometryNodes.get(7), 11.9733, 57.7153);
+        assertGeometryNode(geometryNodes.get(8), 11.9733, 57.7153);
+        assertGeometryNode(geometryNodes.get(9), 11.9733, 57.7153);
+        assertGeometryNode(geometryNodes.get(10), 10.584, 57.715);
+        assertGeometryNode(geometryNodes.get(11), 10.352, 57.979);
+        assertGeometryNode(geometryNodes.get(12), 14.681, 55.472);
+        assertGeometryNode(geometryNodes.get(13), 14.48, 55.682);
+        assertGeometryNode(geometryNodes.get(14), 11.233, 58.359);
+        assertGeometryNode(geometryNodes.get(15), 14.902, 55.471);
+        assertGeometryNode(geometryNodes.get(16), 11.9733, 57.7153);
+    }
+
     // Can be extended to test more fields
     private void assertActivityReport(ReportDTO dto, String occurrenceAsString, int fishingActivityId, int faReportId, String activityType) {
         Instant occurrence = Instant.parse(occurrenceAsString);
@@ -97,5 +155,16 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(fishingActivityId, dto.getFishingActivityId());
         assertEquals(faReportId, dto.getFaReportID());
         assertEquals(activityType, dto.getActivityType());
+    }
+
+    private void assertGeometryNode(JsonNode jsonNode, double latitude, double longitude) {
+        JsonNode geometryNode = jsonNode.get("geometry");
+        JsonNode coordinates = geometryNode.get("coordinates");
+        ArrayNode coordsArray = (ArrayNode) coordinates.get(0);
+        DoubleNode latNode = (DoubleNode) coordsArray.get(0);
+        DoubleNode longNode = (DoubleNode) coordsArray.get(1);
+
+        assertEquals(latitude, latNode.doubleValue(), 0.0001d);
+        assertEquals(longitude, longNode.doubleValue(), 0.0001d);
     }
 }
