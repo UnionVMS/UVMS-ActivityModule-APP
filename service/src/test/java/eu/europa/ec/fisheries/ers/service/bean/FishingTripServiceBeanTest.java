@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
@@ -33,6 +32,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
+import org.locationtech.jts.geom.Geometry;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
