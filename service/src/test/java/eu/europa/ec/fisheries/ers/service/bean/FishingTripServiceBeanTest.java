@@ -13,10 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.ers.fa.dao.*;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
@@ -35,21 +33,11 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
-import org.locationtech.jts.geom.Geometry;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import javax.persistence.EntityManager;
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 import java.util.*;
 
