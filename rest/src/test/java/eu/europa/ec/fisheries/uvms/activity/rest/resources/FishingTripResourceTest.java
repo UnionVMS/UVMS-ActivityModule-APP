@@ -7,9 +7,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetailsDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import org.jboss.arquillian.junit.Arquillian;
@@ -24,6 +28,7 @@ import javax.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -31,16 +36,20 @@ import static org.junit.Assert.assertNull;
 @RunWith(Arquillian.class)
 public class FishingTripResourceTest extends BaseActivityArquillianTest {
 
+    private String authToken;
+
     @Before
     public void setUp() throws NamingException {
         InitialContext ctx = new InitialContext();
         ctx.rebind("java:global/spatial_endpoint", "http://localhost:8080/activity-rest-test");
+        ctx.rebind("java:global/mdr_endpoint", "http://localhost:8080/activity-rest-test");
+
+        authToken = getToken();
     }
 
     @Test
     public void getFishingTripSummary_noGeometry() throws JsonProcessingException {
         // Given
-        String token = getToken();
 
         // When
         String responseAsString = getWebTarget()
@@ -48,7 +57,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
                 .path("reports")
                 .path("ESP-TRP-20160630000003")
                 .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
                 .header("scopeName", null) // "null" means that we will not look up any geometry
                 .header("roleName", "myRole")
                 .get(String.class);
@@ -60,8 +69,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ResponseDto<FishingTripSummaryViewDTO> responseDto =
-                objectMapper.readValue(responseAsString,
-                        new TypeReference<ResponseDto<FishingTripSummaryViewDTO>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FishingTripSummaryViewDTO>>(){});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -94,9 +102,49 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
     }
 
     @Test
+    public void getVesselDetails() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("vessel")
+                .path("details")
+                .path("ESP-TRP-20160630000003")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<VesselDetailsDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<VesselDetailsDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        VesselDetailsDTO vesselDetails = responseDto.getData();
+        assertEquals("MADONNA DI POMPEI", vesselDetails.getName());
+        assertEquals("MLT", vesselDetails.getCountry());
+
+        Set<ContactPartyDetailsDTO> contactPartyDetailsDTOSet = vesselDetails.getContactPartyDetailsDTOSet();
+        assertEquals(1, contactPartyDetailsDTOSet.size());
+
+        ContactPartyDetailsDTO contactPartyDetailsDto = contactPartyDetailsDTOSet.iterator().next();
+        assertEquals("MASTER", contactPartyDetailsDto.getRole());
+        assertEquals("Miguel Nunes", contactPartyDetailsDto.getContactPerson().getAlias());
+
+        Set<AssetIdentifierDto> vesselIdentifiers = vesselDetails.getVesselIdentifiers();
+        assertEquals(1, vesselIdentifiers.size());
+
+        AssetIdentifierDto identifier = vesselIdentifiers.iterator().next();
+        assertEquals(VesselIdentifierSchemeIdEnum.CFR, identifier.getIdentifierSchemeId());
+        assertEquals("SWE000004540", identifier.getFaIdentifierId());
+    }
+
+    @Test
     public void getTripMapData() throws JsonProcessingException {
         // Given
-        String token = getToken();
 
         // When
         String responseAsString = getWebTarget()
@@ -104,14 +152,13 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
                 .path("mapData")
                 .path("ESP-TRP-20160630000003")
                 .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
         ResponseDto<ObjectNode> responseDto =
-                objectMapper.readValue(responseAsString,
-                        new TypeReference<ResponseDto<ObjectNode>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<ObjectNode>>(){});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
