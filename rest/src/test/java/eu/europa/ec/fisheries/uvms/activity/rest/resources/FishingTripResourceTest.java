@@ -10,10 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
@@ -29,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -164,7 +162,6 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
 
-        int fae = 4;
         MessageCountDTO messageCountDTO = responseDto.getData();
         assertEquals(34, messageCountDTO.getNoOfReports());
         assertEquals(27, messageCountDTO.getNoOfDeclarations());
@@ -173,6 +170,69 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(22, messageCountDTO.getNoOfFishingOperations());
         assertEquals(0, messageCountDTO.getNoOfDeletions());
         assertEquals(0, messageCountDTO.getNoOfCancellations());
+    }
+
+    @Test
+    public void getFishingTripCatchReports() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("catches")
+                .path("MLT-TRP-20160630000001")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<Map<String, CatchSummaryListDTO>> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Map<String, CatchSummaryListDTO>>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        Map<String, CatchSummaryListDTO> messageCountDTO = responseDto.getData();
+        assertEquals(2, messageCountDTO.size());
+
+        CatchSummaryListDTO onboard = messageCountDTO.get("onboard");
+        assertEquals(2117000.0, onboard.getTotal(), 0.1d);
+        List<SpeciesQuantityDTO> onboardSpeciesList = onboard.getSpeciesList();
+        assertEquals(3, onboardSpeciesList.size());
+        assertTypicalSpeciesQuantityDTO(onboardSpeciesList.get(0), "BET", 101000.0, 23000.0);
+        assertTypicalSpeciesQuantityDTO(onboardSpeciesList.get(1), "SKJ", 678000.0, 220000.0);
+
+        SpeciesQuantityDTO onboardSpecies2 = onboardSpeciesList.get(2); // this one is a bit different
+        assertEquals("YFT", onboardSpecies2.getSpeciesCode());
+        assertEquals(1095000.0, onboardSpecies2.getWeight(), 0.1d);
+        List<SpeciesAreaDTO> onboardSpecies2AreaList = onboardSpecies2.getAreaInfo();
+        assertEquals(3, onboardSpecies2AreaList.size());
+        assertSpeciesAreaDTO(onboardSpecies2AreaList.get(0), "51.5", 981000.0);
+        assertSpeciesAreaDTO(onboardSpecies2AreaList.get(1), "51.6", 37000.0);
+        assertSpeciesAreaDTO(onboardSpecies2AreaList.get(2), "SYC", 77000.0);
+
+        CatchSummaryListDTO landed = messageCountDTO.get("landed");
+        assertEquals(3200508.0, landed.getTotal(), 0.1d);
+        List<SpeciesQuantityDTO> landedSpeciesList = landed.getSpeciesList();
+        assertEquals(3, landedSpeciesList.size());
+        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(0), "BET", 256466.0, 69000.0);
+        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(1), "SKJ", 442708.0, 660000.0);
+        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(2), "YFT", 1661334.0, 111000.0);
+    }
+
+    private void assertTypicalSpeciesQuantityDTO(SpeciesQuantityDTO dto, String speciesCode, double area0Weight, double area1Weight) {
+        assertEquals(speciesCode, dto.getSpeciesCode());
+        assertEquals(area0Weight + area1Weight, dto.getWeight(), 0.1d);
+        List<SpeciesAreaDTO> areaInfoList = dto.getAreaInfo();
+        assertEquals(2, areaInfoList.size());
+        assertSpeciesAreaDTO(areaInfoList.get(0), "51.5", area0Weight);
+        assertSpeciesAreaDTO(areaInfoList.get(1), "51.6", area1Weight);
+    }
+
+    private void assertSpeciesAreaDTO(SpeciesAreaDTO dto, String areaName, double weight) {
+        assertEquals(areaName, dto.getAreaName());
+        assertEquals(weight, dto.getWeight(), 0.1d);
     }
 
     @Test
