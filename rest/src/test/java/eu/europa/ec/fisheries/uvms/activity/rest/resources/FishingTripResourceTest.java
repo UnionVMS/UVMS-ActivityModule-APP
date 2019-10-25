@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetai
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
@@ -140,6 +141,38 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         AssetIdentifierDto identifier = vesselIdentifiers.iterator().next();
         assertEquals(VesselIdentifierSchemeIdEnum.CFR, identifier.getIdentifierSchemeId());
         assertEquals("SWE000004540", identifier.getFaIdentifierId());
+    }
+
+    @Test
+    public void getFishingTripMessageCounter() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("messages")
+                .path("FRA-TRP-2016122102030")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<MessageCountDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<MessageCountDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        int fae = 4;
+        MessageCountDTO messageCountDTO = responseDto.getData();
+        assertEquals(34, messageCountDTO.getNoOfReports());
+        assertEquals(27, messageCountDTO.getNoOfDeclarations());
+        assertEquals(7, messageCountDTO.getNoOfNotifications());
+        assertEquals(0, messageCountDTO.getNoOfCorrections());
+        assertEquals(22, messageCountDTO.getNoOfFishingOperations());
+        assertEquals(0, messageCountDTO.getNoOfDeletions());
+        assertEquals(0, messageCountDTO.getNoOfCancellations());
     }
 
     @Test
