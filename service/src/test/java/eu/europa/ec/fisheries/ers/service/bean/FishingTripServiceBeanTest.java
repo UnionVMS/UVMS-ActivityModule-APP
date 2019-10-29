@@ -13,13 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.ers.fa.dao.*;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
@@ -28,7 +29,6 @@ import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,14 +39,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import javax.persistence.EntityManager;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by padhyad on 9/29/2016.
@@ -55,9 +53,6 @@ public class FishingTripServiceBeanTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-    @Mock
-    EntityManager em;
 
     @Mock
     FaReportDocumentDao faReportDocumentDao;
@@ -78,9 +73,6 @@ public class FishingTripServiceBeanTest {
     FaCatchDao faCatchDao;
 
     @Mock
-    ActivityConfigurationDao activityConfigurationDao;
-
-    @Mock
     ActivityServiceBean activityServiceBean;
 
     @InjectMocks
@@ -89,9 +81,15 @@ public class FishingTripServiceBeanTest {
     @Mock
     MdrModuleService mdrModuleService;
 
+    @Mock
+    AssetModuleServiceBean assetModule;
+
+    @Mock
+    VesselTransportMeansDao vesselTransportMeansDao;
+
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_limitedRecordsFound() {
+    public void getChronologyOfFishingTrip_limitedRecordsFound() {
 
         //Mock the Dao
         doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
@@ -117,7 +115,7 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_OnlyPrevious() {
+    public void getChronologyOfFishingTrip_OnlyPrevious() {
         //Mock the Dao
         doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
         FishingTripIdentifierEntity fishingTripIdentifierEntity = getCurrentTrip();
@@ -139,7 +137,7 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_All() {
+    public void getChronologyOfFishingTrip_All() {
         //Mock the Dao
         doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
         FishingTripIdentifierEntity fishingTripIdentifierEntity = getCurrentTrip();
@@ -163,7 +161,7 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_OnlyCurrentAndSelected() {
+    public void getChronologyOfFishingTrip_OnlyCurrentAndSelected() {
         //Mock the Dao
         doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
         FishingTripIdentifierEntity fishingTripIdentifierEntity = getCurrentTrip();
@@ -207,14 +205,14 @@ public class FishingTripServiceBeanTest {
         return identifierEntities;
     }
 
-    public FishingTripIdentifierEntity getCurrentTrip() {
+    private FishingTripIdentifierEntity getCurrentTrip() {
         FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
         identifier.setTripId("Current Trip");
         identifier.setTripSchemeId("Current Trip scheme Id");
         return identifier;
     }
 
-    public List<FishingTripIdentifierEntity> getPreviousTrips(int numberOfRecord) {
+    private List<FishingTripIdentifierEntity> getPreviousTrips(int numberOfRecord) {
         List<FishingTripIdentifierEntity> previousTrips = new ArrayList<>();
         for (int i = 1; i <= numberOfRecord; i++) {
             FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
@@ -225,7 +223,7 @@ public class FishingTripServiceBeanTest {
         return previousTrips;
     }
 
-    public List<FishingTripIdentifierEntity> getNextTrips(int numberOfRecord) {
+    private List<FishingTripIdentifierEntity> getNextTrips(int numberOfRecord) {
         List<FishingTripIdentifierEntity> nextTrips = new ArrayList<>();
         for (int i = 1; i <= numberOfRecord; i++) {
             FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
@@ -239,14 +237,14 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testGetFishingTripSummary() throws ServiceException {
+    public void getFishingTripSummary() {
         when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
 
         //Trigger
         FishingTripSummaryViewDTO fishingTripSummaryViewDTO = fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706", null);
 
-        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class), Mockito.any(Geometry.class));
+        Mockito.verify(fishingActivityDao, times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class), Mockito.any(Geometry.class));
 
         //Verify
         assertEquals(3, fishingTripSummaryViewDTO.getSummary().size());
@@ -257,13 +255,13 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testRetrieveFaCatchesForFishingTrip() throws ServiceException {
+    public void retrieveFaCatchesForFishingTrip() {
 
         when(faCatchDao.findFaCatchesByFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFaCaches());
         //Trigger
         Map<String, CatchSummaryListDTO> faCatchesMap = fishingTripService.retrieveFaCatchesForFishingTrip("NOR-TRP-20160517234053706");
         //Verify
-        Mockito.verify(faCatchDao, Mockito.times(1)).findFaCatchesByFishingTrip(Mockito.any(String.class));
+        Mockito.verify(faCatchDao, times(1)).findFaCatchesByFishingTrip(Mockito.any(String.class));
 
         assertNotNull(faCatchesMap.get("landed"));
         assertNotNull(faCatchesMap.get("onboard"));
@@ -276,12 +274,12 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testGetTripMapDetailsForTripId() throws ServiceException, JsonProcessingException {
+    public void getTripMapDetailsForTripId() {
         String expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}";
         when(faReportDocumentDao.loadReports("NOR-TRP-20160517234053706", "Y")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
         //Trigger
         ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
-        Mockito.verify(faReportDocumentDao, Mockito.times(1)).loadReports(Mockito.any(String.class), Mockito.any(String.class));
+        Mockito.verify(faReportDocumentDao, times(1)).loadReports(Mockito.any(String.class), Mockito.any(String.class));
 
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify
@@ -291,7 +289,7 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testFilterFishingTrips() throws ServiceException, JsonProcessingException {
+    public void filterFishingTrips() {
 
         Map<SearchFilter, String> searchMap = new HashMap<>();
         searchMap.put(SearchFilter.REPORT_TYPE, "NOTIFICATION");
@@ -322,7 +320,7 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testBuildFishingTripSearchRespose() throws ServiceException, JsonProcessingException {
+    public void buildFishingTripSearchResponse() {
 
         FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
@@ -341,5 +339,24 @@ public class FishingTripServiceBeanTest {
 
         assertNotNull(response);
 
+    }
+
+    @Test
+    @SneakyThrows
+    public void getVesselDetailsForFishingTrip() {
+        // Given
+        Map<String, List<String>> returnMap = new HashMap<>();
+        returnMap.put("code", new ArrayList<>());
+        VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
+        vesselTransportMeansEntity.setName("MyFirstVessel");
+        when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(vesselTransportMeansEntity);
+        when(mdrModuleService.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<>(), 9999999, "code")).thenReturn(returnMap);
+
+        // When
+        VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
+
+        // Then
+        Mockito.verify(vesselTransportMeansDao, times(1)).findLatestVesselByTripId("NOR-TRP-20160517234053706");
+        assertEquals("MyFirstVessel", vesselDetailsDTO.getName());
     }
 }
