@@ -40,10 +40,10 @@ public class DelimitedPeriodEntity implements Serializable {
 	@JoinColumn(name = "fishing_trip_id")
 	private FishingTripEntity fishingTrip;
 	
-	@Column(name = "start_date", length = 29)
+	@Column(name = "start_date")
 	private Instant startDate;
 	
-	@Column(name = "end_date", length = 29)
+	@Column(name = "end_date")
 	private Instant endDate;
 
     @Embedded

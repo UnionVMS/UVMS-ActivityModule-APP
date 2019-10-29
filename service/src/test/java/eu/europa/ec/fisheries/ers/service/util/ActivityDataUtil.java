@@ -54,7 +54,7 @@ public class ActivityDataUtil {
         FluxReportIdentifierEntity entity = new FluxReportIdentifierEntity();
         entity.setFluxReportIdentifierId(fluxDocumentID);
         fluxReportDocumentEntity.setFluxReportIdentifiers(new HashSet<>(Arrays.asList(entity)));
-        fluxReportDocumentEntity.setCreationDatetime(Date.from(creationDateTime));
+        fluxReportDocumentEntity.setCreationDatetime(creationDateTime);
 
         FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
         fluxPartyEntity.setFluxPartyName(ownerFluxPartyName);

@@ -87,7 +87,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "type" , source = "typeCode"),
             @Mapping(target = "acceptedDate" , expression = "java(instantToDateUtilsStringFormat(faReportDocument.getAcceptedDatetime()))"),
-            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", qualifiedByName = "instantToDateUtilsStringFormat"),
             @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getReportOwner())"),
             @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
             @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),

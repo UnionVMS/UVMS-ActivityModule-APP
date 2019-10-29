@@ -13,12 +13,11 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.service.util.Utils;
 import lombok.*;
-import org.apache.commons.collections.CollectionUtils;
 
 @Entity
 @Table(name = "activity_flux_report_document")
@@ -57,9 +56,8 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(name = "reference_scheme_id")
     private String referenceSchemeId;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creation_datetime", nullable = false, length = 29)
-    private Date creationDatetime;
+    @Column(name = "creation_datetime", nullable = false)
+    private Instant creationDatetime;
 
     @Column(name = "purpose_code", nullable = false)
     private String purposeCode;

@@ -104,10 +104,10 @@ public class FishingTripIdentifierEntity implements Serializable {
 	@Column(name = "trip_scheme_id", nullable = false)
 	private String tripSchemeId;
 
-	@Column(name = "calculated_trip_start_date", length = 29)
+	@Column(name = "calculated_trip_start_date")
 	private Instant calculatedTripStartDate;
 
-	@Column(name = "calculated_trip_end_date", length = 29)
+	@Column(name = "calculated_trip_end_date")
 	private Instant calculatedTripEndDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

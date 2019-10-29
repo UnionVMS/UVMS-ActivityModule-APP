@@ -21,12 +21,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
 
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.AllArgsConstructor;
@@ -73,9 +71,8 @@ public class GearCharacteristicEntity implements Serializable {
 	@Column(name = "calculated_value_measure")
 	private Double calculatedValueMeasure;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "value_date_time", length = 29)
-	private Date valueDateTime;
+	@Column(name = "value_date_time")
+	private Instant valueDateTime;
 
 	@Column(name = "value_indicator")
 	private String valueIndicator;

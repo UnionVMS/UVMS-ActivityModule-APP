@@ -29,7 +29,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by padhyad on 7/18/2016.
@@ -42,7 +41,7 @@ public class FaReportDocumentMapperTest {
         FaReportCorrectionDTO faReportCorrectionDTO = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDto(faReportDocumentEntity);
 
         assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate().toInstant());
 
         FluxReportIdentifierEntity entity = faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
         assertEquals(entity.getFluxReportIdentifierId(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
@@ -57,7 +56,7 @@ public class FaReportDocumentMapperTest {
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOs.get(0);
 
         assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate().toInstant());
 
         FluxReportIdentifierEntity entity = faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
         assertEquals(entity.getFluxReportIdentifierId(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
@@ -78,11 +77,11 @@ public class FaReportDocumentMapperTest {
     @Test
     public void faReportDocumentMapperNullReturns(){
         Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
-        assertTrue(fishingActivityEntities.size() == 0);
+        assertEquals(0, fishingActivityEntities.size());
         Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = FaReportDocumentMapper.INSTANCE.mapVesselTransportMeansEntity(null, new FaReportDocumentEntity());
         assertNull(vesselTransportMeansEntityList);
         Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
-        assertTrue(fishingActivityEntities1.size() == 0);
+        assertEquals(0, fishingActivityEntities1.size());
     }
 
     @Test

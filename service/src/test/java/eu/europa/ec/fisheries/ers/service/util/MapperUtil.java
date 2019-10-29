@@ -217,9 +217,9 @@ public class MapperUtil {
         return faReportDocumentEntity;
     }
 
-    public static FluxReportDocumentEntity getFluxReportDocumentEntity() {
+    private static FluxReportDocumentEntity getFluxReportDocumentEntity() {
         FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
-        fluxReportDocumentEntity.setCreationDatetime(new Date());
+        fluxReportDocumentEntity.setCreationDatetime(Instant.now());
 
         fluxReportDocumentEntity.setFluxReportIdentifiers(new HashSet<FluxReportIdentifierEntity>(Arrays.asList(getFluxReportIdentifierEntity())));
         fluxReportDocumentEntity.setFluxParty(getFluxPartyEntity());
@@ -230,14 +230,14 @@ public class MapperUtil {
         return fluxReportDocumentEntity;
     }
 
-    public static FluxReportIdentifierEntity getFluxReportIdentifierEntity() {
+    private static FluxReportIdentifierEntity getFluxReportIdentifierEntity() {
         FluxReportIdentifierEntity fluxReportIdentifierEntity = new FluxReportIdentifierEntity();
         fluxReportIdentifierEntity.setFluxReportIdentifierId("Report Id 1");
         fluxReportIdentifierEntity.setFluxReportIdentifierSchemeId("Scheme Id 1");
         return fluxReportIdentifierEntity;
     }
 
-    public static FluxPartyEntity getFluxPartyEntity() {
+    private static FluxPartyEntity getFluxPartyEntity() {
         FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
         fluxPartyEntity.setFluxPartyName("Flux party Name 1");
         fluxPartyEntity.setNameLanguageId("Flux party name language id 1");

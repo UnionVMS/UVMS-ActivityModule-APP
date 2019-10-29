@@ -104,7 +104,7 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "type_code_list_id")
     private String typeCodeListId;
 
-    @Column(name = "accepted_datetime", length = 29)
+    @Column(name = "accepted_datetime")
     private Instant acceptedDatetime;
 
     @Column(name = "fmc_marker")
