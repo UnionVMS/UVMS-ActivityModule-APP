@@ -11,6 +11,8 @@ import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.ContactPartyDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
@@ -94,6 +96,17 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertActivityReport(activityReports.get(14), "2017-01-09T11:46:00.00Z", 69, 39, "FISHING_OPERATION");
         assertActivityReport(activityReports.get(15), "2017-01-09T12:44:00.00Z", 43, 23, "FISHING_OPERATION");
         assertActivityReport(activityReports.get(16), "2017-01-09T12:52:00.00Z", 70, 40, "FISHING_OPERATION");
+    }
+
+    // Can be extended to test more fields
+    private void assertActivityReport(ReportDTO dto, String occurrenceAsString, int fishingActivityId, int faReportId, String activityType) {
+        Instant occurrence = Instant.parse(occurrenceAsString);
+        assertEquals(occurrence, dto.getOccurence().toInstant());
+        assertEquals(occurrence, dto.getFaReportAcceptedDateTime().toInstant());
+
+        assertEquals(fishingActivityId, dto.getFishingActivityId());
+        assertEquals(faReportId, dto.getFaReportID());
+        assertEquals(activityType, dto.getActivityType());
     }
 
     @Test
@@ -339,17 +352,6 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertGeometryNode(geometryNodes.get(16), 11.9733, 57.7153);
     }
 
-    // Can be extended to test more fields
-    private void assertActivityReport(ReportDTO dto, String occurrenceAsString, int fishingActivityId, int faReportId, String activityType) {
-        Instant occurrence = Instant.parse(occurrenceAsString);
-        assertEquals(occurrence, dto.getOccurence().toInstant());
-        assertEquals(occurrence, dto.getFaReportAcceptedDateTime().toInstant());
-
-        assertEquals(fishingActivityId, dto.getFishingActivityId());
-        assertEquals(faReportId, dto.getFaReportID());
-        assertEquals(activityType, dto.getActivityType());
-    }
-
     private void assertGeometryNode(JsonNode jsonNode, double latitude, double longitude) {
         JsonNode geometryNode = jsonNode.get("geometry");
         JsonNode coordinates = geometryNode.get("coordinates");
@@ -359,5 +361,76 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
 
         assertEquals(latitude, latNode.doubleValue(), 0.0001d);
         assertEquals(longitude, longNode.doubleValue(), 0.0001d);
+    }
+
+    @Test
+    public void getFishingTripCatchEvolution() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("catchevolution")
+                .path("ESP-TRP-20160630000003")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<CatchEvolutionDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<CatchEvolutionDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        CatchEvolutionDTO response = responseDto.getData();
+
+        TripWidgetDto tripDetails = response.getTripDetails();
+        assertNull(tripDetails.getVesselDetails());
+        assertNull(tripDetails.getFlapDocuments());
+
+        assertEquals(1, tripDetails.getTrips().size());
+        TripOverviewDto trip = tripDetails.getTrips().get(0);
+        assertEquals(1, trip.getTripId().size());
+        assertEquals("ESP-TRP-20160630000003", trip.getTripId().get(0).getId());
+        assertEquals("EU_TRIP_ID", trip.getTripId().get(0).getSchemeId());
+        assertEquals(new Date(1483966440000L), trip.getDepartureTime());
+        assertNull(trip.getTypeCode());
+        assertNull(trip.getArrivalTime());
+        assertNull(trip.getLandingTime());
+
+        List<CatchEvolutionProgressDTO> catchEvolutionProgress = response.getCatchEvolutionProgress();
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 1, "AREA_ENTRY", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 2, "FISHING_OPERATION", "DECLARATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 3, "AREA_ENTRY", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 4, "AREA_EXIT", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 5, "FISHING_OPERATION", "DECLARATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 6, "AREA_ENTRY", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 7, "AREA_EXIT", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 8, "AREA_EXIT", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 9, "AREA_ENTRY", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 10, "AREA_EXIT", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 11, "FISHING_OPERATION", "DECLARATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 12, "AREA_EXIT", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 13, "AREA_EXIT", "NOTIFICATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 14, "FISHING_OPERATION", "DECLARATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 15, "FISHING_OPERATION", "DECLARATION");
+        assertCatchEvolutionProgressDto(catchEvolutionProgress, 16, "DEPARTURE", "DECLARATION");
+    }
+
+    private void assertCatchEvolutionProgressDto(List<CatchEvolutionProgressDTO> dtos, int i, String activityType, String reportType) {
+        CatchEvolutionProgressDTO dto = dtos.get(i);
+        CatchEvolutionProgressDTO previous = dtos.get(i - 1);
+
+        Map<String, CatchSummaryListDTO> catchEvolution = dto.getCatchEvolution();
+        assertEquals(2, catchEvolution.size());
+        assertTrue(catchEvolution.get("cumulated").getTotal() >= previous.getCatchEvolution().get("cumulated").getTotal());
+
+        assertEquals(2, catchEvolution.get("cumulated").getSpeciesList().size());
+
+        assertEquals(activityType, dto.getActivityType());
+        assertEquals(reportType, dto.getReportType());
+        assertEquals(i + 1, dto.getOrderId());
     }
 }
