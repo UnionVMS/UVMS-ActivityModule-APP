@@ -89,55 +89,44 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
         // Given
 
         // When
-        List<FaReportDocumentEntity> result = dao.loadReports(null, null, null, null, null, null);
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, null, null);
 
         // Then
         assertReportsHaveIds(result, 1, 2, 3, 6);
     }
 
     @Test
-    public void loadReports_allForSpecificVessel() {
-        // Given
-
-        // When
-        List<FaReportDocumentEntity> result = dao.loadReports(null, null, "EXT_MARK123", "EXT_MARK", null,null);
-
-        // Then
-        assertReportsHaveIds(result, 1, 2, 6);
-    }
-
-    @Test
-    public void loadReports_forSpecificVessel_after20160701() {
+    public void loadReports_after20160701() {
         // Given
         Instant startDate = Instant.parse("2016-07-01T00:00:01Z");
 
         // When
-        List<FaReportDocumentEntity> result = dao.loadReports(null, null, "EXT_MARK123", "EXT_MARK", startDate, null);
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, startDate, null);
 
         // Then
         assertReportsHaveIds(result, 6);
     }
 
     @Test
-    public void loadReports_forSpecificVessel_before20160630() {
+    public void loadReports_before20160630() {
         // Given
         Instant endDate = Instant.parse("2016-06-30T23:59:59Z");
 
         // When
-        List<FaReportDocumentEntity> result = dao.loadReports(null, null, "EXT_MARK123", "EXT_MARK", null, endDate);
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, null, endDate);
 
         // Then
-        assertReportsHaveIds(result, 1, 2);
+        assertReportsHaveIds(result, 1, 2, 3);
     }
 
     @Test
-    public void loadReports_forSpecificVessel_narrowTimeRange() {
+    public void loadReports_narrowTimeRange() {
         // Given
         Instant startDate = Instant.parse("2016-06-27T05:59:00Z");
         Instant endDate =   Instant.parse("2016-06-27T06:01:00Z");
 
         // When
-        List<FaReportDocumentEntity> result = dao.loadReports(null, null, "EXT_MARK123", "EXT_MARK", startDate, endDate);
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, startDate, endDate);
 
         // Then
         assertReportsHaveIds(result, 2);
