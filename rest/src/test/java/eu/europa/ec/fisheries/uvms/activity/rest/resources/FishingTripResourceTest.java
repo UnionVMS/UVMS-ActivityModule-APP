@@ -24,13 +24,9 @@ import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 public class FishingTripResourceTest extends BaseActivityArquillianTest {
@@ -233,6 +229,63 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
     private void assertSpeciesAreaDTO(SpeciesAreaDTO dto, String areaName, double weight) {
         assertEquals(areaName, dto.getAreaName());
         assertEquals(weight, dto.getWeight(), 0.1d);
+    }
+
+    /**
+     * This test tests the behaviour of the getCronologyOfFishingTrip (sic) endpoint
+     * as it is at the time of writing the tests. Comments in the test point out dubious behaviours
+     * in the end point logic.
+     */
+    @Test
+    public void getChronologyOfFishingTrip() throws JsonProcessingException {
+        // Weird thing #1: All fishing trips include themselves in "previousTrips"
+        // #2: Request for the chronology of the "ESP" and "FRA" trips return the exact same set of previous trips, both saying that they are chronologically after the other.
+        //     The "MLT" trip for some reason doesn't have the "FRA" trip as a previous trip
+        // #3: No response says that they have any "next trips", that collection is always null
+        assertChronologyOfFishingTrip("MLT-TRP-20160630000001", 100, "MLT-TRP-20160630000001", "ESP-TRP-20160630000003");
+        assertChronologyOfFishingTrip("ESP-TRP-20160630000003", 100, "MLT-TRP-20160630000001", "ESP-TRP-20160630000003", "FRA-TRP-2016122102030");
+        assertChronologyOfFishingTrip("FRA-TRP-2016122102030", 100, "MLT-TRP-20160630000001", "ESP-TRP-20160630000003", "FRA-TRP-2016122102030");
+
+        // #4: The way the number of previous trips (and next trips, if we where to receive any) is calculated is pretty unintuitive, as seen in the example below
+        assertChronologyOfFishingTrip("FRA-TRP-2016122102030", 0);
+        assertChronologyOfFishingTrip("FRA-TRP-2016122102030", 1);
+        assertChronologyOfFishingTrip("FRA-TRP-2016122102030", 2, "ESP-TRP-20160630000003");
+        assertChronologyOfFishingTrip("FRA-TRP-2016122102030", 3, "ESP-TRP-20160630000003", "FRA-TRP-2016122102030");
+        assertChronologyOfFishingTrip("FRA-TRP-2016122102030", 4, "MLT-TRP-20160630000001", "ESP-TRP-20160630000003", "FRA-TRP-2016122102030");
+    }
+
+    private void assertChronologyOfFishingTrip(String tripId, int count, String ... expectedPreviousTripIds) throws JsonProcessingException {
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("cronology")// sic
+                .path(tripId)
+                .path(Integer.toString(count))
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<CronologyTripDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<CronologyTripDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        CronologyTripDTO cronologyTripDTO = responseDto.getData();
+        assertEquals("FRA-TRP-2016122102030", cronologyTripDTO.getCurrentTrip());
+        assertEquals(tripId, cronologyTripDTO.getSelectedTrip());
+
+        assertNull(cronologyTripDTO.getNextTrips());
+
+        if (expectedPreviousTripIds.length > 0) {
+            assertEquals(expectedPreviousTripIds.length, cronologyTripDTO.getPreviousTrips().size());
+            for (int i = 0; i < expectedPreviousTripIds.length; i++) {
+                assertEquals(expectedPreviousTripIds[i], cronologyTripDTO.getPreviousTrips().get(i));
+            }
+        } else {
+            assertNull(cronologyTripDTO.getPreviousTrips());
+        }
     }
 
     @Test
