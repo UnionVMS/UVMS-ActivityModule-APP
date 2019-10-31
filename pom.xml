@@ -30,7 +30,7 @@
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
 
         <!-- Docker configuration -->
-        <docker.dev.version>3.40.1.w18-ERS</docker.dev.version>
+        <docker.dev.version>3.40.2.w18-ERS</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
