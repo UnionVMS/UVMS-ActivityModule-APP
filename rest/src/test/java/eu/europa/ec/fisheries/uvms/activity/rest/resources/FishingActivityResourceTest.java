@@ -3,13 +3,18 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginatedResponse;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +24,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,5 +163,50 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         assertTrue(responseDto.getResultList().isEmpty());
+    }
+
+
+    @Test
+    public void listFishingTripsByQuery() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        query.setSearchCriteriaMap(new HashMap<>());
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("fa")
+                .path("listTrips")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .post(Entity.json(query), String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+
+        ResponseDto<FishingTripResponse> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FishingTripResponse>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        FishingTripResponse fishingTripResponse = responseDto.getData();
+
+        assertEquals(0, fishingTripResponse.getFishingActivityLists().size());
+        assertEquals(BigInteger.valueOf(57L), fishingTripResponse.getTotalCountOfRecords());
+        assertNull(fishingTripResponse.getMethod());
+        assertNull(fishingTripResponse.getPluginType());
+
+        List<FishingTripIdWithGeometry> fishingTripIds = fishingTripResponse.getFishingTripIdLists();
+        assertEquals(3, fishingTripIds.size());
+
+        assertEquals("ESP-TRP-20160630000003", fishingTripIds.get(0).getTripId());
+        assertEquals("FRA-TRP-2016122102030", fishingTripIds.get(1).getTripId());
+        assertEquals("MLT-TRP-20160630000001", fishingTripIds.get(2).getTripId());
     }
 }
