@@ -168,14 +168,12 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private String getCurrentTrip(List<VesselIdentifierEntity> vesselIdentifiers) {
         String currentTrip = null;
-        if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
-                FishingTripIdentifierEntity identifierEntity = fishingTripIdentifierDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
-                        vesselIdentifier.getVesselIdentifierSchemeId());
-                currentTrip = identifierEntity != null ? identifierEntity.getTripId() : null;
-                if (StringUtils.isEmpty(currentTrip)) {
-                    break;
-                }
+        for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
+            FishingTripIdentifierEntity identifierEntity = fishingTripIdentifierDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
+                    vesselIdentifier.getVesselIdentifierSchemeId());
+            currentTrip = identifierEntity != null ? identifierEntity.getTripId() : null;
+            if (StringUtils.isEmpty(currentTrip)) {
+                break;
             }
         }
         log.info("Current Trip : " + currentTrip);
@@ -184,13 +182,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private Set<String> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
-        if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
-                List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
-                        vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-                for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                    tripIds.add(identifiers.getTripId());
-                }
+        for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
+            List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
+                    vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
+            for (FishingTripIdentifierEntity identifiers : identifierEntities) {
+                tripIds.add(identifiers.getTripId());
             }
         }
         log.debug("Previous Trips : " + tripIds);
@@ -199,13 +195,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private Set<String> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
-        if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
-                List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
-                        vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-                for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                    tripIds.add(identifiers.getTripId());
-                }
+        for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
+            List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
+                    vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
+            for (FishingTripIdentifierEntity identifiers : identifierEntities) {
+                tripIds.add(identifiers.getTripId());
             }
         }
         log.debug("Next Trips : " + tripIds);
@@ -217,17 +211,13 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (fishingTripId == null) {
             throw new IllegalArgumentException("PARAMETER CANNOT BE NULL");
         }
-        VesselDetailsDTO detailsDTO = null;
-        try {
-            VesselTransportMeansEntity latestVesselByTripId = vesselTransportMeansDao.findLatestVesselByTripId(fishingTripId);
-            if (latestVesselByTripId != null) {
-                FishingActivityEntity parent = latestVesselByTripId.getFishingActivity();
-                detailsDTO = getVesselDetailsDTO(latestVesselByTripId, parent);
-            }
-        } catch (ServiceException e) {
-            throw new ServiceException(e.getMessage(), e);
+        VesselTransportMeansEntity latestVesselByTripId = vesselTransportMeansDao.findLatestVesselByTripId(fishingTripId);
+        if (latestVesselByTripId != null) {
+            FishingActivityEntity parent = latestVesselByTripId.getFishingActivity();
+            return getVesselDetailsDTO(latestVesselByTripId, parent);
         }
-        return detailsDTO;
+
+        return null;
     }
 
     @Nullable
@@ -281,7 +271,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers, codeList);
                 log.info("Asset Criteria Pair List size is :" + assetListCriteriaPairs.size());
                 log.info("Got code list of size from mdr:" + codeList.size());
-                if (null != assetListCriteriaPairs && !CollectionUtils.isEmpty(assetListCriteriaPairs)) {
+                if (!CollectionUtils.isEmpty(assetListCriteriaPairs)) {
                     AssetListCriteria criteria = new AssetListCriteria();
                     criteria.setIsDynamic(false); // need to set this
                     criteria.getCriterias().addAll(assetListCriteriaPairs);
@@ -355,11 +345,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                                                                                                       Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
         fishingActivityList.addAll(getReportsThatWereCancelledOrDeleted(fishingActivityList));
-        if (CollectionUtils.isEmpty(fishingActivityList)) {
-            return Collections.emptyMap();
-        }
         Map<String, FishingActivityTypeDTO> tripSummary = new HashMap<>();
-        for (FishingActivityEntity activityEntity : fishingActivityList) {
+        for (FishingActivityEntity activityEntity : Utils.safeIterable(fishingActivityList)) {
             if (!isOnlyTripSummary) {
                 ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
                 reportDTOList.add(reportDTO);
@@ -403,7 +390,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (MapUtils.isEmpty(fishActFaRepMap)) {
             return fishingActivityEntities;
         }
-        for(Map.Entry<FaReportDocumentEntity, FishingActivityEntity> entry : fishActFaRepMap.entrySet()){
+        for (Map.Entry<FaReportDocumentEntity, FishingActivityEntity> entry : fishActFaRepMap.entrySet()) {
             FaReportDocumentEntity faRep = entry.getKey();
             FishingActivityEntity fishAct = entry.getValue();
             FishingActivityEntity cloneActivity = SerializationUtils.clone(fishAct);
@@ -439,14 +426,13 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
     }
 
-
     private void populateFishingTripSummary(FishingActivityEntity activityEntity, Map<String, FishingActivityTypeDTO> summary) {
         String activityTypeCode = activityEntity.getTypeCode();
         if (DEPARTURE.toString().equalsIgnoreCase(activityTypeCode)
                 || ARRIVAL.toString().equalsIgnoreCase(activityTypeCode)
                 || LANDING.toString().equalsIgnoreCase(activityTypeCode)) {
             Instant occurrence = activityEntity.getOccurence();
-            Boolean isCorrection = BaseMapper.getCorrection(activityEntity);
+            boolean isCorrection = BaseMapper.getCorrection(activityEntity);
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
             if (fishingActivityTypeDTO == null
                     || (isCorrection
@@ -468,9 +454,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     @Override
     public MessageCountDTO getMessageCountersForTripId(String tripId) {
         List<FaReportDocumentEntity> reports = faReportDocumentDao.loadReports(tripId, "N");
-        if(CollectionUtils.isNotEmpty(reports)){
+        if (CollectionUtils.isNotEmpty(reports)) {
             List<FaReportDocumentEntity> canceledDeletedReports = faReportDocumentDao.loadCanceledAndDeletedReports(reports);
-            if(CollectionUtils.isNotEmpty(canceledDeletedReports)){
+            if (CollectionUtils.isNotEmpty(canceledDeletedReports)) {
                 reports.addAll(canceledDeletedReports);
             }
         }
@@ -482,7 +468,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      *
      * @param faReportDocumentList
      */
-    public MessageCountDTO createMessageCounter(List<FaReportDocumentEntity> faReportDocumentList) {
+    private MessageCountDTO createMessageCounter(List<FaReportDocumentEntity> faReportDocumentList) {
 
         MessageCountDTO messagesCounter = new MessageCountDTO();
         if (CollectionUtils.isEmpty(faReportDocumentList)) {
@@ -668,13 +654,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * @param uniqueActivityIdList      This method helps parent function to collect FishingActivities for all the fishingTrips. In order to avoid duplicate fishing Activities, we need to maintain uniqueActivityIdList
      * @param fishingActivityEntityList
      */
-    public List<FishingActivitySummary> getFishingActivitySummaryList(List<FishingActivityEntity> fishingActivityEntityList, List<Integer> uniqueActivityIdList) {
+    private List<FishingActivitySummary> getFishingActivitySummaryList(List<FishingActivityEntity> fishingActivityEntityList, List<Integer> uniqueActivityIdList) {
         List<FishingActivitySummary> fishingActivitySummaryList = new ArrayList<>();
         if (CollectionUtils.isEmpty(uniqueActivityIdList)) {
             uniqueActivityIdList = new ArrayList<>();
         }
         for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
-            if (fishingActivityEntity != null && uniqueActivityIdList.add(fishingActivityEntity.getId())) {
+            if (fishingActivityEntity != null) {
+                uniqueActivityIdList.add(fishingActivityEntity.getId());
                 FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(fishingActivityEntity);
                 ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
                 if (contactParty != null) {
@@ -758,7 +745,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return catchEvolutionProgress;
     }
 
-    public TripWidgetDto createTripWidgetDtoWithFishingActivity(FishingActivityEntity activityEntity) throws ServiceException {
+    private TripWidgetDto createTripWidgetDtoWithFishingActivity(FishingActivityEntity activityEntity) throws ServiceException {
         TripWidgetDto tripWidgetDto = new TripWidgetDto();
         Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips();
 
@@ -771,10 +758,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         for (FishingTripEntity fishingTripEntity : fishingTripEntities) {
             Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
             for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-                if (!tripIdSet.contains(tripIdentifierEntity.getTripId())) {
+                if (tripIdSet.add(tripIdentifierEntity.getTripId())) {
                     log.debug("Get Trip summary information for tripID :" + tripIdentifierEntity.getTripId());
                     tripOverviewDtoList.add(getTripOverviewDto(activityEntity, tripIdentifierEntity.getTripId()));
-                    tripIdSet.add(tripIdentifierEntity.getTripId());
                 }
             }
         }
@@ -801,7 +787,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     }
 
-    public TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
+    private TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
         Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
         TripOverviewDto tripOverviewDto = new TripOverviewDto();
         Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips(); // Find out fishingTrip schemeId matching to tripId from fishingActivity object.
@@ -850,5 +836,4 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public String getOwnerFluxPartyFromTripId(String tripId) {
         return fishingTripDao.getOwnerFluxPartyFromTripId(tripId);
     }
-
 }

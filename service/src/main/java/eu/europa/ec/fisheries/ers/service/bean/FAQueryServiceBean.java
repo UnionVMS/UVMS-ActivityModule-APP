@@ -67,11 +67,6 @@ public class FAQueryServiceBean implements FaQueryService {
     public FLUXFAReportMessage getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria) {
 
         if (CollectionUtils.isNotEmpty(subscriptionDataCriteria)) {
-
-            String consolidated = "N";
-            String tripID = null;
-            String vesselId = null;
-            String schemeId = null;
             Instant endDate = null;
             Instant startDate = null;
 
@@ -82,15 +77,13 @@ public class FAQueryServiceBean implements FaQueryService {
 
                 if (subCriteria == SubCriteriaType.END_DATE) {
                     endDate = Instant.parse(value);
-                }
-
-                else if (subCriteria == SubCriteriaType.START_DATE) {
+                } else if (subCriteria == SubCriteriaType.START_DATE) {
                     startDate = Instant.parse(value);
                 }
 
             }
 
-            List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(tripID, consolidated, vesselId, schemeId, startDate, endDate);
+            List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(null, "N", startDate, endDate);
             return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
         }
 
