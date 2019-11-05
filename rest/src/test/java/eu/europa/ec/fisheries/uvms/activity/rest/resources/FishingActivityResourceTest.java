@@ -8,6 +8,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
@@ -165,7 +166,6 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertTrue(responseDto.getResultList().isEmpty());
     }
 
-
     @Test
     public void listFishingTripsByQuery() throws JsonProcessingException {
         // Given
@@ -208,5 +208,41 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertEquals("ESP-TRP-20160630000003", fishingTripIds.get(0).getTripId());
         assertEquals("FRA-TRP-2016122102030", fishingTripIds.get(1).getTripId());
         assertEquals("MLT-TRP-20160630000001", fishingTripIds.get(2).getTripId());
+    }
+
+    @Test
+    public void getAllCorrections() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("fa")
+                .path("history")
+                .path("C8471F99-FB55-4B05-9AAA-7E08738C92B2")
+                .path("UUID")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ResponseDto<List<FaReportCorrectionDTO>> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<List<FaReportCorrectionDTO>>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FaReportCorrectionDTO> data = responseDto.getData();
+        assertEquals(1, data.size());
+        FaReportCorrectionDTO faReportCorrectionDTO = data.get(0);
+        assertEquals("58", faReportCorrectionDTO.getId());
+        assertEquals("NEW", faReportCorrectionDTO.getCorrectionType());
+        assertEquals("Fri Jul 08 05:00:00 UTC 2016", faReportCorrectionDTO.getCreationDate().toString());
+        assertEquals("Mon Jan 09 03:06:00 UTC 2017", faReportCorrectionDTO.getAcceptedDate().toString());
+        assertNull(faReportCorrectionDTO.getOwnerFluxPartyName());
+        assertEquals(9, faReportCorrectionDTO.getPurposeCode().intValue());
+        assertEquals(1, faReportCorrectionDTO.getFaReportIdentifiers().size());
+        assertEquals("UUID", faReportCorrectionDTO.getFaReportIdentifiers().get("C8471F99-FB55-4B05-9AAA-7E08738C92B2"));
     }
 }
