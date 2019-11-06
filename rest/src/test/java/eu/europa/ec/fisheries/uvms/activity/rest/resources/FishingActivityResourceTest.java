@@ -267,4 +267,29 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
         assertEquals(102, responseDto.getData().intValue());
     }
+
+    @Test
+    public void getNextFishingActivity() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("fa")
+                .path("next")
+                .path("102")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ResponseDto<Integer> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        assertEquals(103, responseDto.getData().intValue());
+    }
 }
