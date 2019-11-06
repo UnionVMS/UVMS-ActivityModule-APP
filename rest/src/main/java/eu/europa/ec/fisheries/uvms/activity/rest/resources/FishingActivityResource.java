@@ -31,14 +31,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -61,7 +54,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/commChannels")
-    public Response getCommunicationChannels() throws ServiceException {
+    public Response getCommunicationChannels() {
         log.info("getCommunicationChannels");
         return Response.ok(FaReportSourceEnum.values()).build();
     }
@@ -93,16 +86,12 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response listFishingTripsByQuery(@Context HttpServletRequest request,
-                                            @HeaderParam("scopeName") String scopeName,
-                                            @HeaderParam("roleName") String roleName,
-                                            FishingActivityQuery fishingActivityQuery) throws ServiceException {
+    public Response listFishingTripsByQuery(FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
         log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
-        String username = request.getRemoteUser();
         FishingTripResponse fishingTripIdsForFilter = fishingTripService.filterFishingTrips(fishingActivityQuery);
         return createSuccessResponse(fishingTripIdsForFilter);
     }
@@ -112,9 +101,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getAllCorrections(@Context HttpServletRequest request,
-                                      @Context HttpServletResponse response,
-                                      @PathParam("referenceId") String referenceId,
+    public Response getAllCorrections(@PathParam("referenceId") String referenceId,
                                       @PathParam("schemeId") String schemeId) throws ServiceException {
 
         return createSuccessResponse(activityService.getFaReportHistory(referenceId, schemeId));
@@ -125,9 +112,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getPreviousFishingActivity(@Context HttpServletRequest request,
-                                               @Context HttpServletResponse response,
-                                               @PathParam("activityId") String activityId) throws ServiceException {
+    public Response getPreviousFishingActivity(@PathParam("activityId") String activityId) {
         int converstedActivityId = 0;
         log.info("Received ActivityId from frontEnd as: " + activityId);
         if (activityId != null) {
@@ -142,9 +127,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getNextFishingActivity(@Context HttpServletRequest request,
-                                           @Context HttpServletResponse response,
-                                           @PathParam("activityId") String activityId) throws ServiceException {
+    public Response getNextFishingActivity(@PathParam("activityId") String activityId) {
         int converstedActivityId = 0;
         log.info("Received ActivityId from frontEnd as: " + activityId);
         if (activityId != null) {
