@@ -24,13 +24,11 @@ import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is a resource to call services exposed tru the JMS channel
  */
 @Path("/xml")
-@Slf4j
 public class XMLResource {
 
     @EJB

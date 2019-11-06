@@ -45,7 +45,7 @@ public class ReportDocumentResource extends UnionVMSResource {
     public Object getReport(FLUXFAQueryMessage fluxfaQueryMessage) throws JAXBException {
         SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
         List<SubscriptionDataCriteria> queryCriteria = subscriptionDataRequest.getQuery().getCriteria();
-        log.info(queryCriteria.toString());
+        log.debug(queryCriteria.toString());
         FLUXFAReportMessage reportsByCriteria = faQueryService.getReportsByCriteria(queryCriteria);
         String controlSource = JAXBUtils.marshallJaxBObjectToString(reportsByCriteria, "ISO-8859-15", true, new FANamespaceMapper());
         return clearEmptyTags(controlSource);
