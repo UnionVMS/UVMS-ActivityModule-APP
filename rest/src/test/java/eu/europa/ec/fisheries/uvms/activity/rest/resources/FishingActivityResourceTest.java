@@ -93,8 +93,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
         List<FishingActivityReportDTO> resultList = responseDto.getResultList();
 
-        assertEquals(57, responseDto.getTotalItemsCount());
-        assertEquals(57, resultList.size());
+        assertEquals(59, responseDto.getTotalItemsCount());
+        assertEquals(59, resultList.size());
 
         for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
             assertEquals("FLUX", fishingActivityReportDTO.getDataSource());
@@ -102,9 +102,6 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
             assertTrue(fishingActivityReportDTO.getFromId().get(0).equals("MLT") || fishingActivityReportDTO.getFromId().get(0).equals("FRA"));
             assertNull(fishingActivityReportDTO.getFromName());
             assertEquals("9", fishingActivityReportDTO.getPurposeCode());
-            assertFalse(fishingActivityReportDTO.isHasCorrection());
-            assertNull(fishingActivityReportDTO.getFluxReportReferenceId());
-            assertNull(fishingActivityReportDTO.getFluxReportReferenceSchemeId());
             assertEquals(1, fishingActivityReportDTO.getUniqueFAReportId().size());
             assertNotNull(fishingActivityReportDTO.getUniqueFAReportId().get(0).getFluxReportId());
             assertEquals("UUID", fishingActivityReportDTO.getUniqueFAReportId().get(0).getFluxReportSchemeId());
@@ -238,11 +235,36 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         FaReportCorrectionDTO faReportCorrectionDTO = data.get(0);
         assertEquals("58", faReportCorrectionDTO.getId());
         assertEquals("NEW", faReportCorrectionDTO.getCorrectionType());
-        assertEquals("Fri Jul 08 05:00:00 UTC 2016", faReportCorrectionDTO.getCreationDate().toString());
-        assertEquals("Mon Jan 09 03:06:00 UTC 2017", faReportCorrectionDTO.getAcceptedDate().toString());
+        assertEquals(1_467_954_000_000L, faReportCorrectionDTO.getCreationDate().getTime());
+        assertEquals(1_483_931_160_000L, faReportCorrectionDTO.getAcceptedDate().getTime());
         assertNull(faReportCorrectionDTO.getOwnerFluxPartyName());
         assertEquals(9, faReportCorrectionDTO.getPurposeCode().intValue());
         assertEquals(1, faReportCorrectionDTO.getFaReportIdentifiers().size());
         assertEquals("UUID", faReportCorrectionDTO.getFaReportIdentifiers().get("C8471F99-FB55-4B05-9AAA-7E08738C92B2"));
+    }
+
+    @Test
+    public void getPreviousFishingActivity() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("fa")
+                .path("previous")
+                .path("103")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ResponseDto<Integer> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        assertEquals(102, responseDto.getData().intValue());
     }
 }
