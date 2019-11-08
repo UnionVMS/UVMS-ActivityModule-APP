@@ -10,17 +10,11 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import static org.mockito.Mockito.when;
-
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
-import java.util.Collection;
-import java.util.List;
 import lombok.SneakyThrows;
 import org.apache.activemq.artemis.api.core.SimpleString;
 import org.apache.activemq.artemis.api.core.client.ClientSession;
@@ -28,11 +22,20 @@ import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by kovian on 17/07/2017.
@@ -61,12 +64,12 @@ public class ActivityEventServiceBeanTest {
     @Mock
     ClientSession session;
 
-    EventMessage nonUniqueIdsMessageEventMessage;
-    EventMessage faAndTripIdsFromTripIdsEventMessage;
+    private EventMessage nonUniqueIdsMessageEventMessage;
+    private EventMessage faAndTripIdsFromTripIdsEventMessage;
 
-    GetNonUniqueIdsResponse getNonUniqueIdsResponse;
+    private GetNonUniqueIdsResponse getNonUniqueIdsResponse;
 
-    GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse;
+    private GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse;
 
     @Before
     @SneakyThrows
@@ -87,19 +90,49 @@ public class ActivityEventServiceBeanTest {
     }
 
     @Test
-    public void testGeNonUniqueIds(){
-        when(matchingIdsService.getMatchingIdsResponse((List<ActivityUniquinessList>) Mockito.any(Collection.class))).thenReturn(getNonUniqueIdsResponse);
+    public void getNonUniqueIds() throws JMSException {
+        // Given
+        when(matchingIdsService.getMatchingIdsResponse(any())).thenReturn(getNonUniqueIdsResponse);
+
+        // When
         activityEventBean.getNonUniqueIdsRequest(nonUniqueIdsMessageEventMessage);
+
+        // Then
+        ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
+        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(producer, times(1)).sendResponseMessageToSender(messageCaptor.capture(), textCaptor.capture());
+
+        TextMessage message = messageCaptor.getValue();
+        String text = textCaptor.getValue();
+
+        assertTrue(message.getText().contains("46DCC44C-0AE2-434C-BC14-B85D86B29512"));
+        assertTrue(text.contains("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb"));
     }
 
     @Test
     @SneakyThrows
-    public void testgetFishingActivityForTripsRequest(){
-        when(activityServiceBean.getFaAndTripIdsFromTripIds((List<FishingActivityForTripIds>) Mockito.any(Collection.class))).thenReturn(getFishingActivitiesForTripResponse);
+    public void getFishingActivityForTripsRequest() {
+        // Given
+        when(activityServiceBean.getFaAndTripIdsFromTripIds(any())).thenReturn(getFishingActivitiesForTripResponse);
+
+        // When
         activityEventBean.getFishingActivityForTripsRequest(faAndTripIdsFromTripIdsEventMessage);
+
+        // Then
+        ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
+        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(producer, times(1)).sendResponseMessageToSender(messageCaptor.capture(), textCaptor.capture());
+
+        TextMessage message = messageCaptor.getValue();
+        String text = textCaptor.getValue();
+
+        assertTrue(message.getText().contains("AUT-TRP-38778a5888837-000000"));
+        assertTrue(text.contains("GetFishingActivitiesForTripResponse"));
     }
 
-    private String getStrRequest1(){
+    private String getStrRequest1() {
         return "<ns2:GetNonUniqueIdsRequest xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
                 "    <method>GET_NON_UNIQUE_IDS</method>\n" +
                 "    <activityUniquinessList>\n" +
@@ -119,7 +152,7 @@ public class ActivityEventServiceBeanTest {
                 "</ns2:GetNonUniqueIdsRequest>";
     }
 
-    private String getResponseStr1(){
+    private String getResponseStr1() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ns2:GetNonUniqueIdsResponse xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
                 "    <method>GET_NON_UNIQUE_IDS</method>\n" +

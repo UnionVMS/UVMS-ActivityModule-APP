@@ -55,7 +55,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/commChannels")
     public Response getCommunicationChannels() {
-        log.info("getCommunicationChannels");
+        log.debug("getCommunicationChannels");
         return Response.ok(FaReportSourceEnum.values()).build();
     }
 
@@ -70,7 +70,7 @@ public class FishingActivityResource extends UnionVMSResource {
                                                @HeaderParam("scopeName") String scopeName,
                                                @HeaderParam("roleName") String roleName,
                                                FishingActivityQuery fishingActivityQuery) throws ServiceException {
-        log.info("[INFO] Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        log.debug("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
@@ -88,7 +88,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response listFishingTripsByQuery(FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
-        log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        log.debug("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
@@ -114,7 +114,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getPreviousFishingActivity(@PathParam("activityId") String activityId) {
         int converstedActivityId = 0;
-        log.info("Received ActivityId from frontEnd as: " + activityId);
+        log.debug("Received ActivityId from frontEnd as: " + activityId);
         if (activityId != null) {
 
             converstedActivityId = Integer.parseInt(activityId);
@@ -129,7 +129,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getNextFishingActivity(@PathParam("activityId") String activityId) {
         int converstedActivityId = 0;
-        log.info("Received ActivityId from frontEnd as: " + activityId);
+        log.debug("Received ActivityId from frontEnd as: " + activityId);
         if (activityId != null) {
 
             converstedActivityId = Integer.parseInt(activityId);

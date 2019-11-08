@@ -14,17 +14,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
@@ -35,22 +29,19 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFac
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import lombok.SneakyThrows;
 import org.apache.commons.beanutils.BeanUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFishingActivity;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by kovian on 09/02/2017.
  */
 public class FishingActivityViewMapperTest {
 
-    FishingActivityEntity fishingActivity;
+    private FishingActivityEntity fishingActivity;
 
     @Before
     @SneakyThrows
@@ -72,10 +63,8 @@ public class FishingActivityViewMapperTest {
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getGears());
         assertNotNull(fishingActivityViewDTO.getReportDetails());
-        assertTrue(fishingActivityViewDTO.getGears().size() == 1);
+        assertEquals(1, fishingActivityViewDTO.getGears().size());
         assertNull(mapperForView.mapFaEntityToFaDto(null));
-
-//        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Arrival.class);
     }
 
 
@@ -94,8 +83,6 @@ public class FishingActivityViewMapperTest {
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getReportDetails());
         assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
-
-        // printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Landing.class);
     }
 
     @Test
@@ -132,12 +119,42 @@ public class FishingActivityViewMapperTest {
 
     @Test
     @SneakyThrows
-    public void testGearShotAndRetrieval(){
-        FishingActivityEntity fishingActivityEntity1 = getFishingActivityEntity();
-        Set<FishingActivityEntity> fishingActivityEntity = new HashSet<>();
-        fishingActivityEntity.add(fishingActivityEntity1);
-        List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntity);
-        // printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
+    public void testGearShotAndRetrieval() {
+        // Given
+        FishingActivityEntity fishingActivity = getFishingActivityEntity();
+        Set<FishingActivityEntity> fishingActivityEntitySet = new HashSet<>();
+        fishingActivityEntitySet.add(fishingActivity);
+
+        // When
+        List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntitySet);
+
+        // Then
+        assertEquals(1, fishingActivityViewDTO.size());
+        GearShotRetrievalDto gearShotRetrievalDto = fishingActivityViewDTO.get(0);
+
+        assertEquals(fishingActivity.getTypeCode(), gearShotRetrievalDto.getType());
+        assertEquals(fishingActivity.getOccurence(), Instant.parse(gearShotRetrievalDto.getOccurrence() + "Z"));
+
+        assertEquals(1, fishingActivity.getFishingActivityIdentifiers().size());
+
+        assertEquals(1, fishingActivity.getDelimitedPeriods().size());
+
+        assertNull(gearShotRetrievalDto.getCalculatedDuration());
+        FishingGearEntity fishingGearEntity = fishingActivity.getFishingGears().iterator().next();
+        assertEquals(fishingGearEntity.getTypeCode(), gearShotRetrievalDto.getGear().getType());
+        assertEquals(fishingGearEntity.getFishingGearRole().iterator().next().getRoleCode(), gearShotRetrievalDto.getGear().getRole());
+
+        assertEquals(1, gearShotRetrievalDto.getCharacteristics().size());
+        assertEquals(1, gearShotRetrievalDto.getGearProblems().size());
+
+        FluxLocationDto location = gearShotRetrievalDto.getLocation();
+        FluxLocationEntity fluxLocation = fishingActivity.getFluxLocations().iterator().next();
+        assertEquals(fluxLocation.getCountryId(), location.getCountryId());
+        assertEquals(fluxLocation.getSovereignRightsCountryCode(), location.getSovereignCountry());
+        assertEquals(fluxLocation.getJurisdictionCountryCode(), location.getJurisdictionCountry());
+        assertEquals(fluxLocation.getFluxLocationIdentifier(), location.getFluxLocationIdentifier());
+        assertEquals(fluxLocation.getFluxLocationIdentifierSchemeId(), location.getFluxLocationIdentifierSchemeId());
+        assertEquals(fluxLocation.getTypeCode(), location.getTypeCode());
     }
 
     @Test
@@ -163,24 +180,12 @@ public class FishingActivityViewMapperTest {
 
     @SneakyThrows
     private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
-        List<FaCatchEntity> faCatchList = new ArrayList<>();
         FaCatchEntity clone_1 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
         FaCatchEntity clone_2 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
         FaCatchEntity clone_3 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
         FaCatchEntity clone_4 = (FaCatchEntity) BeanUtils.cloneBean(faCatchExample);
 
-        faCatchList.add(cloneEntity(clone_1, "LSC", 100.00));
-        faCatchList.add(cloneEntity(clone_2, "LSC", 100.00));
-        faCatchList.add(cloneEntity(clone_3, "BMS", 200.00));
-        faCatchList.add(cloneEntity(clone_4, "BMS", 200.00));
-
         return new HashSet<>(Arrays.asList(clone_1, clone_2, clone_3, clone_4));
-    }
-
-    private FaCatchEntity cloneEntity(FaCatchEntity faCatchExample, String fishClassCode, Double weight) {
-        faCatchExample.setFishClassCode(fishClassCode);
-        faCatchExample.setCalculatedWeightMeasure(weight);
-        return faCatchExample;
     }
 
     private FLUXFAReportMessage getActivityDataFromXML() throws JAXBException {
@@ -190,26 +195,10 @@ public class FishingActivityViewMapperTest {
         return (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
     }
 
-    private FishingActivityEntity getFishingActivityEntity() throws JAXBException {
-        if(fishingActivity == null){
+    private FishingActivityEntity getFishingActivityEntity() {
+        if (fishingActivity == null) {
             initFishingActivityEntity();
         }
         return fishingActivity;
-    }
-
-
-    private void printDtoOnConsole(Object fishingActivityViewDTO, final Class<?> view) throws JsonProcessingException {
-        System.out.println(getObjectMapperForView(view).configure(SerializationFeature.INDENT_OUTPUT, true).writeValueAsString(fishingActivityViewDTO));
-    }
-
-    @NotNull
-    private ObjectMapper getObjectMapperForView(final Class<?> view) {
-        return new ObjectMapper() {
-                private static final long serialVersionUID = 1L;
-                @Override
-                protected DefaultSerializerProvider _serializerProvider(SerializationConfig config) {
-                    return super._serializerProvider(config.withView(view));
-                }
-            };
     }
 }

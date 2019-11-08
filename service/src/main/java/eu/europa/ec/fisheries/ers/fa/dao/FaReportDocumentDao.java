@@ -26,7 +26,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,7 +39,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     private static final String REPORT_REF_ID = "reportRefId";
     private static final String SCHEME_REF_ID = "schemeRefId";
     private static final String TRIP_ID = "tripId";
-    private static final String VESSEL_ID = "vesselId";
     private static final String STATUSES = "statuses";
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
@@ -134,10 +132,10 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     }
 
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated) {
-        return loadReports(tripId, consolidated, null, null, null, null);
+        return loadReports(tripId, consolidated, null, null);
     }
 
-    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, String vesselId, String schemeId, Instant startDate, Instant endDate) {
+    public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, Instant startDate, Instant endDate) {
 
         Set<String> statuses = new HashSet<>();
         statuses.add(FaReportStatusType.NEW.name());
@@ -149,17 +147,15 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.LOAD_REPORTS, FaReportDocumentEntity.class);
         query.setParameter(TRIP_ID, tripId);
         query.setParameter(STATUSES, statuses);
-        query.setParameter(VESSEL_ID, vesselId);
-        query.setParameter(SCHEME_ID, schemeId);
 
-        query.setParameter(START_DATE, Timestamp.from(Instant.ofEpochSecond(-30_610_224_000L))); // The year 1000
-        query.setParameter(END_DATE, Timestamp.from(Instant.ofEpochSecond(32_503_680_000L))); // The year 3000
+        query.setParameter(START_DATE, Instant.ofEpochSecond(-30_610_224_000L)); // The year 1000
+        query.setParameter(END_DATE, Instant.ofEpochSecond(32_503_680_000L)); // The year 3000
 
         if (startDate != null) {
-            query.setParameter(START_DATE, Timestamp.from(startDate));
+            query.setParameter(START_DATE, startDate);
         }
         if (endDate != null) {
-            query.setParameter(END_DATE, Timestamp.from(endDate));
+            query.setParameter(END_DATE, endDate);
         }
 
         return query.getResultList();

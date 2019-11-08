@@ -59,12 +59,12 @@ public class FACatchResource extends UnionVMSResource {
                                                @HeaderParam("roleName") String roleName,
                                                FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
-        log.info("Query Received to getFACatchSummaryReport. " + fishingActivityQuery);
+        log.debug("Query Received to getFACatchSummaryReport. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
         FACatchSummaryReportResponse faCatchSummaryReportResponse = reportService.getFACatchSummaryReportResponse(fishingActivityQuery);
-        log.info("Successfully processed");
+        log.debug("Successfully processed");
         return createSuccessResponse(faCatchSummaryReportResponse);
     }
 
@@ -78,7 +78,7 @@ public class FACatchResource extends UnionVMSResource {
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
                                              @PathParam("fishingTripId") String tripId) throws ServiceException {
-        log.info("getFACatchSummaryDetails: " + tripId);
+        log.debug("getFACatchSummaryDetails: " + tripId);
         return createSuccessResponse( reportService.getCatchDetailsScreen(tripId));
     }
 }

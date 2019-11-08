@@ -102,7 +102,7 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "type_code_listid", nullable = false)
 	private String typeCodeListid;
 
-	@Column(name = "occurence", length = 29)
+	@Column(name = "occurence")
 	private Instant occurence;
 
 	@Column(name = "reason_code")
@@ -167,7 +167,7 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name="deleted_by")
 	private Integer deletedBy;
 
-	@Column(name = "calculated_start_time", length = 29)
+	@Column(name = "calculated_start_time")
 	private Instant calculatedStartTime;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

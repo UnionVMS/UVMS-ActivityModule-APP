@@ -420,7 +420,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     private void mapRegistrationEvent(VesselTransportMeans target, RegistrationEventEntity source) {
         if (ObjectUtils.allNotNull(target, source)){
             RegistrationEvent registrationEvent = new RegistrationEvent();
-            mapOccurrenceDateTime(registrationEvent, source.getOccurrenceDatetime().toInstant());
+            mapOccurrenceDateTime(registrationEvent, source.getOccurrenceDatetime());
             mapDescription(registrationEvent, source.getDescription(), source.getDescLanguageId());
             mapRelatedRegistrationLocation(registrationEvent, source.getRegistrationLocation());
             target.setSpecifiedRegistrationEvents(singletonList(registrationEvent));
