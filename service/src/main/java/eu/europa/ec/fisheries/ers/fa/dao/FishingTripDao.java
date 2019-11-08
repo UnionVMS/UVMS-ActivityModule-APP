@@ -27,7 +27,6 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripIdSearchBuilder;
-import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -67,27 +66,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         List<FluxPartyIdentifierEntity> resultList = query.getResultList();
         return CollectionUtils.isNotEmpty(resultList) ? resultList.get(0).getFluxPartyIdentifierId() : StringUtils.EMPTY;
     }
-
-    /**
-     * Get all the Fishing Trip entities for matching Filters
-     *
-     * @param query FishingActivityQuery
-     * @throws ServiceException
-     */
-    public List<FishingTripEntity> getFishingTripsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
-        Query listQuery = getQueryForFilterFishingTrips(query);
-
-        PaginationDto pagination = query.getPagination();
-        if (pagination != null) {
-            log.debug("Pagination information getting applied to Query is: Offset :"+pagination.getOffset() +" PageSize:"+pagination.getPageSize());
-
-            listQuery.setFirstResult(pagination.getOffset());
-            listQuery.setMaxResults(pagination.getPageSize());
-        }
-
-        return listQuery.getResultList();
-    }
-
 
     /**
      * Get all the Fishing Trip entities for matching Filters
@@ -139,14 +117,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         Long nrOfFa = (Long) query.getResultList().get(0);
         return nrOfFa.intValue();
 
-    }
-
-    private Query getQueryForFilterFishingTrips(FishingActivityQuery query) throws ServiceException {
-        FishingTripSearchBuilder search = new FishingTripSearchBuilder();
-        StringBuilder sqlToGetActivityList = search.createSQL(query);
-        log.debug("SQL:" + sqlToGetActivityList);
-        Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
-        return search.fillInValuesForTypedQuery(query, typedQuery);
     }
 
     private Query getQueryForFilterFishingTripIds(FishingActivityQuery query) throws ServiceException {

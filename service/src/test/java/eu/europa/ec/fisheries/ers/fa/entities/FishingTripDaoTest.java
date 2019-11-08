@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,33 +40,6 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
     @Before
     public void prepare() {
         super.prepare();
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetFishingTripsForMatchingFilterCriteria() throws Exception {
-
-        dbSetupTracker.skipNextLaunch();
-
-        Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
-
-        Map<SearchFilter,List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        List<String> activityTypeValues=new ArrayList<>();
-        activityTypeValues.add("FISHING_OPERATION");
-        activityTypeValues.add("DEPARTURE");
-        activityTypeValues.add("ARRIVAL");
-
-        FishingActivityQuery query = new FishingActivityQuery();
-        query.setSearchCriteriaMap(searchCriteriaMap);
-        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
-
-        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
-        List<FishingTripEntity> list= dao.getFishingTripsForMatchingFilterCriteria(query);
-
-        System.out.println("done:" + list.size());
-
-        assertNotNull(list);
-
     }
 
     @Test
