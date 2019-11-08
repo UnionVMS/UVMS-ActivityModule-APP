@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mdr.client.MdrRestClient;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
@@ -26,7 +25,7 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
     private MdrRestClient mdrRestClient;
 
     @Override
-    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> filterColumns, Integer nrOfResults, String... returnColumns) throws ServiceException {
+    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> filterColumns, Integer nrOfResults, String... returnColumns) {
         Map<String, List<String>> columnNameValuesMap = prepareColumnNameValuesMap(returnColumns);
         MdrGetCodeListResponse response = mdrRestClient.getAcronym(acronym, filter, filterColumns, nrOfResults);
         for (ObjectRepresentation objectRep : response.getDataSets()) {

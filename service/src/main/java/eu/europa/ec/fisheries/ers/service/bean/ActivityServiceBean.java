@@ -19,7 +19,11 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.service.*;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -35,7 +39,11 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFac
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityWithIdentifiers;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -55,7 +63,13 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -190,7 +204,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
         fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
         log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
-        addPortDescriptions(fishingActivityViewDTO, "LOCATION");
+        addPortDescriptions(fishingActivityViewDTO);
         if(withHistory){
             Stopwatch stopwatch = Stopwatch.createStarted();
             fishingActivityViewDTO.setHistory(getActivityHistory(activityEntityFound));
@@ -363,23 +377,18 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return actIDList;
     }
 
-    private void addPortDescriptions(FishingActivityViewDTO fishingActivityViewDTO, String fluxLocationIdSchemeId) {
-        if (fishingActivityViewDTO == null || StringUtils.isBlank(fluxLocationIdSchemeId)) {
+    private void addPortDescriptions(FishingActivityViewDTO fishingActivityViewDTO) {
+        if (fishingActivityViewDTO == null) {
             return;
         }
-        final String ACRONYM = "LOCATION";
-        String filter;
-        final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
-        Integer nrOfResults = 1;
+        final List<String> columnsList = new ArrayList<>(Collections.singletonList("code"));
         for (FluxLocationDto fluxLocationDto : Utils.safeIterable(fishingActivityViewDTO.getLocations())) {
-            if (fluxLocationIdSchemeId.equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
+            if ("LOCATION".equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
                 try {
-                    filter = fluxLocationDto.getFluxLocationIdentifier();
-                    List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "description").get("description");
+                    String filter = fluxLocationDto.getFluxLocationIdentifier();
+                    List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr("LOCATION", filter, columnsList, 1, "description").get("description");
                     String codeDescription = codeDescriptions.get(0);
                     fluxLocationDto.setPortDescription(codeDescription);
-                } catch (ServiceException e) {
-                    log.error("Error while trying to set port description on FluxLocationDto.", e);
                 } catch (IndexOutOfBoundsException iobe) {
                     log.error("Error while trying to set port description on FluxLocationDto! Description for code: " + fluxLocationDto.getTypeCode() +
                             " doesn't exist", iobe);

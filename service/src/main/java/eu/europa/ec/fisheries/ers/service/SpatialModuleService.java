@@ -28,9 +28,8 @@ public interface SpatialModuleService {
      *
      * @param areaIdentifiers Area Ids from Dataset
      * @return Filtered WKT
-     * @throws ServiceException
      */
-    String getFilteredAreaGeom(Collection<AreaIdentifierType> areaIdentifiers) throws ServiceException;
+    String getFilteredAreaGeom(Collection<AreaIdentifierType> areaIdentifiers);
 
     String getGeometryForPortCode(String portCode) throws ServiceException;
 }

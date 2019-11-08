@@ -13,12 +13,27 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.MicroMovementComparator;
-import eu.europa.ec.fisheries.ers.service.*;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.FluxMessageService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
+import eu.europa.ec.fisheries.ers.service.MovementModuleService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
@@ -46,7 +61,14 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Stateless
 @Transactional
@@ -368,29 +390,24 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             return null;
         }
         final List<String> columnsList = new ArrayList<>(Collections.singletonList("code"));
-        try {
-            Map<String, List<String>> portValuesFromMdr = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", fluxLocationIdentifier, columnsList, 1, "latitude", "longitude");
-            List<String> latitudeValues = portValuesFromMdr.get("latitude");
-            List<String> longitudeValues = portValuesFromMdr.get("longitude");
-            Double latitude = null;
-            Double longitude = null;
-            if (CollectionUtils.isNotEmpty(latitudeValues)) {
-                String latitudeStr = latitudeValues.get(0);
-                if (latitudeStr != null) {
-                    latitude = Double.parseDouble(latitudeStr);
-                }
+        Map<String, List<String>> portValuesFromMdr = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", fluxLocationIdentifier, columnsList, 1, "latitude", "longitude");
+        List<String> latitudeValues = portValuesFromMdr.get("latitude");
+        List<String> longitudeValues = portValuesFromMdr.get("longitude");
+        Double latitude = null;
+        Double longitude = null;
+        if (CollectionUtils.isNotEmpty(latitudeValues)) {
+            String latitudeStr = latitudeValues.get(0);
+            if (latitudeStr != null) {
+                latitude = Double.parseDouble(latitudeStr);
             }
-            if (CollectionUtils.isNotEmpty(longitudeValues)) {
-                String longitudeStr = longitudeValues.get(0);
-                if (longitudeStr != null) {
-                    longitude = Double.parseDouble(longitudeStr);
-                }
-            }
-            return GeometryUtils.createPoint(longitude, latitude);
-        } catch (ServiceException e) {
-            log.error("Error while retriving values from MDR.", e);
         }
-        return null;
+        if (CollectionUtils.isNotEmpty(longitudeValues)) {
+            String longitudeStr = longitudeValues.get(0);
+            if (longitudeStr != null) {
+                longitude = Double.parseDouble(longitudeStr);
+            }
+        }
+        return GeometryUtils.createPoint(longitude, latitude);
     }
 
     /**

@@ -35,9 +35,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MovementModuleServiceBean extends ModuleService implements MovementModuleService {
 
-    private static final long ONE_DAY_IN_MILLIS = 24L * 60L * 60L * 1000L;
-    private static final String RANGE_CRITERIA_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss Z";
-
     @EJB
     private MovementRestClient movementClient;
 
