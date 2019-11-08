@@ -26,7 +26,7 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
     private MdrRestClient mdrRestClient;
 
     @Override
-    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> filterColumns, Integer nrOfResults, String... returnColumns) throws ServiceException {
+    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> filterColumns, Integer nrOfResults, String... returnColumns) {
         Map<String, List<String>> columnNameValuesMap = prepareColumnNameValuesMap(returnColumns);
         MdrGetCodeListResponse response = mdrRestClient.getAcronym(acronym, filter, filterColumns, nrOfResults);
         for (ObjectRepresentation objectRep : response.getDataSets()) {
