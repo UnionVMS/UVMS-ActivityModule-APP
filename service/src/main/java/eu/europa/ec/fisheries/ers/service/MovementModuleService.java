@@ -29,7 +29,6 @@ public interface MovementModuleService {
      * @param startDate start date
      * @param endDate end date
      * @return list of Movements
-     * @throws ServiceException
      */
     List<MicroMovement> getMovement(List<String> vesselIds, Instant startDate, Instant endDate) throws ServiceException;
 }
