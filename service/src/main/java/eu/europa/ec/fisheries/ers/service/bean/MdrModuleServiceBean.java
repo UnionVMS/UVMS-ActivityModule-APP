@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.mdr.client.MdrRestClient;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
