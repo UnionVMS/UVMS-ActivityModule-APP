@@ -45,18 +45,6 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    @Ignore //FIXME
-    public void testFetchVesselTransportDetailsForFishingTrip() throws Exception {
-
-        dbSetupTracker.skipNextLaunch();
-        FishingTripEntity fishingTripEntity = dao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706");
-        assertNotNull(fishingTripEntity);
-        assertNotNull(fishingTripEntity.getFaCatch());
-        assertNotNull(fishingTripEntity.getFishingActivity());
-    }
-
-    @Test
-    @SneakyThrows
     public void testGetFishingTripsForMatchingFilterCriteria() throws Exception {
 
         dbSetupTracker.skipNextLaunch();

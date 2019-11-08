@@ -52,22 +52,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return em;
     }
 
-    public FishingTripEntity fetchVesselTransportDetailsForFishingTrip(String fishingTripId) {
-        String sql = "SELECT DISTINCT ft from FishingTripEntity ft " +
-                "  JOIN FETCH ft.fishingActivity a" +
-                "  JOIN FETCH a.faReportDocument fa" +
-                "  JOIN FETCH fa.vesselTransportMeans vt" +
-                "  JOIN FETCH vt.contactParty cparty " +
-                "  JOIN FETCH cparty.structuredAddresses sa " +
-                "  JOIN FETCH cparty.contactPerson cPerson " +
-                "  JOIN FETCH ft.fishingTripIdentifiers fi " +
-                "  where fi.tripId =:fishingTripId and a is not null";
-        TypedQuery<FishingTripEntity> typedQuery = em.createQuery(sql, FishingTripEntity.class);
-        typedQuery.setParameter("fishingTripId", fishingTripId);
-        typedQuery.setMaxResults(1);
-        return typedQuery.getSingleResult();
-    }
-
     public List<FishingActivityEntity> getFishingActivitiesForFishingTripId(String fishingTripId){
         String sql = "SELECT DISTINCT a from FishingActivityEntity a JOIN a.fishingTrips fishingTrips" +
                 "  JOIN fishingTrips.fishingTripIdentifiers fi" +
