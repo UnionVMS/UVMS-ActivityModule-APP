@@ -18,17 +18,22 @@ import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.bean.FaReportSaverBean;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
@@ -81,6 +86,12 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @EJB
     private ActivityRulesModuleService activityRulesModuleServiceBean;
 
+    @EJB
+    private FishingTripService fishingTripService;
+
+    @EJB
+    private ActivityErrorMessageServiceBean producer;
+
     @Override
     public void onMessage(Message message) {
 
@@ -110,7 +121,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faRepQueryResponseAfterMapping, "getTheOnValueFromSomewhere", getReportRequest.getRequestType(), textMessage.getJMSMessageID());
                     break;
                 case GET_FISHING_TRIPS:
-                    getFishingTripListEvent.fire(new EventMessage(textMessage));
+                    FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, FishingTripRequest.class);
+                    FishingTripResponse baseResponse = fishingTripService.filterFishingTripsForReporting(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
+                    String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
+                    producer.sendResponseMessageToSender(textMessage, response, 3_600_000L);
                     break;
                 case GET_FA_CATCH_SUMMARY_REPORT:
                     getFACatchSummaryReportEvent.fire(new EventMessage(textMessage));
@@ -125,7 +139,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     log.error("[ Request method {} is not implemented ]", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));
             }
-        } catch (ActivityModelMarshallException | ClassCastException | JMSException | ActivityModuleException e) {
+        } catch (ActivityModelMarshallException | ClassCastException | JMSException | ActivityModuleException | ServiceException e) {
             log.error("[ Error when receiving message in activity: ] {}", e);
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
         }

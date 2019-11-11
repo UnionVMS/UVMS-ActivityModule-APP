@@ -14,7 +14,6 @@ import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityErrorMe
 import eu.europa.ec.fisheries.ers.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTripsRequestEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
@@ -24,7 +23,6 @@ import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -33,8 +31,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
@@ -122,24 +118,6 @@ public class ActivityEventServiceBean implements EventService {
             }
             subscriptionProducer.sendMessageWithSpecificIds(JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest), rulesQueue , null, jmsCorrelationID);
         } catch ( JAXBException | JMSException e) {
-            sendError(message, e);
-        }
-    }
-
-    @Override
-    public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) {
-        log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "FishingTripIds:");
-        try {
-            log.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
-            FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
-            log.debug("FishingTriId Request Unmarshalled");
-            FishingTripResponse baseResponse = fishingTripService.filterFishingTripsForReporting(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
-            log.debug("FishingTripResponse ::: "+FACatchSummaryHelper.printJsonstructure(baseResponse));
-            String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
-            log.debug("FishingTriId response marshalled");
-            producer.sendResponseMessageToSender(message.getJmsMessage(), response, 3_600_000L);
-            log.debug("Response sent back.");
-        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
     }

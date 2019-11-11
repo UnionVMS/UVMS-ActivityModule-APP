@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.ers.service;
 
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTripsRequestEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
@@ -29,8 +28,6 @@ import javax.enterprise.event.Observes;
 public interface EventService {
 
     void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message);
-
-    void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) throws ServiceException;
 
     void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException;
 
