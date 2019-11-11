@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
+import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityConsumerBean;
+import eu.europa.ec.fisheries.ers.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;

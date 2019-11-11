@@ -94,12 +94,6 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>message</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>client-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -557,7 +551,6 @@
         <module>LIQUIBASE</module>
         <module>rest</module>
         <module>service</module>
-        <module>message</module>
         <module>module</module>
         <module>client-model</module>
     </modules>

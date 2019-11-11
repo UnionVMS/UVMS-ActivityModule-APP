@@ -27,12 +27,6 @@
             <artifactId>client-model</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>message</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
 
         <!-- UVMS COMMONS DEPENDENCIES -->
 

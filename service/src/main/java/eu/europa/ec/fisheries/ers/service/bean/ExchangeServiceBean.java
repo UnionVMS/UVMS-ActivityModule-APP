@@ -15,8 +15,8 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.JMSException;
 
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityEventQueueConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
+import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityEventQueueConsumerBean;
+import eu.europa.ec.fisheries.ers.activity.message.producer.ExchangeProducerBean;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.ExchangeModuleRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 
