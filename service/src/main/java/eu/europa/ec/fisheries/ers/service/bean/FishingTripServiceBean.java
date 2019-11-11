@@ -692,7 +692,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      *  Returns TripWidgetDto based on the tripId and activityId
      */
     public TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId) {
-        if (activityEntity == null && tripId == null) {
+        if (activityEntity == null) {
             return null;
         }
         TripWidgetDto tripWidgetDto = new TripWidgetDto();
@@ -703,7 +703,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
                 tripOverviewDtoList.add(tripOverviewDto);
                 tripWidgetDto.setTrips(tripOverviewDtoList);
-                if (activityEntity != null && activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
+                if (activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
                     Set<VesselTransportMeansEntity> vesselTransportMeansEntities = activityEntity.getFaReportDocument().getVesselTransportMeans();
                     for (VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportMeansEntities) {
                         if (vesselTransportMeansEntity.getFishingActivity() == null) {
@@ -729,7 +729,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException {
         CatchEvolutionDTO catchEvolution = new CatchEvolutionDTO();
         List<FishingActivityEntity> fishingActivities = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
-        catchEvolution.setTripDetails(getTripWidgetDto(fishingActivities.get(0), fishingTripId));
+        FishingActivityEntity activityEntity = fishingActivities.isEmpty() ? null : fishingActivities.get(0);
+        catchEvolution.setTripDetails(getTripWidgetDto(activityEntity, fishingTripId));
         catchEvolution.setCatchEvolutionProgress(prepareCatchEvolutionProgress(fishingActivities));
 
         return catchEvolution;
