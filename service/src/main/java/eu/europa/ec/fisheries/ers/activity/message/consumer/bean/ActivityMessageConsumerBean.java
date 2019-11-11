@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.activity.message.consumer.bean;
 
 
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -26,12 +27,14 @@ import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.ers.service.bean.FaReportSaverBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +76,8 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
+    @EJB
+    private FaReportSaverBean saveReportBean;
 
     @Override
     public void onMessage(Message message) {
@@ -94,6 +99,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
             }
             switch (method) {
                 case GET_FLUX_FA_REPORT:
+                    SetFLUXFAReportOrQueryMessageRequest reportOrQueryMessageRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, SetFLUXFAReportOrQueryMessageRequest.class);
+                    saveReportBean.handleFaReportSaving(reportOrQueryMessageRequest);
+                    break;
                 case GET_FLUX_FA_QUERY:
                     receiveFishingActivityEvent.fire(new EventMessage(textMessage, method));
                     break;
