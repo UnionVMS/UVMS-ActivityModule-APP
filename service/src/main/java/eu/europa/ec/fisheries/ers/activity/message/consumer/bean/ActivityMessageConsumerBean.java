@@ -11,22 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.activity.message.consumer.bean;
 
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJB;
-import javax.ejb.MessageDriven;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
-
 import eu.europa.ec.fisheries.ers.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.bean.FaReportSaverBean;
@@ -43,6 +32,16 @@ import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticConte
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
+import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
+import javax.ejb.MessageDriven;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;
+
 @MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
@@ -55,10 +54,6 @@ import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessag
 })
 @Slf4j
 public class ActivityMessageConsumerBean implements MessageListener {
-
-    @Inject
-    @ReceiveFishingActivityRequestEvent
-    private Event<EventMessage> receiveFishingActivityEvent;
 
     @Inject
     @GetFishingTripListEvent

@@ -15,9 +15,9 @@ import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTr
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+
 import javax.ejb.Local;
 import javax.enterprise.event.Observes;
 
@@ -27,8 +27,6 @@ import javax.enterprise.event.Observes;
  */
 @Local
 public interface EventService {
-
-    void getFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage message);
 
     void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message);
 

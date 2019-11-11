@@ -10,27 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBException;
-
-import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.EventService;
-import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
-import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.ers.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFACatchSummaryReportEvent;
@@ -38,9 +17,16 @@ import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTr
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.activity.message.producer.SubscriptionProducerBean;
+import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.EventService;
+import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
@@ -54,7 +40,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesFo
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -62,6 +47,18 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.xml.bind.JAXBException;
 
 @LocalBean
 @Stateless
@@ -130,34 +127,6 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     @Override
-    public void getFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
-        log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "SetFLUXFAReportOrQueryMessageRequest");
-        try {
-            TextMessage jmsMessage = eventMessage.getJmsMessage();
-            SetFLUXFAReportOrQueryMessageRequest request = JAXBMarshaller.unmarshallTextMessage(jmsMessage, SetFLUXFAReportOrQueryMessageRequest.class);
-            log.info("SetFLUXFAReportOrQueryMessageRequest unmarshalled");
-            if(request == null){
-                log.error("Unmarshalled SetFLUXFAReportOrQueryMessageRequest is null. Something went wrong during jms comm?!");
-                return;
-            }
-            switch (eventMessage.getMethod()) {
-                case GET_FLUX_FA_REPORT :
-                    saveReportBean.handleFaReportSaving(request);
-                    break;
-                case GET_FLUX_FA_QUERY:
-                    log.warn("TODO : FAQUERY mappers NOT implemented yet....");
-                    FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
-                    // TODO : Implement me... Map tp real HQl/SQL query and run the query and map the results to FLUXFAReportMessage and send it to
-                    FLUXFAReportMessage faRepQueryResponseAfterMapping = new FLUXFAReportMessage();
-                    activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faRepQueryResponseAfterMapping, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID());
-                    break;
-            }
-        } catch (ActivityModelMarshallException | ActivityModuleException | JMSException e) {
-            sendError(eventMessage, e);
-        }
-    }
-
-    @Override
     public void getFishingTripList(@Observes @GetFishingTripListEvent EventMessage message) {
         log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "FishingTripIds:");
         try {
@@ -174,7 +143,6 @@ public class ActivityEventServiceBean implements EventService {
             sendError(message, e);
         }
     }
-
 
     @Override
     public void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message)  {
