@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.bean.FaReportSaverBean;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
@@ -28,6 +29,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
@@ -92,6 +95,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @EJB
     private ActivityErrorMessageServiceBean producer;
 
+    @EJB
+    private FaCatchReportService faCatchReportService;
+
     @Override
     public void onMessage(Message message) {
 
@@ -121,13 +127,16 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faRepQueryResponseAfterMapping, "getTheOnValueFromSomewhere", getReportRequest.getRequestType(), textMessage.getJMSMessageID());
                     break;
                 case GET_FISHING_TRIPS:
-                    FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, FishingTripRequest.class);
-                    FishingTripResponse baseResponse = fishingTripService.filterFishingTripsForReporting(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
-                    String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
-                    producer.sendResponseMessageToSender(textMessage, response, 3_600_000L);
+                    FishingTripRequest fishingTripRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, FishingTripRequest.class);
+                    FishingTripResponse fishingTripResponse = fishingTripService.filterFishingTripsForReporting(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(fishingTripRequest));
+                    String fishingTripResponseString = JAXBMarshaller.marshallJaxBObjectToString(fishingTripResponse);
+                    producer.sendResponseMessageToSender(textMessage, fishingTripResponseString, 3_600_000L);
                     break;
                 case GET_FA_CATCH_SUMMARY_REPORT:
-                    getFACatchSummaryReportEvent.fire(new EventMessage(textMessage));
+                    FACatchSummaryReportRequest faCatchSummaryReportRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, FACatchSummaryReportRequest.class);
+                    FACatchSummaryReportResponse faCatchSummaryReportResponse = faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(faCatchSummaryReportRequest));
+                    String faCatchSummaryReportResponseString = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
+                    producer.sendResponseMessageToSender(textMessage, faCatchSummaryReportResponseString);
                     break;
                 case GET_NON_UNIQUE_IDS:
                     getNonUniqueIdsRequest.fire(new EventMessage(textMessage));

@@ -10,12 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service;
 
-import eu.europa.ec.fisheries.ers.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 import javax.ejb.Local;
 import javax.enterprise.event.Observes;
@@ -28,8 +26,6 @@ import javax.enterprise.event.Observes;
 public interface EventService {
 
     void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message);
-
-    void getFACatchSummaryReport(@Observes @GetFACatchSummaryReportEvent EventMessage message) throws ServiceException;
 
     void getNonUniqueIdsRequest(@Observes @GetNonUniqueIdsRequestEvent EventMessage message);
 
