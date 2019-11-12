@@ -234,25 +234,6 @@ public class FishingTripServiceBeanTest {
         return nextTrips;
     }
 
-
-    @Test
-    @SneakyThrows
-    public void getFishingTripSummary() {
-        when(fishingTripDao.fetchVesselTransportDetailsForFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFishingTripEntity());
-        when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
-
-        //Trigger
-        FishingTripSummaryViewDTO fishingTripSummaryViewDTO = fishingTripService.getFishingTripSummaryAndReports("NOR-TRP-20160517234053706", null);
-
-        Mockito.verify(fishingActivityDao, times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class), Mockito.any(Geometry.class));
-
-        //Verify
-        assertEquals(3, fishingTripSummaryViewDTO.getSummary().size());
-        assertEquals(3, fishingTripSummaryViewDTO.getActivityReports().size());
-
-    }
-
-
     @Test
     @SneakyThrows
     public void retrieveFaCatchesForFishingTrip() {
