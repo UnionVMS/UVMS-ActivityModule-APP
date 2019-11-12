@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityMessageConsumerBean;
-import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivitySubscriptionCheckMessageConsumerBean;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
@@ -76,14 +75,8 @@ public class ActivityMessageConsumerBeanTest {
     @InjectMocks
     private ActivityMessageConsumerBean consumer;
 
-    @InjectMocks
-    private ActivitySubscriptionCheckMessageConsumerBean subscriptionConsumer;
-
     @Mock
     private ClientSession session;
-
-    @Mock
-    private Event<EventMessage> mapToSubscriptionRequest;
 
     @Mock
     private Event<EventMessage> errorEvent;
@@ -129,22 +122,6 @@ public class ActivityMessageConsumerBeanTest {
 //        verify(getFishingTripListEvent, times(1)).fire(any(EventMessage.class));
 //        verify(getFACatchSummaryReportEvent, times(1)).fire(any(EventMessage.class));
 //        verify(getNonUniqueIdsRequest, times(1)).fire(any(EventMessage.class));
-    }
-
-    @Test
-    @SneakyThrows
-    public void testOnMessageMethodForSubscriptionRequest() {
-        mockStatic(MappedDiagnosticContext.class);
-        PowerMockito.doNothing().when(MappedDiagnosticContext.class, "addMessagePropertiesToThreadMappedDiagnosticContext", Mockito.any(TextMessage.class));
-        GetNonUniqueIdsRequest request = new GetNonUniqueIdsRequest();
-        request.setMethod(ActivityModuleMethod.MAP_TO_SUBSCRIPTION_REQUEST);
-        ActiveMQTextMessage textMessage = new ActiveMQTextMessage(session);
-        final String strReq = JAXBMarshaller.marshallJaxBObjectToString(request);
-        Whitebox.setInternalState(textMessage, "text", new SimpleString(strReq));
-        subscriptionConsumer.onMessage(textMessage);
-        PowerMockito.verifyStatic();
-        MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
-        verify(mapToSubscriptionRequest, times(1)).fire(any(EventMessage.class));
     }
 
     @Test
