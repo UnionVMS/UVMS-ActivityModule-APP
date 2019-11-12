@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.message;
 
-import eu.europa.ec.fisheries.ers.activity.message.producer.ActivityResponseQueueProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.wsdl.user.module.GetUserContextResponse;
 import eu.europa.ec.fisheries.wsdl.user.types.*;

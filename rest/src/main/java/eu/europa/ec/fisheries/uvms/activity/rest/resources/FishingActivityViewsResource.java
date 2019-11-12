@@ -12,11 +12,11 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.ers.activity.service.ActivityService;
-import eu.europa.ec.fisheries.ers.activity.service.dto.view.ActivityViewDto;
-import eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView;
-import eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView.FishingOperation;
-import eu.europa.ec.fisheries.ers.activity.service.mapper.view.base.ActivityViewEnum;
+import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityViewDto;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.FishingOperation;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
@@ -37,12 +37,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView.AreaEntry;
-import static eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView.Arrival;
-import static eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView.Departure;
-import static eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
-import static eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView.Landing;
-import static eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
+import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.AreaEntry;
+import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.Arrival;
+import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.Departure;
+import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
+import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.Landing;
+import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
 
 /**
  * Created by kovian on 08/02/2017.

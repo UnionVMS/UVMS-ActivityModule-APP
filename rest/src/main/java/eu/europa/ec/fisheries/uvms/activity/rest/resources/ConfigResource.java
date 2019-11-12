@@ -23,8 +23,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import eu.europa.ec.fisheries.ers.activity.service.ActivityConfigService;
-import eu.europa.ec.fisheries.ers.activity.service.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.ActivityConfigService;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;

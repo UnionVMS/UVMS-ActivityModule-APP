@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.uvms.activity.rest.message;
 
 import eu.europa.ec.fisheries.schema.config.types.v1.PullSettingsStatus;
 import eu.europa.ec.fisheries.schema.config.types.v1.SettingType;
-import eu.europa.ec.fisheries.ers.activity.message.producer.ActivityResponseQueueProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.config.model.mapper.ModuleResponseMapper;
 
 import javax.ejb.ActivationConfigProperty;
