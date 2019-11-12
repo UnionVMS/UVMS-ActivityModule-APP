@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.AssetModuleServiceBean;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
@@ -19,7 +18,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssetModuleServiceBeanTest {
@@ -36,7 +35,7 @@ public class AssetModuleServiceBeanTest {
     private AssetModuleServiceBean assetModuleServiceBean;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         assetModuleServiceBean = new AssetModuleServiceBean(assetProducerBean, activityConsumerBean, assetClient);
     }
 
