@@ -19,8 +19,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
+import eu.europa.ec.fisheries.ers.activity.service.FaCatchReportService;
+import eu.europa.ec.fisheries.ers.activity.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;

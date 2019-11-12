@@ -13,19 +13,17 @@ package eu.europa.ec.fisheries.ers.activity.message.consumer.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
-
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Queue;
 
 @Stateless
 @Slf4j

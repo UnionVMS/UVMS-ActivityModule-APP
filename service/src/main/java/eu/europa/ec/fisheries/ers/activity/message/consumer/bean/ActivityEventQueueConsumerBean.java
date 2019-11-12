@@ -10,15 +10,14 @@
 
 package eu.europa.ec.fisheries.ers.activity.message.consumer.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
+
 import javax.annotation.Resource;
-import javax.ejb.Local;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 import javax.jms.Queue;
-
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
 
 @Stateless
 @LocalBean

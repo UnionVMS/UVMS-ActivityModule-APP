@@ -11,8 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.activity.message.event.carrier;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFault;
-
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
+
 import javax.jms.TextMessage;
 
 /**

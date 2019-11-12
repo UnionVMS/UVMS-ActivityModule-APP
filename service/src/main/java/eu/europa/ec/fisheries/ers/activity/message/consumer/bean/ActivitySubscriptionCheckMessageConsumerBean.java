@@ -2,10 +2,9 @@ package eu.europa.ec.fisheries.ers.activity.message.consumer.bean;
 
 
 import eu.europa.ec.fisheries.ers.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.activity.message.producer.SubscriptionProducerBean;
-import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
+import eu.europa.ec.fisheries.ers.activity.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;

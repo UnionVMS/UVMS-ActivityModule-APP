@@ -11,9 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.activity.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.ers.activity.service.ActivityService;
+import eu.europa.ec.fisheries.ers.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
