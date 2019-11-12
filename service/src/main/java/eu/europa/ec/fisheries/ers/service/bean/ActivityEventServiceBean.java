@@ -10,25 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.ers.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.activity.message.producer.SubscriptionProducerBean;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
@@ -56,12 +48,6 @@ public class ActivityEventServiceBean implements EventService {
     @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
-
-    @EJB
-    private ActivityService activityServiceBean;
-
-    @EJB
-    private ActivityErrorMessageServiceBean producer;
 
     @EJB
     private SubscriptionProducerBean subscriptionProducer;
@@ -93,20 +79,6 @@ public class ActivityEventServiceBean implements EventService {
             }
             subscriptionProducer.sendMessageWithSpecificIds(JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest), rulesQueue , null, jmsCorrelationID);
         } catch ( JAXBException | JMSException e) {
-            sendError(message, e);
-        }
-    }
-
-    @Override
-    public void getFishingActivityForTripsRequest(@Observes @GetFishingActivityForTripsRequestEvent EventMessage message){
-        log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + " Fishing activities related to trips.");
-        try {
-            log.debug(message.getJmsMessage().getText());
-            GetFishingActivitiesForTripRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetFishingActivitiesForTripRequest.class);
-            GetFishingActivitiesForTripResponse response = activityServiceBean.getFaAndTripIdsFromTripIds(request.getFaAndTripIds());
-            String responseStr = JAXBMarshaller.marshallJaxBObjectToString(response);
-            producer.sendResponseMessageToSender(message.getJmsMessage(), responseStr);
-        } catch (ActivityModelMarshallException | JMSException | ServiceException e) {
             sendError(message, e);
         }
     }

@@ -10,10 +10,12 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityMessageConsumerBean;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivitySubscriptionCheckMessageConsumerBean;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -22,9 +24,13 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
 import org.apache.activemq.artemis.api.core.SimpleString;
 import org.apache.activemq.artemis.api.core.client.ClientSession;
@@ -68,40 +74,28 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class ActivityMessageConsumerBeanTest {
 
     @InjectMocks
-    ActivityMessageConsumerBean consumer;
+    private ActivityMessageConsumerBean consumer;
 
     @InjectMocks
-    ActivitySubscriptionCheckMessageConsumerBean subscriptionConsumer;
+    private ActivitySubscriptionCheckMessageConsumerBean subscriptionConsumer;
 
     @Mock
-    ClientSession session;
+    private ClientSession session;
 
     @Mock
-    Event<EventMessage> mapToSubscriptionRequest;
+    private Event<EventMessage> mapToSubscriptionRequest;
 
     @Mock
-    Event<EventMessage> receiveFishingActivityEvent;
-
-    @Mock
-    Event<EventMessage> getFishingTripListEvent;
-
-    @Mock
-    Event<EventMessage> getFACatchSummaryReportEvent;
-
-    @Mock
-    Event<EventMessage> getNonUniqueIdsRequest;
-
-    @Mock
-    Event<EventMessage> getFishingActivityForTrips;
-
-    @Mock
-    Event<EventMessage> errorEvent;
+    private Event<EventMessage> errorEvent;
 
     @Mock
     private ActivityMatchingIdsServiceBean matchingIdsService;
 
     @Mock
     private ActivityErrorMessageServiceBean producer;
+
+    @Mock
+    private ActivityService activityService;
 
     @Before
     public void initMocks() {
@@ -131,10 +125,10 @@ public class ActivityMessageConsumerBeanTest {
             PowerMockito.verifyStatic();
             MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(activeMQTextMessage);
         }
-        verify(receiveFishingActivityEvent, times(2)).fire(any(EventMessage.class));
-        verify(getFishingTripListEvent, times(1)).fire(any(EventMessage.class));
-        verify(getFACatchSummaryReportEvent, times(1)).fire(any(EventMessage.class));
-        verify(getNonUniqueIdsRequest, times(1)).fire(any(EventMessage.class));
+//        verify(receiveFishingActivityEvent, times(2)).fire(any(EventMessage.class));
+//        verify(getFishingTripListEvent, times(1)).fire(any(EventMessage.class));
+//        verify(getFACatchSummaryReportEvent, times(1)).fire(any(EventMessage.class));
+//        verify(getNonUniqueIdsRequest, times(1)).fire(any(EventMessage.class));
     }
 
     @Test
@@ -212,5 +206,46 @@ public class ActivityMessageConsumerBeanTest {
         String text = textCaptor.getValue();
 
         assertTrue(text.contains("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb"));
+    }
+
+    @Test
+    public void getFishingActivityForTrips() throws ActivityModelMarshallException, ServiceException, JMSException {
+        // Given
+        FishingActivityForTripIds fishingActivityForTripIds = new FishingActivityForTripIds();
+        fishingActivityForTripIds.setTripId("AUT-TRP-38778a5888837-000000");
+        fishingActivityForTripIds.setTripSchemeId("EU_TRIP_ID");
+        fishingActivityForTripIds.setFishActTypeCode("LANDING");
+        fishingActivityForTripIds.setFluxRepDocPurposeCodes(Lists.newArrayList("9"));
+
+        List<FishingActivityForTripIds> tripIds = new ArrayList<>();
+        tripIds.add(fishingActivityForTripIds);
+
+        GetFishingActivitiesForTripRequest getFishingActivitiesForTripRequest = new GetFishingActivitiesForTripRequest();
+        getFishingActivitiesForTripRequest.setMethod(ActivityModuleMethod.GET_FISHING_ACTIVITY_FOR_TRIPS);
+        getFishingActivitiesForTripRequest.setFaAndTripIds(tripIds);
+
+        String requestString = JAXBMarshaller.marshallJaxBObjectToString(getFishingActivitiesForTripRequest);
+
+        ActiveMQTextMessage activeMQTextMessage = mock(ActiveMQTextMessage.class);
+        when(activeMQTextMessage.getText()).thenReturn(requestString);
+
+        GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse = new GetFishingActivitiesForTripResponse();
+
+        when(activityService.getFaAndTripIdsFromTripIds(any())).thenReturn(getFishingActivitiesForTripResponse);
+
+        // When
+        consumer.onMessage(activeMQTextMessage);
+
+        // Then
+        ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
+        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(producer, times(1)).sendResponseMessageToSender(messageCaptor.capture(), textCaptor.capture());
+
+        TextMessage message = messageCaptor.getValue();
+        String text = textCaptor.getValue();
+
+        assertTrue(message.getText().contains("AUT-TRP-38778a5888837-000000"));
+        assertTrue(text.contains("GetFishingActivitiesForTripResponse"));
     }
 }

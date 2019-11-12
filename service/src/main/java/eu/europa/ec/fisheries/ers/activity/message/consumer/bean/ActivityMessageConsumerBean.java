@@ -12,12 +12,9 @@ package eu.europa.ec.fisheries.ers.activity.message.consumer.bean;
 
 
 import eu.europa.ec.fisheries.ers.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetFACatchSummaryReportEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTripsRequestEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingTripListEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.bean.ActivityMatchingIdsServiceBean;
@@ -34,6 +31,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRe
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
@@ -67,22 +66,6 @@ import javax.jms.TextMessage;
 public class ActivityMessageConsumerBean implements MessageListener {
 
     @Inject
-    @GetFishingTripListEvent
-    private Event<EventMessage> getFishingTripListEvent;
-
-    @Inject
-    @GetFACatchSummaryReportEvent
-    private Event<EventMessage> getFACatchSummaryReportEvent;
-
-    @Inject
-    @GetNonUniqueIdsRequestEvent
-    private Event<EventMessage> getNonUniqueIdsRequest;
-
-    @Inject
-    @GetFishingActivityForTripsRequestEvent
-    private Event<EventMessage> getFishingActivityForTrips;
-
-    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -103,6 +86,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
 
     @EJB
     private ActivityMatchingIdsServiceBean matchingIdsService;
+
+    @EJB
+    private ActivityService activityServiceBean;
 
     @Override
     public void onMessage(Message message) {
@@ -151,7 +137,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     producer.sendResponseMessageToSender(textMessage, getNonUniqueIdsResponseString);
                     break;
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
-                    getFishingActivityForTrips.fire(new EventMessage(textMessage));
+                    GetFishingActivitiesForTripRequest getFishingActivitiesForTripRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, GetFishingActivitiesForTripRequest.class);
+                    GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse = activityServiceBean.getFaAndTripIdsFromTripIds(getFishingActivitiesForTripRequest.getFaAndTripIds());
+                    String responseStr = JAXBMarshaller.marshallJaxBObjectToString(getFishingActivitiesForTripResponse);
+                    producer.sendResponseMessageToSender(textMessage, responseStr);
                     break;
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());
