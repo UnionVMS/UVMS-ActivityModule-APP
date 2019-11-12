@@ -37,7 +37,7 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
 
     public FACatchSummaryPresentationHelper(){
         super();
-        this.faCatchSummaryCustomClassName = "eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomChildProxy";
+        this.faCatchSummaryCustomClassName = "eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomChildProxy";
     }
 
 /**

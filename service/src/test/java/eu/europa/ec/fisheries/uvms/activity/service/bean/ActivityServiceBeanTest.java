@@ -32,13 +32,12 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,13 +53,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ActivityServiceBeanTest {
 
     @InjectMocks
     private ActivityServiceBean activityService;
-
-    @Rule
-    private MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     private FishingActivityDao fishingActivityDao;
