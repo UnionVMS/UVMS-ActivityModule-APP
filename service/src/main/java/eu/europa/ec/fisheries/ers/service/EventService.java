@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service;
 
 import eu.europa.ec.fisheries.ers.activity.message.event.GetFishingActivityForTripsRequestEvent;
-import eu.europa.ec.fisheries.ers.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 
@@ -26,8 +25,6 @@ import javax.enterprise.event.Observes;
 public interface EventService {
 
     void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message);
-
-    void getNonUniqueIdsRequest(@Observes @GetNonUniqueIdsRequestEvent EventMessage message);
 
     void getFishingActivityForTripsRequest(@Observes @GetFishingActivityForTripsRequestEvent EventMessage message);
 }

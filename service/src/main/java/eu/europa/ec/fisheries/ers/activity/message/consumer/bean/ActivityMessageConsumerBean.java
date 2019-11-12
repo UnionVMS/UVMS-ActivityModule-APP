@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.bean.ActivityMatchingIdsServiceBean;
 import eu.europa.ec.fisheries.ers.service.bean.FaReportSaverBean;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
@@ -33,6 +34,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRe
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
@@ -98,6 +101,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @EJB
     private FaCatchReportService faCatchReportService;
 
+    @EJB
+    private ActivityMatchingIdsServiceBean matchingIdsService;
+
     @Override
     public void onMessage(Message message) {
 
@@ -139,7 +145,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     producer.sendResponseMessageToSender(textMessage, faCatchSummaryReportResponseString);
                     break;
                 case GET_NON_UNIQUE_IDS:
-                    getNonUniqueIdsRequest.fire(new EventMessage(textMessage));
+                    GetNonUniqueIdsRequest getNonUniqueIdsRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, GetNonUniqueIdsRequest.class);
+                    GetNonUniqueIdsResponse getNonUniqueIdsResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest.getActivityUniquinessLists());
+                    String getNonUniqueIdsResponseString = JAXBMarshaller.marshallJaxBObjectToString(getNonUniqueIdsResponse);
+                    producer.sendResponseMessageToSender(textMessage, getNonUniqueIdsResponseString);
                     break;
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
                     getFishingActivityForTrips.fire(new EventMessage(textMessage));

@@ -14,7 +14,6 @@ import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityErrorMe
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import lombok.SneakyThrows;
 import org.apache.activemq.artemis.api.core.SimpleString;
 import org.apache.activemq.artemis.api.core.client.ClientSession;
@@ -29,7 +28,6 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.jms.JMSException;
 import javax.jms.TextMessage;
 
 import static org.junit.Assert.assertTrue;
@@ -50,9 +48,6 @@ public class ActivityEventServiceBeanTest {
     ActivityServiceBean activityServiceBean;
 
     @Mock
-    ActivityMatchingIdsServiceBean matchingIdsService;
-
-    @Mock
     ActivityErrorMessageServiceBean producer;
 
     @Mock
@@ -64,50 +59,18 @@ public class ActivityEventServiceBeanTest {
     @Mock
     ClientSession session;
 
-    private EventMessage nonUniqueIdsMessageEventMessage;
     private EventMessage faAndTripIdsFromTripIdsEventMessage;
-
-    private GetNonUniqueIdsResponse getNonUniqueIdsResponse;
-
     private GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse;
 
     @Before
     @SneakyThrows
     public void setUp() {
-        nonUniqueIdsMessage = new ActiveMQTextMessage(session);
-        Whitebox.setInternalState(nonUniqueIdsMessage, "text", new SimpleString(getStrRequest1()));
-        Whitebox.setInternalState(nonUniqueIdsMessage, "jmsCorrelationID", "SomeCorrId");
-        nonUniqueIdsMessageEventMessage = new EventMessage(nonUniqueIdsMessage);
-
         faAndTripIdsFromTripIdsMessage = new ActiveMQTextMessage(session);
         Whitebox.setInternalState(faAndTripIdsFromTripIdsMessage, "text", new SimpleString(getStrRequest2()));
         Whitebox.setInternalState(faAndTripIdsFromTripIdsMessage, "jmsCorrelationID", "SomeCorrId");
         faAndTripIdsFromTripIdsEventMessage = new EventMessage(faAndTripIdsFromTripIdsMessage);
 
-        getNonUniqueIdsResponse = JAXBMarshaller.unmarshallTextMessage(getResponseStr1(), GetNonUniqueIdsResponse.class);
         getFishingActivitiesForTripResponse = JAXBMarshaller.unmarshallTextMessage(getResponseStr2(), GetFishingActivitiesForTripResponse.class);
-
-    }
-
-    @Test
-    public void getNonUniqueIds() throws JMSException {
-        // Given
-        when(matchingIdsService.getMatchingIdsResponse(any())).thenReturn(getNonUniqueIdsResponse);
-
-        // When
-        activityEventBean.getNonUniqueIdsRequest(nonUniqueIdsMessageEventMessage);
-
-        // Then
-        ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
-        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
-
-        Mockito.verify(producer, times(1)).sendResponseMessageToSender(messageCaptor.capture(), textCaptor.capture());
-
-        TextMessage message = messageCaptor.getValue();
-        String text = textCaptor.getValue();
-
-        assertTrue(message.getText().contains("46DCC44C-0AE2-434C-BC14-B85D86B29512"));
-        assertTrue(text.contains("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb"));
     }
 
     @Test
@@ -130,49 +93,6 @@ public class ActivityEventServiceBeanTest {
 
         assertTrue(message.getText().contains("AUT-TRP-38778a5888837-000000"));
         assertTrue(text.contains("GetFishingActivitiesForTripResponse"));
-    }
-
-    private String getStrRequest1() {
-        return "<ns2:GetNonUniqueIdsRequest xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
-                "    <method>GET_NON_UNIQUE_IDS</method>\n" +
-                "    <activityUniquinessList>\n" +
-                "        <activityTableType>RELATED_FLUX_REPORT_DOCUMENT_ENTITY</activityTableType>\n" +
-                "        <ids>\n" +
-                "            <value>46DCC44C-0AE2-434C-BC14-B85D86B29512</value>\n" +
-                "            <identifierSchemeId>UUID</identifierSchemeId>\n" +
-                "        </ids>\n" +
-                "    </activityUniquinessList>\n" +
-                "    <activityUniquinessList>\n" +
-                "        <activityTableType>FLUX_REPORT_DOCUMENT_ENTITY</activityTableType>\n" +
-                "        <ids>\n" +
-                "            <value>46DCC44C-0AE2-434C-BC14-B85D86B29512</value>\n" +
-                "            <identifierSchemeId>UUID</identifierSchemeId>\n" +
-                "        </ids>\n" +
-                "    </activityUniquinessList>\n" +
-                "</ns2:GetNonUniqueIdsRequest>";
-    }
-
-    private String getResponseStr1() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<ns2:GetNonUniqueIdsResponse xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
-                "    <method>GET_NON_UNIQUE_IDS</method>\n" +
-                "    <activityUniquinessList>\n" +
-                "        <activityTableType>RELATED_FLUX_REPORT_DOCUMENT_ENTITY</activityTableType>\n" +
-                "        <ids>\n" +
-                "            <value>46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb</value>\n" +
-                "            <identifierSchemeId>scheme-idqq</identifierSchemeId>\n" +
-                "        </ids>\n" +
-                "        <ids/>\n" +
-                "    </activityUniquinessList>\n" +
-                "    <activityUniquinessList>\n" +
-                "        <activityTableType>FLUX_REPORT_DOCUMENT_ENTITY</activityTableType>\n" +
-                "        <ids>\n" +
-                "            <value>46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb</value>\n" +
-                "            <identifierSchemeId>scheme-idqq</identifierSchemeId>\n" +
-                "        </ids>\n" +
-                "        <ids/>\n" +
-                "    </activityUniquinessList>\n" +
-                "</ns2:GetNonUniqueIdsResponse>";
     }
 
     public String getStrRequest2() {

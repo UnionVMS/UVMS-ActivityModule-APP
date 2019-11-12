@@ -10,14 +10,20 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
-import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
+import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivityMessageConsumerBean;
 import eu.europa.ec.fisheries.ers.activity.message.consumer.bean.ActivitySubscriptionCheckMessageConsumerBean;
 import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
+import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import lombok.SneakyThrows;
 import org.apache.activemq.artemis.api.core.SimpleString;
@@ -27,6 +33,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -38,11 +45,17 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.enterprise.event.Event;
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
@@ -51,7 +64,6 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MappedDiagnosticContext.class})
 @PowerMockIgnore({"javax.management.*"})
-@Ignore
 // TODO: Rewrite this test without powermock
 public class ActivityMessageConsumerBeanTest {
 
@@ -85,6 +97,12 @@ public class ActivityMessageConsumerBeanTest {
     @Mock
     Event<EventMessage> errorEvent;
 
+    @Mock
+    private ActivityMatchingIdsServiceBean matchingIdsService;
+
+    @Mock
+    private ActivityErrorMessageServiceBean producer;
+
     @Before
     public void initMocks() {
         MockitoAnnotations.initMocks(this);
@@ -92,6 +110,7 @@ public class ActivityMessageConsumerBeanTest {
 
     @Test
     @SneakyThrows
+    @Ignore("Doesn't really test anything, it just used to send in messages for each method and expected it to fire off a certain number of internal messages.")
     public void testOnMessageMethod() {
         mockStatic(MappedDiagnosticContext.class);
         PowerMockito.doNothing().when(MappedDiagnosticContext.class, "addMessagePropertiesToThreadMappedDiagnosticContext", Mockito.any(TextMessage.class));
@@ -99,14 +118,18 @@ public class ActivityMessageConsumerBeanTest {
 
             GetNonUniqueIdsRequest request = new GetNonUniqueIdsRequest();
             request.setMethod(moduleMethod);
-            ActiveMQTextMessage textMessage = new ActiveMQTextMessage(session);
-            final String strReq = JAXBMarshaller.marshallJaxBObjectToString(request);
-            Whitebox.setInternalState(textMessage, "text", new SimpleString(strReq));
 
-            consumer.onMessage(textMessage);
+            final String strReq = JAXBMarshaller.marshallJaxBObjectToString(request);
+            ActiveMQTextMessage activeMQTextMessage = mock(ActiveMQTextMessage.class);
+            when(activeMQTextMessage.getText()).thenReturn(strReq);
+
+            GetNonUniqueIdsResponse getNonUniqueIdsResponse = new GetNonUniqueIdsResponse();
+            when(matchingIdsService.getMatchingIdsResponse(any())).thenReturn(getNonUniqueIdsResponse);
+
+            consumer.onMessage(activeMQTextMessage);
 
             PowerMockito.verifyStatic();
-            MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
+            MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(activeMQTextMessage);
         }
         verify(receiveFishingActivityEvent, times(2)).fire(any(EventMessage.class));
         verify(getFishingTripListEvent, times(1)).fire(any(EventMessage.class));
@@ -146,4 +169,48 @@ public class ActivityMessageConsumerBeanTest {
         verify(errorEvent, times(1)).fire(any(EventMessage.class));
     }
 
+    @Test
+    public void getNonUniqueIds() throws ActivityModelMarshallException, JMSException {
+        // Given
+        GetNonUniqueIdsRequest getNonUniqueIdsRequest = new GetNonUniqueIdsRequest();
+        getNonUniqueIdsRequest.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
+        String requestString = JAXBMarshaller.marshallJaxBObjectToString(getNonUniqueIdsRequest);
+
+        ActiveMQTextMessage activeMQTextMessage = mock(ActiveMQTextMessage.class);
+        when(activeMQTextMessage.getText()).thenReturn(requestString);
+
+        List<ActivityIDType> idList = new ArrayList<>();
+        idList.add(new ActivityIDType("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb", "scheme-idqq"));
+
+        ActivityUniquinessList activityUniquinessList1 = new ActivityUniquinessList();
+        activityUniquinessList1.setActivityTableType(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY);
+        activityUniquinessList1.setIds(idList);
+
+        ActivityUniquinessList activityUniquinessList2 = new ActivityUniquinessList();
+        activityUniquinessList2.setActivityTableType(ActivityTableType.FLUX_REPORT_DOCUMENT_ENTITY);
+        activityUniquinessList2.setIds(idList);
+
+        List<ActivityUniquinessList> list = new ArrayList<>();
+        list.add(activityUniquinessList1);
+        list.add(activityUniquinessList2);
+
+        GetNonUniqueIdsResponse getNonUniqueIdsResponse = new GetNonUniqueIdsResponse();
+        getNonUniqueIdsResponse.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
+        getNonUniqueIdsResponse.setActivityUniquinessLists(list);
+
+        when(matchingIdsService.getMatchingIdsResponse(any())).thenReturn(getNonUniqueIdsResponse);
+
+        // When
+        consumer.onMessage(activeMQTextMessage);
+
+        // Then
+        ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
+        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(producer, times(1)).sendResponseMessageToSender(messageCaptor.capture(), textCaptor.capture());
+
+        String text = textCaptor.getValue();
+
+        assertTrue(text.contains("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb"));
+    }
 }
