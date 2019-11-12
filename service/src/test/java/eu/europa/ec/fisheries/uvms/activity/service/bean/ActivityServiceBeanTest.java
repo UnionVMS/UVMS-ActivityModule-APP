@@ -10,28 +10,23 @@
  *
  *
  */
-
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripIdentifierDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -45,7 +40,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,38 +54,19 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-
 public class ActivityServiceBeanTest {
 
+    @InjectMocks
+    private ActivityServiceBean activityService;
+
     @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
+    private MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    EntityManager em;
+    private FishingActivityDao fishingActivityDao;
 
     @Mock
-    FishingActivityDao fishingActivityDao;
-
-    @Mock
-    FaReportDocumentDao faReportDocumentDao;
-
-    @Mock
-    FishingTripDao fishingTripDao;
-
-    @Mock
-    FishingTripIdentifierDao fishingTripIdentifierDao;
-
-    @Mock
-    VesselTransportMeansDao vesselIdentifiersDao;
-
-    @InjectMocks
-    ActivityServiceBean activityService;
-
-    @InjectMocks
-    FishingTripServiceBean fishingTripService;
-
-    @Mock
-    JAXBMarshaller marshaller;
+    private FaReportDocumentDao faReportDocumentDao;
 
     @Mock
     private SpatialModuleService spatialModule;
