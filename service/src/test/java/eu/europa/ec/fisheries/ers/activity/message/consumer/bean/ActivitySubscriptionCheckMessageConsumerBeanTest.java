@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.ers.activity.message.consumer.bean;
 
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.ers.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.ers.activity.message.producer.SubscriptionProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
@@ -29,7 +28,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
-import javax.enterprise.event.Event;
 import javax.jms.Destination;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -49,12 +47,6 @@ public class ActivitySubscriptionCheckMessageConsumerBeanTest {
 
     @InjectMocks
     private ActivitySubscriptionCheckMessageConsumerBean subscriptionConsumer;
-
-    @Mock
-    private Event<EventMessage> mapToSubscriptionRequest;
-
-    @Mock
-    private Event<EventMessage> errorEvent; // Needed otherwise mockito will choose the wrong member to inject into
 
     @Mock
     private SubscriptionProducerBean subscriptionProducer;

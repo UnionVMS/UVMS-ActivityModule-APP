@@ -11,7 +11,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseM
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
@@ -44,10 +43,6 @@ import javax.xml.bind.JAXBException;
 public class ActivitySubscriptionCheckMessageConsumerBean implements MessageListener {
 
     @Inject
-    @MapToSubscriptionRequestEvent
-    private Event<EventMessage> mapToSubscriptionRequest;
-
-    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -59,60 +54,54 @@ public class ActivitySubscriptionCheckMessageConsumerBean implements MessageList
 
     @Override
     public void onMessage(Message message) {
-
-        TextMessage textMessage = null;
+        log.debug("Received subscription message");
+        TextMessage textMessage = (TextMessage) message;
         try {
-            textMessage = (TextMessage) message;
+            String jmsMessageID = message.getJMSMessageID();
             MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
-            ActivityModuleRequest request;
-            request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
-            log.debug("Message unmarshalled successfully in activity");
+            MapToSubscriptionRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, MapToSubscriptionRequest.class);
+
+            log.debug("Successfully parsed message to {}", MapToSubscriptionRequest.class.getName());
+
             if (request == null) {
-                log.error("[ Request is null ]");
+                log.error("Request is null");
                 return;
             }
+
             ActivityModuleMethod method = request.getMethod();
             if (method == null) {
-                log.error("[ Request method is null ]");
+                log.error("Request method is null");
                 return;
             }
-            switch (method) {
-                case MAP_TO_SUBSCRIPTION_REQUEST:
-                    mapToSubscriptionRequest(textMessage);
-                    break;
-                default:
-                    log.error("[ Request method {} is not implemented ]", method.name());
-                    errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));
-            }
 
-        } catch (ActivityModelMarshallException | ClassCastException e) {
-            log.error("[ Error when receiving message in activity: ] {}", e);
-            errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
+            if (method == ActivityModuleMethod.MAP_TO_SUBSCRIPTION_REQUEST) {
+                mapToSubscriptionRequest(request, jmsMessageID, textMessage);
+            } else {
+                log.error("Request method {} is not implemented", method.name());
+                errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Request method " + method.name() + "  is not implemented")));
+            }
+        } catch (ActivityModelMarshallException | ClassCastException | JMSException | JAXBException e) {
+            log.error("Error when receiving message", e);
+            errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message: " + e.getMessage())));
         }
     }
 
-    private void mapToSubscriptionRequest(TextMessage textMessage) {
-        try {
-            String jmsCorrelationID = textMessage.getJMSMessageID();
-            String messageReceived = textMessage.getText();
-            SubscriptionDataRequest subscriptionDataRequest = null;
-            MapToSubscriptionRequest baseRequest = JAXBUtils.unMarshallMessage(messageReceived, MapToSubscriptionRequest.class);
-            switch (baseRequest.getMessageType()){
-                case FLUX_FA_QUERY_MESSAGE:
-                    FLUXFAQueryMessage fluxfaQueryMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAQueryMessage.class);
-                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
-                    break;
-                case FLUX_FA_REPORT_MESSAGE:
-                    FLUXFAReportMessage fluxFAReportMessage = JAXBUtils.unMarshallMessage(baseRequest.getRequest(), FLUXFAReportMessage.class);
-                    subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxFAReportMessage);
-                    break;
-                default:
-                    errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Exception in activity [ Forbidden fruit ]")));
-            }
-            subscriptionProducer.sendMessageWithSpecificIds(JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest), rulesQueue , null, jmsCorrelationID);
-        } catch ( JAXBException | JMSException e) {
-            errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
+    private void mapToSubscriptionRequest(MapToSubscriptionRequest request, String jmsCorrelationId, TextMessage textMessage) throws JAXBException, JMSException {
+        SubscriptionDataRequest subscriptionDataRequest = null;
+        switch (request.getMessageType()) {
+            case FLUX_FA_QUERY_MESSAGE:
+                FLUXFAQueryMessage fluxfaQueryMessage = JAXBUtils.unMarshallMessage(request.getRequest(), FLUXFAQueryMessage.class);
+                subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
+                break;
+            case FLUX_FA_REPORT_MESSAGE:
+                FLUXFAReportMessage fluxFAReportMessage = JAXBUtils.unMarshallMessage(request.getRequest(), FLUXFAReportMessage.class);
+                subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxFAReportMessage);
+                break;
+            default:
+                errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Message has incorrect message type " + request.getMessageType())));
         }
+        String messageToSend = JAXBUtils.marshallJaxBObjectToString(subscriptionDataRequest);
+        subscriptionProducer.sendMessageWithSpecificIds(messageToSend, rulesQueue , null, jmsCorrelationId);
     }
 
 }
