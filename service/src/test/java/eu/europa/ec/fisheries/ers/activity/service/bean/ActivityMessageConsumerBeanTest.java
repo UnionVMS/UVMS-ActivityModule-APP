@@ -30,7 +30,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesFo
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import org.apache.activemq.artemis.api.core.client.ClientSession;
 import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +39,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 import javax.jms.JMSException;
@@ -56,20 +55,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by kovian on 17/07/2017.
- */
-@RunWith(PowerMockRunner.class)
-//@PrepareForTest({MappedDiagnosticContext.class})
-//@PowerMockIgnore({"javax.management.*"})
-// TODO: Rewrite this test without powermock
+@RunWith(MockitoJUnitRunner.class)
 public class ActivityMessageConsumerBeanTest {
 
     @InjectMocks
     private ActivityMessageConsumerBean consumer;
-
-    @Mock
-    private ClientSession session;
 
     @Mock
     private Event<EventMessage> errorEvent;
