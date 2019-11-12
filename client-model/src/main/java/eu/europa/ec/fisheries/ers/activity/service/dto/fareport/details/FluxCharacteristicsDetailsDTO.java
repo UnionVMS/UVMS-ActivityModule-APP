@@ -11,7 +11,7 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
+package eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details;
 
 import java.util.Date;
 

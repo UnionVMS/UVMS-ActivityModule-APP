@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

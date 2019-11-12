@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.activity.service.mapper;
 
 import eu.europa.ec.fisheries.ers.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.activity.service.util.CustomBigDecimal;
-import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
+import eu.europa.ec.fisheries.ers.activity.service.dto.FluxCharacteristicsDto;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

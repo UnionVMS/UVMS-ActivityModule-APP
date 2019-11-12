@@ -16,8 +16,6 @@ package eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxCharacteristicsDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxLocationDetailsDTO;
 
 import java.util.Date;
 import java.util.List;

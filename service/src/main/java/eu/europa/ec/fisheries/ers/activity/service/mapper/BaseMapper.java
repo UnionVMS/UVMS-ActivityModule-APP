@@ -35,7 +35,7 @@ import eu.europa.ec.fisheries.ers.activity.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.activity.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.ers.activity.service.mapper.view.base.ViewConstants;
 import eu.europa.ec.fisheries.ers.activity.service.util.Utils;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;

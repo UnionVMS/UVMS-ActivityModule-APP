@@ -11,14 +11,14 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.dto;
+package eu.europa.ec.fisheries.ers.activity.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxLocationDetailsDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.Data;
 

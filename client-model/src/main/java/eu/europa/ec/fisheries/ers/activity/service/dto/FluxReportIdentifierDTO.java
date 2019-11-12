@@ -11,7 +11,7 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.dto;
+package eu.europa.ec.fisheries.ers.activity.service.dto;
 
 /**
  * Created by sanera on 20/09/2016.

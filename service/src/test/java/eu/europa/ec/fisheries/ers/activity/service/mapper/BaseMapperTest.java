@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.ers.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.activity.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.ers.activity.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;

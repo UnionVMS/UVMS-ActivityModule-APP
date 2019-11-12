@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.activity.service.mapper;
 
 import eu.europa.ec.fisheries.ers.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.activity.service.util.CustomBigDecimal;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

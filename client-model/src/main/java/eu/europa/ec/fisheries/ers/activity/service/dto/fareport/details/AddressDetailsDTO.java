@@ -12,7 +12,7 @@
  */
 
 
-package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
+package eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

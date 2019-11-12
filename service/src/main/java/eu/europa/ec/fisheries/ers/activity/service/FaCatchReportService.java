@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.ers.activity.service;
 
 import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.summary.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.summary.FACatchSummaryDTO;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 

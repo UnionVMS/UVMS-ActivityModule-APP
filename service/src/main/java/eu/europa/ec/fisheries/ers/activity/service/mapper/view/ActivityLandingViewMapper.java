@@ -17,7 +17,7 @@ import eu.europa.ec.fisheries.ers.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.activity.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.activity.service.mapper.view.base.BaseActivityViewMapper;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.DelimitedPeriodDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

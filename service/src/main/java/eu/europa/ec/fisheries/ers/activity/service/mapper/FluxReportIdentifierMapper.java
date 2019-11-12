@@ -11,7 +11,7 @@
 package eu.europa.ec.fisheries.ers.activity.service.mapper;
 
 import eu.europa.ec.fisheries.ers.activity.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.FluxReportIdentifierDTO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

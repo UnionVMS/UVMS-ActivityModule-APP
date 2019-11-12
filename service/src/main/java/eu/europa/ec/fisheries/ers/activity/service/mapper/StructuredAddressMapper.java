@@ -12,7 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.activity.service.mapper;
 
 import eu.europa.ec.fisheries.ers.activity.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details.AddressDetailsDTO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.ers.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.ers.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.activity.service.search.builder.FishingTripIdSearchBuilder;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;

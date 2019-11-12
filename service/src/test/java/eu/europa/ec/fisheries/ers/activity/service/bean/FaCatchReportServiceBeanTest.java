@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.ers.activity.fa.dao.proxy.FaCatchSummaryCustomProx
 import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.summary.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.summary.FACatchSummaryDTO;
 import eu.europa.ec.fisheries.ers.activity.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;

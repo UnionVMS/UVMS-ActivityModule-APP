@@ -26,7 +26,7 @@ import eu.europa.ec.fisheries.ers.activity.service.mapper.FishingActivityIdentif
 import eu.europa.ec.fisheries.ers.activity.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.ers.activity.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.activity.service.mapper.view.base.BaseActivityViewMapper;
-import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.DelimitedPeriodDTO;
 import io.jsonwebtoken.lang.Collections;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;

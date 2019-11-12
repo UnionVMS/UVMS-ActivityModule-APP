@@ -16,8 +16,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.activity.service.dto.view.parent.FishingActivityView;
-import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
-import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.FluxCharacteristicsDto;
+import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details.AddressDetailsDTO;
 import lombok.NoArgsConstructor;
 
 import java.util.Collections;

@@ -30,8 +30,8 @@ import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.details.VesselDe
 import eu.europa.ec.fisheries.ers.activity.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.ers.activity.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.ers.activity.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;

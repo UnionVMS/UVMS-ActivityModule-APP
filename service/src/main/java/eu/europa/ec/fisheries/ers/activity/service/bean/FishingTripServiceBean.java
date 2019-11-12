@@ -64,8 +64,8 @@ import eu.europa.ec.fisheries.ers.activity.service.mapper.VesselStorageCharacter
 import eu.europa.ec.fisheries.ers.activity.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.activity.service.util.Utils;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;

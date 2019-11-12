@@ -14,7 +14,7 @@
 package eu.europa.ec.fisheries.ers.activity.service.search.builder;
 
 import eu.europa.ec.fisheries.ers.activity.service.search.FilterMap;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

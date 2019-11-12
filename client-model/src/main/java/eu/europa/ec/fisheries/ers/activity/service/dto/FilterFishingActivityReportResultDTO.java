@@ -11,7 +11,7 @@
  *
  */
 
-package eu.europa.ec.fisheries.ers.service.dto;
+package eu.europa.ec.fisheries.ers.activity.service.dto;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 

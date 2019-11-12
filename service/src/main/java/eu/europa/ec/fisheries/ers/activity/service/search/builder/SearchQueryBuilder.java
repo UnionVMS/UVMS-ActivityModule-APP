@@ -15,8 +15,8 @@ package eu.europa.ec.fisheries.ers.activity.service.search.builder;
 
 import eu.europa.ec.fisheries.ers.activity.service.search.FilterDetails;
 import eu.europa.ec.fisheries.ers.activity.service.search.FilterMap;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;

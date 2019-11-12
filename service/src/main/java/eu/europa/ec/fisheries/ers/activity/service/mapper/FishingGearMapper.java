@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.activity.service.mapper;
 
 import eu.europa.ec.fisheries.ers.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.activity.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.ers.service.dto.FishingGearDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.FishingGearDTO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

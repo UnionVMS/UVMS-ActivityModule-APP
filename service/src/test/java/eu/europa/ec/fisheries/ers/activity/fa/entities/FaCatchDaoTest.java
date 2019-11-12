@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.ers.activity.fa.entities;
 
 import eu.europa.ec.fisheries.ers.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.SneakyThrows;

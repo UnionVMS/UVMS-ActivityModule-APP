@@ -36,9 +36,9 @@ import eu.europa.ec.fisheries.ers.activity.service.mapper.view.base.ActivityView
 import eu.europa.ec.fisheries.ers.activity.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.activity.service.util.Utils;
-import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
-import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.ers.activity.service.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityWithIdentifiers;

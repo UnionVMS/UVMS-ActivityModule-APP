@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.ers.activity.fa.entities.FishingTripIdentifierEnti
 import eu.europa.ec.fisheries.ers.activity.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.activity.service.search.FishingTripId;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;

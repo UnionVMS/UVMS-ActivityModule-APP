@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.ers.activity.service.search.builder;
 import eu.europa.ec.fisheries.ers.activity.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.activity.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;

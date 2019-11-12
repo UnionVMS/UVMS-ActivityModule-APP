@@ -24,7 +24,7 @@ import eu.europa.ec.fisheries.ers.activity.service.dto.fishingtrip.FishingTripSu
 import eu.europa.ec.fisheries.ers.activity.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.activity.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.activity.service.dto.view.TripWidgetDto;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;

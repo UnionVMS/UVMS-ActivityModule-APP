@@ -15,8 +15,8 @@ package eu.europa.ec.fisheries.ers.activity.fa.entities;
 
 import eu.europa.ec.fisheries.ers.activity.service.search.builder.FishingActivitySearchBuilder;
 import eu.europa.ec.fisheries.ers.activity.service.search.builder.SearchQueryBuilder;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;

@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.ers.activity.fa.dao;
 import eu.europa.ec.fisheries.ers.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.activity.service.search.builder.FishingActivitySearchBuilder;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;

@@ -26,8 +26,8 @@ import eu.europa.ec.fisheries.ers.activity.fa.entities.FishingTripIdentifierEnti
 import eu.europa.ec.fisheries.ers.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.activity.service.util.MapperUtil;
-import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
-import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.ers.activity.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.ers.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
