@@ -29,6 +29,7 @@ import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,7 +44,11 @@ import org.slf4j.LoggerFactory;
 public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
-    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_SELECT = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId ";
+    private static final String PERIOD_END_SELECT = ", a";
+    private static final String PERIOD_START_SELECT = ", a";
+    private static final String FLAG_STATE_SELECT = ", a";
+    private static final String FISHING_TRIP_JOIN = " from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
     private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
 
     /**
@@ -61,11 +66,31 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
+        boolean isSorted = query.getSorting().getSortBy() != null;
+
+        sql.append(FISHING_TRIP_SELECT);
+        if(isSorted) { updateSQLQueryFilter(query,sql); } // Add Order by clause for only requested Sort field
+
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         LOG.info("sql :" + sql);
+
+        if(isSorted) {createSortPartForQuery(sql, query);}
         return sql;
+    }
+
+    private void updateSQLQueryFilter(FishingActivityQuery query, StringBuilder sql){
+
+        if(SearchFilter.PERIOD_END_TRIP.equals(query.getSorting().getSortBy())) {
+           sql.append(PERIOD_END_SELECT);
+        }
+        if(SearchFilter.PERIOD_START.equals(query.getSorting().getSortBy())) {
+            sql.append(PERIOD_START_SELECT);
+        }
+        if(SearchFilter.FLAG_STATE.equals(query.getSorting().getSortBy())) {
+            sql.append(FLAG_STATE_SELECT);
+        }
     }
 
     public StringBuilder createCountSQL(FishingActivityQuery query) throws ServiceException {

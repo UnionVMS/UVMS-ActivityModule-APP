@@ -36,6 +36,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter.PURPOSE;
+
 public abstract class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
     private static final String JOIN_FETCH = " JOIN FETCH ";
@@ -102,7 +104,6 @@ public abstract class SearchQueryBuilder {
             completeQueryDependingOnKey(sql, key, joinString);
         }
         getJoinPartForSortingOptions(sql, query);
-
         //   LOG.debug("Generated SQL for JOIN Part :" + sql);
     }
 
@@ -196,7 +197,7 @@ public abstract class SearchQueryBuilder {
         // Make sure that the field which we want to sort, table Join is present for it.
         switch (getFiledCase(sql, field)) {
             case 1:
-                appendLeftJoinFetch(sql, filterMap.DELIMITED_PERIOD_TABLE_ALIAS);
+                appendLeftJoinFetch(sql, filterMap.DELIMITED_PERIOD_TABLE_ALIAS); //@
                 break;
             case 2:
                 appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
@@ -204,6 +205,8 @@ public abstract class SearchQueryBuilder {
             case 3:
                 checkAndAppendIfNeededFluxReportDocTable(sql);
                 break;
+            case 9:
+                appendLeftJoin(sql,filterMap.DELIMITED_PERIOD_TABLE_ALIAS );
             default:
                 break;
         }
@@ -222,14 +225,21 @@ public abstract class SearchQueryBuilder {
     private int getFiledCase(StringBuilder sql, SearchFilter field) {
         if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
             return 1;
-        } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
+        } else if (PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
             return 2;
+        } else if (SearchFilter.PERIOD_END_TRIP.equals(field)){
+            return 9;
         }
+
         return 0;
     }
 
     protected void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
         sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
+    }
+
+    protected void appendLeftJoin(StringBuilder sql, String delimitedPeriodTableAlias) {
+        sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
     }
 
     void createWherePartForQueryForFilters(StringBuilder sql, FishingActivityQuery query) {
@@ -302,8 +312,11 @@ public abstract class SearchQueryBuilder {
         SortKey sort = query.getSorting();
         if (sort != null && sort.getSortBy() != null) {
             SearchFilter field = sort.getSortBy();
-            if (SearchFilter.PERIOD_END.equals(field)) {
+            if (SearchFilter.PERIOD_END.equals(field) ) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
+            }
+            if(SearchFilter.PERIOD_END_TRIP.equals(field)){
+                getMaxEndDate(sql, field, query);
             }
             String orderby = " ASC ";
             if (sort.isReversed()) {
@@ -317,6 +330,18 @@ public abstract class SearchQueryBuilder {
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }
+    }
+    private void getMaxEndDate(StringBuilder sql, SearchFilter filter, FishingActivityQuery query) {
+        Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
+        if (searchCriteriaMap == null) {
+            return;
+        }
+        sql.append(" and a.typeCode = 'ARRIVAL'  ");
+//        sql.append(FilterMap.getFilterSortMappings().get(filter));
+//        sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a  ");
+//        sql.append(" where a.typeCode = 'ARRIVAL'");
+//        sql.append(" )) ");
+//        sql.append(" OR dp is null ) ");
     }
 
     /**
