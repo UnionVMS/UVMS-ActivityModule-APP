@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,6 +52,22 @@ public class ActivityMatchingIdsServiceTest {
 
         // When
         List<ActivityUniquinessList> matchingIds = matchingBean.getMatchingIds(inputActivityUniquenessList);
+
+        // Then
+        assertEquals(2, matchingIds.size());
+    }
+
+    @Test
+    public void getMatchingIds_simpleListOfIds() throws Exception {
+        // Given
+        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+
+        List<ActivityIDType> activityIDTypes = new ArrayList<>();
+        activityIDTypes.add(new ActivityIDType("46DCC44C-0AE2-434C-BC14-B85D86B29512iiiii", "scheme-idvv"));
+        activityIDTypes.add(new ActivityIDType("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb", "scheme-idgg"));
+
+        // When
+        List<ActivityIDType> matchingIds = matchingBean.getMatchingIds(activityIDTypes, ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY);
 
         // Then
         assertEquals(2, matchingIds.size());
