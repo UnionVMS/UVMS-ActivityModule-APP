@@ -17,20 +17,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 @Entity
 @Table(name = "activity_vessel_position_event")
@@ -48,9 +39,8 @@ public class VesselPositionEventEntity implements Serializable {
     @JoinColumn(name = "vessel_transport_means_id")
     private VesselTransportMeansEntity vesselTransportMeans;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "obtained_occurrence_date_time", length = 29)
-    private Date obtainedOccurrenceDateTime;
+    @Column(name = "obtained_occurrence_date_time")
+    private Instant obtainedOccurrenceDateTime;
 
     @Column(name = "type_code")
     private String typeCode;
@@ -73,4 +63,11 @@ public class VesselPositionEventEntity implements Serializable {
     @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;
 
+    public Optional<Date> getObtainedOccurrenceAsDate() {
+        if (obtainedOccurrenceDateTime == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(Date.from(obtainedOccurrenceDateTime));
+    }
 }

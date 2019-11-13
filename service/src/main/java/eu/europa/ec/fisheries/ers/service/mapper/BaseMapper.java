@@ -12,19 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
@@ -36,6 +24,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -45,46 +34,34 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Geometry;
+import org.mapstruct.Named;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_Q_CODE_C62;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GM;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GN;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_HE;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_ME;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NI;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NL;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NN;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_QG;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
 
 @Slf4j
 @NoArgsConstructor
 public class BaseMapper {
+
+    protected static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT, Locale.ROOT).withZone(ZoneId.of("UTC"));
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities) {
         Set<FluxLocationDto> locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fLocEntities);
@@ -143,27 +120,30 @@ public class BaseMapper {
         return fishingTripEntity;
     }
 
-    public static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
+    protected static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
         BigDecimal fishingTime = BigDecimal.ZERO;
-        Date startDate = null;
-        Date endDate = null;
+        Instant startInstant = null;
+        Instant endInstant = null;
         String unitCode = null;
         for (DelimitedPeriodEntity period : periodEntities) {
             Double calcDur = period.getCalculatedDuration();
-            Date start = period.getStartDate();
-            Date end = period.getEndDate();
+            Instant start = period.getStartDate();
+            Instant end = period.getEndDate();
 
-            if (startDate == null || start.before(startDate)) {
-                startDate = start;
+            if (startInstant == null || start.isBefore(startInstant)) {
+                startInstant = start;
             }
-            if (endDate == null || end.after(endDate)) {
-                endDate = end;
+            if (endInstant == null || end.isAfter(endInstant)) {
+                endInstant = end;
             }
             if (calcDur != null) {
                 fishingTime = fishingTime.add(new BigDecimal(calcDur));
             }
             unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode() : unitCode;
         }
+
+        Date startDate = Date.from(startInstant);
+        Date endDate = Date.from(endInstant);
 
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
                 .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).unitCode(unitCode).build();
@@ -238,21 +218,6 @@ public class BaseMapper {
         return fluxReportDocument.getReferenceId() != null && fluxReportDocument.getReferenceId().length() != 0;
     }
 
-    protected static XMLGregorianCalendar convertToXMLGregorianCalendar(Date dateTime, boolean includeTimeZone) {
-        XMLGregorianCalendar calendar = null;
-        try {
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTimeInMillis(dateTime.getTime());
-            calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-            if (!includeTimeZone) {
-                calendar.setTimezone(DatatypeConstants.FIELD_UNDEFINED); //If we do not want timeZone to be included, set this
-            }
-        } catch (DatatypeConfigurationException e) {
-            log.error(e.getMessage(), e);
-        }
-        return calendar;
-    }
-
     public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
         FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
         return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
@@ -323,7 +288,7 @@ public class BaseMapper {
             return null;
         }
         PositionDto positionDto = new PositionDto();
-        positionDto.setOccurence(faEntity.getOccurence());
+        positionDto.setOccurence(faEntity.getOccurrenceAsDate().orElse(null));
         if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
             FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
             if (locationEntity != null && locationEntity.getGeom() != null) {
@@ -333,24 +298,22 @@ public class BaseMapper {
         return positionDto;
     }
 
-    /**
-     * return fishing trip start and end time
-     * fishingActivityType =FishingActivityTypeEnum.DEPARTURE = method will return fishing trip start time
-     * fishingActivityType =FishingActivityTypeEnum.ARRIVAL = method will return fishing trip end time
-     *
-     * @param fishingActivities
-     * @param fishingActivityType
-     */
-    public Date getFishingTripDateTimeFromFishingActivities(List<FishingActivityEntity> fishingActivities, String fishingActivityType) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivityType == null) {
+    @Named("instantToDate")
+    protected Date instantToDate(Instant value) {
+        if (value == null) {
             return null;
         }
-        for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
-            if (fishingActivityEntity != null && fishingActivityType.equals(fishingActivityEntity.getTypeCode()) && fishingActivityEntity.getCalculatedStartTime() != null) {
-                return fishingActivityEntity.getCalculatedStartTime();
-            }
+
+        return Date.from(value);
+    }
+
+    @Named("instantToDateUtilsStringFormat")
+    protected String instantToDateUtilsStringFormat(Instant value) {
+        if (value == null) {
+            return null;
         }
-        return null;
+
+        return dateTimeFormatter.format(value);
     }
 
     protected void fillRoleAndCharacteristics(GearDto gearDto, FishingGearEntity gearEntity) {
@@ -407,5 +370,64 @@ public class BaseMapper {
             default:
                 break;
         }
+    }
+
+    /**
+     * Converts an Instant to an XMLGregorianCalendar that uses the UTC time zone.
+     * The precision is seconds, not milliseconds. This is done in order to preserve backwards compatibility of the format for outgoing FLUX messages.
+     * Otherwise, the timestamp in the FLUX XML will contain milliseconds, which it hasn't previously.
+     * XMLDateUtils.dateToXmlGregorian() (which this method is intended to replace) also doesn't have millisecond precision.
+     *
+     * @param instant Instant to convert
+     * @return XMLGregorianCalendar set to the same epoch second with UTC time zone
+     */
+    @Named("instantToXMLGregorianCalendarUTC")
+    protected XMLGregorianCalendar instantToXMLGregorianCalendarUTC(Instant instant) {
+        GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ROOT);
+        calendar.setTimeInMillis(instant.toEpochMilli());
+        try {
+            XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+            // no millisecond precision, see Javadoc
+            xmlGregorianCalendar.setFractionalSecond(null);
+            return xmlGregorianCalendar;
+        } catch (DatatypeConfigurationException e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Named("instantToDateTimeTypeUTC")
+    protected DateTimeType instantToDateTimeTypeUTC(Instant value) {
+        if (value == null) {
+            return null;
+        }
+
+        XMLGregorianCalendar xmlGregorianCalendar = instantToXMLGregorianCalendarUTC(value);
+        DateTimeType result = new DateTimeType();
+        result.setDateTime(xmlGregorianCalendar);
+        return result;
+    }
+
+    @Named("dateTimeTypeToInstant")
+    protected Instant dateTimeTypeToInstant(DateTimeType value) {
+        if (value == null) {
+            return null;
+        }
+
+        XMLGregorianCalendar dateTime = value.getDateTime();
+        if (dateTime == null) {
+            return null;
+        }
+
+        return dateTime.toGregorianCalendar().toInstant();
+    }
+
+    @Named("xmlGregorianCalendarToInstant")
+    protected Instant xmlGregorianCalendarToInstant(XMLGregorianCalendar value) {
+        if (value ==  null) {
+            return null;
+        }
+
+        return value.toGregorianCalendar().toInstant();
     }
 }

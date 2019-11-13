@@ -64,7 +64,6 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -205,7 +204,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
         fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
         log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
-        addPortDescriptions(fishingActivityViewDTO, "LOCATION");
+        addPortDescriptions(fishingActivityViewDTO);
         if(withHistory){
             Stopwatch stopwatch = Stopwatch.createStarted();
             fishingActivityViewDTO.setHistory(getActivityHistory(activityEntityFound));
@@ -378,23 +377,18 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return actIDList;
     }
 
-    private void addPortDescriptions(FishingActivityViewDTO fishingActivityViewDTO, String fluxLocationIdSchemeId) {
-        if (fishingActivityViewDTO == null || StringUtils.isBlank(fluxLocationIdSchemeId)) {
+    private void addPortDescriptions(FishingActivityViewDTO fishingActivityViewDTO) {
+        if (fishingActivityViewDTO == null) {
             return;
         }
-        final String ACRONYM = "LOCATION";
-        String filter;
-        final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
-        Integer nrOfResults = 1;
+        final List<String> columnsList = new ArrayList<>(Collections.singletonList("code"));
         for (FluxLocationDto fluxLocationDto : Utils.safeIterable(fishingActivityViewDTO.getLocations())) {
-            if (fluxLocationIdSchemeId.equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
+            if ("LOCATION".equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
                 try {
-                    filter = fluxLocationDto.getFluxLocationIdentifier();
-                    List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "description").get("description");
+                    String filter = fluxLocationDto.getFluxLocationIdentifier();
+                    List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr("LOCATION", filter, columnsList, 1, "description").get("description");
                     String codeDescription = codeDescriptions.get(0);
                     fluxLocationDto.setPortDescription(codeDescription);
-                } catch (ServiceException e) {
-                    log.error("Error while trying to set port description on FluxLocationDto.", e);
                 } catch (IndexOutOfBoundsException iobe) {
                     log.error("Error while trying to set port description on FluxLocationDto! Description for code: " + fluxLocationDto.getTypeCode() +
                             " doesn't exist", iobe);
@@ -442,7 +436,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
                 }
 
             }
-            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDatetime(), purposeCode, acticityIds));
+            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDateTimeAsDate().orElse(null), purposeCode, acticityIds));
         }
         Collections.sort(dtoElements);
         return dtoElements;
@@ -451,15 +445,15 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public int getPreviousFishingActivity(int fishingActivityId) {
         log.info(" Retrieve fishing activity from db:" + fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime().toInstant()));
-        return fishingActivityDao.getPreviousFishingActivityId(activityEntity.getId(), activityEntity.getTypeCode(), activityEntity.getCalculatedStartTime());
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getPreviousFishingActivityId(activityEntity);
     }
 
 
     public int getNextFishingActivity(int fishingActivityId) {
         log.info(" Retrieve fishing activity from db:" + fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime().toInstant()));
-        return fishingActivityDao.getNextFishingActivityId(activityEntity.getId(), activityEntity.getTypeCode(), activityEntity.getCalculatedStartTime());
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getNextFishingActivityId(activityEntity);
     }
 }

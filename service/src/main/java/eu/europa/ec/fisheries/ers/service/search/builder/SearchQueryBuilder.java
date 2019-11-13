@@ -30,16 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class SearchQueryBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
@@ -86,7 +82,7 @@ public abstract class SearchQueryBuilder {
     void createJoinTablesPartForQuery(StringBuilder sql, FishingActivityQuery query) {
         LOG.debug("Create Join Tables part of Query");
         Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
-        Set<SearchFilter> keySet = new HashSet<>();
+        SortedSet<SearchFilter> keySet = new TreeSet<>();
         if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
             keySet.addAll(query.getSearchCriteriaMap().keySet());
         }
@@ -105,8 +101,6 @@ public abstract class SearchQueryBuilder {
             completeQueryDependingOnKey(sql, key, joinString);
         }
         getJoinPartForSortingOptions(sql, query);
-
-        //   LOG.debug("Generated SQL for JOIN Part :" + sql);
     }
 
     private void completeQueryDependingOnKey(StringBuilder sql, SearchFilter key, String joinString) {
@@ -238,7 +232,7 @@ public abstract class SearchQueryBuilder {
         LOG.debug("[INFO] Creating Where part of Query");
         sql.append(" where ");
         Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
-        Set<SearchFilter> keySet = new HashSet<>();
+        SortedSet<SearchFilter> keySet = new TreeSet<>();
         if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
             keySet.addAll(query.getSearchCriteriaMap().keySet());
         }
@@ -249,23 +243,20 @@ public abstract class SearchQueryBuilder {
         if(query.getShowOnlyLatest() != null){
             sql.append(" a.latest=:latest ").append(" and ");
         }
-        int i = 0;
+        boolean hasAppendedAtLeastOne = false;
         for (SearchFilter key : keySet) {
-            if (!appendWhereQueryPart(sql, filterMappings, keySet, i, key)) {
-                continue;
-            }
-            i++;
+            hasAppendedAtLeastOne |= appendWhereQueryPart(sql, filterMappings, keySet, hasAppendedAtLeastOne, key);
         }
         LOG.debug("[INFO] Generated Query After Where :" + sql);
     }
 
-    private boolean appendWhereQueryPart(StringBuilder sql, Map<SearchFilter, FilterDetails> filterMappings, Set<SearchFilter> keySet, int i, SearchFilter key) {
+    private boolean appendWhereQueryPart(StringBuilder sql, Map<SearchFilter, FilterDetails> filterMappings, Set<SearchFilter> keySet, boolean hasAppendedAtLeastOne, SearchFilter key) {
         if ((SearchFilter.QUANTITY_MIN.equals(key) && keySet.contains(SearchFilter.QUANTITY_MAX)) || (filterMappings.get(key) == null)) { // skip this as MIN and MAX both are required to form where part. Treat it differently
             return false;
         }
         String mapping = filterMappings.get(key).getCondition();
-        if (i != 0) {
-            sql.append(" and ");
+        if (hasAppendedAtLeastOne) {
+            sql.append(" AND ");
         }
         if (SearchFilter.QUANTITY_MIN.equals(key)) {
             sql.append("((faCatch.calculatedWeightMeasure >= :").append(FilterMap.QUANTITY_MIN).append(" OR aprod.calculatedWeightMeasure >= :")
@@ -273,8 +264,8 @@ public abstract class SearchQueryBuilder {
 
         } else if (SearchFilter.QUANTITY_MAX.equals(key)) {
             sql.append(" ( ");
-            sql.append(filterMappings.get(SearchFilter.QUANTITY_MIN).getCondition()).append(" and ").append(mapping);
-            sql.append(" OR (aprod.calculatedWeightMeasure BETWEEN :").append(FilterMap.QUANTITY_MIN).append(" and :").append(FilterMap.QUANTITY_MAX + ")");
+            sql.append(filterMappings.get(SearchFilter.QUANTITY_MIN).getCondition()).append(" AND ").append(mapping);
+            sql.append(" OR (aprod.calculatedWeightMeasure BETWEEN :").append(FilterMap.QUANTITY_MIN).append(" AND :").append(FilterMap.QUANTITY_MAX + ")");
             sql.append(" ) ");
         } else {
             sql.append(mapping);
@@ -369,21 +360,19 @@ public abstract class SearchQueryBuilder {
         }
     }
 
-    private Date parseToUTCDate(String value) {
+    private Instant parseToInstant(String value) {
         LocalDateTime localDateTime = LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT));
         ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime.toLocalDate(), localDateTime.toLocalTime(), ZoneId.of("UTC"));
-        return Date.from(zonedDateTime.toInstant());
+        return zonedDateTime.toInstant();
     }
 
     private void applyValueDependingOnKey(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery, SearchFilter key, String value) throws ServiceException {
         switch (key) {
             case PERIOD_START:
             case PERIOD_END:
-                typedQuery.setParameter(queryParameterMappings.get(key), parseToUTCDate(value));
+                typedQuery.setParameter(queryParameterMappings.get(key), parseToInstant(value));
                 break;
             case QUANTITY_MIN:
-                typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
-                break;
             case QUANTITY_MAX:
                 typedQuery.setParameter(queryParameterMappings.get(key), SearchQueryBuilder.normalizeWeightValue(value, searchCriteriaMap.get(SearchFilter.WEIGHT_MEASURE)));
                 break;

@@ -33,12 +33,12 @@ public class RegistrationEventMapperTest {
         RegistrationEventEntity registrationEventEntity = RegistrationEventMapper.INSTANCE.mapToRegistrationEventEntity(registrationEvent);
 
         assertTrue(registrationEventEntity.getDescription().startsWith(registrationEvent.getDescriptions().get(0).getValue()));
-        assertEquals(registrationEvent.getOccurrenceDateTime().getDateTime().toGregorianCalendar().getTime(), registrationEventEntity.getOccurrenceDatetime());
+        assertEquals(registrationEvent.getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant(), registrationEventEntity.getOccurrenceDatetime());
         assertNotNull(registrationEventEntity.getRegistrationLocation());
 
         registrationEventEntity = registrationEventEntity.getRegistrationLocation().getRegistrationEvent();
         assertTrue(registrationEventEntity.getDescription().startsWith(registrationEvent.getDescriptions().get(0).getValue()));
-        assertEquals(registrationEvent.getOccurrenceDateTime().getDateTime().toGregorianCalendar().getTime(), registrationEventEntity.getOccurrenceDatetime());
+        assertEquals(registrationEvent.getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant(), registrationEventEntity.getOccurrenceDatetime());
 
     }
 }

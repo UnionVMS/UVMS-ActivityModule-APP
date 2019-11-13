@@ -14,7 +14,9 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.Data;
@@ -38,13 +40,11 @@ public class DelimitedPeriodEntity implements Serializable {
 	@JoinColumn(name = "fishing_trip_id")
 	private FishingTripEntity fishingTrip;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "start_date", length = 29)
-	private Date startDate;
+	@Column(name = "start_date")
+	private Instant startDate;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "end_date", length = 29)
-	private Date endDate;
+	@Column(name = "end_date")
+	private Instant endDate;
 
     @Embedded
     @AttributeOverrides({
@@ -67,5 +67,21 @@ public class DelimitedPeriodEntity implements Serializable {
                 calculatedDuration = result.doubleValue();
             }
         }
+    }
+
+    public Optional<Date> getStartDateAsDate() {
+        if (startDate == null) {
+            return  Optional.empty();
+        }
+
+        return Optional.of(Date.from(startDate));
+    }
+
+    public Optional<Date> getEndDateAsDate() {
+        if (endDate == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(Date.from(endDate));
     }
 }

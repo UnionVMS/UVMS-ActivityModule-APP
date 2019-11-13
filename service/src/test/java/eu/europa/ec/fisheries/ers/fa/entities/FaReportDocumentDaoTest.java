@@ -15,12 +15,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+import org.mapstruct.ap.internal.util.Collections;
 
 public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
@@ -33,7 +37,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testFindEntityById() {
+    public void findEntityById() {
         dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
         assertNotNull(entity);
@@ -41,7 +45,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testFindFaReportById() {
+    public void findFaReportById() {
         dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity entity = dao.findEntityById(FaReportDocumentEntity.class, 1);
         String identifier = entity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId();
@@ -56,7 +60,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testGetLatestFaReportDocumentsForTrip() {
+    public void getLatestFaReportDocumentsForTrip() {
         dbSetupTracker.skipNextLaunch();
         List<FaReportDocumentEntity> entities=dao.loadReports("NOR-TRP-20160517234053706", "Y");
         assertNotNull(entities);
@@ -65,7 +69,7 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testReturnNullIfEmpty(){
+    public void returnNullIfEmpty() {
         dbSetupTracker.skipNextLaunch();
         FaReportDocumentEntity faReportDocEntity = dao.findFaReportByIdAndScheme("TEST_NON_EXISTANT-REP-ID", "TEST_NON_EXISTANT-SCH-ID");
         assertNull(faReportDocEntity);
@@ -73,10 +77,69 @@ public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testGetFaReportDocumentsForTrip(){
+    public void getFaReportDocumentsForTrip() {
         dbSetupTracker.skipNextLaunch();
         List<FaReportDocumentEntity> faReportDocumentsForTrip = dao.loadReports("NOR-TRP-20160517234053706", "N");
         assertNotNull(faReportDocumentsForTrip);
         assertTrue(faReportDocumentsForTrip.size() > 0);
+    }
+
+    @Test
+    public void loadReports_getAll() {
+        // Given
+
+        // When
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, null, null);
+
+        // Then
+        assertReportsHaveIds(result, 1, 2, 3, 6);
+    }
+
+    @Test
+    public void loadReports_after20160701() {
+        // Given
+        Instant startDate = Instant.parse("2016-07-01T00:00:01Z");
+
+        // When
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, startDate, null);
+
+        // Then
+        assertReportsHaveIds(result, 6);
+    }
+
+    @Test
+    public void loadReports_before20160630() {
+        // Given
+        Instant endDate = Instant.parse("2016-06-30T23:59:59Z");
+
+        // When
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, null, endDate);
+
+        // Then
+        assertReportsHaveIds(result, 1, 2, 3);
+    }
+
+    @Test
+    public void loadReports_narrowTimeRange() {
+        // Given
+        Instant startDate = Instant.parse("2016-06-27T05:59:00Z");
+        Instant endDate =   Instant.parse("2016-06-27T06:01:00Z");
+
+        // When
+        List<FaReportDocumentEntity> result = dao.loadReports(null, null, startDate, endDate);
+
+        // Then
+        assertReportsHaveIds(result, 2);
+    }
+
+    private void assertReportsHaveIds(Collection<FaReportDocumentEntity> entities, Integer ... ids) {
+        Set<Integer> idSet = Collections.asSet(ids);
+
+        for (FaReportDocumentEntity entity : entities) {
+            Integer id = entity.getId();
+            assertTrue("Report with ID " + id + " not expected", idSet.remove(id));
+        }
+
+        assertTrue("Not all IDs found among reports", idSet.isEmpty());
     }
 }

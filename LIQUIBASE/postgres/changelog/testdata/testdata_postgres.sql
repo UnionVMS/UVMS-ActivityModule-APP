@@ -80,6 +80,8 @@ INSERT INTO activity_flux_party VALUES (55, NULL, NULL);
 INSERT INTO activity_flux_party VALUES (56, NULL, NULL);
 INSERT INTO activity_flux_party VALUES (57, NULL, NULL);
 INSERT INTO activity_flux_party VALUES (58, NULL, NULL);
+INSERT INTO activity_flux_party VALUES (59, NULL, NULL);
+INSERT INTO activity_flux_party VALUES (60, NULL, NULL);
 
 
 --
@@ -144,6 +146,8 @@ INSERT INTO activity_flux_report_document VALUES (55, NULL, NULL, '2017-01-09 02
 INSERT INTO activity_flux_report_document VALUES (56, NULL, NULL, '2017-01-09 12:54:00', '9', 'FLUX_GP_PURPOSE', NULL, 56, NULL);
 INSERT INTO activity_flux_report_document VALUES (57, NULL, NULL, '2017-01-09 12:08:00', '9', 'FLUX_GP_PURPOSE', NULL, 57, NULL);
 INSERT INTO activity_flux_report_document VALUES (58, '88F9AE4F-166B-46A1-AD2F-728E26095091', 'UUID', '2016-07-08 05:00:00', '9', 'FLUX_GP_PURPOSE', NULL, 58, 1);
+INSERT INTO activity_flux_report_document VALUES (59, NULL, NULL, '2019-11-06 11:00:00', '9', 'FLUX_GP_PURPOSE', NULL, 59, NULL);
+INSERT INTO activity_flux_report_document VALUES (60, '631cf7c4-fbcf-4b65-a6fc-166b7eabbd6a', 'UUID', '2019-11-06 12:00:00', '9', 'FLUX_GP_PURPOSE', NULL, 60, NULL);
 
 
 --
@@ -156,70 +160,6 @@ INSERT INTO activity_flux_report_document VALUES (58, '88F9AE4F-166B-46A1-AD2F-7
 -- Data for Name: activity_registration_event; Type: TABLE DATA; Schema: activity; Owner: activity
 --
 
-
-
---
--- Data for Name: activity_vessel_transport_means; Type: TABLE DATA; Schema: activity; Owner: activity
---
-
-INSERT INTO activity_vessel_transport_means VALUES (1, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (2, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (3, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b1d8b10d-28a9-467e-bd15-2a0867bedae4');
-INSERT INTO activity_vessel_transport_means VALUES (4, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'dd47eb99-244c-44f3-9cb5-d9d1046b4ef0');
-INSERT INTO activity_vessel_transport_means VALUES (5, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '8f5b7064-cdd8-4667-8117-4739797d14db');
-INSERT INTO activity_vessel_transport_means VALUES (6, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (7, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'e9e67c44-a25c-4981-b93b-1eb7e6578c94');
-INSERT INTO activity_vessel_transport_means VALUES (8, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b632e69d-36d6-4273-8fb1-c0a07825fcfa');
-INSERT INTO activity_vessel_transport_means VALUES (9, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'a909d2e2-6fb6-4e68-ac7e-211f7d7d8beb');
-INSERT INTO activity_vessel_transport_means VALUES (10, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '33b03980-33d2-4cdf-a497-21147311df18');
-INSERT INTO activity_vessel_transport_means VALUES (11, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (12, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'abbc5e76-555c-4e8d-afa7-f7d654de3efc');
-INSERT INTO activity_vessel_transport_means VALUES (13, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b6195362-6b25-4b7c-be11-8e66dea5619a');
-INSERT INTO activity_vessel_transport_means VALUES (14, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'b8c4db8a-f643-4910-9833-8226f8829d14');
-INSERT INTO activity_vessel_transport_means VALUES (15, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'e9e67c44-a25c-4981-b93b-1eb7e6578c94');
-INSERT INTO activity_vessel_transport_means VALUES (16, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'f596b661-24be-4e0b-a6bd-d5c2312ef232');
-INSERT INTO activity_vessel_transport_means VALUES (17, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '1cba9feb-8059-4a0e-965e-413cdf7053b6');
-INSERT INTO activity_vessel_transport_means VALUES (18, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '3ff66df9-2785-455e-ad8a-7a91c90653ce');
-INSERT INTO activity_vessel_transport_means VALUES (19, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '1b1acd99-498e-46c5-be15-707c61df9207');
-INSERT INTO activity_vessel_transport_means VALUES (20, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fa6dc69d-28c1-478b-bd24-eb6c61237ffc');
-INSERT INTO activity_vessel_transport_means VALUES (21, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (22, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '52b616a0-4b7b-4402-92c5-8ad8283497c1');
-INSERT INTO activity_vessel_transport_means VALUES (23, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '88731c92-220a-4d34-989e-c0d5f582c0c6');
-INSERT INTO activity_vessel_transport_means VALUES (24, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'ef53894a-c082-4211-81cc-508499165ea7');
-INSERT INTO activity_vessel_transport_means VALUES (25, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'a58ec1ca-9eb8-4127-b21f-59b98d07b7c5');
-INSERT INTO activity_vessel_transport_means VALUES (26, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '230a89b9-fc6a-426d-848a-a03855d95538');
-INSERT INTO activity_vessel_transport_means VALUES (27, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (28, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '3ce9b035-cbb9-45a2-80d1-84492e62c092');
-INSERT INTO activity_vessel_transport_means VALUES (29, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '01c8eefe-daee-4cc7-b662-85a040879c0f');
-INSERT INTO activity_vessel_transport_means VALUES (30, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '14168d38-7f92-43ff-98b9-082b0aa50010');
-INSERT INTO activity_vessel_transport_means VALUES (31, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '449b7f2a-ea34-498a-87d5-08df02a97ad2');
-INSERT INTO activity_vessel_transport_means VALUES (32, 'DONOR', 'FA_VESSEL_ROLE', 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '55edbd80-a7ca-4d7f-951b-efd81a613016');
-INSERT INTO activity_vessel_transport_means VALUES (33, 'RECEIVER', 'FA_VESSEL_ROLE', NULL, NULL, 'TERRITORY', 'ESP', NULL);
-INSERT INTO activity_vessel_transport_means VALUES (34, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '268031be-3858-46c7-8459-00fbe46ae259');
-INSERT INTO activity_vessel_transport_means VALUES (35, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'b8c4db8a-f643-4910-9833-8226f8829d14');
-INSERT INTO activity_vessel_transport_means VALUES (36, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fa6ecd35-adba-4e3e-86d3-9011ec11f188');
-INSERT INTO activity_vessel_transport_means VALUES (37, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (38, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (39, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (40, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'eb0edaa6-25bd-46ae-b5a8-914f66b86dcd');
-INSERT INTO activity_vessel_transport_means VALUES (41, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'a996d332-3396-4b79-a259-eccf12bb8ffc');
-INSERT INTO activity_vessel_transport_means VALUES (42, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '333152ba-3119-4192-aeba-f9da1f8145b3');
-INSERT INTO activity_vessel_transport_means VALUES (43, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '54e3c96e-4059-45d6-869b-572aba5905ef');
-INSERT INTO activity_vessel_transport_means VALUES (44, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (45, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '7507dd0d-7dc8-44b5-8527-5773e462c97c');
-INSERT INTO activity_vessel_transport_means VALUES (46, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'ef53894a-c082-4211-81cc-508499165ea7');
-INSERT INTO activity_vessel_transport_means VALUES (47, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'ca3e4a2b-d722-4744-8a89-8a4ee07f82c9');
-INSERT INTO activity_vessel_transport_means VALUES (48, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'a8be94e6-9a9b-48f7-874b-b18213494a65');
-INSERT INTO activity_vessel_transport_means VALUES (49, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '63b54dcb-fb6e-4f9c-be6d-416d6feabde6');
-INSERT INTO activity_vessel_transport_means VALUES (50, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'a9b4cfa7-0883-47af-a082-c5b1dfe01765');
-INSERT INTO activity_vessel_transport_means VALUES (51, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'ca3e4a2b-d722-4744-8a89-8a4ee07f82c9');
-INSERT INTO activity_vessel_transport_means VALUES (52, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '52648603-7bee-4709-8f00-29b106a43810');
-INSERT INTO activity_vessel_transport_means VALUES (53, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '8f5b7064-cdd8-4667-8117-4739797d14db');
-INSERT INTO activity_vessel_transport_means VALUES (54, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b01c5ee3-9246-43d3-ae47-00be67346b0b');
-INSERT INTO activity_vessel_transport_means VALUES (55, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '42af7411-1099-41c7-ba4e-90dcbd2d945d');
-INSERT INTO activity_vessel_transport_means VALUES (56, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
-INSERT INTO activity_vessel_transport_means VALUES (57, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'e3a242c7-14ba-4303-8922-6af49210b370');
-INSERT INTO activity_vessel_transport_means VALUES (58, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '3ce9b035-cbb9-45a2-80d1-84492e62c092');
 
 
 --
@@ -284,6 +224,72 @@ INSERT INTO activity_fa_report_document VALUES (55, '0104000020E6100000030000000
 INSERT INTO activity_fa_report_document VALUES (56, '0104000020E61000000100000001010000000000000000604E40857CD0B359D52EC0', 'DECLARATION', 'FLUX_FA_REPORT_TYPE', '2017-01-09 12:54:00', 56, 57, NULL, 'NEW', 'FLUX', 1);
 INSERT INTO activity_fa_report_document VALUES (57, '0104000020E61000000400000001010000002B8716D9CEB72C40D7A3703D0AC74B400101000000EEEBC03923E249409A999999999917C001010000004E62105839B426C00AD7A3703D9A48400101000000C1CAA145B63326C0986E1283C08A4840', 'DECLARATION', 'FLUX_FA_REPORT_TYPE', '2017-01-09 12:08:00', 57, 58, NULL, 'NEW', 'FLUX', 1);
 INSERT INTO activity_fa_report_document VALUES (58, '0104000020E6100000010000000101000000F28B25BF58F22740E233EC0A90DB4C40', 'NOTIFICATION', 'FLUX_FA_REPORT_TYPE', '2017-01-09 03:06:00', 58, 58, NULL, 'NEW', 'FLUX', 1);
+INSERT INTO activity_fa_report_document VALUES (59, NULL, 'NOTIFICATION', 'FLUX_FA_REPORT_TYPE', '2019-11-06 11:00:00', 59, NULL, NULL, 'NEW', 'FLUX', 1);
+INSERT INTO activity_fa_report_document VALUES (60, NULL, 'NOTIFICATION', 'FLUX_FA_REPORT_TYPE', '2019-11-06 12:00:00', 60, NULL, NULL, 'NEW', 'FLUX', 1);
+
+
+--
+-- Data for Name: activity_vessel_transport_means; Type: TABLE DATA; Schema: activity; Owner: activity
+--
+
+INSERT INTO activity_vessel_transport_means VALUES (1, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027', NULL, 1);
+INSERT INTO activity_vessel_transport_means VALUES (2, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (3, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b1d8b10d-28a9-467e-bd15-2a0867bedae4');
+INSERT INTO activity_vessel_transport_means VALUES (4, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'dd47eb99-244c-44f3-9cb5-d9d1046b4ef0');
+INSERT INTO activity_vessel_transport_means VALUES (5, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '8f5b7064-cdd8-4667-8117-4739797d14db');
+INSERT INTO activity_vessel_transport_means VALUES (6, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027', NULL, 5);
+INSERT INTO activity_vessel_transport_means VALUES (7, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'e9e67c44-a25c-4981-b93b-1eb7e6578c94');
+INSERT INTO activity_vessel_transport_means VALUES (8, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b632e69d-36d6-4273-8fb1-c0a07825fcfa');
+INSERT INTO activity_vessel_transport_means VALUES (9, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'a909d2e2-6fb6-4e68-ac7e-211f7d7d8beb');
+INSERT INTO activity_vessel_transport_means VALUES (10, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '33b03980-33d2-4cdf-a497-21147311df18');
+INSERT INTO activity_vessel_transport_means VALUES (11, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027', NULL, 6);
+INSERT INTO activity_vessel_transport_means VALUES (12, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'abbc5e76-555c-4e8d-afa7-f7d654de3efc');
+INSERT INTO activity_vessel_transport_means VALUES (13, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b6195362-6b25-4b7c-be11-8e66dea5619a');
+INSERT INTO activity_vessel_transport_means VALUES (14, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'b8c4db8a-f643-4910-9833-8226f8829d14');
+INSERT INTO activity_vessel_transport_means VALUES (15, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'e9e67c44-a25c-4981-b93b-1eb7e6578c94');
+INSERT INTO activity_vessel_transport_means VALUES (16, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'f596b661-24be-4e0b-a6bd-d5c2312ef232');
+INSERT INTO activity_vessel_transport_means VALUES (17, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '1cba9feb-8059-4a0e-965e-413cdf7053b6');
+INSERT INTO activity_vessel_transport_means VALUES (18, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '3ff66df9-2785-455e-ad8a-7a91c90653ce');
+INSERT INTO activity_vessel_transport_means VALUES (19, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '1b1acd99-498e-46c5-be15-707c61df9207');
+INSERT INTO activity_vessel_transport_means VALUES (20, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fa6dc69d-28c1-478b-bd24-eb6c61237ffc');
+INSERT INTO activity_vessel_transport_means VALUES (21, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (22, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '52b616a0-4b7b-4402-92c5-8ad8283497c1');
+INSERT INTO activity_vessel_transport_means VALUES (23, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '88731c92-220a-4d34-989e-c0d5f582c0c6');
+INSERT INTO activity_vessel_transport_means VALUES (24, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'ef53894a-c082-4211-81cc-508499165ea7');
+INSERT INTO activity_vessel_transport_means VALUES (25, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'a58ec1ca-9eb8-4127-b21f-59b98d07b7c5');
+INSERT INTO activity_vessel_transport_means VALUES (26, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '230a89b9-fc6a-426d-848a-a03855d95538');
+INSERT INTO activity_vessel_transport_means VALUES (27, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (28, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '3ce9b035-cbb9-45a2-80d1-84492e62c092');
+INSERT INTO activity_vessel_transport_means VALUES (29, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '01c8eefe-daee-4cc7-b662-85a040879c0f');
+INSERT INTO activity_vessel_transport_means VALUES (30, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '14168d38-7f92-43ff-98b9-082b0aa50010');
+INSERT INTO activity_vessel_transport_means VALUES (31, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '449b7f2a-ea34-498a-87d5-08df02a97ad2');
+INSERT INTO activity_vessel_transport_means VALUES (32, 'DONOR', 'FA_VESSEL_ROLE', 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '55edbd80-a7ca-4d7f-951b-efd81a613016');
+INSERT INTO activity_vessel_transport_means VALUES (33, 'RECEIVER', 'FA_VESSEL_ROLE', NULL, NULL, 'TERRITORY', 'ESP', NULL);
+INSERT INTO activity_vessel_transport_means VALUES (34, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '268031be-3858-46c7-8459-00fbe46ae259');
+INSERT INTO activity_vessel_transport_means VALUES (35, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'b8c4db8a-f643-4910-9833-8226f8829d14');
+INSERT INTO activity_vessel_transport_means VALUES (36, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fa6ecd35-adba-4e3e-86d3-9011ec11f188');
+INSERT INTO activity_vessel_transport_means VALUES (37, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (38, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (39, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (40, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'eb0edaa6-25bd-46ae-b5a8-914f66b86dcd');
+INSERT INTO activity_vessel_transport_means VALUES (41, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'a996d332-3396-4b79-a259-eccf12bb8ffc');
+INSERT INTO activity_vessel_transport_means VALUES (42, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '333152ba-3119-4192-aeba-f9da1f8145b3');
+INSERT INTO activity_vessel_transport_means VALUES (43, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '54e3c96e-4059-45d6-869b-572aba5905ef');
+INSERT INTO activity_vessel_transport_means VALUES (44, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (45, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '7507dd0d-7dc8-44b5-8527-5773e462c97c');
+INSERT INTO activity_vessel_transport_means VALUES (46, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'ef53894a-c082-4211-81cc-508499165ea7');
+INSERT INTO activity_vessel_transport_means VALUES (47, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'ca3e4a2b-d722-4744-8a89-8a4ee07f82c9');
+INSERT INTO activity_vessel_transport_means VALUES (48, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'a8be94e6-9a9b-48f7-874b-b18213494a65');
+INSERT INTO activity_vessel_transport_means VALUES (49, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '63b54dcb-fb6e-4f9c-be6d-416d6feabde6');
+INSERT INTO activity_vessel_transport_means VALUES (50, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'a9b4cfa7-0883-47af-a082-c5b1dfe01765');
+INSERT INTO activity_vessel_transport_means VALUES (51, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'ca3e4a2b-d722-4744-8a89-8a4ee07f82c9');
+INSERT INTO activity_vessel_transport_means VALUES (52, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '52648603-7bee-4709-8f00-29b106a43810');
+INSERT INTO activity_vessel_transport_means VALUES (53, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', '8f5b7064-cdd8-4667-8117-4739797d14db');
+INSERT INTO activity_vessel_transport_means VALUES (54, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'b01c5ee3-9246-43d3-ae47-00be67346b0b');
+INSERT INTO activity_vessel_transport_means VALUES (55, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '42af7411-1099-41c7-ba4e-90dcbd2d945d');
+INSERT INTO activity_vessel_transport_means VALUES (56, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', 'fcb634a7-3862-4337-b1e6-6ba791cf4027');
+INSERT INTO activity_vessel_transport_means VALUES (57, NULL, NULL, 'MADONNA DI POMPEI', NULL, 'TERRITORY', 'MLT', 'e3a242c7-14ba-4303-8922-6af49210b370');
+INSERT INTO activity_vessel_transport_means VALUES (58, NULL, NULL, 'André', NULL, 'TERRITORY', 'FRA', '3ce9b035-cbb9-45a2-80d1-84492e62c092');
 
 
 --
@@ -397,6 +403,8 @@ INSERT INTO activity_fishing_activity VALUES (98, '0104000020E610000001000000010
 INSERT INTO activity_fishing_activity VALUES (99, '0104000020E61000000200000001010000002B8716D9CEB72C40D7A3703D0AC74B400101000000EEEBC03923E249409A999999999917C0', 'FISHING_OPERATION', 'FLUX_FA_TYPE', '2017-01-09 12:08:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 57, NULL, NULL, NULL, NULL);
 INSERT INTO activity_fishing_activity VALUES (100, '0104000020E6100000010000000101000000C1CAA145B63326C0986E1283C08A4840', 'GEAR_RETRIEVAL', 'FLUX_FA_TYPE', '2016-12-20 15:09:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 57, 99, NULL, NULL, NULL);
 INSERT INTO activity_fishing_activity VALUES (101, '0104000020E61000000100000001010000004E62105839B426C00AD7A3703D9A4840', 'GEAR_SHOT', 'FLUX_FA_TYPE', '2016-12-20 11:05:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 57, 99, NULL, NULL, NULL);
+INSERT INTO activity_fishing_activity VALUES (102, NULL, 'FISHING_OPERATION', 'FLUX_FA_TYPE', '2019-11-06 11:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 59, NULL, NULL, NULL, NULL);
+INSERT INTO activity_fishing_activity VALUES (103, NULL, 'FISHING_OPERATION', 'FLUX_FA_TYPE', '2019-11-06 12:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 60, NULL, NULL, NULL, NULL);
 
 
 --
@@ -4659,6 +4667,8 @@ INSERT INTO activity_flux_party_identifier VALUES (55, 55, 'FRA', 'FLUX_GP_PARTY
 INSERT INTO activity_flux_party_identifier VALUES (56, 56, 'MLT', 'FLUX_GP_PARTY');
 INSERT INTO activity_flux_party_identifier VALUES (57, 57, 'FRA', 'FLUX_GP_PARTY');
 INSERT INTO activity_flux_party_identifier VALUES (58, 58, 'MLT', 'FLUX_GP_PARTY');
+INSERT INTO activity_flux_party_identifier VALUES (59, 59, 'MLT', 'FLUX_GP_PARTY');
+INSERT INTO activity_flux_party_identifier VALUES (60, 60, 'MLT', 'FLUX_GP_PARTY');
 
 
 --
@@ -4737,6 +4747,8 @@ INSERT INTO activity_flux_report_identifier VALUES (55, 55, '40771F4F-4B22-409B-
 INSERT INTO activity_flux_report_identifier VALUES (56, 56, '20D3FFFE-0D3D-40ED-A49E-DF532ACD4EFC', 'UUID');
 INSERT INTO activity_flux_report_identifier VALUES (57, 57, '40771F4F-4B22-409B-9893-821FEC2139F7', 'UUID');
 INSERT INTO activity_flux_report_identifier VALUES (58, 58, 'C8471F99-FB55-4B05-9AAA-7E08738C92B2', 'UUID');
+INSERT INTO activity_flux_report_identifier VALUES (59, 59, '631cf7c4-fbcf-4b65-a6fc-166b7eabbd6a', 'UUID');
+INSERT INTO activity_flux_report_identifier VALUES (60, 60, 'b9b4ab04-1ca0-4d61-ad7a-0d0c0e1b0a93', 'UUID');
 
 
 --

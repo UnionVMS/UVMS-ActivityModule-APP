@@ -27,7 +27,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
@@ -72,7 +71,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "id", expression = "java(mapListToSingleIdentifier(entity.getFishingActivityIdentifiers()))"),
-            @Mapping(target = "occurrence", source = "occurence", dateFormat = DateUtils.DATE_TIME_UI_FORMAT),
+            @Mapping(target = "occurrence", expression = "java(instantToDateUtilsStringFormat(entity.getOccurence()))"),
             @Mapping(target = "gear", expression = "java(mapToFirstFishingGear(entity.getFishingGears()))"),
             @Mapping(target = "characteristics", expression = "java(getFluxCharacteristicsTypeCodeValue(entity.getFluxCharacteristics()))"),
             @Mapping(target = "location", expression = "java(mapSingleFluxLocationFromEntity(entity.getFluxLocations()))")
@@ -122,5 +121,4 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
         }
         return probRecoveryMeasure;
     }
-
 }

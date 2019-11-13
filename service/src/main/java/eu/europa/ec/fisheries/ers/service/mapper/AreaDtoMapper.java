@@ -57,10 +57,10 @@ public class AreaDtoMapper extends BaseMapper {
             CollectionUtils.isNotEmpty(vesselTransportMeans.iterator().next().getVesselPositionEvents()))
         {
             VesselPositionEventEntity vesselPositionEventEntity = vesselTransportMeans.iterator().next().getVesselPositionEvents().iterator().next();
-            positionDto.setOccurence(vesselPositionEventEntity.getObtainedOccurrenceDateTime());
+            positionDto.setOccurence(vesselPositionEventEntity.getObtainedOccurrenceAsDate().orElse(null));
             positionDto.setGeometry(extractGeometryWkt(vesselPositionEventEntity.getLongitude(), vesselPositionEventEntity.getLatitude()));
         } else {
-            positionDto.setOccurence(faReportDocument.getAcceptedDatetime());
+            positionDto.setOccurence(faEntity.getFaReportDocument().getAcceptedDateTimeAsDate().orElse(null));
         }
 
         return positionDto;

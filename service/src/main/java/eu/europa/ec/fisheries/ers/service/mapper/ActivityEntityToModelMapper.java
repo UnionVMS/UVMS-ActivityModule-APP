@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
@@ -31,7 +32,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 import static java.util.Collections.singletonList;
 
 @Slf4j
-public class ActivityEntityToModelMapper {
+public class ActivityEntityToModelMapper extends BaseMapper {
 
     public static final ActivityEntityToModelMapper INSTANCE = new ActivityEntityToModelMapper();
   
@@ -324,10 +325,9 @@ public class ActivityEntityToModelMapper {
         }
     }
 
-    private void mapOccurrenceDateTime(FishingActivity target, Date source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
+    private void mapOccurrenceDateTime(FishingActivity target, Instant source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            DateTimeType dateTimeType = instantToDateTimeTypeUTC(source);
             target.setOccurrenceDateTime(dateTimeType);
         }
     }
@@ -497,10 +497,9 @@ public class ActivityEntityToModelMapper {
         }
     }
 
-    private void mapOccurrenceDateTime(RegistrationEvent target, Date source) {
-        if (ObjectUtils.allNotNull(target, source)){
-            DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
+    private void mapOccurrenceDateTime(RegistrationEvent target, Instant source) {
+        if (ObjectUtils.allNotNull(target, source)) {
+            DateTimeType dateTimeType = instantToDateTimeTypeUTC(source);
             target.setOccurrenceDateTime(dateTimeType);
         }
     }
@@ -571,10 +570,9 @@ public class ActivityEntityToModelMapper {
         }
     }
 
-    private void mapAcceptanceDateTime(FAReportDocument target, Date source) {
+    private void mapAcceptanceDateTime(FAReportDocument target, Instant source) {
         if (ObjectUtils.allNotNull(target, source)) {
-            DateTimeType dateTimeType = new DateTimeType();
-            dateTimeType.setDateTime(DateUtils.dateToXmlGregorian(source));
+            DateTimeType dateTimeType = instantToDateTimeTypeUTC(source);
             target.setAcceptanceDateTime(dateTimeType);
         }
     }

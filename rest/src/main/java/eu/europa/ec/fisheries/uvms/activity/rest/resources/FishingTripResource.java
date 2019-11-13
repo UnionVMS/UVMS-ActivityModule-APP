@@ -81,10 +81,9 @@ public class FishingTripResource extends UnionVMSResource {
                                           @HeaderParam("roleName") String roleName,
                                           @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("Fishing Trip summary from fishing trip : " + fishingTripId);
+        LOG.debug("Fishing Trip summary from fishing trip : " + fishingTripId);
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        LOG.info("Fishing Trip summary from fishing trip : "+fishingTripId);
         return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId, datasets));
     }
 
@@ -97,7 +96,7 @@ public class FishingTripResource extends UnionVMSResource {
                                      @Context HttpServletResponse response,
                                      @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("Getting Vessels details for trip : " + fishingTripId);
+        LOG.debug("Getting Vessels details for trip : " + fishingTripId);
         return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));
     }
 
@@ -110,7 +109,7 @@ public class FishingTripResource extends UnionVMSResource {
                                                  @Context HttpServletResponse response,
                                                  @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("Message counters for fishing trip : " + fishingTripId);
+        LOG.debug("Message counters for fishing trip : " + fishingTripId);
         return createSuccessResponse(fishingTripService.getMessageCountersForTripId(fishingTripId));
     }
 
@@ -123,7 +122,7 @@ public class FishingTripResource extends UnionVMSResource {
                                                  @Context HttpServletResponse response,
                                                  @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.info("Catches for fishing trip : "+fishingTripId);
+        LOG.debug("Catches for fishing trip : "+fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
     }
 
@@ -159,7 +158,7 @@ public class FishingTripResource extends UnionVMSResource {
     public Response getFishingTripCatchEvolution(@Context HttpServletRequest request,
                                                  @Context HttpServletResponse response,
                                                  @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
-        LOG.info("Catch evolution for fishing trip : " + fishingTripId);
+        LOG.debug("Catch evolution for fishing trip : " + fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId));
     }
 
@@ -171,7 +170,7 @@ public class FishingTripResource extends UnionVMSResource {
     public Response requestTripUpdateFromTripId(@Context HttpServletRequest request,
                                                 @Context HttpServletResponse response,
                                                 @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
-        LOG.info("[INFO] Going to send FaQuery related to Trip with id : " + fishingTripId);
+        LOG.debug("Going to send FaQuery related to Trip with id : " + fishingTripId);
         try {
             rulesService.composeAndSendTripUpdateFaQueryToRules(fishingTripId);
         } catch (ActivityModuleException e) {
@@ -188,7 +187,7 @@ public class FishingTripResource extends UnionVMSResource {
     // @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.SEND_UPDATE_TRIP_REQUEST})
     public Response mockerReportToPlugin(@Context HttpServletRequest request,
                                                 @Context HttpServletResponse response) throws ServiceException {
-        LOG.info("Going to process sending of FaReportMessage....");
+        LOG.debug("Going to process sending of FaReportMessage....");
         try {
             rulesService.sendSyncAsyncFaReportToRules((FLUXFAReportMessage)JAXBMarshaller.unMarshallMessage(mockedFaReport, FLUXFAReportMessage.class), "SOMEON", SyncAsyncRequestType.ASYNC, null);
         } catch (ActivityModuleException | RulesModelMarshallException e) {

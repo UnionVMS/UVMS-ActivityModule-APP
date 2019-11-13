@@ -25,7 +25,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -49,7 +48,6 @@ import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivity
  * Created by kovian on 08/02/2017.
  */
 @Path("/fa/views")
-@Slf4j
 @Stateless
 public class FishingActivityViewsResource extends UnionVMSResource {
 

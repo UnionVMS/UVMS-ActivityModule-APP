@@ -32,10 +32,8 @@ import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-import lombok.extern.slf4j.Slf4j;
 
 @Path("/config")
-@Slf4j
 @Stateless
 public class ConfigResource extends UnionVMSResource {
 
