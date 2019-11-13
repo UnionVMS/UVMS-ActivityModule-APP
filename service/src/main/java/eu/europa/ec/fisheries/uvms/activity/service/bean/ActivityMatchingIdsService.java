@@ -13,11 +13,11 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxReportIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
@@ -28,55 +28,55 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by kovian on 12/07/2017.
- */
 @Stateless
 @LocalBean
 @Transactional
 @Slf4j
-public class ActivityMatchingIdsServiceBean extends BaseActivityBean {
+public class ActivityMatchingIdsService extends BaseActivityBean {
 
-    private FluxReportIdentifierDao fluxRepIdentDao;
+    private FluxReportIdentifierDao fluxReportIdentifierDao;
 
     @PostConstruct
     public void init() {
         initEntityManager();
         EntityManager entityManager = getEntityManager();
-        fluxRepIdentDao = new FluxReportIdentifierDao(entityManager);
+        fluxReportIdentifierDao = new FluxReportIdentifierDao(entityManager);
     }
 
-
-    public GetNonUniqueIdsResponse getMatchingIdsResponse(List<ActivityUniquinessList> activityUniquenessLists) {
+    @NotNull
+    public List<ActivityUniquinessList> getMatchingIds(List<ActivityUniquinessList> activityUniquenessLists) {
         if (CollectionUtils.isEmpty(activityUniquenessLists)) {
-            return null;
+            return Collections.emptyList();
         }
-        GetNonUniqueIdsResponse response = new GetNonUniqueIdsResponse();
-        List<ActivityUniquinessList> activityUniquinessResponseLists = new ArrayList<>();
-        response.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
-        response.setActivityUniquinessLists(activityUniquinessResponseLists);
+        List<ActivityUniquinessList> matchingIdsList = new ArrayList<>();
 
-        for (ActivityUniquinessList actUniqueReq : activityUniquenessLists) {
-            activityUniquinessResponseLists.add(getActivityNonUniqueIdsList(actUniqueReq));
+        for (ActivityUniquinessList activityUniquinessList : activityUniquenessLists) {
+            matchingIdsList.add(getActivityNonUniqueIdsList(activityUniquinessList));
         }
-        return response;
+        return matchingIdsList;
     }
 
-    private ActivityUniquinessList getActivityNonUniqueIdsList(ActivityUniquinessList actRequestUniqueReq) {
-        ActivityUniquinessList respUniqList = new ActivityUniquinessList();
-        respUniqList.setActivityTableType(actRequestUniqueReq.getActivityTableType());
-        List<ActivityIDType> ids = actRequestUniqueReq.getIds();
-        respUniqList.setIds(mapIDsListToActivityIDTypeList(fluxRepIdentDao.getMatchingIdentifiers(ids, actRequestUniqueReq.getActivityTableType())));
-        return respUniqList;
+    private ActivityUniquinessList getActivityNonUniqueIdsList(ActivityUniquinessList originalUniquenessList) {
+        ActivityTableType originalActivityTableType = originalUniquenessList.getActivityTableType();
+        List<ActivityIDType> originalActivityIdTypeList = originalUniquenessList.getIds();
+
+        List<FluxReportIdentifierEntity> matchingIdentifiers = fluxReportIdentifierDao.getMatchingIdentifiers(originalActivityIdTypeList, originalActivityTableType);
+        List<ActivityIDType> updatedActivityIdTypeList = mapIDsListToActivityIDTypeList(matchingIdentifiers);
+
+        ActivityUniquinessList updatedUniquenessList = new ActivityUniquinessList();
+        updatedUniquenessList.setIds(updatedActivityIdTypeList);
+        updatedUniquenessList.setActivityTableType(originalActivityTableType);
+        return updatedUniquenessList;
     }
 
     private List<ActivityIDType> mapIDsListToActivityIDTypeList(List<FluxReportIdentifierEntity> identifiersFromDbList) {
-        if(CollectionUtils.isEmpty(identifiersFromDbList)){
+        if (CollectionUtils.isEmpty(identifiersFromDbList)) {
             return Collections.emptyList();
         }
         List<ActivityIDType> entityIds = new ArrayList<>();
-        for(FluxReportIdentifierEntity fishTripIdentifier : identifiersFromDbList){
-            entityIds.add(new ActivityIDType(fishTripIdentifier.getFluxReportIdentifierId(),fishTripIdentifier.getFluxReportIdentifierSchemeId()));
+        for (FluxReportIdentifierEntity fishTripIdentifier : identifiersFromDbList) {
+            ActivityIDType activityIdType = new ActivityIDType(fishTripIdentifier.getFluxReportIdentifierId(), fishTripIdentifier.getFluxReportIdentifierSchemeId());
+            entityIds.add(activityIdType);
         }
         return entityIds;
     }

@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +49,7 @@ public class FaReportSaverBean {
     private FluxMessageService fluxMessageService;
 
     @EJB
-    private ActivityMatchingIdsServiceBean matchingIdsService;
+    private ActivityMatchingIdsService matchingIdsService;
 
     @EJB
     private ExchangeServiceBean exchangeServiceBean;
@@ -77,10 +76,10 @@ public class FaReportSaverBean {
         } catch (ActivityModelMarshallException e) {
             log.error("Error while trying to get the unique ids from FaReportDocumentIdentifiers table.");
         }
-        GetNonUniqueIdsResponse matchingIdsResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest != null ? getNonUniqueIdsRequest.getActivityUniquinessLists() : null);
-        List<ActivityUniquinessList> activityUniquinessLists = matchingIdsResponse.getActivityUniquinessLists();
+
+        List<ActivityUniquinessList> matchingIdsList = matchingIdsService.getMatchingIds(getNonUniqueIdsRequest != null ? getNonUniqueIdsRequest.getActivityUniquinessLists() : null);
         final List<FAReportDocument> faReportDocuments = repMsg.getFAReportDocuments();
-        for(ActivityUniquinessList unique : Utils.safeIterable(activityUniquinessLists)) {
+        for (ActivityUniquinessList unique : matchingIdsList) {
             deleteBranchesThatMatchWithTheIdsList(unique.getIds(), faReportDocuments);
         }
     }

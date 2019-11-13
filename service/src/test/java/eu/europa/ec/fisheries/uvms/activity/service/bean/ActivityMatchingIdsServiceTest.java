@@ -12,15 +12,12 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxReportIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsServiceBean;
-import lombok.SneakyThrows;
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,56 +29,57 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by kovian on 17/07/2017.
- */
 @RunWith(MockitoJUnitRunner.class)
-public class ActivityMatchingIdsServiceBeanTest {
+public class ActivityMatchingIdsServiceTest {
 
     @InjectMocks
-    ActivityMatchingIdsServiceBean matchingBean;
+    private ActivityMatchingIdsService matchingBean;
 
     @Mock
-    FluxReportIdentifierDao fluxRepIdentDao;
+    private FluxReportIdentifierDao fluxRepIdentDao;
 
     @Test
-    public void getMatchingIdsResponse() {
-
+    public void getMatchingIdsResponse() throws Exception {
+        // Given
         when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
-        List<ActivityUniquinessList> request = getMockedRequest();
-        GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);
+        List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
-        assertNotNull(matchingIdsResponse);
-        assertTrue(CollectionUtils.isNotEmpty(matchingIdsResponse.getActivityUniquinessLists()));
-        assertEquals(2, matchingIdsResponse.getActivityUniquinessLists().size());
+        // When
+        List<ActivityUniquinessList> matchingIds = matchingBean.getMatchingIds(inputActivityUniquenessList);
+
+        // Then
+        assertEquals(2, matchingIds.size());
     }
 
     @Test
     public void getMatchingIdsResponseNullPointer() {
+        // Given
         when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
 
-        GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(null);
-        assertNull(matchingIdsResponse);
+        // When
+        List<ActivityUniquinessList> matchingIds = matchingBean.getMatchingIds(null);
+
+        // Then
+        assertTrue(matchingIds.isEmpty());
     }
 
     @Test
-    public void getMatchingIdsResponseNullMap() {
-
+    public void getMatchingIdsResponseNullMap() throws Exception {
+        // Given
         when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
 
-        List<ActivityUniquinessList> request = getMockedRequest();
-        GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);
+        List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
-        assertNotNull(matchingIdsResponse);
-        assertTrue(CollectionUtils.isNotEmpty(matchingIdsResponse.getActivityUniquinessLists()));
-        assertEquals(2, matchingIdsResponse.getActivityUniquinessLists().size());
+        // When
+        List<ActivityUniquinessList> matchingIds = matchingBean.getMatchingIds(inputActivityUniquenessList);
+
+        // Then
+        assertEquals(2, matchingIds.size());
     }
 
     @Test
@@ -90,24 +88,23 @@ public class ActivityMatchingIdsServiceBeanTest {
     }
 
     @Test
-    public void getMatchingIdsResponseMappingEmptyList() {
-
+    public void getMatchingIdsResponseMappingEmptyList() throws Exception {
+        // Given
         when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
-        List<ActivityUniquinessList> request = getMockedRequest();
-        GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);
+        List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
-        assertNotNull(matchingIdsResponse);
-        assertTrue(CollectionUtils.isNotEmpty(matchingIdsResponse.getActivityUniquinessLists()));
-        assertEquals(2, matchingIdsResponse.getActivityUniquinessLists().size());
+        // When
+        List<ActivityUniquinessList> matchingIds = matchingBean.getMatchingIds(inputActivityUniquenessList);
+
+        // Then
+        assertEquals(2, matchingIds.size());
     }
 
-    @SneakyThrows
-    private List<ActivityUniquinessList> getMockedRequest() {
+    private List<ActivityUniquinessList> createInputActivityUniquenessList() throws ActivityModelMarshallException {
         GetNonUniqueIdsRequest getNonUniqueIdsRequest = JAXBMarshaller.unmarshallTextMessage(getStrRequest(), GetNonUniqueIdsRequest.class);
         return getNonUniqueIdsRequest.getActivityUniquinessLists();
     }
-
 
     private String getStrRequest() {
         return "<ns2:GetNonUniqueIdsRequest xmlns:ns2=\"http://europa.eu/ec/fisheries/uvms/activity/model/schemas\">\n" +
@@ -128,7 +125,6 @@ public class ActivityMatchingIdsServiceBeanTest {
                 "    </activityUniquinessList>\n" +
                 "</ns2:GetNonUniqueIdsRequest>";
     }
-
 
     private List<FluxReportIdentifierEntity> getMockedIdentifiers() {
         FluxReportIdentifierEntity ident1 = new FluxReportIdentifierEntity();
