@@ -115,6 +115,7 @@ public class FilterMap {
     private static void populateFilterSortWhereMappings() {
         filterSortWhereMappings.put(SearchFilter.PERIOD_START, "dp1.startDate");
         filterSortWhereMappings.put(SearchFilter.PERIOD_END, "dp1.endDate");
+        filterSortWhereMappings.put(SearchFilter.PERIOD_END_TRIP, "a.calculatedStartTime");
     }
 
     /**
@@ -124,12 +125,15 @@ public class FilterMap {
     private static void populateFilterSortMappings() {
         filterSortMappings.put(SearchFilter.PERIOD_START, "a.calculatedStartTime");
         filterSortMappings.put(SearchFilter.PERIOD_END, "dp.endDate");
+        filterSortMappings.put(SearchFilter.PERIOD_END_TRIP, "a.calculatedStartTime");
         filterSortMappings.put(SearchFilter.REPORT_TYPE, "fa.typeCode");
         filterSortMappings.put(SearchFilter.SOURCE, "fa.source");
         filterSortMappings.put(SearchFilter.ACTIVITY_TYPE, "a.typeCode");
         filterSortMappings.put(SearchFilter.OCCURRENCE, "a.occurence");
         filterSortMappings.put(SearchFilter.PURPOSE, "flux.purposeCode");
         filterSortMappings.put(SearchFilter.FA_STATUS, "fa.status");
+        filterSortMappings.put(SearchFilter.TRIP_ID, "ftripid.tripId");
+        filterSortMappings.put(SearchFilter.FLAG_STATE, "a.flagState");
     }
 
     /**
@@ -143,6 +147,7 @@ public class FilterMap {
         filterQueryParameterMappings.put(SearchFilter.FROM, FROM_ID);
         filterQueryParameterMappings.put(SearchFilter.PERIOD_START, OCCURENCE_START_DATE);
         filterQueryParameterMappings.put(SearchFilter.PERIOD_END, OCCURENCE_END_DATE);
+        filterQueryParameterMappings.put(SearchFilter.PERIOD_END_TRIP, OCCURENCE_START_DATE);
         filterQueryParameterMappings.put(SearchFilter.VESSEL_NAME, VESSEL_IDENTITY_NAME);
         filterQueryParameterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, VESSEL_IDENTIFIRE);
         filterQueryParameterMappings.put(SearchFilter.PURPOSE, PURPOSE_CODE);
@@ -230,6 +235,7 @@ public class FilterMap {
         // filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, "( dp.startDate >= :" + OCCURENCE_START_DATE + "  OR a.occurence  >= :" + OCCURENCE_START_DATE + " )"));
         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "   a.calculatedStartTime  >= :" + OCCURENCE_START_DATE + " "));
         filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, " (dp.endDate <= :" + OCCURENCE_END_DATE+" OR  a.calculatedStartTime <= :"+ OCCURENCE_END_DATE +")") );
+        filterMappings.put(SearchFilter.PERIOD_END_TRIP, new FilterDetails(" ", "   a.calculatedStartTime  >= :" + OCCURENCE_START_DATE + " ") );
         filterMappings.put(SearchFilter.VESSEL_NAME, new FilterDetails("fa.vesselTransportMeans vt", "vt.name IN (:" + VESSEL_IDENTITY_NAME + ")"));
         filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, new FilterDetails("vt.vesselIdentifiers vi", "vi.vesselIdentifierId IN (:" + VESSEL_IDENTIFIRE + ")"));
         filterMappings.put(SearchFilter.VESSEL_GUIDS, new FilterDetails("fa.vesselTransportMeans vtMeans", "vtMeans.guid IN (:" + VTM_GUIDS + ")"));
@@ -261,6 +267,7 @@ public class FilterMap {
     public void populateFilterMappingsForFilterFishingTrips() {
          filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
          filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
+         filterMappings.put(SearchFilter.PERIOD_END_TRIP, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
 
          filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
                      "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));

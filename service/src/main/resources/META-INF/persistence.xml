@@ -22,8 +22,8 @@
             <property name="hibernate.dialect" value="${hibernate.spatial.dialect}"/>
             <property name="hibernate.event.merge.entity_copy_observer" value="allow"/>
             <property name="hibernate.default_schema" value="activity"/>
-            <property name="show_sql" value="false"/>
-            <property name="format_sql" value="true"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
             <property name="use_sql_comments" value="false"/>
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.generate_statistics" value="true"/>

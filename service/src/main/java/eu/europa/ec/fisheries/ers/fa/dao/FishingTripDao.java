@@ -16,10 +16,7 @@ package eu.europa.ec.fisheries.ers.fa.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -129,10 +126,10 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
         if (CollectionUtils.isEmpty(resultList))
             return Collections.emptySet();
-        Set<FishingTripId> fishingTripIds = new HashSet<>();
+        Set<FishingTripId> fishingTripIds = new LinkedHashSet<>();
         for(Object[] objArr :resultList){
             try {
-                if (objArr !=null && objArr.length ==2){
+                if (objArr !=null ){
                     fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1]) );
                 }
             } catch (Exception e) {

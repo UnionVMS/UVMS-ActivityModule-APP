@@ -49,8 +49,11 @@ import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -99,6 +102,30 @@ public class FishingTripServiceBeanTest {
 
     @Mock
     MdrModuleService mdrModuleService;
+
+    static FishingActivityQuery query;
+
+    @BeforeClass
+    public static void setup(){
+        query = createRequest();
+    }
+
+    private static FishingActivityQuery createRequest(){
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        PaginationDto pagination = new PaginationDto();
+        pagination.setOffset(0);
+        pagination.setPageSize(25);
+
+
+        Map<SearchFilter, List<String>> myMap = new HashMap<>();
+        myMap.put(SearchFilter.PURPOSE,(Arrays.asList(new String[]{"9","1","5","3"})));
+        query.setSearchCriteriaMapMultipleValues(myMap);
+
+        query.setShowOnlyLatest(true);
+
+        return query;
+    }
 
     @Test
     @SneakyThrows
@@ -330,6 +357,63 @@ public class FishingTripServiceBeanTest {
         assertNotNull(response);
 
     }
+
+
+    @Test
+    @SneakyThrows
+    public void testFilterFishingTripsByPERIOD_END_TRIP() throws ServiceException, JsonProcessingException {
+        SortKey key = new SortKey();
+        key.setReversed(false);
+        key.setSortBy(SearchFilter.PERIOD_END_TRIP);
+        query.setSorting(key);
+
+        //Trigger
+        FishingTripResponse response = fishingTripService.filterFishingTrips(query);
+        assertNotNull(response);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testFilterFishingTripsByPERIOD_START() throws ServiceException, JsonProcessingException {
+
+        SortKey key = new SortKey();
+        key.setReversed(false);
+        key.setSortBy(SearchFilter.PERIOD_START);
+        query.setSorting(key);
+
+        //Trigger
+        FishingTripResponse response = fishingTripService.filterFishingTrips(query);
+        assertNotNull(response);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testFilterFishingTripsByTRIP_ID() throws ServiceException, JsonProcessingException {
+
+        SortKey key = new SortKey();
+        key.setReversed(false);
+        key.setSortBy(SearchFilter.TRIP_ID);
+        query.setSorting(key);
+
+        //Trigger
+        FishingTripResponse response = fishingTripService.filterFishingTrips(query);
+        assertNotNull(response);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testFilterFishingTripsByFLAG_STATE() throws ServiceException, JsonProcessingException {
+
+        SortKey key = new SortKey();
+        key.setReversed(false);
+        key.setSortBy(SearchFilter.FLAG_STATE);
+        query.setSorting(key);
+
+        //Trigger
+        FishingTripResponse response = fishingTripService.filterFishingTrips(query);
+        assertNotNull(response);
+    }
+
 
     @Test
     @SneakyThrows
