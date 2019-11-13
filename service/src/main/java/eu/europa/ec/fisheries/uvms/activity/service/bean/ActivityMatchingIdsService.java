@@ -44,6 +44,15 @@ public class ActivityMatchingIdsService extends BaseActivityBean {
     }
 
     @NotNull
+    public List<ActivityIDType> getMatchingIds(List<ActivityIDType> activityIDTypes, ActivityTableType activityTableType) {
+        if (CollectionUtils.isEmpty(activityIDTypes)) {
+            return Collections.emptyList();
+        }
+
+        return getActivityIDTypesPresentInDatabase(activityTableType, activityIDTypes);
+    }
+
+    @NotNull
     public List<ActivityUniquinessList> getMatchingIds(List<ActivityUniquinessList> activityUniquenessLists) {
         if (CollectionUtils.isEmpty(activityUniquenessLists)) {
             return Collections.emptyList();
@@ -61,13 +70,18 @@ public class ActivityMatchingIdsService extends BaseActivityBean {
         ActivityTableType originalActivityTableType = originalUniquenessList.getActivityTableType();
         List<ActivityIDType> originalActivityIdTypeList = originalUniquenessList.getIds();
 
-        List<FluxReportIdentifierEntity> matchingIdentifiers = fluxReportIdentifierDao.getMatchingIdentifiers(originalActivityIdTypeList, originalActivityTableType);
-        List<ActivityIDType> updatedActivityIdTypeList = mapIDsListToActivityIDTypeList(matchingIdentifiers);
+        List<ActivityIDType> updatedActivityIdTypeList = getActivityIDTypesPresentInDatabase(originalActivityTableType, originalActivityIdTypeList);
 
         ActivityUniquinessList updatedUniquenessList = new ActivityUniquinessList();
         updatedUniquenessList.setIds(updatedActivityIdTypeList);
         updatedUniquenessList.setActivityTableType(originalActivityTableType);
         return updatedUniquenessList;
+    }
+
+    @NotNull
+    private List<ActivityIDType> getActivityIDTypesPresentInDatabase(ActivityTableType originalActivityTableType, List<ActivityIDType> originalActivityIdTypeList) {
+        List<FluxReportIdentifierEntity> matchingIdentifiers = fluxReportIdentifierDao.getMatchingIdentifiers(originalActivityIdTypeList, originalActivityTableType);
+        return mapIDsListToActivityIDTypeList(matchingIdentifiers);
     }
 
     private List<ActivityIDType> mapIDsListToActivityIDTypeList(List<FluxReportIdentifierEntity> identifiersFromDbList) {

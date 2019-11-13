@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import org.junit.Test;
@@ -58,13 +58,7 @@ public class FaReportSaverBeanTest {
         List<ActivityIDType> databaseIds = new ArrayList<>();
         databaseIds.add(new ActivityIDType("related-flux-report-document-id-already-in-database", "UUID"));
 
-        ActivityUniquinessList activityUniquinessList = new ActivityUniquinessList();
-        activityUniquinessList.setIds(databaseIds);
-
-        List<ActivityUniquinessList> idsThatExistInTheDatabase = new ArrayList<>();
-        idsThatExistInTheDatabase.add(activityUniquinessList);
-
-        when(matchingIdsService.getMatchingIds(anyListOf(ActivityUniquinessList.class))).thenReturn(idsThatExistInTheDatabase);
+        when(matchingIdsService.getMatchingIds(anyListOf(ActivityIDType.class), eq(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY))).thenReturn(databaseIds);
 
         // When
         faReportSaverBean.handleFaReportSaving(reportOrQueryMessageRequest);
@@ -93,13 +87,7 @@ public class FaReportSaverBeanTest {
         List<ActivityIDType> databaseIds = new ArrayList<>();
         databaseIds.add(new ActivityIDType("related-flux-report-document-id-already-in-database", "UUID"));
 
-        ActivityUniquinessList activityUniquinessList = new ActivityUniquinessList();
-        activityUniquinessList.setIds(databaseIds);
-
-        List<ActivityUniquinessList> idsThatExistInTheDatabase = new ArrayList<>();
-        idsThatExistInTheDatabase.add(activityUniquinessList);
-
-        when(matchingIdsService.getMatchingIds(anyListOf(ActivityUniquinessList.class))).thenReturn(idsThatExistInTheDatabase);
+        when(matchingIdsService.getMatchingIds(anyListOf(ActivityIDType.class), eq(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY))).thenReturn(databaseIds);
 
         // When
         faReportSaverBean.handleFaReportSaving(reportOrQueryMessageRequest);
