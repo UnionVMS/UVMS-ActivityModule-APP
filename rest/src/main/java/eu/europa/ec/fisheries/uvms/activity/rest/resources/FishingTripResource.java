@@ -13,9 +13,9 @@
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
+import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;

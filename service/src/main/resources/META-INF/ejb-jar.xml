@@ -11,15 +11,7 @@
 	
 	<assembly-descriptor>
 		<interceptor-binding>
-			<ejb-name>ActivityEventServiceBean</ejb-name>
-			<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
-		</interceptor-binding>
-		<interceptor-binding>
 			<ejb-name>ActivityMatchingIdsServiceBean</ejb-name>
-			<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
-		</interceptor-binding>
-		<interceptor-binding>
-			<ejb-name>ActivityConfigHelper</ejb-name>
 			<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
 		</interceptor-binding>
 		<interceptor-binding>
