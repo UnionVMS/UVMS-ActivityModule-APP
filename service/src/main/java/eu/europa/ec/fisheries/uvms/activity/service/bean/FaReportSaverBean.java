@@ -98,10 +98,10 @@ public class FaReportSaverBean {
     private void deleteBranchesThatMatchWithTheIdsList(List<ActivityIDType> ids, List<FAReportDocument> faReportDocuments) {
         final Iterator<FAReportDocument> iterator = faReportDocuments.iterator();
         while (iterator.hasNext()) {
-            FAReportDocument faRep = iterator.next();
-            FLUXReportDocument relatedFLUXReportDocument = faRep.getRelatedFLUXReportDocument();
+            FAReportDocument faReportDocument = iterator.next();
+            FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
             if (relatedFLUXReportDocument != null && reportDocumentIdsMatch(relatedFLUXReportDocument.getIDS(), ids)) {
-                log.warn("Deleted FaReportDocument with id {} (from XML MSG Node) since it already exist in the Activity DB.", preetyPrintIds(relatedFLUXReportDocument.getIDS()));
+                log.warn("Deleted FaReportDocument with id {} (from XML MSG Node) since it already exist in the Activity DB.", prettyPrintIdList(relatedFLUXReportDocument.getIDS()));
                 iterator.remove();
                 log.info("Remaining [{}] FaReportDocuments to be saved.", faReportDocuments.size());
             }
@@ -117,8 +117,8 @@ public class FaReportSaverBean {
 
     private boolean reportDocumentIdsMatch(List<IDType> ids, List<ActivityIDType> idsToMatch) {
         boolean match = true;
-        for(IDType idType : ids){
-            if(!idExistsInList(idType, idsToMatch)){
+        for (IDType idType : ids) {
+            if (!idExistsInList(idType, idsToMatch)) {
                 match = false;
                 break;
             }
@@ -130,22 +130,21 @@ public class FaReportSaverBean {
         boolean match = false;
         final String value = idType.getValue();
         final String schemeID = idType.getSchemeID();
-        for(ActivityIDType actId : idsToMatch){
-            if(actId.getValue().equals(value) && actId.getIdentifierSchemeId().equals(schemeID)){
+        for (ActivityIDType actId : idsToMatch) {
+            if (actId.getValue().equals(value) && actId.getIdentifierSchemeId().equals(schemeID)) {
                 match = true;
             }
         }
         return match;
     }
 
-    private String preetyPrintIds(List<IDType> ids) {
+    private String prettyPrintIdList(List<IDType> ids) {
         StringBuilder strBuild = new StringBuilder();
-        for(IDType id : ids){
+        for (IDType id : ids) {
             strBuild.append("[ UUID : ").append(id.getValue()).append(" ]\n");
         }
         return strBuild.toString();
     }
-
 }
 
 
