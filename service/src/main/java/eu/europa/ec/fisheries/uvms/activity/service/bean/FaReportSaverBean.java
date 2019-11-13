@@ -54,7 +54,6 @@ public class FaReportSaverBean {
     @EJB
     private ExchangeServiceBean exchangeServiceBean;
 
-
     public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
         try {
             FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
@@ -69,46 +68,48 @@ public class FaReportSaverBean {
         }
     }
 
-    private void deleteDuplicatedReportsFromXMLDocument(FLUXFAReportMessage repMsg) {
+    private void deleteDuplicatedReportsFromXMLDocument(FLUXFAReportMessage fluxfaReportMessage) {
         GetNonUniqueIdsRequest getNonUniqueIdsRequest = null;
         try {
-            getNonUniqueIdsRequest = ActivityModuleRequestMapper.mapToGetNonUniqueIdRequestObject(collectAllIdsFromMessage(repMsg));
+            Map<ActivityTableType, List<IDType>> idMap = collectAllIdsFromMessage(fluxfaReportMessage);
+            getNonUniqueIdsRequest = ActivityModuleRequestMapper.mapToGetNonUniqueIdRequestObject(idMap);
         } catch (ActivityModelMarshallException e) {
             log.error("Error while trying to get the unique ids from FaReportDocumentIdentifiers table.");
         }
 
         List<ActivityUniquinessList> matchingIdsList = matchingIdsService.getMatchingIds(getNonUniqueIdsRequest != null ? getNonUniqueIdsRequest.getActivityUniquinessLists() : null);
-        final List<FAReportDocument> faReportDocuments = repMsg.getFAReportDocuments();
+        final List<FAReportDocument> faReportDocuments = fluxfaReportMessage.getFAReportDocuments();
         for (ActivityUniquinessList unique : matchingIdsList) {
             deleteBranchesThatMatchWithTheIdsList(unique.getIds(), faReportDocuments);
         }
     }
 
-    private Map<ActivityTableType, List<IDType>> collectAllIdsFromMessage(FLUXFAReportMessage faRepMessage) {
-        Map<ActivityTableType, List<IDType>> idsmap = new EnumMap<>(ActivityTableType.class);
-        idsmap.put(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY, new ArrayList<IDType>());
-        if (faRepMessage == null) {
-            return idsmap;
+    private Map<ActivityTableType, List<IDType>> collectAllIdsFromMessage(FLUXFAReportMessage fluxfaReportMessage) {
+        Map<ActivityTableType, List<IDType>> idMap = new EnumMap<>(ActivityTableType.class);
+        idMap.put(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY, new ArrayList<>());
+        if (fluxfaReportMessage == null) {
+            return idMap;
         }
-        List<FAReportDocument> faReportDocuments = faRepMessage.getFAReportDocuments();
-        for (FAReportDocument faRepDoc : Utils.safeIterable(faReportDocuments)) {
-            FLUXReportDocument relatedFLUXReportDocument = faRepDoc.getRelatedFLUXReportDocument();
+
+        List<FAReportDocument> faReportDocuments = fluxfaReportMessage.getFAReportDocuments();
+        for (FAReportDocument faReportDocument : faReportDocuments) {
+            FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
             if (relatedFLUXReportDocument != null) {
                 List<IDType> idTypes = new ArrayList<>(relatedFLUXReportDocument.getIDS());
                 idTypes.add(relatedFLUXReportDocument.getReferencedID());
                 idTypes.removeAll(Collections.singletonList(null));
-                idsmap.get(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY).addAll(idTypes);
+                idMap.get(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY).addAll(idTypes);
             }
         }
-        return idsmap;
+        return idMap;
     }
 
     private void deleteBranchesThatMatchWithTheIdsList(List<ActivityIDType> ids, List<FAReportDocument> faReportDocuments) {
         final Iterator<FAReportDocument> iterator = faReportDocuments.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             FAReportDocument faRep = iterator.next();
             FLUXReportDocument relatedFLUXReportDocument = faRep.getRelatedFLUXReportDocument();
-            if(relatedFLUXReportDocument != null && reportDocumentIdsMatch(relatedFLUXReportDocument.getIDS(), ids)){
+            if (relatedFLUXReportDocument != null && reportDocumentIdsMatch(relatedFLUXReportDocument.getIDS(), ids)) {
                 log.warn("Deleted FaReportDocument with id {} (from XML MSG Node) since it already exist in the Activity DB.", preetyPrintIds(relatedFLUXReportDocument.getIDS()));
                 iterator.remove();
                 log.info("Remaining [{}] FaReportDocuments to be saved.", faReportDocuments.size());
@@ -117,7 +118,7 @@ public class FaReportSaverBean {
     }
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
-        if(pluginType == null){
+        if (pluginType == null) {
             return FaReportSourceEnum.FLUX;
         }
         return pluginType == PluginType.FLUX ? FaReportSourceEnum.FLUX : FaReportSourceEnum.MANUAL;

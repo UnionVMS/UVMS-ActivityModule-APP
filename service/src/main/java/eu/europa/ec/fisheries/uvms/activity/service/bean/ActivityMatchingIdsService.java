@@ -51,7 +51,8 @@ public class ActivityMatchingIdsService extends BaseActivityBean {
         List<ActivityUniquinessList> matchingIdsList = new ArrayList<>();
 
         for (ActivityUniquinessList activityUniquinessList : activityUniquenessLists) {
-            matchingIdsList.add(getActivityNonUniqueIdsList(activityUniquinessList));
+            ActivityUniquinessList activityNonUniqueIdsList = getActivityNonUniqueIdsList(activityUniquinessList);
+            matchingIdsList.add(activityNonUniqueIdsList);
         }
         return matchingIdsList;
     }
