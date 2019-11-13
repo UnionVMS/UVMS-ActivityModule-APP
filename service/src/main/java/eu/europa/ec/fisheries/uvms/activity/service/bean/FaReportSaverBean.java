@@ -63,7 +63,7 @@ public class FaReportSaverBean {
             if (CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
                 fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
             } else {
-                log.error("[ERROR] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+                log.error("After checking faReportDocuments IDs, all of them exist already in Activity DB. So nothing will be saved!!");
             }
         } catch (Exception e){
             exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
@@ -75,7 +75,7 @@ public class FaReportSaverBean {
         try {
             getNonUniqueIdsRequest = ActivityModuleRequestMapper.mapToGetNonUniqueIdRequestObject(collectAllIdsFromMessage(repMsg));
         } catch (ActivityModelMarshallException e) {
-            log.error("[ERROR] Error while trying to get the unique ids from FaReportDocumentIdentifiers table...");
+            log.error("Error while trying to get the unique ids from FaReportDocumentIdentifiers table.");
         }
         GetNonUniqueIdsResponse matchingIdsResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest != null ? getNonUniqueIdsRequest.getActivityUniquinessLists() : null);
         List<ActivityUniquinessList> activityUniquinessLists = matchingIdsResponse.getActivityUniquinessLists();
@@ -110,10 +110,9 @@ public class FaReportSaverBean {
             FAReportDocument faRep = iterator.next();
             FLUXReportDocument relatedFLUXReportDocument = faRep.getRelatedFLUXReportDocument();
             if(relatedFLUXReportDocument != null && reportDocumentIdsMatch(relatedFLUXReportDocument.getIDS(), ids)){
-                log.warn("[WARN] Deleted FaReportDocument (from XML MSG Node) since it already exist in the Activity DB..\n" +
-                        "Following is the ID : { "+preetyPrintIds(relatedFLUXReportDocument.getIDS())+" }");
+                log.warn("Deleted FaReportDocument with id {} (from XML MSG Node) since it already exist in the Activity DB.", preetyPrintIds(relatedFLUXReportDocument.getIDS()));
                 iterator.remove();
-                log.info("[INFO] Remaining [ "+faReportDocuments.size()+" ] FaReportDocuments to be saved.");
+                log.info("Remaining [{}] FaReportDocuments to be saved.", faReportDocuments.size());
             }
         }
     }
