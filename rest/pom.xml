@@ -32,12 +32,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>message</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
 
         <!-- UVMS COMMONS DEPENDENCIES -->
 
@@ -67,8 +61,25 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+            <artifactId>rules-model</artifactId>
+        </dependency>
 
-        <!-- THIRD-PARTY DEPENDENCIES -->
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+            <artifactId>spatial-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+            <artifactId>subscription-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+            <artifactId>mdr-model</artifactId>
+        </dependency>
 
         <!-- TEST DEPENDENCIES -->
 
