@@ -47,15 +47,16 @@ public class ActivityMatchingIdsServiceBean extends BaseActivityBean {
     }
 
 
-    public GetNonUniqueIdsResponse getMatchingIdsResponse(List<ActivityUniquinessList> activityUniquinessLists) {
-        if(CollectionUtils.isEmpty(activityUniquinessLists)){
+    public GetNonUniqueIdsResponse getMatchingIdsResponse(List<ActivityUniquinessList> activityUniquenessLists) {
+        if (CollectionUtils.isEmpty(activityUniquenessLists)) {
             return null;
         }
         GetNonUniqueIdsResponse response = new GetNonUniqueIdsResponse();
         List<ActivityUniquinessList> activityUniquinessResponseLists = new ArrayList<>();
         response.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
         response.setActivityUniquinessLists(activityUniquinessResponseLists);
-        for(ActivityUniquinessList actUniqueReq : activityUniquinessLists){
+
+        for (ActivityUniquinessList actUniqueReq : activityUniquenessLists) {
             activityUniquinessResponseLists.add(getActivityNonUniqueIdsList(actUniqueReq));
         }
         return response;
