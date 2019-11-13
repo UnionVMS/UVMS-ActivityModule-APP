@@ -58,7 +58,7 @@ public class ActivityMatchingIdsServiceTest {
     }
 
     @Test
-    public void getMatchingIds_simpleListOfIds() throws Exception {
+    public void getMatchingIds_simpleListOfIds() {
         // Given
         when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
