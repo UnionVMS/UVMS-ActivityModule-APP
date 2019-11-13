@@ -20,8 +20,8 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.util.List;
 
-import eu.europa.ec.fisheries.ers.service.FaQueryService;
-import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.FaQueryService;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
