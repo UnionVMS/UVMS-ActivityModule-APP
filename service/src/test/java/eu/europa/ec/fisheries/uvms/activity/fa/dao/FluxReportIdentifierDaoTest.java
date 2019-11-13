@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxReportIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
@@ -29,10 +28,10 @@ import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -55,16 +54,16 @@ public class FluxReportIdentifierDaoTest {
         final List<FluxReportIdentifierEntity> matchingIdentifiers = dao.getMatchingIdentifiers(new ArrayList<ActivityIDType>(), ActivityTableType.FLUX_REPORT_DOCUMENT_ENTITY);
 
         assertNotNull(matchingIdentifiers);
-        assertTrue(matchingIdentifiers.size() == 0);
+        assertEquals(0, matchingIdentifiers.size());
     }
 
     @Test
     public void testGetMatchingIdentifiers(){
-        when(dao.getEntityManager().createNamedQuery(anyString(), any(FluxReportIdentifierEntity.class.getClass()))).thenReturn(query);
+        when(dao.getEntityManager().createNamedQuery(anyString(), eq(FluxReportIdentifierEntity.class))).thenReturn(query);
         ActivityUniquinessList reqElem = getMockedRequest().iterator().next();
         final List<FluxReportIdentifierEntity> matchingIdentifiers = dao.getMatchingIdentifiers(reqElem.getIds(), reqElem.getActivityTableType());
         assertNotNull(matchingIdentifiers);
-        assertTrue(matchingIdentifiers.size() == 0);
+        assertEquals(0, matchingIdentifiers.size());
     }
 
 

@@ -423,17 +423,14 @@ public abstract class SearchQueryBuilder {
             if (valueList == null || valueList.isEmpty()) {
                 throw new ServiceException("valueList for filter " + key + " is null or empty");
             }
-            switch (key) {
-                case MASTER:
-                    List<String> uppperCaseValList = new ArrayList<>();
-                    for (String val : valueList) {
-                        uppperCaseValList.add(val.toUpperCase());
-                    }
-                    typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
-                    break;
-                default:
-                    typedQuery.setParameter(queryParameterMappings.get(key), valueList);
-                    break;
+            if (key == SearchFilter.MASTER) {
+                List<String> uppperCaseValList = new ArrayList<>();
+                for (String val : valueList) {
+                    uppperCaseValList.add(val.toUpperCase());
+                }
+                typedQuery.setParameter(queryParameterMappings.get(key), uppperCaseValList);
+            } else {
+                typedQuery.setParameter(queryParameterMappings.get(key), valueList);
             }
         }
     }

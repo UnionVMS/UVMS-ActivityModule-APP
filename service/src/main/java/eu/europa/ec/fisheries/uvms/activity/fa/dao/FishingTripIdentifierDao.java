@@ -42,7 +42,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
     }
 
     public FishingTripIdentifierEntity getCurrentTrip(String vesselId, String vesselSchemeId) {
-        TypedQuery query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_CURRENT_TRIP, FishingTripIdentifierEntity.class);
+        TypedQuery<FishingTripIdentifierEntity> query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_CURRENT_TRIP, FishingTripIdentifierEntity.class);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setMaxResults(1);
@@ -55,7 +55,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
     }
 
     public List<FishingTripIdentifierEntity> getPreviousTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
-        TypedQuery query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_PREVIOUS_TRIP, FishingTripIdentifierEntity.class);
+        TypedQuery<FishingTripIdentifierEntity> query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_PREVIOUS_TRIP, FishingTripIdentifierEntity.class);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setParameter(TRIP_ID, tripId);
@@ -64,7 +64,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
     }
 
     public List<FishingTripIdentifierEntity> getNextTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
-        TypedQuery query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_NEXT_TRIP, FishingTripIdentifierEntity.class);
+        TypedQuery<FishingTripIdentifierEntity> query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_NEXT_TRIP, FishingTripIdentifierEntity.class);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setParameter(TRIP_ID, tripId);

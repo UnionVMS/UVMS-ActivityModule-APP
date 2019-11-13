@@ -144,7 +144,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
             statuses.add(FaReportStatusType.CANCELED.name());
             statuses.add(FaReportStatusType.DELETED.name());
         }
-        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.LOAD_REPORTS, FaReportDocumentEntity.class);
+        TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.LOAD_REPORTS, FaReportDocumentEntity.class);
         query.setParameter(TRIP_ID, tripId);
         query.setParameter(STATUSES, statuses);
 
@@ -162,14 +162,14 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     }
 
     public List<FaReportDocumentEntity> findReportsByTripId(String tripId, Geometry multipolygon){
-        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
+        TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
         query.setParameter(TRIP_ID, tripId);
         query.setParameter(AREA, multipolygon);
         return query.getResultList();
     }
 
     public List<FaReportDocumentEntity> findReportsByIdsList(List<Integer> ids){
-        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_IDS_LIST, FaReportDocumentEntity.class);
+        TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_IDS_LIST, FaReportDocumentEntity.class);
         query.setParameter("ids", ids);
         return query.getResultList();
     }

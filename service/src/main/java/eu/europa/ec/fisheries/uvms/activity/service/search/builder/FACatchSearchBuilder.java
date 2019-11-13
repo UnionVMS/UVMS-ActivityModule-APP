@@ -30,11 +30,11 @@ import java.util.Map;
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
 
-    private String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
+    private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
             "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
             "  JOIN a.faReportDocument fa  ";
 
-    private String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure)  ";
+    private static final String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure)  ";
 
     public FACatchSearchBuilder() {
         super();
@@ -157,6 +157,4 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
     protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
-
-
 }

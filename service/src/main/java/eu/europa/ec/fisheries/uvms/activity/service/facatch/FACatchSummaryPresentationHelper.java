@@ -74,12 +74,12 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
     @Override
     public void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
 
-        Map<FishSizeClassEnum,Object> fishSizeClassEnumMap=summaryTable.getSummaryFishSize();
+        Map<FishSizeClassEnum,Object> fishSizeClassEnumMap = summaryTable.getSummaryFishSize();
         if(MapUtils.isEmpty(fishSizeClassEnumMap)){
             return;
         }
 
-        Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap=summaryTableWithTotals.getSummaryFishSize();
+        Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap = summaryTableWithTotals.getSummaryFishSize();
         if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
             totalFishSizeSpeciesMap = new EnumMap<>(FishSizeClassEnum.class);
             summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);

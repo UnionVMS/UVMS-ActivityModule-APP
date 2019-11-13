@@ -18,12 +18,12 @@ import java.util.Map;
  */
 public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
 
-    private String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
+    private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
             "JOIN "+ FilterMap.AAP_PROCESS_TABLE_ALIAS +" JOIN  " +FilterMap.AAP_PRODUCT_TABLE_ALIAS+
             "  JOIN a.faReportDocument fa  " ;
 
 
-    private String SUM_WEIGHT = " SUM(aprod.calculatedWeightMeasure)  " ;
+    private static final String SUM_WEIGHT = " SUM(aprod.calculatedWeightMeasure)  " ;
 
     protected void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings, List<GroupCriteria> groupByFieldList) {
         // Below is default JOIN for the query
@@ -42,7 +42,6 @@ public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
         }
     }
 
-    @NotNull
     protected void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings) throws ServiceException {
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");

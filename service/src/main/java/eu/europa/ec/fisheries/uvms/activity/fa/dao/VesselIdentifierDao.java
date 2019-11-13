@@ -35,9 +35,8 @@ public class VesselIdentifierDao extends AbstractDAO<VesselIdentifierEntity> {
         return em;
     }
 
-    public List<VesselIdentifierEntity> getLatestVesselIdByTrip(String tripId) throws ServiceException {
-        return findEntityByNamedQuery(VesselIdentifierEntity.class,
-                VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID, QueryParameter.with(TRIP_ID, tripId).parameters(), 1);
+    public List<VesselIdentifierEntity> getLatestVesselIdByTrip(String tripId) {
+        return findEntityByNamedQuery(VesselIdentifierEntity.class, VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID, QueryParameter.with(TRIP_ID, tripId).parameters(), 1);
     }
 
 }

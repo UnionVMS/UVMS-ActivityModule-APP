@@ -61,7 +61,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public String getOwnerFluxPartyFromTripId(String fishingTripId){
-        TypedQuery query = getEntityManager().createNamedQuery(FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID, FluxPartyIdentifierEntity.class);
+        TypedQuery<FluxPartyIdentifierEntity> query = getEntityManager().createNamedQuery(FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID, FluxPartyIdentifierEntity.class);
         query.setParameter("fishingTripId", fishingTripId).setMaxResults(1).getResultList();
         List<FluxPartyIdentifierEntity> resultList = query.getResultList();
         return CollectionUtils.isNotEmpty(resultList) ? resultList.get(0).getFluxPartyIdentifierId() : StringUtils.EMPTY;
@@ -123,7 +123,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         FishingTripIdSearchBuilder search = new FishingTripIdSearchBuilder();
         StringBuilder sqlToGetActivityList = search.createSQL(query);
         log.debug("SQL:" + sqlToGetActivityList);
-        TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(),Object[].class);
+        TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(), Object[].class);
         return search.fillInValuesForTypedQuery(query, typedQuery);
     }
 

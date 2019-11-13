@@ -262,7 +262,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             activityList = Collections.emptyList();
         }
         // Prepare DTO to return to Frontend
-        log.debug("Fishing Activity Report resultset size : " + Integer.toString(activityList.size()));
+        log.debug("Fishing Activity Report resultset size : " + activityList.size());
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO = new FilterFishingActivityReportResultDTO();
         filterFishingActivityReportResultDTO.setResultList(mapToFishingActivityReportDTOList(activityList));
         filterFishingActivityReportResultDTO.setTotalCountOfRecords(totalCountOfRecords);

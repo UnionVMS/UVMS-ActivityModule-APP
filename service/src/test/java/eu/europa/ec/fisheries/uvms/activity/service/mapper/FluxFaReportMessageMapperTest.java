@@ -42,7 +42,7 @@ public class FluxFaReportMessageMapperTest {
         FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
         FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
 
-        List<FaReportDocumentEntity> faReportDocuments = new ArrayList(fluxRepMessageEntity.getFaReportDocuments());
+        List<FaReportDocumentEntity> faReportDocuments = new ArrayList<>(fluxRepMessageEntity.getFaReportDocuments());
         FluxReportDocumentEntity fluxReportDocument = fluxRepMessageEntity.getFluxReportDocument();
 
         assertNotNull(fluxRepMessageEntity);

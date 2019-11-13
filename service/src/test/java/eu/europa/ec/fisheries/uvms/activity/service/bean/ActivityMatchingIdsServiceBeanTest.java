@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxReportIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
@@ -34,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
 /**
@@ -52,7 +53,7 @@ public class ActivityMatchingIdsServiceBeanTest {
     @Test
     public void getMatchingIdsResponse() {
 
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityUniquinessList> request = getMockedRequest();
         GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);
@@ -64,7 +65,7 @@ public class ActivityMatchingIdsServiceBeanTest {
 
     @Test
     public void getMatchingIdsResponseNullPointer() {
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(null);
+        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
 
         GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(null);
         assertNull(matchingIdsResponse);
@@ -73,7 +74,7 @@ public class ActivityMatchingIdsServiceBeanTest {
     @Test
     public void getMatchingIdsResponseNullMap() {
 
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(null);
+        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
 
         List<ActivityUniquinessList> request = getMockedRequest();
         GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);
@@ -91,7 +92,7 @@ public class ActivityMatchingIdsServiceBeanTest {
     @Test
     public void getMatchingIdsResponseMappingEmptyList() {
 
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityUniquinessList> request = getMockedRequest();
         GetNonUniqueIdsResponse matchingIdsResponse = matchingBean.getMatchingIdsResponse(request);

@@ -14,17 +14,18 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Postgres;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -50,6 +51,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyListOf;
 
 @Ignore
 public class FluxMessageServiceBeanTest {
@@ -102,8 +104,8 @@ public class FluxMessageServiceBeanTest {
         //Mock the APIs
         Mockito.doReturn(new FluxFaReportMessageEntity()).when(fluxFaReportMessageDao).createEntity(Mockito.any(FluxFaReportMessageEntity.class));
 
-        Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(Mockito.anyCollection());
-        Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(Mockito.anyList(), Mockito.any(Instant.class), Mockito.any(Instant.class));
+        Mockito.doReturn(getMockedAssets()).when(assetModule).getAssetGuids(anyListOf(VesselIdentifierEntity.class));
+        Mockito.doReturn(getMockedMovements()).when(movementModule).getMovement(anyListOf(String.class), Mockito.any(Instant.class), Mockito.any(Instant.class));
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger

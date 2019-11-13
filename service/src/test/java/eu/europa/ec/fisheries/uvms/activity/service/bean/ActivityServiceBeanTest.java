@@ -41,6 +41,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +52,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -78,7 +80,7 @@ public class ActivityServiceBeanTest {
             add(faReportDocumentEntity);
         }};
         Mockito.doReturn(faReportDocumentEntity).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
-        Mockito.doReturn(faRepsArraResp).when(faReportDocumentDao).getHistoryOfFaReport(Mockito.any(FaReportDocumentEntity.class), Mockito.any(ArrayList.class));
+        Mockito.doReturn(faRepsArraResp).when(faReportDocumentDao).getHistoryOfFaReport(Mockito.any(FaReportDocumentEntity.class), anyListOf(FaReportDocumentEntity.class));
 
         //Trigger
         List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportHistory("TEST ID", "SCHEME ID");
@@ -166,10 +168,11 @@ public class ActivityServiceBeanTest {
     @SneakyThrows
     public void testGetFaAndTripIdsResponse(){
         List<String> flRepPurpCodes = new ArrayList<String>(){{add("1"); add("9");}};
-        when(fishingActivityDao.getFishingActivityForTrip(any(String.class), any(String.class), any(String.class), any(flRepPurpCodes.getClass()))).thenReturn(mockFishActEntities());
+        when(fishingActivityDao.getFishingActivityForTrip(any(String.class), any(String.class), any(String.class), anyListOf(String.class))).thenReturn(mockFishActEntities());
 
-        GetFishingActivitiesForTripResponse response = activityService.getFaAndTripIdsFromTripIds(
-                Arrays.asList(new FishingActivityForTripIds("faTypeCode", "tripId", "tripSchemeId", flRepPurpCodes)));
+        FishingActivityForTripIds fishingActivityForTripIds = new FishingActivityForTripIds("faTypeCode", "tripId", "tripSchemeId", flRepPurpCodes);
+        List<FishingActivityForTripIds> fishingActivityForTripIdsList = Collections.singletonList(fishingActivityForTripIds);
+        GetFishingActivitiesForTripResponse response = activityService.getFaAndTripIdsFromTripIds(fishingActivityForTripIdsList);
 
         assertNotNull(response);
         assertTrue(CollectionUtils.isNotEmpty(response.getFaWithIdentifiers()));

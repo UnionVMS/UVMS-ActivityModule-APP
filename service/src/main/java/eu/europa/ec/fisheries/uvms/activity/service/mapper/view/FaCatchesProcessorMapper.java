@@ -334,8 +334,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         public static boolean catchesAreEqual(FaCatchEntity thisCatch, FaCatchEntity thatCatch) {
             if (thisCatch == thatCatch)
                 return true;
-            if (thisCatch == null && thatCatch == null)
-                return true;
             if (thisCatch == null || thatCatch == null)
                 return false;
             if (thisCatch.getTypeCode() != null ? !thisCatch.getTypeCode().equals(thatCatch.getTypeCode()) : thatCatch.getTypeCode() != null)
@@ -362,21 +360,17 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
                 return false;
             if (!aapStocsAreEqual(thisCatch.getAapStocks(), thatCatch.getAapStocks()))
                 return false;
-            if (!fishingTripsAreEquals(thisCatch.getFishingTrips(), thatCatch.getFishingTrips()))
-                return false;
-            return true;
+
+            return fishingTripsAreEquals(thisCatch.getFishingTrips(), thatCatch.getFishingTrips());
         }
 
         private static boolean sizeDestributionsAreEqual(SizeDistributionEntity sizeThis, SizeDistributionEntity sizeThat) {
             if (sizeThis == sizeThat)
                 return true;
-            if (sizeThis == null && sizeThat == null)
-                return true;
             if (sizeThis == null || sizeThat == null)
                 return false;
-            if (!StringUtils.equals(sizeThis.getCategoryCode(), sizeThat.getCategoryCode()))
-                return false;
-            return true;
+
+            return StringUtils.equals(sizeThis.getCategoryCode(), sizeThat.getCategoryCode());
         }
 
         private static boolean aapStocsAreEqual(Set<AapStockEntity> aapList_1, Set<AapStockEntity> aapList_2) {
@@ -384,13 +378,10 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             AapStockEntity aapStockThat = CollectionUtils.isNotEmpty(aapList_2) ? aapList_2.iterator().next() : null;
             if (aapStockThis == aapStockThat)
                 return true;
-            if (aapStockThis == null && aapStockThat == null)
-                return true;
             if (aapStockThis == null || aapStockThat == null)
                 return false;
-            if (!StringUtils.equals(aapStockThis.getStockId(), aapStockThat.getStockId()))
-                return false;
-            return true;
+
+            return StringUtils.equals(aapStockThis.getStockId(), aapStockThat.getStockId());
         }
 
         private static boolean fishingTripsAreEquals(Set<FishingTripEntity> aapList_1, Set<FishingTripEntity> aapList_2) {
@@ -398,21 +389,16 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             FishingTripEntity aapStockThat = CollectionUtils.isNotEmpty(aapList_2) ? aapList_2.iterator().next() : null;
             if (aapStockThis == aapStockThat)
                 return true;
-            if (aapStockThis == null && aapStockThat == null)
-                return true;
             if (aapStockThis == null || aapStockThat == null)
                 return false;
             FishingTripIdentifierEntity identifierThis = CollectionUtils.isNotEmpty(aapStockThis.getFishingTripIdentifiers()) ? aapStockThis.getFishingTripIdentifiers().iterator().next() : null;
             FishingTripIdentifierEntity identifierThat = CollectionUtils.isNotEmpty(aapStockThis.getFishingTripIdentifiers()) ? aapStockThis.getFishingTripIdentifiers().iterator().next() : null;
             if (identifierThis == identifierThat)
                 return true;
-            if (identifierThis == null && identifierThat == null)
-                return true;
             if (identifierThis == null || identifierThat == null)
                 return false;
-            if (!StringUtils.equals(identifierThis.getTripId(), identifierThat.getTripId()))
-                return false;
-            return true;
+
+            return StringUtils.equals(identifierThis.getTripId(), identifierThat.getTripId());
         }
 
     }

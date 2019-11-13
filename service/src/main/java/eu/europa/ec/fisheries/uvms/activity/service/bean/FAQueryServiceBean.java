@@ -48,13 +48,12 @@ public class FAQueryServiceBean implements FaQueryService {
     @PersistenceContext(unitName = "activityPUoracle")
     private EntityManager oracle;
 
-    private EntityManager em;
     private FaReportDocumentDao FAReportDAO;
 
     @PostConstruct
     public void init() {
-
         String dbDialect = System.getProperty("db.dialect");
+        EntityManager em;
         if ("oracle".equalsIgnoreCase(dbDialect)) {
             em = oracle;
         } else {

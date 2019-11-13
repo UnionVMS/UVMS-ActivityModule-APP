@@ -29,7 +29,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
  * Created by padhyad on 8/5/2016.
  */
 @JsonInclude(Include.NON_EMPTY)
-public class FaReportCorrectionDTO implements Serializable, Comparable {
+public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportCorrectionDTO> {
 
     @JsonProperty("id")
     private String id;
@@ -137,8 +137,8 @@ public class FaReportCorrectionDTO implements Serializable, Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return acceptedDate.compareTo(((FaReportCorrectionDTO) o).getAcceptedDate());
+    public int compareTo(FaReportCorrectionDTO o) {
+        return acceptedDate.compareTo(o.getAcceptedDate());
     }
 
     @Override

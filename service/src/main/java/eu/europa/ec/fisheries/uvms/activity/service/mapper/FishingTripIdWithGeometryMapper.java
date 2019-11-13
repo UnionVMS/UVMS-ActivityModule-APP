@@ -210,11 +210,8 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         }
 
         Optional<Instant> tripStartDate = getCalculatedStartTimeForFishingActivity(fishingActivities, FishingActivityTypeEnum.DEPARTURE);
-        if (!tripStartDate.isPresent()) {
-            return null;
-        }
+        return tripStartDate.map(FishingTripIdWithGeometryMapper::convertToXMLGregorianCalendar).orElse(null);
 
-        return convertToXMLGregorianCalendar(tripStartDate.get());
     }
 
     private static XMLGregorianCalendar getRelativeLastFishingActivityDateForTrip(List<FishingActivityEntity> fishingActivities) {
@@ -223,11 +220,8 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         }
 
         Optional<Instant> tripEndDate = getCalculatedStartTimeForFishingActivity(fishingActivities, FishingActivityTypeEnum.ARRIVAL);
-        if (!tripEndDate.isPresent()) {
-            return null;
-        }
+        return tripEndDate.map(FishingTripIdWithGeometryMapper::convertToXMLGregorianCalendar).orElse(null);
 
-        return convertToXMLGregorianCalendar(tripEndDate.get());
     }
 
     /**
