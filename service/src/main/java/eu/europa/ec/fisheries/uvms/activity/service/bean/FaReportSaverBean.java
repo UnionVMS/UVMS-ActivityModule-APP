@@ -52,7 +52,7 @@ public class FaReportSaverBean {
         try {
             FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
             deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
-            if (CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
+            if (CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())) {
                 fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
             } else {
                 log.error("After checking faReportDocuments IDs, all of them exist already in Activity DB. So nothing will be saved!!");
@@ -96,7 +96,7 @@ public class FaReportSaverBean {
     }
 
     private void deleteBranchesThatMatchWithTheIdsList(List<ActivityIDType> ids, List<FAReportDocument> faReportDocuments) {
-        final Iterator<FAReportDocument> iterator = faReportDocuments.iterator();
+        Iterator<FAReportDocument> iterator = faReportDocuments.iterator();
         while (iterator.hasNext()) {
             FAReportDocument faReportDocument = iterator.next();
             FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
