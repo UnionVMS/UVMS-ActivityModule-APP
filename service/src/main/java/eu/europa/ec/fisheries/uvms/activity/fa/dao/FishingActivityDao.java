@@ -13,9 +13,9 @@ package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingActivitySearchBuilder;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingActivitySearchBuilder;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,11 +58,11 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public int getPreviousFishingActivityId(FishingActivityEntity fishingActivityEntity) {
         int previousActivityId = 0;
         if (fishingActivityEntity.getTypeCode() == null || fishingActivityEntity.getCalculatedStartTime() == null) {
-            LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
+            LOG.warn("activityTypeCode OR activityCalculatedStartTime is null.");
             return previousActivityId;
         }
 
-        String query = "SELECT a.id from FishingActivityEntity a " +
+        String queryString = "SELECT a.id from FishingActivityEntity a " +
                 "JOIN a.faReportDocument fa " +
                 "JOIN fa.fluxReportDocument flux " +
                 "JOIN flux.fluxReportIdentifiers fluxIds " +
@@ -76,21 +77,21 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 "a.calculatedStartTime <= :activityStartTime " +
                 "ORDER BY a.calculatedStartTime desc";
 
-        Query typedQuery = getEntityManager().createQuery(query);
-        typedQuery.setParameter("fishingActivityId", fishingActivityEntity.getId());
-        typedQuery.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
-        typedQuery.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
+        Query query = getEntityManager().createQuery(queryString);
+        query.setParameter("fishingActivityId", fishingActivityEntity.getId());
+        query.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
+        query.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
 
-        typedQuery.setMaxResults(1); // There could be multiple fishing Activities matching the condition, but we need just one.
+        query.setMaxResults(1); // There could be multiple fishing Activities matching the condition, but we need just one.
 
         Object result = null;
         try {
-            result = typedQuery.getSingleResult();
+            result = query.getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for : " + fishingActivityEntity.getId());
+            LOG.warn("No next FishingActivity present for: {}", fishingActivityEntity.getId());
         }
 
-        LOG.debug("Previous Fishing Activity : " + result);
+        LOG.debug("Previous Fishing Activity: {}", result);
         if (result != null) {
             previousActivityId = (int) result;
         }
@@ -114,7 +115,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
             LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
             return nextFishingActivity;
         }
-        String query = "SELECT a.id from FishingActivityEntity a " +
+        String queryString = "SELECT a.id from FishingActivityEntity a " +
                 "JOIN a.faReportDocument fa " +
                 "JOIN fa.fluxReportDocument flux " +
                 "where flux.referenceId IN " +
@@ -128,22 +129,22 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 ") AND " +
                 "a.calculatedStartTime >= :activityStartTime " +
                 "ORDER BY a.calculatedStartTime asc";
-        
-        Query typedQuery = getEntityManager().createQuery(query);
-        typedQuery.setParameter("fishingActivityId", fishingActivityEntity.getId());
-        typedQuery.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
-        typedQuery.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
 
-        typedQuery.setMaxResults(1);
+        Query query = getEntityManager().createQuery(queryString);
+        query.setParameter("fishingActivityId", fishingActivityEntity.getId());
+        query.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
+        query.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
+
+        query.setMaxResults(1);
 
         Object result = null;
         try {
-            result = typedQuery.getSingleResult();
+            result = query.getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for : " + fishingActivityEntity.getId());
+            LOG.warn("No next FishingActivity present for: {}", fishingActivityEntity.getId());
         }
 
-        LOG.info("Next Fishing Activity : " + result);
+        LOG.debug("Next Fishing Activity: {}", result);
         if (result != null) {
             nextFishingActivity = (int) result;
         }
@@ -158,36 +159,41 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * @throws ServiceException
      */
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolygon) throws ServiceException {
-        if (fishingTripId == null || fishingTripId.length() == 0)
+        if (fishingTripId == null || fishingTripId.length() == 0) {
             throw new ServiceException("fishing Trip Id is null or empty. ");
+        }
+
         String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
-        if (multipolygon == null)
+        if (multipolygon == null) {
             queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
-        Query query = getEntityManager().createNamedQuery(queryName);
-        query.setParameter("fishingTripId", fishingTripId);
-        if (multipolygon != null)
-            query.setParameter("area", multipolygon);
-        return query.getResultList();
+        }
+
+        TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
+        typedQuery.setParameter("fishingTripId", fishingTripId);
+        if (multipolygon != null) {
+            typedQuery.setParameter("area", multipolygon);
+        }
+
+        return typedQuery.getResultList();
     }
 
-    public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
-        FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
+    public Integer getCountForFishingActivityListByQuery(FishingActivityQuery fishingActivityQuery) throws ServiceException {
         LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
-        StringBuilder sqlToGetActivityListCount = search.createCountingSql(query);
+        FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
+        StringBuilder sqlToGetActivityListCount = search.createCountingSql(fishingActivityQuery);
         String replace = sqlToGetActivityListCount.toString().replace("JOIN FETCH", "JOIN");
-        Query countQuery = getTypedQueryForFishingActivityFilter(new StringBuilder(replace), query, search);
-        Long nrOfFa = (Long) countQuery.getResultList().get(0);
+        Query query = getQueryForFishingActivityFilter(new StringBuilder(replace), fishingActivityQuery, search);
+        Long nrOfFa = (Long) query.getResultList().get(0);
         return nrOfFa.intValue();
     }
 
     /**
      * Set typed values for Dynamically generated Query
      */
-    private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearchBuilder search) throws ServiceException {
+    private Query getQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery fishingActivityQuery, FishingActivitySearchBuilder search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
-        Query typedQuery = em.createQuery(sql.toString());
-        return search.fillInValuesForTypedQuery(query, typedQuery);
-
+        Query query = em.createQuery(sql.toString());
+        return search.fillInValuesForQuery(fishingActivityQuery, query);
     }
 
     /*
@@ -195,21 +201,23 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      Provide paginated data if user has asked for it
      */
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
-
-        if(query.getUseStatusInsteadOfPurposeCode() != null && query.getUseStatusInsteadOfPurposeCode()){
+        if (query.getUseStatusInsteadOfPurposeCode() != null && query.getUseStatusInsteadOfPurposeCode()) {
             adaptForStatusInsteadOfPurpose(query);
         }
 
         LOG.info("Get Fishing Activity Report list by Query.");
         FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
+
         // Create Query dynamically based on filter and Sort criteria
         StringBuilder sqlToGetActivityList = search.createSQL(query);
+
         // Apply real values to Query built
-        Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
+        Query listQuery = getQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
+
         // Agreed with frontend : Page size : Number of record to be retrieved in one page; offSet : The position from where the result should be picked. Starts with 0
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
-            LOG.debug("Pagination information getting applied to Query is: Offset :" + pagination.getOffset() + " PageSize:" + pagination.getPageSize());
+            LOG.debug("Pagination information getting applied to Query is: Offset: {} PageSize. {}", pagination.getOffset(), pagination.getPageSize());
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
@@ -218,7 +226,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private void adaptForStatusInsteadOfPurpose(FishingActivityQuery query) {
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
-        if(MapUtils.isNotEmpty(searchCriteriaMapMultipleValues)){
+        if (MapUtils.isNotEmpty(searchCriteriaMapMultipleValues)) {
             List<String> purposes = searchCriteriaMapMultipleValues.get(SearchFilter.PURPOSE);
             List<String> statuses = new ArrayList<>();
             for (String purpose : purposes) {
@@ -233,24 +241,26 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      * Returns a FishingActivityEntity with joined tables depending on the view (ARRIVAL, DEPARTURE, etc..).
      *
      * @param activityId
-     * @param geom
+     * @param geometry
      */
-    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geom) {
-        String s = fillQueryConditions(geom);
-        Query typedQuery = getEntityManager().createQuery(s);
+    public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geometry) {
+        TypedQuery<FishingActivityEntity> typedQuery = createFishingActivityEntityQuery(geometry);
         typedQuery.setParameter("fishingActivityId", activityId);
-        if (geom != null) {
-            typedQuery.setParameter("area", geom);
+
+        if (geometry != null) {
+            typedQuery.setParameter("area", geometry);
         }
+
         List<FishingActivityEntity> resultList = typedQuery.getResultList();
         if (CollectionUtils.isEmpty(resultList)) {
             return null;
         }
+
         return resultList.get(0);
     }
 
     public List<FishingActivityEntity> getFishingActivityForTrip(String tripId, String tripSchemeId, String fishActTypeCode, List<String> flPurposeCodes) {
-        Query typedQuery = getEntityManager().createNamedQuery(FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP);
+        TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP, FishingActivityEntity.class);
         typedQuery.setParameter("fishingTripId", tripId);
         typedQuery.setParameter("tripSchemeId", tripSchemeId);
         typedQuery.setParameter("fishActTypeCode", fishActTypeCode);
@@ -258,9 +268,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         return typedQuery.getResultList();
     }
 
-    private String fillQueryConditions(Geometry geom) {
-
-        StringBuilder sb = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
+    private TypedQuery<FishingActivityEntity> createFishingActivityEntityQuery(Geometry geometry) {
+        StringBuilder stringBuilder = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
                 .append("LEFT JOIN FETCH a.faReportDocument fa ")
                 .append("LEFT JOIN FETCH a.fluxLocations fl ")
                 .append("LEFT JOIN FETCH a.fishingGears fg ")
@@ -290,12 +299,11 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH faFiTrips.faCatch faFiTripsFaCatch ")
                 .append("LEFT JOIN FETCH a.gearProblems gearProb ")
                 .append("WHERE ");
-        if (geom != null) {
-            sb.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
+        if (geometry != null) {
+            stringBuilder.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
         } else {
-            sb.append("a.id=:fishingActivityId ");
+            stringBuilder.append("a.id=:fishingActivityId ");
         }
-        return sb.toString();
+        return getEntityManager().createNamedQuery(stringBuilder.toString(), FishingActivityEntity.class);
     }
-
 }

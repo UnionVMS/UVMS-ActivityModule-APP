@@ -334,19 +334,19 @@ public abstract class SearchQueryBuilder {
         sql.append(" OR dp is null ) ");
     }
 
-    public Query fillInValuesForTypedQuery(FishingActivityQuery query, Query typedQuery) throws ServiceException {
-        Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
-        Map<SearchFilter, List<String>> searchForMultipleValues = query.getSearchCriteriaMapMultipleValues();
+    public Query fillInValuesForQuery(FishingActivityQuery fishingActivityQuery, Query query) throws ServiceException {
+        Map<SearchFilter, String> searchCriteriaMap = fishingActivityQuery.getSearchCriteriaMap();
+        Map<SearchFilter, List<String>> searchForMultipleValues = fishingActivityQuery.getSearchCriteriaMapMultipleValues();
         if (MapUtils.isNotEmpty(searchCriteriaMap)) {
-            applySingleValuesToQuery(searchCriteriaMap, typedQuery);
+            applySingleValuesToQuery(searchCriteriaMap, query);
         }
         if (MapUtils.isNotEmpty(searchForMultipleValues)) {
-            applyListValuesToQuery(searchForMultipleValues, typedQuery);
+            applyListValuesToQuery(searchForMultipleValues, query);
         }
-        if(query.getShowOnlyLatest() != null){
-            typedQuery.setParameter("latest",query.getShowOnlyLatest());
+        if (fishingActivityQuery.getShowOnlyLatest() != null) {
+            query.setParameter("latest",fishingActivityQuery.getShowOnlyLatest());
         }
-        return typedQuery;
+        return query;
     }
 
     private void applySingleValuesToQuery(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery) throws ServiceException {
@@ -404,7 +404,7 @@ public abstract class SearchQueryBuilder {
     }
 
     /**
-     * Applies the values stored in the searchCriteriaMapMultipleValues map to the typedQuery
+     * Applies the values stored in the searchCriteriaMapMultipleValues map to the query
      *
      * @param searchCriteriaMap
      * @param typedQuery
