@@ -11,13 +11,21 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,16 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
-import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import lombok.extern.slf4j.Slf4j;
 
 @Path("/catch")
 @Slf4j
@@ -54,10 +52,7 @@ public class FACatchResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getFACatchSummaryReport(@Context HttpServletRequest request,
-                                               @HeaderParam("scopeName") String scopeName,
-                                               @HeaderParam("roleName") String roleName,
-                                               FishingActivityQuery fishingActivityQuery) throws ServiceException {
+    public Response getFACatchSummaryReport(FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
         log.debug("Query Received to getFACatchSummaryReport. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
@@ -74,10 +69,7 @@ public class FACatchResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getFACatchSummaryDetails(@Context HttpServletRequest request,
-                                            @HeaderParam("scopeName") String scopeName,
-                                            @HeaderParam("roleName") String roleName,
-                                             @PathParam("fishingTripId") String tripId) throws ServiceException {
+    public Response getFACatchSummaryDetails(@PathParam("fishingTripId") String tripId) throws ServiceException {
         log.debug("getFACatchSummaryDetails: " + tripId);
         return createSuccessResponse( reportService.getCatchDetailsScreen(tripId));
     }
