@@ -107,6 +107,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private GeometryFactory geometryFactory = new GeometryFactory();
 
+    private FluxFaReportMessageMapper fluxFaReportMessageMapper = new FluxFaReportMessageMapper();
+
     @PostConstruct
     public void init() {
         initEntityManager();
@@ -124,7 +126,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @Transactional
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
-        FluxFaReportMessageEntity messageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
+        FluxFaReportMessageEntity messageEntity = fluxFaReportMessageMapper.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             try {
