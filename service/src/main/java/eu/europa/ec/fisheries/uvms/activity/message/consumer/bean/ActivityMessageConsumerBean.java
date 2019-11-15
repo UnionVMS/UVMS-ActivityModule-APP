@@ -13,11 +13,12 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsServiceBean;
+import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsService;
 import eu.europa.ec.fisheries.uvms.activity.service.bean.FaReportSaverBean;
 import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityRequestMapper;
@@ -51,6 +52,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import java.util.List;
 
 @MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
@@ -87,7 +89,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private FaCatchReportService faCatchReportService;
 
     @EJB
-    private ActivityMatchingIdsServiceBean matchingIdsService;
+    private ActivityMatchingIdsService matchingIdsService;
 
     @EJB
     private ActivityService activityServiceBean;
@@ -152,8 +154,13 @@ public class ActivityMessageConsumerBean implements MessageListener {
 
     private void getNonUniqueIds(TextMessage textMessage) throws ActivityModelMarshallException, JMSException {
         GetNonUniqueIdsRequest getNonUniqueIdsRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, GetNonUniqueIdsRequest.class);
-        GetNonUniqueIdsResponse getNonUniqueIdsResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest.getActivityUniquinessLists());
+        List<ActivityUniquinessList> matchingIds = matchingIdsService.getMatchingIds(getNonUniqueIdsRequest.getActivityUniquinessLists());
+
+        GetNonUniqueIdsResponse getNonUniqueIdsResponse = new GetNonUniqueIdsResponse();
+        getNonUniqueIdsResponse.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
+        getNonUniqueIdsResponse.setActivityUniquinessLists(matchingIds);
         String getNonUniqueIdsResponseString = JAXBMarshaller.marshallJaxBObjectToString(getNonUniqueIdsResponse);
+
         producer.sendResponseMessageToSender(textMessage, getNonUniqueIdsResponseString);
     }
 

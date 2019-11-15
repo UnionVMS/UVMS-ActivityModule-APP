@@ -60,7 +60,7 @@ public class FishingActivityViewMapperTest {
     @SneakyThrows
     public void initFishingActivityEntity(){
         FLUXFAReportMessage fluxfaReportMessage = getActivityDataFromXML();
-        FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
+        FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.FLUX);
         List<FaReportDocumentEntity> faReportDocuments = new ArrayList<>(fluxRepMessageEntity.getFaReportDocuments());
         fishingActivity = faReportDocuments.get(0).getFishingActivities().iterator().next();
     }
