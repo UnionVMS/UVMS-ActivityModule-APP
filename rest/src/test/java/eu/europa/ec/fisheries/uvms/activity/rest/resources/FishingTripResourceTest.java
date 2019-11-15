@@ -119,6 +119,36 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
     }
 
     @Test
+    public void getFishingTripSummary_tripNotFound() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("reports")
+                .path("THIS-HERE-AINT-NO-TRIP")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .header("scopeName", null) // "null" means that we will not look up any geometry
+                .header("roleName", "myRole")
+                .get(String.class);
+
+        // Then
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ResponseDto<FishingTripSummaryViewDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FishingTripSummaryViewDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        FishingTripSummaryViewDTO data = responseDto.getData();
+        assertNull(data.getSummary());
+        assertNull(data.getActivityReports());
+    }
+
+    @Test
     public void getVesselDetails() throws JsonProcessingException {
         // Given
 
@@ -160,6 +190,30 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
     }
 
     @Test
+    public void getVesselDetails_tripNotFound() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("vessel")
+                .path("details")
+                .path("YOU-WILL-NEVER-SEE-A-TRIP-ID-SUCH-AS-THIS")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<VesselDetailsDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<VesselDetailsDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+        assertNull(responseDto.getData());
+    }
+
+    @Test
     public void getFishingTripMessageCounter() throws JsonProcessingException {
         // Given
 
@@ -186,6 +240,37 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(7, messageCountDTO.getNoOfNotifications());
         assertEquals(0, messageCountDTO.getNoOfCorrections());
         assertEquals(22, messageCountDTO.getNoOfFishingOperations());
+        assertEquals(0, messageCountDTO.getNoOfDeletions());
+        assertEquals(0, messageCountDTO.getNoOfCancellations());
+    }
+
+    @Test
+    public void getFishingTripMessageCounter_tripNotFound() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("messages")
+                .path("BLARRRRGHH")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<MessageCountDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<MessageCountDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        MessageCountDTO messageCountDTO = responseDto.getData();
+        assertEquals(0, messageCountDTO.getNoOfReports());
+        assertEquals(0, messageCountDTO.getNoOfDeclarations());
+        assertEquals(0, messageCountDTO.getNoOfNotifications());
+        assertEquals(0, messageCountDTO.getNoOfCorrections());
+        assertEquals(0, messageCountDTO.getNoOfFishingOperations());
         assertEquals(0, messageCountDTO.getNoOfDeletions());
         assertEquals(0, messageCountDTO.getNoOfCancellations());
     }
@@ -253,6 +338,40 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(weight, dto.getWeight(), 0.1d);
     }
 
+    @Test
+    public void getFishingTripCatchReports_tripNotFound() throws JsonProcessingException {
+        // Given
+
+        System.out.println("afseffsaaf efwfew");
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("catches")
+                .path("WHAT-ME-PROVIDE-A-REAL-TRIP-ID")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<Map<String, CatchSummaryListDTO>> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Map<String, CatchSummaryListDTO>>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        Map<String, CatchSummaryListDTO> messageCountDTO = responseDto.getData();
+        assertEquals(2, messageCountDTO.size());
+
+        CatchSummaryListDTO onboard = messageCountDTO.get("onboard");
+        assertEquals(0.0, onboard.getTotal(), 0.1d);
+        assertTrue(onboard.getSpeciesList().isEmpty());
+
+        CatchSummaryListDTO landed = messageCountDTO.get("landed");
+        assertEquals(0, landed.getTotal(), 0.1d);
+        assertTrue(landed.getSpeciesList().isEmpty());
+    }
+
     /**
      * This test tests the behaviour of the getCronologyOfFishingTrip (sic) endpoint
      * as it is at the time of writing the tests. Comments in the test point out dubious behaviours
@@ -308,6 +427,33 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         } else {
             assertNull(cronologyTripDTO.getPreviousTrips());
         }
+    }
+
+    @Test
+    public void getChronologyOfFishingTrip_tripNotFound() throws JsonProcessingException {
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("cronology")// sic
+                .path("NONEXISTANT-TRIP-ID")
+                .path(Integer.toString(1000))
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<CronologyTripDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<CronologyTripDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        CronologyTripDTO cronologyTripDTO = responseDto.getData();
+        assertNull(cronologyTripDTO.getCurrentTrip());
+        assertEquals("NONEXISTANT-TRIP-ID", cronologyTripDTO.getSelectedTrip());
+
+        assertNull(cronologyTripDTO.getPreviousTrips());
+        assertNull(cronologyTripDTO.getNextTrips());
     }
 
     @Test
@@ -370,6 +516,34 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
 
         assertEquals(latitude, latNode.doubleValue(), 0.0001d);
         assertEquals(longitude, longNode.doubleValue(), 0.0001d);
+    }
+
+    @Test
+    public void getTripMapData_tripNotFound() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("mapData")
+                .path("YOU-GOT-TO-FIND-THE-TRIP-ID-WITHIN-YOU-MAN")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<ObjectNode> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<ObjectNode>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        ObjectNode response = responseDto.getData();
+
+        ArrayNode featureCollection = (ArrayNode) response.get("features");
+
+        assertEquals(0, featureCollection.size());
     }
 
     @Test
@@ -441,5 +615,31 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(activityType, dto.getActivityType());
         assertEquals(reportType, dto.getReportType());
         assertEquals(i + 1, dto.getOrderId());
+    }
+
+    @Test
+    public void getFishingTripCatchEvolution_tripNotFound() throws JsonProcessingException {
+        // Given
+
+        // When
+        String responseAsString = getWebTarget()
+                .path("trip")
+                .path("catchevolution")
+                .path("TRIP-ID-DI-PIRT")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseDto<CatchEvolutionDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<CatchEvolutionDTO>>(){});
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        CatchEvolutionDTO response = responseDto.getData();
+
+        assertNull(response.getTripDetails());
     }
 }
