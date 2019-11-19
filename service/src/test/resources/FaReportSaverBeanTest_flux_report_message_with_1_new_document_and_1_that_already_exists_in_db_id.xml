@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns0:FLUXFAReportMessage xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns0="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3">
+    <ns0:FAReportDocument>
+        <ns6:TypeCode listID="FLUX_FA_REPORT_TYPE" xmlns:ns6="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20">DECLARATION</ns6:TypeCode>
+        <ns6:AcceptanceDateTime xmlns:ns6="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20">
+            <ns8:DateTime xmlns:ns8="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20">2019-01-01T12:00:00.000Z</ns8:DateTime>
+        </ns6:AcceptanceDateTime>
+        <ns6:RelatedFLUXReportDocument xmlns:ns6="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20">
+            <ns6:ID schemeID="UUID">related-flux-report-document-id-1</ns6:ID>
+            <ns6:CreationDateTime>
+                <ns8:DateTime xmlns:ns8="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20">2019-01-01T12:00:00.000Z</ns8:DateTime>
+            </ns6:CreationDateTime>
+            <ns6:PurposeCode listID="FLUX_GP_PURPOSE">9</ns6:PurposeCode>
+            <ns6:OwnerFLUXParty>
+                <ns6:ID schemeID="FLUX_GP_PARTY">SWE</ns6:ID>
+            </ns6:OwnerFLUXParty>
+        </ns6:RelatedFLUXReportDocument>
+    </ns0:FAReportDocument>
+    <ns0:FAReportDocument>
+        <ns6:TypeCode listID="FLUX_FA_REPORT_TYPE" xmlns:ns6="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20">DECLARATION</ns6:TypeCode>
+        <ns6:AcceptanceDateTime xmlns:ns6="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20">
+            <ns8:DateTime xmlns:ns8="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20">2019-01-01T12:00:00.000Z</ns8:DateTime>
+        </ns6:AcceptanceDateTime>
+        <ns6:RelatedFLUXReportDocument xmlns:ns6="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20">
+            <ns6:ID schemeID="UUID">related-flux-report-document-id-already-in-database</ns6:ID>
+            <ns6:CreationDateTime>
+                <ns8:DateTime xmlns:ns8="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20">2019-01-01T12:00:00.000Z</ns8:DateTime>
+            </ns6:CreationDateTime>
+            <ns6:PurposeCode listID="FLUX_GP_PURPOSE">9</ns6:PurposeCode>
+            <ns6:OwnerFLUXParty>
+                <ns6:ID schemeID="FLUX_GP_PARTY">SWE</ns6:ID>
+            </ns6:OwnerFLUXParty>
+        </ns6:RelatedFLUXReportDocument>
+    </ns0:FAReportDocument>
+</ns0:FLUXFAReportMessage>

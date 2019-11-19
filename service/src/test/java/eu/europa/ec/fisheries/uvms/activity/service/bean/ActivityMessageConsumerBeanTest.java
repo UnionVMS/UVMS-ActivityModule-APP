@@ -11,12 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import com.google.common.collect.Lists;
+import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
+import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
-import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
-import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFault;
@@ -28,8 +27,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTrip
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsServiceBean;
+import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
 import org.junit.Before;
@@ -66,7 +64,7 @@ public class ActivityMessageConsumerBeanTest {
     private Event<EventMessage> errorEvent;
 
     @Mock
-    private ActivityMatchingIdsServiceBean matchingIdsService;
+    private ActivityMatchingIdsService matchingIdsService;
 
     @Mock
     private ActivityErrorMessageServiceBean producer;
@@ -129,11 +127,7 @@ public class ActivityMessageConsumerBeanTest {
         list.add(activityUniquinessList1);
         list.add(activityUniquinessList2);
 
-        GetNonUniqueIdsResponse getNonUniqueIdsResponse = new GetNonUniqueIdsResponse();
-        getNonUniqueIdsResponse.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
-        getNonUniqueIdsResponse.setActivityUniquinessLists(list);
-
-        when(matchingIdsService.getMatchingIdsResponse(any())).thenReturn(getNonUniqueIdsResponse);
+        when(matchingIdsService.getMatchingIds(any())).thenReturn(list);
 
         // When
         consumer.onMessage(activeMQTextMessage);

@@ -30,10 +30,13 @@ import java.util.Set;
 
 public class FluxFaReportMessageMapper {
 
-    public FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage) {
+    public FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum) {
         if (fluxfaReportMessage == null && faReportSourceEnum == null) {
             return null;
         }
+
+        FluxFaReportMessageEntity fluxFaReportMessage = new FluxFaReportMessageEntity();
+
         if (fluxfaReportMessage != null) {
             FLUXReportDocument fluxReportDocument = fluxfaReportMessage.getFLUXReportDocument();
             if(fluxReportDocument == null) {
