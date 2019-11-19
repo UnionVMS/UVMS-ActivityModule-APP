@@ -164,8 +164,8 @@ public class BaseMapper {
             unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode() : unitCode;
         }
 
-        Date startDate = Date.from(startInstant);
-        Date endDate = Date.from(endInstant);
+        Date startDate = startInstant != null ? Date.from(startInstant) : null;
+        Date endDate = endInstant != null ? Date.from(endInstant) : null;
 
         DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
                 .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).unitCode(unitCode).build();
