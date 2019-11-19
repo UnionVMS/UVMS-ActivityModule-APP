@@ -111,7 +111,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     @Override
     public List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) {
         FaReportDocumentEntity faReport = faReportDocumentDao.findFaReportByIdAndScheme(refReportId, refSchemeId);
-        List<FaReportDocumentEntity> historyOfFaReport = faReportDocumentDao.getHistoryOfFaReport(faReport, new ArrayList<FaReportDocumentEntity>());
+        List<FaReportDocumentEntity> historyOfFaReport = faReportDocumentDao.getHistoryOfFaReport(faReport);
         List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(historyOfFaReport);
         log.info("Sort collection by date before sending");
         Collections.sort(faReportCorrectionDTOs);
@@ -407,7 +407,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             log.error("fishingActivity or fishingActivityTime ");
             return new ArrayList<>();
         }
-        return mapFromReportsToActivityHistory(faReportDocumentDao.getHistoryOfFaReport(fishingActivity.getFaReportDocument(), new ArrayList<>()), fishingActivity.getTypeCode());
+        return mapFromReportsToActivityHistory(faReportDocumentDao.getHistoryOfFaReport(fishingActivity.getFaReportDocument()), fishingActivity.getTypeCode());
     }
 
     private List<ActivityHistoryDtoElement> mapFromReportsToActivityHistory(List<FaReportDocumentEntity> fullHistoryReportsList, String activityType) {
