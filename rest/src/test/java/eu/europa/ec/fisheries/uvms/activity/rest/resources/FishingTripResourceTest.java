@@ -171,7 +171,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         VesselDetailsDTO vesselDetails = responseDto.getData();
-        assertEquals("MADONNA DI POMPEI", vesselDetails.getName());
+        assertEquals("Test Ship 001", vesselDetails.getName());
         assertEquals("MLT", vesselDetails.getCountry());
 
         Set<ContactPartyDetailsDTO> contactPartyDetailsDTOSet = vesselDetails.getContactPartyDetailsDTOSet();
@@ -179,14 +179,14 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
 
         ContactPartyDetailsDTO contactPartyDetailsDto = contactPartyDetailsDTOSet.iterator().next();
         assertEquals("MASTER", contactPartyDetailsDto.getRole());
-        assertEquals("Miguel Nunes", contactPartyDetailsDto.getContactPerson().getAlias());
+        assertEquals("Contact Person 001 Alias", contactPartyDetailsDto.getContactPerson().getAlias());
 
         Set<AssetIdentifierDto> vesselIdentifiers = vesselDetails.getVesselIdentifiers();
         assertEquals(1, vesselIdentifiers.size());
 
         AssetIdentifierDto identifier = vesselIdentifiers.iterator().next();
         assertEquals(VesselIdentifierSchemeIdEnum.CFR, identifier.getIdentifierSchemeId());
-        assertEquals("SWE000004540", identifier.getFaIdentifierId());
+        assertEquals("SWEFAKE00001", identifier.getFaIdentifierId());
     }
 
     @Test
@@ -342,7 +342,6 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
     public void getFishingTripCatchReports_tripNotFound() throws JsonProcessingException {
         // Given
 
-        System.out.println("afseffsaaf efwfew");
         // When
         String responseAsString = getWebTarget()
                 .path("trip")
