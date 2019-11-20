@@ -40,6 +40,10 @@ public class ActivityHistoryDtoElement implements Comparable<ActivityHistoryDtoE
     @JsonView(FishingActivityView.CommonView.class)
     private List<Integer> fishingActivityIds;
 
+    public ActivityHistoryDtoElement() {
+        // Used by Jackson for deserialization
+    }
+
     public ActivityHistoryDtoElement(Integer faReportId, Date acceptanceDate, Integer purposeCode, List<Integer> fishingActivityIds) {
         this.fishingActivityIds = fishingActivityIds;
         this.faReportId = faReportId;

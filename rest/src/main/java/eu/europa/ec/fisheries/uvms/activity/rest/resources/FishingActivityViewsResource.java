@@ -12,14 +12,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityViewDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.FishingOperation;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ActivityViewEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
@@ -30,8 +30,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -65,7 +68,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityArrivalView(@Context HttpServletRequest request,
-                                           @Context HttpServletResponse response,
                                            @HeaderParam("scopeName") String scopeName,
                                            @HeaderParam("roleName") String roleName,
                                            ActivityViewDto activityViewDto) throws ServiceException {
@@ -81,7 +83,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityLandingView(@Context HttpServletRequest request,
-                                           @Context HttpServletResponse response,
                                            @HeaderParam("scopeName") String scopeName,
                                            @HeaderParam("roleName") String roleName,
                                            ActivityViewDto activityViewDto) throws ServiceException {
@@ -96,7 +97,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getDiscardAtSeaView(@Context HttpServletRequest request,
-                                        @Context HttpServletResponse response,
                                         @HeaderParam("scopeName") String scopeName,
                                         @HeaderParam("roleName") String roleName,
                                         ActivityViewDto activityViewDto) throws ServiceException {
@@ -111,7 +111,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityDepartureView(@Context HttpServletRequest request,
-                                             @Context HttpServletResponse response,
                                              @HeaderParam("scopeName") String scopeName,
                                              @HeaderParam("roleName") String roleName,
                                              ActivityViewDto activityViewDto) throws ServiceException {
@@ -126,7 +125,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityNotificationOfArrivalView(@Context HttpServletRequest request,
-                                                         @Context HttpServletResponse response,
                                                          @HeaderParam("scopeName") String scopeName,
                                                          @HeaderParam("roleName") String roleName,
                                                          ActivityViewDto activityViewDto) throws ServiceException {
@@ -142,7 +140,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityAreaEntryView(@Context HttpServletRequest request,
-                                             @Context HttpServletResponse response,
                                              @HeaderParam("scopeName") String scopeName,
                                              @HeaderParam("roleName") String roleName,
                                              ActivityViewDto activityViewDto) throws ServiceException {
@@ -158,7 +155,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getActivityAreaExitView(@Context HttpServletRequest request,
-                                            @Context HttpServletResponse response,
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
                                             ActivityViewDto activityViewDto) throws ServiceException {
@@ -174,7 +170,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getGearShotAndRetrievalView(@Context HttpServletRequest request,
-                                                @Context HttpServletResponse response,
                                                 @HeaderParam("scopeName") String scopeName,
                                                 @HeaderParam("roleName") String roleName,
                                                 ActivityViewDto activityViewDto) throws ServiceException {
@@ -190,7 +185,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getTranshipmentView(@Context HttpServletRequest request,
-                                        @Context HttpServletResponse response,
                                         @HeaderParam("scopeName") String scopeName,
                                         @HeaderParam("roleName") String roleName,
                                         ActivityViewDto activityViewDto) throws ServiceException {
@@ -205,7 +199,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getFishingOperationView(@Context HttpServletRequest request,
-                                            @Context HttpServletResponse response,
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
                                             ActivityViewDto activityViewDto) throws ServiceException {
@@ -221,7 +214,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getRelocationView(@Context HttpServletRequest request,
-                                      @Context HttpServletResponse response,
                                       @HeaderParam("scopeName") String scopeName,
                                       @HeaderParam("roleName") String roleName,
                                       ActivityViewDto activityViewDto) throws ServiceException {
@@ -236,7 +228,6 @@ public class FishingActivityViewsResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getJointFishingOperationView(@Context HttpServletRequest request,
-                                                 @Context HttpServletResponse response,
                                                  @HeaderParam("scopeName") String scopeName,
                                                  @HeaderParam("roleName") String roleName,
                                                  ActivityViewDto activityViewDto) throws ServiceException {
