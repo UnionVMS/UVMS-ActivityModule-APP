@@ -24,7 +24,7 @@ import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.Fishi
 public class FaCatchGroupDto {
 
     @JsonView(CommonView.class)
-    private final ThreadLocal<Double> calculatedWeight = new ThreadLocal<>();
+    private Double calculatedWeight;
     @JsonView(CommonView.class)
     private String type;
     @JsonView(CommonView.class)
@@ -64,11 +64,11 @@ public class FaCatchGroupDto {
     }
 
     public Double getCalculatedWeight() {
-        return calculatedWeight.get();
+        return calculatedWeight;
     }
 
     public void setCalculatedWeight(Double calculatedWeight) {
-        this.calculatedWeight.set(calculatedWeight);
+        this.calculatedWeight = calculatedWeight;
     }
 
     public Map<String, FaCatchGroupDetailsDto> getGroupingDetails() {
