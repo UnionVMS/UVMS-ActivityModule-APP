@@ -304,6 +304,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         } else {
             stringBuilder.append("a.id=:fishingActivityId ");
         }
-        return getEntityManager().createNamedQuery(stringBuilder.toString(), FishingActivityEntity.class);
+        return getEntityManager().createQuery(stringBuilder.toString(), FishingActivityEntity.class);
     }
 }
