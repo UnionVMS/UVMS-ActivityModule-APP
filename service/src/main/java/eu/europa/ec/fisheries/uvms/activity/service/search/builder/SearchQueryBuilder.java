@@ -234,8 +234,8 @@ public abstract class SearchQueryBuilder {
     }
 
     void createWherePartForQueryForFilters(StringBuilder sql, FishingActivityQuery query) {
-        LOG.debug("[INFO] Creating Where part of Query");
-        sql.append(" where ");
+        LOG.debug("Creating Where part of Query");
+        sql.append(" WHERE ");
         Map<SearchFilter, FilterDetails> filterMappings = filterMap.getFilterMappings();
         SortedSet<SearchFilter> keySet = new TreeSet<>();
         if (MapUtils.isNotEmpty(query.getSearchCriteriaMap())) {
@@ -246,13 +246,13 @@ public abstract class SearchQueryBuilder {
         }
         // Create Where part of SQL Query
         if(query.getShowOnlyLatest() != null){
-            sql.append(" a.latest=:latest ").append(" and ");
+            sql.append(" a.latest=:latest ").append(" AND ");
         }
         boolean hasAppendedAtLeastOne = false;
         for (SearchFilter key : keySet) {
             hasAppendedAtLeastOne |= appendWhereQueryPart(sql, filterMappings, keySet, hasAppendedAtLeastOne, key);
         }
-        LOG.debug("[INFO] Generated Query After Where :" + sql);
+        LOG.debug("Generated Query After Where :" + sql);
     }
 
     private boolean appendWhereQueryPart(StringBuilder sql, Map<SearchFilter, FilterDetails> filterMappings, Set<SearchFilter> keySet, boolean hasAppendedAtLeastOne, SearchFilter key) {
@@ -309,9 +309,9 @@ public abstract class SearchQueryBuilder {
             if (sortFieldMapping == null) {
                 throw new ServiceException("Information about which database field to be used for sorting is unavailable");
             }
-            sql.append(" order by ").append(sortFieldMapping).append(orderby);
+            sql.append(" ORDER BY ").append(sortFieldMapping).append(orderby);
         } else {
-            sql.append(" order by fa.acceptedDatetime ASC ");
+            sql.append(" ORDER BY fa.acceptedDatetime ASC ");
         }
     }
 
@@ -327,26 +327,26 @@ public abstract class SearchQueryBuilder {
         if (searchCriteriaMap == null) {
             return;
         }
-        sql.append(" and(  ");
+        sql.append(" AND(  ");
         sql.append(FilterMap.getFilterSortMappings().get(filter));
-        sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a.delimitedPeriods dp1  ");
+        sql.append(" =(SELECT MAX(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") FROM a.delimitedPeriods dp1  ");
         sql.append(" ) ");
-        sql.append(" OR dp is null ) ");
+        sql.append(" OR dp IS null ) ");
     }
 
-    public Query fillInValuesForTypedQuery(FishingActivityQuery query, Query typedQuery) throws ServiceException {
-        Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
-        Map<SearchFilter, List<String>> searchForMultipleValues = query.getSearchCriteriaMapMultipleValues();
+    public Query fillInValuesForQuery(FishingActivityQuery fishingActivityQuery, Query query) throws ServiceException {
+        Map<SearchFilter, String> searchCriteriaMap = fishingActivityQuery.getSearchCriteriaMap();
+        Map<SearchFilter, List<String>> searchForMultipleValues = fishingActivityQuery.getSearchCriteriaMapMultipleValues();
         if (MapUtils.isNotEmpty(searchCriteriaMap)) {
-            applySingleValuesToQuery(searchCriteriaMap, typedQuery);
+            applySingleValuesToQuery(searchCriteriaMap, query);
         }
         if (MapUtils.isNotEmpty(searchForMultipleValues)) {
-            applyListValuesToQuery(searchForMultipleValues, typedQuery);
+            applyListValuesToQuery(searchForMultipleValues, query);
         }
-        if(query.getShowOnlyLatest() != null){
-            typedQuery.setParameter("latest",query.getShowOnlyLatest());
+        if (fishingActivityQuery.getShowOnlyLatest() != null) {
+            query.setParameter("latest",fishingActivityQuery.getShowOnlyLatest());
         }
-        return typedQuery;
+        return query;
     }
 
     private void applySingleValuesToQuery(Map<SearchFilter, String> searchCriteriaMap, Query typedQuery) throws ServiceException {
@@ -404,7 +404,7 @@ public abstract class SearchQueryBuilder {
     }
 
     /**
-     * Applies the values stored in the searchCriteriaMapMultipleValues map to the typedQuery
+     * Applies the values stored in the searchCriteriaMapMultipleValues map to the query
      *
      * @param searchCriteriaMap
      * @param typedQuery

@@ -25,7 +25,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Postgres;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -109,7 +108,6 @@ public class FluxMessageServiceBeanTest {
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
 
         // Trigger
-        fluxMessageService.setDialect(new Postgres());
         fluxMessageService.saveFishingActivityReportDocuments(fluxFaReportMessage, FaReportSourceEnum.FLUX);
 
         //Verify

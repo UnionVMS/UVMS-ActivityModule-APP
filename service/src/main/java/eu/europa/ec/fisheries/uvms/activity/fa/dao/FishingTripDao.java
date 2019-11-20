@@ -113,7 +113,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         StringBuilder sqlToGetActivityList = search.createCountSQL(queryDto);
         log.debug("SQL:" + sqlToGetActivityList);
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
-        Query query = search.fillInValuesForTypedQuery(queryDto, typedQuery);
+        Query query = search.fillInValuesForQuery(queryDto, typedQuery);
         Long nrOfFa = (Long) query.getResultList().get(0);
         return nrOfFa.intValue();
 
@@ -124,7 +124,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         StringBuilder sqlToGetActivityList = search.createSQL(query);
         log.debug("SQL:" + sqlToGetActivityList);
         TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(), Object[].class);
-        return search.fillInValuesForTypedQuery(query, typedQuery);
+        return search.fillInValuesForQuery(query, typedQuery);
     }
 
 }

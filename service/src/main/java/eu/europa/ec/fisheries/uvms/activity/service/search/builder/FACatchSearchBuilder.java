@@ -31,10 +31,10 @@ import java.util.Map;
 public class FACatchSearchBuilder extends SearchQueryBuilder {
 
     private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
-            "LEFT JOIN a.relatedFishingActivity relatedActivity  " +
-            "  JOIN a.faReportDocument fa  ";
+            "LEFT JOIN a.relatedFishingActivity relatedActivity " +
+            "JOIN a.faReportDocument fa  ";
 
-    private static final String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure)  ";
+    private static final String SUM_WEIGHT = " SUM(faCatch.calculatedWeightMeasure) ";
 
     public FACatchSearchBuilder() {
         super();
@@ -50,15 +50,14 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         StringBuilder sql = new StringBuilder();
-        // FilterMap.populateFilterMAppingsWithChangeForFACatchReport();
         Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
         List<GroupCriteria> groupByFieldList = query.getGroupByFields();
-        sql.append("SELECT  "); // Common Join for all filters
+        sql.append("SELECT "); // Common Join for all filters
         appendSelectGroupColumns(groupByFieldList, sql, groupMappings);
         createJoinPartOfTheQuery(query, sql, groupMappings, groupByFieldList);
         createWherePartOfQuery(query, sql, groupByFieldList);
         createGroupByPartOfTheQuery(sql, groupMappings, groupByFieldList);
-        log.debug("sql :" + sql);
+        log.debug("sql: " + sql);
         return sql;
     }
 
@@ -84,29 +83,28 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         }
     }
 
-    protected void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings, List<GroupCriteria> groupByFieldList) {
+    protected void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMappings, List<GroupCriteria> groupByFieldList) {
         // Below is default JOIN for the query
         sql.append(FA_CATCH_JOIN);
         // Create join part of SQL query
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         // Add joins if not added by activity filtering . Below code will add joins required by FA Catch report joins
         for (GroupCriteria criteria : groupByFieldList) {
-            GroupCriteriaMapper mapper = groupMAppings.get(criteria);
+            GroupCriteriaMapper mapper = groupMappings.get(criteria);
             if (sql.indexOf(mapper.getTableJoin()) == -1) {
                 appendJoinString(sql, mapper.getTableJoin());
             }
         }
     }
 
-    protected void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings) throws ServiceException {
+    protected void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMappings) throws ServiceException {
 
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
 
         // Build SELECT part of query.
         for (GroupCriteria criteria : groupByFieldList) {
-
-            GroupCriteriaMapper mapper = groupMAppings.get(criteria);
+            GroupCriteriaMapper mapper = groupMappings.get(criteria);
             sql.append(mapper.getColumnName());
             sql.append(", ");
         }
@@ -119,16 +117,46 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
      * @param sql
      */
     protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql) {
-        sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
+        // This is an ugly workaround to handle the fact that we can't be 100% sure there are previous search criteria
+        if (!sql.toString().trim().toUpperCase().endsWith("WHERE")) {
+            sql.append(" AND ");
+        }
+
+        sql.append("( a.typeCode ='")
+                .append(FishingActivityTypeEnum.FISHING_OPERATION.toString())
+                .append("' AND faCatch.typeCode IN ('")
+                .append(FaCatchTypeEnum.DEMINIMIS)
+                .append("','")
+                .append(FaCatchTypeEnum.DISCARDED)
+                .append("')) ");
     }
 
     protected void conditionsForFACatchSummaryReport(StringBuilder sql) {
-        sql.append(" and (" +
-                "(a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD)
-                .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(FishingActivityTypeEnum.RELOCATION.toString())
-                .append("' and a.relatedFishingActivity.typeCode='").append(FishingActivityTypeEnum.JOINED_FISHING_OPERATION.toString()).append("' and a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid  ")
-                .append(" and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.TAKEN_ON_BOARD)
-                .append("','").append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("')))");
+        // This is an ugly workaround to handle the fact that we can't be 100% sure there are previous search criteria
+        if (!sql.toString().trim().toUpperCase().endsWith("WHERE")) {
+            sql.append(" AND ");
+        }
+
+        sql.append("((a.typeCode ='")
+                .append(FishingActivityTypeEnum.FISHING_OPERATION.toString())
+                .append("' AND faCatch.typeCode IN('")
+                .append(FaCatchTypeEnum.ONBOARD)
+                .append("','")
+                .append(FaCatchTypeEnum.KEPT_IN_NET)
+                .append("','")
+                .append(FaCatchTypeEnum.BY_CATCH)
+                .append("'))  OR (a.typeCode ='")
+                .append(FishingActivityTypeEnum.RELOCATION.toString())
+                .append("' AND a.relatedFishingActivity.typeCode='")
+                .append(FishingActivityTypeEnum.JOINED_FISHING_OPERATION.toString())
+                .append("' AND a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid ")
+                .append(" AND faCatch.typeCode IN('")
+                .append(FaCatchTypeEnum.ONBOARD)
+                .append("','")
+                .append(FaCatchTypeEnum.TAKEN_ON_BOARD)
+                .append("','")
+                .append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA)
+                .append("')))");
     }
 
     @Override

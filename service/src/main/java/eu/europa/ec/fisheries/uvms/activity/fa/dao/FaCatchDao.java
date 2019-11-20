@@ -91,7 +91,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
         FACatchSearchBuilder faCatchSearchBuilder = createBuilderForFACatch(isLanding);
         StringBuilder sql = faCatchSearchBuilder.createSQL(query);
         TypedQuery<Object[]> typedQuery = em.createQuery(sql.toString(), Object[].class);
-        typedQuery = (TypedQuery<Object[]>) faCatchSearchBuilder.fillInValuesForTypedQuery(query, typedQuery);
+        typedQuery = (TypedQuery<Object[]>) faCatchSearchBuilder.fillInValuesForQuery(query, typedQuery);
         List<Object[]> list = typedQuery.getResultList();
         log.debug("size of records received from DB :" + list.size());
 
@@ -114,11 +114,9 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
     private FACatchSearchBuilder createBuilderForFACatch(boolean isLanding) {
         if (isLanding) {
-            return new FACatchSearchBuilder_Landing();// This is for landing table
+            return new FACatchSearchBuilder_Landing(); // This is for landing table
         } else {
             return new FACatchSearchBuilder();
         }
     }
-
-
 }

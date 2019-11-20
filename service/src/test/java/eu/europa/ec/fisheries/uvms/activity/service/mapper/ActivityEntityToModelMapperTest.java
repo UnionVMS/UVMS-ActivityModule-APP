@@ -13,8 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.ActivityEntityToModelMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -54,7 +52,7 @@ public class ActivityEntityToModelMapperTest {
     public void testMapToFLUXFAReportMessage(String resource) throws Exception {
 
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
-        FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL, new FluxFaReportMessageEntity());
+        FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
 
         FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
 

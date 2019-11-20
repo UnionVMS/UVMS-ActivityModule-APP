@@ -11,18 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
+import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -35,10 +29,9 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -50,76 +43,74 @@ public class FaReportSaverBean {
     private FluxMessageService fluxMessageService;
 
     @EJB
-    private ActivityMatchingIdsServiceBean matchingIdsService;
+    private ActivityMatchingIdsService matchingIdsService;
 
     @EJB
     private ExchangeServiceBean exchangeServiceBean;
-
 
     public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
         try {
             FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
             deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
-            if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
+            if (CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())) {
                 fluxMessageService.saveFishingActivityReportDocuments(fluxFAReportMessage, extractPluginType(request.getPluginType()));
             } else {
-                log.error("[ERROR] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+                log.error("After checking faReportDocuments IDs, all of them exist already in Activity DB. So nothing will be saved!!");
             }
-        } catch (Exception e){
+        } catch (Exception e) {
+            log.error("Failed to save FLUXFAReportMessage", e);
             exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
         }
     }
 
-    private void deleteDuplicatedReportsFromXMLDocument(FLUXFAReportMessage repMsg) {
-        GetNonUniqueIdsRequest getNonUniqueIdsRequest = null;
-        try {
-            getNonUniqueIdsRequest = ActivityModuleRequestMapper.mapToGetNonUniqueIdRequestObject(collectAllIdsFromMessage(repMsg));
-        } catch (ActivityModelMarshallException e) {
-            log.error("[ERROR] Error while trying to get the unique ids from FaReportDocumentIdentifiers table...");
-        }
-        GetNonUniqueIdsResponse matchingIdsResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest != null ? getNonUniqueIdsRequest.getActivityUniquinessLists() : null);
-        List<ActivityUniquinessList> activityUniquinessLists = matchingIdsResponse.getActivityUniquinessLists();
-        final List<FAReportDocument> faReportDocuments = repMsg.getFAReportDocuments();
-        for(ActivityUniquinessList unique : Utils.safeIterable(activityUniquinessLists)) {
-            deleteBranchesThatMatchWithTheIdsList(unique.getIds(), faReportDocuments);
-        }
+    private void deleteDuplicatedReportsFromXMLDocument(FLUXFAReportMessage fluxfaReportMessage) {
+        List<ActivityIDType> documentIdList = collectAllIdsFromMessage(fluxfaReportMessage);
+
+        List<ActivityIDType> matchingIds = matchingIdsService.getMatchingIds(documentIdList, ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY);
+        List<FAReportDocument> faReportDocuments = fluxfaReportMessage.getFAReportDocuments();
+        deleteBranchesThatMatchWithTheIdsList(matchingIds, faReportDocuments);
     }
 
-    private Map<ActivityTableType, List<IDType>> collectAllIdsFromMessage(FLUXFAReportMessage faRepMessage) {
-        Map<ActivityTableType, List<IDType>> idsmap = new EnumMap<>(ActivityTableType.class);
-        idsmap.put(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY, new ArrayList<IDType>());
-        if (faRepMessage == null) {
-            return idsmap;
+    private List<ActivityIDType> collectAllIdsFromMessage(FLUXFAReportMessage fluxfaReportMessage) {
+        List<IDType> fluxFaReportMessageDocumentIdList = new ArrayList<>();
+
+        if (fluxfaReportMessage == null) {
+            return Collections.emptyList();
         }
-        List<FAReportDocument> faReportDocuments = faRepMessage.getFAReportDocuments();
-        for (FAReportDocument faRepDoc : Utils.safeIterable(faReportDocuments)) {
-            FLUXReportDocument relatedFLUXReportDocument = faRepDoc.getRelatedFLUXReportDocument();
+
+        List<FAReportDocument> faReportDocuments = fluxfaReportMessage.getFAReportDocuments();
+        for (FAReportDocument faReportDocument : faReportDocuments) {
+            FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
             if (relatedFLUXReportDocument != null) {
                 List<IDType> idTypes = new ArrayList<>(relatedFLUXReportDocument.getIDS());
                 idTypes.add(relatedFLUXReportDocument.getReferencedID());
                 idTypes.removeAll(Collections.singletonList(null));
-                idsmap.get(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY).addAll(idTypes);
+
+                fluxFaReportMessageDocumentIdList.addAll(idTypes);
             }
         }
-        return idsmap;
+
+        return fluxFaReportMessageDocumentIdList
+                .stream()
+                .map(idType -> new ActivityIDType(idType.getValue(), idType.getSchemeID()))
+                .collect(Collectors.toList());
     }
 
     private void deleteBranchesThatMatchWithTheIdsList(List<ActivityIDType> ids, List<FAReportDocument> faReportDocuments) {
-        final Iterator<FAReportDocument> iterator = faReportDocuments.iterator();
-        while(iterator.hasNext()){
-            FAReportDocument faRep = iterator.next();
-            FLUXReportDocument relatedFLUXReportDocument = faRep.getRelatedFLUXReportDocument();
-            if(relatedFLUXReportDocument != null && reportDocumentIdsMatch(relatedFLUXReportDocument.getIDS(), ids)){
-                log.warn("[WARN] Deleted FaReportDocument (from XML MSG Node) since it already exist in the Activity DB..\n" +
-                        "Following is the ID : { "+preetyPrintIds(relatedFLUXReportDocument.getIDS())+" }");
+        Iterator<FAReportDocument> iterator = faReportDocuments.iterator();
+        while (iterator.hasNext()) {
+            FAReportDocument faReportDocument = iterator.next();
+            FLUXReportDocument relatedFLUXReportDocument = faReportDocument.getRelatedFLUXReportDocument();
+            if (relatedFLUXReportDocument != null && reportDocumentIdsMatch(relatedFLUXReportDocument.getIDS(), ids)) {
+                log.warn("Deleted FaReportDocument with id {} (from XML MSG Node) since it already exist in the Activity DB.", prettyPrintIdList(relatedFLUXReportDocument.getIDS()));
                 iterator.remove();
-                log.info("[INFO] Remaining [ "+faReportDocuments.size()+" ] FaReportDocuments to be saved.");
+                log.info("Remaining [{}] FaReportDocuments to be saved.", faReportDocuments.size());
             }
         }
     }
 
     private FaReportSourceEnum extractPluginType(PluginType pluginType) {
-        if(pluginType == null){
+        if (pluginType == null) {
             return FaReportSourceEnum.FLUX;
         }
         return pluginType == PluginType.FLUX ? FaReportSourceEnum.FLUX : FaReportSourceEnum.MANUAL;
@@ -127,8 +118,8 @@ public class FaReportSaverBean {
 
     private boolean reportDocumentIdsMatch(List<IDType> ids, List<ActivityIDType> idsToMatch) {
         boolean match = true;
-        for(IDType idType : ids){
-            if(!idExistsInList(idType, idsToMatch)){
+        for (IDType idType : ids) {
+            if (!idExistsInList(idType, idsToMatch)) {
                 match = false;
                 break;
             }
@@ -140,22 +131,21 @@ public class FaReportSaverBean {
         boolean match = false;
         final String value = idType.getValue();
         final String schemeID = idType.getSchemeID();
-        for(ActivityIDType actId : idsToMatch){
-            if(actId.getValue().equals(value) && actId.getIdentifierSchemeId().equals(schemeID)){
+        for (ActivityIDType actId : idsToMatch) {
+            if (actId.getValue().equals(value) && actId.getIdentifierSchemeId().equals(schemeID)) {
                 match = true;
             }
         }
         return match;
     }
 
-    private String preetyPrintIds(List<IDType> ids) {
+    private String prettyPrintIdList(List<IDType> ids) {
         StringBuilder strBuild = new StringBuilder();
-        for(IDType id : ids){
+        for (IDType id : ids) {
             strBuild.append("[ UUID : ").append(id.getValue()).append(" ]\n");
         }
         return strBuild.toString();
     }
-
 }
 
 
