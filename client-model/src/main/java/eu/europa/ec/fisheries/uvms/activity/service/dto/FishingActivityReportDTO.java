@@ -44,9 +44,6 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonProperty("vesselTransportMeansName")
     private String vesselTransportMeansName;
 
-    @JsonProperty("purposeCode")
-    private String purposeCode;
-
     @JsonProperty("FAReportType")
     private String FAReportType;
 
@@ -96,16 +93,6 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonProperty("vesselTransportMeansName")
     public void setVesselTransportMeansName(String vesselTransportMeansName) {
         this.vesselTransportMeansName = vesselTransportMeansName;
-    }
-
-    @JsonProperty("purposeCode")
-    public String getPurposeCode() {
-        return purposeCode;
-    }
-
-    @JsonProperty("purposeCode")
-    public void setPurposeCode(String purposeCode) {
-        this.purposeCode = purposeCode;
     }
 
     @JsonProperty("FAReportType")

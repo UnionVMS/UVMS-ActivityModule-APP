@@ -24,7 +24,6 @@ import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -55,38 +54,32 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return em;
     }
 
-    public List<FaReportDocumentEntity> getHistoryOfFaReport(FaReportDocumentEntity faReportEntity, List<FaReportDocumentEntity> reportsList) {
-        if(faReportEntity == null){
-            return null;
-        }
-        reportsList.add(faReportEntity);
+    public List<FaReportDocumentEntity> getHistoryOfFaReport(FaReportDocumentEntity faReportEntity) {
+        Set<FaReportDocumentEntity> result = new HashSet<>();
+        populateHistoryOfFaReport(faReportEntity, result);
+
+        return new ArrayList<>(result);
+    }
+
+    private void populateHistoryOfFaReport(FaReportDocumentEntity faReportEntity, Set<FaReportDocumentEntity> history) {
+        history.add(faReportEntity);
 
         // Find reports that refer to this report
         FluxReportIdentifierEntity repId = faReportEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
         FaReportDocumentEntity reportThatRefersToThisOne = findFaReportByRefIdAndRefScheme(repId.getFluxReportIdentifierId(), repId.getFluxReportIdentifierSchemeId());
-        if(reportThatRefersToThisOne != null && !alreadyExistsInList(reportsList, reportThatRefersToThisOne)){
-            getHistoryOfFaReport(reportThatRefersToThisOne, reportsList);
+        if (reportThatRefersToThisOne != null && !history.contains(reportThatRefersToThisOne)) {
+            populateHistoryOfFaReport(reportThatRefersToThisOne, history);
         }
 
         // Find reports that this report refers to
         String repRefId = faReportEntity.getFluxReportDocument().getReferenceId();
         String repRefSchemeId = faReportEntity.getFluxReportDocument().getReferenceSchemeId();
-        if(StringUtils.isNotEmpty(repRefId) && StringUtils.isNotEmpty(repRefSchemeId)){
+        if (StringUtils.isNotEmpty(repRefId) && StringUtils.isNotEmpty(repRefSchemeId)) {
             FaReportDocumentEntity referredReport = findFaReportByIdAndScheme(repRefId, repRefSchemeId);
-            if(referredReport != null && !alreadyExistsInList(reportsList, referredReport)){
-                getHistoryOfFaReport(referredReport, reportsList);
+            if (referredReport != null && !history.contains(referredReport)) {
+                populateHistoryOfFaReport(referredReport, history);
             }
         }
-        return reportsList;
-    }
-
-    private boolean alreadyExistsInList(List<FaReportDocumentEntity> reportsList, FaReportDocumentEntity reportThatRefersToThisOne) {
-        for (FaReportDocumentEntity faReportDocumentEntity : reportsList) {
-            if(faReportDocumentEntity.equals(reportThatRefersToThisOne)){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

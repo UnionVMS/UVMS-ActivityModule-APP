@@ -80,7 +80,7 @@ public class ActivityServiceBeanTest {
             add(faReportDocumentEntity);
         }};
         Mockito.doReturn(faReportDocumentEntity).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
-        Mockito.doReturn(faRepsArraResp).when(faReportDocumentDao).getHistoryOfFaReport(Mockito.any(FaReportDocumentEntity.class), anyListOf(FaReportDocumentEntity.class));
+        Mockito.doReturn(faRepsArraResp).when(faReportDocumentDao).getHistoryOfFaReport(Mockito.any(FaReportDocumentEntity.class));
 
         //Trigger
         List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportHistory("TEST ID", "SCHEME ID");
