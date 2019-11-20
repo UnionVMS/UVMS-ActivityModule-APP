@@ -57,7 +57,8 @@ public class FaReportSaverBean {
             } else {
                 log.error("After checking faReportDocuments IDs, all of them exist already in Activity DB. So nothing will be saved!!");
             }
-        } catch (Exception e){
+        } catch (Exception e) {
+            log.error("Failed to save FLUXFAReportMessage", e);
             exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
         }
     }
