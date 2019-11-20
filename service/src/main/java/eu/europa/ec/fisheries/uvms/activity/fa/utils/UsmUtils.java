@@ -14,29 +14,27 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsmUtils {
 
-    public static List<AreaIdentifierType> convertDataSetToAreaId(List<Dataset> datasets) throws ServiceException {
+    private UsmUtils() {}
+
+    public static List<AreaIdentifierType> convertDataSetToAreaId(List<Dataset> datasets) {
         List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
         for (Dataset dataset : datasets) {
             int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
 
             if (lastIndexDelimiter > -1 )  {
                 AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
-                AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0,lastIndexDelimiter));
+                AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0, lastIndexDelimiter));
                 String areaId = dataset.getDiscriminator().substring(lastIndexDelimiter + 1);
 
                 if (areaType!= null && StringUtils.isNotBlank(areaId)) {

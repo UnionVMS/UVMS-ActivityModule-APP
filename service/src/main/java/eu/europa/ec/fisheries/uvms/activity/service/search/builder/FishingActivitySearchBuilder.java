@@ -44,24 +44,24 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
      */
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
-        LOG.debug("Start building SQL depending upon Filter Criterias");
+        LOG.debug("Start building SQL depending upon Filter criteria");
         StringBuilder sql = new StringBuilder();
         sql.append(FISHING_ACTIVITY_JOIN); // Common Join for all filters
         // Create join part of SQL query
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         createSortPartForQuery(sql, query); // Add Order by clause for only requested Sort field
-        LOG.debug("sql :" + sql);
+        LOG.debug("SQL: {}: ", sql);
         return sql;
     }
 
     public StringBuilder createCountingSql(FishingActivityQuery query) throws ServiceException {
-        LOG.debug("Start building SQL depending upon Filter Criterias");
+        LOG.debug("Start building SQL depending upon Filter criteria");
         StringBuilder sql = new StringBuilder();
         sql.append(FISHING_ACTIVITY_COUNT_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.debug("sql :" + sql);
+        LOG.debug("SQL: {}", sql);
         return sql;
     }
 
