@@ -101,16 +101,16 @@ public class FishingActivityViewsResourceTest extends BaseActivityArquillianTest
         expectedTripWidgetDto = new TripWidgetDto();
 
         VesselDetailsDTO expectedVesselDetailsDto = new VesselDetailsDTO();
-        expectedVesselDetailsDto.setName("MADONNA DI POMPEI");
+        expectedVesselDetailsDto.setName("Test Ship 001");
         expectedVesselDetailsDto.setCountry("MLT");
         expectedContactPartyDetailsDto = new ContactPartyDetailsDTO();
         expectedContactPartyDetailsDto.setRole("MASTER");
-        expectedContactPartyDetailsDto.setContactPerson(new ContactPersonDetailsDTO(null, null, null, null, null, null, null, "Miguel Nunes"));
+        expectedContactPartyDetailsDto.setContactPerson(new ContactPersonDetailsDTO(null, null, null, null, null, null, null, "Contact Person 001 Alias"));
         expectedContactPartyDetailsDto.setStructuredAddresses(
                 Lists.newArrayList(
-                        new AddressDetailsDTO(null, null, null, null, null, null, null, null, null, null, null, null, "MARSAXLOKK (KAVALLERIZZA)")));
+                        new AddressDetailsDTO(null, null, null, null, null, null, null, null, null, null, null, null, "Contact Person 001 Street Name")));
         expectedVesselDetailsDto.setContactPartyDetailsDTOSet(Sets.newHashSet(expectedContactPartyDetailsDto));
-        AssetIdentifierDto expectedAssetIdentifierDto = new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.CFR, "SWE000004540");
+        AssetIdentifierDto expectedAssetIdentifierDto = new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.CFR, "SWEFAKE00001");
         expectedVesselDetailsDto.setVesselIdentifiers(Sets.newHashSet(expectedAssetIdentifierDto));
         expectedVesselDetailsDto.setFlapDocuments(new HashSet<>());
         expectedTripWidgetDto.setVesselDetails(expectedVesselDetailsDto);

@@ -134,7 +134,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         FishingActivityQuery query = new FishingActivityQuery();
 
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-        searchCriteriaMap.put(SearchFilter.VESSEL, "SWE000004540");
+        searchCriteriaMap.put(SearchFilter.VESSEL, "SWEFAKE00001");
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
