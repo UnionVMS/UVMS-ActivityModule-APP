@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import org.jboss.arquillian.junit.Arquillian;
@@ -21,6 +22,8 @@ import javax.ejb.EJB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
+
+import static org.junit.Assert.assertFalse;
 
 /**
  * Created by padhyad on 5/19/2016.
@@ -37,6 +40,7 @@ public class FluxMessageServiceIT extends BaseActivityArquillianTest {
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
+        FluxFaReportMessageEntity savedEntity = fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
+        assertFalse(savedEntity.getFaReportDocuments().isEmpty());
     }
 }
