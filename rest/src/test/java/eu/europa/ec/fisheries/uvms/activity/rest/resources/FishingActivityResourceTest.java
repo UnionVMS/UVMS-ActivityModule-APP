@@ -43,22 +43,30 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
     }
 
     @Test
-    public void getCommunicationChannels_OK() {
+    public void getCommunicationChannels_OK() throws JsonProcessingException {
         // Given
 
         // When
-        Response response = getWebTarget()
+        String responseAsString = getWebTarget()
                 .path("fa")
-                .path("commChannels")
+                .path("commChannel")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get();
+                .get(String.class);
 
         // Then
-        assertEquals(200, response.getStatus());
-        FaReportSourceEnum[] faReportSourceEnums = response.readEntity(FaReportSourceEnum[].class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+
+        ResponseDto<FaReportSourceEnum[]> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FaReportSourceEnum[]>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
         FaReportSourceEnum[] faReportSourceEnumsExpected = {FaReportSourceEnum.FLUX, FaReportSourceEnum.MANUAL};
-        assertArrayEquals(faReportSourceEnumsExpected, faReportSourceEnums);
+        assertArrayEquals(faReportSourceEnumsExpected, responseDto.getData());
     }
 
     @Test
