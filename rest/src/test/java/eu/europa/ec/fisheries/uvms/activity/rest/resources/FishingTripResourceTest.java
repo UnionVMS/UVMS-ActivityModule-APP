@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.ContactPartyDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
@@ -22,35 +24,32 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.SpeciesAreaD
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.SpeciesQuantityDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripWidgetDto;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class FishingTripResourceTest extends BaseActivityArquillianTest {
 
-    private String authToken;
-
     @Before
     public void setUp() throws NamingException {
-        InitialContext ctx = new InitialContext();
-        ctx.rebind("java:global/spatial_endpoint", "http://localhost:8080/activity-rest-test");
-        ctx.rebind("java:global/mdr_endpoint", "http://localhost:8080/activity-rest-test");
-
-        authToken = getToken();
+        super.setUp();
     }
 
     @Test
