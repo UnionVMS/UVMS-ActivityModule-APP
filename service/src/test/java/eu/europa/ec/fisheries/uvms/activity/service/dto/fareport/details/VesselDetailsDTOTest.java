@@ -10,72 +10,146 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import org.junit.Test;
 
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO.builder;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.ICCAT;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
-import static org.junit.Assert.assertTrue;
+import static eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO.builder;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
-public class VesselDetailsDTOTest extends BaseUnitilsTest {
+public class VesselDetailsDTOTest {
 
     @Test
-    public void testEnrichIdentifiers() throws Exception {
+    public void testEnrichIdentifiersAllFromAsset() {
 
-        Asset asset = new Asset();
-        asset.setCfr("cfrValueFromAsset");
+        // Given
+        AssetDTO assetDTO = new AssetDTO();
+        assetDTO.setCfr("cfrFromAsset");
+        assetDTO.setExternalMarking("extMarkingFromAsset");
+        assetDTO.setIrcs("ircsFromAsset");
+        assetDTO.setIccat("iccatFromAsset");
+        assetDTO.setUvi("uviFromAsset");
+
+        VesselDetailsDTO vesselDetailsDTO = builder().build();
+
+        // When
+        vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetDTO);
+
+        // Then
+        Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+        ImmutableMap<VesselIdentifierSchemeIdEnum, AssetIdentifierDto> vesselIdentifierMap = Maps.uniqueIndex(vesselIdentifiers, AssetIdentifierDto::getIdentifierSchemeId);
+        assertEquals("cfrFromAsset", vesselIdentifierMap.get(CFR).getFaIdentifierId());
+        assertEquals(true, vesselIdentifierMap.get(CFR).isFromAssets());
+
+        assertEquals("extMarkingFromAsset", vesselIdentifierMap.get(EXT_MARK).getFaIdentifierId());
+        assertEquals(true, vesselIdentifierMap.get(EXT_MARK).isFromAssets());
+
+        assertEquals("ircsFromAsset", vesselIdentifierMap.get(IRCS).getFaIdentifierId());
+        assertEquals(true, vesselIdentifierMap.get(IRCS).isFromAssets());
+
+        assertEquals("iccatFromAsset", vesselIdentifierMap.get(ICCAT).getFaIdentifierId());
+        assertEquals(true, vesselIdentifierMap.get(ICCAT).isFromAssets());
+
+        assertEquals("uviFromAsset", vesselIdentifierMap.get(UVI).getFaIdentifierId());
+        assertEquals(true, vesselIdentifierMap.get(UVI).isFromAssets());
+    }
+
+    @Test
+    public void testEnrichIdentifiersNoneFromAsset() {
+
+        // Given
+        AssetDTO assetDTO = new AssetDTO();
+        assetDTO.setCfr("cfrFromAsset");
+        assetDTO.setExternalMarking("extMarkingFromAsset");
+        assetDTO.setIrcs("ircsFromAsset");
+        assetDTO.setIccat("iccatFromAsset");
+        assetDTO.setUvi("uviFromAsset");
 
         AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
+        cfr.setFaIdentifierId("cfrFromVessel");
 
         AssetIdentifierDto ext = new AssetIdentifierDto(EXT_MARK);
-        ext.setFaIdentifierId("extMarkingFromActivity");
+        ext.setFaIdentifierId("extMarkingFromVessel");
 
         AssetIdentifierDto ircs = new AssetIdentifierDto(IRCS);
-        ircs.setFaIdentifierId("ircsFromActivity");
+        ircs.setFaIdentifierId("ircsFromVessel");
 
         AssetIdentifierDto iccat = new AssetIdentifierDto(ICCAT);
-        iccat.setFaIdentifierId("iccat");
+        iccat.setFaIdentifierId("iccatFromVessel");
 
         AssetIdentifierDto uvi = new AssetIdentifierDto(UVI);
+        uvi.setFaIdentifierId("uviFromVessel");
 
-        Set<AssetIdentifierDto> identifiers = newSet(ircs, cfr, iccat, uvi, ext);
+        Set<AssetIdentifierDto> identifiers = newSet(cfr, ext, ircs, iccat, uvi);
+        VesselDetailsDTO vesselDetailsDTO = builder().vesselIdentifiers(identifiers).build();
 
-        VesselDetailsDTO dto = builder().vesselIdentifiers(identifiers).build();
+        // When
+        vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetDTO);
 
-        dto.enrichIdentifiers(asset);
+        // Then
+        Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+        ImmutableMap<VesselIdentifierSchemeIdEnum, AssetIdentifierDto> vesselIdentifierMap = Maps.uniqueIndex(vesselIdentifiers, AssetIdentifierDto::getIdentifierSchemeId);
+        assertEquals("cfrFromVessel", vesselIdentifierMap.get(CFR).getFaIdentifierId());
+        assertEquals(false, vesselIdentifierMap.get(CFR).isFromAssets());
 
-        Set<AssetIdentifierDto> vesselIdentifiers = dto.getVesselIdentifiers();
+        assertEquals("extMarkingFromVessel", vesselIdentifierMap.get(EXT_MARK).getFaIdentifierId());
+        assertEquals(false, vesselIdentifierMap.get(EXT_MARK).isFromAssets());
 
-        ImmutableMap<VesselIdentifierSchemeIdEnum, AssetIdentifierDto> map = Maps.uniqueIndex(vesselIdentifiers,
-                new Function<AssetIdentifierDto, VesselIdentifierSchemeIdEnum>() {
-                    public VesselIdentifierSchemeIdEnum apply(AssetIdentifierDto from) {
-                        return from.getIdentifierSchemeId();
-                    }
-                });
+        assertEquals("ircsFromVessel", vesselIdentifierMap.get(IRCS).getFaIdentifierId());
+        assertEquals(false, vesselIdentifierMap.get(IRCS).isFromAssets());
 
-        AssetIdentifierDto cfr_ = map.get(CFR);
-        AssetIdentifierDto ext_ = map.get(EXT_MARK);
-        AssetIdentifierDto ircs_ = map.get(IRCS);
-        AssetIdentifierDto uvi_ = map.get(UVI);
-        AssetIdentifierDto iccat_ = map.get(ICCAT);
+        assertEquals("iccatFromVessel", vesselIdentifierMap.get(ICCAT).getFaIdentifierId());
+        assertEquals(false, vesselIdentifierMap.get(ICCAT).isFromAssets());
 
-        assertTrue(uvi.equals(uvi_));
-        assertTrue(ircs.equals(ircs_));
-        assertTrue(iccat.equals(iccat_));
+        assertEquals("uviFromVessel", vesselIdentifierMap.get(UVI).getFaIdentifierId());
+        assertEquals(false, vesselIdentifierMap.get(UVI).isFromAssets());
+    }
 
+    @Test
+    public void testEnrichIdentifiersMix() {
+
+        // Given
+        AssetDTO assetDTO = new AssetDTO();
+        assetDTO.setCfr("cfrFromAsset");
+        assetDTO.setExternalMarking("extMarkingFromAsset");
+
+        AssetIdentifierDto ext = new AssetIdentifierDto(EXT_MARK);
+        ext.setFaIdentifierId("extMarkingFromVessel");
+
+        AssetIdentifierDto ircs = new AssetIdentifierDto(IRCS);
+        ircs.setFaIdentifierId("ircsFromVessel");
+
+        Set<AssetIdentifierDto> identifiers = newSet(ext, ircs);
+        VesselDetailsDTO vesselDetailsDTO = builder().vesselIdentifiers(identifiers).build();
+
+        // When
+        vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetDTO);
+
+        // Then
+        Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+        ImmutableMap<VesselIdentifierSchemeIdEnum, AssetIdentifierDto> vesselIdentifierMap = Maps.uniqueIndex(vesselIdentifiers, AssetIdentifierDto::getIdentifierSchemeId);
+        assertEquals("cfrFromAsset", vesselIdentifierMap.get(CFR).getFaIdentifierId());
+        assertEquals(true, vesselIdentifierMap.get(CFR).isFromAssets());
+
+        assertEquals("extMarkingFromVessel", vesselIdentifierMap.get(EXT_MARK).getFaIdentifierId());
+        assertEquals(false, vesselIdentifierMap.get(EXT_MARK).isFromAssets());
+
+        assertEquals("ircsFromVessel", vesselIdentifierMap.get(IRCS).getFaIdentifierId());
+        assertEquals(false, vesselIdentifierMap.get(IRCS).isFromAssets());
+
+        assertEquals(null, vesselIdentifierMap.get(ICCAT));
+
+        assertEquals(null, vesselIdentifierMap.get(UVI));
     }
 }

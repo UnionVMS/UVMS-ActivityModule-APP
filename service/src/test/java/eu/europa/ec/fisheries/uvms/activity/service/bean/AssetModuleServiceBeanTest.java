@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,7 +59,7 @@ public class AssetModuleServiceBeanTest {
         List<AssetDTO> assetList = new ArrayList<>();
         assetList.add(assetDTO);
 
-        when(assetClient.getAssetList(any(AssetQuery.class))).thenReturn(assetList);
+        when(assetClient.getAssetList(any(AssetQuery.class), eq(false))).thenReturn(assetList);
 
         // When
         List<String> assetGuids = assetModuleServiceBean.getAssetGuids(vesselIdentifiers);
