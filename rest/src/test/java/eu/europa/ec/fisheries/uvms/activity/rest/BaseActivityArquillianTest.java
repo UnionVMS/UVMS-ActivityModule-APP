@@ -44,7 +44,8 @@ public abstract class BaseActivityArquillianTest {
         WebArchive testWar = ShrinkWrap.create(WebArchive.class, ACTIVITY_REST_TEST + ".war");
 
         File[] dependencyFiles = Maven
-                .resolver()
+                .configureResolver()
+                .workOffline()
                 .loadPomFromFile("pom.xml")
                 .importRuntimeDependencies()
                 .resolve()
@@ -52,7 +53,9 @@ public abstract class BaseActivityArquillianTest {
                 .asFile();
         testWar.addAsLibraries(dependencyFiles);
 
-        testWar.addAsLibraries(Maven.configureResolver().loadPomFromFile("pom.xml")
+        testWar.addAsLibraries(Maven.configureResolver()
+                .workOffline()
+                .loadPomFromFile("pom.xml")
                 .resolve("eu.europa.ec.fisheries.uvms.activity:service")
                 .withTransitivity().asFile());
 
