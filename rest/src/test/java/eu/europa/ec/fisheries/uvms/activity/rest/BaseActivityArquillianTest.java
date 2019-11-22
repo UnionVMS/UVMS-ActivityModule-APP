@@ -80,13 +80,12 @@ public abstract class BaseActivityArquillianTest {
         return client.target("http://localhost:8080/" + ACTIVITY_REST_TEST + "/rest");
     }
 
-    protected String getToken(UnionVMSFeature... features) {
+    private String getToken(UnionVMSFeature... features) {
         List<Integer> featureIds = Stream.of(features)
                 .map(UnionVMSFeature::getFeatureId)
                 .collect(Collectors.toList());
 
-        final String token = tokenHandler.createToken("user", featureIds);
-        return token;
+        return tokenHandler.createToken("user", featureIds);
     }
 
     protected void setUp() throws NamingException {
