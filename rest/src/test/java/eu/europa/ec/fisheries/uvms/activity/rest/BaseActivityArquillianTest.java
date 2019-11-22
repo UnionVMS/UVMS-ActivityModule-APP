@@ -20,6 +20,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -30,13 +32,16 @@ import java.util.stream.Stream;
 
 @ArquillianSuiteDeployment
 public abstract class BaseActivityArquillianTest {
+    private static final String ACTIVITY_REST_TEST = "activity-rest-test";
 
     @EJB
     private JwtTokenHandler tokenHandler;
 
-    @Deployment(name = "activity-rest-test")
+    protected String authToken;
+
+    @Deployment(name = ACTIVITY_REST_TEST)
     public static WebArchive createDeployment() {
-        WebArchive testWar = ShrinkWrap.create(WebArchive.class, "activity-rest-test.war");
+        WebArchive testWar = ShrinkWrap.create(WebArchive.class, ACTIVITY_REST_TEST + ".war");
 
         File[] dependencyFiles = Maven
                 .resolver()
@@ -69,14 +74,24 @@ public abstract class BaseActivityArquillianTest {
         Client client = ClientBuilder.newClient();
         client.register(objectMapper);
 
-        return client.target("http://localhost:8080/activity-rest-test/rest");
+        return client.target("http://localhost:8080/" + ACTIVITY_REST_TEST + "/rest");
     }
 
-    protected String getToken(UnionVMSFeature ... features) {
+    protected String getToken(UnionVMSFeature... features) {
         List<Integer> featureIds = Stream.of(features)
                 .map(UnionVMSFeature::getFeatureId)
                 .collect(Collectors.toList());
 
-        return tokenHandler.createToken("user", featureIds);
+        final String token = tokenHandler.createToken("user", featureIds);
+        return token;
+    }
+
+    protected void setUp() throws NamingException {
+        InitialContext ctx = new InitialContext();
+        ctx.rebind("java:global/spatial_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST);
+        ctx.rebind("java:global/mdr_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/mdrmock");
+        ctx.rebind("java:global/asset_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/assetmock");
+
+        authToken = getToken();
     }
 }
