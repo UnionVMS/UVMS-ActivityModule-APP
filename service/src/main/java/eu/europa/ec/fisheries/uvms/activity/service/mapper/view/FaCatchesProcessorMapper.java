@@ -361,7 +361,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             if (!aapStocsAreEqual(thisCatch.getAapStocks(), thatCatch.getAapStocks()))
                 return false;
 
-            return fishingTripsAreEquals(thisCatch.getFishingTrips(), thatCatch.getFishingTrips());
+            return thisCatch.getFishingTrip().equals(thatCatch.getFishingTrip());
         }
 
         private static boolean sizeDestributionsAreEqual(SizeDistributionEntity sizeThis, SizeDistributionEntity sizeThat) {
@@ -382,24 +382,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
                 return false;
 
             return StringUtils.equals(aapStockThis.getStockId(), aapStockThat.getStockId());
-        }
-
-        private static boolean fishingTripsAreEquals(Set<FishingTripEntity> aapList_1, Set<FishingTripEntity> aapList_2) {
-            FishingTripEntity aapStockThis = CollectionUtils.isNotEmpty(aapList_1) ? aapList_1.iterator().next() : null;
-            FishingTripEntity aapStockThat = CollectionUtils.isNotEmpty(aapList_2) ? aapList_2.iterator().next() : null;
-            if (aapStockThis == aapStockThat)
-                return true;
-            if (aapStockThis == null || aapStockThat == null)
-                return false;
-            FishingTripIdentifierEntity identifierThis = aapStockThis.getFishingTripIdentifier();
-            FishingTripIdentifierEntity identifierThat = aapStockThis.getFishingTripIdentifier();
-            // TODO: WTAF
-            if (identifierThis == null || identifierThat == null)
-                return false;
-            if (identifierThis.equals(identifierThat))
-                return true;
-
-            return StringUtils.equals(identifierThis.getTripId(), identifierThat.getTripId());
         }
 
     }

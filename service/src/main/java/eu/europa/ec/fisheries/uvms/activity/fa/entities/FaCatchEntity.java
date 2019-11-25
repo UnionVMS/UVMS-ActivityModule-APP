@@ -162,8 +162,9 @@ public class FaCatchEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapStockEntity> aapStocks = new HashSet<>();
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<FishingTripEntity> fishingTrips = new HashSet<>();
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fishing_trip_id")
+	private FishingTripEntity fishingTrip;
 
 	@PrePersist
 	public void prePersist(){

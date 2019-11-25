@@ -112,8 +112,7 @@ public class BaseMapper {
         Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
         for (FishingTrip fishingTrip : fishingTrips) {
             FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
-
-            fishingTripEntity.setFaCatch(faCatchEntity);
+            fishingTripEntity.getCatchEntities().add(faCatchEntity);
             fishingTripEntities.add(fishingTripEntity);
         }
         return fishingTripEntities;

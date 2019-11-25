@@ -35,9 +35,8 @@ public class FishingTripEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-	@ManyToOne
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
+    @OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FaCatchEntity> catchEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FishingActivityEntity> fishingActivities = new HashSet<>();

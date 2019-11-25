@@ -11,5 +11,12 @@
             <column name="fishing_trip_id" type="int" />
         </addColumn>
     </changeSet>
+
+    <changeSet author="anwall" id="move_trip_to_catch">
+        <dropColumn tableName="activity_fishing_trip" columnName="fa_catch_id" />
+        <addColumn tableName="activity_fa_catch">
+            <column name="fishing_trip_id" type="int" />
+        </addColumn>
+    </changeSet>
     
 </databaseChangeLog>
