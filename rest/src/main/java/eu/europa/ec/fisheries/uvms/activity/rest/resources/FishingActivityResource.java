@@ -61,7 +61,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/commChannel")
     public Response getCommunicationChannels() throws ServiceException {
-        log.info("getCommunicationChannels");
+        log.debug("getCommunicationChannels");
         return createSuccessResponse(FaReportSourceEnum.values());
     }
 

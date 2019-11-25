@@ -286,47 +286,49 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         final String filter = "*";
         final List<String> columnsList = new ArrayList<String>();
         Integer nrOfResults = 1000;
-        if (vesselDetailsDTO != null) {
-            List<String> codeList;
-            try {
-                codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "code").get("code");
-                Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
-                if (vesselIdentifiers != null && codeList != null) {
-                    AssetQuery assetQuery = new AssetQuery();
-                    for (AssetIdentifierDto assetIdentifierDto : vesselIdentifiers) {
-                        if (codeList.contains(assetIdentifierDto.getIdentifierSchemeId().name())) {
-                            final List<String> idValueAsList = Arrays.asList(assetIdentifierDto.getFaIdentifierId());
-                            switch (assetIdentifierDto.getIdentifierSchemeId()) {
-                                case CFR:
-                                    assetQuery.setCfr(idValueAsList);
-                                    break;
-                                case EXT_MARK:
-                                    assetQuery.setExternalMarking(idValueAsList);
-                                    break;
-                                case GFCM:
-                                    assetQuery.setGfcm(idValueAsList);
-                                    break;
-                                case ICCAT:
-                                    assetQuery.setIccat(idValueAsList);
-                                    break;
-                                case IRCS:
-                                    assetQuery.setIrcs(idValueAsList);
-                                    break;
-                                case UVI:
-                                    assetQuery.setUvi(idValueAsList);
-                                    break;
-                                default:
-                            }
-                        }
-                    }
-                    List<AssetDTO> assetList = assetModuleService.getAssets(assetQuery);
-                    if (!CollectionUtils.isEmpty(assetList)) {
-                        vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetList.get(0));
+        if (vesselDetailsDTO == null) {
+            return;
+        }
+        List<String> codeList;
+        try {
+            codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "code").get("code");
+            Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+            if (vesselIdentifiers == null || codeList == null) {
+                return;
+            }
+            AssetQuery assetQuery = new AssetQuery();
+            for (AssetIdentifierDto assetIdentifierDto : vesselIdentifiers) {
+                if (codeList.contains(assetIdentifierDto.getIdentifierSchemeId().name())) {
+                    final List<String> idValueAsList = Arrays.asList(assetIdentifierDto.getFaIdentifierId());
+                    switch (assetIdentifierDto.getIdentifierSchemeId()) {
+                        case CFR:
+                            assetQuery.setCfr(idValueAsList);
+                            break;
+                        case EXT_MARK:
+                            assetQuery.setExternalMarking(idValueAsList);
+                            break;
+                        case GFCM:
+                            assetQuery.setGfcm(idValueAsList);
+                            break;
+                        case ICCAT:
+                            assetQuery.setIccat(idValueAsList);
+                            break;
+                        case IRCS:
+                            assetQuery.setIrcs(idValueAsList);
+                            break;
+                        case UVI:
+                            assetQuery.setUvi(idValueAsList);
+                            break;
+                        default:
                     }
                 }
-            } catch (ServiceException e) {
-                log.error("Error while trying to send message to Assets module.", e);
             }
+            List<AssetDTO> assetList = assetModuleService.getAssets(assetQuery);
+            if (!CollectionUtils.isEmpty(assetList)) {
+                vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetList.get(0));
+            }
+        } catch (ServiceException e) {
+            log.error("Error while trying to send message to Assets module.", e);
         }
     }
 
@@ -750,8 +752,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                         }
                     }
                 }
-                // VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
-                // tripWidgetDto.setVesselDetails(detailsDTO);
                 log.debug("tripWidgetDto set for tripID :" + tripId);
             } else {
                 log.debug("TripId is not received for the screen. Try to get TripSummary information for all the tripIds specified for FishingActivity:" + activityEntity.getId());

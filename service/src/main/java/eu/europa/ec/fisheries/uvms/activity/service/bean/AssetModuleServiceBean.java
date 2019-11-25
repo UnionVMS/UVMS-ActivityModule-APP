@@ -34,7 +34,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -67,8 +67,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     @Override
     public List<AssetDTO> getAssets(AssetQuery assetQuery) throws ServiceException {
         final boolean dynamic = false;
-        List<AssetDTO> assetList = assetClient.getAssetList(assetQuery, dynamic);
-        return assetList;
+        return assetClient.getAssetList(assetQuery, dynamic);
     }
 
     /**
@@ -76,16 +75,12 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
      */
     @Override
     public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) {
-        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new HashMap<>();
+        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new EnumMap(VesselTypeAssetQueryEnum.class);
 
         for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
             VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(vesselIdentifier.getVesselIdentifierSchemeId());
             if (queryEnum != null && queryEnum.getConfigSearchField() != null && StringUtils.isNotEmpty(vesselIdentifier.getVesselIdentifierId())) {
-                List<String> queryEnumValues = identifierTypeToValuesMap.get(queryEnum);
-                if (queryEnumValues == null) {
-                    queryEnumValues = new ArrayList<>();
-                    identifierTypeToValuesMap.put(queryEnum, queryEnumValues);
-                }
+                List<String> queryEnumValues = identifierTypeToValuesMap.computeIfAbsent(queryEnum, key -> new ArrayList<>());
                 queryEnumValues.add(vesselIdentifier.getVesselIdentifierId());
             }
         }
@@ -93,8 +88,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         AssetQuery assetQuery = deriveAssetQuery(identifierTypeToValuesMap);
         final boolean dynamic = false;
         List<AssetDTO> assetList = assetClient.getAssetList(assetQuery, dynamic);
-        final List<String> guids = extractGuidsFromAssets(assetList);
-        return guids;
+        return extractGuidsFromAssets(assetList);
     }
 
     @NotNull
@@ -166,7 +160,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     }
 
     private Map<VesselTypeAssetQueryEnum, List<String>> createMultipleIdTypesQueryMap(String vesselIdentifierValueToSearchFor) {
-        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new HashMap<>();
+        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new EnumMap(VesselTypeAssetQueryEnum.class);
         for (VesselTypeAssetQueryEnum queryEnum : VesselTypeAssetQueryEnum.values()) {
             if (queryEnum.getConfigSearchField() != null) {
                 identifierTypeToValuesMap.put(queryEnum, Arrays.asList(vesselIdentifierValueToSearchFor));
