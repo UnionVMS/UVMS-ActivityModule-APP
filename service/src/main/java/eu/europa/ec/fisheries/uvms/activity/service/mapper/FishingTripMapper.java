@@ -33,17 +33,18 @@ public interface FishingTripMapper {
             @Mapping(target = "typeCode", source = "typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "delimitedPeriods", ignore = true),
-            @Mapping(target = "fishingTripIdentifiers", ignore = true),
+            @Mapping(target = "fishingTripIdentifier", ignore = true),
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "faCatch", ignore = true),
-            @Mapping(target = "fishingActivity", ignore = true),
+            @Mapping(target = "fishingActivities", ignore = true),
     })
     FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
 
     @InheritInverseConfiguration
     @Mappings({
             @Mapping(source = "delimitedPeriods", target = "specifiedDelimitedPeriods"),
-            @Mapping(source = "fishingTripIdentifiers", target = "IDS"),
+            //TODO: Fix this!?
+            @Mapping(target = "IDS", ignore = true),
     })
     FishingTrip mapToFishingTrip(FishingTripEntity fishingTrip);
 

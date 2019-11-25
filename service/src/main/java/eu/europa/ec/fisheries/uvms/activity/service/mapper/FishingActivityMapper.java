@@ -106,7 +106,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "fishingActivityIdentifiers", expression = "java(mapToFishingActivityIdentifierEntities(fishingActivity.getIDS(), fishingActivityEntity))"),
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
-            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(fishingActivity.getSpecifiedFishingTrip(), fishingActivityEntity))"),
+            @Mapping(target = "fishingTrip", expression = "java(BaseMapper.mapToFishingTripEntity(fishingActivity.getSpecifiedFishingTrip()))"),
             @Mapping(target = "fishingGears", ignore = true),
             @Mapping(target = "fluxCharacteristics", ignore = true),
             @Mapping(target = "gearProblems", expression = "java(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), fishingActivityEntity))"),
@@ -667,14 +667,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected String getFishingTripId(FishingActivityEntity fishingActivityEntity) {
-        if (fishingActivityEntity == null || CollectionUtils.isEmpty(fishingActivityEntity.getFishingTrips())) {
+        if (fishingActivityEntity == null) {
             return null;
         }
-        Set<FishingTripEntity> fishingTripEntities = fishingActivityEntity.getFishingTrips();
-        FishingTripEntity fishingTripEntity = fishingTripEntities.iterator().next();
-        if (CollectionUtils.isEmpty(fishingTripEntity.getFishingTripIdentifiers()))
+        if(fishingActivityEntity.getFishingTrip().getFishingTripIdentifier() == null) {
             return null;
-        return fishingTripEntity.getFishingTripIdentifiers().iterator().next().getTripId();
+        }
+
+        return fishingActivityEntity.getFishingTrip().getFishingTripIdentifier().getTripId();
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {

@@ -16,17 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,8 +24,8 @@ import java.util.Set;
 @Entity
 @Table(name = "activity_fishing_trip")
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
-@ToString(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
+@EqualsAndHashCode(exclude = {"delimitedPeriods"})
+@ToString(exclude = {"delimitedPeriods"})
 @Data
 public class FishingTripEntity implements Serializable {
 
@@ -49,9 +39,8 @@ public class FishingTripEntity implements Serializable {
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 
-	@ManyToOne
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
+    @OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FishingActivityEntity> fishingActivities = new HashSet<>();
 
 	@Column(name = "type_code")
 	private String typeCode;
@@ -62,13 +51,9 @@ public class FishingTripEntity implements Serializable {
 	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
 
-	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<>();
-
-    public void addFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
-        fishingTripIdentifiers.add(identifierEntity);
-        identifierEntity.setFishingTrip(this);
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fishing_trip_id", referencedColumnName = "id")
+	private FishingTripIdentifierEntity fishingTripIdentifier;
 
     public void addDelimitedPeriods(DelimitedPeriodEntity periodEntity) {
         delimitedPeriods.add(periodEntity);
@@ -78,10 +63,5 @@ public class FishingTripEntity implements Serializable {
     public void removeDelimitedPeriods(DelimitedPeriodEntity area) {
         delimitedPeriods.remove(area);
         area.setFishingTrip(null);
-    }
-
-    public void removeFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
-        fishingTripIdentifiers.remove(identifierEntity);
-        identifierEntity.setFishingTrip(null);
     }
 }

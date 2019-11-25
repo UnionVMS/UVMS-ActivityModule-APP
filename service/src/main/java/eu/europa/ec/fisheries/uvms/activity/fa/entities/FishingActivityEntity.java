@@ -62,8 +62,8 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
-						"JOIN FETCH a.fishingTrips ft " +
-						"JOIN FETCH ft.fishingTripIdentifiers fi " +
+						"JOIN FETCH a.fishingTrip ft " +
+						"JOIN FETCH ft.fishingTripIdentifier fi " +
 						"where (intersects(fa.geom, :area) = true " +
 						"and fi.tripId =:fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime"),
@@ -71,21 +71,22 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
-						"JOIN FETCH a.fishingTrips ft " +
-						"JOIN FETCH ft.fishingTripIdentifiers fi " +
+						"JOIN FETCH a.fishingTrip ft " +
+						"JOIN FETCH ft.fishingTripIdentifier fi " +
 						"where fi.tripId =:fishingTripId " +
 						"order by a.typeCode,fa.acceptedDatetime"),
 		@NamedQuery(name = FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP,
 				query = "SELECT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
-						"JOIN FETCH a.fishingTrips ft " +
-						"JOIN FETCH ft.fishingTripIdentifiers fi " +
+						"JOIN FETCH a.fishingTrip ft " +
+						"JOIN FETCH ft.fishingTripIdentifier fi " +
 						"where fi.tripId = :fishingTripId and " +
 						"fi.tripSchemeId = :tripSchemeId and " +
 						"a.typeCode = :fishActTypeCode and " +
 						"flux.purposeCode in (:flPurposeCodes)")
 })
+
 @Entity
 @Table(name = "activity_fishing_activity")
 @AllArgsConstructor
@@ -207,8 +208,9 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FishingTripEntity> fishingTrips;
+	@ManyToOne
+	@JoinColumn(name = "fishing_trip_id")
+	private FishingTripEntity fishingTrip;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingGearEntity> fishingGears;

@@ -187,26 +187,20 @@ public class ActivityServiceBeanTest {
         Set<FishingActivityIdentifierEntity> fishIdentList = new HashSet<>();
         fishIdentList.add(ident);
 
-        Set<FishingTripEntity> fishTrips = new HashSet<>();
         FishingTripEntity fishTrip = new FishingTripEntity();
 
-        Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<>();
         FishingTripIdentifierEntity tripident = new FishingTripIdentifierEntity();
         tripident.setTripId("tripId");
         tripident.setTripSchemeId("tripSchemeId");
-        fishingTripIdentifiers.add(tripident);
-
-        fishTrips.add(fishTrip);
+        fishTrip.setFishingTripIdentifier(tripident);
 
         fishTrip.setTypeCode("someTripCode");
-        fishTrip.setFishingActivity(fishAct);
-        fishTrip.setFishingTripIdentifiers(fishingTripIdentifiers);
+        fishTrip.getFishingActivities().add(fishAct);
 
         fishAct.setFishingActivityIdentifiers(fishIdentList);
 
         fishAct.setTypeCode("faTypeCode");
-
-        fishAct.setFishingTrips(fishTrips);
+        fishAct.setFishingTrip(fishTrip);
 
         return new ArrayList<FishingActivityEntity>(){{add(fishAct);}};
     }

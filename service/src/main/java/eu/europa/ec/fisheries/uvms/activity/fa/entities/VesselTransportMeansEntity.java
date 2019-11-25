@@ -43,7 +43,7 @@ import java.util.Set;
         @NamedQuery(name = VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
                 query = "SELECT vt FROM FishingTripIdentifierEntity fti " +
                         "INNER JOIN fti.fishingTrip ft " +
-                        "INNER JOIN ft.fishingActivity fa " +
+                        "INNER JOIN ft.fishingActivities fa " +
                         "INNER JOIN fa.faReportDocument frd " +
                         "INNER JOIN frd.vesselTransportMeans vt " +
                         "INNER JOIN vt.vesselIdentifiers vi " +

@@ -301,8 +301,8 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         groupDetailsDto.setSize(actualEntity.getSizeDistribution() != null ? actualEntity.getSizeDistribution().getCategoryCode() : null);
         groupDetailsDto.setWeightingMeans(actualEntity.getWeighingMeansCode());
         groupDetailsDto.setUsage(actualEntity.getUsageCode());
-        Set<FishingTripIdentifierEntity> fishingTripIdentifierEntities = CollectionUtils.isNotEmpty(actualEntity.getFishingTrips()) ? actualEntity.getFishingTrips().iterator().next().getFishingTripIdentifiers() : null;
-        groupDetailsDto.setTripId(CollectionUtils.isNotEmpty(fishingTripIdentifierEntities) ? fishingTripIdentifierEntities.iterator().next().getTripId() : null);
+        //TODO: WTAF, If there are multiple fishing trips then it we cannot extract a single tripId?
+        groupDetailsDto.setTripId(null);
         groupDetailsDto.setDetailsAreSet(true);
     }
 
@@ -391,12 +391,13 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
                 return true;
             if (aapStockThis == null || aapStockThat == null)
                 return false;
-            FishingTripIdentifierEntity identifierThis = CollectionUtils.isNotEmpty(aapStockThis.getFishingTripIdentifiers()) ? aapStockThis.getFishingTripIdentifiers().iterator().next() : null;
-            FishingTripIdentifierEntity identifierThat = CollectionUtils.isNotEmpty(aapStockThis.getFishingTripIdentifiers()) ? aapStockThis.getFishingTripIdentifiers().iterator().next() : null;
-            if (identifierThis == identifierThat)
-                return true;
+            FishingTripIdentifierEntity identifierThis = aapStockThis.getFishingTripIdentifier();
+            FishingTripIdentifierEntity identifierThat = aapStockThis.getFishingTripIdentifier();
+            // TODO: WTAF
             if (identifierThis == null || identifierThat == null)
                 return false;
+            if (identifierThis.equals(identifierThat))
+                return true;
 
             return StringUtils.equals(identifierThis.getTripId(), identifierThat.getTripId());
         }

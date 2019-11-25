@@ -34,10 +34,10 @@ public class FishingTripMapperTest {
 
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
-        assertNull(fishingTripEntity.getFishingActivity());
+        assertNotNull(fishingTripEntity.getFishingActivities());
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
-        assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
+        assertNotNull(fishingTripEntity.getFishingTripIdentifier());
 
     }
 
@@ -51,7 +51,7 @@ public class FishingTripMapperTest {
         assertNull(fishingTripEntity.getFaCatch());
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
-        assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
+        assertNotNull(fishingTripEntity.getFishingTripIdentifier());
 
     }
 }

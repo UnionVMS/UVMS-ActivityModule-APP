@@ -233,15 +233,13 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     }
 
     private void addToIdsList(List<FaIdsListWithTripIdMap> responseList, FishingActivityEntity faEntity) {
-        Set<FishingTripIdentifierEntity> fishingTripIdentifiers = faEntity.getFishingTrips().iterator().next().getFishingTripIdentifiers();
+        FishingTripIdentifierEntity fishingTripIdentifier = faEntity.getFishingTrip().getFishingTripIdentifier();
         List<FishingActivityWithIdentifiers> faIdentifiers = mapToActivityIdsAndType(faEntity.getFishingActivityIdentifiers(), faEntity.getTypeCode());
-        for (FishingTripIdentifierEntity tripIdentifEntity : fishingTripIdentifiers) {
-            FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, tripIdentifEntity.getTripId());
-            if (null != existingActWithIdentifiers) {
-                existingActWithIdentifiers.getFaIdentifierLists().addAll(faIdentifiers);
-            } else {
-                responseList.add(new FaIdsListWithTripIdMap(tripIdentifEntity.getTripId(), tripIdentifEntity.getTripSchemeId(), faIdentifiers));
-            }
+        FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, fishingTripIdentifier.getTripId());
+        if (null != existingActWithIdentifiers) {
+            existingActWithIdentifiers.getFaIdentifierLists().addAll(faIdentifiers);
+        } else {
+            responseList.add(new FaIdsListWithTripIdMap(fishingTripIdentifier.getTripId(), fishingTripIdentifier.getTripSchemeId(), faIdentifiers));
         }
     }
 

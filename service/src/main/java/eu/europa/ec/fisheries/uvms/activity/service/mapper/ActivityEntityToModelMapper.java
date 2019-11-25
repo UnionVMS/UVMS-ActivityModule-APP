@@ -189,10 +189,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
         target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
 
-        List<FishingTrip> fishingTrips = FishingTripMapper.INSTANCE.mapToFishingTripList(source.getFishingTrips());
-        if (CollectionUtils.isNotEmpty(fishingTrips)) {
-            target.setSpecifiedFishingTrip(fishingTrips.get(0));
-        }
+        target.setSpecifiedFishingTrip(FishingTripMapper.INSTANCE.mapToFishingTrip(source.getFishingTrip()));
 
         target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
 

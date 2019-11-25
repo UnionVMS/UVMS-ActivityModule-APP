@@ -174,16 +174,13 @@ public class MapperUtil {
 
         entity= ActivityDataUtil.getFishingTripEntity("JFO", "EU_TRIP_ID",faCatchEntity,fishingActivityEntity1);
 
-        Set<FishingTripIdentifierEntity> fishingTripIdentifiers =new HashSet<>();
-        fishingTripIdentifiers.add(ActivityDataUtil.getFishingTripIdentifierEntity(entity, "NOR-TRP-20160517234053706", "EU_TRIP_ID"));
-        fishingTripIdentifiers.add(ActivityDataUtil.getFishingTripIdentifierEntity(entity, "NOR-TRP-20160517234053706", "EU_TRIP_ID"));
-        entity.setFishingTripIdentifiers(fishingTripIdentifiers);
+        entity.setFishingTripIdentifier(ActivityDataUtil.getFishingTripIdentifierEntity(entity, "NOR-TRP-20160517234053706", "EU_TRIP_ID"));
         return entity;
     }
 
     public static FishingTripEntity getFishingTripEntityWithContactParties() {
         FishingTripEntity fishingTripEntity = getFishingTripEntity();
-        Set<VesselTransportMeansEntity> vesselTransportEntityList = fishingTripEntity.getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        Set<VesselTransportMeansEntity> vesselTransportEntityList = fishingTripEntity.getFishingActivities().iterator().next().getFaReportDocument().getVesselTransportMeans();
 
         Set<ContactPartyEntity> contactParties = new HashSet<>();
 
@@ -747,7 +744,7 @@ public class MapperUtil {
 
     public static List<VesselIdentifierEntity> getVesselIdentifiersList() {
         List<VesselIdentifierEntity> vesselIdentifiersList = new ArrayList<>();
-        Set<VesselTransportMeansEntity> vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivity().getFaReportDocument().getVesselTransportMeans();
+        Set<VesselTransportMeansEntity> vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivities().iterator().next().getFaReportDocument().getVesselTransportMeans();
         Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.iterator().next().getVesselIdentifiers();
         vesselIdentifiersList.addAll(vesselIdentifiersSet);
         return vesselIdentifiersList;

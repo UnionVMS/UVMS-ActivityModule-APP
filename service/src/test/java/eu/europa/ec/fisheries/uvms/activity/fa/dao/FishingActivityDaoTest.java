@@ -77,8 +77,8 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         FishingActivityEntity fishingActivityEntity = fishingActivityForTrip.get(0);
         assertEquals(1, fishingActivityEntity.getId());
 
-        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrips().iterator().next();
-        FishingTripIdentifierEntity fishingTripIdentifier = fishingTripEntity.getFishingTripIdentifiers().iterator().next();
+        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrip();
+        FishingTripIdentifierEntity fishingTripIdentifier = fishingTripEntity.getFishingTripIdentifier();
         assertEquals("NOR-TRP-20160517234053706", fishingTripIdentifier.getTripId());
     }
 

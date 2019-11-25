@@ -138,7 +138,7 @@ public class ActivityDataUtil {
         fishingTripEntity.setTypeCode(typeCode);
         fishingTripEntity.setTypeCodeListId(typeCodeListId);
         fishingTripEntity.setFaCatch(faCatchEntity);
-        fishingTripEntity.setFishingActivity(fishingActivityEntity);
+        fishingTripEntity.getFishingActivities().add(fishingActivityEntity);
         return fishingTripEntity;
     }
 
