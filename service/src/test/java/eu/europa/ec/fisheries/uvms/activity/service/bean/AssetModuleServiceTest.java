@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.AssetModuleServiceBean;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,6 @@ import org.mockito.Mockito;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.TextMessage;
-import java.util.ArrayList;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -55,7 +53,6 @@ public class AssetModuleServiceTest {
     public void testGetGuidsFromAssets(){//
         doReturn("12222-4rrr-566t-dwq11").when(assetProducer).sendModuleMessage(Mockito.anyString(), any(Destination.class));
         doReturn(null).when(activityConsumer).getMessage("12222-4rrr-566t-dwq11", TextMessage.class);
-        doReturn(new ArrayList<>()).when(assetsModuleBean).getGuidsFromAssets(Mockito.anyString());
         assetsModuleBean.getAssetGuids("JEANNE", "test-group");
 
         // Verify

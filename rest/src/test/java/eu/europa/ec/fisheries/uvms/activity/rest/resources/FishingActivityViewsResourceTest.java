@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
@@ -53,8 +52,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Arquillian.class)
 public class FishingActivityViewsResourceTest extends BaseActivityArquillianTest {
 
-    private String authToken;
-
     private ActivityDetailsDto expectedActivityDetailsDto;
     private ReportDocumentDto expectedReportDocumentDto;
     private TripWidgetDto expectedTripWidgetDto;
@@ -63,10 +60,7 @@ public class FishingActivityViewsResourceTest extends BaseActivityArquillianTest
 
     @Before
     public void setUp() throws NamingException {
-        InitialContext ctx = new InitialContext();
-        ctx.rebind("java:global/mdr_endpoint", "http://localhost:8080/activity-rest-test");
-
-        authToken = getToken();
+        super.setUp();
 
         expectedActivityDetailsDto = new ActivityDetailsDto();
         expectedActivityDetailsDto.setType("AREA_ENTRY");
