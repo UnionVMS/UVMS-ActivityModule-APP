@@ -128,38 +128,40 @@ public class VesselDetailsDTO {
     }
 
     public void enrichVesselIdentifiersFromAsset(AssetDTO assetDTO) {
-        if (vesselIdentifiers == null) {
-            vesselIdentifiers = new HashSet<>();
+        if (this.vesselIdentifiers == null) {
+            this.vesselIdentifiers = new HashSet<>();
         }
         if (assetDTO != null) {
-            vesselIdentifiers = addIdIfMissingAndValueProvided(vesselIdentifiers, CFR, assetDTO.getCfr());
-            vesselIdentifiers = addIdIfMissingAndValueProvided(vesselIdentifiers, EXT_MARK, assetDTO.getExternalMarking());
-            vesselIdentifiers = addIdIfMissingAndValueProvided(vesselIdentifiers, GFCM, assetDTO.getGfcm());
-            vesselIdentifiers = addIdIfMissingAndValueProvided(vesselIdentifiers, ICCAT, assetDTO.getIccat());
-            vesselIdentifiers = addIdIfMissingAndValueProvided(vesselIdentifiers, IRCS, assetDTO.getIrcs());
-            vesselIdentifiers = addIdIfMissingAndValueProvided(vesselIdentifiers, UVI, assetDTO.getUvi());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, CFR, assetDTO.getCfr());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, EXT_MARK, assetDTO.getExternalMarking());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, GFCM, assetDTO.getGfcm());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, ICCAT, assetDTO.getIccat());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, IRCS, assetDTO.getIrcs());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, UVI, assetDTO.getUvi());
         }
     }
 
-    private Set<AssetIdentifierDto> addIdIfMissingAndValueProvided(Set<AssetIdentifierDto> vesselIdentifiers, VesselIdentifierSchemeIdEnum idScheme, String idValue) {
-        AssetIdentifierDto assetIdentifier = null;
+    private void addVesselIdentifierIfMissing(Set<AssetIdentifierDto> vesselIdentifiers, VesselIdentifierSchemeIdEnum idScheme, String idValue) {
+        if (isEmpty(idValue)) {
+            return;
+        }
+
+        AssetIdentifierDto assetId = null;
         final Iterator<AssetIdentifierDto> assetIdIterator = vesselIdentifiers.iterator();
-        while (assetIdIterator.hasNext() && assetIdentifier == null) {
-            AssetIdentifierDto tempAssetIdentifierDto = assetIdIterator.next();
-            if (tempAssetIdentifierDto.getIdentifierSchemeId() == idScheme) {
-                assetIdentifier = tempAssetIdentifierDto;
+        while (assetIdIterator.hasNext() && assetId == null) {
+            AssetIdentifierDto tempAssetId = assetIdIterator.next();
+            if (tempAssetId.getIdentifierSchemeId() == idScheme) {
+                assetId = tempAssetId;
             }
         }
-        if (!isEmpty(idValue) &&
-                ((assetIdentifier == null) || isEmpty(assetIdentifier.getFaIdentifierId()))) {
-            if (assetIdentifier == null) {
-                assetIdentifier = new AssetIdentifierDto(idScheme);
-                vesselIdentifiers.add(assetIdentifier);
-            }
-            assetIdentifier.setFaIdentifierId(idValue);
-            assetIdentifier.setFromAssets(true);
+        if (assetId == null) {
+            assetId = new AssetIdentifierDto(idScheme);
+            vesselIdentifiers.add(assetId);
         }
-        return vesselIdentifiers;
+        if (isEmpty(assetId.getFaIdentifierId())) {
+            assetId.setFaIdentifierId(idValue);
+            assetId.setFromAssets(true);
+        }
     }
 
     public Set<FlapDocumentDto> getFlapDocuments() {
