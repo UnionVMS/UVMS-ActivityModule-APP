@@ -7,13 +7,13 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginatedResponse;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import org.jboss.arquillian.junit.Arquillian;
@@ -21,44 +21,54 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.naming.NamingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
-    private String authToken;
-
     @Before
-    public void setUp() {
-        authToken = getToken();
+    public void setUp() throws NamingException {
+        super.setUp();
     }
 
     @Test
-    public void getCommunicationChannels_OK() {
+    public void getCommunicationChannels_OK() throws JsonProcessingException {
         // Given
 
         // When
-        Response response = getWebTarget()
+        String responseAsString = getWebTarget()
                 .path("fa")
-                .path("commChannels")
+                .path("commChannel")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get();
+                .get(String.class);
 
         // Then
-        assertEquals(200, response.getStatus());
-        FaReportSourceEnum[] faReportSourceEnums = response.readEntity(FaReportSourceEnum[].class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+
+        ResponseDto<FaReportSourceEnum[]> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FaReportSourceEnum[]>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
         FaReportSourceEnum[] faReportSourceEnumsExpected = {FaReportSourceEnum.FLUX, FaReportSourceEnum.MANUAL};
-        assertArrayEquals(faReportSourceEnumsExpected, faReportSourceEnums);
+        assertArrayEquals(faReportSourceEnumsExpected, responseDto.getData());
     }
 
     @Test
@@ -86,7 +96,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -155,7 +166,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -187,7 +199,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
 
         ResponseDto<FishingTripResponse> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FishingTripResponse>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FishingTripResponse>>() {
+                });
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -225,7 +238,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ResponseDto<List<FaReportCorrectionDTO>> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<List<FaReportCorrectionDTO>>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<List<FaReportCorrectionDTO>>>() {
+                });
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -260,7 +274,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ResponseDto<Integer> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>() {
+                });
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -285,7 +300,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ResponseDto<Integer> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>(){});
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>() {
+                });
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());

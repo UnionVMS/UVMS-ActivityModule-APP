@@ -26,7 +26,6 @@ public class Utils {
      *
      * @param actualMeasureToAdd
      * @param measureSubTotalToAddTo
-     * @return
      */
     public static Double addDoubles(Double actualMeasureToAdd, Double measureSubTotalToAddTo) {
         if (actualMeasureToAdd != null && !(Math.abs(actualMeasureToAdd - 0.0) < 0.00000001)) {

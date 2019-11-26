@@ -35,6 +35,11 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEnti
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UsmUtils;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
@@ -62,24 +67,16 @@ import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripIdWithGeom
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripToGeoJsonMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselTransportMeansMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -98,6 +95,7 @@ import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -113,8 +111,8 @@ import java.util.Set;
 @Slf4j
 public class FishingTripServiceBean extends BaseActivityBean implements FishingTripService {
 
-    private static final String DECLARATION ="Declaration";
-    private static final String NOTIFICATION ="Notification";
+    private static final String DECLARATION = "Declaration";
+    private static final String NOTIFICATION = "Notification";
     private static final String PREVIOUS = "PREVIOUS";
     private static final String NEXT = "NEXT";
 
@@ -282,59 +280,55 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return detailsDTO;
     }
 
-
-    // need confirmation for removal of this method
-    private void enrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
-        if (vesselDetailsDTO != null && vesselDetailsDTO.hasEmptyIdentifierValues()) {
-            try {
-                Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
-                List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapToAssetListCriteriaPairList(vesselIdentifiers);
-                AssetListCriteria criteria = new AssetListCriteria();
-                criteria.getCriterias().addAll(assetListCriteriaPairs);
-                AssetListQuery query = new AssetListQuery();
-                query.setAssetSearchCriteria(criteria);
-                List<Asset> assetList = assetModuleService.getAssetListResponse(query);
-                vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
-            } catch (ServiceException e) {
-                log.error("Error while trying to send message to Assets module.", e);
-            }
-        }
-    }
-
-
     //To process MDR code list and compare with  database:vesselTransportMeansDao and then enrich with asset module
     private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
         final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
         final String filter = "*";
         final List<String> columnsList = new ArrayList<String>();
-        Integer nrOfResults = 9999999;
-        if (vesselDetailsDTO != null) {
-            List<String> codeList;
-            try {
-                codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "code").get("code");
-                Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
-
-                List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers, codeList);
-                log.info("Asset Criteria Pair List size is :" + assetListCriteriaPairs.size());
-                log.info("Got code list of size from mdr:" + codeList.size());
-                if (!CollectionUtils.isEmpty(assetListCriteriaPairs)) {
-                    AssetListCriteria criteria = new AssetListCriteria();
-                    criteria.setIsDynamic(false); // need to set this
-                    criteria.getCriterias().addAll(assetListCriteriaPairs);
-                    AssetListQuery query = new AssetListQuery();
-                    AssetListPagination assetListPagination = new AssetListPagination();
-                    assetListPagination.setPage(1);   //need to set this
-                    assetListPagination.setListSize(1000);   //need to set this
-                    query.setPagination(assetListPagination);
-                    query.setAssetSearchCriteria(criteria);
-                    List<Asset> assetList = assetModuleService.getAssetListResponse(query);
-                    if (null != assetList && !CollectionUtils.isEmpty(assetList)) {
-                        vesselDetailsDTO.enrichIdentifiers(assetList.get(0));
+        Integer nrOfResults = 1000;
+        if (vesselDetailsDTO == null) {
+            return;
+        }
+        List<String> codeList;
+        try {
+            codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "code").get("code");
+            Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+            if (vesselIdentifiers == null || codeList == null) {
+                return;
+            }
+            AssetQuery assetQuery = new AssetQuery();
+            for (AssetIdentifierDto assetIdentifierDto : vesselIdentifiers) {
+                if (codeList.contains(assetIdentifierDto.getIdentifierSchemeId().name())) {
+                    final List<String> idValueAsList = Arrays.asList(assetIdentifierDto.getFaIdentifierId());
+                    switch (assetIdentifierDto.getIdentifierSchemeId()) {
+                        case CFR:
+                            assetQuery.setCfr(idValueAsList);
+                            break;
+                        case EXT_MARK:
+                            assetQuery.setExternalMarking(idValueAsList);
+                            break;
+                        case GFCM:
+                            assetQuery.setGfcm(idValueAsList);
+                            break;
+                        case ICCAT:
+                            assetQuery.setIccat(idValueAsList);
+                            break;
+                        case IRCS:
+                            assetQuery.setIrcs(idValueAsList);
+                            break;
+                        case UVI:
+                            assetQuery.setUvi(idValueAsList);
+                            break;
+                        default:
                     }
                 }
-            } catch (ServiceException e) {
-                log.error("Error while trying to send message to Assets module.", e);
             }
+            List<AssetDTO> assetList = assetModuleService.getAssets(assetQuery);
+            if (!CollectionUtils.isEmpty(assetList)) {
+                vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetList.get(0));
+            }
+        } catch (ServiceException e) {
+            log.error("Error while trying to send message to Assets module.", e);
         }
     }
 
@@ -758,8 +752,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                         }
                     }
                 }
-                // VesselDetailsDTO detailsDTO = getVesselDetailsForFishingTrip(tripId);
-                // tripWidgetDto.setVesselDetails(detailsDTO);
                 log.debug("tripWidgetDto set for tripID :" + tripId);
             } else {
                 log.debug("TripId is not received for the screen. Try to get TripSummary information for all the tripIds specified for FishingActivity:" + activityEntity.getId());

@@ -17,25 +17,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.StorageDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.collections.CollectionUtils;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.ICCAT;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @JsonInclude(Include.NON_NULL)
@@ -124,47 +127,42 @@ public class VesselDetailsDTO {
         this.storageDto = storageDto;
     }
 
-    public boolean hasEmptyIdentifierValues() {
-
-        if (!CollectionUtils.isEmpty(vesselIdentifiers)) {
-            for (IdentifierDto identifier : vesselIdentifiers) {
-                if (isEmpty(identifier.getFaIdentifierId())) {
-                    return true;
-                }
-            }
+    public void enrichVesselIdentifiersFromAsset(AssetDTO assetDTO) {
+        if (this.vesselIdentifiers == null) {
+            this.vesselIdentifiers = new HashSet<>();
         }
-        return false;
-    }
-
-    public void enrichIdentifiers(Asset asset) {
-        if(asset!=null) {
-            String ircs = asset.getIrcs();
-            String cfr = asset.getCfr();
-            String externalMarking = asset.getExternalMarking();
-
-            for (AssetIdentifierDto identifier : vesselIdentifiers) {
-
-                if (isEmpty(identifier.getFaIdentifierId())) {
-
-                    VesselIdentifierSchemeIdEnum identifierSchemeId = identifier.getIdentifierSchemeId();
-
-                    if (CFR.equals(identifierSchemeId) && !isEmpty(cfr)) {
-                        setIdentifier(identifier, cfr);
-                    } else if (EXT_MARK.equals(identifierSchemeId) && !isEmpty(externalMarking)) {
-                        setIdentifier(identifier, externalMarking);
-                    } else if (IRCS.equals(identifierSchemeId) && !isEmpty(ircs)) {
-                        setIdentifier(identifier, ircs);
-                    }
-                }
-            }
+        if (assetDTO != null) {
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, CFR, assetDTO.getCfr());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, EXT_MARK, assetDTO.getExternalMarking());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, GFCM, assetDTO.getGfcm());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, ICCAT, assetDTO.getIccat());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, IRCS, assetDTO.getIrcs());
+            addVesselIdentifierIfMissing(this.vesselIdentifiers, UVI, assetDTO.getUvi());
         }
     }
 
-    private void setIdentifier(AssetIdentifierDto identifier, String value) {
-        identifier.setFaIdentifierId(value);
-        identifier.setFromAssets(true);
-    }
+    private void addVesselIdentifierIfMissing(Set<AssetIdentifierDto> vesselIdentifiers, VesselIdentifierSchemeIdEnum idScheme, String idValue) {
+        if (isEmpty(idValue)) {
+            return;
+        }
 
+        AssetIdentifierDto assetId = null;
+        final Iterator<AssetIdentifierDto> assetIdIterator = vesselIdentifiers.iterator();
+        while (assetIdIterator.hasNext() && assetId == null) {
+            AssetIdentifierDto tempAssetId = assetIdIterator.next();
+            if (tempAssetId.getIdentifierSchemeId() == idScheme) {
+                assetId = tempAssetId;
+            }
+        }
+        if (assetId == null) {
+            assetId = new AssetIdentifierDto(idScheme);
+            vesselIdentifiers.add(assetId);
+        }
+        if (isEmpty(assetId.getFaIdentifierId())) {
+            assetId.setFaIdentifierId(idValue);
+            assetId.setFromAssets(true);
+        }
+    }
 
     public Set<FlapDocumentDto> getFlapDocuments() {
         return flapDocuments;

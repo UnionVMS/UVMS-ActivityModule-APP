@@ -7,3 +7,8 @@ logging.properties
 /.idea
 rest/src/main/webapp/apidocs/
 .DS_Store
+/rest/application.error.logfile_IS_UNDEFINED*
+/rest/application.logfile_IS_UNDEFINED*
+/rest/src/test/resources/FLUXFAReportMessage_PROD.xml
+/rest/src/test/resources/FLUXFAReportMessage_PROD_EDITED.xml
+/rest/src/test/resources/FLUXFAReportMessage_PROD_ORIG.zip
