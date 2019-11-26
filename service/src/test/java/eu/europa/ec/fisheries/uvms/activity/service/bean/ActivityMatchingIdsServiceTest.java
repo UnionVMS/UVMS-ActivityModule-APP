@@ -100,11 +100,6 @@ public class ActivityMatchingIdsServiceTest {
     }
 
     @Test
-    public void initProcess() {
-        matchingBean.init();
-    }
-
-    @Test
     public void getMatchingIdsResponseMappingEmptyList() throws Exception {
         // Given
         when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());

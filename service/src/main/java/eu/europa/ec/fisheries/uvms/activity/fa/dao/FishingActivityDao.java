@@ -105,9 +105,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      *  Take fluxIdentifierId of current fishingActivity. Find  which other faReportDocument referenceId has fluxIdentifierId of current fishingActivity.
      *  Take that faReportDocument , and all the fishingActivities from that document with same FishingActivity Type and having date greater than or equal to current fishingActivity
      *
-     * @param fishingActivityId
-     * @param activityTypeCode
-     * @param activityCalculatedStartTime
      */
     public int getNextFishingActivityId(FishingActivityEntity fishingActivityEntity) {
         int nextFishingActivity = 0;
