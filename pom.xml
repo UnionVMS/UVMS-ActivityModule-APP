@@ -84,6 +84,12 @@
     <dependencyManagement>
         <dependencies>
 
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-java11-deps</artifactId>
+                <type>pom</type>
+            </dependency>
+
             <!-- PROJECT DEPENDENCIES -->
 
             <dependency>
@@ -514,7 +520,7 @@
         <profile>
             <id>doclint-java8-disable</id>
             <activation>
-                <jdk>[1.8,)</jdk>
+                <jdk>1.8</jdk>
             </activation>
             <properties>
                 <javadoc.doclint>none</javadoc.doclint>

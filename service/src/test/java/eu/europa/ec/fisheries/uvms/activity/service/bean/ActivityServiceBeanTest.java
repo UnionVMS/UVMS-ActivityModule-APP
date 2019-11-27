@@ -91,8 +91,8 @@ public class ActivityServiceBeanTest {
         //Test
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOList.get(0);
         assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime(), faReportCorrectionDTO.getCreationDate().toInstant());
-        assertEquals(faReportDocumentEntity.getAcceptedDatetime(), faReportCorrectionDTO.getAcceptedDate().toInstant());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime().toEpochMilli(), faReportCorrectionDTO.getCreationDate().toInstant().toEpochMilli());
+        assertEquals(faReportDocumentEntity.getAcceptedDatetime().toEpochMilli(), faReportCorrectionDTO.getAcceptedDate().toInstant().toEpochMilli());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId(),
                 faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId(),
