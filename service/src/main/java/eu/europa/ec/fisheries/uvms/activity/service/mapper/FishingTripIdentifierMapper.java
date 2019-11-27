@@ -30,7 +30,6 @@ public interface FishingTripIdentifierMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "calculatedTripStartDate", ignore = true),
             @Mapping(target = "calculatedTripEndDate", ignore = true)
-            //@Mapping(target = "fishingTrip", ignore = true)
     })
     FishingTripIdentifierEntity mapToFishingTripIdentifier(IDType idType);
 

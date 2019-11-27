@@ -33,7 +33,7 @@ import java.io.Serializable;
 @NamedQueries({
 		@NamedQuery(name = VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
 				//TODO: Rewrite
-				query = "SELECT fa.fishingTrip.fishingTripIdentifier FROM FishingActivityEntity fa " +
+				query = "SELECT vi FROM FishingActivityEntity fa " +
 						"INNER JOIN fa.faReportDocument frd " +
 						"INNER JOIN frd.vesselTransportMeans vtm " +
 						"INNER JOIN vtm.vesselIdentifiers vi " +
