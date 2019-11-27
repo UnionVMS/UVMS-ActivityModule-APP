@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,15 +20,16 @@ import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Mapper(uses = {FishingTripIdentifierMapper.class, DelimitedPeriodMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface FishingTripMapper {
+public abstract class FishingTripMapper {
 
-    FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
+    public static final FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", source = "typeCode.value"),
@@ -38,16 +40,19 @@ public interface FishingTripMapper {
             @Mapping(target = "catchEntities", ignore = true),
             @Mapping(target = "fishingActivities", ignore = true),
     })
-    FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
+    public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
 
     @InheritInverseConfiguration
     @Mappings({
             @Mapping(source = "delimitedPeriods", target = "specifiedDelimitedPeriods"),
-            //TODO: Fix this!?
-            @Mapping(target = "IDS", ignore = true),
+            @Mapping(target = "IDS", expression = "java(mapToIDS(fishingTrip.getFishingTripIdentifier()))"),
     })
-    FishingTrip mapToFishingTrip(FishingTripEntity fishingTrip);
+    public abstract FishingTrip mapToFishingTrip(FishingTripEntity fishingTrip);
 
-    List<FishingTrip> mapToFishingTripList(Set<FishingTripEntity> fishingTrip);
+    protected List<IDType> mapToIDS(FishingTripIdentifierEntity fishingTripIdentifierEntity) {
+        List<IDType> IDS = new ArrayList<>();
+        IDS.add(FishingTripIdentifierMapper.INSTANCE.mapToIDType(fishingTripIdentifierEntity));
+        return IDS;
+    }
 
 }

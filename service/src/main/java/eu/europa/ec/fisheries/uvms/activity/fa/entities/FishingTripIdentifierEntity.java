@@ -98,7 +98,9 @@ public class FishingTripIdentifierEntity implements Serializable {
 	@Column(name = "calculated_trip_end_date")
 	private Instant calculatedTripEndDate;
 
-	@OneToOne(mappedBy = "fishingTripIdentifier")
-    private FishingTripEntity fishingTrip;
-
+	/*
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fishing_trip_id", referencedColumnName = "id")
+	private FishingTripEntity fishingTrip;
+	*/
 }

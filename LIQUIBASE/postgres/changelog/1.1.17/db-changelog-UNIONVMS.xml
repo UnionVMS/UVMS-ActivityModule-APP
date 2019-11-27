@@ -7,8 +7,12 @@
 
     <changeSet author="anwall" id="move_trip_to_fa">
         <dropColumn tableName="activity_fishing_trip" columnName="fishing_activity_id" />
+        <dropColumn tableName="activity_fishing_trip_identifier" columnName="fishing_trip_id" />
         <addColumn tableName="activity_fishing_activity">
             <column name="fishing_trip_id" type="int" />
+        </addColumn>
+        <addColumn tableName="activity_fishing_trip">
+            <column name="fishing_trip_identifier_id" type="int" />
         </addColumn>
     </changeSet>
 

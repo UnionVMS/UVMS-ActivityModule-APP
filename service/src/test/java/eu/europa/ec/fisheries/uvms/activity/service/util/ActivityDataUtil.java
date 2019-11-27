@@ -145,7 +145,7 @@ public class ActivityDataUtil {
 
     public static FishingTripIdentifierEntity getFishingTripIdentifierEntity(FishingTripEntity fishingTripEntity, String tripId, String tripSchemeId) {
         FishingTripIdentifierEntity fishingTripIdentifierEntity = new FishingTripIdentifierEntity();
-        fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
+        //fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
         fishingTripIdentifierEntity.setTripId(tripId);
         fishingTripIdentifierEntity.setTripSchemeId(tripSchemeId);
         fishingTripIdentifierEntity.setCalculatedTripEndDate(Instant.parse("2016-01-12T00:00:00Z"));
