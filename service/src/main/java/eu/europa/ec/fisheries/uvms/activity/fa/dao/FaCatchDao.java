@@ -60,7 +60,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
      * If isLanding flag is true, then we need to gather information for Landing table as well.
      *
      * @param query
-     * @return Map<FaCatchSummaryCustomEntity   ,   List   <   FaCatchSummaryCustomEntity>> key = object represnting common group, value is list of different objects which belong to  that group
+     * @return Map&lt;FaCatchSummaryCustomEntity, List&lt;FaCatchSummaryCustomEntity&gt;&gt; key = object represnting common group, value is list of different objects which belong to  that group
      * @throws ServiceException
      */
     public Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> getGroupedFaCatchData(FishingActivityQuery query, boolean isLanding) throws ServiceException {

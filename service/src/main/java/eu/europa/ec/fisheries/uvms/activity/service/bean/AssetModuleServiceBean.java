@@ -23,16 +23,7 @@ import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,12 +32,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -75,24 +65,9 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     }
 
     @Override
-    public List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException {
-
-        //TODO: Implement call to new Asset Module!
-        /*
-        try {
-
-            String assetsRequest = AssetModuleRequestMapper.createAssetListModuleRequest(assetListQuery);
-            String correlationID = assetProducer.sendModuleMessage(assetsRequest, activityConsumer.getDestination());
-            TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
-            assetList = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationID);
-
-        } catch (AssetModelMapperException | MessageException e) {
-            log.error("Error while trying to send message to Assets module.", e);
-            throw new ServiceException(e.getMessage(), e.getCause());
-        }
-        */
-
-        return new ArrayList<>();
+    public List<AssetDTO> getAssets(AssetQuery assetQuery) throws ServiceException {
+        final boolean dynamic = false;
+        return assetClient.getAssetList(assetQuery, dynamic);
     }
 
     /**
@@ -100,52 +75,83 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
      */
     @Override
     public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) {
-        AssetQuery assetQuery = new AssetQuery();
-
-        Map<VesselTypeAssetQueryEnum, List<String>> identifierMap = new HashMap<>();
+        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new EnumMap(VesselTypeAssetQueryEnum.class);
 
         for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
             VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(vesselIdentifier.getVesselIdentifierSchemeId());
             if (queryEnum != null && queryEnum.getConfigSearchField() != null && StringUtils.isNotEmpty(vesselIdentifier.getVesselIdentifierId())) {
-                List<String> queryEnumValues = identifierMap.get(queryEnum);
-                if (queryEnumValues == null) {
-                    queryEnumValues = new ArrayList<>();
-                    identifierMap.put(queryEnum, queryEnumValues);
-                }
+                List<String> queryEnumValues = identifierTypeToValuesMap.computeIfAbsent(queryEnum, key -> new ArrayList<>());
                 queryEnumValues.add(vesselIdentifier.getVesselIdentifierId());
             }
         }
 
-        Set<VesselTypeAssetQueryEnum> vesselTypeAssetQueryEnums = identifierMap.keySet();
-        for (VesselTypeAssetQueryEnum vesselTypeAssetQueryEnum : vesselTypeAssetQueryEnums) {
-            List<String> vesselIdentifier = identifierMap.get(vesselTypeAssetQueryEnum);
+        AssetQuery assetQuery = deriveAssetQuery(identifierTypeToValuesMap);
+        final boolean dynamic = false;
+        List<AssetDTO> assetList = assetClient.getAssetList(assetQuery, dynamic);
+        return extractGuidsFromAssets(assetList);
+    }
+
+    @NotNull
+    private AssetQuery deriveAssetQuery(Map<VesselTypeAssetQueryEnum, List<String>> identifierMap) {
+        AssetQuery assetQuery = new AssetQuery();
+        identifierMap.forEach((VesselTypeAssetQueryEnum vesselTypeAssetQueryEnum, List<String> vesselIdentifierStrings) -> {
             switch (vesselTypeAssetQueryEnum) {
                 case CFR:
-                    assetQuery.setCfr(vesselIdentifier);
+                    assetQuery.setCfr(vesselIdentifierStrings);
                     break;
                 case IRCS:
-                    assetQuery.setIrcs(vesselIdentifier);
+                    assetQuery.setIrcs(vesselIdentifierStrings);
                     break;
                 case EXT_MARK:
-                    assetQuery.setExternalMarking(vesselIdentifier);
+                    assetQuery.setExternalMarking(vesselIdentifierStrings);
                     break;
                 case FLAG_STATE:
-                    assetQuery.setFlagState(vesselIdentifier);
+                    assetQuery.setFlagState(vesselIdentifierStrings);
                     break;
                 case NAME:
-                    assetQuery.setName(vesselIdentifier);
+                    assetQuery.setName(vesselIdentifierStrings);
                     break;
                 case ICCAT:
-                    assetQuery.setIccat(vesselIdentifier);
+                    assetQuery.setIccat(vesselIdentifierStrings);
                     break;
                 case UVI:
-                    assetQuery.setUvi(vesselIdentifier);
+                    assetQuery.setUvi(vesselIdentifierStrings);
                     break;
             }
+        });
+        return assetQuery;
+    }
+
+    @Override
+    public List<String> getAssetGuids(String vesselIdsSearchStr, String vesselGroupGuidSearchStr) throws ServiceException {
+        List<String> resultingGuids = new ArrayList<>();
+
+        // Get the list of guids from assets if vesselIdsSearchStr is provided
+        if (StringUtils.isNotEmpty(vesselIdsSearchStr)) {
+            Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = createMultipleIdTypesQueryMap(vesselIdsSearchStr);
+            AssetQuery assetQuery = deriveAssetQuery(identifierTypeToValuesMap);
+            boolean dynamic = false;
+            List<AssetDTO> assetList = assetClient.getAssetList(assetQuery, dynamic);
+            resultingGuids.addAll(extractGuidsFromAssets(assetList));
         }
 
-        List<AssetDTO> assetList = assetClient.getAssetList(assetQuery);
+        // Get the list of guids from assets if vesselGroupSearchName is provided
+        if (StringUtils.isNotEmpty(vesselGroupGuidSearchStr)) {
+            UUID vesselGroupGuidSearch = null;
+            try {
+                vesselGroupGuidSearch = UUID.fromString(vesselGroupGuidSearchStr);
+            } catch (IllegalArgumentException iae) {
+                throw new ServiceException("Provided group id, " + vesselGroupGuidSearchStr + ", was not a valid UUID", iae);
+            }
+            List<AssetDTO> assetList = assetClient.getAssetsByGroupIds(Arrays.asList(vesselGroupGuidSearch));
+            resultingGuids.addAll(extractGuidsFromAssets(assetList));
+        }
 
+        return resultingGuids;
+
+    }
+
+    private List<String> extractGuidsFromAssets(List<AssetDTO> assetList) {
         return assetList
                 .stream()
                 .map(AssetDTO::getId)
@@ -153,142 +159,13 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearch) throws ServiceException {
-        return new ArrayList<>();
-        /*
-        List<String> guidsFromVesselSearchStr = null;
-        List<String> guidsFromVesselGroup     = null;
-        String request;
-
-        // Get the list of guids from assets if vesselSearchStr is provided
-        if (StringUtils.isNotEmpty(vesselSearchStr)) {
-            try {
-                request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselSearchStr));
-            } catch (AssetModelMapperException e) {
-                log.error("Error while trying to map the request for assets Module.", e);
-                throw new ServiceException(e.getMessage(), e.getCause());
-            }
-            guidsFromVesselSearchStr = getGuidsFromAssets(request);
-        }
-
-        // Get the list of guids from assets if vesselGroupSearchName is provided
-        // If the list of guids is not empty then we have to provide this on the query also
-        if(StringUtils.isNotEmpty(vesselGroupSearch)){
-            try {
-                request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetGroupQuery(vesselGroupSearch));
-            } catch (AssetModelMapperException e) {
-                log.error("Error while trying to map the request for assets Module.", e);
-                throw new ServiceException(e.getMessage(), e.getCause());
-            }
-            guidsFromVesselGroup = getGuidsFromAssets(request);
-        }
-
-        return joinResults(guidsFromVesselSearchStr, guidsFromVesselGroup);
-
-         */
-    }
-
-    @NotNull
-    protected List<String> getGuidsFromAssets(String request) throws ServiceException {
-        return new ArrayList<>();
-        /*
-        try {
-            String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
-            TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class);
-            if (response != null && isNotUserFault(response)) {
-                List<Asset> assets = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationId);
-                List<String> assetGuids = new ArrayList<>();
-                for (Asset asset : assets) {
-                    assetGuids.add(asset.getAssetId().getGuid());
-                }
-                return assetGuids;
-            } else {
-                throw new ServiceException("FAILED TO GET DATA FROM ASSET");
-            }
-        } catch (ServiceException | MessageException | AssetModelMapperException e) {
-            log.error("Exception in communication with movements", e);
-            throw new ServiceException(e.getMessage(), e);
-        }
-
-         */
-    }
-
-    private List<String> joinResults(List<String> guidsFromVesselSearchStr, List<String> guidsFromVesselGroup) {
-        Set<String> resultingList = new HashSet<>();
-        if(CollectionUtils.isNotEmpty(guidsFromVesselSearchStr)){
-            resultingList.addAll(guidsFromVesselSearchStr);
-        }
-        if(CollectionUtils.isNotEmpty(guidsFromVesselGroup)){
-            resultingList.addAll(guidsFromVesselGroup);
-        }
-        return new ArrayList<>(resultingList);
-    }
-
-    @NotNull
-    private List<AssetGroup> createAssetGroupQuery(String vesselGroupSearch) {
-        List<AssetGroup> assetGroupList = new ArrayList<>();
-        AssetGroup assGroup = new AssetGroup();
-        assGroup.getSearchFields().addAll(createAssetGroupSearchFileds(vesselGroupSearch));
-        assGroup.setGuid(vesselGroupSearch);
-        assetGroupList.add(assGroup);
-        return assetGroupList;
-    }
-
-    private List<AssetGroupSearchField> createAssetGroupSearchFileds(String vesselGroupSearchName) {
-        List<AssetGroupSearchField> assetGroupSearchFieldList = new ArrayList<>();
-        AssetGroupSearchField assetGroupGuidField = new AssetGroupSearchField();
-        assetGroupGuidField.setKey(ConfigSearchField.GUID);
-        assetGroupGuidField.setValue(vesselGroupSearchName);
-        assetGroupSearchFieldList.add(assetGroupGuidField);
-        return assetGroupSearchFieldList;
-    }
-
-    private AssetListQuery createAssetListQuery(String vesselToSearchFor) {
-        AssetListQuery assetListQuery       = new AssetListQuery();
-        AssetListCriteria assetListCriteria = new AssetListCriteria();
+    private Map<VesselTypeAssetQueryEnum, List<String>> createMultipleIdTypesQueryMap(String vesselIdentifierValueToSearchFor) {
+        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new EnumMap(VesselTypeAssetQueryEnum.class);
         for (VesselTypeAssetQueryEnum queryEnum : VesselTypeAssetQueryEnum.values()) {
-            // Little hack since in the asset module this value corrisponds to a number one,
-            // if it fails to parse it than it will throw!
-            if(!queryEnum.equals(VesselTypeAssetQueryEnum.UVI) && queryEnum.getConfigSearchField() != null){
-                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-                criteriaPair.setKey(queryEnum.getConfigSearchField());
-                criteriaPair.setValue(vesselToSearchFor);
-                assetListCriteria.getCriterias().add(criteriaPair);
+            if (queryEnum.getConfigSearchField() != null) {
+                identifierTypeToValuesMap.put(queryEnum, Arrays.asList(vesselIdentifierValueToSearchFor));
             }
         }
-        assetListCriteria.setIsDynamic(false); // DO not know why
-        assetListQuery.setAssetSearchCriteria(assetListCriteria);
-        // Set asset pagination
-        AssetListPagination pagination = new AssetListPagination();
-        pagination.setPage(1);
-        pagination.setListSize(1000);
-        assetListQuery.setPagination(pagination);
-        return assetListQuery;
-    }
-
-    private AssetListQuery createAssetListQuery(Collection<VesselIdentifierEntity> vesselIdentifiers) {
-        AssetListQuery assetListQuery = new AssetListQuery();
-        //Set asset list criteria
-        AssetListCriteria assetListCriteria = new AssetListCriteria();
-        for (VesselIdentifierEntity identifier : vesselIdentifiers) {
-            VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(identifier.getVesselIdentifierSchemeId());
-            if(queryEnum != null && queryEnum.getConfigSearchField() != null && StringUtils.isNotEmpty(identifier.getVesselIdentifierId())){
-                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-                criteriaPair.setKey(queryEnum.getConfigSearchField());
-                criteriaPair.setValue(identifier.getVesselIdentifierId());
-                assetListCriteria.getCriterias().add(criteriaPair);
-            } else {
-                log.warn("For Identifier : '"+identifier.getVesselIdentifierSchemeId()+"' it was not found the counterpart in the VesselTypeAssetQueryEnum.");
-            }
-        }
-        assetListCriteria.setIsDynamic(false); // DO not know why
-        assetListQuery.setAssetSearchCriteria(assetListCriteria);
-        // Set asset pagination
-        AssetListPagination pagination = new AssetListPagination();
-        pagination.setPage(1);
-        pagination.setListSize(1000);
-        assetListQuery.setPagination(pagination);
-        return assetListQuery;
+        return identifierTypeToValuesMap;
     }
 }

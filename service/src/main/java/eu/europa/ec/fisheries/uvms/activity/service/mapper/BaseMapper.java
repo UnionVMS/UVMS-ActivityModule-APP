@@ -29,14 +29,14 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ViewConstants;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -161,7 +161,8 @@ public class BaseMapper {
             if (calcDur != null) {
                 fishingTime = fishingTime.add(new BigDecimal(calcDur));
             }
-            unitCode = unitCode == null ? periodEntities.size() > 1 ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode() : unitCode;
+            unitCode = (unitCode != null ? unitCode :
+                    (periodEntities.size() > 1 || period.getDurationMeasure() == null ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode()));
         }
 
         Date startDate = startInstant != null ? Date.from(startInstant) : null;

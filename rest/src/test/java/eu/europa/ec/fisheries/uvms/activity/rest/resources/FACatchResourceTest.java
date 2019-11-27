@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.naming.NamingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -45,11 +46,10 @@ import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 public class FACatchResourceTest extends BaseActivityArquillianTest {
-    private String authToken;
 
     @Before
-    public void setUp() {
-        authToken = getToken();
+    public void setUp() throws NamingException {
+        super.setUp();
     }
 
     @Test
