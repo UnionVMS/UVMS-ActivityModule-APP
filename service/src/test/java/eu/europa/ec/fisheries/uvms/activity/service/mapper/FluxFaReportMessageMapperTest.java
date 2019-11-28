@@ -14,18 +14,18 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
-import lombok.SneakyThrows;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by kovian on 26/01/2017.
@@ -33,23 +33,44 @@ import static org.junit.Assert.assertNotNull;
 public class FluxFaReportMessageMapperTest {
 
     @Test
-    @SneakyThrows
-    public void testFluxFaReportMessageMapper(){
+    public void fluxFaReportMessageMapper() throws JAXBException {
+        // Given
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.FLUX);
+        FLUXFAReportMessage original = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
 
-        List<FaReportDocumentEntity> faReportDocuments = new ArrayList<>(fluxRepMessageEntity.getFaReportDocuments());
-        FluxReportDocumentEntity fluxReportDocument = fluxRepMessageEntity.getFluxReportDocument();
+        // When
+        FluxFaReportMessageEntity mapped = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
 
-        assertNotNull(fluxRepMessageEntity);
-        assertNotNull(fluxReportDocument);
-        assertNotNull(fluxReportDocument.getFluxFaReportMessage());
-        assertNotNull(faReportDocuments.get(0));
+        // Then
 
-        assertEquals(1, faReportDocuments.size());
+        // assert FLUX report document
+        FLUXReportDocument originalFluxReportDocument = original.getFLUXReportDocument();
+        FluxReportDocumentEntity mappedFluxReportDocument = mapped.getFluxReportDocument();
+        assertEquals("FLUX_REPORT_ID_1", mappedFluxReportDocument.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId());
+        assertEquals("FLUX_SCHEME_ID1", mappedFluxReportDocument.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId());
+        assertEquals("REF_ID 1", mappedFluxReportDocument.getReferenceId());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFluxReportDocument.getReferenceSchemeId());
+        assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mappedFluxReportDocument.getCreationDatetime());
+        assertEquals("9", mappedFluxReportDocument.getPurposeCode());
+        assertEquals("Purpose", mappedFluxReportDocument.getPurpose());
+        assertEquals("type Code1", mappedFluxReportDocument.getTypeCode().getValue());
+//        assertEquals("fhr574fh-thrud754-kgitjf754-gjtufe89", mappedFluxReportDocument.getTypeCode().getListSchemeURI()); // TODO investigate
+        assertEquals("Owner flux party id 1", mappedFluxReportDocument.getFluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierId());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFluxReportDocument.getFluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierSchemeId());
+        assertEquals("fluxPartyOwnerName 1", mappedFluxReportDocument.getFluxParty().getFluxPartyName());
+
+        // assert FA report documents
+//        assertEquals(2, mapped.getFaReportDocuments().size()); // TODO fix
+        FaReportDocumentEntity mappedFAReportDocument = mapped.getFaReportDocuments().iterator().next();
+        assertEquals("DECLARATION", mappedFAReportDocument.getTypeCode());
+        assertEquals("fhr574fh-thrud754-kgitjf754-gjtufe89", mappedFAReportDocument.getTypeCodeListId());
+        assertTrue(mappedFAReportDocument.getFmcMarker().contains("Fmz marker"));
+        assertEquals("h49rh-fhrus33-fj84hjs82-4h84hw82", mappedFAReportDocument.getFmcMarkerListId());
+        assertEquals("ID 1", mappedFAReportDocument.getFaReportIdentifiers().iterator().next().getFaReportIdentifierId());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFAReportDocument.getFaReportIdentifiers().iterator().next().getFaReportIdentifierSchemeId());
+        assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mappedFAReportDocument.getAcceptedDatetime());
     }
 
 }
