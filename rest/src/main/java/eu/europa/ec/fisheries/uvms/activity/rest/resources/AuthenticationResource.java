@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.activity.rest.LoginResponse;
+import eu.europa.ec.fisheries.uvms.activity.service.auth.AuthenticateResult;
 import eu.europa.ec.fisheries.uvms.activity.service.auth.LdapAuthentication;
 import eu.europa.ec.mare.usm.jwt.JwtTokenHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -41,12 +42,24 @@ public class AuthenticationResource {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginDto loginDto) {
-        boolean authenticated = ldapAuthentication.doAuthentication(loginDto.getUsername(), loginDto.getPassword());
-        if (authenticated) {
+        AuthenticateResult authenticateResult = ldapAuthentication.doAuthentication(loginDto.getUsername(), loginDto.getPassword());
+        if (authenticateResult.isAuthenticated()) {
             String token = tokenHandler.createToken(loginDto.getUsername());
             return Response.ok(new LoginResponse(1, 1234, token)).build();
         }
         return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/changePassword")
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response changePassword(ChangePasswordDto changePasswordDto) {
+        boolean passwordChanged = ldapAuthentication.changePassword(changePasswordDto.getUsername(), changePasswordDto.getPassword(), changePasswordDto.getNewPassword());
+        if (passwordChanged) {
+            return Response.ok().build();
+        }
+        return Response.status(404).build();
     }
 }
 
