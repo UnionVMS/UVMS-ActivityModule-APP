@@ -187,7 +187,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             next = nextTripCount;
         } else if (count != 1) {
             log.info("Count the number of previous and next result based on count received");
-            count = count - 1; // FIXME squid:S1226 intoduce a new variable instead of reusing
+            count = count - 1;
             if (count % 2 == 0) {
                 previous = count / 2;
                 next = count / 2;
@@ -284,7 +284,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
         final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
         final String filter = "*";
-        final List<String> columnsList = new ArrayList<String>();
+        final List<String> columnsList = new ArrayList<>();
         Integer nrOfResults = 1000;
         if (vesselDetailsDTO == null) {
             return;
@@ -474,11 +474,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             Instant occurrence = activityEntity.getOccurence();
             boolean isCorrection = BaseMapper.getCorrection(activityEntity);
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
-            if (fishingActivityTypeDTO == null
-                    || (isCorrection
-                    && fishingActivityTypeDTO.getDate() != null
-                    && occurrence != null
-                    && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0)) {
+            if (occurrence != null && (
+                    (fishingActivityTypeDTO == null)
+                            || (isCorrection
+                            && fishingActivityTypeDTO.getDate() != null
+                            && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0))) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
                 fishingActivityTypeDTO.setDate(Date.from(occurrence));
                 summary.put(activityTypeCode, fishingActivityTypeDTO);
@@ -675,11 +675,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private List<FishingActivityEntity> cleanFromDeletionsAndCancellations(List<FishingActivityEntity> fishingActivityEntityList) {
         List<FishingActivityEntity> cleanList = new ArrayList<>();
-        String DELETED_STR = FaReportStatusType.DELETED.name();
-        String CANCELLED_STR = FaReportStatusType.CANCELED.name();
+        final String DELETED_STR = FaReportStatusType.DELETED.name();
+        final String CANCELLED_STR = FaReportStatusType.CANCELED.name();
         for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
             String status = fishingActivityEntity.getFaReportDocument().getStatus();
-            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && fishingActivityEntity.getLatest()) {
+            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && Boolean.TRUE.equals(fishingActivityEntity.getLatest())) {
                 cleanList.add(fishingActivityEntity);
             }
         }
