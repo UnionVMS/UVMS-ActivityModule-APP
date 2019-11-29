@@ -15,11 +15,11 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -58,7 +58,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         fishingTripIdWithGeometry.setLastFishingActivity( getLastFishingActivityType(fishingActivities) );
         fishingTripIdWithGeometry.setRelativeFirstFaDateTime( getRelativeFirstFishingActivityDateForTrip(fishingActivities) );
         fishingTripIdWithGeometry.setGeometry( getGeometryMultiPointForAllFishingActivities(fishingActivities) );
-        fishingTripIdWithGeometry.setTripDuration( getTotalTripDuration(fishingActivities).toMillis() );
+        fishingTripIdWithGeometry.setTripDuration( getTotalTripDuration(fishingActivities).getSeconds() );
         fishingTripIdWithGeometry.setLastFishingActivityDateTime( getLastFishingActivityStartTime(fishingActivities) );
 
         return fishingTripIdWithGeometry;
