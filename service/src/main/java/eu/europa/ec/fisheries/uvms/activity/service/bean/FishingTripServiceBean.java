@@ -474,11 +474,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             Instant occurrence = activityEntity.getOccurence();
             boolean isCorrection = BaseMapper.getCorrection(activityEntity);
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
-            if (fishingActivityTypeDTO == null
-                    || (isCorrection
-                    && fishingActivityTypeDTO.getDate() != null
-                    && occurrence != null
-                    && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0)) {
+            if (occurrence != null && (
+                    (fishingActivityTypeDTO == null)
+                            || (isCorrection
+                            && fishingActivityTypeDTO.getDate() != null
+                            && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0))) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
                 fishingActivityTypeDTO.setDate(Date.from(occurrence));
                 summary.put(activityTypeCode, fishingActivityTypeDTO);
