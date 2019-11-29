@@ -62,7 +62,7 @@ public class FluxFaReportMessageMapperTest {
         assertEquals("fluxPartyOwnerName 1", mappedFluxReportDocument.getFluxParty().getFluxPartyName());
 
         // assert FA report documents
-//        assertEquals(2, mapped.getFaReportDocuments().size()); // TODO fix
+        assertEquals(2, mapped.getFaReportDocuments().size());
         FaReportDocumentEntity mappedFAReportDocument = mapped.getFaReportDocuments().iterator().next();
         assertEquals("DECLARATION", mappedFAReportDocument.getTypeCode());
         assertEquals("fhr574fh-thrud754-kgitjf754-gjtufe89", mappedFAReportDocument.getTypeCodeListId());
