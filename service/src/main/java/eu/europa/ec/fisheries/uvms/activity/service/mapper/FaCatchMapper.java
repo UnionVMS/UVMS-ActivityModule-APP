@@ -257,7 +257,7 @@ public abstract class FaCatchMapper extends BaseMapper {
     }
 
     /**
-     * Depending on the catch type (typeCode->FaCatchEntity) returns a DTO containing the sums of ONBOARD and
+     * Depending on the catch type (typeCode -&gt; FaCatchEntity) returns a DTO containing the sums of ONBOARD and
      * LANDED fishQuantity and species.
      *
      * @param faCatches

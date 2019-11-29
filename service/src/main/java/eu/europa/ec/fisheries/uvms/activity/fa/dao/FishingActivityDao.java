@@ -51,7 +51,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     }
 
     /**
-     * To find out previous Activity date-->
+     * To find out previous Activity date
      * Use referenceId to find our previous FishingActivityReportDocument.
      * Then choose all the fishingActivities from that document with same FishingActivity Type and having date less than or equal to current fishingActivity
      */
@@ -101,7 +101,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
 
     /**
-     *  To find out next fishingActivityId -->
+     *  To find out next fishingActivityId
      *  Take fluxIdentifierId of current fishingActivity. Find  which other faReportDocument referenceId has fluxIdentifierId of current fishingActivity.
      *  Take that faReportDocument , and all the fishingActivities from that document with same FishingActivity Type and having date greater than or equal to current fishingActivity
      *

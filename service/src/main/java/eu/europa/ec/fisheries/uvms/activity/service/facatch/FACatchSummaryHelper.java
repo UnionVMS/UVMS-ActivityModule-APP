@@ -187,7 +187,7 @@ public abstract class FACatchSummaryHelper {
      * This method creates groups for various aggregation criterias and combine records for the group
      *
      * @param customEntities
-     * @return Map<FaCatchSummaryCustomEntity,List<FaCatchSummaryCustomEntity>> key => group value => list of records with that group
+     * @return key =&gt; group value =&gt; list of records with that group
      */
     public Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupByFACatchCustomEntities(List<FaCatchSummaryCustomProxy> customEntities) {
         Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap = new HashMap<>();
@@ -211,7 +211,7 @@ public abstract class FACatchSummaryHelper {
      * Post process data received from database to create FACatchSummaryRecordDTO. Every record will have summary calculated for it.
      *
      * @param groupedMap
-     * @return List<FACatchSummaryRecordDTO> Processed records having summary data
+     * @return Processed records having summary data
      */
     public abstract List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap);
 
