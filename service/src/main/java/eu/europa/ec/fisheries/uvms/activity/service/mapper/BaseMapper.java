@@ -104,20 +104,6 @@ public class BaseMapper {
         return mapFromFluxLocation(filtered);
     }
 
-    /* TODO: WTAF */
-    public static Set<FishingTripEntity> mapToFishingTripEntitySet(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {
-        if (fishingTrips == null || fishingTrips.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
-        for (FishingTrip fishingTrip : fishingTrips) {
-            FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
-            fishingTripEntity.getCatchEntities().add(faCatchEntity);
-            fishingTripEntities.add(fishingTripEntity);
-        }
-        return fishingTripEntities;
-    }
-
     public static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();

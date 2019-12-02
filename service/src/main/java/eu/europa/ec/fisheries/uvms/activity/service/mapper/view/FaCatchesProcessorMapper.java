@@ -301,8 +301,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         groupDetailsDto.setSize(actualEntity.getSizeDistribution() != null ? actualEntity.getSizeDistribution().getCategoryCode() : null);
         groupDetailsDto.setWeightingMeans(actualEntity.getWeighingMeansCode());
         groupDetailsDto.setUsage(actualEntity.getUsageCode());
-        //TODO: WTAF, If there are multiple fishing trips then it we cannot extract a single tripId?
-        groupDetailsDto.setTripId(null);
+        groupDetailsDto.setTripId(actualEntity.getFishingTrip().getFishingTripIdentifier().getTripId());
         groupDetailsDto.setDetailsAreSet(true);
     }
 
