@@ -42,14 +42,15 @@ public class FishingActivityMapperTest {
         FishingActivity fishingActivity = MapperUtil.getFishingActivity();
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
+        fishingActivityEntity.getFishingTrip().getFishingActivities().add(fishingActivityEntity);
 
         assertFishingActivityFields(fishingActivity, fishingActivityEntity);
         assertEquals(faReportDocumentEntity, fishingActivityEntity.getFaReportDocument());
 
-        assertNotNull(fishingActivityEntity.getFishingTrips());
-        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrips().iterator().next();
+        assertNotNull(fishingActivityEntity.getFishingTrip());
+        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrip();
         assertNotNull(fishingTripEntity);
-        assertFishingActivityFields(fishingActivity, fishingTripEntity.getFishingActivity());
+        assertFishingActivityFields(fishingActivity, fishingTripEntity.getFishingActivities().iterator().next());
 
         assertNotNull(fishingActivityEntity.getFaCatchs());
         FaCatchEntity faCatchEntity = fishingActivityEntity.getFaCatchs().iterator().next();

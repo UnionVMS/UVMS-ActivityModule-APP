@@ -137,15 +137,15 @@ public class ActivityDataUtil {
         FishingTripEntity fishingTripEntity = new FishingTripEntity();
         fishingTripEntity.setTypeCode(typeCode);
         fishingTripEntity.setTypeCodeListId(typeCodeListId);
-        fishingTripEntity.setFaCatch(faCatchEntity);
-        fishingTripEntity.setFishingActivity(fishingActivityEntity);
+        fishingTripEntity.getCatchEntities().add(faCatchEntity);
+        fishingTripEntity.getFishingActivities().add(fishingActivityEntity);
         return fishingTripEntity;
     }
 
 
     public static FishingTripIdentifierEntity getFishingTripIdentifierEntity(FishingTripEntity fishingTripEntity, String tripId, String tripSchemeId) {
         FishingTripIdentifierEntity fishingTripIdentifierEntity = new FishingTripIdentifierEntity();
-        fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
+        //fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
         fishingTripIdentifierEntity.setTripId(tripId);
         fishingTripIdentifierEntity.setTripSchemeId(tripSchemeId);
         fishingTripIdentifierEntity.setCalculatedTripEndDate(Instant.parse("2016-01-12T00:00:00Z"));

@@ -15,37 +15,24 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 
 @NamedQueries({
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRIP,
-				query = "SELECT fti from FishingTripIdentifierEntity fti " +
-						"INNER JOIN fti.fishingTrip ft " +
-						"INNER JOIN ft.fishingActivity fa " +
+				query = "SELECT fa.fishingTrip.fishingTripIdentifier FROM FishingActivityEntity fa " +
 						"INNER JOIN fa.faReportDocument frd " +
 						"INNER JOIN frd.vesselTransportMeans vtm " +
 						"INNER JOIN vtm.vesselIdentifiers vi " +
 						"WHERE vi.vesselIdentifierId = :vesselId " +
-						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
-						"ORDER BY frd.acceptedDatetime DESC"),
+						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId")
 
+		/*
+		//TODO: We need to rewrite this...
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_TRIP,
-				query = "SELECT fti from FishingTripIdentifierEntity fti " +
-						"INNER JOIN fti.fishingTrip ft " +
-						"INNER JOIN ft.fishingActivity fa " +
+				query = "SELECT fa.fishingTrip.fishingTripIdentifier FROM FishingActivityEntity fa " +
+						"INNER JOIN fa.fishingTrip ft " +
 						"INNER JOIN fa.faReportDocument frd " +
 						"INNER JOIN frd.vesselTransportMeans vtm " +
 						"INNER JOIN vtm.vesselIdentifiers vi " +
@@ -79,6 +66,7 @@ import java.time.Instant;
 													"WHERE sfti.tripId = :tripId" +
 													")" +
 						"ORDER BY frd.acceptedDatetime ASC")
+		 */
 })
 
 @Entity
@@ -110,8 +98,9 @@ public class FishingTripIdentifierEntity implements Serializable {
 	@Column(name = "calculated_trip_end_date")
 	private Instant calculatedTripEndDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fishing_trip_id")
-    private FishingTripEntity fishingTrip;
-
+	/*
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fishing_trip_id", referencedColumnName = "id")
+	private FishingTripEntity fishingTrip;
+	*/
 }

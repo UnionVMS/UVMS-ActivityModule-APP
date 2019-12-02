@@ -58,10 +58,10 @@ import java.util.Set;
                         "LEFT JOIN FETCH rpt.vesselTransportMeans vtm " +
                         "LEFT OUTER JOIN FETCH vtm.vesselIdentifiers vtmids " +
                         "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
-                        "JOIN FETCH act.fishingTrips fshtrp " +
-                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
+                        "JOIN FETCH act.fishingTrip fshtrp " +
+                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifier fshtrpid " +
                         "WHERE rpt.status IN (:statuses) " +
-                        "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
+                        "AND ((:tripId IS NULL) OR fshtrpid.tripId = :tripId) " +
                         "AND (" +
                                 ":startDate <= flxrep.creationDatetime " +
                                 "AND flxrep.creationDatetime <= :endDate)"
@@ -70,9 +70,9 @@ import java.util.Set;
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
                         "LEFT JOIN FETCH rpt.fishingActivities act " +
                         "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
-                        "JOIN FETCH act.fishingTrips fshtrp " +
-                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
-                        "WHERE fshtrpids.tripId = :tripId " +
+                        "JOIN FETCH act.fishingTrip fshtrp " +
+                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifier fshtrpid " +
+                        "WHERE fshtrpid.tripId = :tripId " +
                         "AND ((:area IS NULL) OR intersects(act.geom, :area) = true)"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_IDS_LIST,

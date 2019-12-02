@@ -93,35 +93,41 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
      */
     public void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry,
                                                         List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom, boolean includeFishingActivities) {
+        //TODO: WTAF
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 
+            /*
             Set<FishingTripIdentifierEntity> fishingTripIdList = entity.getFishingTripIdentifiers();
             if (fishingTripIdList == null) {
                 continue;
             }
 
             for (FishingTripIdentifierEntity id : fishingTripIdList) { // Identify unique FishingTrips and collect different geometries for that fishing trip.
-
                 FishingTripId tripIdObj = new FishingTripId(id.getTripId(), id.getTripSchemeId());
-                try {
-                    uniqueTripIdWithGeometry.put(tripIdObj, fillGeometrylist(uniqueTripIdWithGeometry,
-                            id.getFishingTrip().getFishingActivity().getFaReportDocument().getGeom(), tripIdObj));
-                } catch (Exception e) {
-                    LOG.error("Error occurred while trying to find Geometry for FishingTrip. Put tripID into separateList", e);
-                    fishingTripIdsWithoutGeom.add(tripIdObj);
+                for(FishingActivityEntity each : id.getFishingTrip().getFishingActivities()) {
+                    try {
+                        uniqueTripIdWithGeometry.put(tripIdObj, fillGeometrylist(uniqueTripIdWithGeometry,
+                                each.getFaReportDocument().getGeom(), tripIdObj));
+                    } catch (Exception e) {
+                        LOG.error("Error occurred while trying to find Geometry for FishingTrip. Put tripID into separateList", e);
+                        fishingTripIdsWithoutGeom.add(tripIdObj);
+                    }
                 }
             }
-
+*/
             if (includeFishingActivities) {
+                /* TODO: WTAF
                 FishingActivitySummary fishingActivitySummary = getFishingActivitySummary(uniqueFishingActivityIdList, entity);
                 if (fishingActivitySummary != null) {
                     fishingActivityLists.add(fishingActivitySummary);
                 }
+                */
             }
         }
     }
 
+    /* TODO: WTAF
     private FishingActivitySummary getFishingActivitySummary(Set<Integer> uniqueFishingActivityIdList, FishingTripEntity entity) {
         FishingActivitySummary fishingActivitySummary = null;
         FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
@@ -135,6 +141,8 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         }
         return fishingActivitySummary;
     }
+    */
+
 
     @NotNull
     private List<Geometry> fillGeometrylist(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, Geometry geometry, FishingTripId tripIdObj) {

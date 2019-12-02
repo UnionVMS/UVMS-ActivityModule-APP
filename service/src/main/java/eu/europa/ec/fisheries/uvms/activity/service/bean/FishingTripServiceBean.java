@@ -786,23 +786,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private TripWidgetDto createTripWidgetDtoWithFishingActivity(FishingActivityEntity activityEntity) throws ServiceException {
         TripWidgetDto tripWidgetDto = new TripWidgetDto();
-        Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips();
-
-        if (CollectionUtils.isEmpty(fishingTripEntities)) {
-            throw new ServiceException(" Could not find fishingTrips associated with FishingActivity id :" + activityEntity.getId());
-        }
         List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
-        // try to find unique tripIds for the fishing Activity
-        Set<String> tripIdSet = new HashSet<>();
-        for (FishingTripEntity fishingTripEntity : fishingTripEntities) {
-            Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
-            for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-                if (tripIdSet.add(tripIdentifierEntity.getTripId())) {
-                    log.debug("Get Trip summary information for tripID :" + tripIdentifierEntity.getTripId());
-                    tripOverviewDtoList.add(getTripOverviewDto(activityEntity, tripIdentifierEntity.getTripId()));
-                }
-            }
-        }
+        tripOverviewDtoList.add(getTripOverviewDto(activityEntity, activityEntity.getFishingTrip().getFishingTripIdentifier().getTripId()));
         tripWidgetDto.setTrips(tripOverviewDtoList);
         //As per new requirement, vessel should always be the one associated with fishing Activity in the trip widget
         if (activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
@@ -829,23 +814,13 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
         Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
         TripOverviewDto tripOverviewDto = new TripOverviewDto();
-        Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips(); // Find out fishingTrip schemeId matching to tripId from fishingActivity object.
-        for (FishingTripEntity fishingTripEntity : Utils.safeIterable(fishingTripEntities)) {
-            Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
-            for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-                if (tripId.equalsIgnoreCase(tripIdentifierEntity.getTripId())) {
-                    TripIdDto tripIdDto = new TripIdDto();
-                    tripIdDto.setId(tripId);
-                    tripIdDto.setSchemeId(tripIdentifierEntity.getTripSchemeId());
-                    List<TripIdDto> tripIdList = new ArrayList<>();
-                    tripIdList.add(tripIdDto);
-                    tripOverviewDto.setTripId(tripIdList);
-                    tripOverviewDto.setTypeCode(fishingTripEntity.getTypeCode());
-                    break;
-                }
-            }
-        }
-
+        TripIdDto tripIdDto = new TripIdDto();
+        tripIdDto.setId(tripId);
+        tripIdDto.setSchemeId(activityEntity.getFishingTrip().getFishingTripIdentifier().getTripSchemeId());
+        List<TripIdDto> tripIdList = new ArrayList<>();
+        tripIdList.add(tripIdDto);
+        tripOverviewDto.setTripId(tripIdList);
+        tripOverviewDto.setTypeCode(activityEntity.getFishingTrip().getTypeCode());
         populateTripOverviewDto(typeDTOMap, tripOverviewDto);
         return tripOverviewDto;
     }

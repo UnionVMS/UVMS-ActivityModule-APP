@@ -159,43 +159,32 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
 
         for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
-            Set<FishingTripEntity> fishingTripEntities = fishingActivityEntity.getFishingTrips();
-            if (CollectionUtils.isEmpty(fishingTripEntities)) {
-                continue;
-            }
-            for (FishingTripEntity fishingTripEntity : fishingTripEntities) {
-                setTripStartAndEndDateForFishingTrip(fishingTripEntity);
-            }
+            setTripStartAndEndDateForFishingTrip(fishingActivityEntity.getFishingTrip());
         }
     }
 
     private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
-        Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
-        if (CollectionUtils.isEmpty(identifierEntities)) {
+
+        if(fishingTripEntity.getFishingTripIdentifier() == null) {
             return;
         }
 
-        for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-            try {
-                List<FishingActivityEntity> fishingActivityEntityList = fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
-                if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
-                    //Calculate trip start date
-                    FishingActivityEntity firstFishingActivity = fishingActivityEntityList.get(0);
-                    tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
-                    // calculate trip end date
-                    Instant calculatedTripEndDate;
-                    int totalActivities = fishingActivityEntityList.size();
-                    if (totalActivities > 1) {
-                        calculatedTripEndDate = fishingActivityEntityList.get(totalActivities - 1).getCalculatedStartTime();
-                    } else {
-                        calculatedTripEndDate = firstFishingActivity.getCalculatedStartTime();
-                    }
-                    tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
-                }
-            } catch (Exception e) {
-                log.error("Error while trying to calculate FishingTrip start and end Date", e);
+        Instant calculatedTripStartDate = null;
+        Instant calculatedTripEndDate = null;
+
+        for(FishingActivityEntity fishingActivityEntity : fishingTripEntity.getFishingActivities()) {
+            if (calculatedTripStartDate == null || fishingActivityEntity.getCalculatedStartTime().isBefore(calculatedTripStartDate)) {
+                calculatedTripStartDate = fishingActivityEntity.getCalculatedStartTime();
             }
+            if (calculatedTripEndDate == null || fishingActivityEntity.getCalculatedStartTime().isAfter(calculatedTripEndDate)) {
+                // TODO: This cant be quite right can it?
+                calculatedTripEndDate = fishingActivityEntity.getCalculatedStartTime();
+            }
+
         }
+        //Calculate trip start date
+        fishingTripEntity.getFishingTripIdentifier().setCalculatedTripStartDate(calculatedTripStartDate);
+        fishingTripEntity.getFishingTripIdentifier().setCalculatedTripEndDate(calculatedTripEndDate);
     }
 
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument) {

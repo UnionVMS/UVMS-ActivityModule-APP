@@ -104,35 +104,12 @@ public class BaseMapper {
         return mapFromFluxLocation(filtered);
     }
 
-    public static Set<FishingTripEntity> mapToFishingTripEntitySet(FishingTrip fishingTrip, FishingActivityEntity fishingActivityEntity) {
-        if (fishingTrip == null) {
-            return Collections.emptySet();
-        }
-        FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
-        fishingTripEntity.setFishingActivity(fishingActivityEntity);
-        return Sets.newHashSet(fishingTripEntity);
-    }
-
-    public static Set<FishingTripEntity> mapToFishingTripEntitySet(List<FishingTrip> fishingTrips, FaCatchEntity faCatchEntity) {
-        if (fishingTrips == null || fishingTrips.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FishingTripEntity> fishingTripEntities = new HashSet<>();
-        for (FishingTrip fishingTrip : fishingTrips) {
-            FishingTripEntity fishingTripEntity = mapToFishingTripEntity(fishingTrip);
-
-            fishingTripEntity.setFaCatch(faCatchEntity);
-            fishingTripEntities.add(fishingTripEntity);
-        }
-        return fishingTripEntities;
-    }
-
-    private static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
+    public static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();
-        for (IDType idType : Utils.safeIterable(ids)) {
-            fishingTripEntity.addFishingTripIdentifiers(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
-        }
+        // TODO: WTAF, should be one and only one?
+        IDType idType = ids.get(0);
+        fishingTripEntity.setFishingTripIdentifier(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
 
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
         for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {

@@ -11,13 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
@@ -34,13 +28,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,7 +64,6 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))"),
             @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))"),
             @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))"),
-            @Mapping(target = "fishingTrips", expression = "java(BaseMapper.mapToFishingTripEntitySet(faCatch.getRelatedFishingTrips(), faCatchEntity))"),
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "fishingActivity", ignore = true),
             @Mapping(target = "calculatedUnitQuantity", ignore = true),
@@ -89,6 +76,8 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "gfcmGsa", ignore = true),
             @Mapping(target = "gfcmStatRectangle", ignore = true),
             @Mapping(target = "presentation", ignore = true),
+            //TODO: Fix this
+            @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))"),
             @Mapping(target = "gearTypeCode", ignore = true)
     })
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
@@ -159,6 +148,13 @@ public abstract class FaCatchMapper extends BaseMapper {
             }
         }
         return assetIdentifierDtos;
+    }
+
+    protected FishingTripEntity getFishingTripEntity(List<FishingTrip> relatedFishingTrips) {
+        if(relatedFishingTrips == null || relatedFishingTrips.size() == 0) {
+            return null;
+        }
+        return FishingTripMapper.INSTANCE.mapToFishingTripEntity(relatedFishingTrips.get(0));
     }
 
     protected VesselTransportMeansEntity getVesselTransportMeansForRelocation(FaCatchEntity faCatch) {

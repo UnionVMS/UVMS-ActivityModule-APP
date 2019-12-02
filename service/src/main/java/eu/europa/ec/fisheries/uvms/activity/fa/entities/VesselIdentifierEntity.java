@@ -32,14 +32,14 @@ import java.io.Serializable;
 
 @NamedQueries({
 		@NamedQuery(name = VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
-				query = "SELECT vi from FishingTripIdentifierEntity fti " +
-						"INNER JOIN fti.fishingTrip ft " +
-						"INNER JOIN ft.fishingActivity fa " +
+				//TODO: Rewrite
+				query = "SELECT vi FROM FishingActivityEntity fa " +
 						"INNER JOIN fa.faReportDocument frd " +
-						"INNER JOIN frd.vesselTransportMeans vt " +
-						"INNER JOIN vt.vesselIdentifiers vi " +
-						"WHERE fti.tripId = :tripId " +
+						"INNER JOIN frd.vesselTransportMeans vtm " +
+						"INNER JOIN vtm.vesselIdentifiers vi " +
+						"WHERE fa.fishingTrip.fishingTripIdentifier.tripId = :tripId " +
 						"ORDER BY frd.acceptedDatetime DESC")
+
 })
 @Entity
 @Table(name = "activity_vessel_identifier")
@@ -54,9 +54,9 @@ public class VesselIdentifierEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    private int id;
+	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+	private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vessel_transport_mean_id")

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.7/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="anwall" id="move_trip_to_fa">
+        <dropColumn tableName="activity_fishing_trip" columnName="fishing_activity_id" />
+        <dropColumn tableName="activity_fishing_trip_identifier" columnName="fishing_trip_id" />
+        <addColumn tableName="activity_fishing_activity">
+            <column name="fishing_trip_id" type="int" />
+        </addColumn>
+        <addColumn tableName="activity_fishing_trip">
+            <column name="fishing_trip_identifier_id" type="int" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="anwall" id="move_trip_to_catch">
+        <dropColumn tableName="activity_fishing_trip" columnName="fa_catch_id" />
+        <addColumn tableName="activity_fa_catch">
+            <column name="fishing_trip_id" type="int" />
+        </addColumn>
+    </changeSet>
+    
+</databaseChangeLog>

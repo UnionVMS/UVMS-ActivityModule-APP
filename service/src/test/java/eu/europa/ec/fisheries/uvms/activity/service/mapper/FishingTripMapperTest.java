@@ -18,9 +18,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by padhyad on 7/29/2016.
@@ -34,10 +32,10 @@ public class FishingTripMapperTest {
 
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
-        assertNull(fishingTripEntity.getFishingActivity());
+        assertNotNull(fishingTripEntity.getFishingActivities());
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
-        assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
+        assertNotNull(fishingTripEntity.getFishingTripIdentifier());
 
     }
 
@@ -48,10 +46,10 @@ public class FishingTripMapperTest {
 
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
-        assertNull(fishingTripEntity.getFaCatch());
+        assertTrue(fishingTripEntity.getCatchEntities().size() == 0);
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
-        assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
+        assertNotNull(fishingTripEntity.getFishingTripIdentifier());
 
     }
 }

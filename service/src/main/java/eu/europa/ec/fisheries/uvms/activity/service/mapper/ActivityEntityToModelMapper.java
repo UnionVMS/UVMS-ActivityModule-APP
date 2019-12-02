@@ -189,10 +189,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
         target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
 
-        List<FishingTrip> fishingTrips = FishingTripMapper.INSTANCE.mapToFishingTripList(source.getFishingTrips());
-        if (CollectionUtils.isNotEmpty(fishingTrips)) {
-            target.setSpecifiedFishingTrip(fishingTrips.get(0));
-        }
+        target.setSpecifiedFishingTrip(FishingTripMapper.INSTANCE.mapToFishingTrip(source.getFishingTrip()));
 
         target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
 
@@ -217,7 +214,8 @@ public class ActivityEntityToModelMapper extends BaseMapper {
                     faCatch.setSpecifiedFLUXLocations(specified);
                     faCatch.setDestinationFLUXLocations(destination);
                 }
-                faCatch.setRelatedFishingTrips(FishingTripMapper.INSTANCE.mapToFishingTripList(faCatchEntity.getFishingTrips()));
+                // TODO: This cant be right
+                faCatch.getRelatedFishingTrips().add(FishingTripMapper.INSTANCE.mapToFishingTrip(faCatchEntity.getFishingTrip()));
                 faCatchList.add(faCatch);
             }
             target.setSpecifiedFACatches(faCatchList);
