@@ -24,8 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -52,7 +54,10 @@ public class FACatchResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getFACatchSummaryReport(FishingActivityQuery fishingActivityQuery) throws ServiceException {
+    public Response getFACatchSummaryReport(@Context HttpServletRequest request,
+                                            @HeaderParam("scopeName") String scopeName,
+                                            @HeaderParam("roleName") String roleName,
+                                            FishingActivityQuery fishingActivityQuery) throws ServiceException {
 
         log.debug("Query Received to getFACatchSummaryReport. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
@@ -69,7 +74,10 @@ public class FACatchResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response getFACatchSummaryDetails(@PathParam("fishingTripId") String tripId) throws ServiceException {
+    public Response getFACatchSummaryDetails(@Context HttpServletRequest request,
+                                             @HeaderParam("scopeName") String scopeName,
+                                             @HeaderParam("roleName") String roleName,
+                                             @PathParam("fishingTripId") String tripId) throws ServiceException {
         log.debug("getFACatchSummaryDetails: " + tripId);
         return createSuccessResponse( reportService.getCatchDetailsScreen(tripId));
     }
