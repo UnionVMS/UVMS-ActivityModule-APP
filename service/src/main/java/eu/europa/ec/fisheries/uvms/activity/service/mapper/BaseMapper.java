@@ -105,6 +105,10 @@ public class BaseMapper {
     }
 
     public static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
+        if (fishingTrip == null) {
+            return null;
+        }
+
         FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();
         // TODO: WTAF, should be one and only one?

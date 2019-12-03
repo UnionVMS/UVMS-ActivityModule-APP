@@ -208,7 +208,7 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "fishing_trip_id")
 	private FishingTripEntity fishingTrip;
 

@@ -50,7 +50,7 @@ public class FishingTripEntity implements Serializable {
 	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "fishing_trip_identifier_id")
 	private FishingTripIdentifierEntity fishingTripIdentifier;
 
