@@ -40,6 +40,10 @@ import java.util.Set;
 @Slf4j
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
+    private static final String VESSEL_ID = "vesselId";
+    private static final String VESSEL_SCHEME_ID = "vesselSchemeId";
+    private static final String TRIP_ID = "tripId";
+
     private EntityManager em;
 
     public FishingTripDao(EntityManager em) {
@@ -53,8 +57,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
     public List<FishingActivityEntity> getFishingActivitiesForFishingTripId(String fishingTripId){
         String sql = "SELECT DISTINCT a from FishingActivityEntity a JOIN a.fishingTrip fishingTrip" +
-                "  JOIN fishingTrip.fishingTripIdentifier fi" +
-                "  where fi.tripId =:fishingTripId order by a.calculatedStartTime ASC";
+                "  where fishingTrip.tripId =:fishingTripId order by a.calculatedStartTime ASC";
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
         typedQuery.setParameter("fishingTripId", fishingTripId);
         return typedQuery.getResultList();
@@ -125,6 +128,37 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         log.debug("SQL:" + sqlToGetActivityList);
         TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(), Object[].class);
         return search.fillInValuesForQuery(query, typedQuery);
+    }
+
+    public FishingTripEntity getCurrentTrip(String vesselId, String vesselSchemeId) {
+        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_CURRENT_TRIP, FishingTripEntity.class);
+        query.setParameter(VESSEL_ID, vesselId);
+        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
+        query.setMaxResults(1);
+        List<FishingTripEntity> fishingTripIdentifies = query.getResultList();
+        if (CollectionUtils.isNotEmpty(fishingTripIdentifies)) {
+            return fishingTripIdentifies.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public List<FishingTripEntity> getPreviousTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
+        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_PREVIOUS_TRIP, FishingTripEntity.class);
+        query.setParameter(VESSEL_ID, vesselId);
+        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
+        query.setParameter(TRIP_ID, tripId);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
+
+    public List<FishingTripEntity> getNextTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
+        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_NEXT_TRIP, FishingTripEntity.class);
+        query.setParameter(VESSEL_ID, vesselId);
+        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
+        query.setParameter(TRIP_ID, tripId);
+        query.setMaxResults(limit);
+        return query.getResultList();
     }
 
 }

@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -40,7 +39,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -189,10 +187,8 @@ public class ActivityServiceBeanTest {
 
         FishingTripEntity fishTrip = new FishingTripEntity();
 
-        FishingTripIdentifierEntity tripident = new FishingTripIdentifierEntity();
-        tripident.setTripId("tripId");
-        tripident.setTripSchemeId("tripSchemeId");
-        fishTrip.setFishingTripIdentifier(tripident);
+        fishTrip.setTripId("tripId");
+        fishTrip.setTripSchemeId("tripSchemeId");
 
         fishTrip.setTypeCode("someTripCode");
         fishTrip.getFishingActivities().add(fishAct);

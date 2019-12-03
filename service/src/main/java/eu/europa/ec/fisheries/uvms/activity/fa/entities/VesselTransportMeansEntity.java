@@ -46,7 +46,7 @@ import java.util.Set;
                         "INNER JOIN fa.faReportDocument frd " +
                         "INNER JOIN frd.vesselTransportMeans vt " +
                         "INNER JOIN vt.vesselIdentifiers vi " +
-                        "WHERE ft.fishingTripIdentifier.tripId = :tripId " +
+                        "WHERE ft.tripId = :tripId " +
                         "ORDER BY frd.acceptedDatetime DESC")
 })
 @Entity

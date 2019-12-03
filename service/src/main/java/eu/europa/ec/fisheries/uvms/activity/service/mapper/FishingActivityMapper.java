@@ -21,7 +21,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
@@ -35,16 +34,16 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationSchemeId;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxReportIdentifierDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.ReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityDetailsDto;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -670,11 +669,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingActivityEntity == null) {
             return null;
         }
-        if(fishingActivityEntity.getFishingTrip().getFishingTripIdentifier() == null) {
+        if (fishingActivityEntity.getFishingTrip() == null) {
             return null;
         }
 
-        return fishingActivityEntity.getFishingTrip().getFishingTripIdentifier().getTripId();
+        return fishingActivityEntity.getFishingTrip().getTripId();
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {

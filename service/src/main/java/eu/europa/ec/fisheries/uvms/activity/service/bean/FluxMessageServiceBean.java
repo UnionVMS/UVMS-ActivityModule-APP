@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
@@ -165,14 +164,14 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
 
-        if(fishingTripEntity.getFishingTripIdentifier() == null) {
+        if (fishingTripEntity.getTripId() == null) {
             return;
         }
 
         Instant calculatedTripStartDate = null;
         Instant calculatedTripEndDate = null;
 
-        for(FishingActivityEntity fishingActivityEntity : fishingTripEntity.getFishingActivities()) {
+        for (FishingActivityEntity fishingActivityEntity : fishingTripEntity.getFishingActivities()) {
             if (calculatedTripStartDate == null || fishingActivityEntity.getCalculatedStartTime().isBefore(calculatedTripStartDate)) {
                 calculatedTripStartDate = fishingActivityEntity.getCalculatedStartTime();
             }
@@ -183,8 +182,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
         }
         //Calculate trip start date
-        fishingTripEntity.getFishingTripIdentifier().setCalculatedTripStartDate(calculatedTripStartDate);
-        fishingTripEntity.getFishingTripIdentifier().setCalculatedTripEndDate(calculatedTripEndDate);
+        fishingTripEntity.setCalculatedTripStartDate(calculatedTripStartDate);
+        fishingTripEntity.setCalculatedTripEndDate(calculatedTripEndDate);
     }
 
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument) {

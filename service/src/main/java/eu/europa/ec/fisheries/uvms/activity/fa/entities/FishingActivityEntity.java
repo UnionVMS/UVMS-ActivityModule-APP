@@ -63,26 +63,23 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
-						"JOIN FETCH ft.fishingTripIdentifier fi " +
 						"where (intersects(fa.geom, :area) = true " +
-						"and fi.tripId =:fishingTripId) " +
+						"and ft.tripId =:fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime"),
 		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
 				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
-						"JOIN FETCH ft.fishingTripIdentifier fi " +
-						"where fi.tripId =:fishingTripId " +
+						"where ft.tripId =:fishingTripId " +
 						"order by a.typeCode,fa.acceptedDatetime"),
 		@NamedQuery(name = FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP,
 				query = "SELECT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
-						"JOIN FETCH ft.fishingTripIdentifier fi " +
-						"where fi.tripId = :fishingTripId and " +
-						"fi.tripSchemeId = :tripSchemeId and " +
+						"where ft.tripId = :fishingTripId and " +
+						"ft.tripSchemeId = :tripSchemeId and " +
 						"a.typeCode = :fishActTypeCode and " +
 						"flux.purposeCode in (:flPurposeCodes)")
 })

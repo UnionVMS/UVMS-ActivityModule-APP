@@ -16,8 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
@@ -301,7 +299,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         groupDetailsDto.setSize(actualEntity.getSizeDistribution() != null ? actualEntity.getSizeDistribution().getCategoryCode() : null);
         groupDetailsDto.setWeightingMeans(actualEntity.getWeighingMeansCode());
         groupDetailsDto.setUsage(actualEntity.getUsageCode());
-        groupDetailsDto.setTripId(actualEntity.getFishingTrip().getFishingTripIdentifier().getTripId());
+        groupDetailsDto.setTripId(actualEntity.getFishingTrip().getTripId());
         groupDetailsDto.setDetailsAreSet(true);
     }
 

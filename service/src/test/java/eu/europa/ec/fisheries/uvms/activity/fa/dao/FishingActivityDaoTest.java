@@ -14,10 +14,9 @@ import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.BaseErsFaDaoTest;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import lombok.SneakyThrows;
 import org.junit.Before;
@@ -80,8 +79,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertEquals(1, fishingActivityEntity.getId());
 
         FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrip();
-        FishingTripIdentifierEntity fishingTripIdentifier = fishingTripEntity.getFishingTripIdentifier();
-        assertEquals("NOR-TRP-20160517234053706", fishingTripIdentifier.getTripId());
+        assertEquals("NOR-TRP-20160517234053706", fishingTripEntity.getTripId());
     }
 
     @Test

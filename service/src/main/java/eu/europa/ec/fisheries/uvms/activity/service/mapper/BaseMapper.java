@@ -113,7 +113,10 @@ public class BaseMapper {
         List<IDType> ids = fishingTrip.getIDS();
         // TODO: WTAF, should be one and only one?
         IDType idType = ids.get(0);
-        fishingTripEntity.setFishingTripIdentifier(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(idType));
+        if (idType != null) {
+            fishingTripEntity.setTripId(idType.getValue());
+            fishingTripEntity.setTripSchemeId(idType.getSchemeID());
+        }
 
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
         for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {

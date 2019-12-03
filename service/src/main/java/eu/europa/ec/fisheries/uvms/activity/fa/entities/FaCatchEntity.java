@@ -46,8 +46,7 @@ import java.util.Set;
 						"JOIN faCatch.fishingActivity fishAct " +
 						"JOIN fishAct.faReportDocument fa " +
 						"JOIN fishAct.fishingTrip fishTrip " +
-						"JOIN fishTrip.fishingTripIdentifier fishIdent " +
-						"WHERE fishIdent.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
+						"WHERE fishTrip.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
 						"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.fluxLocationIdentifier " +
 						"ORDER BY faCatch.typeCode, faCatch.speciesCode")
 })

@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
@@ -140,17 +139,6 @@ public class ActivityDataUtil {
         fishingTripEntity.getCatchEntities().add(faCatchEntity);
         fishingTripEntity.getFishingActivities().add(fishingActivityEntity);
         return fishingTripEntity;
-    }
-
-
-    public static FishingTripIdentifierEntity getFishingTripIdentifierEntity(FishingTripEntity fishingTripEntity, String tripId, String tripSchemeId) {
-        FishingTripIdentifierEntity fishingTripIdentifierEntity = new FishingTripIdentifierEntity();
-        //fishingTripIdentifierEntity.setFishingTrip(fishingTripEntity);
-        fishingTripIdentifierEntity.setTripId(tripId);
-        fishingTripIdentifierEntity.setTripSchemeId(tripSchemeId);
-        fishingTripIdentifierEntity.setCalculatedTripEndDate(Instant.parse("2016-01-12T00:00:00Z"));
-        fishingTripIdentifierEntity.setCalculatedTripStartDate(Instant.parse("2013-01-12T00:00:00Z"));
-        return fishingTripIdentifierEntity;
     }
 
     public static ContactPartyEntity getContactPartyEntity(String title, String givenName, String middleName, String familyName, String familyNamePrefix, String nameSuffix, String gender, String alias) {

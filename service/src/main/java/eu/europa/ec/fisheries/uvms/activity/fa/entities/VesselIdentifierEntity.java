@@ -37,7 +37,7 @@ import java.io.Serializable;
 						"INNER JOIN fa.faReportDocument frd " +
 						"INNER JOIN frd.vesselTransportMeans vtm " +
 						"INNER JOIN vtm.vesselIdentifiers vi " +
-						"WHERE fa.fishingTrip.fishingTripIdentifier.tripId = :tripId " +
+						"WHERE fa.fishingTrip.tripId = :tripId " +
 						"ORDER BY frd.acceptedDatetime DESC")
 
 })

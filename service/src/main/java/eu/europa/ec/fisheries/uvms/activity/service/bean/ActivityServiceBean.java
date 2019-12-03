@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
@@ -233,13 +233,13 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     }
 
     private void addToIdsList(List<FaIdsListWithTripIdMap> responseList, FishingActivityEntity faEntity) {
-        FishingTripIdentifierEntity fishingTripIdentifier = faEntity.getFishingTrip().getFishingTripIdentifier();
+        FishingTripEntity fishingTrip = faEntity.getFishingTrip();
         List<FishingActivityWithIdentifiers> faIdentifiers = mapToActivityIdsAndType(faEntity.getFishingActivityIdentifiers(), faEntity.getTypeCode());
-        FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, fishingTripIdentifier.getTripId());
+        FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, fishingTrip.getTripId());
         if (null != existingActWithIdentifiers) {
             existingActWithIdentifiers.getFaIdentifierLists().addAll(faIdentifiers);
         } else {
-            responseList.add(new FaIdsListWithTripIdMap(fishingTripIdentifier.getTripId(), fishingTripIdentifier.getTripSchemeId(), faIdentifiers));
+            responseList.add(new FaIdsListWithTripIdMap(fishingTrip.getTripId(), fishingTrip.getTripSchemeId(), faIdentifiers));
         }
     }
 

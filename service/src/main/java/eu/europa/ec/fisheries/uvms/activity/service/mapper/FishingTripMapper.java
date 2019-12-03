@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,7 +24,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(uses = {FishingTripIdentifierMapper.class, DelimitedPeriodMapper.class},
+@Mapper(uses = {DelimitedPeriodMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FishingTripMapper {
 
@@ -35,23 +34,47 @@ public abstract class FishingTripMapper {
             @Mapping(target = "typeCode", source = "typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "delimitedPeriods", ignore = true),
-            @Mapping(target = "fishingTripIdentifier", expression = "java(FishingTripIdentifierMapper.INSTANCE.mapToFishingTripIdentifier(fishingTrip.getIDS().get(0)))"),
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "catchEntities", ignore = true),
             @Mapping(target = "fishingActivities", ignore = true),
+            @Mapping(target = "tripId", expression = "java(mapToTripId(fishingTrip))"),
+            @Mapping(target = "tripSchemeId", expression = "java(mapToSchemeId(fishingTrip))"),
+            @Mapping(target = "calculatedTripStartDate", ignore = true),
+            @Mapping(target = "calculatedTripEndDate", ignore = true)
     })
     public abstract FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip);
 
     @InheritInverseConfiguration
     @Mappings({
             @Mapping(source = "delimitedPeriods", target = "specifiedDelimitedPeriods"),
-            @Mapping(target = "IDS", expression = "java(mapToIDS(fishingTrip.getFishingTripIdentifier()))"),
+            @Mapping(target = "IDS", expression = "java(mapToIDS(fishingTrip))"),
     })
     public abstract FishingTrip mapToFishingTrip(FishingTripEntity fishingTrip);
 
-    protected List<IDType> mapToIDS(FishingTripIdentifierEntity fishingTripIdentifierEntity) {
+    protected String mapToTripId(FishingTrip fishingTrip) {
+        List<IDType> ids = fishingTrip.getIDS();
+        IDType idType = ids.get(0);
+        if (idType != null) {
+            return idType.getValue();
+        }
+        return null;
+    }
+
+    protected String mapToSchemeId(FishingTrip fishingTrip) {
+        List<IDType> ids = fishingTrip.getIDS();
+        IDType idType = ids.get(0);
+        if (idType != null) {
+            return idType.getSchemeID();
+        }
+        return null;
+    }
+
+    protected List<IDType> mapToIDS(FishingTripEntity fishingTripEntity) {
         List<IDType> IDS = new ArrayList<>();
-        IDS.add(FishingTripIdentifierMapper.INSTANCE.mapToIDType(fishingTripIdentifierEntity));
+        IDType idType = new IDType();
+        idType.setValue(fishingTripEntity.getTripId());
+        idType.setSchemeID(fishingTripEntity.getTripSchemeId());
+        IDS.add(idType);
         return IDS;
     }
 
