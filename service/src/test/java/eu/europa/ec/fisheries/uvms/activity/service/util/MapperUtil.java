@@ -21,6 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
@@ -173,8 +174,7 @@ public class MapperUtil {
 
         entity= ActivityDataUtil.getFishingTripEntity("JFO", "EU_TRIP_ID",faCatchEntity,fishingActivityEntity1);
 
-        entity.setTripId("NOR-TRP-20160517234053706");
-        entity.setTripSchemeId("EU_TRIP_ID");
+        entity.setFishingTripKey(new FishingTripKey("NOR-TRP-20160517234053706", "EU_TRIP_ID"));
         entity.setCalculatedTripEndDate(Instant.parse("2016-01-12T00:00:00Z"));
         entity.setCalculatedTripStartDate(Instant.parse("2013-01-12T00:00:00Z"));
         return entity;

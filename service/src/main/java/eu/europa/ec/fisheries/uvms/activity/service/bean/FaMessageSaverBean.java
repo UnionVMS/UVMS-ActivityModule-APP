@@ -36,7 +36,7 @@ public class FaMessageSaverBean extends BaseActivityBean {
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public FluxFaReportMessageEntity saveReportMessageNow(FluxFaReportMessageEntity messageEntity) throws
             ServiceException {
-        return fluxReportMessageDao.createEntity(messageEntity);
+        return fluxReportMessageDao.saveOrUpdateEntity(messageEntity);
     }
 
 }

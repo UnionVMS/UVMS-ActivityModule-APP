@@ -235,11 +235,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     private void addToIdsList(List<FaIdsListWithTripIdMap> responseList, FishingActivityEntity faEntity) {
         FishingTripEntity fishingTrip = faEntity.getFishingTrip();
         List<FishingActivityWithIdentifiers> faIdentifiers = mapToActivityIdsAndType(faEntity.getFishingActivityIdentifiers(), faEntity.getTypeCode());
-        FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, fishingTrip.getTripId());
+        FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, fishingTrip.getFishingTripKey().getTripId());
         if (null != existingActWithIdentifiers) {
             existingActWithIdentifiers.getFaIdentifierLists().addAll(faIdentifiers);
         } else {
-            responseList.add(new FaIdsListWithTripIdMap(fishingTrip.getTripId(), fishingTrip.getTripSchemeId(), faIdentifiers));
+            responseList.add(new FaIdsListWithTripIdMap(fishingTrip.getFishingTripKey().getTripId(), fishingTrip.getFishingTripKey().getTripSchemeId(), faIdentifiers));
         }
     }
 

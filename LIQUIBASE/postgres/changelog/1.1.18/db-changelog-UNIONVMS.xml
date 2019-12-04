@@ -32,4 +32,44 @@
         <dropColumn tableName="activity_fishing_trip" columnName="fishing_trip_identifier_id" />
     </changeSet>
 
+    <changeSet author="robkra" id="update_delimited_period_table_with_new_trip_composite_fk" >
+        <dropColumn tableName="activity_delimited_period" columnName="fishing_trip_id" />
+        <addColumn tableName="activity_delimited_period">
+            <column name="trip_id" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="activity_delimited_period">
+            <column name="trip_scheme_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="update_catch_table_with_new_trip_composite_fk" >
+        <dropColumn tableName="activity_fa_catch" columnName="fishing_trip_id" />
+        <addColumn tableName="activity_fa_catch">
+            <column name="trip_id" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="activity_fa_catch">
+            <column name="trip_scheme_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="update_fishing_activity_table_with_new_trip_composite_fk" >
+        <dropColumn tableName="activity_fishing_activity" columnName="fishing_trip_id" />
+        <addColumn tableName="activity_fishing_activity">
+            <column name="trip_id" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="activity_fishing_activity">
+            <column name="trip_scheme_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="drop_id_column_on_fishing_trip_table" >
+        <dropColumn tableName="activity_fishing_trip" columnName="id" />
+    </changeSet>
+
+    <changeSet author="robkra" id="add_new_primary_key_on_fishing_trip_table" >
+        <addPrimaryKey tableName="activity_fishing_trip"
+                       columnNames="trip_id, trip_scheme_id"
+                       constraintName="fishing_trip_pk" />
+    </changeSet>
+
 </databaseChangeLog>

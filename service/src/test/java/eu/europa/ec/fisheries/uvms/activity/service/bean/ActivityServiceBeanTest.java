@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -187,8 +188,7 @@ public class ActivityServiceBeanTest {
 
         FishingTripEntity fishTrip = new FishingTripEntity();
 
-        fishTrip.setTripId("tripId");
-        fishTrip.setTripSchemeId("tripSchemeId");
+        fishTrip.setFishingTripKey(new FishingTripKey("tripId", "tripSchemeId"));
 
         fishTrip.setTypeCode("someTripCode");
         fishTrip.getFishingActivities().add(fishAct);

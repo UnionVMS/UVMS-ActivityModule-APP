@@ -24,6 +24,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
@@ -50,7 +51,10 @@ public class DelimitedPeriodEntity implements Serializable {
 	private FishingActivityEntity fishingActivity;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_trip_id")
+    @JoinColumns({
+            @JoinColumn(name = "trip_id", referencedColumnName = "trip_id"),
+            @JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
+    })
 	private FishingTripEntity fishingTrip;
 	
 	@Column(name = "start_date")

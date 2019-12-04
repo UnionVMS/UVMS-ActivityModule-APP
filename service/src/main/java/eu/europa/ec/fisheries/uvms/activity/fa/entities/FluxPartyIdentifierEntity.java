@@ -46,7 +46,7 @@ import java.io.Serializable;
                         "LEFT JOIN fluxRepMessage.faReportDocuments faRepDocs " +
                         "LEFT JOIN faRepDocs.fishingActivities fishActivities " +
                         "LEFT JOIN fishActivities.fishingTrip fishTrip " +
-                        "WHERE fishTrip.tripId =:fishingTripId")
+                        "WHERE fishTrip.fishingTripKey.tripId =:fishingTripId")
 })
 @EqualsAndHashCode(of = {"fluxPartyIdentifierId","fluxPartyIdentifierSchemeId"})
 public class FluxPartyIdentifierEntity implements Serializable {

@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
@@ -113,7 +114,7 @@ public class FishingTripServiceBeanTest {
 
         //Assert
         assertEquals(selectedTrip, cronology.getSelectedTrip());
-        assertEquals(currentTrip.getTripId(), cronology.getCurrentTrip());
+        assertEquals(currentTrip.getFishingTripKey().getTripId(), cronology.getCurrentTrip());
         List<String> previousIds = getIds(previousTrips);
         assertEquals(previousIds.subList(3, previousIds.size()), cronology.getPreviousTrips());
         List<String> nextIds = getIds(nextTrips);
@@ -137,7 +138,7 @@ public class FishingTripServiceBeanTest {
         CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 2);
 
         assertEquals(selectedTrip, cronology.getSelectedTrip());
-        assertEquals(currentTrip.getTripId(), cronology.getCurrentTrip());
+        assertEquals(currentTrip.getFishingTripKey().getTripId(), cronology.getCurrentTrip());
         List<String> previousIds = getIds(previousTrips);
         assertEquals(previousIds.subList(1, previousIds.size()), cronology.getPreviousTrips());
     }
@@ -159,7 +160,7 @@ public class FishingTripServiceBeanTest {
         CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 0);
 
         assertEquals(selectedTrip, cronology.getSelectedTrip());
-        assertEquals(currentTrip.getTripId(), cronology.getCurrentTrip());
+        assertEquals(currentTrip.getFishingTripKey().getTripId(), cronology.getCurrentTrip());
         List<String> previousIds = getIds(previousTrips);
         assertEquals(previousIds, cronology.getPreviousTrips());
         List<String> nextIds = getIds(nextTrips);
@@ -183,7 +184,7 @@ public class FishingTripServiceBeanTest {
         CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 1);
 
         assertEquals(selectedTrip, cronology.getSelectedTrip());
-        assertEquals(currentTrip.getTripId(), cronology.getCurrentTrip());
+        assertEquals(currentTrip.getFishingTripKey().getTripId(), cronology.getCurrentTrip());
 
         assertEquals(0, cronology.getPreviousTrips().size());
         assertEquals(0, cronology.getNextTrips().size());
@@ -192,7 +193,7 @@ public class FishingTripServiceBeanTest {
     private List<String> getIds(List<FishingTripEntity> entities) {
         List<String> ids = new ArrayList<>();
         for (FishingTripEntity trip : entities) {
-            ids.add(trip.getTripId());
+            ids.add(trip.getFishingTripKey().getTripId());
         }
         return ids;
     }
@@ -214,8 +215,7 @@ public class FishingTripServiceBeanTest {
 
     private FishingTripEntity getCurrentTrip() {
         FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        fishingTripEntity.setTripId("Current Trip");
-        fishingTripEntity.setTripSchemeId("Current Trip scheme Id");
+        fishingTripEntity.setFishingTripKey(new FishingTripKey("Current Trip", "Current Trip scheme Id"));
         return fishingTripEntity;
     }
 
@@ -223,8 +223,7 @@ public class FishingTripServiceBeanTest {
         List<FishingTripEntity> previousTrips = new ArrayList<>();
         for (int i = 1; i <= numberOfRecord; i++) {
             FishingTripEntity fishingTripEntity = new FishingTripEntity();
-            fishingTripEntity.setTripId("Previous Trip " + i);
-            fishingTripEntity.setTripSchemeId("Previous Scheme " + i);
+            fishingTripEntity.setFishingTripKey(new FishingTripKey("Previous Trip " + i, "Previous Scheme " + i));
             previousTrips.add(fishingTripEntity);
         }
         return previousTrips;
@@ -234,8 +233,7 @@ public class FishingTripServiceBeanTest {
         List<FishingTripEntity> nextTrips = new ArrayList<>();
         for (int i = 1; i <= numberOfRecord; i++) {
             FishingTripEntity fishingTripEntity = new FishingTripEntity();
-            fishingTripEntity.setTripId("Next Trip " + i);
-            fishingTripEntity.setTripSchemeId("Next Scheme " + i);
+            fishingTripEntity.setFishingTripKey(new FishingTripKey("Next Trip " + i, "Next Scheme " + i));
             nextTrips.add(fishingTripEntity);
         }
         return nextTrips;

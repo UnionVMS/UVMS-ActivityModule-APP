@@ -25,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -46,7 +47,7 @@ import java.util.Set;
 						"JOIN faCatch.fishingActivity fishAct " +
 						"JOIN fishAct.faReportDocument fa " +
 						"JOIN fishAct.fishingTrip fishTrip " +
-						"WHERE fishTrip.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
+						"WHERE fishTrip.fishingTripKey.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
 						"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.fluxLocationIdentifier " +
 						"ORDER BY faCatch.typeCode, faCatch.speciesCode")
 })
@@ -162,7 +163,10 @@ public class FaCatchEntity implements Serializable {
 	private Set<AapStockEntity> aapStocks = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_trip_id")
+	@JoinColumns({
+			@JoinColumn(name = "trip_id", referencedColumnName = "trip_id"),
+			@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
+	})
 	private FishingTripEntity fishingTrip;
 
 	@PrePersist

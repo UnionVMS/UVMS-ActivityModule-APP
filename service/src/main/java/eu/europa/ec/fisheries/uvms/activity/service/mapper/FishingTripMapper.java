@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,14 +32,12 @@ public abstract class FishingTripMapper {
     public static final FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
 
     @Mappings({
+            @Mapping(target = "fishingTripKey", expression = "java(mapToFishingTripKey(fishingTrip))"),
             @Mapping(target = "typeCode", source = "typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "delimitedPeriods", ignore = true),
-            @Mapping(target = "id", ignore = true),
             @Mapping(target = "catchEntities", ignore = true),
             @Mapping(target = "fishingActivities", ignore = true),
-            @Mapping(target = "tripId", expression = "java(mapToTripId(fishingTrip))"),
-            @Mapping(target = "tripSchemeId", expression = "java(mapToSchemeId(fishingTrip))"),
             @Mapping(target = "calculatedTripStartDate", ignore = true),
             @Mapping(target = "calculatedTripEndDate", ignore = true)
     })
@@ -51,20 +50,11 @@ public abstract class FishingTripMapper {
     })
     public abstract FishingTrip mapToFishingTrip(FishingTripEntity fishingTrip);
 
-    protected String mapToTripId(FishingTrip fishingTrip) {
+    protected FishingTripKey mapToFishingTripKey(FishingTrip fishingTrip) {
         List<IDType> ids = fishingTrip.getIDS();
         IDType idType = ids.get(0);
         if (idType != null) {
-            return idType.getValue();
-        }
-        return null;
-    }
-
-    protected String mapToSchemeId(FishingTrip fishingTrip) {
-        List<IDType> ids = fishingTrip.getIDS();
-        IDType idType = ids.get(0);
-        if (idType != null) {
-            return idType.getSchemeID();
+            return new FishingTripKey(idType.getValue(), idType.getSchemeID());
         }
         return null;
     }
@@ -72,8 +62,9 @@ public abstract class FishingTripMapper {
     protected List<IDType> mapToIDS(FishingTripEntity fishingTripEntity) {
         List<IDType> IDS = new ArrayList<>();
         IDType idType = new IDType();
-        idType.setValue(fishingTripEntity.getTripId());
-        idType.setSchemeID(fishingTripEntity.getTripSchemeId());
+        FishingTripKey fishingTripKey = fishingTripEntity.getFishingTripKey();
+        idType.setValue(fishingTripKey.getTripId());
+        idType.setSchemeID(fishingTripKey.getTripSchemeId());
         IDS.add(idType);
         return IDS;
     }

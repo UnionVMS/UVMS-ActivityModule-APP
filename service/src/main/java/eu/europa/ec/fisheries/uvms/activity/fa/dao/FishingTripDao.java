@@ -57,7 +57,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
     public List<FishingActivityEntity> getFishingActivitiesForFishingTripId(String fishingTripId){
         String sql = "SELECT DISTINCT a from FishingActivityEntity a JOIN a.fishingTrip fishingTrip" +
-                "  where fishingTrip.tripId =:fishingTripId order by a.calculatedStartTime ASC";
+                "  where fishingTrip.fishingTripKey.tripId =:fishingTripId order by a.calculatedStartTime ASC";
         TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
         typedQuery.setParameter("fishingTripId", fishingTripId);
         return typedQuery.getResultList();

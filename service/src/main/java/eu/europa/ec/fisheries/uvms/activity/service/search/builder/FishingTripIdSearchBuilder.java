@@ -40,7 +40,7 @@ import java.util.Set;
 public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
-    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.fishingTripKey..tripId , ftripId.fishingTripKey..tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
     private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
 
     /**

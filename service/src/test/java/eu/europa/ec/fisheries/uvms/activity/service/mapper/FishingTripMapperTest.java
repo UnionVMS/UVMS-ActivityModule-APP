@@ -20,7 +20,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by padhyad on 7/29/2016.
@@ -37,8 +36,8 @@ public class FishingTripMapperTest {
         assertNotNull(fishingTripEntity.getFishingActivities());
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
-        assertNotNull(fishingTripEntity.getTripId());
-        assertNotNull(fishingTripEntity.getTripSchemeId());
+        assertNotNull(fishingTripEntity.getFishingTripKey().getTripId());
+        assertNotNull(fishingTripEntity.getFishingTripKey().getTripSchemeId());
     }
 
     @Test
@@ -51,7 +50,7 @@ public class FishingTripMapperTest {
         assertEquals(0, fishingTripEntity.getCatchEntities().size());
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
-        assertNotNull(fishingTripEntity.getTripId());
-        assertNotNull(fishingTripEntity.getTripSchemeId());
+        assertNotNull(fishingTripEntity.getFishingTripKey().getTripId());
+        assertNotNull(fishingTripEntity.getFishingTripKey().getTripSchemeId());
     }
 }

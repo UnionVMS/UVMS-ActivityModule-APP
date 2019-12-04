@@ -164,7 +164,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
 
-        if (fishingTripEntity.getTripId() == null) {
+        if (fishingTripEntity.getFishingTripKey() == null) {
             return;
         }
 

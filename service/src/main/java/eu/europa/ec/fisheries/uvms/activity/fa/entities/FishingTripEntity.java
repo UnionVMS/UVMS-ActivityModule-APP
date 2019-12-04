@@ -18,14 +18,11 @@ import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
@@ -94,11 +91,8 @@ public class FishingTripEntity implements Serializable {
     public static final String FIND_PREVIOUS_TRIP = "findPreviousTrip";
     public static final String FIND_NEXT_TRIP = "findNextTrip";
 
-	@Id
-	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_trip_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    private int id;
+    @EmbeddedId
+    private FishingTripKey fishingTripKey;
 
     @OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FaCatchEntity> catchEntities = new HashSet<>();
@@ -114,12 +108,6 @@ public class FishingTripEntity implements Serializable {
 
 	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
-
-    @Column(name = "trip_id", nullable = false)
-    private String tripId;
-
-    @Column(name = "trip_scheme_id", nullable = false)
-    private String tripSchemeId;
 
     @Column(name = "calculated_trip_start_date")
     private Instant calculatedTripStartDate;

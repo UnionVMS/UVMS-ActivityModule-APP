@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
@@ -114,8 +115,7 @@ public class BaseMapper {
         // TODO: WTAF, should be one and only one?
         IDType idType = ids.get(0);
         if (idType != null) {
-            fishingTripEntity.setTripId(idType.getValue());
-            fishingTripEntity.setTripSchemeId(idType.getSchemeID());
+            fishingTripEntity.setFishingTripKey(new FishingTripKey(idType.getValue(), idType.getSchemeID()));
         }
 
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();

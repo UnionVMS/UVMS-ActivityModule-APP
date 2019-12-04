@@ -299,7 +299,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         groupDetailsDto.setSize(actualEntity.getSizeDistribution() != null ? actualEntity.getSizeDistribution().getCategoryCode() : null);
         groupDetailsDto.setWeightingMeans(actualEntity.getWeighingMeansCode());
         groupDetailsDto.setUsage(actualEntity.getUsageCode());
-        groupDetailsDto.setTripId(actualEntity.getFishingTrip().getTripId());
+        groupDetailsDto.setTripId(actualEntity.getFishingTrip().getFishingTripKey().getTripId());
         groupDetailsDto.setDetailsAreSet(true);
     }
 

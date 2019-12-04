@@ -673,7 +673,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
 
-        return fishingActivityEntity.getFishingTrip().getTripId();
+        return fishingActivityEntity.getFishingTrip().getFishingTripKey().getTripId();
     }
 
     protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
