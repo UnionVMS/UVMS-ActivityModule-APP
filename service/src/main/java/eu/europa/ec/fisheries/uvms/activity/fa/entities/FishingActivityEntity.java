@@ -203,9 +203,6 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<DelimitedPeriodEntity> delimitedPeriods;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers;
-
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name = "trip_id", referencedColumnName = "trip_id"),
@@ -285,11 +282,6 @@ public class FishingActivityEntity implements Serializable {
         flapDocuments.add(flapDocumentEntity);
         flapDocumentEntity.setFishingActivity(this);
     }
-
-	public void addFishingActivityIdentifiers(FishingActivityIdentifierEntity identifierEntity){
-		fishingActivityIdentifiers.add(identifierEntity);
-		identifierEntity.setFishingActivity(this);
-	}
 
     public Double getCalculatedDuration(){
         if (isEmpty(delimitedPeriods)) {

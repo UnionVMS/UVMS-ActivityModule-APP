@@ -5,6 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
         logicalFilePath="changelog/1.1.7/db-changelog-UNIONVMS.xml">
 
+    <!-- FISHING TRIP CHANGES -->
+
     <changeSet author="robkra" id="move_trip_identifiers_to_trip_table">
         <addColumn tableName="activity_fishing_trip">
             <column name="trip_id" type="varchar(255)">
@@ -70,6 +72,12 @@
         <addPrimaryKey tableName="activity_fishing_trip"
                        columnNames="trip_id, trip_scheme_id"
                        constraintName="fishing_trip_pk" />
+    </changeSet>
+
+    <!-- FISHING ACTIVITY CHANGES -->
+
+    <changeSet author="robkra" id="drop_fishing_activity_identifier_table">
+        <dropTable tableName="activity_fishing_activity_identifier"/>
     </changeSet>
 
 </databaseChangeLog>

@@ -17,16 +17,14 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.DelimitedPeriodMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.BaseActivityViewMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import io.jsonwebtoken.lang.Collections;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
@@ -88,8 +86,6 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
 
 
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
-        Set<IdentifierDto> identifierDtos = FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(faEntity.getFishingActivityIdentifiers());
-        activityDetails.setIdentifiers(identifierDtos);
         Set<DelimitedPeriodEntity> delimitedPeriodEntitySet = faEntity.getDelimitedPeriods();
 
         if (!Collections.isEmpty(delimitedPeriodEntitySet)) {

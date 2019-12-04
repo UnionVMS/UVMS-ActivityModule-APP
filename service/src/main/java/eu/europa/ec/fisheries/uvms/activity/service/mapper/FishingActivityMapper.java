@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
@@ -103,7 +102,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faReportDocument", source = "faReportDocumentEntity"),
             @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
-            @Mapping(target = "fishingActivityIdentifiers", expression = "java(mapToFishingActivityIdentifierEntities(fishingActivity.getIDS(), fishingActivityEntity))"),
             @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
             @Mapping(target = "fishingTrip", expression = "java(BaseMapper.mapToFishingTripEntity(fishingActivity.getSpecifiedFishingTrip()))"),
             @Mapping(target = "fishingGears", ignore = true),
@@ -213,18 +211,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "occurrence", source = "entity.occurence", qualifiedByName = "instantToDate"),
-            @Mapping(target = "identifiers", source = "fishingActivityIdentifiers"),
             @Mapping(target = "nrOfOperation", source = "operationsQuantity.value"),
             @Mapping(target = "reason", source = "reasonCode"),
             @Mapping(target = "vesselActivity", source = "vesselActivityCode")
     })
     public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
-
-    @Mappings({
-            @Mapping(target = "faIdentifierId", source = "value"),
-            @Mapping(target = "faIdentifierSchemeId", source = "schemeID")
-    })
-    protected abstract FishingActivityIdentifierEntity mapToFishingActivityIdentifierEntity(IDType idType);
 
     protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity fishingActivityEntity) {
         List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();
@@ -687,19 +678,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             delimitedPeriodEntities.add(delimitedPeriodEntity);
         }
         return delimitedPeriodEntities;
-    }
-
-    protected Set<FishingActivityIdentifierEntity> mapToFishingActivityIdentifierEntities(List<IDType> idTypes, FishingActivityEntity fishingActivityEntity) {
-        if (idTypes == null || idTypes.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<FishingActivityIdentifierEntity> identifierEntities = new HashSet<>();
-        for (IDType idType : idTypes) {
-            FishingActivityIdentifierEntity identifier = FishingActivityMapper.INSTANCE.mapToFishingActivityIdentifierEntity(idType);
-            identifier.setFishingActivity(fishingActivityEntity);
-            identifierEntities.add(identifier);
-        }
-        return identifierEntities;
     }
 
     protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {

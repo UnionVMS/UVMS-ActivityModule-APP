@@ -166,11 +166,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 fishActEntity.addFlapDocuments(flapDocumentEntity);
             }
 
-            List<IDType> ids = fishingActivity.getIDS();
-            for (IDType id : Utils.safeIterable(ids)) {
-                fishActEntity.addFishingActivityIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToFishingActivityIdentifierEntity(id));
-            }
-
             specifiedFishingActivityEntities.add(fishActEntity);
 
             List<FLUXCharacteristic> specifiedFLUXCharacteristics = fishingActivity.getSpecifiedFLUXCharacteristics();

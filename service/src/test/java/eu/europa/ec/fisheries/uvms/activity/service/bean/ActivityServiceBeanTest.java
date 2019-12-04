@@ -16,11 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
@@ -31,7 +26,6 @@ import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.SneakyThrows;
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,18 +34,12 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -161,44 +149,6 @@ public class ActivityServiceBeanTest {
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
         //Verify
          assertNotNull(filterFishingActivityReportResultDTO);
-    }
-
-    @Test
-    @SneakyThrows
-    public void testGetFaAndTripIdsResponse(){
-        List<String> flRepPurpCodes = new ArrayList<String>(){{add("1"); add("9");}};
-        when(fishingActivityDao.getFishingActivityForTrip(any(String.class), any(String.class), any(String.class), anyListOf(String.class))).thenReturn(mockFishActEntities());
-
-        FishingActivityForTripIds fishingActivityForTripIds = new FishingActivityForTripIds("faTypeCode", "tripId", "tripSchemeId", flRepPurpCodes);
-        List<FishingActivityForTripIds> fishingActivityForTripIdsList = Collections.singletonList(fishingActivityForTripIds);
-        GetFishingActivitiesForTripResponse response = activityService.getFaAndTripIdsFromTripIds(fishingActivityForTripIdsList);
-
-        assertNotNull(response);
-        assertTrue(CollectionUtils.isNotEmpty(response.getFaWithIdentifiers()));
-    }
-
-    private List<FishingActivityEntity> mockFishActEntities() {
-        final FishingActivityEntity fishAct = new FishingActivityEntity();
-
-        FishingActivityIdentifierEntity ident = new FishingActivityIdentifierEntity();
-        ident.setFaIdentifierId("faId");
-        ident.setFaIdentifierSchemeId("faSchemeId");
-        Set<FishingActivityIdentifierEntity> fishIdentList = new HashSet<>();
-        fishIdentList.add(ident);
-
-        FishingTripEntity fishTrip = new FishingTripEntity();
-
-        fishTrip.setFishingTripKey(new FishingTripKey("tripId", "tripSchemeId"));
-
-        fishTrip.setTypeCode("someTripCode");
-        fishTrip.getFishingActivities().add(fishAct);
-
-        fishAct.setFishingActivityIdentifiers(fishIdentList);
-
-        fishAct.setTypeCode("faTypeCode");
-        fishAct.setFishingTrip(fishTrip);
-
-        return new ArrayList<FishingActivityEntity>(){{add(fishAct);}};
     }
 }
 

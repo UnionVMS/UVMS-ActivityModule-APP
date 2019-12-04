@@ -169,7 +169,6 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         mapSourceVesselStorageCharacteristic(target, source.getSourceVesselCharId());
         mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
 
-        target.setIDS(FishingActivityIdentifierMapper.INSTANCE.mapToIDTypeList(source.getFishingActivityIdentifiers()));
         target.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
 
         Set<FluxCharacteristicEntity> fluxCharacteristics = source.getFluxCharacteristics();
