@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
@@ -41,7 +42,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
@@ -188,7 +188,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
         target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
 
-        target.setSpecifiedFishingTrip(FishingTripMapper.INSTANCE.mapToFishingTrip(source.getFishingTrip()));
+        FishingTripEntity fishingTripEntity = source.getFishingTrip();
+        if (fishingTripEntity != null) {
+            target.setSpecifiedFishingTrip(fishingTripEntity.convert());
+        }
 
         target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
 
@@ -214,7 +217,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
                     faCatch.setDestinationFLUXLocations(destination);
                 }
                 // TODO: This cant be right
-                faCatch.getRelatedFishingTrips().add(FishingTripMapper.INSTANCE.mapToFishingTrip(faCatchEntity.getFishingTrip()));
+                FishingTripEntity catchFishingTrip = faCatchEntity.getFishingTrip();
+                if (catchFishingTrip != null) {
+                    faCatch.getRelatedFishingTrips().add(catchFishingTrip.convert());
+                }
                 faCatchList.add(faCatch);
             }
             target.setSpecifiedFACatches(faCatchList);

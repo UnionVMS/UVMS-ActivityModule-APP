@@ -110,7 +110,7 @@ public class BaseMapper {
             return null;
         }
 
-        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
+        FishingTripEntity fishingTripEntity = FishingTripEntity.create(fishingTrip);
         List<IDType> ids = fishingTrip.getIDS();
         // TODO: WTAF, should be one and only one?
         IDType idType = ids.get(0);

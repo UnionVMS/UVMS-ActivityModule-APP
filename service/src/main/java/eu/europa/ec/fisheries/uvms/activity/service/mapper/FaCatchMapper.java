@@ -11,15 +11,22 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.StructuredAddressEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.StructuredAddressTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.FluxCharacteristicsViewDtoMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritInverseConfiguration;
@@ -28,7 +35,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, FishingTripMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
+@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
@@ -154,7 +168,8 @@ public abstract class FaCatchMapper extends BaseMapper {
         if(relatedFishingTrips == null || relatedFishingTrips.size() == 0) {
             return null;
         }
-        return FishingTripMapper.INSTANCE.mapToFishingTripEntity(relatedFishingTrips.get(0));
+        FishingTrip fishingTrip = relatedFishingTrips.get(0);
+        return FishingTripEntity.create(fishingTrip);
     }
 
     protected VesselTransportMeansEntity getVesselTransportMeansForRelocation(FaCatchEntity faCatch) {
