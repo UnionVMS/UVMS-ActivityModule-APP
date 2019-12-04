@@ -127,52 +127,105 @@ public class MapperUtil {
     }
 
 
-    public static FishingActivityEntity getFishingActivityEntity(){
-
+    public static FishingActivityEntity getFishingActivityEntity() {
           return new FishingActivityEntity();
     }
 
-    public static Set<FishingTripId> getFishingTripIdSet(){
+    public static Set<FishingTripId> getFishingTripIdSet() {
         Set<FishingTripId> fishingTripIdSet = new HashSet<>();
         fishingTripIdSet.add(new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID"));
         fishingTripIdSet.add(new FishingTripId("NOR-ABC-20160517234053706","EU_TRIP_ID"));
         return fishingTripIdSet;
     }
 
-    public static FishingTripEntity getFishingTripEntity(){
-        FishingTripEntity entity = new FishingTripEntity();
+    public static FishingTripEntity getFishingTripEntity() {
+        FluxReportDocumentEntity fluxReportDocumentEntity1 = ActivityDataUtil.getFluxReportDocumentEntity(
+                "FLUX_REPORT_DOCUMENT1",
+                null,
+                parseDate("2016-06-27 07:47:31"),
+                "PURPOSE",
+                "PURPOSE_CODE_LIST",
+                null,
+                "OWNER_FLUX_ID1",
+                "flux1");
 
-        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, parseDate("2016-06-27 07:47:31"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
-        FluxReportDocumentEntity fluxReportDocumentEntity2=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT2",null, parseDate("2016-06-27 07:47:31"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID2","flux2");
-        FluxReportDocumentEntity fluxReportDocumentEntity3=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT3",null, parseDate("2016-06-27 07:47:31"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID3","flux3");
-        FluxReportDocumentEntity fluxReportDocumentEntity4=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT4",null, parseDate("2016-06-27 07:47:31"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID4","flux4");
+        FluxReportDocumentEntity fluxReportDocumentEntity2 = ActivityDataUtil.getFluxReportDocumentEntity(
+                "FLUX_REPORT_DOCUMENT2",
+                null,
+                parseDate("2016-06-27 07:47:31"),
+                "PURPOSE",
+                "PURPOSE_CODE_LIST",
+                null,
+                "OWNER_FLUX_ID2",
+                "flux2");
+        FluxReportDocumentEntity fluxReportDocumentEntity3 = ActivityDataUtil.getFluxReportDocumentEntity(
+                "FLUX_REPORT_DOCUMENT3",
+                null,
+                parseDate("2016-06-27 07:47:31"),
+                "PURPOSE",
+                "PURPOSE_CODE_LIST",
+                null,
+                "OWNER_FLUX_ID3",
+                "flux3");
+        FluxReportDocumentEntity fluxReportDocumentEntity4 = ActivityDataUtil.getFluxReportDocumentEntity(
+                "FLUX_REPORT_DOCUMENT4",
+                null,
+                parseDate("2016-06-27 07:47:31"),
+                "PURPOSE",
+                "PURPOSE_CODE_LIST",
+                null,
+                "OWNER_FLUX_ID4",
+                "flux4");
 
-        VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
-        VesselTransportMeansEntity vesselTransportMeansEntity2= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
-        VesselTransportMeansEntity vesselTransportMeansEntity3= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
+        VesselTransportMeansEntity vesselTransportMeansEntity1 = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
+        VesselTransportMeansEntity vesselTransportMeansEntity2 = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
+        VesselTransportMeansEntity vesselTransportMeansEntity3 = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
 
         vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1", "CFR"));
 
-        FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2016-06-27 07:47:31"), fluxReportDocumentEntity1,
-                vesselTransportMeansEntity1, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity2=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity2,
-                vesselTransportMeansEntity2, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity3,
-                vesselTransportMeansEntity3, FaReportStatusType.NEW);
+        FaReportDocumentEntity faReportDocumentEntity1 = ActivityDataUtil.getFaReportDocumentEntity(
+                "Declaration" ,
+                "FLUX_FA_REPORT_TYPE",
+                parseDate("2016-06-27 07:47:31"),
+                fluxReportDocumentEntity1,
+                vesselTransportMeansEntity1,
+                FaReportStatusType.NEW);
 
-        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity1,null);
-        FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
-        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity3,null);
+        FaReportDocumentEntity faReportDocumentEntity2 = ActivityDataUtil.getFaReportDocumentEntity(
+                "Declaration" ,
+                "FLUX_FA_REPORT_TYPE",
+                parseDate("2015-06-27 07:47:31"),
+                fluxReportDocumentEntity2,
+                vesselTransportMeansEntity2,
+                FaReportStatusType.NEW);
 
-        SizeDistributionEntity sizeDistributionEntity= ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
-        FaCatchEntity faCatchEntity =ActivityDataUtil.getFaCatchEntity(fishingActivityEntity1,"DEPARTURE","FA_CATCH_TYPE", "beagle2", "FAO_SPECIES",
-                11112D, 11112.0D, "FLUX_UNIT", "BFT","WEIGHT_MEANS",sizeDistributionEntity);
+        FaReportDocumentEntity faReportDocumentEntity3 = ActivityDataUtil.getFaReportDocumentEntity(
+                "Declaration" ,
+                "FLUX_FA_REPORT_TYPE",
+                parseDate("2015-06-27 07:47:31"),
+                fluxReportDocumentEntity3,
+                vesselTransportMeansEntity3,
+                FaReportStatusType.NEW);
 
-        entity= ActivityDataUtil.getFishingTripEntity("JFO", "EU_TRIP_ID",faCatchEntity,fishingActivityEntity1);
+        FishingActivityEntity fishingActivityEntity1 = ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity1,null);
+        FishingActivityEntity fishingActivityEntity2 = ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
+        FishingActivityEntity fishingActivityEntity3 = ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity3,null);
+
+        SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
+        FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(
+                fishingActivityEntity1,
+                "DEPARTURE",
+                "FA_CATCH_TYPE",
+                "beagle2",
+                "FAO_SPECIES",
+                11112D,
+                11112.0D,
+                "FLUX_UNIT",
+                "BFT",
+                "WEIGHT_MEANS",
+                sizeDistributionEntity);
+
+        FishingTripEntity entity = ActivityDataUtil.getFishingTripEntity("JFO", "EU_TRIP_ID", faCatchEntity, fishingActivityEntity1);
 
         entity.setFishingTripKey(new FishingTripKey("NOR-TRP-20160517234053706", "EU_TRIP_ID"));
         entity.setCalculatedTripEndDate(Instant.parse("2016-01-12T00:00:00Z"));
@@ -184,8 +237,6 @@ public class MapperUtil {
         FishingTripEntity fishingTripEntity = getFishingTripEntity();
         Set<VesselTransportMeansEntity> vesselTransportEntityList = fishingTripEntity.getFishingActivities().iterator().next().getFaReportDocument().getVesselTransportMeans();
 
-        Set<ContactPartyEntity> contactParties = new HashSet<>();
-
         ContactPartyEntity contPartEntity_1 = ActivityDataUtil.getContactPartyEntity("title1","givenName1","middleName1","familyName1","familyNamePrefix1","nameSuffix1","gender1","alias1");
         ContactPartyEntity contPartEntity_2 = ActivityDataUtil.getContactPartyEntity("title2","givenName2","middleName2","familyName2","familyNamePrefix2","nameSuffix2","gender2","alias2");
 
@@ -194,8 +245,8 @@ public class MapperUtil {
         contPartEntity_1.setContactPartyRole(roleList_1);
         contPartEntity_2.setContactPartyRole(roleList_2);
 
-        contactParties.addAll(Arrays.asList(contPartEntity_1,contPartEntity_2));
-        for(VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportEntityList) {
+        Set<ContactPartyEntity> contactParties = new HashSet<>(Arrays.asList(contPartEntity_1, contPartEntity_2));
+        for (VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportEntityList) {
             vesselTransportMeansEntity.setContactParty(contactParties);
         }
 
@@ -203,26 +254,64 @@ public class MapperUtil {
     }
 
 
-    public static List<FishingActivityEntity> getFishingActivityEntityList(){
-        FishingTripEntity entity = new FishingTripEntity();
+    public static List<FishingActivityEntity> getFishingActivityEntityList() {
+        FluxReportDocumentEntity fluxReportDocumentEntity1 = ActivityDataUtil.getFluxReportDocumentEntity(
+                "FLUX_REPORT_DOCUMENT1",
+                null,
+                parseDate("2016-06-27 07:47:31"),
+                "PURPOSE",
+                "PURPOSE_CODE_LIST",
+                null,
+                "OWNER_FLUX_ID1",
+                "flux1");
 
-        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, parseDate("2016-06-27 07:47:31"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
-        FluxReportDocumentEntity fluxReportDocumentEntity2=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT2",null, parseDate("2016-06-27 07:47:31"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID2","flux2");
-        FluxReportDocumentEntity fluxReportDocumentEntity3=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT3",null, parseDate("2016-06-27 07:47:31"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID3","flux3");
+        FluxReportDocumentEntity fluxReportDocumentEntity2 = ActivityDataUtil.getFluxReportDocumentEntity(
+                "FLUX_REPORT_DOCUMENT2",
+                null,
+                parseDate("2016-06-27 07:47:31"),
+                "PURPOSE",
+                "PURPOSE_CODE_LIST",
+                null,
+                "OWNER_FLUX_ID2",
+                "flux2");
+
+        FluxReportDocumentEntity fluxReportDocumentEntity3 = ActivityDataUtil.getFluxReportDocumentEntity(
+                "FLUX_REPORT_DOCUMENT3",
+                null,
+                parseDate("2016-06-27 07:47:31"),
+                "PURPOSE",
+                "PURPOSE_CODE_LIST",
+                null,
+                "OWNER_FLUX_ID3",
+                "flux3");
 
         VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
         VesselTransportMeansEntity vesselTransportMeansEntity2= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
         VesselTransportMeansEntity vesselTransportMeansEntity3= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
 
-        FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2016-06-27 07:47:31"), fluxReportDocumentEntity1,
-                vesselTransportMeansEntity1, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity2=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity2,
-                vesselTransportMeansEntity2, FaReportStatusType.NEW);
-        FaReportDocumentEntity faReportDocumentEntity3=  ActivityDataUtil.getFaReportDocumentEntity("Declaration", "FLUX_FA_REPORT_TYPE", parseDate("2015-06-27 07:47:31"), fluxReportDocumentEntity3,
-                vesselTransportMeansEntity3, FaReportStatusType.NEW);
+        FaReportDocumentEntity faReportDocumentEntity1 = ActivityDataUtil.getFaReportDocumentEntity(
+                "Declaration",
+                "FLUX_FA_REPORT_TYPE",
+                parseDate("2016-06-27 07:47:31"),
+                fluxReportDocumentEntity1,
+                vesselTransportMeansEntity1,
+                FaReportStatusType.NEW);
+
+        FaReportDocumentEntity faReportDocumentEntity2 = ActivityDataUtil.getFaReportDocumentEntity(
+                "Declaration" ,
+                "FLUX_FA_REPORT_TYPE",
+                parseDate("2015-06-27 07:47:31"),
+                fluxReportDocumentEntity2,
+                vesselTransportMeansEntity2,
+                FaReportStatusType.NEW);
+
+        FaReportDocumentEntity faReportDocumentEntity3 = ActivityDataUtil.getFaReportDocumentEntity(
+                "Declaration",
+                "FLUX_FA_REPORT_TYPE",
+                parseDate("2015-06-27 07:47:31"),
+                fluxReportDocumentEntity3,
+                vesselTransportMeansEntity3,
+                FaReportStatusType.NEW);
 
         FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", parseDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity1, null);
         FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
@@ -233,7 +322,7 @@ public class MapperUtil {
         fishingActivityEntityList.add(fishingActivityEntity2);
         fishingActivityEntityList.add(fishingActivityEntity3);
 
-      return fishingActivityEntityList;
+        return fishingActivityEntityList;
     }
 
     public static Instant parseDate(String dateStr) {
@@ -249,7 +338,7 @@ public class MapperUtil {
         faReportDocumentEntity.setAcceptedDatetime(Instant.now());
         faReportDocumentEntity.setFmcMarker("FMC Marker");
         faReportDocumentEntity.setFmcMarkerListId("FMC Marker list Id");
-        Geometry geometry =null;
+        Geometry geometry = null;
 
         try {
             geometry= wktReader.read("MULTIPOINT ((-10 40), (-40 30), (-20 20), (-30 10))");
@@ -275,7 +364,9 @@ public class MapperUtil {
         FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
         fluxReportDocumentEntity.setCreationDatetime(Instant.now());
 
-        fluxReportDocumentEntity.setFluxReportIdentifiers(new HashSet<FluxReportIdentifierEntity>(Arrays.asList(getFluxReportIdentifierEntity())));
+        FluxReportIdentifierEntity fluxReportIdentifierEntity = getFluxReportIdentifierEntity();
+        HashSet<FluxReportIdentifierEntity> fluxReportIdentifiers = new HashSet<>(Collections.singletonList(fluxReportIdentifierEntity));
+        fluxReportDocumentEntity.setFluxReportIdentifiers(fluxReportIdentifiers);
         fluxReportDocumentEntity.setFluxParty(getFluxPartyEntity());
         fluxReportDocumentEntity.setPurpose("Test purpose");
         fluxReportDocumentEntity.setPurposeCode("5");
@@ -299,14 +390,15 @@ public class MapperUtil {
         FluxPartyIdentifierEntity entity = new FluxPartyIdentifierEntity();
         entity.setFluxPartyIdentifierId("Flux party Id 1");
         entity.setFluxPartyIdentifierSchemeId("Flux Scheme Id 1");
-        fluxPartyEntity.setFluxPartyIdentifiers(new HashSet<FluxPartyIdentifierEntity>(Arrays.asList(entity)));
+        HashSet<FluxPartyIdentifierEntity> fluxPartyIdentifiers = new HashSet<>(Collections.singletonList(entity));
+        fluxPartyEntity.setFluxPartyIdentifiers(fluxPartyIdentifiers);
         return fluxPartyEntity;
     }
 
     public static AAPProcess getAapProcess() {
-        List<CodeType> codeList = Arrays.asList(getCodeType("FISH_FRESHNESS", "FLUX_PROCESS_TYPE"));
+        List<CodeType> codeList = Collections.singletonList(getCodeType("FISH_FRESHNESS", "FLUX_PROCESS_TYPE"));
         NumericType numericType = getNumericType(123);
-        return new AAPProcess(codeList, numericType, null, Arrays.asList(getAapProduct()));
+        return new AAPProcess(codeList, numericType, null, Collections.singletonList(getAapProduct()));
     }
 
     public static AAPProduct getAapProduct() {
@@ -318,17 +410,29 @@ public class MapperUtil {
         QuantityType packagingUnitQuantity = getQuantityType(1234);
         CodeType packagingTypeCode = getCodeType("packaging type 1", "FISH_PACKAGING");
         MeasureType packagingUnitAverageWeightMeasure = getMeasureType(123, "C62", "qbdcg-3fhr5-rd4kd5-er5tgd5k");
-        SalesPrice totalSalesPrice = getSalesPrice(getAmountType(123, "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k", "1"));
-        SizeDistribution specifiedSizeDistribution = getSizeDistribution(getCodeType("catagory 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k"),
+        SalesPrice totalSalesPrice = getSalesPrice(getAmountType(123));
+        SizeDistribution specifiedSizeDistribution = getSizeDistribution(
+                getCodeType("catagory 1", "qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k"),
                 getCodeType("class code1", "qbd43cg-3fhr5t65-rd45674-er5tgd5k"));
-        AAPProduct aapProduct = new AAPProduct(speciesCode, quantityType, measureType, weighingMeansCode,
-                usageCode, packagingUnitQuantity, packagingTypeCode, packagingUnitAverageWeightMeasure, null, totalSalesPrice, specifiedSizeDistribution, null, null);
-        return aapProduct;
+
+        return new AAPProduct(
+                speciesCode,
+                quantityType,
+                measureType,
+                weighingMeansCode,
+                usageCode,
+                packagingUnitQuantity,
+                packagingTypeCode,
+                packagingUnitAverageWeightMeasure,
+                null,
+                totalSalesPrice,
+                specifiedSizeDistribution,
+                null,
+                null);
     }
 
     public static AAPStock getAapStock() {
-        AAPStock aapStock = new AAPStock(getIdType("Id Type1", "4fjgt7-4rifi65-4rjf75-4ru85gf"));
-        return aapStock;
+        return new AAPStock(getIdType("Id Type1", "4fjgt7-4rifi65-4rjf75-4ru85gf"));
     }
 
     public static StructuredAddress getStructuredAddress() {
@@ -349,24 +453,18 @@ public class MapperUtil {
         TextType floorIdentification = getTextType("8888");
         TextType roomIdentification = getTextType("555");
         TextType postalArea = getTextType("123");
-      //  StructuredAddress structuredAddress = new StructuredAddress();
-        StructuredAddress structuredAddress = new StructuredAddress(id, postcodeCode, buildingName,
+
+        return new StructuredAddress(id, postcodeCode, buildingName,
                 streetName, cityName, countryID, citySubDivisionName, countryName, countrySubDivisionName, blockName, plotIdentification,
-                postOfficeBox, buildingNumber, staircaseNumber, floorIdentification, roomIdentification,postalArea) ;
-
-
-        /*    StructuredAddress structuredAddress = new StructuredAddress(id, postcodeCode, buildingName, streetName,
-                cityName, countryID, citySubDivisionName, countryName, countrySubDivisionName, blockName, plotIdentification,
-                postOfficeBox, buildingNumber, staircaseNumber, floorIdentification, roomIdentification);*/
-        return structuredAddress;
+                postOfficeBox, buildingNumber, staircaseNumber, floorIdentification, roomIdentification,postalArea);
     }
 
     public static ContactParty getContactParty() {
         ContactParty contactParty = new ContactParty();
         CodeType roleCode = getCodeType("MASTER", "FLUX_CONTACT_ ROLE");
-        contactParty.setRoleCodes(Arrays.asList(roleCode));
-        contactParty.setSpecifiedContactPersons(Arrays.asList(getContactPerson()));
-        contactParty.setSpecifiedStructuredAddresses(Arrays.asList(getStructuredAddress()));
+        contactParty.setRoleCodes(Collections.singletonList(roleCode));
+        contactParty.setSpecifiedContactPersons(Collections.singletonList(getContactPerson()));
+        contactParty.setSpecifiedStructuredAddresses(Collections.singletonList(getStructuredAddress()));
         return contactParty;
     }
 
@@ -379,47 +477,42 @@ public class MapperUtil {
         TextType nameSuffix = getTextType("Test Suffix");
         CodeType genderCode = getCodeType("Gender", "4ryf65-fhtfyd-thfey45-tu5r7ght");
         TextType alias = getTextType("Test Alias");
-       // ContactPerson contactPerson = new ContactPerson();
-           ContactPerson contactPerson = new ContactPerson(title, givenName, middleName, familyNamePrefix,
-                familyName, nameSuffix, genderCode, alias, null, null, null, null,null,null,null);
-        return contactPerson;
+        return new ContactPerson(title, givenName, middleName, familyNamePrefix,
+             familyName, nameSuffix, genderCode, alias, null, null, null, null,null,null,null);
     }
 
     public static DelimitedPeriod getDelimitedPeriod() {
         DateTimeType startDate = getDateTimeType("2011-07-01 11:15:00");
         DateTimeType endDate = getDateTimeType("2016-07-01 11:15:00");
         MeasureType measureType = getMeasureType(500, "C62", "4rhfy5-fhtydr-tyfr85-ghtyd54");
-        DelimitedPeriod delimitedPeriod = new DelimitedPeriod(startDate, endDate, measureType);
-        return delimitedPeriod;
+        return new DelimitedPeriod(startDate, endDate, measureType);
     }
 
     public static RegistrationLocation getRegistrationLocation() {
         IDType countryID = getIdType("XEU", "TERRITORY");
-        List<TextType> descriptions = Arrays.asList(getTextType("This is Test Text"));
+        List<TextType> descriptions = Collections.singletonList(getTextType("This is Test Text"));
         CodeType geopoliticalRegionCode = getCodeType("Region Code 1", "57tug6-tfu576-5tud75-t57e5td-56tdwe");
-        List<IDType> ids = Arrays.asList(getIdType("ID 2", "fhtyr8-45jrf-5784fhrt-thf75"));
-        List<TextType> names = Arrays.asList(getTextType("This is Test Name"));
+        List<IDType> ids = Collections.singletonList(getIdType("ID 2", "fhtyr8-45jrf-5784fhrt-thf75"));
+        List<TextType> names = Collections.singletonList(getTextType("This is Test Name"));
         CodeType typeCode = getCodeType("Code type 1", "475rhf-587trhdy-thgy576-thfr64");
-        RegistrationLocation registrationLocation = new RegistrationLocation(countryID, descriptions, geopoliticalRegionCode, ids, names, typeCode, null);
-        return registrationLocation;
+        return new RegistrationLocation(countryID, descriptions, geopoliticalRegionCode, ids, names, typeCode, null);
     }
 
     public static RegistrationEvent getRegistrationEvent() {
-        List<TextType> descriptions = Arrays.asList(getTextType("This is test Text"));
+        List<TextType> descriptions = Collections.singletonList(getTextType("This is test Text"));
         DateTimeType occurrenceDateTime = getDateTimeType("2016-07-01 11:15:00");
         RegistrationLocation relatedRegistrationLocation = getRegistrationLocation();
-        RegistrationEvent registrationEvent = new RegistrationEvent(descriptions, occurrenceDateTime, relatedRegistrationLocation);
-        return registrationEvent;
+        return new RegistrationEvent(descriptions, occurrenceDateTime, relatedRegistrationLocation);
     }
 
     public static VesselTransportMeans getVesselTransportMeans() {
         VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
         CodeType roleCode = getCodeType("CATCHING_VESSEL", "FA_VESSEL_ROLE");
-        List<TextType> names = Arrays.asList(getTextType("Test Name"));
-        List<FLAPDocument> grantedFLAPDocuments = Arrays.asList(getFlapDocument());
-        List<IDType> ids = Arrays.asList(getIdType("ID 1", "CFR"));
-        List<ContactParty> specifiedContactParties = Arrays.asList(getContactParty());
-        List<RegistrationEvent> specifiedRegistrationEvents = Arrays.asList(getRegistrationEvent());
+        List<TextType> names = Collections.singletonList(getTextType("Test Name"));
+        List<FLAPDocument> grantedFLAPDocuments = Collections.singletonList(getFlapDocument());
+        List<IDType> ids = Collections.singletonList(getIdType("ID 1", "CFR"));
+        List<ContactParty> specifiedContactParties = Collections.singletonList(getContactParty());
+        List<RegistrationEvent> specifiedRegistrationEvents = Collections.singletonList(getRegistrationEvent());
         VesselCountry vesselCounty = new VesselCountry(getIdType("Country Id 1", "tu587r-5jt85-tjfur7-tjgut7"));
         vesselTransportMeans.setRoleCode(roleCode);
         vesselTransportMeans.setNames(names);
@@ -433,7 +526,7 @@ public class MapperUtil {
 
     public static VesselStorageCharacteristic getVesselStorageCharacteristic() {
         VesselStorageCharacteristic vesselStorageCharacteristic = new VesselStorageCharacteristic();
-        List<CodeType> typeCodes = Arrays.asList(getCodeType("CONTAINER", "VESSEL_STORAGE_TYPE"));
+        List<CodeType> typeCodes = Collections.singletonList(getCodeType("CONTAINER", "VESSEL_STORAGE_TYPE"));
         IDType id = getIdType("ID 1", "687yu5-tught6-thfyr-5yt74e");
         vesselStorageCharacteristic.setID(id);
         vesselStorageCharacteristic.setTypeCodes(typeCodes);
@@ -442,66 +535,61 @@ public class MapperUtil {
 
     public static SizeDistribution getSizeDistribution() {
         CodeType categoryCode = getCodeType("S6", "FA_BFT_SIZE_CATEGORY");
-        List<CodeType> classCodes = Arrays.asList(getCodeType("LSC", "FISH_SIZE_CLASS"));
-        SizeDistribution sizeDistribution = new SizeDistribution(categoryCode, classCodes);
-        return sizeDistribution;
+        List<CodeType> classCodes = Collections.singletonList(getCodeType("LSC", "FISH_SIZE_CLASS"));
+        return new SizeDistribution(categoryCode, classCodes);
     }
 
     public static GearCharacteristic getGearCharacteristics() {
         CodeType typeCode = getCodeType("Code 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
-        List<TextType> descriptions = Arrays.asList(getTextType("This is sample text"));
+        List<TextType> descriptions = Collections.singletonList(getTextType("This is sample text"));
         MeasureType valueMeasure = getMeasureType(123, "C62", "57t3yf-ght43yrf-ght56yru-ght7565h");
         DateTimeType valueDateTime = getDateTimeType("2016-07-01 11:15:00");
-        IndicatorType valueIndicator = getIndicatorType(true, "Test value", "Test format");
+        IndicatorType valueIndicator = getIndicatorType();
         CodeType valueCode = getCodeType("Code type 1", "4fhry5-thfyr85-67thf-5htr84");
         TextType value = getTextType("This is sample Text");
         QuantityType valueQuantity = getQuantityType(123);
 
-        List<FLUXLocation> specifiedFluxLocations=Arrays.asList(getFluxLocation());
-       GearCharacteristic gearCharacteristic = new GearCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, value, valueQuantity,specifiedFluxLocations);
-        return gearCharacteristic;
+        List<FLUXLocation> specifiedFluxLocations = Collections.singletonList(getFluxLocation());
+        return new GearCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, value, valueQuantity,specifiedFluxLocations);
     }
 
     public static FLUXCharacteristic getFluxCharacteristics() {
         CodeType typeCode = getCodeType("Code 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
-        List<TextType> descriptions = Arrays.asList(getTextType("This is test description"));
+        List<TextType> descriptions = Collections.singletonList(getTextType("This is test description"));
         MeasureType valueMeasure = getMeasureType(333, "C62", "57t3yf-ght43yrf-ght56yru-ght7565h");
         DateTimeType valueDateTime = getDateTimeType("2016-07-01 11:15:00");
-        IndicatorType valueIndicator = getIndicatorType(true, "Test value", "Test format");
+        IndicatorType valueIndicator = getIndicatorType();
         CodeType valueCode = getCodeType("Code Value 1", "57tr4t3yf-ght43yrf-ght56yr5u-ght75365h");
-        List<TextType> values = Arrays.asList(getTextType("This is sample value"));
-        QuantityType valueQuantity =getQuantityType(123);
+        List<TextType> values = Collections.singletonList(getTextType("This is sample value"));
+        QuantityType valueQuantity = getQuantityType(123);
         List<FLUXLocation> specifiedFLUXLocations=null;
-         List<FLAPDocument> relatedFLAPDocuments=Arrays.asList(getFlapDocument());
-        FLUXCharacteristic fluxCharacteristic = new FLUXCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, values, valueQuantity,specifiedFLUXLocations,relatedFLAPDocuments);
-        return fluxCharacteristic;
+         List<FLAPDocument> relatedFLAPDocuments = Collections.singletonList(getFlapDocument());
+        return new FLUXCharacteristic(typeCode, descriptions, valueMeasure, valueDateTime, valueIndicator, valueCode, values, valueQuantity,specifiedFLUXLocations,relatedFLAPDocuments);
     }
 
     public static FishingGear getFishingGear() {
         FishingGear fishingGear = new FishingGear();
         CodeType typeCode = getCodeType("Code Type 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
-        List<CodeType> roleCodes = Arrays.asList(getCodeType("Role Code 1", "57t3yf-g43yrf-ght56ru-ght65h"));
+        List<CodeType> roleCodes = Collections.singletonList(getCodeType("Role Code 1", "57t3yf-g43yrf-ght56ru-ght65h"));
         fishingGear.setTypeCode(typeCode);
         fishingGear.setRoleCodes(roleCodes);
-        fishingGear.setApplicableGearCharacteristics(Arrays.asList(getGearCharacteristics()));
+        fishingGear.setApplicableGearCharacteristics(Collections.singletonList(getGearCharacteristics()));
         return fishingGear;
     }
 
     public static FishingTrip getFishingTrip() {
-        List<IDType> ids = Arrays.asList(getIdType("ID 1", "fhty58-gh586t-5tjf8-t58rjewe"));
+        List<IDType> ids = Collections.singletonList(getIdType("ID 1", "fhty58-gh586t-5tjf8-t58rjewe"));
         CodeType typeCode = getCodeType("Code Type 1", "57t3yf-ght43yrf-ght56yru-ght7565h");
-        List<DelimitedPeriod> specifiedDelimitedPeriods = Arrays.asList(getDelimitedPeriod());
-        FishingTrip fishingTrip = new FishingTrip(ids, typeCode, specifiedDelimitedPeriods);
-        return fishingTrip;
+        List<DelimitedPeriod> specifiedDelimitedPeriods = Collections.singletonList(getDelimitedPeriod());
+        return new FishingTrip(ids, typeCode, specifiedDelimitedPeriods);
     }
 
     public static GearProblem getGearProblem() {
         CodeType typeCode = getCodeType("Code Type 1", "fhty58-gh586t-5tjf8-t58rjewe");
         QuantityType affectedQuantity = getQuantityType(222);
-        List<CodeType> recoveryMeasureCodes = Arrays.asList(getCodeType("Quantity Code 1", "57t3yf-ght43yrf-ght56yru-ght7565h"));
-        List<FishingGear> relatedFishingGears = Arrays.asList(getFishingGear());
-        GearProblem gearProblem = new GearProblem(typeCode, affectedQuantity, recoveryMeasureCodes, Arrays.asList(getFluxLocation()), relatedFishingGears);
-        return gearProblem;
+        List<CodeType> recoveryMeasureCodes = Collections.singletonList(getCodeType("Quantity Code 1", "57t3yf-ght43yrf-ght56yru-ght7565h"));
+        List<FishingGear> relatedFishingGears = Collections.singletonList(getFishingGear());
+        return new GearProblem(typeCode, affectedQuantity, recoveryMeasureCodes, Collections.singletonList(getFluxLocation()), relatedFishingGears);
     }
 
     public static FLUXLocation getFluxLocation() {
@@ -512,11 +600,11 @@ public class MapperUtil {
         FLUXGeographicalCoordinate specifiedPhysicalFLUXGeographicalCoordinate = getFluxGeographicalCoordinate();
         IDType id = getIdType("25.5b", "FAO_AREA");
         CodeType geopoliticalRegionCode = getCodeType("Code type 2", "fhty258-g3h586t-5t4jf8-t58rjew5e");
-        List<TextType> names = Arrays.asList(getTextType("This is sample name"));
+        List<TextType> names = Collections.singletonList(getTextType("This is sample name"));
         IDType sovereignRightsCountryID = getIdType("sovereign rights id 1", "fhty58-gh5486t-5t5jf8-t58rjewe");
         IDType jurisdictionCountryID = getIdType("jurisdiction country id 1", "fht1y58-gh5876t-5t3jf8-t58rjewe");
         List<FLUXCharacteristic> applicableFLUXCharacteristics = null;
-        List<StructuredAddress> postalStructuredAddresses = Arrays.asList(getStructuredAddress());
+        List<StructuredAddress> postalStructuredAddresses = Collections.singletonList(getStructuredAddress());
         StructuredAddress physicalStructuredAddress = getStructuredAddress();
 
         fluxLocation.setTypeCode(typeCode);
@@ -535,16 +623,15 @@ public class MapperUtil {
     }
 
     public static FLUXReportDocument getFluxReportDocument() {
-        List<IDType> ids = Arrays.asList(getIdType("flux_report_doc_1", "fhty58-gh586t-5tjf8-t58rjewe"));
+        List<IDType> ids = Collections.singletonList(getIdType("flux_report_doc_1", "fhty58-gh586t-5tjf8-t58rjewe"));
         IDType referencedID = getIdType("Ref ID 1", "fhty58-gh586t-5tjf8-t58rjewe");
         DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
         CodeType purposeCode = getCodeType("5", "FLUX_GP_PURPOSE");
         final TextType purpose = getTextType("Purpose Text");
         CodeType typeCode = getCodeType("FluxReportTypeCode", "fhty58-gh586t-5tjf8-t58rjewe");
-        FLUXParty ownerFLUXParty = new FLUXParty(Arrays.asList(getIdType("Owner flux party id 1", "58fjrut-tjfuri-586jte-5jfur")),
-                Arrays.asList(getTextType("This is sample text for owner flux party")));
-        FLUXReportDocument fluxReportDocument = new FLUXReportDocument(ids, referencedID, creationDateTime, purposeCode, purpose, typeCode, ownerFLUXParty);
-        return fluxReportDocument;
+        FLUXParty ownerFLUXParty = new FLUXParty(Collections.singletonList(getIdType("Owner flux party id 1", "58fjrut-tjfuri-586jte-5jfur")),
+                Collections.singletonList(getTextType("This is sample text for owner flux party")));
+        return new FLUXReportDocument(ids, referencedID, creationDateTime, purposeCode, purpose, typeCode, ownerFLUXParty);
     }
 
     public static FACatch getFaCatch() {
@@ -554,66 +641,61 @@ public class MapperUtil {
         CodeType weighingMeansCode = getCodeType("Weighing means code 1", "5854tt5-gjtdir-5j85tui-589git");
         CodeType usageCode = getCodeType("Usage code 1", "58thft-58fjd8-gt85eje-hjgute8");
         CodeType typeCode = getCodeType("Type code 1", "FA_CATCH_TYPE");
-        final List<FishingTrip> relatedFishingTrips = Arrays.asList(getFishingTrip());
+        final List<FishingTrip> relatedFishingTrips = Collections.singletonList(getFishingTrip());
         SizeDistribution specifiedSizeDistribution = getSizeDistribution();
-        List<AAPStock> relatedAAPStocks = Arrays.asList(getAapStock());
-        List<AAPProcess> appliedAAPProcesses = Arrays.asList(getAapProcess());
+        List<AAPStock> relatedAAPStocks = Collections.singletonList(getAapStock());
+        List<AAPProcess> appliedAAPProcesses = Collections.singletonList(getAapProcess());
         List<SalesBatch> relatedSalesBatches = null;
-        List<FLUXLocation> specifiedFLUXLocations = Arrays.asList(getFluxLocation());
-        List<FishingGear> usedFishingGears = Arrays.asList(getFishingGear());
+        List<FLUXLocation> specifiedFLUXLocations = Collections.singletonList(getFluxLocation());
+        List<FishingGear> usedFishingGears = Collections.singletonList(getFishingGear());
 
 
-        List<FLUXCharacteristic> applicableFLUXCharacteristics = Arrays.asList(getFluxCharacteristics());
-        List<FLUXLocation> destinationFLUXLocations = Arrays.asList(getFluxLocation());
-        FACatch faCatch = new FACatch(speciesCode, unitQuantity, weightMeasure, weighingMeansCode, usageCode,
+        List<FLUXCharacteristic> applicableFLUXCharacteristics = Collections.singletonList(getFluxCharacteristics());
+        List<FLUXLocation> destinationFLUXLocations = Collections.singletonList(getFluxLocation());
+        return new FACatch(speciesCode, unitQuantity, weightMeasure, weighingMeansCode, usageCode,
                 typeCode, relatedFishingTrips, specifiedSizeDistribution, relatedAAPStocks, appliedAAPProcesses, relatedSalesBatches,
                 specifiedFLUXLocations, usedFishingGears, applicableFLUXCharacteristics, destinationFLUXLocations);
-        return faCatch;
     }
 
     public static FishingActivity getFishingActivity() {
         FishingActivity fishingActivity = getStandardFishingActivity();
-        List<FishingActivity> relatedFishingActivities = Arrays.asList(getStandardFishingActivity());
+        List<FishingActivity> relatedFishingActivities = Collections.singletonList(getStandardFishingActivity());
         fishingActivity.setRelatedFishingActivities(relatedFishingActivities);
         return fishingActivity;
     }
 
     public static FLUXFAReportMessage getFLUXFAReportMessage() {
-
-        FLUXFAReportMessage fluxfaReportMessage = new FLUXFAReportMessage(getFLUXReportDocument(), Arrays.asList(getFaReportDocument()));
-        return fluxfaReportMessage;
+        return new FLUXFAReportMessage(getFLUXReportDocument(), Collections.singletonList(getFaReportDocument()));
     }
 
     public static FLUXReportDocument getFLUXReportDocument(){
         new FLUXReportDocument();
-        List<IDType> ids = Arrays.asList(getIdType("FLUX_REPORT_ID_1", "FLUX_SCHEME_ID1"));
+        List<IDType> ids = Collections.singletonList(getIdType("FLUX_REPORT_ID_1", "FLUX_SCHEME_ID1"));
         IDType referenceId=getIdType("REF_ID 1", "47rfh-5hry4-thfur75-4hf743");
         DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
         CodeType purposeCode = getCodeType("9", "FLUX_GP_PURPOSE");
         CodeType typeCode = getCodeType("type Code1", "fhr574fh-thrud754-kgitjf754-gjtufe89");
-        List<IDType> ownerFluxPartyId = Arrays.asList(getIdType("Owner_flux_party_id_1", "flux_Party_scheme_id"));
-        List<TextType> names =Arrays.asList(getTextType("fluxPartyOwnerName 1"));
+        List<IDType> ownerFluxPartyId = Collections.singletonList(getIdType("Owner_flux_party_id_1", "flux_Party_scheme_id"));
+        List<TextType> names = Collections.singletonList(getTextType("fluxPartyOwnerName 1"));
         FLUXParty fluxParty = new FLUXParty(ownerFluxPartyId,names);
-        FLUXReportDocument fluxReportDocument = new FLUXReportDocument(ids, referenceId, creationDateTime, purposeCode, getTextType("Purpose"), typeCode, fluxParty);
 
-        return fluxReportDocument;
+        return new FLUXReportDocument(ids, referenceId, creationDateTime, purposeCode, getTextType("Purpose"), typeCode, fluxParty);
     }
 
     public static FAReportDocument getFaReportDocument() {
         CodeType typeCode = getCodeType("DECLARATION", "FLUX_FA_REPORT_TYPE");
         CodeType fmcMarkerCode = getCodeType("Fmz marker 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
-        List<IDType> relatedReportIDs = Arrays.asList(getIdType("ID 1", "47rfh-5hry4-thfur75-4hf743"));
+        List<IDType> relatedReportIDs = Collections.singletonList(getIdType("ID 1", "47rfh-5hry4-thfur75-4hf743"));
         DateTimeType acceptanceDateTime = getDateTimeType("2016-07-01 11:15:00");
         FLUXReportDocument relatedFLUXReportDocument = getFluxReportDocument();
-        List<FishingActivity> specifiedFishingActivities = Arrays.asList(getFishingActivity());
+        List<FishingActivity> specifiedFishingActivities = Collections.singletonList(getFishingActivity());
         VesselTransportMeans specifiedVesselTransportMeans = getVesselTransportMeans();
-        FAReportDocument faReportDocument = new FAReportDocument(typeCode, fmcMarkerCode, relatedReportIDs, acceptanceDateTime,
+        return new FAReportDocument(typeCode, fmcMarkerCode, relatedReportIDs, acceptanceDateTime,
                 relatedFLUXReportDocument, specifiedFishingActivities, specifiedVesselTransportMeans);
-        return faReportDocument;
     }
 
     private static FishingActivity getStandardFishingActivity() {
-        List<IDType> ids = Arrays.asList(getIdType("Id_1", "fhr574fh-thrud754-kgitjf754-gjtufe89"));
+        List<IDType> ids = Collections.singletonList(getIdType("Id_1", "fhr574fh-thrud754-kgitjf754-gjtufe89"));
         CodeType typeCode = getCodeType("FISHING_OPERATION", "FLUX_FA_TYPE");
         DateTimeType occurrenceDateTime = getDateTimeType("2016-07-01 11:15:00");
         CodeType reasonCode = getCodeType("Reason_code_1", "FA_REASON_DEPARTURE");
@@ -622,26 +704,23 @@ public class MapperUtil {
         CodeType speciesTargetCode = getCodeType("Species code 1", "FAO_SPECIES");
         QuantityType operationsQuantity = getQuantityType(100);
         MeasureType fishingDurationMeasure = getMeasureType(500, "C62", "4hr2yf0-t583thf-6jgttue8-6jtie844");
-        List<FLAPDocument> specifiedFLAPDocument = Arrays.asList(getFlapDocument());
+        List<FLAPDocument> specifiedFLAPDocument = Collections.singletonList(getFlapDocument());
         VesselStorageCharacteristic sourceVesselStorageCharacteristic = getVesselStorageCharacteristic();
         VesselStorageCharacteristic destinationVesselStorageCharacteristic = getVesselStorageCharacteristic();
-        List<FACatch> specifiedFACatches = Arrays.asList(getFaCatch());
-        List<FLUXLocation> relatedFLUXLocations = Arrays.asList(getFluxLocation());
-        List<GearProblem> specifiedGearProblems = Arrays.asList(getGearProblem());
-        List<FLUXCharacteristic> specifiedFLUXCharacteristics = Arrays.asList(getFluxCharacteristics());
-        List<FishingGear> specifiedFishingGears = Arrays.asList(getFishingGear());
-        List<DelimitedPeriod> specifiedDelimitedPeriods = Arrays.asList(getDelimitedPeriod());
+        List<FACatch> specifiedFACatches = Collections.singletonList(getFaCatch());
+        List<FLUXLocation> relatedFLUXLocations = Collections.singletonList(getFluxLocation());
+        List<GearProblem> specifiedGearProblems = Collections.singletonList(getGearProblem());
+        List<FLUXCharacteristic> specifiedFLUXCharacteristics = Collections.singletonList(getFluxCharacteristics());
+        List<FishingGear> specifiedFishingGears = Collections.singletonList(getFishingGear());
+        List<DelimitedPeriod> specifiedDelimitedPeriods = Collections.singletonList(getDelimitedPeriod());
         FishingTrip specifiedFishingTrip = getFishingTrip();
-        List<VesselTransportMeans> relatedVesselTransportMeans = Arrays.asList(getVesselTransportMeans());
+        List<VesselTransportMeans> relatedVesselTransportMeans = Collections.singletonList(getVesselTransportMeans());
 
-        FishingActivity fishingActivity = new FishingActivity (ids, typeCode, occurrenceDateTime, reasonCode, vesselRelatedActivityCode, fisheryTypeCode, speciesTargetCode, operationsQuantity, fishingDurationMeasure,
+        return new FishingActivity (ids, typeCode, occurrenceDateTime, reasonCode, vesselRelatedActivityCode, fisheryTypeCode, speciesTargetCode, operationsQuantity, fishingDurationMeasure,
                 specifiedFACatches, relatedFLUXLocations, specifiedGearProblems, specifiedFLUXCharacteristics,
                 specifiedFishingGears, sourceVesselStorageCharacteristic, destinationVesselStorageCharacteristic,
         null, specifiedFLAPDocument, specifiedDelimitedPeriods, specifiedFishingTrip,
-                relatedVesselTransportMeans) ;
-
-
-        return fishingActivity;
+                relatedVesselTransportMeans);
     }
 
     private static FLUXGeographicalCoordinate getFluxGeographicalCoordinate() {
@@ -653,10 +732,10 @@ public class MapperUtil {
         );
     }
 
-    private static IndicatorType getIndicatorType(Boolean indicator, String value, String format) {
+    private static IndicatorType getIndicatorType() {
         IndicatorType indicatorType = new IndicatorType();
-        indicatorType.setIndicator(indicator);
-        indicatorType.setIndicatorString(new IndicatorType.IndicatorString(value, format));
+        indicatorType.setIndicator(true);
+        indicatorType.setIndicatorString(new IndicatorType.IndicatorString("Test value", "Test format"));
         return indicatorType;
     }
 
@@ -674,7 +753,7 @@ public class MapperUtil {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(df.parse(value));
             XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().
-                    newXMLGregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), DatatypeConstants.FIELD_UNDEFINED, cal.getTimeZone().LONG).normalize();
+                    newXMLGregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), DatatypeConstants.FIELD_UNDEFINED, GregorianCalendar.LONG).normalize();
             dateTimeType.setDateTime(xmlDate);
             return dateTimeType;
         } catch (Exception e) {
@@ -698,20 +777,20 @@ public class MapperUtil {
     private static SizeDistribution getSizeDistribution(CodeType catagoryCode, CodeType classCode) {
         SizeDistribution sizeDistribution = new SizeDistribution();
         sizeDistribution.setCategoryCode(catagoryCode);
-        sizeDistribution.setClassCodes(Arrays.asList(classCode));
+        sizeDistribution.setClassCodes(Collections.singletonList(classCode));
         return sizeDistribution;
     }
     private static SalesPrice getSalesPrice(AmountType amountType) {
         SalesPrice salesPrice = new SalesPrice();
-        salesPrice.setChargeAmounts(Arrays.asList(amountType));
+        salesPrice.setChargeAmounts(Collections.singletonList(amountType));
         return salesPrice;
     }
 
-    private static AmountType getAmountType(int value, String listId, String currencyId) {
+    private static AmountType getAmountType(int value) {
         AmountType amountType = new AmountType();
         amountType.setValue(new BigDecimal(value));
-        amountType.setCurrencyCodeListVersionID(listId);
-        amountType.setCurrencyID(currencyId);
+        amountType.setCurrencyCodeListVersionID("qbd43cg-3fhr5t65-rd4kd5rt4-er5tgd5k");
+        amountType.setCurrencyID("1");
         return amountType;
     }
 
@@ -745,15 +824,12 @@ public class MapperUtil {
     }
 
     public static List<VesselIdentifierEntity> getVesselIdentifiersList() {
-        List<VesselIdentifierEntity> vesselIdentifiersList = new ArrayList<>();
         Set<VesselTransportMeansEntity> vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivities().iterator().next().getFaReportDocument().getVesselTransportMeans();
         Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.iterator().next().getVesselIdentifiers();
-        vesselIdentifiersList.addAll(vesselIdentifiersSet);
-        return vesselIdentifiersList;
+        return new ArrayList<>(vesselIdentifiersSet);
     }
 
     public static List<Object[]> getFaCaches() {
-        List<Object[]> faCatches = new ArrayList<>();
 
         Object[] faCatch_1 = new Object[4];
         Object[] faCatch_2 = new Object[4];
@@ -779,9 +855,7 @@ public class MapperUtil {
         faCatch_3[3] = 100.1;
         faCatch_4[0] = 150.1;
 
-        faCatches.addAll(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
-
-        return faCatches;
+        return new ArrayList<>(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
     }
 
     public static Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> getGroupedFaCatchSummaryCustomEntityData() {
