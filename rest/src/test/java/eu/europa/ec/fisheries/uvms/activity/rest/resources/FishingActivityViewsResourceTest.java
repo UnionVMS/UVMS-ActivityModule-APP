@@ -28,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,8 @@ import javax.naming.NamingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -59,7 +62,7 @@ public class FishingActivityViewsResourceTest extends BaseActivityArquillianTest
     private ContactPartyDetailsDTO expectedContactPartyDetailsDto;
 
     @Before
-    public void setUp() throws NamingException {
+    public void setUp() throws NamingException, IOException, JAXBException, ServiceException {
         super.setUp();
 
         expectedActivityDetailsDto = new ActivityDetailsDto();

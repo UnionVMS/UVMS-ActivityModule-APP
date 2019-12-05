@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><ns3:FLUXFAReportMessage xmlns:ns3="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20">
+    <ns3:FLUXReportDocument>
+        <ID schemeID="UUID">c4766883-b547-4cb5-b229-272f051d3abb</ID>
+        <CreationDateTime>
+            <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+        </CreationDateTime>
+        <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+        <OwnerFLUXParty>
+            <ID schemeID="FLUX_GP_PARTY">JXU</ID>
+        </OwnerFLUXParty>
+    </ns3:FLUXReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</TypeCode>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="UUID">7174b693-cdcc-4bed-bcae-4910253841a7</ID>
+            <CreationDateTime>
+                <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+            <OwnerFLUXParty>
+                <ID schemeID="FLUX_GP_PARTY">JXU</ID>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedFishingActivity>
+            <TypeCode listID="FLUX_FA_TYPE">DEPARTURE</TypeCode>
+            <OccurrenceDateTime>
+                <ns2:DateTime>2012-11-08T04:09:12.467Z</ns2:DateTime>
+            </OccurrenceDateTime>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</TypeCode>
+                <CountryID schemeID="TERRITORY">JXU</CountryID>
+                <ID schemeID="LOCATION">VSWAV</ID>
+            </RelatedFLUXLocation>
+            <SpecifiedFishingGear>
+                <TypeCode listID="GEAR_TYPE">TX</TypeCode>
+                <RoleCode listID="FA_GEAR_ROLE">ONBOARD</RoleCode>
+                <ApplicableGearCharacteristic>
+                    <TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</TypeCode>
+                    <ValueMeasure unitCode="MMT">20</ValueMeasure>
+                </ApplicableGearCharacteristic>
+                <ApplicableGearCharacteristic>
+                    <TypeCode listID="FA_GEAR_CHARACTERISTIC">GN</TypeCode>
+                    <ValueQuantity unitCodeListID="C62">0</ValueQuantity>
+                </ApplicableGearCharacteristic>
+            </SpecifiedFishingGear>
+            <SpecifiedFishingTrip>
+                <ID schemeID="EU_TRIP_ID">SKF-LVK-99C769778N7</ID>
+            </SpecifiedFishingTrip>
+        </SpecifiedFishingActivity>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">LRD362515173</ID>
+            <ID schemeID="EXT_MARK">LUZ-32-F</ID>
+            <ID schemeID="IRCS">KPKP</ID>
+            <RegistrationVesselCountry>
+                <ID schemeID="TERRITORY">JXU</ID>
+            </RegistrationVesselCountry>
+            <SpecifiedContactParty>
+                <NationalityCountryID schemeID="TERRITORY">JXU</NationalityCountryID>
+                <RoleCode listID="FLUX_CONTACT_ROLE">MASTER</RoleCode>
+                <SpecifiedStructuredAddress>
+                    <StreetName>slggohtl</StreetName>
+                    <CityName>emsekkbq</CityName>
+                    <CountryID schemeID="TERRITORY">JXU</CountryID>
+                    <PlotIdentification>slggohtl</PlotIdentification>
+                    <PostalArea>34779</PostalArea>
+                </SpecifiedStructuredAddress>
+                <SpecifiedContactPerson>
+                    <GivenName>tkqowgoy</GivenName>
+                    <FamilyName>bzaphmqb</FamilyName>
+                </SpecifiedContactPerson>
+                <URIEmailCommunication>
+                    <URIID schemeID="URI">jtfweh.ajlbto@fake-email.com</URIID>
+                </URIEmailCommunication>
+                <SpecifiedUniversalCommunication>
+                    <ChannelCode>TE</ChannelCode>
+                    <CompleteNumber>+836 711 141 2291</CompleteNumber>
+                </SpecifiedUniversalCommunication>
+            </SpecifiedContactParty>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</TypeCode>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="UUID">182a51d3-812d-4923-9c47-98be0ddbe2d7</ID>
+            <CreationDateTime>
+                <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+            <OwnerFLUXParty>
+                <ID schemeID="FLUX_GP_PARTY">JXU</ID>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedFishingActivity>
+            <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+            <OccurrenceDateTime>
+                <ns2:DateTime>2012-11-09T05:08:12.467Z</ns2:DateTime>
+            </OccurrenceDateTime>
+            <VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</VesselRelatedActivityCode>
+            <OperationsQuantity unitCodeListID="C62">1</OperationsQuantity>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">HER</SpeciesCode>
+                <WeightMeasure unitCode="KGM">59551.17</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">SPR</SpeciesCode>
+                <WeightMeasure unitCode="KGM">187.56</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">MXV</SpeciesCode>
+                <WeightMeasure unitCode="KGM">499.21</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                <ID schemeID="STAT_RECTANGLE">83J4</ID>
+            </RelatedFLUXLocation>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">POSITION</TypeCode>
+                <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                    <LongitudeMeasure>89.25</LongitudeMeasure>
+                    <LatitudeMeasure>37.92</LatitudeMeasure>
+                </SpecifiedPhysicalFLUXGeographicalCoordinate>
+            </RelatedFLUXLocation>
+            <SpecifiedFishingGear>
+                <TypeCode listID="GEAR_TYPE">OTB</TypeCode>
+                <RoleCode listID="FA_GEAR_ROLE">DEPLOYED</RoleCode>
+                <ApplicableGearCharacteristic>
+                    <TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</TypeCode>
+                    <ValueMeasure unitCode="MMT">20</ValueMeasure>
+                </ApplicableGearCharacteristic>
+                <ApplicableGearCharacteristic>
+                    <TypeCode listID="FA_GEAR_CHARACTERISTIC">GN</TypeCode>
+                    <ValueQuantity unitCodeListID="C62">1</ValueQuantity>
+                </ApplicableGearCharacteristic>
+            </SpecifiedFishingGear>
+            <SpecifiedFishingTrip>
+                <ID schemeID="EU_TRIP_ID">SKF-LVK-99C769778N7</ID>
+            </SpecifiedFishingTrip>
+        </SpecifiedFishingActivity>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">LRD362515173</ID>
+            <ID schemeID="EXT_MARK">LUZ-32-F</ID>
+            <ID schemeID="IRCS">KPKP</ID>
+            <RegistrationVesselCountry>
+                <ID schemeID="TERRITORY">JXU</ID>
+            </RegistrationVesselCountry>
+            <SpecifiedContactParty>
+                <NationalityCountryID schemeID="TERRITORY">JXU</NationalityCountryID>
+                <RoleCode listID="FLUX_CONTACT_ROLE">MASTER</RoleCode>
+                <SpecifiedStructuredAddress>
+                    <StreetName>slggohtl</StreetName>
+                    <CityName>emsekkbq</CityName>
+                    <CountryID schemeID="TERRITORY">JXU</CountryID>
+                    <PlotIdentification>slggohtl</PlotIdentification>
+                    <PostalArea>34779</PostalArea>
+                </SpecifiedStructuredAddress>
+                <SpecifiedContactPerson>
+                    <GivenName>tkqowgoy</GivenName>
+                    <FamilyName>bzaphmqb</FamilyName>
+                </SpecifiedContactPerson>
+                <URIEmailCommunication>
+                    <URIID schemeID="URI">jtfweh.ajlbto@fake-email.com</URIID>
+                </URIEmailCommunication>
+                <SpecifiedUniversalCommunication>
+                    <ChannelCode>TE</ChannelCode>
+                    <CompleteNumber>+836 711 141 2291</CompleteNumber>
+                </SpecifiedUniversalCommunication>
+            </SpecifiedContactParty>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</TypeCode>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="UUID">413ab151-c9df-4cd1-8bda-88579471b9ec</ID>
+            <CreationDateTime>
+                <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+            <OwnerFLUXParty>
+                <ID schemeID="FLUX_GP_PARTY">JXU</ID>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedFishingActivity>
+            <TypeCode listID="FLUX_FA_TYPE">FISHING_OPERATION</TypeCode>
+            <OccurrenceDateTime>
+                <ns2:DateTime>2012-11-09T21:37:12.467Z</ns2:DateTime>
+            </OccurrenceDateTime>
+            <VesselRelatedActivityCode listID="VESSEL_ACTIVITY">FIS</VesselRelatedActivityCode>
+            <OperationsQuantity unitCodeListID="C62">1</OperationsQuantity>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">HER</SpeciesCode>
+                <WeightMeasure unitCode="KGM">39272.68</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">MXV</SpeciesCode>
+                <WeightMeasure unitCode="KGM">636.56</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                <ID schemeID="STAT_RECTANGLE">83J4</ID>
+            </RelatedFLUXLocation>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">POSITION</TypeCode>
+                <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                    <LongitudeMeasure>45.65</LongitudeMeasure>
+                    <LatitudeMeasure>79.34</LatitudeMeasure>
+                </SpecifiedPhysicalFLUXGeographicalCoordinate>
+            </RelatedFLUXLocation>
+            <SpecifiedFishingGear>
+                <TypeCode listID="GEAR_TYPE">OTM</TypeCode>
+                <RoleCode listID="FA_GEAR_ROLE">DEPLOYED</RoleCode>
+                <ApplicableGearCharacteristic>
+                    <TypeCode listID="FA_GEAR_CHARACTERISTIC">ME</TypeCode>
+                    <ValueMeasure unitCode="MMT">20</ValueMeasure>
+                </ApplicableGearCharacteristic>
+                <ApplicableGearCharacteristic>
+                    <TypeCode listID="FA_GEAR_CHARACTERISTIC">GN</TypeCode>
+                    <ValueQuantity unitCodeListID="C62">1</ValueQuantity>
+                </ApplicableGearCharacteristic>
+            </SpecifiedFishingGear>
+            <SpecifiedFishingTrip>
+                <ID schemeID="EU_TRIP_ID">SKF-LVK-99C769778N7</ID>
+            </SpecifiedFishingTrip>
+        </SpecifiedFishingActivity>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">LRD362515173</ID>
+            <ID schemeID="EXT_MARK">LUZ-32-F</ID>
+            <ID schemeID="IRCS">KPKP</ID>
+            <RegistrationVesselCountry>
+                <ID schemeID="TERRITORY">JXU</ID>
+            </RegistrationVesselCountry>
+            <SpecifiedContactParty>
+                <NationalityCountryID schemeID="TERRITORY">JXU</NationalityCountryID>
+                <RoleCode listID="FLUX_CONTACT_ROLE">MASTER</RoleCode>
+                <SpecifiedStructuredAddress>
+                    <StreetName>slggohtl</StreetName>
+                    <CityName>emsekkbq</CityName>
+                    <CountryID schemeID="TERRITORY">JXU</CountryID>
+                    <PlotIdentification>slggohtl</PlotIdentification>
+                    <PostalArea>34779</PostalArea>
+                </SpecifiedStructuredAddress>
+                <SpecifiedContactPerson>
+                    <GivenName>tkqowgoy</GivenName>
+                    <FamilyName>bzaphmqb</FamilyName>
+                </SpecifiedContactPerson>
+                <URIEmailCommunication>
+                    <URIID schemeID="URI">jtfweh.ajlbto@fake-email.com</URIID>
+                </URIEmailCommunication>
+                <SpecifiedUniversalCommunication>
+                    <ChannelCode>TE</ChannelCode>
+                    <CompleteNumber>+836 711 141 2291</CompleteNumber>
+                </SpecifiedUniversalCommunication>
+            </SpecifiedContactParty>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="FLUX_FA_REPORT_TYPE">NOTIFICATION</TypeCode>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="UUID">511760fa-439e-4f0e-9dbc-c08621de42e2</ID>
+            <CreationDateTime>
+                <ns2:DateTime>2012-11-09T22:38:13.467Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+            <OwnerFLUXParty>
+                <ID schemeID="FLUX_GP_PARTY">JXU</ID>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedFishingActivity>
+            <TypeCode listID="FLUX_FA_TYPE">ARRIVAL</TypeCode>
+            <OccurrenceDateTime>
+                <ns2:DateTime>2012-11-10T05:28:12.467Z</ns2:DateTime>
+            </OccurrenceDateTime>
+            <ReasonCode listID="FA_REASON_ARRIVAL">LAN</ReasonCode>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">HER</SpeciesCode>
+                <WeightMeasure unitCode="KGM">87599.97</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">HER</SpeciesCode>
+                <WeightMeasure unitCode="KGM">87599.97</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">UNLOADED</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">MXV</SpeciesCode>
+                <WeightMeasure unitCode="KGM">187.56</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">MXV</SpeciesCode>
+                <WeightMeasure unitCode="KGM">187.56</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">UNLOADED</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">SPR</SpeciesCode>
+                <WeightMeasure unitCode="KGM">187.56</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">SPR</SpeciesCode>
+                <WeightMeasure unitCode="KGM">187.56</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">UNLOADED</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="TERRITORY">WWV</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                    <ID schemeID="FAO_AREA">76.2.f</ID>
+                </SpecifiedFLUXLocation>
+            </SpecifiedFACatch>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</TypeCode>
+                <CountryID schemeID="TERRITORY">JXU</CountryID>
+                <ID schemeID="LOCATION">VSWAV</ID>
+            </RelatedFLUXLocation>
+            <SpecifiedFishingTrip>
+                <ID schemeID="EU_TRIP_ID">SKF-LVK-99C769778N7</ID>
+                <SpecifiedDelimitedPeriod>
+                    <StartDateTime>
+                        <ns2:DateTime>3227-62-52T47:13:43R</ns2:DateTime>
+                    </StartDateTime>
+                </SpecifiedDelimitedPeriod>
+            </SpecifiedFishingTrip>
+        </SpecifiedFishingActivity>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">LRD362515173</ID>
+            <ID schemeID="EXT_MARK">LUZ-32-F</ID>
+            <ID schemeID="IRCS">KPKP</ID>
+            <RegistrationVesselCountry>
+                <ID schemeID="TERRITORY">JXU</ID>
+            </RegistrationVesselCountry>
+            <SpecifiedContactParty>
+                <NationalityCountryID schemeID="TERRITORY">JXU</NationalityCountryID>
+                <RoleCode listID="FLUX_CONTACT_ROLE">MASTER</RoleCode>
+                <SpecifiedStructuredAddress>
+                    <StreetName>slggohtl</StreetName>
+                    <CityName>emsekkbq</CityName>
+                    <CountryID schemeID="TERRITORY">JXU</CountryID>
+                    <PlotIdentification>slggohtl</PlotIdentification>
+                    <PostalArea>34779</PostalArea>
+                </SpecifiedStructuredAddress>
+                <SpecifiedContactPerson>
+                    <GivenName>tkqowgoy</GivenName>
+                    <FamilyName>bzaphmqb</FamilyName>
+                </SpecifiedContactPerson>
+                <URIEmailCommunication>
+                    <URIID schemeID="URI">jtfweh.ajlbto@fake-email.com</URIID>
+                </URIEmailCommunication>
+                <SpecifiedUniversalCommunication>
+                    <ChannelCode>TE</ChannelCode>
+                    <CompleteNumber>+836 711 141 2291</CompleteNumber>
+                </SpecifiedUniversalCommunication>
+            </SpecifiedContactParty>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+</ns3:FLUXFAReportMessage>

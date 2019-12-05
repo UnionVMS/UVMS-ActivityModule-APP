@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatch
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,8 @@ import javax.naming.NamingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,7 +51,7 @@ import static org.junit.Assert.fail;
 public class FACatchResourceTest extends BaseActivityArquillianTest {
 
     @Before
-    public void setUp() throws NamingException {
+    public void setUp() throws NamingException, IOException, JAXBException, ServiceException {
         super.setUp();
     }
 
