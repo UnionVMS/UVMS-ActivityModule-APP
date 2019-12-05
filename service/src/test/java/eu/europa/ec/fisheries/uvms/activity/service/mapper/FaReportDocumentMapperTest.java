@@ -104,8 +104,8 @@ public class FaReportDocumentMapperTest {
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getReferenceId(), dto.getRefId());
         assertEquals(faReportDocumentEntity.getFmcMarker(), dto.getFmcMark());
 
-        assertEquals("2016-07-01T11:14:00", dto.getAcceptedDate());
-        assertEquals("2016-07-01T11:14:00", dto.getCreationDate());
+        assertEquals("2016-07-01T11:15:00", dto.getAcceptedDate());
+        assertEquals("2016-07-01T11:15:00", dto.getCreationDate());
 
         FaReportIdentifierEntity faReportIdentifier = faReportDocumentEntity.getFaReportIdentifiers().iterator().next();
         assertEquals(1, dto.getRelatedReports().size());

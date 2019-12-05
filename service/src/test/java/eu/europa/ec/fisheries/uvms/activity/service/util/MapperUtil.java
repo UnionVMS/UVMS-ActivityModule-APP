@@ -90,12 +90,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 /**
  * Created by padhyad on 7/27/2016.
@@ -690,8 +692,9 @@ public class MapperUtil {
         FLUXReportDocument relatedFLUXReportDocument = getFluxReportDocument();
         List<FishingActivity> specifiedFishingActivities = Collections.singletonList(getFishingActivity());
         VesselTransportMeans specifiedVesselTransportMeans = getVesselTransportMeans();
-        return new FAReportDocument(typeCode, fmcMarkerCode, relatedReportIDs, acceptanceDateTime,
+        FAReportDocument faReportDocument = new FAReportDocument(typeCode, fmcMarkerCode, relatedReportIDs, acceptanceDateTime,
                 relatedFLUXReportDocument, specifiedFishingActivities, specifiedVesselTransportMeans);
+        return faReportDocument;
     }
 
     private static FishingActivity getStandardFishingActivity() {
@@ -751,10 +754,12 @@ public class MapperUtil {
             DateTimeType dateTimeType = new DateTimeType();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(df.parse(value));
-            XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().
-                    newXMLGregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), DatatypeConstants.FIELD_UNDEFINED, GregorianCalendar.LONG).normalize();
-            dateTimeType.setDateTime(xmlDate);
+            Date parse = df.parse(value);
+            cal.setTime(parse);
+            DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+            XMLGregorianCalendar xmlDate = datatypeFactory.newXMLGregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), DatatypeConstants.FIELD_UNDEFINED, 0);
+            XMLGregorianCalendar normalize = xmlDate.normalize();
+            dateTimeType.setDateTime(normalize);
             return dateTimeType;
         } catch (Exception e) {
             return null;
