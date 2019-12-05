@@ -28,7 +28,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.MicroMovementComparator;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.MovementModuleService;
@@ -91,9 +90,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private PropertiesBean properties;
 
     @EJB
-    private FishingTripService fishingTripService;
-
-    @EJB
     private MdrModuleService mdrModuleServiceBean;
 
     @EJB
@@ -122,7 +118,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * {@inheritDoc}
      */
     @Override
-    @Transactional
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
         FluxFaReportMessageEntity messageEntity = fluxFaReportMessageMapper.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);

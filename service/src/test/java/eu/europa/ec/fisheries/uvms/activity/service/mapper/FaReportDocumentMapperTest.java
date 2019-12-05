@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEnti
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.uvms.activity.service.FaReportMessageFishingTrips;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ReportDocumentDto;
@@ -81,11 +82,11 @@ public class FaReportDocumentMapperTest {
 
     @Test
     public void faReportDocumentMapperNullReturns(){
-        Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
+        Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null, new FaReportMessageFishingTrips());
         assertEquals(0, fishingActivityEntities.size());
         Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = FaReportDocumentMapper.INSTANCE.mapVesselTransportMeansEntity(null, new FaReportDocumentEntity());
         assertNull(vesselTransportMeansEntityList);
-        Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
+        Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null, new FaReportMessageFishingTrips());
         assertEquals(0, fishingActivityEntities1.size());
     }
 
