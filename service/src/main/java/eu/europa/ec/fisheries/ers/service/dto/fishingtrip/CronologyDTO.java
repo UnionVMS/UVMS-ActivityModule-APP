@@ -13,30 +13,27 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 
+import java.util.Objects;
+
 /**
  * Created by sanera on 26/08/2016.
  */
 public class CronologyDTO {
 
 
-    private String tripID;
+    private String tripId;
     private String tripDate;
 
     public CronologyDTO(){
 
     }
 
-    public CronologyDTO(String tripID, String tripDate) {
-        this.tripID = tripID;
-        this.tripDate = tripDate;
+    public String getTripId() {
+        return tripId;
     }
 
-    public String getTripID() {
-        return tripID;
-    }
-
-    public void setTripID(String tripID) {
-        this.tripID = tripID;
+    public void setTripId(String tripId) {
+        this.tripId = tripId;
     }
 
     public String getTripDate() {
@@ -50,9 +47,24 @@ public class CronologyDTO {
     @Override
     public String toString() {
         return "CronologyDTO{" +
-                "tripID='" + tripID + '\'' +
+                "tripId='" + tripId + '\'' +
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CronologyDTO that = (CronologyDTO) o;
+        return Objects.equals(tripId, that.tripId) && Objects.equals(tripDate, that.tripDate);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(tripId, tripDate);
+    }
 }

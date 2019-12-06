@@ -37,6 +37,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -57,6 +58,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.*;
@@ -118,10 +121,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         List<VesselIdentifierEntity> latestVesselIdentifiers = vesselIdentifierDao.getLatestVesselIdByTrip(tripId); // Find the latest Vessel for the Trip for finding the trip of that vessel
         CronologyTripDTO cronologyTripDTO = new CronologyTripDTO();
         cronologyTripDTO.setCurrentTrip(getCurrentTrip(latestVesselIdentifiers));
-        cronologyTripDTO.setSelectedTrip(tripId);
+        CronologyDTO selectedTrip = buildCronologyDTO(tripId);
+        cronologyTripDTO.setSelectedTrip(selectedTrip);
 
-        List<String> previousTrips = new ArrayList<>(getPreviousTrips(tripId, count, latestVesselIdentifiers));
-        List<String> nextTrips = new ArrayList<>(getNextTrips(tripId, count, latestVesselIdentifiers));
+        List<CronologyDTO> previousTrips = new ArrayList<>(getPreviousTrips(tripId, count, latestVesselIdentifiers));
+        List<CronologyDTO> nextTrips = new ArrayList<>(getNextTrips(tripId, count, latestVesselIdentifiers));
 
         Map<String, Integer> countMap = calculateTripCounts(count, previousTrips.size(), nextTrips.size());
         log.info("Number of previous record to find : " + countMap.get(PREVIOUS));
@@ -167,14 +171,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return ImmutableMap.<String, Integer>builder().put(PREVIOUS, previous).put(NEXT, next).build();
     }
 
-    private String getCurrentTrip(List<VesselIdentifierEntity> vesselIdentifiers) {
-        String currentTrip = null;
+    private CronologyDTO getCurrentTrip(List<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException{
+        CronologyDTO currentTrip = null;
         if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
             for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
                 FishingTripIdentifierEntity identifierEntity = fishingTripIdentifierDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId());
-                currentTrip = identifierEntity != null ? identifierEntity.getTripId() : null;
-                if (StringUtils.isEmpty(currentTrip)) {
+                currentTrip = identifierEntity != null ? buildCronologyDTO(identifierEntity.getTripId()) : null;
+                if (currentTrip == null || StringUtils.isEmpty(currentTrip.getTripDate())) {
                     break;
                 }
             }
@@ -183,34 +187,36 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return currentTrip;
     }
 
-    private Set<String> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
-        Set<String> tripIds = new LinkedHashSet<>();
+    private Set<CronologyDTO> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
+        Set<CronologyDTO> tripCronologyDTOs = new LinkedHashSet<>();
         if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
             for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
                 List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
                 for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                    tripIds.add(identifiers.getTripId());
+                    CronologyDTO cronologyDTO = buildCronologyDTO(identifiers.getTripId());
+                    tripCronologyDTOs.add(cronologyDTO);
                 }
             }
         }
-        log.debug("Previous Trips : " + tripIds);
-        return tripIds;
+        log.debug("Previous Trips : " + tripCronologyDTOs);
+        return tripCronologyDTOs;
     }
 
-    private Set<String> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
-        Set<String> tripIds = new LinkedHashSet<>();
+    private Set<CronologyDTO> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
+        Set<CronologyDTO> tripCronologyDTOs = new LinkedHashSet<>();
         if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
             for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
                 List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
                         vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
                 for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                    tripIds.add(identifiers.getTripId());
+                    CronologyDTO cronologyDTO = buildCronologyDTO(identifiers.getTripId());
+                    tripCronologyDTOs.add(cronologyDTO);
                 }
             }
         }
-        log.debug("Next Trips : " + tripIds);
-        return tripIds;
+        log.debug("Next Trips : " + tripCronologyDTOs);
+        return tripCronologyDTOs;
     }
 
     @Override
@@ -632,6 +638,25 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         response.setFishingActivityLists(fishingActivitySummaries);
         response.setFishingTripIdLists(fishingTripIdLists);
         return response;
+    }
+
+    private CronologyDTO buildCronologyDTO(String tripId) throws ServiceException {
+        CronologyDTO cronologyDTO = new CronologyDTO();
+        FishingActivityQuery query = new FishingActivityQuery();
+        query.setSearchCriteriaMap(Collections.singletonMap(SearchFilter.TRIP_ID, tripId));
+        query.setSorting(new SortKey(SearchFilter.PERIOD_START, false));
+        List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
+
+        String formattedStartDate = fishingActivityEntityList.stream()
+                .findFirst()
+                .map(FishingActivityEntity::getCalculatedStartTime)
+                .map(DateUtils::dateToString)
+                .orElse(null);
+
+        cronologyDTO.setTripId(tripId);
+        cronologyDTO.setTripDate(formattedStartDate);
+
+        return cronologyDTO;
     }
 
     private List<FishingActivityEntity> cleanFromDeletionsAndCancelations(List<FishingActivityEntity> fishingActivityEntityList) {
