@@ -6,7 +6,6 @@
   <include file="v0.1\db-changelog-createTables_0.1.xml" relativeToChangelogFile="true"/>
   <include file="v0.2\db-changelog-createTables_0.2.xml" relativeToChangelogFile="true"/>
   <include file="v0.3\db-changelog-createTables_0.3.xml" relativeToChangelogFile="true"/>
-  <include file="testdata\activityTestDataXML.xml" relativeToChangelogFile="true"/>
   <include file="1.1.5\db-changelog-UNIONVMS-3381.xml" relativeToChangelogFile="true"/>
   <include file="1.1.6\db-changelog-UNIONVMS.xml" relativeToChangelogFile="true"/>
   <include file="1.1.7\db-changelog-UNIONVMS.xml" relativeToChangelogFile="true"/>
