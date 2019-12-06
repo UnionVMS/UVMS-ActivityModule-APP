@@ -28,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
@@ -90,10 +91,9 @@ public abstract class BaseActivityArquillianTest {
             SizeDistributionClassCodeEntity.class,
             GearCharacteristicEntity.class,
             FluxLocationEntity.class,
-            FishingTripEntity.class,
+            DelimitedPeriodEntity.class,
             FishingGearRoleEntity.class,
             FishingGearEntity.class,
-            DelimitedPeriodEntity.class,
             ContactPartyRoleEntity.class,
             ContactPartyEntity.class,
             ContactPersonEntity.class,
@@ -102,12 +102,14 @@ public abstract class BaseActivityArquillianTest {
             AapProcessEntity.class,
             FaCatchEntity.class,
             SizeDistributionEntity.class,
-            FishingActivityEntity.class,
             VesselTransportMeansEntity.class,
+            FishingTripEntity.class,
+            FishingActivityEntity.class,
             FaReportDocumentEntity.class,
+            FluxCharacteristicEntity.class,
             FluxReportDocumentEntity.class,
-            FluxPartyEntity.class,
-            FluxFaReportMessageEntity.class
+            FluxFaReportMessageEntity.class,
+            FluxPartyEntity.class
             );
 
     public static final String ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME = "anonymized_flux_messages";
@@ -186,6 +188,8 @@ public abstract class BaseActivityArquillianTest {
         ctx.rebind("java:global/spatial_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST);
         ctx.rebind("java:global/mdr_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/mdrmock");
         ctx.rebind("java:global/asset_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/assetmock");
+        ctx.rebind("java:global/movement_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/movementmock");
+        ctx.rebind("java:global/spatial_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/spatialmock");
 
         authToken = getToken();
 
