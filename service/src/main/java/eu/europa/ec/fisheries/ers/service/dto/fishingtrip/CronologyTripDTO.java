@@ -25,54 +25,54 @@ import java.util.List;
 public class CronologyTripDTO {
 
     @JsonProperty("currentTrip")
-    private String currentTrip;
+    private CronologyDTO currentTrip;
 
     @JsonProperty("previousTrips")
-    private List<String> previousTrips;
+    private List<CronologyDTO> previousTrips;
 
     @JsonProperty("selectedTrip")
-    private String selectedTrip;
+    private CronologyDTO selectedTrip;
 
     @JsonProperty("nextTrips")
-    private List<String> nextTrips;
+    private List<CronologyDTO> nextTrips;
 
     @JsonProperty("currentTrip")
-    public String getCurrentTrip() {
+    public CronologyDTO getCurrentTrip() {
         return currentTrip;
     }
 
     @JsonProperty("currentTrip")
-    public void setCurrentTrip(String currentTrip) {
+    public void setCurrentTrip(CronologyDTO currentTrip) {
         this.currentTrip = currentTrip;
     }
 
     @JsonProperty("previousTrips")
-    public List<String> getPreviousTrips() {
+    public List<CronologyDTO> getPreviousTrips() {
         return previousTrips;
     }
 
     @JsonProperty("previousTrips")
-    public void setPreviousTrips(List<String> previousTrips) {
+    public void setPreviousTrips(List<CronologyDTO> previousTrips) {
         this.previousTrips = previousTrips;
     }
 
     @JsonProperty("selectedTrip")
-    public String getSelectedTrip() {
+    public CronologyDTO getSelectedTrip() {
         return selectedTrip;
     }
 
     @JsonProperty("selectedTrip")
-    public void setSelectedTrip(String selectedTrip) {
+    public void setSelectedTrip(CronologyDTO selectedTrip) {
         this.selectedTrip = selectedTrip;
     }
 
     @JsonProperty("nextTrips")
-    public List<String> getNextTrips() {
+    public List<CronologyDTO> getNextTrips() {
         return nextTrips;
     }
 
     @JsonProperty("nextTrips")
-    public void setNextTrips(List<String> nextTrips) {
+    public void setNextTrips(List<CronologyDTO> nextTrips) {
         this.nextTrips = nextTrips;
     }
 }
