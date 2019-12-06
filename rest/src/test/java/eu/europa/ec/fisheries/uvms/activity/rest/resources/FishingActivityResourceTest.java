@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.naming.NamingException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -43,7 +45,7 @@ import static org.junit.Assert.assertTrue;
 public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Before
-    public void setUp() throws NamingException, IOException, JAXBException, ServiceException {
+    public void setUp() throws NamingException, IOException, JAXBException, ServiceException, NotSupportedException, SystemException {
         super.setUp();
     }
 

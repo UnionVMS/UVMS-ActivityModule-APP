@@ -57,8 +57,12 @@ import org.junit.After;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -125,8 +129,8 @@ public abstract class BaseActivityArquillianTest {
     @EJB
     private FluxMessageService fluxMessageService;
 
-    @EJB
-    private TestHelperServiceBean testHelperServiceBean;
+    @Inject
+    private UserTransaction userTransaction;
 
     protected String authToken;
 
@@ -183,7 +187,7 @@ public abstract class BaseActivityArquillianTest {
         return tokenHandler.createToken("user", featureIds);
     }
 
-    protected void setUp() throws NamingException, ServiceException, JAXBException, IOException {
+    protected void setUp() throws NamingException, ServiceException, JAXBException, IOException, SystemException, NotSupportedException {
         InitialContext ctx = new InitialContext();
         ctx.rebind("java:global/spatial_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST);
         ctx.rebind("java:global/mdr_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/mdrmock");
@@ -193,14 +197,14 @@ public abstract class BaseActivityArquillianTest {
 
         authToken = getToken();
 
+        userTransaction.begin();
+
         populateFluxTestData();
     }
 
     @After
-    public void tearDown() {
-        for (Class aClass : ENTITY_CLASSES_TO_TRUNCATE_AFTER_TEST) {
-            testHelperServiceBean.deleteAllFromDb(aClass);
-        }
+    public void tearDown() throws SystemException {
+        userTransaction.rollback();
     }
 
     private void populateFluxTestData() throws IOException, JAXBException, ServiceException {
