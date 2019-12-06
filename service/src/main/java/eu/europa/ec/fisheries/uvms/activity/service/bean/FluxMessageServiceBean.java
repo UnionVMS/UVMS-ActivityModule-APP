@@ -134,7 +134,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         log.debug("Saved partial FluxFaReportMessage before further processing");
         updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());
         log.debug("Updating FaReport Corrections is complete.");
-        updateFishingTripStartAndEndDate(faReportDocuments);
+        updateFishingTripStartAndEndDate(entity.getFaReportDocuments());
         log.info("[END] FluxFaReportMessage Saved successfully.");
         return entity;
     }
@@ -153,32 +153,33 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
 
         for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
-            setTripStartAndEndDateForFishingTrip(fishingActivityEntity.getFishingTrip());
+            setTripStartAndEndDateForFishingTrip(fishingActivityEntity);
         }
     }
 
-    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
+    private void setTripStartAndEndDateForFishingTrip(FishingActivityEntity fishingActivityEntity) {
+        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrip();
 
-        if (fishingTripEntity.getFishingTripKey() == null) {
-            return;
+        Instant calculatedTripStartDate = fishingTripEntity.getCalculatedTripStartDate();
+        Instant calculatedTripEndDate = fishingTripEntity.getCalculatedTripEndDate();
+
+        Instant activityTime = fishingActivityEntity.getCalculatedStartTime();
+
+        if (calculatedTripStartDate == null) {
+            fishingTripEntity.setCalculatedTripStartDate(activityTime);
         }
 
-        Instant calculatedTripStartDate = null;
-        Instant calculatedTripEndDate = null;
-
-        for (FishingActivityEntity fishingActivityEntity : fishingTripEntity.getFishingActivities()) {
-            if (calculatedTripStartDate == null || fishingActivityEntity.getCalculatedStartTime().isBefore(calculatedTripStartDate)) {
-                calculatedTripStartDate = fishingActivityEntity.getCalculatedStartTime();
-            }
-            if (calculatedTripEndDate == null || fishingActivityEntity.getCalculatedStartTime().isAfter(calculatedTripEndDate)) {
-                // TODO: This cant be quite right can it?
-                calculatedTripEndDate = fishingActivityEntity.getCalculatedStartTime();
-            }
-
+        if (calculatedTripEndDate == null) {
+            fishingTripEntity.setCalculatedTripEndDate(activityTime);
         }
-        //Calculate trip start date
-        fishingTripEntity.setCalculatedTripStartDate(calculatedTripStartDate);
-        fishingTripEntity.setCalculatedTripEndDate(calculatedTripEndDate);
+
+        if (calculatedTripStartDate != null && activityTime != null && activityTime.isBefore(calculatedTripStartDate)) {
+            fishingTripEntity.setCalculatedTripStartDate(activityTime);
+        }
+
+        if (calculatedTripEndDate != null && activityTime != null && activityTime.isAfter(calculatedTripEndDate)) {
+            fishingTripEntity.setCalculatedTripEndDate(activityTime);
+        }
     }
 
     private void enrichFishingActivityWithGuiID(FaReportDocumentEntity faReportDocument) {
