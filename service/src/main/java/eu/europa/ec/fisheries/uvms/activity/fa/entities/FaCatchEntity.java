@@ -56,7 +56,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(of = {"typeCode", "speciesCode", "typeCodeListId", "speciesCodeListid", "unitQuantity", "unitQuantityCode", "calculatedUnitQuantity", "weightMeasureUnitCode", "weightMeasure", "usageCode", "territory", "fishClassCode"})
-@ToString(exclude = {"fishingActivity", "aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrips"})
+@ToString(exclude = {"fishingActivity", "aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrip"})
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
