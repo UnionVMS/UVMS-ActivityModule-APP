@@ -10,7 +10,6 @@
  *
  *
  */
-
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
@@ -43,13 +42,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-/**
- * Created by sanera on 04/08/2016.
- */
 @Path("/trip")
 @Slf4j
 @Stateless
-
 public class FishingTripResource extends UnionVMSResource {
 
     private final static Logger LOG = LoggerFactory.getLogger(FishingTripResource.class);
@@ -76,7 +71,7 @@ public class FishingTripResource extends UnionVMSResource {
                                           @HeaderParam("roleName") String roleName,
                                           @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.debug("Fishing Trip summary from fishing trip : " + fishingTripId);
+        LOG.debug("Fishing Trip summary from fishing trip: {}", fishingTripId);
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId, datasets));
@@ -88,7 +83,7 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getVesselDetails(@PathParam("fishingTripId") String fishingTripId) throws ServiceException {
-        LOG.debug("Getting Vessels details for trip : " + fishingTripId);
+        LOG.debug("Getting Vessels details for trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));
     }
 
@@ -98,7 +93,7 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getFishingTripMessageCounter(@PathParam("fishingTripId") String fishingTripId) {
-        LOG.debug("Message counters for fishing trip : " + fishingTripId);
+        LOG.debug("Message counters for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.getMessageCountersForTripId(fishingTripId));
     }
 
@@ -108,7 +103,7 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getFishingTripCatchReports(@PathParam("fishingTripId") String fishingTripId) {
-        LOG.debug("Catches for fishing trip : "+fishingTripId);
+        LOG.debug("Catches for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
     }
 
@@ -137,7 +132,7 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getFishingTripCatchEvolution(@PathParam("fishingTripId") String fishingTripId) throws ServiceException {
-        LOG.debug("Catch evolution for fishing trip : " + fishingTripId);
+        LOG.debug("Catch evolution for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId));
     }
 
@@ -147,7 +142,7 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     //@IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.SEND_UPDATE_TRIP_REQUEST})
     public Response requestTripUpdateFromTripId(@PathParam("fishingTripId") String fishingTripId) {
-        LOG.debug("Going to send FaQuery related to Trip with id : " + fishingTripId);
+        LOG.debug("Going to send FaQuery related to Trip with id: {}", fishingTripId);
         try {
             rulesService.composeAndSendTripUpdateFaQueryToRules(fishingTripId);
         } catch (ActivityModuleException e) {
