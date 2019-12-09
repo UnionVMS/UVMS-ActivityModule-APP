@@ -17,17 +17,13 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteriaWithValue
 
 import java.util.List;
 
-/**
- * Created by sanera on 27/01/2017.
- */
 public class FACatchSummaryRecordDTO {
-
 
     private  List<GroupCriteriaWithValue> groups;
     private SummaryTableDTO summaryTable;
 
-    public FACatchSummaryRecordDTO(){
-
+    public FACatchSummaryRecordDTO() {
+        // Needed by jackson serialize/deserialize
     }
 
     public List<GroupCriteriaWithValue> getGroups() {
@@ -45,7 +41,4 @@ public class FACatchSummaryRecordDTO {
     public void setSummaryTable(SummaryTableDTO summaryTable) {
         this.summaryTable = summaryTable;
     }
-
-
-
 }
