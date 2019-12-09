@@ -39,6 +39,7 @@ public class ConfigResource extends UnionVMSResource {
 
     private static final String DEFAULT_CONFIG = "DEFAULT_CONFIG";
     private static final String USER_CONFIG = "USER_CONFIG";
+    private static final String CONFIG_INIT_PARAMETER = "usmApplication";
 
     @EJB
     private USMService usmService;
@@ -52,7 +53,7 @@ public class ConfigResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.MANAGE_ADMIN_CONFIGURATIONS})
     public Response getAdminConfig(@Context HttpServletRequest request) throws ServiceException {
-        String applicationName = request.getServletContext().getInitParameter("usmApplication");
+        String applicationName = request.getServletContext().getInitParameter(CONFIG_INIT_PARAMETER);
         String adminConfig = usmService.getOptionDefaultValue(DEFAULT_CONFIG, applicationName);
         return createSuccessResponse(preferenceConfigService.getAdminConfig(adminConfig));
     }
@@ -63,7 +64,7 @@ public class ConfigResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.MANAGE_ADMIN_CONFIGURATIONS})
     public Response saveAdminConfig(@Context HttpServletRequest request, ActivityConfigDTO activityConfigDTO) throws ServiceException {
-        String applicationName = request.getServletContext().getInitParameter("usmApplication");
+        String applicationName = request.getServletContext().getInitParameter(CONFIG_INIT_PARAMETER);
         String adminJson = preferenceConfigService.saveAdminConfig(activityConfigDTO);
         usmService.setOptionDefaultValue(DEFAULT_CONFIG, adminJson, applicationName);
         return createSuccessResponse();
@@ -76,7 +77,7 @@ public class ConfigResource extends UnionVMSResource {
     public Response getUserConfig(@Context HttpServletRequest request,
                                   @HeaderParam(AuthConstants.HTTP_HEADER_SCOPE_NAME) String scopeName,
                                   @HeaderParam(AuthConstants.HTTP_HEADER_ROLE_NAME) String roleName) throws ServiceException {
-        String applicationName = request.getServletContext().getInitParameter("usmApplication");
+        String applicationName = request.getServletContext().getInitParameter(CONFIG_INIT_PARAMETER);
         String username = request.getRemoteUser();
         String adminConfig = usmService.getOptionDefaultValue(DEFAULT_CONFIG, applicationName);
         String userConfig = usmService.getUserPreference(USER_CONFIG, username, applicationName, roleName, scopeName);
@@ -91,7 +92,7 @@ public class ConfigResource extends UnionVMSResource {
                                    @HeaderParam(AuthConstants.HTTP_HEADER_SCOPE_NAME) String scopeName,
                                    @HeaderParam(AuthConstants.HTTP_HEADER_ROLE_NAME) String roleName,
                                    ActivityConfigDTO activityConfigDTO) throws ServiceException {
-        String applicationName = request.getServletContext().getInitParameter("usmApplication");
+        String applicationName = request.getServletContext().getInitParameter(CONFIG_INIT_PARAMETER);
         String username      = request.getRemoteUser();
         String userConfig    = usmService.getUserPreference(USER_CONFIG, username, applicationName, roleName, scopeName);
         String updatedConfig = preferenceConfigService.saveUserConfig(activityConfigDTO, userConfig);
@@ -107,7 +108,7 @@ public class ConfigResource extends UnionVMSResource {
                                     @HeaderParam(AuthConstants.HTTP_HEADER_SCOPE_NAME) String scopeName,
                                     @HeaderParam(AuthConstants.HTTP_HEADER_ROLE_NAME) String roleName,
                                     ActivityConfigDTO activityConfigDTO) throws ServiceException {
-        String applicationName = request.getServletContext().getInitParameter("usmApplication");
+        String applicationName = request.getServletContext().getInitParameter(CONFIG_INIT_PARAMETER);
         String username        = request.getRemoteUser();
         String adminConfig     = usmService.getOptionDefaultValue(DEFAULT_CONFIG, applicationName);
         String userConfig      = usmService.getUserPreference(USER_CONFIG, username, applicationName, roleName, scopeName);
