@@ -19,8 +19,8 @@ import java.util.Map;
 
 public class SummaryTableDTO {
 
-    private Map<FishSizeClassEnum,Object> summaryFishSize;
-    private Map<FaCatchTypeEnum,Object> summaryFaCatchType;
+    private Map<FishSizeClassEnum, Object> summaryFishSize;
+    private Map<FaCatchTypeEnum, Object> summaryFaCatchType;
 
     public Map<FishSizeClassEnum, Object> getSummaryFishSize() {
         return summaryFishSize;
