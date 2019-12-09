@@ -13,13 +13,11 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
@@ -49,7 +47,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Named;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
@@ -67,11 +64,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -106,24 +101,7 @@ public class BaseMapper {
     }
 
     public static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
-        if (fishingTrip == null) {
-            return null;
-        }
-
-        FishingTripEntity fishingTripEntity = FishingTripEntity.create(fishingTrip);
-        List<IDType> ids = fishingTrip.getIDS();
-        // TODO: WTAF, should be one and only one?
-        IDType idType = ids.get(0);
-        if (idType != null) {
-            fishingTripEntity.setFishingTripKey(new FishingTripKey(idType.getValue(), idType.getSchemeID()));
-        }
-
-        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
-        for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {
-            fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
-        }
-
-        return fishingTripEntity;
+        return FishingTripEntity.create(fishingTrip);
     }
 
     protected static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {

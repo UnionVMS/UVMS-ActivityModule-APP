@@ -6,7 +6,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,8 +35,21 @@ public class FishingTripEntityTest {
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
 
+        Set<DelimitedPeriodEntity> delimitedPeriods = fishingTripEntity.getDelimitedPeriods();
+        assertEquals(1, delimitedPeriods.size());
+
+        DelimitedPeriodEntity delimitedPeriodEntity = delimitedPeriods.iterator().next();
+        Instant startDate = delimitedPeriodEntity.getStartDate();
+        Instant endDate = delimitedPeriodEntity.getEndDate();
+        MeasureType durationMeasure = delimitedPeriodEntity.getDurationMeasure();
+
+        assertEquals("2011-07-01T11:15:00Z", startDate.toString());
+        assertEquals("2016-07-01T11:15:00Z", endDate.toString());
+        assertEquals(500, durationMeasure.getValue(), 0);
+        assertEquals("C62", durationMeasure.getUnitCode());
+        assertEquals("4rhfy5-fhtydr-tyfr85-ghtyd54", durationMeasure.getUnitCodeListVersionID());
+
         assertTrue(fishingTripEntity.getFishingActivities().isEmpty());
-        assertTrue(fishingTripEntity.getDelimitedPeriods().isEmpty());
     }
 
     @Test

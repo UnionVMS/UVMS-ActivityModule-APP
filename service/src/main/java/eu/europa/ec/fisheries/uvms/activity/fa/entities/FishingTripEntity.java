@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.DelimitedPeriodMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -133,6 +134,10 @@ public class FishingTripEntity implements Serializable {
     }
 
     public static FishingTripEntity create(FishingTrip fishingTrip) {
+        if (fishingTrip == null) {
+            return null;
+        }
+
         FishingTripEntity fishingTripEntity = new FishingTripEntity();
 
         List<IDType> ids = fishingTrip.getIDS();
@@ -140,6 +145,11 @@ public class FishingTripEntity implements Serializable {
         if (idType != null) {
             FishingTripKey fishingTripKey = new FishingTripKey(idType.getValue(), idType.getSchemeID());
             fishingTripEntity.setFishingTripKey(fishingTripKey);
+        }
+
+        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
+        for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {
+            fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
         }
 
         CodeType typeCode = fishingTrip.getTypeCode();
