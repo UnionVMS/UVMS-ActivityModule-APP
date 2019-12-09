@@ -30,7 +30,7 @@ import java.util.Set;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class DelimitedPeriodMapper extends BaseMapper {
 
-    public static DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
+    public static final DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
 
     @Mappings({
             @Mapping(target = "startDate", source = "startDateTime.dateTime"),
