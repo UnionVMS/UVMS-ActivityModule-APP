@@ -73,16 +73,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
 						"where ft.fishingTripKey.tripId =:fishingTripId " +
-						"order by a.typeCode,fa.acceptedDatetime"),
-		@NamedQuery(name = FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP,
-				query = "SELECT a from FishingActivityEntity a " +
-						"JOIN FETCH a.faReportDocument fa " +
-						"JOIN FETCH fa.fluxReportDocument flux " +
-						"JOIN FETCH a.fishingTrip ft " +
-						"where ft.fishingTripKey.tripId = :fishingTripId and " +
-						"ft.fishingTripKey.tripSchemeId = :tripSchemeId and " +
-						"a.typeCode = :fishActTypeCode and " +
-						"flux.purposeCode in (:flPurposeCodes)")
+						"order by a.typeCode,fa.acceptedDatetime")
 })
 
 @Entity
@@ -96,7 +87,6 @@ public class FishingActivityEntity implements Serializable {
 
 	public static final String ACTIVITY_FOR_FISHING_TRIP = "findActivityListForFishingTrips";
 	public static final String FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM = "findActivityListForFishingTripsWithoutGeom";
-	public static final String FIND_FISHING_ACTIVITY_FOR_TRIP = "findFishingActivityForTrip";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
