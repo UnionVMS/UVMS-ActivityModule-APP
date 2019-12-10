@@ -35,9 +35,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.MovementModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.util.DatabaseDialect;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Oracle;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Postgres;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -89,9 +86,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private AssetModuleService assetService;
 
     @EJB
-    private PropertiesBean properties;
-
-    @EJB
     private FishingTripService fishingTripService;
 
     @EJB
@@ -103,20 +97,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @EJB
     private FaMessageSaverBean faMessageSaverBean;
 
-    private DatabaseDialect dialect;
-
     private GeometryFactory geometryFactory = new GeometryFactory();
 
     private FluxFaReportMessageMapper fluxFaReportMessageMapper = new FluxFaReportMessageMapper();
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
-        dialect = new Postgres();
-        if ("oracle".equals(properties.getProperty("database.dialect"))) {
-            dialect = new Oracle();
-        }
+        faReportDocumentDao = new FaReportDocumentDao(entityManager);
     }
 
     /**
@@ -513,10 +500,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             return null;
         } else if (nextMovement == null) {
             faReportGeom = convertToPoint(previousMovement);
-            faReportGeom.setSRID(dialect.defaultSRID());
+            faReportGeom.setSRID(DEFAULT_WILDFLY_SRID);
         } else if (previousMovement == null) {
             faReportGeom = convertToPoint(nextMovement);
-            faReportGeom.setSRID(dialect.defaultSRID());
+            faReportGeom.setSRID(DEFAULT_WILDFLY_SRID);
         } else {
             faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
         }
@@ -553,7 +540,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB;
             point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
         }
-        point.setSRID(dialect.defaultSRID());
+        point.setSRID(DEFAULT_WILDFLY_SRID);
         return point;
     }
 

@@ -96,9 +96,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        fishingActivityDao = new FishingActivityDao(getEntityManager());
-        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
+        fishingActivityDao = new FishingActivityDao(entityManager);
+        faReportDocumentDao = new FaReportDocumentDao(entityManager);
     }
 
     /**

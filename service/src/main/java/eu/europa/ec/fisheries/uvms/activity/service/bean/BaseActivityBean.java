@@ -18,24 +18,8 @@ import javax.persistence.PersistenceContext;
 
 public abstract class BaseActivityBean {
 
-    protected EntityManager em;
+    protected static final int DEFAULT_WILDFLY_SRID = 4326;
 
     @PersistenceContext(unitName = "activityPUpostgres")
-    protected EntityManager postgres;
-
-    @PersistenceContext(unitName = "activityPUoracle")
-    protected EntityManager oracle;
-
-    protected void initEntityManager() {
-        String dbDialect = System.getProperty("db.dialect");
-        if ("oracle".equalsIgnoreCase(dbDialect)) {
-            em = oracle;
-        } else {
-            em = postgres;
-        }
-    }
-
-    protected EntityManager getEntityManager() {
-        return em;
-    }
+    protected EntityManager entityManager;
 }

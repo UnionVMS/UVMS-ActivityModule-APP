@@ -35,21 +35,5 @@
 
     </persistence-unit>
 
-    <persistence-unit name="activityPUoracle" transaction-type="JTA">
-        <properties>
-            <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
-        </properties>
-        <!--	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-            <jta-data-source>jdbc/uvms_reporting</jta-data-source>
-            <properties>
-                <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect" />
-                <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.WeblogicJtaPlatform"/>
-                <property name="hibernate.query.substitutions" value="true 1, false 0" />
-                <property name="hibernate.default_schema" value="reporting"/>
-                <property name="hibernate.hbm2ddl.auto" value="none"/>
-                <property name="hibernate.show_sql" value="true"/>
-            </properties>-->
-    </persistence-unit>
-
 </persistence>
 
