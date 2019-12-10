@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FaReportSaverBeanTest {
+public class FluxReportMessageSaverTest {
 
     @Mock
     private FluxMessageService fluxMessageService;
@@ -41,11 +41,8 @@ public class FaReportSaverBeanTest {
     @Mock
     private ActivityMatchingIdsService matchingIdsService;
 
-    @Mock
-    private ExchangeServiceBean exchangeServiceBean;
-
     @InjectMocks
-    private FaReportSaverBean faReportSaverBean;
+    private FluxReportMessageSaver fluxReportMessageSaver;
 
     @Test
     public void handleFaReportSaving_removeReportThatAlreadyExistInTheDatabase() throws Exception {
@@ -61,7 +58,7 @@ public class FaReportSaverBeanTest {
         when(matchingIdsService.getMatchingIds(anyListOf(ActivityIDType.class), eq(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY))).thenReturn(databaseIds);
 
         // When
-        faReportSaverBean.handleFaReportSaving(reportOrQueryMessageRequest);
+        fluxReportMessageSaver.saveFluxReportMessage(reportOrQueryMessageRequest);
 
         // Then
         ArgumentCaptor<FLUXFAReportMessage> argumentCaptor = ArgumentCaptor.forClass(FLUXFAReportMessage.class);
@@ -90,7 +87,7 @@ public class FaReportSaverBeanTest {
         when(matchingIdsService.getMatchingIds(anyListOf(ActivityIDType.class), eq(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY))).thenReturn(databaseIds);
 
         // When
-        faReportSaverBean.handleFaReportSaving(reportOrQueryMessageRequest);
+        fluxReportMessageSaver.saveFluxReportMessage(reportOrQueryMessageRequest);
 
         // Then
         verify(fluxMessageService, never()).saveFishingActivityReportDocuments(any(), any());
