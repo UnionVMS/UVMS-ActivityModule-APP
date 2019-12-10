@@ -798,14 +798,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return tripWidgetDto;
     }
 
-    public List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException {
-        if (tripId == null) {
-            throw new ServiceException("tripId is null. Please provide valid tripId");
-        }
-        return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
-
-    }
-
     private TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
         Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
         TripOverviewDto tripOverviewDto = new TripOverviewDto();

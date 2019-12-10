@@ -110,16 +110,6 @@ public interface FishingTripService {
 
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
-    /**
-     * Returns list of FishingActivities for provided tripId
-     *
-     * @param tripId
-     * @return List<FishingActivityEntity> list of activities for the trip
-     * @throws ServiceException
-     */
-    List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
-
-
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
