@@ -30,8 +30,8 @@ import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripIdDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
-import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchEvolutionProgressProcessor;
-import eu.europa.ec.fisheries.ers.service.facatch.evolution.TripCatchEvolutionProgressRegistry;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchProgressProcessor;
+import eu.europa.ec.fisheries.ers.service.facatch.evolution.TripCatchProgressRegistry;
 import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
@@ -97,8 +97,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private FaCatchDao faCatchDao;
     private ActivityConfigurationDao activityConfigurationDao;
 
-    private static final CatchEvolutionProgressProcessor catchEvolutionProgressProcessor =
-            new CatchEvolutionProgressProcessor(new TripCatchEvolutionProgressRegistry());
+    private static final CatchProgressProcessor catchProgressProcessor =
+            new CatchProgressProcessor(new TripCatchProgressRegistry());
 
     @PostConstruct
     public void init() {
@@ -757,21 +757,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     public CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException {
         CatchEvolutionDTO catchEvolution = new CatchEvolutionDTO();
         List<FishingActivityEntity> fishingActivities = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
-        List<Object[]> faCatches = faCatchDao.findFaCatchesByFishingTrip(fishingTripId);
         catchEvolution.setTripDetails(getTripWidgetDto(fishingActivities.get(0), fishingTripId));
-        catchEvolution.setCatchEvolutionProgress(prepareCatchEvolutionProgress(fishingActivities));
-
+        catchEvolution.setCatchEvolutionProgress(catchProgressProcessor.process(fishingActivities));
         return catchEvolution;
-    }
-
-    private List<CatchEvolutionProgressDTO> prepareCatchEvolutionProgress(List<FishingActivityEntity> fishingActivities) {
-        List<CatchEvolutionProgressDTO> catchEvolutionProgress = new ArrayList<>();
-
-        if (CollectionUtils.isNotEmpty(fishingActivities)) {
-            catchEvolutionProgress = catchEvolutionProgressProcessor.process(fishingActivities);
-        }
-
-        return catchEvolutionProgress;
     }
 
     private void setFlapDocuments(VesselDetailsDTO detailsDTO, FishingActivityEntity parent, TripWidgetDto tripWidgetDto) {

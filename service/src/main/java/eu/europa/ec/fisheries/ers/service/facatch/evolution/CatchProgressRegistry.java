@@ -6,22 +6,22 @@ import org.apache.commons.collections.MapUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class CatchEvolutionProgressRegistry {
-    private Map<FishingActivityTypeEnum, CatchEvolutionProgressHandler> registry = new HashMap<>(FishingActivityTypeEnum.values().length);
+public abstract class CatchProgressRegistry {
+    private Map<FishingActivityTypeEnum, CatchProgressHandler> registry = new HashMap<>(FishingActivityTypeEnum.values().length);
 
-    public CatchEvolutionProgressRegistry(){
+    public CatchProgressRegistry(){
         initRegistry();
     }
 
-    public void addToRegistry(FishingActivityTypeEnum fishingActivityType, CatchEvolutionProgressHandler catchEvolutionProgressHandler) {
-        if (fishingActivityType == null || catchEvolutionProgressHandler == null) {
+    public void addToRegistry(FishingActivityTypeEnum fishingActivityType, CatchProgressHandler catchProgressHandler) {
+        if (fishingActivityType == null || catchProgressHandler == null) {
             throw new IllegalArgumentException("Neither parameter can be null!");
         }
 
-        registry.put(fishingActivityType, catchEvolutionProgressHandler);
+        registry.put(fishingActivityType, catchProgressHandler);
     }
 
-    public CatchEvolutionProgressHandler findHandler(FishingActivityTypeEnum fishingActivityType) {
+    public CatchProgressHandler findHandler(FishingActivityTypeEnum fishingActivityType) {
         return fishingActivityType != null ? registry.get(fishingActivityType) : null;
     }
 
