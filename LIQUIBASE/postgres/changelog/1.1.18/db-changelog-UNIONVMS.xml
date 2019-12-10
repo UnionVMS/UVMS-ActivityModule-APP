@@ -12,16 +12,10 @@
             <column name="trip_id" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-        </addColumn>
-        <addColumn tableName="activity_fishing_trip">
             <column name="trip_scheme_id" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-        </addColumn>
-        <addColumn tableName="activity_fishing_trip">
             <column name="calculated_trip_start_date" type="TIMESTAMP WITHOUT TIME ZONE" />
-        </addColumn>
-        <addColumn tableName="activity_fishing_trip">
             <column name="calculated_trip_end_date" type="TIMESTAMP WITHOUT TIME ZONE" />
         </addColumn>
     </changeSet>
@@ -38,8 +32,6 @@
         <dropColumn tableName="activity_delimited_period" columnName="fishing_trip_id" />
         <addColumn tableName="activity_delimited_period">
             <column name="trip_id" type="varchar(255)"/>
-        </addColumn>
-        <addColumn tableName="activity_delimited_period">
             <column name="trip_scheme_id" type="varchar(255)"/>
         </addColumn>
     </changeSet>
@@ -58,8 +50,6 @@
         <dropColumn tableName="activity_fishing_activity" columnName="fishing_trip_id" />
         <addColumn tableName="activity_fishing_activity">
             <column name="trip_id" type="varchar(255)"/>
-        </addColumn>
-        <addColumn tableName="activity_fishing_activity">
             <column name="trip_scheme_id" type="varchar(255)"/>
         </addColumn>
     </changeSet>
