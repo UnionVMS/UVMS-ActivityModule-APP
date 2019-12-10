@@ -142,7 +142,7 @@ public class FishingTripEntity implements Serializable {
         FishingTripEntity fishingTripEntity = new FishingTripEntity();
 
         List<IDType> ids = fishingTrip.getIDS();
-        IDType idType = ids.get(0);
+        IDType idType = ids.get(0); // We only take the first ID because we don't expect more than one ID
         if (idType != null) {
             FishingTripKey fishingTripKey = new FishingTripKey(idType.getValue(), idType.getSchemeID());
             fishingTripEntity.setFishingTripKey(fishingTripKey);
