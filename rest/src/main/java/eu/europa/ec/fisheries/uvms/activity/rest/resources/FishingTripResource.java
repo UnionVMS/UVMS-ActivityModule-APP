@@ -31,6 +31,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -67,6 +68,7 @@ public class FishingTripResource extends UnionVMSResource {
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getFishingTripSummary(@Context HttpServletRequest request,
+                                          @Context HttpServletResponse response,
                                           @HeaderParam("scopeName") String scopeName,
                                           @HeaderParam("roleName") String roleName,
                                           @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
@@ -82,7 +84,10 @@ public class FishingTripResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getVesselDetails(@PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+    public Response getVesselDetails(@Context HttpServletRequest request,
+                                     @Context HttpServletResponse response,
+                                     @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+
         LOG.debug("Getting Vessels details for trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));
     }
@@ -92,7 +97,10 @@ public class FishingTripResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getFishingTripMessageCounter(@PathParam("fishingTripId") String fishingTripId) {
+    public Response getFishingTripMessageCounter(@Context HttpServletRequest request,
+                                                 @Context HttpServletResponse response,
+                                                 @PathParam("fishingTripId") String fishingTripId) {
+
         LOG.debug("Message counters for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.getMessageCountersForTripId(fishingTripId));
     }
@@ -102,7 +110,10 @@ public class FishingTripResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getFishingTripCatchReports(@PathParam("fishingTripId") String fishingTripId) {
+    public Response getFishingTripCatchReports(@Context HttpServletRequest request,
+                                               @Context HttpServletResponse response,
+                                               @PathParam("fishingTripId") String fishingTripId) {
+
         LOG.debug("Catches for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
     }
@@ -112,7 +123,9 @@ public class FishingTripResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getCronologyOfFishingTrip(@PathParam("tripId") String tripId,
+    public Response getCronologyOfFishingTrip(@Context HttpServletRequest request,
+                                              @Context HttpServletResponse response,
+                                              @PathParam("tripId") String tripId,
                                               @PathParam("count") Integer count) throws ServiceException {
         return createSuccessResponse(fishingTripService.getCronologyOfFishingTrip(tripId, count));
     }
@@ -122,7 +135,9 @@ public class FishingTripResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getTripMapData(@PathParam("tripId") String tripId) {
+    public Response getTripMapData(@Context HttpServletRequest request,
+                                   @Context HttpServletResponse response,
+                                   @PathParam("tripId") String tripId) {
         return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId));
     }
 
@@ -131,7 +146,9 @@ public class FishingTripResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getFishingTripCatchEvolution(@PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+    public Response getFishingTripCatchEvolution(@Context HttpServletRequest request,
+                                                 @Context HttpServletResponse response,
+                                                 @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
         LOG.debug("Catch evolution for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId));
     }
@@ -141,7 +158,9 @@ public class FishingTripResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)
     //@IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.SEND_UPDATE_TRIP_REQUEST})
-    public Response requestTripUpdateFromTripId(@PathParam("fishingTripId") String fishingTripId) {
+    public Response requestTripUpdateFromTripId(@Context HttpServletRequest request,
+                                                @Context HttpServletResponse response,
+                                                @PathParam("fishingTripId") String fishingTripId) {
         LOG.debug("Going to send FaQuery related to Trip with id: {}", fishingTripId);
         try {
             rulesService.composeAndSendTripUpdateFaQueryToRules(fishingTripId);

@@ -38,17 +38,18 @@ import java.util.List;
 import java.util.Set;
 
 @NamedQueries({
-        @NamedQuery(name = FishingTripEntity.FIND_CURRENT_TRIP,
+        @NamedQuery(name = FishingTripEntity.FIND_TRIPS_FOR_VESSEL_ORDERED_BY_DATE_LATEST_FIRST,
                 query = "SELECT fa.fishingTrip FROM FishingActivityEntity fa " +
                         "INNER JOIN fa.faReportDocument frd " +
                         "INNER JOIN frd.vesselTransportMeans vtm " +
                         "INNER JOIN vtm.vesselIdentifiers vi " +
                         "WHERE vi.vesselIdentifierId = :vesselId " +
-                        "AND vi.vesselIdentifierSchemeId = :vesselSchemeId")
+                        "AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+                        "ORDER BY frd.acceptedDatetime DESC")
 
 		/*
 		//TODO: We need to rewrite this...
-		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_TRIP,
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_TRIPS_BEFORE_TRIP_WITH_ID,
 				query = "SELECT fa.fishingTrip.fishingTripIdentifier FROM FishingActivityEntity fa " +
 						"INNER JOIN fa.fishingTrip ft " +
 						"INNER JOIN fa.faReportDocument frd " +
@@ -66,7 +67,7 @@ import java.util.Set;
 													")" +
 						"ORDER BY frd.acceptedDatetime ASC"),
 
-		@NamedQuery(name = FishingTripIdentifierEntity.FIND_NEXT_TRIP,
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_TRIP_AFTER_TRIP_WITH_ID,
 				query = "SELECT fti from FishingTripIdentifierEntity fti " +
 						"INNER JOIN fti.fishingTrip ft " +
 						"INNER JOIN ft.fishingActivity fa " +
@@ -95,9 +96,9 @@ import java.util.Set;
 @Data
 public class FishingTripEntity implements Serializable {
 
-    public static final String FIND_CURRENT_TRIP = "findCurrentTrip";
-    public static final String FIND_PREVIOUS_TRIP = "findPreviousTrip";
-    public static final String FIND_NEXT_TRIP = "findNextTrip";
+    public static final String FIND_TRIPS_FOR_VESSEL_ORDERED_BY_DATE_LATEST_FIRST = "findTripsForVesselOrderedByDateLatestFirst";
+    public static final String FIND_TRIPS_BEFORE_TRIP_WITH_ID = "findTripsBeforeTripWithId";
+    public static final String FIND_TRIPS_AFTER_TRIP_WITH_ID = "findTripsAfterTripWithId";
 
     @EmbeddedId
     private FishingTripKey fishingTripKey;
@@ -141,7 +142,7 @@ public class FishingTripEntity implements Serializable {
         FishingTripEntity fishingTripEntity = new FishingTripEntity();
 
         List<IDType> ids = fishingTrip.getIDS();
-        IDType idType = ids.get(0);
+        IDType idType = ids.get(0); // We only take the first ID because we don't expect more than one ID
         if (idType != null) {
             FishingTripKey fishingTripKey = new FishingTripKey(idType.getValue(), idType.getSchemeID());
             fishingTripEntity.setFishingTripKey(fishingTripKey);

@@ -23,7 +23,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.FaReportMessageFishingTrips;
+import eu.europa.ec.fisheries.uvms.activity.service.FishingTripCache;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ReportDocumentDto;
@@ -129,7 +129,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return entities;
     }
 
-    public static Set<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportMessageFishingTrips faReportMessageFishingTrips) {
+    public static Set<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FishingTripCache fishingTripCache) {
         Set<FishingActivityEntity> specifiedFishingActivityEntities = new HashSet<>();
 
         if (CollectionUtils.isEmpty(fishingActivities)) {
@@ -182,7 +182,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 fishingActivityEntity.addFluxCharacteristics(fluxCharacteristicEntity);
             }
 
-            faReportMessageFishingTrips.addAndUpdateFishingTripOfActivityIfItExists(fishingActivityEntity);
+            fishingTripCache.addAndUpdateFishingTripOfActivityIfItExists(fishingActivityEntity);
         }
         return specifiedFishingActivityEntities;
     }

@@ -13,12 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingTripIdSearchBuilder;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -34,9 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by sanera on 23/08/2016.
- */
 @Slf4j
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
@@ -55,15 +51,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return em;
     }
 
-    public List<FishingActivityEntity> getFishingActivitiesForFishingTripId(String fishingTripId){
-        String sql = "SELECT DISTINCT a from FishingActivityEntity a JOIN a.fishingTrip fishingTrip" +
-                "  where fishingTrip.fishingTripKey.tripId =:fishingTripId order by a.calculatedStartTime ASC";
-        TypedQuery<FishingActivityEntity> typedQuery = em.createQuery(sql, FishingActivityEntity.class);
-        typedQuery.setParameter("fishingTripId", fishingTripId);
-        return typedQuery.getResultList();
-    }
-
-    public String getOwnerFluxPartyFromTripId(String fishingTripId){
+    public String getOwnerFluxPartyFromTripId(String fishingTripId) {
         TypedQuery<FluxPartyIdentifierEntity> query = getEntityManager().createNamedQuery(FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID, FluxPartyIdentifierEntity.class);
         query.setParameter("fishingTripId", fishingTripId).setMaxResults(1).getResultList();
         List<FluxPartyIdentifierEntity> resultList = query.getResultList();
@@ -131,7 +119,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public FishingTripEntity getCurrentTrip(String vesselId, String vesselSchemeId) {
-        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_CURRENT_TRIP, FishingTripEntity.class);
+        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIPS_FOR_VESSEL_ORDERED_BY_DATE_LATEST_FIRST, FishingTripEntity.class);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setMaxResults(1);
@@ -144,7 +132,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public List<FishingTripEntity> getPreviousTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
-        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_PREVIOUS_TRIP, FishingTripEntity.class);
+        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIPS_BEFORE_TRIP_WITH_ID, FishingTripEntity.class);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setParameter(TRIP_ID, tripId);
@@ -153,7 +141,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public List<FishingTripEntity> getNextTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
-        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_NEXT_TRIP, FishingTripEntity.class);
+        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIPS_AFTER_TRIP_WITH_ID, FishingTripEntity.class);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setParameter(TRIP_ID, tripId);

@@ -692,9 +692,8 @@ public class MapperUtil {
         FLUXReportDocument relatedFLUXReportDocument = getFluxReportDocument();
         List<FishingActivity> specifiedFishingActivities = Collections.singletonList(getFishingActivity());
         VesselTransportMeans specifiedVesselTransportMeans = getVesselTransportMeans();
-        FAReportDocument faReportDocument = new FAReportDocument(typeCode, fmcMarkerCode, relatedReportIDs, acceptanceDateTime,
+        return new FAReportDocument(typeCode, fmcMarkerCode, relatedReportIDs, acceptanceDateTime,
                 relatedFLUXReportDocument, specifiedFishingActivities, specifiedVesselTransportMeans);
-        return faReportDocument;
     }
 
     private static FishingActivity getStandardFishingActivity() {
@@ -749,7 +748,7 @@ public class MapperUtil {
         return flapDocument;
     }
 
-    private static DateTimeType getDateTimeType(String value) {
+    public static DateTimeType getDateTimeType(String value) {
         try {
             DateTimeType dateTimeType = new DateTimeType();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

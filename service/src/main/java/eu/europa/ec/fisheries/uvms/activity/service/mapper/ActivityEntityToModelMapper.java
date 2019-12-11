@@ -216,7 +216,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
                     faCatch.setSpecifiedFLUXLocations(specified);
                     faCatch.setDestinationFLUXLocations(destination);
                 }
-                // TODO: This cant be right
+
                 FishingTripEntity catchFishingTrip = faCatchEntity.getFishingTrip();
                 if (catchFishingTrip != null) {
                     faCatch.getRelatedFishingTrips().add(catchFishingTrip.convert());

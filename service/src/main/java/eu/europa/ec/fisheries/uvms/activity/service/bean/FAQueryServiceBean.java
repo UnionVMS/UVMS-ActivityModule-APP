@@ -22,33 +22,18 @@ import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessag
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.Instant;
 import java.util.List;
 
 @Stateless
 @Slf4j
-public class FAQueryServiceBean implements FaQueryService {
-
-    @PersistenceContext(unitName = "activityPUpostgres")
-    private EntityManager postgres;
-
-    @PersistenceContext(unitName = "activityPUoracle")
-    private EntityManager oracle;
+public class FAQueryServiceBean extends BaseActivityBean implements FaQueryService {
 
     private FaReportDocumentDao FAReportDAO;
 
     @PostConstruct
     public void init() {
-        String dbDialect = System.getProperty("db.dialect");
-        EntityManager em;
-        if ("oracle".equalsIgnoreCase(dbDialect)) {
-            em = oracle;
-        } else {
-            em = postgres;
-        }
-        FAReportDAO = new FaReportDocumentDao(em);
+        FAReportDAO = new FaReportDocumentDao(entityManager);
     }
 
     @Override

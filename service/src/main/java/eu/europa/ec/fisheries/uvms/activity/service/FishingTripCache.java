@@ -7,7 +7,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FaReportMessageFishingTrips {
+public class FishingTripCache {
     private Map<FishingTripKey, FishingTripEntity> fishingTripEntityMap = new HashMap<>();
 
     private FishingTripEntity add(FishingTripEntity fishingTripEntity) {

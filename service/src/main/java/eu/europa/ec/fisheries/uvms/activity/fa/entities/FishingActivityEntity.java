@@ -17,9 +17,9 @@ import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Geometry;
@@ -80,8 +80,8 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 @Table(name = "activity_fishing_activity")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@EqualsAndHashCode(of = {"occurence"})
+@Getter
+@Setter
 @ToString(of = {"id", "typeCode", "reasonCode", "occurence"})
 public class FishingActivityEntity implements Serializable {
 

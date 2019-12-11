@@ -27,8 +27,7 @@ public class FaMessageSaverBean extends BaseActivityBean {
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        fluxReportMessageDao = new FluxFaReportMessageDao(getEntityManager());
+        fluxReportMessageDao = new FluxFaReportMessageDao(entityManager);
     }
 
     public FluxFaReportMessageEntity saveReportMessageNow(FluxFaReportMessageEntity messageEntity) {
