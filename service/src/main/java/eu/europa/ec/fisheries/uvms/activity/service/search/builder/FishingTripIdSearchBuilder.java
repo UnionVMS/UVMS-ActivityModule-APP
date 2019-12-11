@@ -16,13 +16,10 @@ package eu.europa.ec.fisheries.uvms.activity.service.search.builder;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +40,7 @@ import java.util.Set;
 public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
-    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.fishingTripKey..tripId , ftripId.fishingTripKey..tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
     private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
 
     /**
@@ -93,35 +90,41 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
      */
     public void processFishingTripsToCollectUniqueTrips(List<FishingTripEntity> fishingTripList, Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry,
                                                         List<FishingActivitySummary> fishingActivityLists, Set<FishingTripId> fishingTripIdsWithoutGeom, boolean includeFishingActivities) {
+        //TODO: WTAF
         Set<Integer> uniqueFishingActivityIdList = new HashSet<>();
         for (FishingTripEntity entity : fishingTripList) {
 
+            /*
             Set<FishingTripIdentifierEntity> fishingTripIdList = entity.getFishingTripIdentifiers();
             if (fishingTripIdList == null) {
                 continue;
             }
 
             for (FishingTripIdentifierEntity id : fishingTripIdList) { // Identify unique FishingTrips and collect different geometries for that fishing trip.
-
                 FishingTripId tripIdObj = new FishingTripId(id.getTripId(), id.getTripSchemeId());
-                try {
-                    uniqueTripIdWithGeometry.put(tripIdObj, fillGeometrylist(uniqueTripIdWithGeometry,
-                            id.getFishingTrip().getFishingActivity().getFaReportDocument().getGeom(), tripIdObj));
-                } catch (Exception e) {
-                    LOG.error("Error occurred while trying to find Geometry for FishingTrip. Put tripID into separateList", e);
-                    fishingTripIdsWithoutGeom.add(tripIdObj);
+                for(FishingActivityEntity each : id.getFishingTrip().getFishingActivities()) {
+                    try {
+                        uniqueTripIdWithGeometry.put(tripIdObj, fillGeometrylist(uniqueTripIdWithGeometry,
+                                each.getFaReportDocument().getGeom(), tripIdObj));
+                    } catch (Exception e) {
+                        LOG.error("Error occurred while trying to find Geometry for FishingTrip. Put tripID into separateList", e);
+                        fishingTripIdsWithoutGeom.add(tripIdObj);
+                    }
                 }
             }
-
+*/
             if (includeFishingActivities) {
+                /* TODO: WTAF
                 FishingActivitySummary fishingActivitySummary = getFishingActivitySummary(uniqueFishingActivityIdList, entity);
                 if (fishingActivitySummary != null) {
                     fishingActivityLists.add(fishingActivitySummary);
                 }
+                */
             }
         }
     }
 
+    /* TODO: WTAF
     private FishingActivitySummary getFishingActivitySummary(Set<Integer> uniqueFishingActivityIdList, FishingTripEntity entity) {
         FishingActivitySummary fishingActivitySummary = null;
         FishingActivityEntity fishingActivityEntity = entity.getFishingActivity();
@@ -135,6 +138,8 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         }
         return fishingActivitySummary;
     }
+    */
+
 
     @NotNull
     private List<Geometry> fillGeometrylist(Map<FishingTripId, List<Geometry>> uniqueTripIdWithGeometry, Geometry geometry, FishingTripId tripIdObj) {

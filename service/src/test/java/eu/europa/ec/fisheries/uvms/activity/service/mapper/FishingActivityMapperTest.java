@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
@@ -42,14 +41,15 @@ public class FishingActivityMapperTest {
         FishingActivity fishingActivity = MapperUtil.getFishingActivity();
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
+        fishingActivityEntity.getFishingTrip().getFishingActivities().add(fishingActivityEntity);
 
         assertFishingActivityFields(fishingActivity, fishingActivityEntity);
         assertEquals(faReportDocumentEntity, fishingActivityEntity.getFaReportDocument());
 
-        assertNotNull(fishingActivityEntity.getFishingTrips());
-        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrips().iterator().next();
+        assertNotNull(fishingActivityEntity.getFishingTrip());
+        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrip();
         assertNotNull(fishingTripEntity);
-        assertFishingActivityFields(fishingActivity, fishingTripEntity.getFishingActivity());
+        assertFishingActivityFields(fishingActivity, fishingTripEntity.getFishingActivities().iterator().next());
 
         assertNotNull(fishingActivityEntity.getFaCatchs());
         FaCatchEntity faCatchEntity = fishingActivityEntity.getFaCatchs().iterator().next();
@@ -76,13 +76,6 @@ public class FishingActivityMapperTest {
         FishingActivityEntity relatedFishingActivityEntity = fishingActivityEntity.getAllRelatedFishingActivities().iterator().next();
         assertNotNull(relatedFishingActivityEntity);
         assertFishingActivityFields(fishingActivity.getRelatedFishingActivities().get(0), relatedFishingActivityEntity);
-
-        assertNotNull(fishingActivityEntity.getFishingActivityIdentifiers());
-        FishingActivityIdentifierEntity fishingActivityIdentifierEntity = fishingActivityEntity.getFishingActivityIdentifiers().iterator().next();
-        assertNotNull(fishingActivityIdentifierEntity);
-        assertEquals(fishingActivity.getIDS().get(0).getValue(), fishingActivityIdentifierEntity.getFaIdentifierId());
-        assertEquals(fishingActivity.getIDS().get(0).getSchemeID(), fishingActivityIdentifierEntity.getFaIdentifierSchemeId());
-        assertFishingActivityFields(fishingActivity, fishingActivityIdentifierEntity.getFishingActivity());
     }
 
     private void assertFishingActivityFields(FishingActivity fishingActivity, FishingActivityEntity fishingActivityEntity) {

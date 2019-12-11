@@ -105,7 +105,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      *  Take fluxIdentifierId of current fishingActivity. Find  which other faReportDocument referenceId has fluxIdentifierId of current fishingActivity.
      *  Take that faReportDocument , and all the fishingActivities from that document with same FishingActivity Type and having date greater than or equal to current fishingActivity
      *
-     * @param fishingActivityEntity
      */
     public int getNextFishingActivityId(FishingActivityEntity fishingActivityEntity) {
         int nextFishingActivity = 0;
@@ -292,9 +291,8 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH flux.fluxParty fluxParty ")
                 .append("LEFT JOIN FETCH a.fishingActivityIdentifiers faId ")
                 .append("LEFT JOIN FETCH flAd.fluxLocation flAdFluxLoc ")
-                .append("LEFT JOIN FETCH a.fishingTrips faFiTrips ")
-                .append("LEFT JOIN FETCH faFiTrips.fishingTripIdentifiers tripIdentifiers ")
-                .append("LEFT JOIN FETCH faFiTrips.faCatch faFiTripsFaCatch ")
+                .append("LEFT JOIN FETCH a.fishingTrip faFiTrip ")
+                .append("LEFT JOIN FETCH faFiTrip.catchEntities faFiTripsFaCatch ")
                 .append("LEFT JOIN FETCH a.gearProblems gearProb ")
                 .append("WHERE ");
         if (geometry != null) {

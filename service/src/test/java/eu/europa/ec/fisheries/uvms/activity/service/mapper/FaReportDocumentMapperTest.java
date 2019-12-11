@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEnti
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.uvms.activity.service.FishingTripCache;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ReportDocumentDto;
@@ -81,11 +82,11 @@ public class FaReportDocumentMapperTest {
 
     @Test
     public void faReportDocumentMapperNullReturns(){
-        Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
+        Set<FishingActivityEntity> fishingActivityEntities = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null, new FishingTripCache());
         assertEquals(0, fishingActivityEntities.size());
         Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = FaReportDocumentMapper.INSTANCE.mapVesselTransportMeansEntity(null, new FaReportDocumentEntity());
         assertNull(vesselTransportMeansEntityList);
-        Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null);
+        Set<FishingActivityEntity> fishingActivityEntities1 = FaReportDocumentMapper.INSTANCE.mapFishingActivityEntities(null, new FaReportDocumentEntity(), null, new FishingTripCache());
         assertEquals(0, fishingActivityEntities1.size());
     }
 
@@ -104,8 +105,8 @@ public class FaReportDocumentMapperTest {
         assertEquals(faReportDocumentEntity.getFluxReportDocument().getReferenceId(), dto.getRefId());
         assertEquals(faReportDocumentEntity.getFmcMarker(), dto.getFmcMark());
 
-        assertEquals("2016-07-01T11:14:00", dto.getAcceptedDate());
-        assertEquals("2016-07-01T11:14:00", dto.getCreationDate());
+        assertEquals("2016-07-01T11:15:00", dto.getAcceptedDate());
+        assertEquals("2016-07-01T11:15:00", dto.getCreationDate());
 
         FaReportIdentifierEntity faReportIdentifier = faReportDocumentEntity.getFaReportIdentifiers().iterator().next();
         assertEquals(1, dto.getRelatedReports().size());

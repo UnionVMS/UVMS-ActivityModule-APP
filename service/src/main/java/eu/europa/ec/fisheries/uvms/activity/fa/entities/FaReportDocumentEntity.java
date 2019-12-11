@@ -11,9 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
 
@@ -58,10 +58,9 @@ import java.util.Set;
                         "LEFT JOIN FETCH rpt.vesselTransportMeans vtm " +
                         "LEFT OUTER JOIN FETCH vtm.vesselIdentifiers vtmids " +
                         "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
-                        "JOIN FETCH act.fishingTrips fshtrp " +
-                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
+                        "JOIN FETCH act.fishingTrip fshtrp " +
                         "WHERE rpt.status IN (:statuses) " +
-                        "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
+                        "AND ((:tripId IS NULL) OR fshtrp.fishingTripKey.tripId = :tripId) " +
                         "AND (" +
                                 ":startDate <= flxrep.creationDatetime " +
                                 "AND flxrep.creationDatetime <= :endDate)"
@@ -70,9 +69,8 @@ import java.util.Set;
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
                         "LEFT JOIN FETCH rpt.fishingActivities act " +
                         "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
-                        "JOIN FETCH act.fishingTrips fshtrp " +
-                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
-                        "WHERE fshtrpids.tripId = :tripId " +
+                        "JOIN FETCH act.fishingTrip fshtrp " +
+                        "WHERE fshtrp.fishingTripKey.tripId = :tripId " +
                         "AND ((:area IS NULL) OR intersects(act.geom, :area) = true)"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_IDS_LIST,
@@ -82,9 +80,9 @@ import java.util.Set;
 })
 @Entity
 @Table(name = "activity_fa_report_document")
-@Data
+@Getter
+@Setter
 @ToString(of = "id")
-@EqualsAndHashCode(of = {"acceptedDatetime"})
 @NoArgsConstructor
 public class FaReportDocumentEntity implements Serializable {
 

@@ -11,13 +11,9 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper.view;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.BaseActivityViewMapper;
-
-import java.util.Set;
 
 public class DiscardViewMapper extends BaseActivityViewMapper {
 
@@ -27,8 +23,6 @@ public class DiscardViewMapper extends BaseActivityViewMapper {
 
         ActivityDetailsDto activityDetailsDto = mapActivityDetails(faEntity);
         activityDetailsDto.setReason(faEntity.getReasonCode());
-        Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers = faEntity.getFishingActivityIdentifiers();
-        activityDetailsDto.setIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(fishingActivityIdentifiers));
         fishingActivityViewDTO.setActivityDetails(activityDetailsDto);
 
         fishingActivityViewDTO.setLocations(mapFromFluxLocation(faEntity.getFluxLocations()));

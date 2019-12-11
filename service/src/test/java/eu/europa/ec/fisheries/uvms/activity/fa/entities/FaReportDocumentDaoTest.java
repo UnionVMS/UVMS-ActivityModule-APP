@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import lombok.SneakyThrows;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mapstruct.ap.internal.util.Collections;
 
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@Ignore
 public class FaReportDocumentDaoTest extends BaseErsFaDaoTest {
 
     private FaReportDocumentDao dao = new FaReportDocumentDao(em);

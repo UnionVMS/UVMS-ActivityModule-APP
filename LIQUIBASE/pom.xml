@@ -65,23 +65,6 @@
 		</profile>
 
 		<profile>
-			<id>oracle</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<db.url>jdbc:oracle:thin:@localhost:1521:uvms</db.url>
-				<db.driver>oracle.jdbc.driver.OracleDriver</db.driver>
-				<db.user>uvms_movement</db.user>
-				<db.passwd>uvms_movement</db.passwd>
-				<db.changeLogFile>changelog/db-changelog-master-oracle.xml</db.changeLogFile>
-				<driver.groupId>com.oracle</driver.groupId>
-				<driver.artifactId>ojdbc7</driver.artifactId>
-				<driver.version>12.1.0.2.0</driver.version>
-			</properties>
-		</profile>
-
-		<profile>
 			<id>export</id>
 			<properties>
 				<db.diffTypes>data</db.diffTypes>

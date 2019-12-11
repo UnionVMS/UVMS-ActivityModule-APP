@@ -12,16 +12,13 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper.view;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemRecoveryEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearProblemDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearShotRetrievalDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.BaseActivityViewMapper;
 import org.apache.commons.collections.CollectionUtils;
@@ -70,7 +67,7 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
 
     @Mappings({
             @Mapping(target = "type", source = "typeCode"),
-            @Mapping(target = "id", expression = "java(mapListToSingleIdentifier(entity.getFishingActivityIdentifiers()))"),
+            @Mapping(target = "activityId", source = "id"),
             @Mapping(target = "occurrence", expression = "java(instantToDateUtilsStringFormat(entity.getOccurence()))"),
             @Mapping(target = "gear", expression = "java(mapToFirstFishingGear(entity.getFishingGears()))"),
             @Mapping(target = "characteristics", expression = "java(getFluxCharacteristicsTypeCodeValue(entity.getFluxCharacteristics()))"),
@@ -87,19 +84,6 @@ public abstract class GearShotRetrievalTileMapper extends BaseActivityViewMapper
             @Mapping(target = "location", expression = "java(mapSingleFluxLocationFromEntity(entity.getLocations()))")
     })
     protected abstract GearProblemDto mapGearProblemToGearsDto(GearProblemEntity entity);
-
-    protected IdentifierDto mapListToSingleIdentifier(Set<FishingActivityIdentifierEntity> identifierList) {
-        if (CollectionUtils.isEmpty(identifierList)) {
-            return null;
-        }
-        IdentifierDto idDto = null;
-        for (FishingActivityIdentifierEntity ident : identifierList) {
-            if (ident != null) {
-                idDto = FishingActivityIdentifierMapper.INSTANCE.mapToActivityIdentifierDTO(ident);
-            }
-        }
-        return idDto;
-    }
 
     protected FluxLocationDto mapSingleFluxLocationFromEntity(Set<FluxLocationEntity> fluxLocations) {
         if (CollectionUtils.isEmpty(fluxLocations)) {

@@ -11,47 +11,103 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.DelimitedPeriodMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+@NamedQueries({
+        @NamedQuery(name = FishingTripEntity.FIND_TRIPS_FOR_VESSEL_ORDERED_BY_DATE_LATEST_FIRST,
+                query = "SELECT fa.fishingTrip FROM FishingActivityEntity fa " +
+                        "INNER JOIN fa.faReportDocument frd " +
+                        "INNER JOIN frd.vesselTransportMeans vtm " +
+                        "INNER JOIN vtm.vesselIdentifiers vi " +
+                        "WHERE vi.vesselIdentifierId = :vesselId " +
+                        "AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+                        "ORDER BY frd.acceptedDatetime DESC")
+
+		/*
+		//TODO: We need to rewrite this...
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_TRIPS_BEFORE_TRIP_WITH_ID,
+				query = "SELECT fa.fishingTrip.fishingTripIdentifier FROM FishingActivityEntity fa " +
+						"INNER JOIN fa.fishingTrip ft " +
+						"INNER JOIN fa.faReportDocument frd " +
+						"INNER JOIN frd.vesselTransportMeans vtm " +
+						"INNER JOIN vtm.vesselIdentifiers vi " +
+						"WHERE vi.vesselIdentifierId = :vesselId " +
+						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+						"AND frd.acceptedDatetime < (" +
+													"SELECT max(sfrd.acceptedDatetime) " +
+													"FROM FishingTripIdentifierEntity sfti " +
+													"INNER JOIN sfti.fishingTrip sft " +
+													"INNER JOIN sft.fishingActivity sfa " +
+													"INNER JOIN sfa.faReportDocument sfrd " +
+													"WHERE sfti.tripId = :tripId" +
+													")" +
+						"ORDER BY frd.acceptedDatetime ASC"),
+
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_TRIP_AFTER_TRIP_WITH_ID,
+				query = "SELECT fti from FishingTripIdentifierEntity fti " +
+						"INNER JOIN fti.fishingTrip ft " +
+						"INNER JOIN ft.fishingActivity fa " +
+						"INNER JOIN fa.faReportDocument frd " +
+						"INNER JOIN frd.vesselTransportMeans vtm " +
+						"INNER JOIN vtm.vesselIdentifiers vi " +
+						"WHERE vi.vesselIdentifierId = :vesselId " +
+						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
+						"AND frd.acceptedDatetime > (" +
+													"SELECT max(sfrd.acceptedDatetime) " +
+													"FROM FishingTripIdentifierEntity sfti " +
+													"INNER JOIN sfti.fishingTrip sft " +
+													"INNER JOIN sft.fishingActivity sfa " +
+													"INNER JOIN sfa.faReportDocument sfrd " +
+													"WHERE sfti.tripId = :tripId" +
+													")" +
+						"ORDER BY frd.acceptedDatetime ASC")
+		 */
+})
 
 @Entity
 @Table(name = "activity_fishing_trip")
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
-@ToString(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
+@EqualsAndHashCode(exclude = {"delimitedPeriods"})
+@ToString(exclude = {"delimitedPeriods"})
 @Data
 public class FishingTripEntity implements Serializable {
 
-	@Id
-	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_trip_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    private int id;
+    public static final String FIND_TRIPS_FOR_VESSEL_ORDERED_BY_DATE_LATEST_FIRST = "findTripsForVesselOrderedByDateLatestFirst";
+    public static final String FIND_TRIPS_BEFORE_TRIP_WITH_ID = "findTripsBeforeTripWithId";
+    public static final String FIND_TRIPS_AFTER_TRIP_WITH_ID = "findTripsAfterTripWithId";
 
-	@ManyToOne
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
+    @EmbeddedId
+    private FishingTripKey fishingTripKey;
 
-	@ManyToOne
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
+    @OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FaCatchEntity> catchEntities = new HashSet<>();
+
+    @OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FishingActivityEntity> fishingActivities = new HashSet<>();
 
 	@Column(name = "type_code")
 	private String typeCode;
@@ -62,13 +118,11 @@ public class FishingTripEntity implements Serializable {
 	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
 
-	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<>();
+    @Column(name = "calculated_trip_start_date")
+    private Instant calculatedTripStartDate;
 
-    public void addFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
-        fishingTripIdentifiers.add(identifierEntity);
-        identifierEntity.setFishingTrip(this);
-    }
+    @Column(name = "calculated_trip_end_date")
+    private Instant calculatedTripEndDate;
 
     public void addDelimitedPeriods(DelimitedPeriodEntity periodEntity) {
         delimitedPeriods.add(periodEntity);
@@ -80,8 +134,55 @@ public class FishingTripEntity implements Serializable {
         area.setFishingTrip(null);
     }
 
-    public void removeFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
-        fishingTripIdentifiers.remove(identifierEntity);
-        identifierEntity.setFishingTrip(null);
+    public static FishingTripEntity create(FishingTrip fishingTrip) {
+        if (fishingTrip == null) {
+            return null;
+        }
+
+        FishingTripEntity fishingTripEntity = new FishingTripEntity();
+
+        List<IDType> ids = fishingTrip.getIDS();
+        IDType idType = ids.get(0); // We only take the first ID because we don't expect more than one ID
+        if (idType != null) {
+            FishingTripKey fishingTripKey = new FishingTripKey(idType.getValue(), idType.getSchemeID());
+            fishingTripEntity.setFishingTripKey(fishingTripKey);
+        }
+
+        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
+        for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {
+            fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
+        }
+
+        CodeType typeCode = fishingTrip.getTypeCode();
+        if (typeCode != null) {
+            fishingTripEntity.setTypeCode(typeCode.getValue());
+            fishingTripEntity.setTypeCodeListId(typeCode.getListID());
+        }
+
+        return fishingTripEntity;
+    }
+
+    public FishingTrip convert() {
+        FishingTrip fishingTrip = new FishingTrip();
+
+        List<IDType> idTypes = new ArrayList<>();
+        IDType idType = new IDType();
+        idType.setValue(fishingTripKey.getTripId());
+        idType.setSchemeID(fishingTripKey.getTripSchemeId());
+        idTypes.add(idType);
+
+        fishingTrip.setIDS(idTypes);
+
+        List<DelimitedPeriod> convertedDelimitedPeriods = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(this.delimitedPeriods);
+        fishingTrip.setSpecifiedDelimitedPeriods(convertedDelimitedPeriods);
+
+        if (typeCode != null && typeCodeListId != null) {
+            CodeType codeType = new CodeType();
+            codeType.setValue(typeCode);
+            codeType.setListID(typeCodeListId);
+            fishingTrip.setTypeCode(codeType);
+        }
+
+        return fishingTrip;
     }
 }

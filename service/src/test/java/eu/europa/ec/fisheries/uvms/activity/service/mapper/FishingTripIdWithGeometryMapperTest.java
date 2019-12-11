@@ -1,11 +1,10 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripIdWithGeometryMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
-import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +34,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
-        assertEquals(0.0, response.getTripDuration(), 1);
+        assertEquals(0.0, response.getTripDuration(), 0.0000000000001);
     }
 
     @Test
@@ -47,7 +46,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
-        assertEquals(3600005, response.getTripDuration(), 100);
+        assertEquals(3600, response.getTripDuration(), 0.0000000000001);
     }
 
     @Test
@@ -61,7 +60,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
-       assertEquals(20000, response.getTripDuration(), 100);
+       assertEquals(20, response.getTripDuration(), 0.0000000000001);
     }
 
     @Test
@@ -77,7 +76,7 @@ public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
         FishingTripIdWithGeometry response = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivities);
 
         // Then
-        assertEquals(30000, response.getTripDuration(), 100);
+        assertEquals(30, response.getTripDuration(), 0.0000000000001);
     }
 
     private void addFishingActivity(FishingActivityTypeEnum type) {

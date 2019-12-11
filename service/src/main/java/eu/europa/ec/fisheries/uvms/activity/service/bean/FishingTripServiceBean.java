@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ActivityConfiguration;
@@ -28,7 +27,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
@@ -99,7 +97,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -132,7 +129,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private FishingActivityDao fishingActivityDao;
     private VesselIdentifierDao vesselIdentifierDao;
     private VesselTransportMeansDao vesselTransportMeansDao;
-    private FishingTripIdentifierDao fishingTripIdentifierDao;
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
     private ActivityConfigurationDao activityConfigurationDao;
@@ -142,15 +138,13 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        fishingTripIdentifierDao = new FishingTripIdentifierDao(getEntityManager());
-        vesselIdentifierDao = new VesselIdentifierDao(getEntityManager());
-        fishingActivityDao = new FishingActivityDao(getEntityManager());
-        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
-        faCatchDao = new FaCatchDao(getEntityManager());
-        fishingTripDao = new FishingTripDao(getEntityManager());
-        vesselTransportMeansDao = new VesselTransportMeansDao(em);
-        activityConfigurationDao = new ActivityConfigurationDao(getEntityManager());
+        vesselIdentifierDao = new VesselIdentifierDao(entityManager);
+        fishingActivityDao = new FishingActivityDao(entityManager);
+        faReportDocumentDao = new FaReportDocumentDao(entityManager);
+        faCatchDao = new FaCatchDao(entityManager);
+        fishingTripDao = new FishingTripDao(entityManager);
+        vesselTransportMeansDao = new VesselTransportMeansDao(entityManager);
+        activityConfigurationDao = new ActivityConfigurationDao(entityManager);
     }
 
     /**
@@ -187,7 +181,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             next = nextTripCount;
         } else if (count != 1) {
             log.info("Count the number of previous and next result based on count received");
-            count = count - 1; // FIXME squid:S1226 intoduce a new variable instead of reusing
+            count = count - 1;
             if (count % 2 == 0) {
                 previous = count / 2;
                 next = count / 2;
@@ -213,9 +207,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private String getCurrentTrip(List<VesselIdentifierEntity> vesselIdentifiers) {
         String currentTrip = null;
         for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
-            FishingTripIdentifierEntity identifierEntity = fishingTripIdentifierDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
+            FishingTripEntity identifierEntity = fishingTripDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
                     vesselIdentifier.getVesselIdentifierSchemeId());
-            currentTrip = identifierEntity != null ? identifierEntity.getTripId() : null;
+            currentTrip = identifierEntity != null ? identifierEntity.getFishingTripKey().getTripId() : null;
             if (StringUtils.isEmpty(currentTrip)) {
                 break;
             }
@@ -227,10 +221,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private Set<String> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
         for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
-            List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
+            List<FishingTripEntity> identifierEntities = fishingTripDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
                     vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-            for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                tripIds.add(identifiers.getTripId());
+            for (FishingTripEntity identifiers : identifierEntities) {
+                tripIds.add(identifiers.getFishingTripKey().getTripId());
             }
         }
         log.debug("Previous Trips : " + tripIds);
@@ -240,10 +234,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private Set<String> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
         Set<String> tripIds = new LinkedHashSet<>();
         for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
-            List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
+            List<FishingTripEntity> identifierEntities = fishingTripDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
                     vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-            for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                tripIds.add(identifiers.getTripId());
+            for (FishingTripEntity identifiers : identifierEntities) {
+                tripIds.add(identifiers.getFishingTripKey().getTripId());
             }
         }
         log.debug("Next Trips : " + tripIds);
@@ -284,7 +278,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
         final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
         final String filter = "*";
-        final List<String> columnsList = new ArrayList<String>();
+        final List<String> columnsList = new ArrayList<>();
         Integer nrOfResults = 1000;
         if (vesselDetailsDTO == null) {
             return;
@@ -474,11 +468,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             Instant occurrence = activityEntity.getOccurence();
             boolean isCorrection = BaseMapper.getCorrection(activityEntity);
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
-            if (fishingActivityTypeDTO == null
-                    || (isCorrection
-                    && fishingActivityTypeDTO.getDate() != null
-                    && occurrence != null
-                    && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0)) {
+            if (occurrence != null && (
+                    (fishingActivityTypeDTO == null)
+                            || (isCorrection
+                            && fishingActivityTypeDTO.getDate() != null
+                            && occurrence.compareTo(fishingActivityTypeDTO.getDate().toInstant()) > 0))) {
                 fishingActivityTypeDTO = new FishingActivityTypeDTO();
                 fishingActivityTypeDTO.setDate(Date.from(occurrence));
                 summary.put(activityTypeCode, fishingActivityTypeDTO);
@@ -675,11 +669,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private List<FishingActivityEntity> cleanFromDeletionsAndCancellations(List<FishingActivityEntity> fishingActivityEntityList) {
         List<FishingActivityEntity> cleanList = new ArrayList<>();
-        String DELETED_STR = FaReportStatusType.DELETED.name();
-        String CANCELLED_STR = FaReportStatusType.CANCELED.name();
+        final String DELETED_STR = FaReportStatusType.DELETED.name();
+        final String CANCELLED_STR = FaReportStatusType.CANCELED.name();
         for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
             String status = fishingActivityEntity.getFaReportDocument().getStatus();
-            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && fishingActivityEntity.getLatest()) {
+            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && Boolean.TRUE.equals(fishingActivityEntity.getLatest())) {
                 cleanList.add(fishingActivityEntity);
             }
         }
@@ -786,23 +780,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private TripWidgetDto createTripWidgetDtoWithFishingActivity(FishingActivityEntity activityEntity) throws ServiceException {
         TripWidgetDto tripWidgetDto = new TripWidgetDto();
-        Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips();
-
-        if (CollectionUtils.isEmpty(fishingTripEntities)) {
-            throw new ServiceException(" Could not find fishingTrips associated with FishingActivity id :" + activityEntity.getId());
-        }
         List<TripOverviewDto> tripOverviewDtoList = new ArrayList<>();
-        // try to find unique tripIds for the fishing Activity
-        Set<String> tripIdSet = new HashSet<>();
-        for (FishingTripEntity fishingTripEntity : fishingTripEntities) {
-            Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
-            for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-                if (tripIdSet.add(tripIdentifierEntity.getTripId())) {
-                    log.debug("Get Trip summary information for tripID :" + tripIdentifierEntity.getTripId());
-                    tripOverviewDtoList.add(getTripOverviewDto(activityEntity, tripIdentifierEntity.getTripId()));
-                }
-            }
-        }
+        tripOverviewDtoList.add(getTripOverviewDto(activityEntity, activityEntity.getFishingTrip().getFishingTripKey().getTripId()));
         tripWidgetDto.setTrips(tripOverviewDtoList);
         //As per new requirement, vessel should always be the one associated with fishing Activity in the trip widget
         if (activityEntity.getFaReportDocument() != null && CollectionUtils.isNotEmpty(activityEntity.getFaReportDocument().getVesselTransportMeans())) {
@@ -818,34 +797,16 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return tripWidgetDto;
     }
 
-    public List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException {
-        if (tripId == null) {
-            throw new ServiceException("tripId is null. Please provide valid tripId");
-        }
-        return fishingTripDao.getFishingActivitiesForFishingTripId(tripId);
-
-    }
-
     private TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
         Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
         TripOverviewDto tripOverviewDto = new TripOverviewDto();
-        Set<FishingTripEntity> fishingTripEntities = activityEntity.getFishingTrips(); // Find out fishingTrip schemeId matching to tripId from fishingActivity object.
-        for (FishingTripEntity fishingTripEntity : Utils.safeIterable(fishingTripEntities)) {
-            Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
-            for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-                if (tripId.equalsIgnoreCase(tripIdentifierEntity.getTripId())) {
-                    TripIdDto tripIdDto = new TripIdDto();
-                    tripIdDto.setId(tripId);
-                    tripIdDto.setSchemeId(tripIdentifierEntity.getTripSchemeId());
-                    List<TripIdDto> tripIdList = new ArrayList<>();
-                    tripIdList.add(tripIdDto);
-                    tripOverviewDto.setTripId(tripIdList);
-                    tripOverviewDto.setTypeCode(fishingTripEntity.getTypeCode());
-                    break;
-                }
-            }
-        }
-
+        TripIdDto tripIdDto = new TripIdDto();
+        tripIdDto.setId(tripId);
+        tripIdDto.setSchemeId(activityEntity.getFishingTrip().getFishingTripKey().getTripSchemeId());
+        List<TripIdDto> tripIdList = new ArrayList<>();
+        tripIdList.add(tripIdDto);
+        tripOverviewDto.setTripId(tripIdList);
+        tripOverviewDto.setTypeCode(activityEntity.getFishingTrip().getTypeCode());
         populateTripOverviewDto(typeDTOMap, tripOverviewDto);
         return tripOverviewDto;
     }

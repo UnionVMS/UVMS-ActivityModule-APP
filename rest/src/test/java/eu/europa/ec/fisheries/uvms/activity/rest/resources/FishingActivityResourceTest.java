@@ -44,6 +44,7 @@ import static org.junit.Assert.assertTrue;
 
 @Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
+@Ignore("TODO: robin test fix")
 public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Before
@@ -53,8 +54,6 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Test
     public void getCommunicationChannels_OK() throws JsonProcessingException {
-        // Given
-
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
@@ -229,8 +228,6 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Test
     public void getAllCorrections() throws JsonProcessingException {
-        // Given
-
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
@@ -266,8 +263,6 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Test
     public void getPreviousFishingActivity() throws JsonProcessingException {
-        // Given
-
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
@@ -292,8 +287,6 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Test
     public void getNextFishingActivity() throws JsonProcessingException {
-        // Given
-
         // When
         String responseAsString = getWebTarget()
                 .path("fa")

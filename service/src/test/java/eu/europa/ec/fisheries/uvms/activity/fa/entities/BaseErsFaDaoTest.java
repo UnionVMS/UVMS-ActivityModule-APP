@@ -23,8 +23,9 @@ import static com.ninja_squad.dbsetup.Operations.insertInto;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 
 public abstract class BaseErsFaDaoTest extends BaseDAOTest {
-
-    public static final Operation ERS_REFERENCE_DATA = sequenceOf(
+/*
+    public static final Operation
+            ERS_REFERENCE_DATA = sequenceOf(
             insertInto("activity.activity_flux_fa_report_message")
                     .row()
                     .column("id", 1)
@@ -53,23 +54,31 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("accepted_datetime", java.sql.Date.valueOf("2014-12-01"))
                     .end()
                     .build(),
+            insertInto("activity.activity_size_distribution")
+                    .row()
+                    .column("id", 1)
+                    .end()
+                    .build(),
+            insertInto("activity.activity_fishing_trip")
+                    .row()
+                    .column("id", 1)
+                    .column("type_code", "JFO")
+                    .column("fa_catch_id", 1)
+                    .end()
+                    .build(),
             insertInto("activity.activity_fishing_activity")
                     .row()
                     .column("ID", 1)
                     .column("type_code", "DEPARTURE")
                     .column("type_code_listid", "FLUX_LOCATION_TYPE")
                     .column("fa_report_document_id", 1)
+                    .column("fishing_trip_id", 1)
                     .end().build(),
             insertInto("activity.activity_vessel_transport_means")
                     .row()
                     .column("id", 1)
                     .column("fishing_activity_id", 1)
                     .column("fa_report_document_id", 1)
-                    .end()
-                    .build(),
-            insertInto("activity.activity_size_distribution")
-                    .row()
-                    .column("id", 1)
                     .end()
                     .build(),
             insertInto("activity.activity_fa_catch")
@@ -83,14 +92,6 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("species_code_listid", "CODE_LIST")
                     .end()
                     .build(),
-            insertInto("activity.activity_fishing_trip")
-                    .row()
-                    .column("id", 1)
-                    .column("type_code", "JFO")
-                    .column("fa_catch_id", 1)
-                    .column("fishing_activity_id", 1)
-                    .end()
-                    .build(),
             insertInto("activity.activity_delimited_period")
                     .row()
                     .column("id", 1)
@@ -101,9 +102,9 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
             insertInto("activity.activity_fishing_trip_Identifier")
                     .row()
                     .column("id", 1)
-                    .column("trip_id", 1)
+                    .column("trip_id", "NOR-TRP-20160517234053706")
                     .column("fishing_trip_id", 1)
-                    .column("trip_scheme_id", "TRIP_SCHEME_ID")
+                    .column("trip_scheme_id", "EU_TRIP_ID")
                     .end()
                     .build(),
             insertInto("activity.activity_vessel_identifier")
@@ -113,6 +114,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .end()
                     .build()
     );
+ */
     protected static final Operation DELETE_ALL = sequenceOf(
             deleteAllFrom("activity.activity_size_distribution"),
             deleteAllFrom("activity.activity_fa_catch"),
@@ -125,25 +127,25 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     );
     protected static final Operation INSERT_ERS_FISHING_TRIP_DATA = sequenceOf(
             insertInto("activity.activity_fishing_trip")
-                    .columns("id", "type_code", "type_code_list_id", "fa_catch_id", "fishing_activity_id")
-                    .values(1, "JFO", "EU_TRIP_ID", 1, 1)
-                    .values(2, "JFO", "EU_TRIP_ID", 2, 2)
-                    .values(3, "JFO", "EU_TRIP_ID", 3, 3)
-                    .values(4, "JFO", "EU_TRIP_ID", 4, 4)
-                    .values(5, "JFO", "EU_TRIP_ID", 5, 5)
-                    .values(6, "JFO", "EU_TRIP_ID", 6, 6)
+                    .columns("id", "type_code", "type_code_list_id")
+                    .values(1, "JFO", "EU_TRIP_ID")
+                    .values(2, "JFO", "EU_TRIP_ID")
+                    .values(3, "JFO", "EU_TRIP_ID")
+                    .values(4, "JFO", "EU_TRIP_ID")
+                    .values(5, "JFO", "EU_TRIP_ID")
+                    .values(6, "JFO", "EU_TRIP_ID")
                     .build()
 
     );
     protected static final Operation INSERT_ERS_FISHING_TRIP_IDENTIFIER_DATA = sequenceOf(
             insertInto("activity.activity_fishing_trip_Identifier")
-                    .columns("id", "fishing_trip_id", "trip_id", "trip_scheme_id","calculated_trip_start_date","calculated_trip_end_date")
-                    .values(1, 1, "NOR-TRP-20160517234053706", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
-                    .values(2, 2, "NOR-TRP-20160517234053706", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
-                    .values(3, 3, "NOR-TRP-20160517234053706", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
-                    .values(4, 4, "NOR-TRP-20160517234053705", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
-                    .values(5, 5, "NOR-TRP-20160517234053707", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
-                    .values(6, 6, "NOR-TRP-20160517234053708", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
+                    .columns("id", "trip_id", "trip_scheme_id","calculated_trip_start_date","calculated_trip_end_date")
+                    .values(1, "NOR-TRP-20160517234053706", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
+                    .values(2, "NOR-TRP-20160517234053706", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
+                    .values(3, "NOR-TRP-20160517234053706", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
+                    .values(4, "NOR-TRP-20160517234053705", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
+                    .values(5, "NOR-TRP-20160517234053707", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
+                    .values(6, "NOR-TRP-20160517234053708", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
                     .build()
 
     );
@@ -173,29 +175,30 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .column("vessel_transport_guid", "AS1222")
                     .column("flag_state", "NLD")
                     .column("calculated_start_time", "2017-02-29 00:00:00")
+                    .column("fishing_trip_id", 1)
                     .end().build(),
             insertInto("activity.activity_fishing_activity")
-                    .columns("id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
+                    .columns("id", "fishing_trip_id", "type_code", "type_code_listid", "occurence", "reason_code", "reason_code_list_id", "vessel_activity_code", "vessel_activity_code_list_id",
                             "fishery_type_code", "fishery_type_code_list_id", "species_target_code", "species_target_code_list_id", "operationsquantity_value", "operationsquantity_unitcode",
                             "calculated_operation_quantity", "fishing_duration_measure", "fishing_duration_measure_code", "calculated_fishing_duration", "source_vessel_char_id",
                             "dest_vessel_char_id",  "fa_report_document_id","related_fishing_activity_id","vessel_transport_guid","flag_state","calculated_start_time")
-                    .values(2, "ARRIVAL", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(2, 1, "ARRIVAL", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 1,null,"AS1222","NLD","2017-03-29 00:00:00")
-                    .values(3, "LANDING", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2013-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(3, 1, "LANDING", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2013-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,2,null,"AS1222","NLD","2017-04-29 00:00:00")
-                    .values(4, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2012-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(4, 1, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2012-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 2,null,"AS1222","NLD","2017-05-29 00:00:00")
-                    .values(5, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(5, 1, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null,  6,null,"AS1222","NLD","2017-06-29 00:00:00")
-                    .values(6, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(6, 1, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 3,null,"AS1222","NLD","2017-07-29 00:00:00")
-                    .values(7, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(7, 1, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,"AS1222","NLD","2017-08-29 00:00:00")
-                    .values(8, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(8, 1, "FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,"AS1222","NLD","2017-09-29 00:00:00")
-                    .values(9, "RELOCATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(9, 1, "RELOCATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,"AS1222","NLD","2017-03-29 00:00:00")
-                    .values(10, "JOINT_FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                    .values(10, 1, "JOINT_FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,9,"AS1222","NLD","2017-03-29 00:00:00")
                     .build()
 
@@ -519,6 +522,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                 INSERT_ERS_FLUX_REPORT_DOCUMENT_DATA,
                 INSERT_ERS_FLUX_REPORT_IDENTIFIER_DATA,
                 INSERT_ERS_FA_REPORT_DOCUMENT_DATA,
+                INSERT_ERS_FISHING_TRIP_DATA,
+                INSERT_ERS_FISHING_TRIP_IDENTIFIER_DATA,
                 INSERT_ERS_FISHING_ACTIVITY_DATA,
                 INSERT_ERS_VESSEL_TRANSPORT_MEANS_DATA,
                 INSERT_ERS_VESSEL_IDENTIFIERS_DATA,
@@ -534,8 +539,6 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                 INSERT_FLUX_LOCATION,
                 INSERT_ERS_FISHING_GEAR_DATA,
                 INSERT_ERS_FISHING_GEAR_ROLE_DATA,
-                INSERT_ERS_FISHING_TRIP_DATA,
-                INSERT_ERS_FISHING_TRIP_IDENTIFIER_DATA,
                 INSERT_DELIMITED_PERIOD);
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);

@@ -30,7 +30,7 @@ public class GearShotRetrievalDto {
     private String occurrence;
 
     @JsonView(FishingActivityView.CommonView.class)
-    private IdentifierDto id;
+    private int activityId;
 
     @JsonView(FishingActivityView.CommonView.class)
     private Double duration;
@@ -109,12 +109,12 @@ public class GearShotRetrievalDto {
         this.gearProblems = gearProblems;
     }
 
-    public IdentifierDto getId() {
-        return id;
+    public int getActivityId() {
+        return activityId;
     }
 
-    public void setId(IdentifierDto id) {
-        this.id = id;
+    public void setActivityId(int activityId) {
+        this.activityId = activityId;
     }
 
     public Double getCalculatedDuration() {

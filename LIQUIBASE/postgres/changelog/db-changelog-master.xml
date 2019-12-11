@@ -10,5 +10,7 @@
   <include file="1.1.6\db-changelog-UNIONVMS.xml" relativeToChangelogFile="true"/>
   <include file="1.1.7\db-changelog-UNIONVMS.xml" relativeToChangelogFile="true"/>
   <include file="1.1.13\db-liquibase-diff.xml" relativeToChangelogFile="true"/>
+  <include file="1.1.17\db-changelog-UNIONVMS.xml" relativeToChangelogFile="true"/>
+  <include file="1.1.18\db-changelog-UNIONVMS.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

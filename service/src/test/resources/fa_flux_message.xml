@@ -24,4 +24,12 @@
             <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
         </AcceptanceDateTime>
     </ns3:FAReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="fhr574fh-thrud754-kgitjf754-gjtufe89">DECLARATION</TypeCode>
+        <FMCMarkerCode listID="h49rh-fhrus33-fj84hjs82-4h84hw82">Fmz marker 2</FMCMarkerCode>
+        <RelatedReportID schemeID="47rfh-5hry4-thfur75-4hf743">ID 1</RelatedReportID>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
+        </AcceptanceDateTime>
+    </ns3:FAReportDocument>
 </ns3:FLUXFAReportMessage>

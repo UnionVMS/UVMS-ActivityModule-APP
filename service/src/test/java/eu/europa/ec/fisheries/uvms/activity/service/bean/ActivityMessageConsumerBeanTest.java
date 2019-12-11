@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
@@ -23,12 +22,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -141,46 +136,5 @@ public class ActivityMessageConsumerBeanTest {
         String text = textCaptor.getValue();
 
         assertTrue(text.contains("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb"));
-    }
-
-    @Test
-    public void getFishingActivityForTrips() throws ActivityModelMarshallException, ServiceException, JMSException {
-        // Given
-        FishingActivityForTripIds fishingActivityForTripIds = new FishingActivityForTripIds();
-        fishingActivityForTripIds.setTripId("AUT-TRP-38778a5888837-000000");
-        fishingActivityForTripIds.setTripSchemeId("EU_TRIP_ID");
-        fishingActivityForTripIds.setFishActTypeCode("LANDING");
-        fishingActivityForTripIds.setFluxRepDocPurposeCodes(Lists.newArrayList("9"));
-
-        List<FishingActivityForTripIds> tripIds = new ArrayList<>();
-        tripIds.add(fishingActivityForTripIds);
-
-        GetFishingActivitiesForTripRequest getFishingActivitiesForTripRequest = new GetFishingActivitiesForTripRequest();
-        getFishingActivitiesForTripRequest.setMethod(ActivityModuleMethod.GET_FISHING_ACTIVITY_FOR_TRIPS);
-        getFishingActivitiesForTripRequest.setFaAndTripIds(tripIds);
-
-        String requestString = JAXBMarshaller.marshallJaxBObjectToString(getFishingActivitiesForTripRequest);
-
-        ActiveMQTextMessage activeMQTextMessage = mock(ActiveMQTextMessage.class);
-        when(activeMQTextMessage.getText()).thenReturn(requestString);
-
-        GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse = new GetFishingActivitiesForTripResponse();
-
-        when(activityService.getFaAndTripIdsFromTripIds(any())).thenReturn(getFishingActivitiesForTripResponse);
-
-        // When
-        consumer.onMessage(activeMQTextMessage);
-
-        // Then
-        ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
-        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
-
-        Mockito.verify(producer, times(1)).sendResponseMessageToSender(messageCaptor.capture(), textCaptor.capture());
-
-        TextMessage message = messageCaptor.getValue();
-        String text = textCaptor.getValue();
-
-        assertTrue(message.getText().contains("AUT-TRP-38778a5888837-000000"));
-        assertTrue(text.contains("GetFishingActivitiesForTripResponse"));
     }
 }

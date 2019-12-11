@@ -52,6 +52,7 @@ import static org.junit.Assert.fail;
 
 @Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
+@Ignore("TODO: robin test fix")
 public class FACatchResourceTest extends BaseActivityArquillianTest {
 
     @Before

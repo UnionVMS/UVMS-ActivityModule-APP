@@ -15,14 +15,8 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityWithIdentifiers;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
@@ -96,9 +90,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        fishingActivityDao = new FishingActivityDao(getEntityManager());
-        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
+        fishingActivityDao = new FishingActivityDao(entityManager);
+        faReportDocumentDao = new FaReportDocumentDao(entityManager);
     }
 
     /**
@@ -215,45 +208,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
         log.debug("fishingActivityView generated after mapping is: {}", fishingActivityViewDTO);
         return fishingActivityViewDTO;
-    }
-
-    @Override
-    public GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) {
-        GetFishingActivitiesForTripResponse response = new GetFishingActivitiesForTripResponse();
-        List<FaIdsListWithTripIdMap> responseList = new ArrayList<>();
-        response.setFaWithIdentifiers(responseList);
-
-        for (FishingActivityForTripIds faTripId : faAndTripIds) {
-            List<FishingActivityEntity> fishingActivies = fishingActivityDao.getFishingActivityForTrip(faTripId.getTripId(), faTripId.getTripSchemeId(), faTripId.getFishActTypeCode(), faTripId.getFluxRepDocPurposeCodes());
-            for (FishingActivityEntity faEntity : fishingActivies) {
-                addToIdsList(responseList, faEntity);
-            }
-        }
-        return response;
-    }
-
-    private void addToIdsList(List<FaIdsListWithTripIdMap> responseList, FishingActivityEntity faEntity) {
-        Set<FishingTripIdentifierEntity> fishingTripIdentifiers = faEntity.getFishingTrips().iterator().next().getFishingTripIdentifiers();
-        List<FishingActivityWithIdentifiers> faIdentifiers = mapToActivityIdsAndType(faEntity.getFishingActivityIdentifiers(), faEntity.getTypeCode());
-        for (FishingTripIdentifierEntity tripIdentifEntity : fishingTripIdentifiers) {
-            FaIdsListWithTripIdMap existingActWithIdentifiers = getElementWithTripId(responseList, tripIdentifEntity.getTripId());
-            if (null != existingActWithIdentifiers) {
-                existingActWithIdentifiers.getFaIdentifierLists().addAll(faIdentifiers);
-            } else {
-                responseList.add(new FaIdsListWithTripIdMap(tripIdentifEntity.getTripId(), tripIdentifEntity.getTripSchemeId(), faIdentifiers));
-            }
-        }
-    }
-
-    private FaIdsListWithTripIdMap getElementWithTripId(List<FaIdsListWithTripIdMap> responseList, String tripId) {
-        FaIdsListWithTripIdMap mapToReturn = null;
-        for (FaIdsListWithTripIdMap respMap : responseList) {
-            if (tripId.equals(respMap.getTripId())) {
-                mapToReturn = respMap;
-                break;
-            }
-        }
-        return mapToReturn;
     }
 
     @NotNull
@@ -373,17 +327,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         } catch (ParseException e) {
             throw new ServiceException(e.getMessage(), e);
         }
-    }
-
-    private List<FishingActivityWithIdentifiers> mapToActivityIdsAndType(Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers, String typeCode) {
-        List<FishingActivityWithIdentifiers> actIDList = new ArrayList<>();
-        if (CollectionUtils.isEmpty(fishingActivityIdentifiers)) {
-            return actIDList;
-        }
-        for (FishingActivityIdentifierEntity tripIdent : fishingActivityIdentifiers) {
-            actIDList.add(new FishingActivityWithIdentifiers(tripIdent.getFaIdentifierId(), tripIdent.getFaIdentifierSchemeId(), typeCode));
-        }
-        return actIDList;
     }
 
     private void addPortDescriptions(FishingActivityViewDTO fishingActivityViewDTO) {
