@@ -84,9 +84,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private AssetModuleService assetService;
 
     @EJB
-    private FishingTripService fishingTripService;
-
-    @EJB
     private MdrModuleService mdrModuleServiceBean;
 
     @EJB

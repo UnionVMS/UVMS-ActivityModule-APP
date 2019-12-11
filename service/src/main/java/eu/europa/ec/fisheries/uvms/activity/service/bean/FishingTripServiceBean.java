@@ -138,7 +138,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @PostConstruct
     public void init() {
-        fishingTripIdentifierDao = new FishingTripIdentifierDao(entityManager);
         vesselIdentifierDao = new VesselIdentifierDao(entityManager);
         fishingActivityDao = new FishingActivityDao(entityManager);
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
