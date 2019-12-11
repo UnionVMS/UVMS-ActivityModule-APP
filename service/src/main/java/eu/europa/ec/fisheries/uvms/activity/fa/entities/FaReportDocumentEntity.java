@@ -11,9 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
 
@@ -80,9 +80,9 @@ import java.util.Set;
 })
 @Entity
 @Table(name = "activity_fa_report_document")
-@Data
+@Getter
+@Setter
 @ToString(of = "id")
-@EqualsAndHashCode(of = {"acceptedDatetime"})
 @NoArgsConstructor
 public class FaReportDocumentEntity implements Serializable {
 

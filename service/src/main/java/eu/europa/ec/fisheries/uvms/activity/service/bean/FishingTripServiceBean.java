@@ -138,14 +138,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        vesselIdentifierDao = new VesselIdentifierDao(getEntityManager());
-        fishingActivityDao = new FishingActivityDao(getEntityManager());
-        faReportDocumentDao = new FaReportDocumentDao(getEntityManager());
-        faCatchDao = new FaCatchDao(getEntityManager());
-        fishingTripDao = new FishingTripDao(getEntityManager());
-        vesselTransportMeansDao = new VesselTransportMeansDao(em);
-        activityConfigurationDao = new ActivityConfigurationDao(getEntityManager());
+        fishingTripIdentifierDao = new FishingTripIdentifierDao(entityManager);
+        vesselIdentifierDao = new VesselIdentifierDao(entityManager);
+        fishingActivityDao = new FishingActivityDao(entityManager);
+        faReportDocumentDao = new FaReportDocumentDao(entityManager);
+        faCatchDao = new FaCatchDao(entityManager);
+        fishingTripDao = new FishingTripDao(entityManager);
+        vesselTransportMeansDao = new VesselTransportMeansDao(entityManager);
+        activityConfigurationDao = new ActivityConfigurationDao(entityManager);
     }
 
     /**
