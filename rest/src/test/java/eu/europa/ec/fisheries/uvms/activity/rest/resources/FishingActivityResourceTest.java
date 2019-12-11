@@ -44,7 +44,6 @@ import static org.junit.Assert.assertTrue;
 
 @Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
-@Ignore("TODO: robin test fix")
 public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Before
