@@ -98,7 +98,7 @@ public class FishingTripEntity implements Serializable {
 
     public static final String FIND_TRIPS_FOR_VESSEL_ORDERED_BY_DATE_LATEST_FIRST = "findTripsForVesselOrderedByDateLatestFirst";
     public static final String FIND_TRIPS_BEFORE_TRIP_WITH_ID = "findTripsBeforeTripWithId";
-    public static final String FIND_TRIP_AFTER_TRIP_WITH_ID = "findTripsAfterTripWithId";
+    public static final String FIND_TRIPS_AFTER_TRIP_WITH_ID = "findTripsAfterTripWithId";
 
     @EmbeddedId
     private FishingTripKey fishingTripKey;

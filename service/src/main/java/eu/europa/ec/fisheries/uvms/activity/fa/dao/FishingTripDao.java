@@ -141,7 +141,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public List<FishingTripEntity> getNextTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
-        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIP_AFTER_TRIP_WITH_ID, FishingTripEntity.class);
+        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIPS_AFTER_TRIP_WITH_ID, FishingTripEntity.class);
         query.setParameter(VESSEL_ID, vesselId);
         query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
         query.setParameter(TRIP_ID, tripId);
