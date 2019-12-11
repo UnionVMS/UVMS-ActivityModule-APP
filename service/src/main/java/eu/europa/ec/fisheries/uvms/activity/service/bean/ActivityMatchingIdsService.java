@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +37,6 @@ public class ActivityMatchingIdsService extends BaseActivityBean {
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        EntityManager entityManager = getEntityManager();
         fluxReportIdentifierDao = new FluxReportIdentifierDao(entityManager);
     }
 

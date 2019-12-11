@@ -13,6 +13,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryDTO;
@@ -22,9 +25,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryHelper
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryHelperFactory;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -48,8 +48,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        faCatchDao = new FaCatchDao(em);
+        faCatchDao = new FaCatchDao(entityManager);
     }
 
     /**

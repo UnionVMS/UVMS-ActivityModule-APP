@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
@@ -29,13 +28,11 @@ public class FaMessageSaverBean extends BaseActivityBean {
 
     @PostConstruct
     public void init() {
-        initEntityManager();
-        fluxReportMessageDao = new FluxFaReportMessageDao(getEntityManager());
+        fluxReportMessageDao = new FluxFaReportMessageDao(entityManager);
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public FluxFaReportMessageEntity saveReportMessageNow(FluxFaReportMessageEntity messageEntity) throws
-            ServiceException {
+    public FluxFaReportMessageEntity saveReportMessageNow(FluxFaReportMessageEntity messageEntity) {
         return fluxReportMessageDao.createEntity(messageEntity);
     }
 
