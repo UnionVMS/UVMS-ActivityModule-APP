@@ -12,36 +12,6 @@ package eu.europa.ec.fisheries.uvms.activity.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPersonEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
@@ -53,16 +23,14 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.After;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.EJB;
-import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
+import javax.transaction.Transactional;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -74,7 +42,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,55 +49,20 @@ import java.util.stream.Stream;
 public abstract class BaseActivityArquillianTest {
     private static final String ACTIVITY_REST_TEST = "activity-rest-test";
 
-    // Note: The order here is important because of foreign keys in the db
-    private static final List<Class> ENTITY_CLASSES_TO_TRUNCATE_AFTER_TEST = ImmutableList.of(
-            FaReportIdentifierEntity.class,
-            FishingTripIdentifierEntity.class,
-            FluxPartyIdentifierEntity.class,
-            FluxReportIdentifierEntity.class,
-            VesselIdentifierEntity.class,
-
-            GearProblemEntity.class,
-            StructuredAddressEntity.class,
-            SizeDistributionClassCodeEntity.class,
-            GearCharacteristicEntity.class,
-            FluxLocationEntity.class,
-            DelimitedPeriodEntity.class,
-            FishingGearRoleEntity.class,
-            FishingGearEntity.class,
-            ContactPartyRoleEntity.class,
-            ContactPartyEntity.class,
-            ContactPersonEntity.class,
-            AapProductEntity.class,
-            AapProcessCodeEntity.class,
-            AapProcessEntity.class,
-            FaCatchEntity.class,
-            SizeDistributionEntity.class,
-            VesselTransportMeansEntity.class,
-            FishingTripEntity.class,
-            FishingActivityEntity.class,
-            FaReportDocumentEntity.class,
-            FluxCharacteristicEntity.class,
-            FluxReportDocumentEntity.class,
-            FluxFaReportMessageEntity.class,
-            FluxPartyEntity.class
-            );
-
-    public static final String ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME = "anonymized_flux_messages";
-    private static final Set<String> ANONYMIZED_FLUX_MESSAGES = ImmutableSet.of(
+    private static final String ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME = "anonymized_flux_messages";
+    private static final List<String> ANONYMIZED_FLUX_MESSAGES = ImmutableList.of(
             "flux1_anonymized.xml",
             "flux2_anonymized.xml",
             "flux3_anonymized.xml"
     );
+
+    private static boolean hasPopulatedTestData = false;
 
     @EJB
     private JwtTokenHandler tokenHandler;
 
     @EJB
     private FluxMessageService fluxMessageService;
-
-    @Inject
-    private UserTransaction userTransaction;
 
     protected String authToken;
 
@@ -197,16 +129,13 @@ public abstract class BaseActivityArquillianTest {
 
         authToken = getToken();
 
-        userTransaction.begin();
-
-        populateFluxTestData();
+        if (!hasPopulatedTestData) {
+            populateFluxTestData();
+            hasPopulatedTestData = true;
+        }
     }
 
-    @After
-    public void tearDown() throws SystemException {
-        userTransaction.rollback();
-    }
-
+    @Transactional
     private void populateFluxTestData() throws IOException, JAXBException, ServiceException {
         for (String anonymizedFluxMessageFileName : ANONYMIZED_FLUX_MESSAGES) {
             FLUXFAReportMessage fluxMessage = getMessageFromTestResource(ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME + "/" + anonymizedFluxMessageFileName);
