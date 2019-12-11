@@ -148,8 +148,6 @@ public class FishingActivityViewMapperTest {
         assertEquals(fishingActivity.getTypeCode(), gearShotRetrievalDto.getType());
         assertEquals(fishingActivity.getOccurence(), Instant.parse(gearShotRetrievalDto.getOccurrence() + "Z"));
 
-        assertEquals(1, fishingActivity.getFishingActivityIdentifiers().size());
-
         assertEquals(1, fishingActivity.getDelimitedPeriods().size());
 
         assertNull(gearShotRetrievalDto.getCalculatedDuration());

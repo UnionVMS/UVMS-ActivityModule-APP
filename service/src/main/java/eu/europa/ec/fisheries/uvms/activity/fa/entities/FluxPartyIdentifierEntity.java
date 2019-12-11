@@ -39,11 +39,14 @@ import java.io.Serializable;
 @Data
 @NamedQueries({
         @NamedQuery(name = FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID,
-                query = "SELECT DISTINCT fPartyIdentifier FROM FluxPartyIdentifierEntity fPartyIdentifier LEFT JOIN fPartyIdentifier.fluxParty flParty " +
-                        "LEFT JOIN flParty.fluxReportDocument fluxRepDoc LEFT JOIN fluxRepDoc.fluxFaReportMessage fluxRepMessage " +
-                        "LEFT JOIN fluxRepMessage.faReportDocuments faRepDocs LEFT JOIN faRepDocs.fishingActivities fishActivities " +
-                        "LEFT JOIN fishActivities.fishingTrips fishTrips JOIN fishTrips.fishingTripIdentifiers fTripIdentifier " +
-                        "WHERE fTripIdentifier.tripId =:fishingTripId")
+                query = "SELECT DISTINCT fPartyIdentifier FROM FluxPartyIdentifierEntity fPartyIdentifier " +
+                        "LEFT JOIN fPartyIdentifier.fluxParty flParty " +
+                        "LEFT JOIN flParty.fluxReportDocument fluxRepDoc " +
+                        "LEFT JOIN fluxRepDoc.fluxFaReportMessage fluxRepMessage " +
+                        "LEFT JOIN fluxRepMessage.faReportDocuments faRepDocs " +
+                        "LEFT JOIN faRepDocs.fishingActivities fishActivities " +
+                        "LEFT JOIN fishActivities.fishingTrip fishTrip " +
+                        "WHERE fishTrip.fishingTripKey.tripId =:fishingTripId")
 })
 @EqualsAndHashCode(of = {"fluxPartyIdentifierId","fluxPartyIdentifierSchemeId"})
 public class FluxPartyIdentifierEntity implements Serializable {

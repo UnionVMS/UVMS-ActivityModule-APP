@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
@@ -29,7 +28,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.MicroMovementComparator;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.MovementModuleService;
@@ -86,9 +84,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private AssetModuleService assetService;
 
     @EJB
-    private FishingTripService fishingTripService;
-
-    @EJB
     private MdrModuleService mdrModuleServiceBean;
 
     @EJB
@@ -110,7 +105,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * {@inheritDoc}
      */
     @Override
-    @Transactional
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
         FluxFaReportMessageEntity messageEntity = fluxFaReportMessageMapper.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
@@ -127,7 +121,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         log.debug("Saved partial FluxFaReportMessage before further processing");
         updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());
         log.debug("Updating FaReport Corrections is complete.");
-        updateFishingTripStartAndEndDate(faReportDocuments);
+        updateFishingTripStartAndEndDate(entity.getFaReportDocuments());
         log.info("[END] FluxFaReportMessage Saved successfully.");
         return entity;
     }
@@ -146,42 +140,32 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
 
         for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
-            Set<FishingTripEntity> fishingTripEntities = fishingActivityEntity.getFishingTrips();
-            if (CollectionUtils.isEmpty(fishingTripEntities)) {
-                continue;
-            }
-            for (FishingTripEntity fishingTripEntity : fishingTripEntities) {
-                setTripStartAndEndDateForFishingTrip(fishingTripEntity);
-            }
+            setTripStartAndEndDateForFishingTrip(fishingActivityEntity);
         }
     }
 
-    private void setTripStartAndEndDateForFishingTrip(FishingTripEntity fishingTripEntity) {
-        Set<FishingTripIdentifierEntity> identifierEntities = fishingTripEntity.getFishingTripIdentifiers();
-        if (CollectionUtils.isEmpty(identifierEntities)) {
-            return;
+    private void setTripStartAndEndDateForFishingTrip(FishingActivityEntity fishingActivityEntity) {
+        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrip();
+
+        Instant calculatedTripStartDate = fishingTripEntity.getCalculatedTripStartDate();
+        Instant calculatedTripEndDate = fishingTripEntity.getCalculatedTripEndDate();
+
+        Instant activityTime = fishingActivityEntity.getCalculatedStartTime();
+
+        if (calculatedTripStartDate == null) {
+            fishingTripEntity.setCalculatedTripStartDate(activityTime);
         }
 
-        for (FishingTripIdentifierEntity tripIdentifierEntity : identifierEntities) {
-            try {
-                List<FishingActivityEntity> fishingActivityEntityList = fishingTripService.getAllFishingActivitiesForTrip(tripIdentifierEntity.getTripId());
-                if (CollectionUtils.isNotEmpty(fishingActivityEntityList)) {
-                    //Calculate trip start date
-                    FishingActivityEntity firstFishingActivity = fishingActivityEntityList.get(0);
-                    tripIdentifierEntity.setCalculatedTripStartDate(firstFishingActivity.getCalculatedStartTime());
-                    // calculate trip end date
-                    Instant calculatedTripEndDate;
-                    int totalActivities = fishingActivityEntityList.size();
-                    if (totalActivities > 1) {
-                        calculatedTripEndDate = fishingActivityEntityList.get(totalActivities - 1).getCalculatedStartTime();
-                    } else {
-                        calculatedTripEndDate = firstFishingActivity.getCalculatedStartTime();
-                    }
-                    tripIdentifierEntity.setCalculatedTripEndDate(calculatedTripEndDate);
-                }
-            } catch (Exception e) {
-                log.error("Error while trying to calculate FishingTrip start and end Date", e);
-            }
+        if (calculatedTripEndDate == null) {
+            fishingTripEntity.setCalculatedTripEndDate(activityTime);
+        }
+
+        if (calculatedTripStartDate != null && activityTime != null && activityTime.isBefore(calculatedTripStartDate)) {
+            fishingTripEntity.setCalculatedTripStartDate(activityTime);
+        }
+
+        if (calculatedTripEndDate != null && activityTime != null && activityTime.isAfter(calculatedTripEndDate)) {
+            fishingTripEntity.setCalculatedTripEndDate(activityTime);
         }
     }
 

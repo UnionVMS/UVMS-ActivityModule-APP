@@ -11,13 +11,11 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper.view;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityIdentifierMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.BaseActivityViewMapper;
@@ -44,9 +42,6 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
         detailsDto.setFisheryType(faEntity.getFisheryTypeCode());
         detailsDto.setSpeciesTarget(faEntity.getSpeciesTargetCode());
-
-        Set<FishingActivityIdentifierEntity> fishingActivityIdentifiers = faEntity.getFishingActivityIdentifiers();
-        detailsDto.setIdentifiers(FishingActivityIdentifierMapper.INSTANCE.mapToIdentifierDTOSet(fishingActivityIdentifiers));
 
         detailsDto.setFishingTime(calculateFishingTime(faEntity.getDelimitedPeriods()));
 

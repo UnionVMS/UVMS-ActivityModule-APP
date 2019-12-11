@@ -13,7 +13,20 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
@@ -22,21 +35,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsServ
 import eu.europa.ec.fisheries.uvms.activity.service.bean.FaReportSaverBean;
 import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityRequestMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -133,8 +131,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     getNonUniqueIds(textMessage);
                     break;
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
-                    getFishingActivityForTrips(textMessage);
-                    break;
                 default:
                     log.error("Request method {} is not implemented", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Request method " + method.name() + " is not implemented")));
@@ -143,13 +139,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
             log.error("Error when receiving message in activity", e);
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message: " + e.getMessage())));
         }
-    }
-
-    private void getFishingActivityForTrips(TextMessage textMessage) throws ActivityModelMarshallException, ServiceException, JMSException {
-        GetFishingActivitiesForTripRequest getFishingActivitiesForTripRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, GetFishingActivitiesForTripRequest.class);
-        GetFishingActivitiesForTripResponse getFishingActivitiesForTripResponse = activityServiceBean.getFaAndTripIdsFromTripIds(getFishingActivitiesForTripRequest.getFaAndTripIds());
-        String responseStr = JAXBMarshaller.marshallJaxBObjectToString(getFishingActivitiesForTripResponse);
-        producer.sendResponseMessageToSender(textMessage, responseStr);
     }
 
     private void getNonUniqueIds(TextMessage textMessage) throws ActivityModelMarshallException, JMSException {

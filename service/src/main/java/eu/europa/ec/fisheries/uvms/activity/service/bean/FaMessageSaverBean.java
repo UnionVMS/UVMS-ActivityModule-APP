@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntit
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 
 @Stateless
 @LocalBean
@@ -31,7 +30,6 @@ public class FaMessageSaverBean extends BaseActivityBean {
         fluxReportMessageDao = new FluxFaReportMessageDao(entityManager);
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public FluxFaReportMessageEntity saveReportMessageNow(FluxFaReportMessageEntity messageEntity) {
         return fluxReportMessageDao.createEntity(messageEntity);
     }

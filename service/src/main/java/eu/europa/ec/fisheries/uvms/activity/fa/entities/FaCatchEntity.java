@@ -25,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -45,9 +46,8 @@ import java.util.Set;
 						"JOIN faCatch.fluxLocations fluxLoc " +
 						"JOIN faCatch.fishingActivity fishAct " +
 						"JOIN fishAct.faReportDocument fa " +
-						"JOIN fishAct.fishingTrips fishTrip " +
-						"JOIN fishTrip.fishingTripIdentifiers fishIdent " +
-						"WHERE fishIdent.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
+						"JOIN fishAct.fishingTrip fishTrip " +
+						"WHERE fishTrip.fishingTripKey.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
 						"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.fluxLocationIdentifier " +
 						"ORDER BY faCatch.typeCode, faCatch.speciesCode")
 })
@@ -56,7 +56,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(of = {"typeCode", "speciesCode", "typeCodeListId", "speciesCodeListid", "unitQuantity", "unitQuantityCode", "calculatedUnitQuantity", "weightMeasureUnitCode", "weightMeasure", "usageCode", "territory", "fishClassCode"})
-@ToString(exclude = {"fishingActivity", "aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrips"})
+@ToString(exclude = {"fishingActivity", "aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrip"})
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
@@ -162,8 +162,12 @@ public class FaCatchEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapStockEntity> aapStocks = new HashSet<>();
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<FishingTripEntity> fishingTrips = new HashSet<>();
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "trip_id", referencedColumnName = "trip_id"),
+			@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
+	})
+	private FishingTripEntity fishingTrip;
 
 	@PrePersist
 	public void prePersist(){
