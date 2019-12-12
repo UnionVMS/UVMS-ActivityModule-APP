@@ -51,9 +51,14 @@ public abstract class BaseActivityArquillianTest {
 
     private static final String ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME = "anonymized_flux_messages";
     private static final List<String> ANONYMIZED_FLUX_MESSAGES = ImmutableList.of(
-            "flux1_anonymized.xml",
-            "flux2_anonymized.xml",
-            "flux3_anonymized.xml"
+            "flux001_anonymized.xml",
+            "flux002_anonymized.xml",
+            "flux003_anonymized.xml",
+            "flux004_anonymized.xml",
+//            "flux005_anonymized.xml", same trip as in flux004
+            "flux006_anonymized.xml",
+//            "flux007_anonymized.xml", same trip as in flux004
+            "flux008_anonymized.xml"
     );
 
     private static boolean hasPopulatedTestData = false;
