@@ -123,15 +123,21 @@ public class BaseMapper {
             if (calcDur != null) {
                 fishingTime = fishingTime.add(new BigDecimal(calcDur));
             }
-            unitCode = (unitCode != null ? unitCode :
-                    (periodEntities.size() > 1 || period.getDurationMeasure() == null ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode()));
+            if (unitCode == null) {
+                unitCode = periodEntities.size() > 1 || period.getDurationMeasure() == null ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode();
+            }
         }
 
         Date startDate = startInstant != null ? Date.from(startInstant) : null;
         Date endDate = endInstant != null ? Date.from(endInstant) : null;
 
-        DelimitedPeriodDTO build = DelimitedPeriodDTO.builder()
-                .duration(fishingTime.doubleValue()).endDate(endDate).startDate(startDate).unitCode(unitCode).build();
+        DelimitedPeriodDTO build = DelimitedPeriodDTO
+                .builder()
+                .duration(fishingTime.doubleValue())
+                .endDate(endDate)
+                .startDate(startDate)
+                .unitCode(unitCode)
+                .build();
 
         if (Math.abs(BigDecimal.ZERO.doubleValue() - build.getDuration()) < 0.00000001) {
             build.setDuration(null);
@@ -155,6 +161,7 @@ public class BaseMapper {
             VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
             ConfigSearchField key = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
             String identifierId = identifierDto.getFaIdentifierId();
+
             if (key != null && identifierId != null) {
                 criteriaPair.setKey(key);
                 criteriaPair.setValue(identifierId);
@@ -169,6 +176,7 @@ public class BaseMapper {
         for (AssetIdentifierDto identifierDto : Utils.safeIterable(identifierDtoSet)) {
             VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
             ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+
             if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
                 String identifierId = identifierDto.getFaIdentifierId();
                 AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
@@ -315,7 +323,7 @@ public class BaseMapper {
 
     private void fillCharacteristicField(GearCharacteristicEntity charac, GearDto gearDto) {
         String quantityOnly = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
-        String quantityWithUnit = new StringBuilder(quantityOnly).append(charac.getValueMeasureUnitCode()).toString();
+        String quantityWithUnit = quantityOnly + charac.getValueMeasureUnitCode();
         switch (charac.getTypeCode()) {
             case ViewConstants.GEAR_CHARAC_TYPE_CODE_ME:
                 gearDto.setMeshSize(quantityWithUnit);
@@ -412,7 +420,6 @@ public class BaseMapper {
         if (value ==  null) {
             return null;
         }
-
         return value.toGregorianCalendar().toInstant();
     }
 }

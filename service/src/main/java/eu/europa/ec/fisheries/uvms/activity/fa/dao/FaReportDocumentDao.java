@@ -91,12 +91,12 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
      * @throws ServiceException
      */
     public FaReportDocumentEntity findFaReportByIdAndScheme(String reportId, String schemeId) {
-        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
+        TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
         query.setParameter(REPORT_ID, reportId);
         query.setParameter(SCHEME_ID, schemeId);
         FaReportDocumentEntity singleResult;
         try {
-            singleResult = (FaReportDocumentEntity) query.getSingleResult();
+            singleResult = query.getSingleResult();
         } catch (NoResultException ex){
             singleResult = null; // no need to log this exception!
         }
@@ -106,18 +106,17 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     /**
      * Load FaReportDocument by one or more Report identifiers
      *
-     * @param reportRefId
-     * @param refSchemId
+     * @param reportReferenceId
+     * @param reportSchemeId
      * @return FaReportDocumentEntity
-     * @throws ServiceException
      */
-    public FaReportDocumentEntity findFaReportByRefIdAndRefScheme(String reportRefId, String refSchemId) {
-        TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
-        query.setParameter(REPORT_REF_ID, reportRefId);
-        query.setParameter(SCHEME_REF_ID, refSchemId);
+    public FaReportDocumentEntity findFaReportByRefIdAndRefScheme(String reportReferenceId, String reportSchemeId) {
+        TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
+        query.setParameter(REPORT_REF_ID, reportReferenceId);
+        query.setParameter(SCHEME_REF_ID, reportSchemeId);
         FaReportDocumentEntity singleResult;
         try {
-            singleResult = (FaReportDocumentEntity) query.getSingleResult();
+            singleResult = query.getSingleResult();
         } catch (NoResultException ex) {
             singleResult = null; // no need to log this exception!
         }
@@ -129,7 +128,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     }
 
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated, Instant startDate, Instant endDate) {
-
         Set<String> statuses = new HashSet<>();
         statuses.add(FaReportStatusType.NEW.name());
         if ("N".equals(consolidated) || consolidated == null) {
@@ -154,13 +152,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return query.getResultList();
     }
 
-    public List<FaReportDocumentEntity> findReportsByTripId(String tripId, Geometry multipolygon){
-        TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID, FaReportDocumentEntity.class);
-        query.setParameter(TRIP_ID, tripId);
-        query.setParameter(AREA, multipolygon);
-        return query.getResultList();
-    }
-
     public List<FaReportDocumentEntity> findReportsByIdsList(List<Integer> ids){
         TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_IDS_LIST, FaReportDocumentEntity.class);
         query.setParameter("ids", ids);
@@ -172,18 +163,19 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         for (FaReportDocumentEntity report : reports) {
             populateDeletingAndCancellationIds(report.getFishingActivities(), idsOfCancelledDeletedReports);
         }
+
         if (CollectionUtils.isNotEmpty(idsOfCancelledDeletedReports)) {
             return findReportsByIdsList(idsOfCancelledDeletedReports);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     private void populateDeletingAndCancellationIds(Set<FishingActivityEntity> fishingActivities, List<Integer> idsOfCancelledDeletedReports) {
         for (FishingActivityEntity fishingActivity : Utils.safeIterable(fishingActivities)) {
-            if(fishingActivity.getCanceledBy() != null){
+            if (fishingActivity.getCanceledBy() != null) {
                 idsOfCancelledDeletedReports.add(fishingActivity.getCanceledBy());
             }
-            if(fishingActivity.getDeletedBy() != null){
+            if (fishingActivity.getDeletedBy() != null) {
                 idsOfCancelledDeletedReports.add(fishingActivity.getDeletedBy());
             }
         }

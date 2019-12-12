@@ -32,7 +32,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsService;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.FaReportSaverBean;
+import eu.europa.ec.fisheries.uvms.activity.service.bean.FluxReportMessageSaver;
 import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
@@ -72,7 +72,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> errorEvent;
 
     @EJB
-    private FaReportSaverBean saveReportBean;
+    private FluxReportMessageSaver fluxReportMessageSaver;
 
     @EJB
     private ActivityRulesModuleService activityRulesModuleServiceBean;
@@ -175,6 +175,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
 
     private void saveReport(TextMessage textMessage) throws ActivityModelMarshallException {
         SetFLUXFAReportOrQueryMessageRequest saveReportRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, SetFLUXFAReportOrQueryMessageRequest.class);
-        saveReportBean.handleFaReportSaving(saveReportRequest);
+        fluxReportMessageSaver.saveFluxReportMessage(saveReportRequest);
     }
 }

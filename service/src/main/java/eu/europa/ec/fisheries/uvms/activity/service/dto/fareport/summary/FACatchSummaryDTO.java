@@ -1,4 +1,3 @@
-
 /*
  *
  * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries European Union, 2015-2016.
@@ -15,12 +14,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary;
 
 import java.util.List;
 
-/**
- * Created by sanera on 15/02/2017.
- */
 public class FACatchSummaryDTO {
-    List<FACatchSummaryRecordDTO> recordDTOs;
-    SummaryTableDTO total;
+    private List<FACatchSummaryRecordDTO> recordDTOs;
+    private SummaryTableDTO total;
 
     public List<FACatchSummaryRecordDTO> getRecordDTOs() {
         return recordDTOs;

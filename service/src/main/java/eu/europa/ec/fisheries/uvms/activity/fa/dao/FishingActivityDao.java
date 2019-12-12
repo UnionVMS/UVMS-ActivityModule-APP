@@ -37,6 +37,11 @@ import java.util.Map;
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
+    private static final String QUERY_PARAM_FISHING_ACTIVITY_ID = "fishingActivityId";
+    private static final String QUERY_PARAM_ACTIVITY_TYPE_CODE = "activityTypeCode";
+    private static final String QUERY_PARAM_ACTIVITY_START_TIME = "activityStartTime";
+    private static final String QUERY_PARAM_AREA = "area";
+
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
 
     private EntityManager em;
@@ -78,9 +83,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 "ORDER BY a.calculatedStartTime desc";
 
         Query query = getEntityManager().createQuery(queryString);
-        query.setParameter("fishingActivityId", fishingActivityEntity.getId());
-        query.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
-        query.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
+        query.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, fishingActivityEntity.getId());
+        query.setParameter(QUERY_PARAM_ACTIVITY_TYPE_CODE, fishingActivityEntity.getTypeCode());
+        query.setParameter(QUERY_PARAM_ACTIVITY_START_TIME, fishingActivityEntity.getCalculatedStartTime());
 
         query.setMaxResults(1); // There could be multiple fishing Activities matching the condition, but we need just one.
 
@@ -128,9 +133,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 "ORDER BY a.calculatedStartTime asc";
 
         Query query = getEntityManager().createQuery(queryString);
-        query.setParameter("fishingActivityId", fishingActivityEntity.getId());
-        query.setParameter("activityTypeCode", fishingActivityEntity.getTypeCode());
-        query.setParameter("activityStartTime", fishingActivityEntity.getCalculatedStartTime());
+        query.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, fishingActivityEntity.getId());
+        query.setParameter(QUERY_PARAM_ACTIVITY_TYPE_CODE, fishingActivityEntity.getTypeCode());
+        query.setParameter(QUERY_PARAM_ACTIVITY_START_TIME, fishingActivityEntity.getCalculatedStartTime());
 
         query.setMaxResults(1);
 
@@ -166,7 +171,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
 
         TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
-        typedQuery.setParameter("fishingTripId", fishingTripId);
+        typedQuery.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, fishingTripId);
         if (multipolygon != null) {
             typedQuery.setParameter("area", multipolygon);
         }
@@ -242,10 +247,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      */
     public FishingActivityEntity getFishingActivityById(Integer activityId, Geometry geometry) {
         TypedQuery<FishingActivityEntity> typedQuery = createFishingActivityEntityQuery(geometry);
-        typedQuery.setParameter("fishingActivityId", activityId);
+        typedQuery.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, activityId);
 
         if (geometry != null) {
-            typedQuery.setParameter("area", geometry);
+            typedQuery.setParameter(QUERY_PARAM_AREA, geometry);
         }
 
         List<FishingActivityEntity> resultList = typedQuery.getResultList();
@@ -254,15 +259,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
 
         return resultList.get(0);
-    }
-
-    public List<FishingActivityEntity> getFishingActivityForTrip(String tripId, String tripSchemeId, String fishActTypeCode, List<String> flPurposeCodes) {
-        TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(FishingActivityEntity.FIND_FISHING_ACTIVITY_FOR_TRIP, FishingActivityEntity.class);
-        typedQuery.setParameter("fishingTripId", tripId);
-        typedQuery.setParameter("tripSchemeId", tripSchemeId);
-        typedQuery.setParameter("fishActTypeCode", fishActTypeCode);
-        typedQuery.setParameter("flPurposeCodes", flPurposeCodes);
-        return typedQuery.getResultList();
     }
 
     private TypedQuery<FishingActivityEntity> createFishingActivityEntityQuery(Geometry geometry) {
@@ -296,9 +292,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH a.gearProblems gearProb ")
                 .append("WHERE ");
         if (geometry != null) {
-            stringBuilder.append("(intersects(fa.geom, :area) = true ").append("and a.id=:fishingActivityId) ");
+            stringBuilder.append("(intersects(fa.geom, :area) = true ").append("and a.id =: fishingActivityId) ");
         } else {
-            stringBuilder.append("a.id=:fishingActivityId ");
+            stringBuilder.append("a.id =: fishingActivityId ");
         }
         return getEntityManager().createQuery(stringBuilder.toString(), FishingActivityEntity.class);
     }

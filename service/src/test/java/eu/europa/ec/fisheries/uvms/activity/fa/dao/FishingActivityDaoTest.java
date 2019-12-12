@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.BaseErsFaDaoTest;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
@@ -24,7 +23,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -50,36 +48,11 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
     @Test
     @SneakyThrows
     public void findEntityById() {
-        // Given
-
         // When
         FishingActivityEntity entity = dao.findEntityById(FishingActivityEntity.class, 1);
 
         // Then
         assertEquals(1, entity.getId());
-    }
-
-    @Test
-    @SneakyThrows
-    public void getFishingActivityForTrip() {
-        // Given
-        String tripId = "NOR-TRP-20160517234053706";
-        String tripSchemeId = "EU_TRIP_ID";
-        String activityTypeCode = "DEPARTURE";
-        List<String> purposes = Arrays.asList("1", "3", "5", "9");
-
-        // When
-        List<FishingActivityEntity> fishingActivityForTrip = dao.getFishingActivityForTrip(tripId, tripSchemeId,
-                activityTypeCode, purposes);
-
-        // Then
-        assertEquals(1, fishingActivityForTrip.size());
-
-        FishingActivityEntity fishingActivityEntity = fishingActivityForTrip.get(0);
-        assertEquals(1, fishingActivityEntity.getId());
-
-        FishingTripEntity fishingTripEntity = fishingActivityEntity.getFishingTrip();
-        assertEquals("NOR-TRP-20160517234053706", fishingTripEntity.getFishingTripKey().getTripId());
     }
 
     @Test

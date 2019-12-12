@@ -7,6 +7,7 @@
  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
@@ -37,7 +38,6 @@ public class FAQueryServiceBean extends BaseActivityBean implements FaQueryServi
 
     @Override
     public FLUXFAReportMessage getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria) {
-
         if (CollectionUtils.isNotEmpty(subscriptionDataCriteria)) {
             Instant endDate = null;
             Instant startDate = null;

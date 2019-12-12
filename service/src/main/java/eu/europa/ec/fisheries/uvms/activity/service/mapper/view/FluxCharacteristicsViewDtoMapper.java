@@ -27,7 +27,7 @@ import java.util.Set;
 @Mapper
 public abstract class FluxCharacteristicsViewDtoMapper extends BaseMapper {
 
-    public static FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
+    public static final FluxCharacteristicsViewDtoMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsViewDtoMapper.class);
 
     @Mappings(
             @Mapping(target = "valueDateTime", source = "valueDateTime", qualifiedByName = "instantToDate")
