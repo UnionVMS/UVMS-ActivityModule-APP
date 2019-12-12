@@ -28,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -35,9 +36,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.naming.NamingException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,8 +55,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
-@Ignore("TODO: robin test fix")
 public class FishingActivityViewsResourceTest extends BaseActivityArquillianTest {
 
     private ActivityDetailsDto expectedActivityDetailsDto;
@@ -61,7 +66,7 @@ public class FishingActivityViewsResourceTest extends BaseActivityArquillianTest
     private ContactPartyDetailsDTO expectedContactPartyDetailsDto;
 
     @Before
-    public void setUp() throws NamingException {
+    public void setUp() throws NamingException, IOException, JAXBException, ServiceException, NotSupportedException, SystemException {
         super.setUp();
 
         expectedActivityDetailsDto = new ActivityDetailsDto();

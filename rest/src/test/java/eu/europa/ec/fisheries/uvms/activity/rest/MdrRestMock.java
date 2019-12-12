@@ -29,26 +29,28 @@ public class MdrRestMock {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAcronymMock(@NotNull MdrGetCodeListRequest request) {
+        if (request.getAcronym() == null) {
+            throw new IllegalStateException("*** The mock " + this.getClass().getName() + " called without acronym in request. Request:" + request);
+        }
+
         MdrGetCodeListResponse mdrGetCodeListResponse = new MdrGetCodeListResponse();
 
-        if ("FLUX_VESSEL_ID_TYPE".equals(request.getAcronym()) &&
-                "*".equals(request.getFilter())) {
-            mdrGetCodeListResponse.setAcronym(request.getAcronym());
-            mdrGetCodeListResponse.setValidation(new ValidationResult(ValidationResultType.OK, "Validation is OK."));
-            mdrGetCodeListResponse.setMethod(MdrModuleMethod.MDR_CODE_LIST_RESP);
+        mdrGetCodeListResponse.setAcronym(request.getAcronym());
+        mdrGetCodeListResponse.setValidation(new ValidationResult(ValidationResultType.OK, "Validation is OK."));
+        mdrGetCodeListResponse.setMethod(MdrModuleMethod.MDR_CODE_LIST_RESP);
+        List<ObjectRepresentation> objectRepresentations = new ArrayList<>();
 
-            List<ObjectRepresentation> objectRepresentations = new ArrayList<>();
+        if ("FLUX_VESSEL_ID_TYPE".equals(request.getAcronym()) && "*".equals(request.getFilter())) {
             for (VesselIdentifierSchemeIdEnum vesselIdentifierSchemeIdEnum : VesselIdentifierSchemeIdEnum.values()) {
                 List<ColumnDataType> fields = new ArrayList<>();
                 fields.add(new ColumnDataType("code", vesselIdentifierSchemeIdEnum.name(), "String"));
                 objectRepresentations.add(new ObjectRepresentation(fields));
-
             }
-            mdrGetCodeListResponse.setDataSets(objectRepresentations);
-
-            return Response.ok(mdrGetCodeListResponse).build();
         }
+        // else return empty data set
 
-        throw new IllegalStateException("*** The mock " + this.getClass().getName() + " called with unknown parameters. request:" + request);
+        mdrGetCodeListResponse.setDataSets(objectRepresentations);
+
+        return Response.ok(mdrGetCodeListResponse).build();
     }
 }

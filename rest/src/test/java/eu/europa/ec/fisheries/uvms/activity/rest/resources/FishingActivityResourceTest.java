@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrect
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginatedResponse;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,9 +24,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.naming.NamingException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +42,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
-@Ignore("TODO: robin test fix")
 public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
     @Before
-    public void setUp() throws NamingException {
+    public void setUp() throws NamingException, IOException, JAXBException, ServiceException, NotSupportedException, SystemException {
         super.setUp();
     }
 

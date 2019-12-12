@@ -8,9 +8,6 @@ mvn liquibase:update -Dverbose=true -Ppostgres
 ## To clean and RE-install database locally on postgres :
 mvn clean liquibase:update -Ppostgres
 
-## To clean and RE-install database (locally on postgres) including the test data :
-mvn clean liquibase:update -Ppostgres,testdata
-
 ## Check status :
 mvn clean liquibase:status -Ppostgres
 

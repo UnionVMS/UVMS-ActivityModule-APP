@@ -72,13 +72,6 @@
 		</profile>
 
 		<profile>
-			<id>testdata</id>
-			<properties>
-				<liquibase.contexts>test</liquibase.contexts>
-			</properties>
-		</profile>
-
-		<profile>
 			<id>publish-sql</id>
 			<build>
 				<plugins>
