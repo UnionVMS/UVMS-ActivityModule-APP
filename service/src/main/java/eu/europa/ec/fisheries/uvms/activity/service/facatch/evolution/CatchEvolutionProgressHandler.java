@@ -17,23 +17,26 @@ import java.util.TreeMap;
 
 public abstract class CatchEvolutionProgressHandler {
 
+    private static final String PARAM_CUMULATED = "cumulated";
+    private static final String PARAM_ONBOARD = "onboard";
+
     public abstract CatchEvolutionProgressDTO prepareCatchEvolutionProgressDTO(FishingActivityEntity fishingActivity, Map<String, Double> speciesCumulatedWeight);
 
     protected CatchEvolutionProgressDTO initCatchEvolutionProgressDTO(FishingActivityEntity fishingActivity, FaReportDocumentType faReportDocumentType, Map<String, Double> speciesCumulatedWeight) {
         CatchSummaryListDTO onboard = new CatchSummaryListDTO();
         CatchSummaryListDTO cumulated = new CatchSummaryListDTO();
         Map<String, CatchSummaryListDTO> catchEvolution = new TreeMap<>();
-        catchEvolution.put("onboard", onboard);
-        catchEvolution.put("cumulated", cumulated);
+        catchEvolution.put(PARAM_ONBOARD, onboard);
+        catchEvolution.put(PARAM_CUMULATED, cumulated);
         CatchEvolutionProgressDTO catchEvolutionProgressDTO = new CatchEvolutionProgressDTO();
         catchEvolutionProgressDTO.setActivityType(fishingActivity.getTypeCode());
         catchEvolutionProgressDTO.setCatchEvolution(catchEvolution);
         catchEvolutionProgressDTO.setReportType(faReportDocumentType.name());
 
-        for (Map.Entry scw : speciesCumulatedWeight.entrySet()) {
+        for (Map.Entry<String, Double> scw : speciesCumulatedWeight.entrySet()) {
             SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO();
-            speciesQuantityDTO.setSpeciesCode((String) scw.getKey());
-            Double weight = (Double) scw.getValue();
+            speciesQuantityDTO.setSpeciesCode(scw.getKey());
+            Double weight = scw.getValue();
             speciesQuantityDTO.setWeight(weight);
             cumulated.getSpeciesList().add(speciesQuantityDTO);
             cumulated.setTotal(cumulated.getTotal() + weight);
@@ -43,7 +46,7 @@ public abstract class CatchEvolutionProgressHandler {
     }
 
     protected void handleOnboardCatch(FaCatchEntity faCatch, CatchEvolutionProgressDTO catchEvolutionProgressDTO) {
-        CatchSummaryListDTO onboard = catchEvolutionProgressDTO.getCatchEvolution().get("onboard");
+        CatchSummaryListDTO onboard = catchEvolutionProgressDTO.getCatchEvolution().get(PARAM_ONBOARD);
         String speciesCode = faCatch.getSpeciesCode();
         boolean exists = false;
         onboard.setTotal(onboard.getTotal() + faCatch.getCalculatedWeightMeasure());
@@ -65,12 +68,12 @@ public abstract class CatchEvolutionProgressHandler {
     }
 
     protected void handleCumulatedCatchNoDeletion(FaCatchEntity faCatch, CatchEvolutionProgressDTO catchEvolutionProgressDTO, Map<String, Double> speciesCumulatedWeight) {
-        CatchSummaryListDTO cumulated = catchEvolutionProgressDTO.getCatchEvolution().get("cumulated");
+        CatchSummaryListDTO cumulated = catchEvolutionProgressDTO.getCatchEvolution().get(PARAM_CUMULATED);
         handleCumulatedCatch(faCatch, cumulated, speciesCumulatedWeight, false);
     }
 
     protected void handleCumulatedCatchWithDeletion(FaCatchEntity faCatch, CatchEvolutionProgressDTO catchEvolutionProgressDTO, Map<String, Double> speciesCumulatedWeight, List<FaCatchTypeEnum> catchTypesToDelete) {
-        CatchSummaryListDTO cumulated = catchEvolutionProgressDTO.getCatchEvolution().get("cumulated");
+        CatchSummaryListDTO cumulated = catchEvolutionProgressDTO.getCatchEvolution().get(PARAM_CUMULATED);
 
         for (FaCatchTypeEnum faCatchType : catchTypesToDelete) {
             FaCatchTypeEnum faCatchTypeEnum = EnumUtils.getEnum(FaCatchTypeEnum.class, faCatch.getTypeCode());
@@ -96,7 +99,7 @@ public abstract class CatchEvolutionProgressHandler {
                     double newCumulatedWeight = delete ? existingCumulatedWeight - faCatch.getCalculatedWeightMeasure() : existingCumulatedWeight + faCatch.getCalculatedWeightMeasure();
                     speciesCumulatedWeight.put(speciesCode, newCumulatedWeight);
                 } else {
-                    speciesCumulatedWeight.put(speciesCode, new Double(weight));
+                    speciesCumulatedWeight.put(speciesCode, weight);
                 }
 
                 exists = true;
@@ -109,7 +112,7 @@ public abstract class CatchEvolutionProgressHandler {
             speciesQuantityDTO.setSpeciesCode(speciesCode);
             double weight = speciesCumulatedWeight.containsKey(speciesCode) ? delete ? speciesCumulatedWeight.get(speciesCode) - faCatch.getCalculatedWeightMeasure() :
                     speciesCumulatedWeight.get(speciesCode) + faCatch.getCalculatedWeightMeasure() : faCatch.getCalculatedWeightMeasure();
-            speciesCumulatedWeight.put(speciesCode, new Double(weight));
+            speciesCumulatedWeight.put(speciesCode, weight);
             speciesQuantityDTO.setWeight(weight);
             cumulated.getSpeciesList().add(speciesQuantityDTO);
         }

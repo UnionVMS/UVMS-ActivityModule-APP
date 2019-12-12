@@ -57,7 +57,7 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
         viewDTO.setGearProblems(GearShotRetrievalTileMapper.INSTANCE.mapGearProblemsToGearsDto(faEntity.getGearProblems()));
 
-        viewDTO.setGearShotRetrievalList(GearShotRetrievalTileMapperImpl.INSTANCE.mapFromRelatedFishingActivities(faEntity));
+        viewDTO.setGearShotRetrievalList(GearShotRetrievalTileMapper.INSTANCE.mapFromRelatedFishingActivities(faEntity));
 
         Set<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations());
 
@@ -73,13 +73,14 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
      * @return VesselDetailsDTO
      */
     private List<VesselDetailsDTO> getVesselDetailsDTO(FishingActivityEntity faEntity){
-        if(faEntity==null || CollectionUtils.isEmpty(faEntity.getVesselTransportMeans()))
+        if (faEntity == null || CollectionUtils.isEmpty(faEntity.getVesselTransportMeans())) {
             return null;
+        }
 
         List<VesselDetailsDTO> vesselDetailsDTOs = new ArrayList<>();
         Set<VesselTransportMeansEntity> entities=  faEntity.getVesselTransportMeans();
 
-        for(VesselTransportMeansEntity vesselTransportMeansEntity : entities) {
+        for (VesselTransportMeansEntity vesselTransportMeansEntity : entities) {
             VesselDetailsDTO vesselDetails = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
             if (vesselDetails != null && faEntity.getDestVesselCharId() != null) {
                 vesselDetails.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(faEntity.getDestVesselCharId()));

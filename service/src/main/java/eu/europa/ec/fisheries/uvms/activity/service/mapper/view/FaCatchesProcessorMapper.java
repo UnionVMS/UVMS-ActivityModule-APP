@@ -52,10 +52,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     public static final String LSC = "LSC";
     public static final String BMS = "BMS";
 
-    public FaCatchesProcessorMapper() {
-
-    }
-
     /**
      * Takes a list of FaCatches and returns the list of groupDtos.
      *
