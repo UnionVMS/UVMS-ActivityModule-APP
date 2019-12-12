@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base;
 
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
@@ -23,6 +23,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -33,35 +34,54 @@ public class FaQueryFactory {
     }
 
     public static FAQuery createFaQueryForTrip(String tripId, String sendTo, boolean consolidated) {
-        FAQuery faq = new FAQuery();
-        faq.setID(new IDType(UUID.randomUUID().toString(), "UUID", null, null, null,
-                null, null, null));
-        faq.setTypeCode(new CodeType("TRIP", "FA_QUERY_TYPE", null, null, null, null,
-                null, null, null, null));
+        IDType queryId = new IDType();
+        queryId.setValue(UUID.randomUUID().toString());
+        queryId.setSchemeID("UUID");
+
+        CodeType queryTypeCode = new CodeType();
+        queryTypeCode.setValue("TRIP");
+        queryTypeCode.setListID("FA_QUERY_TYPE");
+
+        FAQuery fishingActivityQuery = new FAQuery();
+        fishingActivityQuery.setID(queryId);
+        fishingActivityQuery.setTypeCode(queryTypeCode);
+
         try {
-            final XMLGregorianCalendar currentDate = DateUtils.getCurrentDate();
-            faq.setSubmittedDateTime(new DateTimeType(currentDate, null));
+            final XMLGregorianCalendar currentDate = XMLDateUtils.getCurrentDate();
+            fishingActivityQuery.setSubmittedDateTime(new DateTimeType(currentDate, null));
         } catch (DatatypeConfigurationException e) {
             log.error("[ERROR] Error while trying to create XMLGregorianCalendar () DateUtils.getCurrentDate()! Going to retry", e);
             return null;
         }
-        faq.setSubmitterFLUXParty(new FLUXParty(
-                Collections.singletonList(new IDType(sendTo, "FLUX_GP_PARTY", null, null,
-                        null, null, null, null)), null));
-        faq.setSimpleFAQueryParameters(Arrays.asList(
-                new FAQueryParameter(
-                        new CodeType("TRIPID", "FA_QUERY_PARAMETER", null, null,
-                                null, null, null, null, null, null),
-                        null, null,
-                        new IDType(tripId, "EU_TRIP_ID", null, null,
-                                null, null, null, null)
-                ),
-                new FAQueryParameter(
-                        new CodeType("CONSOLIDATED", "FA_QUERY_PARAMETER", null, null,
-                                null, null, null, null, null, null),
-                        new CodeType(consolidated?"Y":"N", "BOOLEAN_VALUE", null, null,
-                                null, null, null, null, null, null),
-                        null, null)));
-        return faq;
+
+        IDType fluxPartyId = new IDType();
+        fluxPartyId.setValue(sendTo);
+        fluxPartyId.setSchemeID("FLUX_GP_PARTY");
+
+        FLUXParty fluxParty = new FLUXParty(Collections.singletonList(fluxPartyId), null);
+        fishingActivityQuery.setSubmitterFLUXParty(fluxParty);
+
+        CodeType tripIdQueryParameter = new CodeType();
+        tripIdQueryParameter.setValue("TRIPID");
+        tripIdQueryParameter.setListID("FA_QUERY_PARAMETER");
+
+        IDType tripIdQueryParameterValue = new IDType();
+        tripIdQueryParameterValue.setValue(tripId);
+        tripIdQueryParameterValue.setSchemeID("EU_TRIP_ID");
+
+        CodeType consolidatedQueryParameter = new CodeType();
+        consolidatedQueryParameter.setValue("CONSOLIDATED");
+        consolidatedQueryParameter.setListID("FA_QUERY_PARAMETER");
+
+        CodeType consolidatedQueryParameterValue = new CodeType();
+        consolidatedQueryParameterValue.setValue(consolidated ? "Y" : "N");
+        consolidatedQueryParameterValue.setListID("BOOLEAN_VALUE");
+
+        FAQueryParameter faQueryParameter = new FAQueryParameter(tripIdQueryParameter, null, null, tripIdQueryParameterValue);
+        FAQueryParameter faQueryParameter1 = new FAQueryParameter(consolidatedQueryParameter, consolidatedQueryParameterValue, null, null);
+
+        List<FAQueryParameter> value1 = Arrays.asList(faQueryParameter, faQueryParameter1);
+        fishingActivityQuery.setSimpleFAQueryParameters(value1);
+        return fishingActivityQuery;
     }
 }
