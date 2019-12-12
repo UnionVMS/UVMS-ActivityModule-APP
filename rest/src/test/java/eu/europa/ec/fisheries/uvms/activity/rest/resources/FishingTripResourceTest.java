@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
@@ -49,7 +50,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
 public class FishingTripResourceTest extends BaseActivityArquillianTest {
 
@@ -58,6 +58,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         super.setUp();
     }
 
+    @Ignore("TODO fix for new test data")
     @Test
     public void getFishingTripSummary_noGeometry() throws JsonProcessingException {
         // Given
@@ -109,6 +110,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals("FISHING_OPERATION", activityReportDto1.getActivityType());
     }
 
+    @Ignore("TODO fix for new test data")
     @Test
     public void getFishingTripSummary_tripNotFound() throws JsonProcessingException {
         // Given
@@ -139,6 +141,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertNull(data.getActivityReports());
     }
 
+    @Ignore("TODO fix for new test data")
     @Test
     public void getVesselDetails() throws JsonProcessingException {
         // Given
@@ -212,7 +215,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         String responseAsString = getWebTarget()
                 .path("trip")
                 .path("messages")
-                .path("QPS-ECV-7513J636531W5")
+                .path("ICV-MOM-83R964412B3")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
@@ -226,11 +229,11 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         MessageCountDTO messageCountDTO = responseDto.getData();
-        assertEquals(34, messageCountDTO.getNoOfReports());
-        assertEquals(27, messageCountDTO.getNoOfDeclarations());
-        assertEquals(7, messageCountDTO.getNoOfNotifications());
+        assertEquals(4, messageCountDTO.getNoOfReports());
+        assertEquals(3, messageCountDTO.getNoOfDeclarations());
+        assertEquals(1, messageCountDTO.getNoOfNotifications());
         assertEquals(0, messageCountDTO.getNoOfCorrections());
-        assertEquals(22, messageCountDTO.getNoOfFishingOperations());
+        assertEquals(2, messageCountDTO.getNoOfFishingOperations());
         assertEquals(0, messageCountDTO.getNoOfDeletions());
         assertEquals(0, messageCountDTO.getNoOfCancellations());
     }
@@ -274,7 +277,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         String responseAsString = getWebTarget()
                 .path("trip")
                 .path("catches")
-                .path("QPS-ECV-7513J636531W5")
+                .path("ICV-MOM-83R964412B3")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
@@ -291,28 +294,20 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(2, messageCountDTO.size());
 
         CatchSummaryListDTO onboard = messageCountDTO.get("onboard");
-        assertEquals(2117000.0, onboard.getTotal(), 0.1d);
+        assertEquals(371662.94, onboard.getTotal(), 0.1d);
         List<SpeciesQuantityDTO> onboardSpeciesList = onboard.getSpeciesList();
         assertEquals(3, onboardSpeciesList.size());
-        assertTypicalSpeciesQuantityDTO(onboardSpeciesList.get(0), "BET", 101000.0, 23000.0);
-        assertTypicalSpeciesQuantityDTO(onboardSpeciesList.get(1), "SKJ", 678000.0, 220000.0);
-
-        SpeciesQuantityDTO onboardSpecies2 = onboardSpeciesList.get(2); // this one is a bit different
-        assertEquals("YFT", onboardSpecies2.getSpeciesCode());
-        assertEquals(1095000.0, onboardSpecies2.getWeight(), 0.1d);
-        List<SpeciesAreaDTO> onboardSpecies2AreaList = onboardSpecies2.getAreaInfo();
-        assertEquals(3, onboardSpecies2AreaList.size());
-        assertSpeciesAreaDTO(onboardSpecies2AreaList.get(0), "51.5", 981000.0);
-        assertSpeciesAreaDTO(onboardSpecies2AreaList.get(1), "51.6", 37000.0);
-        assertSpeciesAreaDTO(onboardSpecies2AreaList.get(2), "SYC", 77000.0);
+        assertTypicalSpeciesQuantityDTO(onboardSpeciesList.get(0), "HER", 182535.41, 182535.41);
+        assertTypicalSpeciesQuantityDTO(onboardSpeciesList.get(1), "MXV", 2060.38, 2060.38);
+        assertTypicalSpeciesQuantityDTO(onboardSpeciesList.get(2), "SPR", 1235.68, 1235.68);
 
         CatchSummaryListDTO landed = messageCountDTO.get("landed");
-        assertEquals(3200508.0, landed.getTotal(), 0.1d);
+        assertEquals(137694.38, landed.getTotal(), 0.1d);
         List<SpeciesQuantityDTO> landedSpeciesList = landed.getSpeciesList();
         assertEquals(3, landedSpeciesList.size());
-        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(0), "BET", 256466.0, 69000.0);
-        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(1), "SKJ", 442708.0, 660000.0);
-        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(2), "YFT", 1661334.0, 111000.0);
+        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(0), "HER", 67611.51, 67611.51);
+        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(1), "MXV", 617.84, 617.84);
+        assertTypicalSpeciesQuantityDTO(landedSpeciesList.get(2), "SPR", 617.84, 617.84);
     }
 
     private void assertTypicalSpeciesQuantityDTO(SpeciesQuantityDTO dto, String speciesCode, double area0Weight, double area1Weight) {
@@ -320,8 +315,8 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(area0Weight + area1Weight, dto.getWeight(), 0.1d);
         List<SpeciesAreaDTO> areaInfoList = dto.getAreaInfo();
         assertEquals(2, areaInfoList.size());
-        assertSpeciesAreaDTO(areaInfoList.get(0), "51.5", area0Weight);
-        assertSpeciesAreaDTO(areaInfoList.get(1), "51.6", area1Weight);
+        assertSpeciesAreaDTO(areaInfoList.get(0), "17.8.s", area0Weight);
+        assertSpeciesAreaDTO(areaInfoList.get(1), "KEF", area1Weight);
     }
 
     private void assertSpeciesAreaDTO(SpeciesAreaDTO dto, String areaName, double weight) {
@@ -367,6 +362,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
      * as it is at the time of writing the tests. Comments in the test point out dubious behaviours
      * in the end point logic.
      */
+    @Ignore("TODO fix for new test data")
     @Test
     public void getChronologyOfFishingTrip() throws JsonProcessingException {
         // Weird thing #1: All fishing trips include themselves in "previousTrips"
@@ -454,7 +450,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         String responseAsString = getWebTarget()
                 .path("trip")
                 .path("mapData")
-                .path("QPS-ECV-7513J636531W5")
+                .path("UUR-XSM-45913768")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
@@ -471,41 +467,35 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
 
         ArrayNode featureCollection = (ArrayNode) response.get("features");
 
-        assertEquals(17, featureCollection.size());
+        assertEquals(12, featureCollection.size());
 
-        List<JsonNode> geometryNodes = new ArrayList<>(17);
+        ArrayList<CoordinateForTest> testCoordinates = Lists.newArrayList(
+                new CoordinateForTest(2.772, 14.911),
+                new CoordinateForTest(5.713, 61.891),
+                new CoordinateForTest(7.955, 13.976),
+                new CoordinateForTest(4.641, 61.891),
+                new CoordinateForTest(9.938, 18.292),
+                new CoordinateForTest(1.237, 61.891),
+                new CoordinateForTest(2.656, 53.571),
+                new CoordinateForTest(4.441, 53.571),
+                new CoordinateForTest(7.266, 33.953),
+                new CoordinateForTest(3.733, 96.513),
+                new CoordinateForTest(2.569, 96.513),
+                new CoordinateForTest(1.298, 56.758)
+        );
+
         for (JsonNode jsonNode : featureCollection) {
-            geometryNodes.add(jsonNode);
+            for (int i = 0; i < testCoordinates.size(); i++) {
+                CoordinateForTest coordinateForTest = testCoordinates.get(i);
+                if (coordinateForTest.aboutEqualTo(jsonNode)) {
+                    testCoordinates.remove(i);
+                    break;
+                }
+            }
         }
 
-        assertGeometryNode(geometryNodes.get(0), 60.75, -15.4167);
-        assertGeometryNode(geometryNodes.get(1), 10.42, 58.247);
-        assertGeometryNode(geometryNodes.get(2), 11.232, 58.359);
-        assertGeometryNode(geometryNodes.get(3), 10.3, 58.004);
-        assertGeometryNode(geometryNodes.get(4), 11.9733, 57.7153);
-        assertGeometryNode(geometryNodes.get(5), 11.257, 57.808);
-        assertGeometryNode(geometryNodes.get(6), 11.271, 58.356);
-        assertGeometryNode(geometryNodes.get(7), 11.9733, 57.7153);
-        assertGeometryNode(geometryNodes.get(8), 11.9733, 57.7153);
-        assertGeometryNode(geometryNodes.get(9), 11.9733, 57.7153);
-        assertGeometryNode(geometryNodes.get(10), 10.584, 57.715);
-        assertGeometryNode(geometryNodes.get(11), 10.352, 57.979);
-        assertGeometryNode(geometryNodes.get(12), 14.681, 55.472);
-        assertGeometryNode(geometryNodes.get(13), 14.48, 55.682);
-        assertGeometryNode(geometryNodes.get(14), 11.233, 58.359);
-        assertGeometryNode(geometryNodes.get(15), 14.902, 55.471);
-        assertGeometryNode(geometryNodes.get(16), 11.9733, 57.7153);
-    }
-
-    private void assertGeometryNode(JsonNode jsonNode, double latitude, double longitude) {
-        JsonNode geometryNode = jsonNode.get("geometry");
-        JsonNode coordinates = geometryNode.get("coordinates");
-        ArrayNode coordsArray = (ArrayNode) coordinates.get(0);
-        DoubleNode latNode = (DoubleNode) coordsArray.get(0);
-        DoubleNode longNode = (DoubleNode) coordsArray.get(1);
-
-        assertEquals(latitude, latNode.doubleValue(), 0.0001d);
-        assertEquals(longitude, longNode.doubleValue(), 0.0001d);
+        // all expected test coordinates found
+        assertTrue(testCoordinates.isEmpty());
     }
 
     @Test
@@ -536,6 +526,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(0, featureCollection.size());
     }
 
+    @Ignore("TODO fix for new test data")
     @Test
     public void getFishingTripCatchEvolution() throws JsonProcessingException {
         // Given
@@ -583,6 +574,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(i + 1, dto.getOrderId());
     }
 
+    @Ignore("TODO fix for new test data")
     @Test
     public void getFishingTripCatchEvolution_tripNotFound() throws JsonProcessingException {
         // Given
@@ -607,5 +599,26 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         CatchEvolutionDTO response = responseDto.getData();
 
         assertNull(response.getTripDetails());
+    }
+
+    private static class CoordinateForTest {
+        public final double latitude;
+        public final double longitude;
+
+        public CoordinateForTest(double latitude, double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+        public boolean aboutEqualTo(JsonNode jsonNode) {
+            JsonNode geometryNode = jsonNode.get("geometry");
+            JsonNode coordinates = geometryNode.get("coordinates");
+            ArrayNode coordsArray = (ArrayNode) coordinates.get(0);
+            DoubleNode latNode = (DoubleNode) coordsArray.get(0);
+            DoubleNode longNode = (DoubleNode) coordsArray.get(1);
+
+            return  Math.abs(latNode.doubleValue() - latitude) <= 0.000001 &&
+                    Math.abs(longNode.doubleValue() - longitude) <= 0.000001;
+        }
     }
 }
