@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
@@ -16,14 +15,12 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryTable;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,20 +34,13 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-@Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
 public class FACatchResourceTest extends BaseActivityArquillianTest {
 
@@ -99,25 +89,39 @@ public class FACatchResourceTest extends BaseActivityArquillianTest {
         SummaryFishSize totalFishSizeSummary = total.getFishSizeSummaries().get(0);
         assertEquals(FishSizeClassEnum.LSC, totalFishSizeSummary.getFishSize());
         assertTrue(totalFishSizeSummary.getSpecies().isEmpty());
-        assertEquals(152454.01999999996, totalFishSizeSummary.getFishSizeCount(), 0.01d);
+        assertEquals(706823.8700000001, totalFishSizeSummary.getFishSizeCount(), 0.01d);
 
         // Summary records
         List<FACatchSummaryRecord> summaryRecords = faCatchSummaryReportResponse.getSummaryRecords();
-        assertEquals(1, summaryRecords.size());
+        assertEquals(2, summaryRecords.size());
 
-        FACatchSummaryRecord faCatchSummaryRecord = summaryRecords.get(0);
-        assertEquals(1, faCatchSummaryRecord.getGroups().size());
-        assertEquals(GroupCriteria.DATE_YEAR, faCatchSummaryRecord.getGroups().get(0).getKey());
-        assertEquals("2017", faCatchSummaryRecord.getGroups().get(0).getValue());
+        FACatchSummaryRecord faCatchSummaryRecord2013 = summaryRecords.get(0);
+        assertEquals(1, faCatchSummaryRecord2013.getGroups().size());
+        assertEquals(GroupCriteria.DATE_YEAR, faCatchSummaryRecord2013.getGroups().get(0).getKey());
+        assertEquals("2013", faCatchSummaryRecord2013.getGroups().get(0).getValue());
 
-        SummaryTable summaryTable = faCatchSummaryRecord.getSummary();
-        assertTrue(summaryTable.getFaCatchTypeSummaries().isEmpty());
+        SummaryTable summaryTable2013 = faCatchSummaryRecord2013.getSummary();
+        assertTrue(summaryTable2013.getFaCatchTypeSummaries().isEmpty());
 
-        List<SummaryFishSize> fishSizeSummaries = summaryTable.getFishSizeSummaries();
-        assertEquals(1, fishSizeSummaries.size());
-        assertEquals(FishSizeClassEnum.LSC, fishSizeSummaries.get(0).getFishSize());
-        assertTrue(fishSizeSummaries.get(0).getSpecies().isEmpty());
-        assertEquals(152454.02d, fishSizeSummaries.get(0).getFishSizeCount(), 0.01d);
+        List<SummaryFishSize> fishSizeSummaries2013 = summaryTable2013.getFishSizeSummaries();
+        assertEquals(1, fishSizeSummaries2013.size());
+        assertEquals(FishSizeClassEnum.LSC, fishSizeSummaries2013.get(0).getFishSize());
+        assertTrue(fishSizeSummaries2013.get(0).getSpecies().isEmpty());
+        assertEquals(700522.4700000001, fishSizeSummaries2013.get(0).getFishSizeCount(), 0.01d);
+
+        FACatchSummaryRecord faCatchSummaryRecord2012 = summaryRecords.get(1);
+        assertEquals(1, faCatchSummaryRecord2012.getGroups().size());
+        assertEquals(GroupCriteria.DATE_YEAR, faCatchSummaryRecord2012.getGroups().get(0).getKey());
+        assertEquals("2012", faCatchSummaryRecord2012.getGroups().get(0).getValue());
+
+        SummaryTable summaryTable2012 = faCatchSummaryRecord2012.getSummary();
+        assertTrue(summaryTable2012.getFaCatchTypeSummaries().isEmpty());
+
+        List<SummaryFishSize> fishSizeSummaries2012 = summaryTable2012.getFishSizeSummaries();
+        assertEquals(1, fishSizeSummaries2012.size());
+        assertEquals(FishSizeClassEnum.LSC, fishSizeSummaries2012.get(0).getFishSize());
+        assertTrue(fishSizeSummaries2012.get(0).getSpecies().isEmpty());
+        assertEquals(6301.4, fishSizeSummaries2012.get(0).getFishSizeCount(), 0.01d);
     }
 
     @Test
@@ -161,48 +165,40 @@ public class FACatchResourceTest extends BaseActivityArquillianTest {
         SummaryFishSize totalFishSizeSummary = total.getFishSizeSummaries().get(0);
         assertEquals(FishSizeClassEnum.LSC, totalFishSizeSummary.getFishSize());
         assertTrue(totalFishSizeSummary.getSpecies().isEmpty());
-        assertEquals(152454.02d, totalFishSizeSummary.getFishSizeCount(), 0.01d);
+        assertEquals(706823.8700000001, totalFishSizeSummary.getFishSizeCount(), 0.01d);
 
         // Summary records
         List<FACatchSummaryRecord> summaryRecords = faCatchSummaryReportResponse.getSummaryRecords();
-        assertEquals(2, summaryRecords.size());
+        assertEquals(3, summaryRecords.size());
 
-        for (FACatchSummaryRecord summaryRecord : summaryRecords) {
-            List<GroupCriteriaWithValue> summaryRecordGroups = summaryRecord.getGroups();
-            assertEquals(2, summaryRecordGroups.size());
+        FACatchSummaryRecord faCatchSummaryRecord = summaryRecords.get(2); // Get the last record, that one contains both YEAR and TERRITORY
 
-            if (summaryRecordGroups.get(0).getKey() == GroupCriteria.DATE_YEAR) {
-                assertEquals("2017", summaryRecordGroups.get(0).getValue());
-                assertEquals(GroupCriteria.TERRITORY, summaryRecordGroups.get(1).getKey());
-                assertTrue(summaryRecordGroups.get(1).getValue().equals("IRL") || summaryRecordGroups.get(1).getValue().equals("SYC"));
-            } else if (summaryRecordGroups.get(0).getKey() == GroupCriteria.TERRITORY) {
-                assertTrue(summaryRecordGroups.get(0).getValue().equals("IRL") || summaryRecordGroups.get(1).getValue().equals("SYC"));
-                assertEquals(GroupCriteria.DATE_YEAR, summaryRecordGroups.get(1).getKey());
-                assertEquals("2017", summaryRecordGroups.get(1).getValue());
-            } else {
-                fail();
-            }
+        List<GroupCriteriaWithValue> groups = faCatchSummaryRecord.getGroups();
+        GroupCriteriaWithValue yearGroup = groups.get(0);
+        GroupCriteriaWithValue territoryGroup = groups.get(1);
 
-            SummaryTable summaryTable = summaryRecord.getSummary();
-            assertTrue(summaryTable.getFaCatchTypeSummaries().isEmpty());
+        assertEquals("2013", yearGroup.getValue());
+        assertEquals("KEF", territoryGroup.getValue());
 
-            List<SummaryFishSize> fishSizeSummaries = summaryTable.getFishSizeSummaries();
-            assertEquals(1, fishSizeSummaries.size());
-            assertEquals(FishSizeClassEnum.LSC, fishSizeSummaries.get(0).getFishSize());
-            assertTrue(fishSizeSummaries.get(0).getSpecies().isEmpty());
-            assertTrue(fishSizeSummaries.get(0).getFishSizeCount() > 10_000.0d);
-        }
+        SummaryTable summary = faCatchSummaryRecord.getSummary();
+
+        List<SummaryFishSize> fishSizeSummaries2012 = summary.getFishSizeSummaries();
+        assertEquals(1, fishSizeSummaries2012.size());
+        assertEquals(FishSizeClassEnum.LSC, fishSizeSummaries2012.get(0).getFishSize());
+        assertTrue(fishSizeSummaries2012.get(0).getSpecies().isEmpty());
+        assertEquals(692325.1699999999, fishSizeSummaries2012.get(0).getFishSizeCount(), 0.01d);
     }
 
+    /*
+        Uses fishing trip from flux001_anonymized.xml
+     */
     @Test
     public void getFACatchSummaryDetails() throws JsonProcessingException {
-        // Given
-
         // When
         String responseAsString = getWebTarget()
                 .path("catch")
                 .path("details")
-                .path("FRA-TRP-2016122102030")
+                .path("ICV-MOM-83R964412B3")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
@@ -227,31 +223,10 @@ public class FACatchResourceTest extends BaseActivityArquillianTest {
         FACatchSummaryDTO catches = faCatchDetailsDTO.getCatches();
         SummaryTableDTO catchesTotal = catches.getTotal();
         Map<String, Double> lscFishMap = (Map<String, Double>) catchesTotal.getSummaryFishSize().get(FishSizeClassEnum.LSC);
-        assertEquals(16, lscFishMap.size());
-        assertNull(catchesTotal.getSummaryFaCatchType());
-        assertEquals(1, catchesTotal.getSummaryFishSize().size());
+        assertEquals(3, lscFishMap.size());
 
-        for (FACatchSummaryRecordDTO recordDTO : catches.getRecordDTOs()) {
-            assertRecordDto(recordDTO);
-        }
-    }
-
-    private void assertRecordDto(FACatchSummaryRecordDTO dto) {
-
-        List<GroupCriteriaWithValue> criterias = dto.getGroups();
-        Set<GroupCriteria> actualCriterias = criterias.stream().map(c -> c.getKey()).collect(Collectors.toSet());
-        HashSet<GroupCriteria> expectedCriterias = Sets.newHashSet(GroupCriteria.DATE, GroupCriteria.EFFORT_ZONE, GroupCriteria.FAO_AREA, GroupCriteria.ICES_STAT_RECTANGLE, GroupCriteria.TERRITORY);
-
-        assertEquals(expectedCriterias, actualCriterias);
-        assertNotNull(criterias.get(0).getKey());
-        assertNotNull(criterias.get(1).getKey());
-        assertNotNull(criterias.get(2).getKey());
-        assertNotNull(criterias.get(3).getKey());
-        assertNotNull(criterias.get(4).getKey());
-
-        SummaryTableDTO summaryTable = dto.getSummaryTable();
-        assertNull(summaryTable.getSummaryFaCatchType());
-        Map<String, Double> lscFishes = (Map<String, Double>)summaryTable.getSummaryFishSize().get(FishSizeClassEnum.LSC);
-        assertFalse(lscFishes.isEmpty());
+        assertEquals(lscFishMap.get("HER"), 114923.9, 0.0);
+        assertEquals(lscFishMap.get("SPR"), 617.84, 0.0);
+        assertEquals(lscFishMap.get("MXV"), 1442.54, 0.0);
     }
 }

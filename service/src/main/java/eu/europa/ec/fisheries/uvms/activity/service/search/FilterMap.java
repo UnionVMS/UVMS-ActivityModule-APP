@@ -248,7 +248,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FA_REPORT_ID, new FilterDetails(StringUtils.SPACE, "fa.id =:" + FAREPORT_ID));
         filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(StringUtils.SPACE, "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
         filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripId =:" + TRIP_ID + StringUtils.SPACE));
-        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     /**
@@ -273,8 +273,8 @@ public class FilterMap {
 
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN  " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN  " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
 
-        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripId =:" + TRIP_ID + StringUtils.SPACE));
-        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     public void populateFilterMAppingsWithChangeForFACatchReport() {
@@ -285,7 +285,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.MASTER, new FilterDetails(" cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
                 "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
-        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripId =:" + TRIP_ID + StringUtils.SPACE));
 
     }
 

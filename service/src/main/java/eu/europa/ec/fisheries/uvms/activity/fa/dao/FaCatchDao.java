@@ -65,8 +65,10 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
      */
     public Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> getGroupedFaCatchData(FishingActivityQuery query, boolean isLanding) throws ServiceException {
         List<GroupCriteria> groupByFieldList = query.getGroupByFields();
-        if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
+        if (groupByFieldList == null || Collections.isEmpty(groupByFieldList)) {
             throw new ServiceException(" No Group information present to aggregate report.");
+        }
+
         FACatchSummaryHelper faCatchSummaryHelper = isLanding ? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION) : FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
         // By default FishSize(LSC/BMS etc) and FACatch(DIS/DIM etc) type should be present in the summary table. First Query db with group FishClass
         faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);

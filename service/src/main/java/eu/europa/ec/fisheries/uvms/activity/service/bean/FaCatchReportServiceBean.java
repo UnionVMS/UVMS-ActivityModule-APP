@@ -59,7 +59,6 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
 
     @Override
     public FACatchDetailsDTO getCatchDetailsScreen(String tripId) throws ServiceException {
-
         FACatchDetailsDTO faCatchDetailsDTO = new FACatchDetailsDTO();
         faCatchDetailsDTO.setCatches(getCatchDetailsScreenTable(tripId,false));
         faCatchDetailsDTO.setLanding(getCatchDetailsScreenTable(tripId,true));
@@ -118,11 +117,11 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = faCatchDao.getGroupedFaCatchData(query, isLanding);
 
         // post process data to create Summary table part of Catch summary Report
-        FACatchSummaryHelper faCatchSummaryHelper = isLanding? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION):FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
-        List<FACatchSummaryRecordDTO> catchSummaryList= faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
+        FACatchSummaryHelper faCatchSummaryHelper = isLanding ? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION) : FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+        List<FACatchSummaryRecordDTO> catchSummaryList = faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
 
         // Post process data to calculate Totals for each column
-        SummaryTableDTO summaryTableDTOTotal=   faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
+        SummaryTableDTO summaryTableDTOTotal = faCatchSummaryHelper.populateSummaryTableWithTotal(catchSummaryList);
 
         // Create DTO object to send back to the web
         FACatchSummaryDTO faCatchSummaryDTO = new FACatchSummaryDTO();
@@ -144,7 +143,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         log.debug("FACatchSummaryReportResponse creation starts");
 
         //get processed information in the form of DTO
-        FACatchSummaryDTO faCatchSummaryDTO= getCatchSummaryReport(query,false);
+        FACatchSummaryDTO faCatchSummaryDTO = getCatchSummaryReport(query,false);
         log.debug("FACatchSummaryDTO created");
 
         // We can not transfter DTO as it is over JMS because of JAVA maps.so, Map DTO to the type transferrable over JMS
