@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by sanera on 06/03/2017.
  * These classes help creating table structure for FACatch summary reports.
  * Every class is handling specific table structure formatting requirements .
  * If new type of table structure is required. Just extend FACatchSummaryHelper and modify methods suitable to your needs
@@ -40,71 +39,68 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
         this.faCatchSummaryCustomClassName = "eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomChildProxy";
     }
 
-/**
- *  Post process data received from database to create FACatchSummaryRecordDTO. Every record will have summary calculated for it.
- *
- * @param groupedMap
- * @return List<FACatchSummaryRecordDTO> Processed records having summary data
- */
-  @Override
-  public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap) {
+    /**
+     *  Post process data received from database to create FACatchSummaryRecordDTO. Every record will have summary calculated for it.
+     *
+     * @param groupedMap
+     * @return List<FACatchSummaryRecordDTO> Processed records having summary data
+     */
+    @Override
+    public List<FACatchSummaryRecordDTO> buildFACatchSummaryRecordDTOList(Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedMap) {
         List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
 
-      for (Map.Entry<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> entry : groupedMap.entrySet()) {
-          FaCatchSummaryCustomProxy customEntity = entry.getKey();
+        for (Map.Entry<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> entry : groupedMap.entrySet()) {
+            FaCatchSummaryCustomProxy customEntity = entry.getKey();
             customEntity.setPresentation(null); // We dont want Presentation to be part of group criteria. We want to display this information in summmary table so, remove it
             FACatchSummaryRecordDTO faCatchSummaryDTO= FACatchSummaryMapper.INSTANCE.mapToFACatchSummaryRecordDTOWithPresentation(entry.getKey(),entry.getValue());
-            if(CollectionUtils.isEmpty(faCatchSummaryDTO.getGroups())){ // Do not add record to the list if no data for grouping factors found
-                log.error("No data for the grouping factors found :"+faCatchSummaryDTO);
+            if (CollectionUtils.isEmpty(faCatchSummaryDTO.getGroups())) { // Do not add record to the list if no data for grouping factors found
+                log.error("No data for the grouping factors found: {}", faCatchSummaryDTO);
                 continue;
             }
 
             // If there is Group but no data for Summary table for the group, do not send it to frontend
-            if(faCatchSummaryDTO.getSummaryTable() == null || (faCatchSummaryDTO.getSummaryTable().getSummaryFaCatchType()==null &&
-                    faCatchSummaryDTO.getSummaryTable().getSummaryFishSize()==null)){
-                log.error("No data for the summary found :"+faCatchSummaryDTO);
+            SummaryTableDTO summaryTable = faCatchSummaryDTO.getSummaryTable();
+            if (summaryTable == null ||
+                    (summaryTable.getSummaryFaCatchType() == null &&
+                     summaryTable.getSummaryFishSize() == null)) {
+                log.error("No data for the summary found: {}", faCatchSummaryDTO);
                 continue;
             }
             faCatchSummaryRecordDTOs.add(faCatchSummaryDTO);
         }
         return faCatchSummaryRecordDTOs;
-
     }
 
     @Override
     public void populateTotalFishSizeMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
-
-        Map<FishSizeClassEnum,Object> fishSizeClassEnumMap = summaryTable.getSummaryFishSize();
-        if(MapUtils.isEmpty(fishSizeClassEnumMap)){
+        Map<FishSizeClassEnum, Object> fishSizeClassEnumMap = summaryTable.getSummaryFishSize();
+        if (MapUtils.isEmpty(fishSizeClassEnumMap)) {
             return;
         }
 
         Map<FishSizeClassEnum, Object> totalFishSizeSpeciesMap = summaryTableWithTotals.getSummaryFishSize();
-        if(MapUtils.isEmpty(totalFishSizeSpeciesMap)){
+        if (MapUtils.isEmpty(totalFishSizeSpeciesMap)) {
             totalFishSizeSpeciesMap = new EnumMap<>(FishSizeClassEnum.class);
             summaryTableWithTotals.setSummaryFishSize(totalFishSizeSpeciesMap);
         }
 
-        // Go through all the Fish classes  and calculate total for each fishclass
-        for(Map.Entry<FishSizeClassEnum, Object> entry :fishSizeClassEnumMap.entrySet()){
-            FishSizeClassEnum fishSize= entry.getKey(); // key fishSize
-
+        // Go through all the Fish classes and calculate total for each fish class
+        for (Map.Entry<FishSizeClassEnum, Object> entry :fishSizeClassEnumMap.entrySet()) {
+            FishSizeClassEnum fishSize = entry.getKey(); // key fishSize
             Object value = entry.getValue();
             // Value will be Double if species are not present as grouping criteria Else it will be map of Species and its count
-            if(value instanceof Map){
+            if (value instanceof Map) {
                 Map<String, Map<String,Double>> fishSizeMap = (Map<String, Map<String,Double>>) totalFishSizeSpeciesMap.get(fishSize); // check if already present
-                fishSizeMap = populateSpeciesPresentationMapWithTotal(( Map<String, Map<String,Double>>) value, fishSizeMap);
+                populateSpeciesPresentationMapWithTotal((Map<String, Map<String, Double>>) value, fishSizeMap);
                 totalFishSizeSpeciesMap.put(fishSize, fishSizeMap);
             }
         }
     }
 
-
     @Override
     public void populateTotalFaCatchMap(SummaryTableDTO summaryTableWithTotals, SummaryTableDTO summaryTable) {
-
-        Map<FaCatchTypeEnum, Object> catchTypeEnumMapMap=summaryTable.getSummaryFaCatchType();
-        if(MapUtils.isNotEmpty(catchTypeEnumMapMap)) {
+        Map<FaCatchTypeEnum, Object> catchTypeEnumMapMap = summaryTable.getSummaryFaCatchType();
+        if (MapUtils.isNotEmpty(catchTypeEnumMapMap)) {
 
             Map<FaCatchTypeEnum,Object> totalCatchTypeMap = summaryTableWithTotals.getSummaryFaCatchType();
             if (MapUtils.isEmpty(totalCatchTypeMap)) {
@@ -116,18 +112,16 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
             for (Map.Entry<FaCatchTypeEnum,Object> entry : catchTypeEnumMapMap.entrySet()) {
                 FaCatchTypeEnum catchType = entry.getKey(); // key fishSize
                 Object value = entry.getValue();
-                if(value instanceof Map){
+                if (value instanceof Map) {
                     Map<String, Map<String,Double>> fishSizeMap = (Map<String, Map<String,Double>>) totalCatchTypeMap.get(catchType); // check if already present
-                    fishSizeMap = populateSpeciesPresentationMapWithTotal(( Map<String, Map<String,Double>>) value, fishSizeMap);
+                    populateSpeciesPresentationMapWithTotal((Map<String, Map<String, Double>>) value, fishSizeMap);
                     totalCatchTypeMap.put(catchType, fishSizeMap);
-
                 }
             }
         }
     }
 
-    @NotNull
-    private Map<String, Map<String,Double>> populateSpeciesPresentationMapWithTotal(Map<String, Map<String, Double>> speciesMap, Map<String, Map<String, Double>> resultTotalPresentationMap) {
+    private void populateSpeciesPresentationMapWithTotal(Map<String, Map<String, Double>> speciesMap, Map<String, Map<String, Double>> resultTotalPresentationMap) {
         for (Map.Entry<String, Map<String, Double>> speciesEntry : speciesMap.entrySet()) {
             String speciesCode = speciesEntry.getKey();
             Map<String, Double> valuePresentationCountMap = speciesEntry.getValue();
@@ -141,8 +135,5 @@ public class FACatchSummaryPresentationHelper extends FACatchSummaryHelper {
                 resultTotalPresentationMap.put(speciesCode, valuePresentationCountMap);
             }
         }
-
-        return resultTotalPresentationMap;
     }
-
 }

@@ -79,10 +79,8 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonProperty("fluxReportReferenceSchemeId")
     private String fluxReportReferenceSchemeId;
 
-
-
-    public FishingActivityReportDTO(){
-
+    public FishingActivityReportDTO() {
+        // Assuming jackson needs this when serializing/deserializing
     }
 
     @JsonProperty("vesselTransportMeansName")
@@ -212,7 +210,6 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
-
 
     public boolean isHasCorrection() {
         return hasCorrection;

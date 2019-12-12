@@ -21,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by kovian on 12/07/2017.
- */
 public class FluxReportIdentifierDao extends AbstractDAO<FluxReportIdentifierEntity> {
 
     private static final String ID = "id";
@@ -43,8 +40,8 @@ public class FluxReportIdentifierDao extends AbstractDAO<FluxReportIdentifierEnt
     public List<FluxReportIdentifierEntity> getMatchingIdentifiers(List<ActivityIDType> ids, ActivityTableType tableType) {
         String namedQueryToSelect = tableType == ActivityTableType.FLUX_REPORT_DOCUMENT_ENTITY ? FluxReportIdentifierEntity.FIND_MATCHING_IDENTIFIER : FluxReportIdentifierEntity.FIND_RELATED_MATCHING_IDENTIFIER;
         List<FluxReportIdentifierEntity> resultList = new ArrayList<>();
-        //FIXME avoid looping ad querying
-        for(ActivityIDType idType : ids){
+        // FIXME avoid looping and querying
+        for (ActivityIDType idType : ids) {
             TypedQuery<FluxReportIdentifierEntity> query = getEntityManager().createNamedQuery(namedQueryToSelect, FluxReportIdentifierEntity.class);
             query.setParameter(ID, idType.getValue());
             query.setParameter(SCHEME_ID, idType.getIdentifierSchemeId());

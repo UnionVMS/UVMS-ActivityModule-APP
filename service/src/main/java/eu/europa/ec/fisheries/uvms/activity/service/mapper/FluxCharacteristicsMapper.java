@@ -25,7 +25,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 @Mapper(uses = CustomBigDecimal.class, unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
-    public static FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);
+    public static final FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);
 
     @Mappings({
             @Mapping(target = "typeCode", source = "typeCode.value"),

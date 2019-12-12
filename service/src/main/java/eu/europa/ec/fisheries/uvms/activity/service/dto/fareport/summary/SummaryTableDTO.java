@@ -1,4 +1,3 @@
-
 /*
  *
  * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries European Union, 2015-2016.
@@ -18,14 +17,10 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
 
 import java.util.Map;
 
-/**
- * Created by sanera on 27/01/2017.
- */
 public class SummaryTableDTO {
 
-
-    private Map<FishSizeClassEnum,Object> summaryFishSize;
-     private Map<FaCatchTypeEnum,Object> summaryFaCatchType;
+    private Map<FishSizeClassEnum, Object> summaryFishSize;
+    private Map<FaCatchTypeEnum, Object> summaryFaCatchType;
 
     public Map<FishSizeClassEnum, Object> getSummaryFishSize() {
         return summaryFishSize;

@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Stateless
 @LocalBean
-public class FaReportSaverBean {
+public class FluxReportMessageSaver {
 
     @EJB
     private FluxMessageService fluxMessageService;
@@ -48,7 +48,7 @@ public class FaReportSaverBean {
     @EJB
     private ExchangeServiceBean exchangeServiceBean;
 
-    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
+    public void saveFluxReportMessage(SetFLUXFAReportOrQueryMessageRequest request) {
         try {
             FLUXFAReportMessage fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
             deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);

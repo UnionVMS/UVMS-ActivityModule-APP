@@ -33,6 +33,7 @@ public class FishingActivityQuery {
     private Boolean useStatusInsteadOfPurposeCode;
 
     public FishingActivityQuery() {
+        // Assuming jackson needs this for serializing/deserializing
     }
 
     public PaginationDto getPagination() {
