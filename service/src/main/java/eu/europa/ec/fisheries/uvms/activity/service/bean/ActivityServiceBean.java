@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -59,6 +60,7 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
@@ -100,6 +102,10 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     @Override
     public List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) {
         FaReportDocumentEntity faReport = faReportDocumentDao.findFaReportByIdAndScheme(refReportId, refSchemeId);
+        if (faReport == null) {
+            return new ArrayList<>();
+        }
+
         List<FaReportDocumentEntity> historyOfFaReport = faReportDocumentDao.getHistoryOfFaReport(faReport);
         List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(historyOfFaReport);
         Collections.sort(faReportCorrectionDTOs);
@@ -290,6 +296,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
+
         for (FishingActivityEntity entity : activityList) {
             FishingActivityReportDTO fishingActivityReportDTO = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity);
             // Switch the report ids if this activity was canceled or deleted (needed from FE to display correctly)
@@ -398,7 +405,26 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         log.info("Retrieve fishing activity from db: {}", fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
         log.info("activityEntity received from db Id: {} typeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
-        return fishingActivityDao.getPreviousFishingActivityId(activityEntity);
+
+        FishingTripEntity fishingTrip = activityEntity.getFishingTrip();
+        Set<FishingActivityEntity> fishingActivities = fishingTrip.getFishingActivities();
+
+        List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>(fishingActivities);
+        fishingActivityEntityList.sort(Comparator.comparing(FishingActivityEntity::getOccurence).reversed());
+
+        int index = -1;
+        for (int i = 0; i < fishingActivityEntityList.size(); i++) {
+            FishingActivityEntity fishingActivityEntity = fishingActivityEntityList.get(i);
+            if (fishingActivityEntity.getId() == fishingActivityId) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index > -1 && index < fishingActivityEntityList.size() - 1) {
+            return fishingActivityEntityList.get(index + 1).getId();
+        }
+        return index;
     }
 
 
@@ -406,6 +432,26 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         log.info("Retrieve fishing activity from db: {}", fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
         log.info("activityEntity received from db Id: {} typeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
-        return fishingActivityDao.getNextFishingActivityId(activityEntity);
+
+        FishingTripEntity fishingTrip = activityEntity.getFishingTrip();
+        Set<FishingActivityEntity> fishingActivities = fishingTrip.getFishingActivities();
+
+        List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>(fishingActivities);
+
+        fishingActivityEntityList.sort(Comparator.comparing(FishingActivityEntity::getOccurence));
+
+        int index = -1;
+        for (int i = 0; i < fishingActivityEntityList.size(); i++) {
+            FishingActivityEntity fishingActivityEntity = fishingActivityEntityList.get(i);
+            if (fishingActivityEntity.getId() == fishingActivityId) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index > -1 && index < fishingActivityEntityList.size() - 1) {
+            return fishingActivityEntityList.get(index + 1).getId();
+        }
+        return index;
     }
 }
