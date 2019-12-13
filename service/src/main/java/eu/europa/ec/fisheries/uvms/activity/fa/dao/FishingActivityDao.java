@@ -38,6 +38,7 @@ import java.util.Map;
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private static final String QUERY_PARAM_FISHING_ACTIVITY_ID = "fishingActivityId";
+    private static final String QUERY_PARAM_FISHING_TRIP_ID = "fishingTripId";
     private static final String QUERY_PARAM_ACTIVITY_TYPE_CODE = "activityTypeCode";
     private static final String QUERY_PARAM_ACTIVITY_START_TIME = "activityStartTime";
     private static final String QUERY_PARAM_AREA = "area";
@@ -171,7 +172,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
 
         TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
-        typedQuery.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, fishingTripId);
+        typedQuery.setParameter(QUERY_PARAM_FISHING_TRIP_ID, fishingTripId);
         if (multipolygon != null) {
             typedQuery.setParameter("area", multipolygon);
         }
