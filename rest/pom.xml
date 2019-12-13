@@ -13,8 +13,8 @@
     <packaging>war</packaging>
 
     <properties>
-<!--        <docker.dev.start.phase>test-compile</docker.dev.start.phase>-->
-<!--        <docker.dev.prestop.phase>install</docker.dev.prestop.phase>-->
+        <docker.dev.start.phase>test-compile</docker.dev.start.phase>
+        <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
     </properties>
 
     <dependencies>
