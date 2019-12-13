@@ -34,14 +34,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by sanera on 16/11/2016.
- */
 public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
-    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.fishingTripKey.tripId , ftripId.fishingTripKey.tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
-    private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft.fishingTripKey.tripId, ft.fishingTripKey.tripSchemeId from FishingTripEntity ft JOIN ft.fishingActivities a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ft) from FishingTripEntity ft JOIN ft.fishingActivities a LEFT JOIN a.faReportDocument fa ";
 
     /**
      * For some usecases we need different database column mappings for same filters.
