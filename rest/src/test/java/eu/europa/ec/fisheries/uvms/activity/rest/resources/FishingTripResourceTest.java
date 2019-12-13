@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierScheme
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.ContactPartyDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
@@ -42,9 +43,11 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -52,6 +55,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 public class FishingTripResourceTest extends BaseActivityArquillianTest {
@@ -180,7 +184,6 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertEquals(1, dto.getDelimitedPeriod().size());
     }
 
-    @Ignore("TODO fix for new test data")
     @Test
     public void getFishingTripSummary_tripNotFound() throws JsonProcessingException {
         // Given
@@ -211,7 +214,6 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertNull(data.getActivityReports());
     }
 
-    @Ignore("TODO fix for new test data")
     @Test
     public void getVesselDetails() throws JsonProcessingException {
         // Given
@@ -221,7 +223,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
                 .path("trip")
                 .path("vessel")
                 .path("details")
-                .path("QPS-ECV-7513J636531W5")
+                .path("XQF-NYK-8726D815443D8")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
@@ -235,22 +237,45 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         VesselDetailsDTO vesselDetails = responseDto.getData();
-        assertEquals("Test Ship 001", vesselDetails.getName());
-        assertEquals("MLT", vesselDetails.getCountry());
+        assertEquals("WVO", vesselDetails.getCountry());
 
         Set<ContactPartyDetailsDTO> contactPartyDetailsDTOSet = vesselDetails.getContactPartyDetailsDTOSet();
         assertEquals(1, contactPartyDetailsDTOSet.size());
 
         ContactPartyDetailsDTO contactPartyDetailsDto = contactPartyDetailsDTOSet.iterator().next();
         assertEquals("MASTER", contactPartyDetailsDto.getRole());
-        assertEquals("Contact Person 001 Alias", contactPartyDetailsDto.getContactPerson().getAlias());
+        assertEquals("jbnhciaw", contactPartyDetailsDto.getContactPerson().getGivenName());
+        assertEquals("otcebzfk", contactPartyDetailsDto.getContactPerson().getFamilyName());
+
+        assertEquals(1, contactPartyDetailsDto.getStructuredAddresses().size());
+        AddressDetailsDTO address = contactPartyDetailsDto.getStructuredAddresses().get(0);
+        assertEquals("epoquqlk", address.getCityName());
+        assertEquals("WVO", address.getCountryIDValue());
+        assertEquals("61444", address.getPostalAreaValue());
+        assertEquals("yenoyter", address.getPlotId());
+        assertEquals("yenoyter", address.getStreetName());
 
         Set<AssetIdentifierDto> vesselIdentifiers = vesselDetails.getVesselIdentifiers();
-        assertEquals(1, vesselIdentifiers.size());
+        assertEquals(3, vesselIdentifiers.size());
+        containsAssetIdentifier(vesselIdentifiers, new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.CFR, "YWA454122867"));
+        containsAssetIdentifier(vesselIdentifiers, new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.IRCS, "RIWZ"));
+        containsAssetIdentifier(vesselIdentifiers, new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.EXT_MARK, "UCJ-3694-Q"));
+    }
 
-        AssetIdentifierDto identifier = vesselIdentifiers.iterator().next();
-        assertEquals(VesselIdentifierSchemeIdEnum.CFR, identifier.getIdentifierSchemeId());
-        assertEquals("SWEFAKE00001", identifier.getFaIdentifierId());
+    private void containsAssetIdentifier(Collection<AssetIdentifierDto> collectionToTest, AssetIdentifierDto dtoToLookFor) {
+        boolean foundOne = false;
+        for (AssetIdentifierDto assetIdentifierDto : collectionToTest) {
+            if (
+                Objects.equals(assetIdentifierDto.getIdentifierSchemeId(), dtoToLookFor.getIdentifierSchemeId()) &&
+                Objects.equals(assetIdentifierDto.getFaIdentifierId(), dtoToLookFor.getFaIdentifierId())
+            ) {
+                if (foundOne) {
+                    fail("Found more than one matching identifier DTO in vessel identifiers");
+                }
+                foundOne = true;
+            }
+        }
+        assertTrue(foundOne);
     }
 
     @Test
