@@ -14,8 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.Data;
 
@@ -27,17 +25,13 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActivityHistoryDtoElement implements Comparable<ActivityHistoryDtoElement> {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Integer faReportId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Integer purposeCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
     private Date acceptanceDate;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private List<Integer> fishingActivityIds;
 
     public ActivityHistoryDtoElement() {

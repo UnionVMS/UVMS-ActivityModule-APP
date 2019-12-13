@@ -14,8 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.AddressDetailsDTO;
 import lombok.NoArgsConstructor;
@@ -31,20 +29,15 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class FluxLocationDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonProperty("country")
     private String countryId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String rfmoCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String geometry;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String sovereignCountry;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String jurisdictionCountry;
 
     @JsonIgnore
@@ -56,13 +49,11 @@ public class FluxLocationDto {
     @JsonIgnore
     private String fluxLocationIdentifierSchemeId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Set<AddressDetailsDTO> structuredAddresses;
 
     @JsonIgnore
     private String typeCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String portDescription;
 
     public String getGeometry() {

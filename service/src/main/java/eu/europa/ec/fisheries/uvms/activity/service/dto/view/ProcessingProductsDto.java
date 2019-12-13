@@ -14,8 +14,6 @@
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import lombok.Builder;
 
 import java.util.HashMap;
@@ -26,43 +24,30 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class ProcessingProductsDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Map<String, String> locations = new HashMap<>();
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String species;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String gear;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String presentation;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String preservation;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String freshness;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double conversionFactor;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double weight;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double quantity;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double packageWeight;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double packageQuantity;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String packagingType;
 
     public ProcessingProductsDto() {

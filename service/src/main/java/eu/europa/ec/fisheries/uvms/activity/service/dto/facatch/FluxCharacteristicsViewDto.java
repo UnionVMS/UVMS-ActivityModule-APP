@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.dto.facatch;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 import java.util.Date;
 
@@ -22,63 +20,48 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FluxCharacteristicsViewDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String typeCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String typeCodeListId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double valueMeasure;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueMeasureUnitCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double calculatedValueMeasure;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date valueDateTime;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueIndicator;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueText;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueLanguageId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double valueQuantity;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueQuantityCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double calculatedValueQuantity;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String descriptionLanguageId;
 

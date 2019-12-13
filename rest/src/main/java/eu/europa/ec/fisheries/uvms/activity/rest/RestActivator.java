@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.rest;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.ConfigResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FACatchResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResource;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityViewsResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingTripResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.ReportDocumentResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.XMLResource;
@@ -33,7 +32,6 @@ public class RestActivator extends Application {
         set.add(FishingActivityResource.class);
         set.add(FishingTripResource.class);
         set.add(ConfigResource.class);
-        set.add(FishingActivityViewsResource.class);
         set.add(FACatchResource.class);
         set.add(XMLResource.class);
         set.add(ReportDocumentResource.class);

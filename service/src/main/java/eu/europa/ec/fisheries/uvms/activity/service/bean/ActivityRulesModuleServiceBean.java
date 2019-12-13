@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.FaQueryFactory;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FaQueryFactory;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;

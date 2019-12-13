@@ -15,12 +15,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Maps;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
@@ -36,68 +34,50 @@ import java.util.Set;
 @ToString
 public class ActivityDetailsDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Long id;
 
     @JsonIgnore
     private Set<FluxCharacteristicsDto> fluxCharacteristics;
 
     @JsonProperty("authorizations")
-    @JsonView({FishingActivityView.CommonView.class})
     private Set<FlapDocumentDto> flapDocuments;
 
     @JsonIgnore
     private Geometry geom;
 
-    @JsonView({FishingActivityView.Arrival.class, FishingActivityView.NotificationOfArrival.class, FishingActivityView.AreaEntry.class, FishingActivityView.Discard.class, FishingActivityView.Departure.class})
     private String reason;
 
     @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonView({FishingActivityView.Landing.class, FishingActivityView.Departure.class, FishingActivityView.AreaEntry.class, FishingActivityView.AreaExit.class, FishingActivityView.FishingOperation.class, FishingActivityView.Discard.class,
-            FishingActivityView.JointFishingOperation.class, FishingActivityView.Relocation.class, FishingActivityView.NotificationOfArrival.class})
     private Date occurrence;
 
     @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonView(FishingActivityView.Arrival.class)
     private Date arrivalTime;
 
-    @JsonView(FishingActivityView.Arrival.class)
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date intendedLandingTime;
 
-    @JsonView(FishingActivityView.NotificationOfArrival.class)
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date estimatedArrivalTime;
 
-    @JsonView(FishingActivityView.Landing.class)
     private DelimitedPeriodDTO landingTime;
 
-    @JsonView({FishingActivityView.Departure.class, FishingActivityView.AreaEntry.class, FishingActivityView.AreaExit.class, FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
     private String fisheryType;
 
-    @JsonView({FishingActivityView.Departure.class, FishingActivityView.AreaEntry.class, FishingActivityView.AreaExit.class, FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
     private String speciesTarget;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class, FishingActivityView.Departure.class})
     private String vesselActivity;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.Departure.class})
     private Integer nrOfOperation;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.Discard.class, FishingActivityView.Transhipment.class, FishingActivityView.JointFishingOperation.class, FishingActivityView.Relocation.class})
     private Set<IdentifierDto> identifiers;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.JointFishingOperation.class})
     private DelimitedPeriodDTO fishingTime;
 
-    @JsonView(FishingActivityView.Transhipment.class)
     private DelimitedPeriodDTO transhipmentTime;
 
     @JsonProperty("characteristics")
-    @JsonView({FishingActivityView.CommonView.class})
     public Map<String, Set<Object>> getCharacteristics() {
         Map<String, Set<Object>> characMap = null;
         if (fluxCharacteristics != null) {

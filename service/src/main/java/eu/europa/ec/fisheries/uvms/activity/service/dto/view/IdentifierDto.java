@@ -13,8 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -33,11 +31,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 public class IdentifierDto {
 
     @JsonProperty("id")
-    @JsonView(FishingActivityView.CommonView.class)
     private String faIdentifierId;
 
     @JsonProperty("schemeId")
-    @JsonView(FishingActivityView.CommonView.class)
     @NonNull
     private String faIdentifierSchemeId;
 

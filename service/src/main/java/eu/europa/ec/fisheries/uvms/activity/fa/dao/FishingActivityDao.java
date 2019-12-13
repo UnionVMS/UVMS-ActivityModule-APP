@@ -37,6 +37,7 @@ import java.util.Map;
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
+    private static final String QUERY_PARAM_FISHING_TRIP_ID = "fishingTripId";
     private static final String QUERY_PARAM_FISHING_ACTIVITY_ID = "fishingActivityId";
     private static final String QUERY_PARAM_FISHING_TRIP_ID = "fishingTripId";
     private static final String QUERY_PARAM_ACTIVITY_TYPE_CODE = "activityTypeCode";
@@ -174,7 +175,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
         typedQuery.setParameter(QUERY_PARAM_FISHING_TRIP_ID, fishingTripId);
         if (multipolygon != null) {
-            typedQuery.setParameter("area", multipolygon);
+            typedQuery.setParameter(QUERY_PARAM_AREA, multipolygon);
         }
 
         return typedQuery.getResultList();
@@ -286,7 +287,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH fl.structuredAddresses flAd ")
                 .append("LEFT JOIN FETCH a.flapDocuments flapDoc ")
                 .append("LEFT JOIN FETCH flux.fluxParty fluxParty ")
-                .append("LEFT JOIN FETCH a.fishingActivityIdentifiers faId ")
                 .append("LEFT JOIN FETCH flAd.fluxLocation flAdFluxLoc ")
                 .append("LEFT JOIN FETCH a.fishingTrip faFiTrip ")
                 .append("LEFT JOIN FETCH faFiTrip.catchEntities faFiTripsFaCatch ")

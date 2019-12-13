@@ -16,12 +16,10 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.StorageDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,7 +65,6 @@ public class VesselDetailsDTO {
     @JsonProperty("storage")
     private StorageDto storageDto;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonProperty("authorizations")
     private Set<FlapDocumentDto> flapDocuments;
 
