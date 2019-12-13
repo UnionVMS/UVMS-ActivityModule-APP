@@ -14,18 +14,14 @@
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
 public class RelatedReportDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String id;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String schemeId;
 
     public String getId() {

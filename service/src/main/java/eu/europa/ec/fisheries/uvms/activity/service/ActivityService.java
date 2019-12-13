@@ -12,21 +12,13 @@
  */
 package eu.europa.ec.fisheries.uvms.activity.service;
 
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 import java.util.List;
-
-/**
- * Created by sanera on 29/06/2016.
- */
 
 public interface ActivityService {
 
@@ -52,8 +44,6 @@ public interface ActivityService {
     List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) throws ServiceException;
 
     boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
-
-    FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, Integer reportId, List<Dataset> datasets, ActivityViewEnum view, boolean withHistory) throws ServiceException;
 
     int getPreviousFishingActivity(int fishingActivityId);
 

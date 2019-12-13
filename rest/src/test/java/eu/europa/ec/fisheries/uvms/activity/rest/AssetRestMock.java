@@ -56,8 +56,17 @@ public class AssetRestMock {
     }
 
     private UUID getId(AssetQuery query) {
-        // TODO based on IDs in query
-        return UUID.fromString("054cef8a-5cb2-48d2-9247-61a3be5ef03a");
+        String seed = "";
+        if (query.getCfr() != null) {
+            seed += String.join("", query.getCfr());
+        }
+        if (query.getExternalMarking() != null) {
+            seed += String.join("", query.getExternalMarking());
+        }
+        if (query.getIrcs() != null) {
+            seed += String.join("", query.getIrcs());
+        }
+        return UUID.nameUUIDFromBytes(seed.getBytes());
     }
 
     private String getImo(AssetQuery query) {

@@ -11,10 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.dto.facatch;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,40 +23,28 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FaCatchGroupDetailsDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double weight;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double unit;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String stockId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String size;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String weightingMeans;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String tripId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String usage;
 
-    @JsonView(FishingActivityView.NoView.class)
     private boolean detailsSet;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private List<DestinationLocationDto> destinationLocation;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private List<GearDto> gears;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private List<FluxLocationDto> specifiedFluxLocations;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<FluxCharacteristicsViewDto> characteristics;
 

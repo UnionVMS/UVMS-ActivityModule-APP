@@ -34,7 +34,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ViewConstants;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
@@ -325,33 +324,33 @@ public class BaseMapper {
         String quantityOnly = charac.getValueMeasure() != null ? charac.getValueMeasure().toString() : StringUtils.EMPTY;
         String quantityWithUnit = quantityOnly + charac.getValueMeasureUnitCode();
         switch (charac.getTypeCode()) {
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_ME:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_ME:
                 gearDto.setMeshSize(quantityWithUnit);
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_GM:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GM:
                 gearDto.setLengthWidth(quantityWithUnit);
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_GN:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GN:
                 gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_HE:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_HE:
                 gearDto.setHeight(quantityWithUnit);
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_NI:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_NI:
                 gearDto.setNrOfLines(quantityWithUnit);
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_NN:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_NN:
                 gearDto.setNrOfNets(quantityWithUnit);
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_NL:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_NL:
                 gearDto.setNominalLengthOfNet(quantityWithUnit);
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_QG:
-                if (!Objects.equals(charac.getValueQuantityCode(), ViewConstants.GEAR_CHARAC_Q_CODE_C62)) {
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_QG:
+                if (!Objects.equals(charac.getValueQuantityCode(), GearCharacteristicConstants.GEAR_CHARAC_Q_CODE_C62)) {
                     gearDto.setQuantity(quantityWithUnit);
                 }
                 break;
-            case ViewConstants.GEAR_CHARAC_TYPE_CODE_GD:
+            case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GD:
                 String description = charac.getDescription();
                 if (StringUtils.isNoneEmpty(description)){
                     gearDto.setDescription(charac.getDescription());
