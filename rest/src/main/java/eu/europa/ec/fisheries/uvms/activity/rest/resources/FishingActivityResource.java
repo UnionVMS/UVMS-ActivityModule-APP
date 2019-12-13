@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -116,7 +117,8 @@ public class FishingActivityResource extends UnionVMSResource {
                                       @PathParam("referenceId") String referenceId,
                                       @PathParam("schemeId") String schemeId) throws ServiceException {
 
-        return createSuccessResponse(activityService.getFaReportHistory(referenceId, schemeId));
+        List<FaReportCorrectionDTO> faReportHistory = activityService.getFaReportHistory(referenceId, schemeId);
+        return createSuccessResponse(faReportHistory);
     }
 
     @GET
@@ -133,7 +135,8 @@ public class FishingActivityResource extends UnionVMSResource {
 
             converstedActivityId = Integer.parseInt(activityId);
         }
-        return createSuccessResponse(activityService.getPreviousFishingActivity(converstedActivityId));
+        int previousFishingActivity = activityService.getPreviousFishingActivity(converstedActivityId);
+        return createSuccessResponse(previousFishingActivity);
     }
 
     @GET
@@ -150,7 +153,7 @@ public class FishingActivityResource extends UnionVMSResource {
 
             converstedActivityId = Integer.parseInt(activityId);
         }
-        return createSuccessResponse(activityService.getNextFishingActivity(converstedActivityId));
+        int nextFishingActivity = activityService.getNextFishingActivity(converstedActivityId);
+        return createSuccessResponse(nextFishingActivity);
     }
-
 }
