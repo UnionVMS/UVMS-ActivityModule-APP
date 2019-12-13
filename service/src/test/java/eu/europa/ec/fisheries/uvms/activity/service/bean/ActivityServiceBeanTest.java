@@ -112,13 +112,9 @@ public class ActivityServiceBeanTest {
         // Given
         int fishingActivityId = 5;
 
-        Instant now = Instant.now();
-
         FishingTripEntity fishingTrip = new FishingTripEntity();
 
         FishingActivityEntity fishingActivity = new FishingActivityEntity();
-        fishingActivity.setId(1);
-        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
 
         fishingTrip.getFishingActivities().add(fishingActivity);
 
@@ -137,18 +133,6 @@ public class ActivityServiceBeanTest {
     public void getNextFishingActivity_noActivity() {
         // Given
         int fishingActivityId = 5;
-
-        Instant now = Instant.now();
-
-        FishingTripEntity fishingTrip = new FishingTripEntity();
-
-        FishingActivityEntity fishingActivity = new FishingActivityEntity();
-        fishingActivity.setId(1);
-        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
-
-        fishingTrip.getFishingActivities().add(fishingActivity);
-
-        fishingActivity.setFishingTrip(fishingTrip);
 
         when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(null);
 
@@ -229,13 +213,9 @@ public class ActivityServiceBeanTest {
         // Given
         int fishingActivityId = 5;
 
-        Instant now = Instant.now();
-
         FishingTripEntity fishingTrip = new FishingTripEntity();
 
         FishingActivityEntity fishingActivity = new FishingActivityEntity();
-        fishingActivity.setId(1);
-        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
 
         fishingTrip.getFishingActivities().add(fishingActivity);
 
@@ -254,18 +234,6 @@ public class ActivityServiceBeanTest {
     public void getPreviousFishingActivity_noActivity() {
         // Given
         int fishingActivityId = 5;
-
-        Instant now = Instant.now();
-
-        FishingTripEntity fishingTrip = new FishingTripEntity();
-
-        FishingActivityEntity fishingActivity = new FishingActivityEntity();
-        fishingActivity.setId(1);
-        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
-
-        fishingTrip.getFishingActivities().add(fishingActivity);
-
-        fishingActivity.setFishingTrip(fishingTrip);
 
         when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(null);
 
