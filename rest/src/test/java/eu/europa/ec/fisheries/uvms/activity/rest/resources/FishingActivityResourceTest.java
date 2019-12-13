@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeome
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
@@ -19,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@Ignore("Fix to work with new test data")
 @RunWith(Arquillian.class)
 public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
@@ -109,15 +109,15 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
         List<FishingActivityReportDTO> resultList = responseDto.getResultList();
 
-        assertEquals(59, responseDto.getTotalItemsCount());
-        assertEquals(59, resultList.size());
+        assertEquals(54, responseDto.getTotalItemsCount());
+        assertEquals(54, resultList.size());
 
         for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
             assertEquals("FLUX", fishingActivityReportDTO.getDataSource());
             assertEquals(1, fishingActivityReportDTO.getFromId().size());
-            assertTrue(fishingActivityReportDTO.getFromId().get(0).equals("MLT") || fishingActivityReportDTO.getFromId().get(0).equals("FRA"));
+            assertTrue(fishingActivityReportDTO.getFromId().get(0).equals("WVO") || fishingActivityReportDTO.getFromId().get(0).equals("UVH"));
             assertNull(fishingActivityReportDTO.getFromName());
-            assertEquals("9", fishingActivityReportDTO.getPurposeCode());
+            assertTrue("9".equals(fishingActivityReportDTO.getPurposeCode()) || "5".equals(fishingActivityReportDTO.getPurposeCode()));
             assertEquals(1, fishingActivityReportDTO.getUniqueFAReportId().size());
             assertNotNull(fishingActivityReportDTO.getUniqueFAReportId().get(0).getFluxReportId());
             assertEquals("UUID", fishingActivityReportDTO.getUniqueFAReportId().get(0).getFluxReportSchemeId());
@@ -143,6 +143,8 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
      * calls to the asset module this test should fail because we will get more than zero results back.
      * The intent is to have this test ready and for the asserts to be updated when AssetModuleServiceBean
      * is functioning again.
+     *
+     * TODO: still not working properly even though mock is working
      */
     @Test
     public void listActivityReportsByQuery_withVesselId() throws JsonProcessingException {
@@ -150,7 +152,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         FishingActivityQuery query = new FishingActivityQuery();
 
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-        searchCriteriaMap.put(SearchFilter.VESSEL, "SWEFAKE00001");
+        searchCriteriaMap.put(SearchFilter.VESSEL, "BZR755583695");
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
@@ -213,16 +215,19 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         FishingTripResponse fishingTripResponse = responseDto.getData();
 
         assertEquals(0, fishingTripResponse.getFishingActivityLists().size());
-        assertEquals(BigInteger.valueOf(57L), fishingTripResponse.getTotalCountOfRecords());
+        assertEquals(BigInteger.valueOf(6L), fishingTripResponse.getTotalCountOfRecords());
         assertNull(fishingTripResponse.getMethod());
         assertNull(fishingTripResponse.getPluginType());
 
         List<FishingTripIdWithGeometry> fishingTripIds = fishingTripResponse.getFishingTripIdLists();
-        assertEquals(3, fishingTripIds.size());
+        assertEquals(6, fishingTripIds.size());
 
-        assertEquals("ESP-TRP-20160630000003", fishingTripIds.get(0).getTripId());
-        assertEquals("FRA-TRP-2016122102030", fishingTripIds.get(1).getTripId());
-        assertEquals("MLT-TRP-20160630000001", fishingTripIds.get(2).getTripId());
+        assertEquals("RNX-BVF-14E728224N4", fishingTripIds.get(0).getTripId());
+        assertEquals("SLT-YEZ-83772353", fishingTripIds.get(1).getTripId());
+        assertEquals("OFL-QEB-11354164", fishingTripIds.get(2).getTripId());
+        assertEquals("UUR-XSM-45913768", fishingTripIds.get(3).getTripId());
+        assertEquals("XQF-NYK-8726D815443D8", fishingTripIds.get(4).getTripId());
+        assertEquals("ICV-MOM-83R964412B3", fishingTripIds.get(5).getTripId());
     }
 
     @Test
@@ -231,7 +236,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         String responseAsString = getWebTarget()
                 .path("fa")
                 .path("history")
-                .path("C8471F99-FB55-4B05-9AAA-7E08738C92B2")
+                .path("8c90fa8b-9778-4b08-811b-050608589590")
                 .path("UUID")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -248,32 +253,72 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         List<FaReportCorrectionDTO> data = responseDto.getData();
-        assertEquals(1, data.size());
-        FaReportCorrectionDTO faReportCorrectionDTO = data.get(0);
-        assertEquals("58", faReportCorrectionDTO.getId());
-        assertEquals("NEW", faReportCorrectionDTO.getCorrectionType());
-        assertEquals(1_467_954_000_000L, faReportCorrectionDTO.getCreationDate().getTime());
-        assertEquals(1_483_931_160_000L, faReportCorrectionDTO.getAcceptedDate().getTime());
-        assertNull(faReportCorrectionDTO.getOwnerFluxPartyName());
-        assertEquals(9, faReportCorrectionDTO.getPurposeCode().intValue());
-        assertEquals(1, faReportCorrectionDTO.getFaReportIdentifiers().size());
-        assertEquals("UUID", faReportCorrectionDTO.getFaReportIdentifiers().get("C8471F99-FB55-4B05-9AAA-7E08738C92B2"));
+        assertEquals(2, data.size());
+
+        FaReportCorrectionDTO originalReport = data.get(0);
+        assertEquals("UPDATED", originalReport.getCorrectionType());
+        assertEquals(1365175257000L, originalReport.getCreationDate().getTime());
+        assertEquals(1365115483000L, originalReport.getAcceptedDate().getTime());
+        assertNull(originalReport.getOwnerFluxPartyName());
+        assertEquals(9, originalReport.getPurposeCode().intValue());
+        assertEquals(1, originalReport.getFaReportIdentifiers().size());
+        assertEquals("UUID", originalReport.getFaReportIdentifiers().get("8c90fa8b-9778-4b08-811b-050608589590"));
+
+        FaReportCorrectionDTO correctionReport = data.get(1);
+        assertEquals("NEW", correctionReport.getCorrectionType());
+        assertEquals(1365175257000L, correctionReport.getCreationDate().getTime());
+        assertEquals(1365175252000L, correctionReport.getAcceptedDate().getTime());
+        assertNull(correctionReport.getOwnerFluxPartyName());
+        assertEquals(5, correctionReport.getPurposeCode().intValue());
+        assertEquals(1, correctionReport.getFaReportIdentifiers().size());
+        assertEquals("UUID", correctionReport.getFaReportIdentifiers().get("27d8c389-c792-4271-90d4-e7108d6f5f79"));
     }
 
     @Test
     public void getPreviousFishingActivity() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        HashMap<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.TRIP_ID, "ICV-MOM-83R964412B3");
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
+
+        String activityListResponseAsString = getWebTarget()
+                .path("fa")
+                .path("list")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .header("scopeName", null)
+                .header("roleName", "myRole")
+                .post(Entity.json(query), String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> activityListResponse =
+                objectMapper.readValue(activityListResponseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        List<FishingActivityReportDTO> resultList = activityListResponse.getResultList();
+        resultList.sort(Comparator.comparing(FishingActivityDTO::getOccurence));
+
+        int activityListSize = resultList.size();
+        FishingActivityReportDTO lastActivity = resultList.get(activityListSize - 1);
+        FishingActivityReportDTO secondToLastActivity = resultList.get(activityListSize - 2);
+
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
                 .path("previous")
-                .path("103")
+                .path(Integer.toString(lastActivity.getFishingActivityId()))
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
         ResponseDto<Integer> responseDto =
                 objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>() {
                 });
@@ -281,23 +326,53 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
 
-        assertEquals(102, responseDto.getData().intValue());
+        assertEquals(secondToLastActivity.getFishingActivityId(), responseDto.getData().intValue());
     }
 
     @Test
     public void getNextFishingActivity() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        HashMap<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.TRIP_ID, "ICV-MOM-83R964412B3");
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
+
+        String activityListResponseAsString = getWebTarget()
+                .path("fa")
+                .path("list")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .header("scopeName", null)
+                .header("roleName", "myRole")
+                .post(Entity.json(query), String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> activityListResponse =
+                objectMapper.readValue(activityListResponseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        List<FishingActivityReportDTO> resultList = activityListResponse.getResultList();
+        resultList.sort(Comparator.comparing(FishingActivityDTO::getOccurence));
+
+        FishingActivityReportDTO firstActivity = resultList.get(0);
+        FishingActivityReportDTO nextActivity = resultList.get(1);
+
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
                 .path("next")
-                .path("102")
+                .path(Integer.toString(firstActivity.getFishingActivityId()))
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .get(String.class);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
         ResponseDto<Integer> responseDto =
                 objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>() {
                 });
@@ -305,6 +380,6 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
 
-        assertEquals(103, responseDto.getData().intValue());
+        assertEquals(nextActivity.getFishingActivityId(), responseDto.getData().intValue());
     }
 }
