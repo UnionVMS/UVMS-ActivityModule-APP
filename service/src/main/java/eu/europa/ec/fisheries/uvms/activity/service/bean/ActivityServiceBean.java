@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import com.google.common.base.Stopwatch;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
@@ -21,27 +20,15 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
-import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityHistoryDtoElement;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.ActivityDepartureViewMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ActivityViewEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -50,8 +37,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -66,7 +51,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Stateless
 @Local(ActivityService.class)
@@ -83,12 +67,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     @EJB
     private AssetModuleService assetsServiceBean;
-
-    @EJB
-    private FishingTripService fishingTripServiceBean;
-
-    @EJB
-    private MdrModuleService mdrModuleService;
 
     @PostConstruct
     public void init() {
@@ -178,44 +156,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return false;
     }
 
-    /**
-     * Gets a FishingActivityEntity with a certain activityId and maps it to a FishingActivityViewDTO representation layer POJO.
-     *
-     * @param activityId
-     * @param datasets
-     * @throws ServiceException
-     */
-    @Override
-    public FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, Integer reportId, List<Dataset> datasets, ActivityViewEnum view, boolean withHistory) throws ServiceException {
-        Geometry geom = getRestrictedAreaGeometry(datasets);
-        FishingActivityEntity activityEntityFound = fishingActivityDao.getFishingActivityById(activityId, geom);
-        if (activityEntityFound == null){
-            throw new ServiceException("Could not find FishingActivityEntity for the given id:" + activityId);
-        }
-
-        log.debug("FishingActivityEntity fetched from database with id: {}", activityEntityFound.getId());
-
-        FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntityFound);
-        if (reportId != null && (activityEntityFound.getFaReportDocument().getId() !=  reportId)) { // Means we're fetching a correcter/deleter report - which is not directly related to the activity -!
-            FaReportDocumentEntity corrOrDeletionReport = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, reportId);
-            ReportDocumentDto repDocDTO = ActivityDepartureViewMapper.INSTANCE.getReportDocsFromEntity(corrOrDeletionReport);
-            fishingActivityViewDTO.setReportDetails(repDocDTO);
-        }
-
-        fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
-        log.debug("fishingActivityView generated after mapping is: {}", fishingActivityViewDTO);
-        addPortDescriptions(fishingActivityViewDTO);
-
-        if (withHistory) {
-            Stopwatch stopwatch = Stopwatch.createStarted();
-            fishingActivityViewDTO.setHistory(getActivityHistory(activityEntityFound));
-            stopwatch.stop();
-            log.info("It took [ {} ] seconds to get the history.", stopwatch.elapsed(TimeUnit.MILLISECONDS));
-        }
-        log.debug("fishingActivityView generated after mapping is: {}", fishingActivityViewDTO);
-        return fishingActivityViewDTO;
-    }
-
     @NotNull
     private FilterFishingActivityReportResultDTO createResultDTO(List<FishingActivityEntity> activityList, int totalCountOfRecords) {
         if (CollectionUtils.isEmpty(activityList)) {
@@ -286,7 +226,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return fishingActivityDao.getCountForFishingActivityListByQuery(query);
     }
 
-    private String getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
+    private String getRestrictedAreaGeom(List<Dataset> datasets) {
         if (CollectionUtils.isEmpty(datasets)) {
             return null;
         }
@@ -319,86 +259,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             activityReportDTOList.add(fishingActivityReportDTO);
         }
         return activityReportDTOList;
-    }
-
-    private Geometry getRestrictedAreaGeometry(List<Dataset> datasets) throws ServiceException {
-        if (datasets == null || datasets.isEmpty()) {
-            return null;
-        }
-        try {
-            List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
-            String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
-            Geometry geometry = GeometryMapper.INSTANCE.wktToGeometry(areaWkt).getValue();
-            geometry.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
-            return geometry;
-        } catch (ParseException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
-    }
-
-    private void addPortDescriptions(FishingActivityViewDTO fishingActivityViewDTO) {
-        if (fishingActivityViewDTO == null) {
-            return;
-        }
-        final List<String> columnsList = new ArrayList<>(Collections.singletonList("code"));
-        for (FluxLocationDto fluxLocationDto : Utils.safeIterable(fishingActivityViewDTO.getLocations())) {
-            if ("LOCATION".equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
-                try {
-                    String filter = fluxLocationDto.getFluxLocationIdentifier();
-                    List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr("LOCATION", filter, columnsList, 1, "description").get("description");
-                    String codeDescription = codeDescriptions.get(0);
-                    fluxLocationDto.setPortDescription(codeDescription);
-                } catch (IndexOutOfBoundsException iobe) {
-                    log.error("Error while trying to set port description on FluxLocationDto! Description for code: " + fluxLocationDto.getTypeCode() + " doesn't exist", iobe);
-                }
-            }
-        }
-    }
-
-    /**
-     *  Return the full history of this activity.
-     *
-     * @param fishingActivity
-     */
-    private List<ActivityHistoryDtoElement> getActivityHistory(FishingActivityEntity fishingActivity) {
-        if (fishingActivity == null || fishingActivity.getFaReportDocument() == null) {
-            log.error("fishingActivity or fishingActivityTime ");
-            return new ArrayList<>();
-        }
-        return mapFromReportsToActivityHistory(faReportDocumentDao.getHistoryOfFaReport(fishingActivity.getFaReportDocument()), fishingActivity.getTypeCode());
-    }
-
-    private List<ActivityHistoryDtoElement> mapFromReportsToActivityHistory(List<FaReportDocumentEntity> fullHistoryReportsList, String activityType) {
-        List<ActivityHistoryDtoElement> dtoElements = new ArrayList<>();
-        if (CollectionUtils.isEmpty(fullHistoryReportsList)) {
-            return dtoElements;
-        }
-
-        for (FaReportDocumentEntity faRep : fullHistoryReportsList) {
-            int purposeCode = Integer.parseInt(faRep.getFluxReportDocument().getPurposeCode());
-            Set<FishingActivityEntity> fishingActivities = faRep.getFishingActivities();
-            List<Integer> activityIdList = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(fishingActivities)) { // In case of deletion or cancellation report this list is empty..
-                for (FishingActivityEntity fishingActivity : fishingActivities) {
-                    if (StringUtils.equals(fishingActivity.getTypeCode(), activityType)) {
-                        activityIdList.add(fishingActivity.getId());
-                    }
-                }
-            } else if(purposeCode == 1 || purposeCode == 3){ // in deletion/cancellation cases we need to populate the activityIds from the report this one deleted
-                String referenceId = faRep.getFluxReportDocument().getReferenceId();
-                for (FaReportDocumentEntity faFromHistory : fullHistoryReportsList) {
-                    if (referenceId.equalsIgnoreCase(faFromHistory.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId())) {
-                        for (FishingActivityEntity fishingActivity : faFromHistory.getFishingActivities()) {
-                            activityIdList.add(fishingActivity.getId());
-                        }
-                    }
-                }
-
-            }
-            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDateTimeAsDate().orElse(null), purposeCode, activityIdList));
-        }
-        Collections.sort(dtoElements);
-        return dtoElements;
     }
 
     public int getPreviousFishingActivity(int fishingActivityId) {
