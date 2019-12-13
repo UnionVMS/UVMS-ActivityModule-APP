@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
@@ -33,6 +34,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +59,244 @@ public class ActivityServiceBeanTest {
 
     @Mock
     private SpatialModuleService spatialModule;
+
+    @Test
+    public void getNextFishingActivity() {
+        // Given
+        int fishingActivityId = 5;
+        int expectedNextFishingActivityId = 18;
+
+        Instant now = Instant.now();
+
+        FishingTripEntity fishingTrip = new FishingTripEntity();
+
+        FishingActivityEntity first = new FishingActivityEntity();
+        first.setId(expectedNextFishingActivityId);
+        first.setOccurence(now.plus(5, ChronoUnit.MINUTES));
+
+        FishingActivityEntity second = new FishingActivityEntity();
+        second.setId(2);
+        second.setOccurence(now.minus(1, ChronoUnit.MINUTES));
+
+        FishingActivityEntity third = new FishingActivityEntity();
+        third.setId(fishingActivityId);
+        third.setOccurence(now);
+
+        FishingActivityEntity fourth = new FishingActivityEntity();
+        fourth.setId(10);
+        fourth.setOccurence(now.plus(55, ChronoUnit.MINUTES));
+
+        FishingActivityEntity fifth = new FishingActivityEntity();
+        fifth.setId(8);
+        fifth.setOccurence(now.minus(20, ChronoUnit.MINUTES));
+
+        fishingTrip.getFishingActivities().add(first);
+        fishingTrip.getFishingActivities().add(second);
+        fishingTrip.getFishingActivities().add(third);
+        fishingTrip.getFishingActivities().add(fourth);
+        fishingTrip.getFishingActivities().add(fifth);
+
+        third.setFishingTrip(fishingTrip);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(third);
+
+        // When
+        int nextFishingActivity = activityService.getNextFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(expectedNextFishingActivityId, nextFishingActivity);
+    }
+
+    @Test
+    public void getNextFishingActivity_noNextActivity() {
+        // Given
+        int fishingActivityId = 5;
+
+        Instant now = Instant.now();
+
+        FishingTripEntity fishingTrip = new FishingTripEntity();
+
+        FishingActivityEntity fishingActivity = new FishingActivityEntity();
+        fishingActivity.setId(1);
+        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
+
+        fishingTrip.getFishingActivities().add(fishingActivity);
+
+        fishingActivity.setFishingTrip(fishingTrip);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(fishingActivity);
+
+        // When
+        int nextFishingActivity = activityService.getNextFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(-1, nextFishingActivity);
+    }
+
+    @Test
+    public void getNextFishingActivity_noActivity() {
+        // Given
+        int fishingActivityId = 5;
+
+        Instant now = Instant.now();
+
+        FishingTripEntity fishingTrip = new FishingTripEntity();
+
+        FishingActivityEntity fishingActivity = new FishingActivityEntity();
+        fishingActivity.setId(1);
+        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
+
+        fishingTrip.getFishingActivities().add(fishingActivity);
+
+        fishingActivity.setFishingTrip(fishingTrip);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(null);
+
+        // When
+        int nextFishingActivity = activityService.getNextFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(-1, nextFishingActivity);
+    }
+
+    @Test
+    public void getNextFishingActivity_noFishingTrip() {
+        // Given
+        int fishingActivityId = 5;
+
+        FishingActivityEntity fishingActivity = new FishingActivityEntity();
+
+        fishingActivity.setFishingTrip(null);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(fishingActivity);
+
+        // When
+        int nextFishingActivity = activityService.getNextFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(-1, nextFishingActivity);
+    }
+
+    @Test
+    public void getPreviousFishingActivity() {
+        // Given
+        int fishingActivityId = 5;
+        int expectedPreviousFishingActivityId = 18;
+
+        Instant now = Instant.now();
+
+        FishingTripEntity fishingTrip = new FishingTripEntity();
+
+        FishingActivityEntity first = new FishingActivityEntity();
+        first.setId(4);
+        first.setOccurence(now.plus(5, ChronoUnit.MINUTES));
+
+        FishingActivityEntity second = new FishingActivityEntity();
+        second.setId(2);
+        second.setOccurence(now.minus(21, ChronoUnit.MINUTES));
+
+        FishingActivityEntity third = new FishingActivityEntity();
+        third.setId(fishingActivityId);
+        third.setOccurence(now);
+
+        FishingActivityEntity fourth = new FishingActivityEntity();
+        fourth.setId(10);
+        fourth.setOccurence(now.plus(55, ChronoUnit.MINUTES));
+
+        FishingActivityEntity fifth = new FishingActivityEntity();
+        fifth.setId(expectedPreviousFishingActivityId);
+        fifth.setOccurence(now.minus(20, ChronoUnit.MINUTES));
+
+        fishingTrip.getFishingActivities().add(first);
+        fishingTrip.getFishingActivities().add(second);
+        fishingTrip.getFishingActivities().add(third);
+        fishingTrip.getFishingActivities().add(fourth);
+        fishingTrip.getFishingActivities().add(fifth);
+
+        third.setFishingTrip(fishingTrip);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(third);
+
+        // When
+        int previousFishingActivity = activityService.getPreviousFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(expectedPreviousFishingActivityId, previousFishingActivity);
+    }
+
+    @Test
+    public void getPreviousFishingActivity_noPreviousActivity() {
+        // Given
+        int fishingActivityId = 5;
+
+        Instant now = Instant.now();
+
+        FishingTripEntity fishingTrip = new FishingTripEntity();
+
+        FishingActivityEntity fishingActivity = new FishingActivityEntity();
+        fishingActivity.setId(1);
+        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
+
+        fishingTrip.getFishingActivities().add(fishingActivity);
+
+        fishingActivity.setFishingTrip(fishingTrip);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(fishingActivity);
+
+        // When
+        int previousFishingActivity = activityService.getPreviousFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(-1, previousFishingActivity);
+    }
+
+    @Test
+    public void getPreviousFishingActivity_noActivity() {
+        // Given
+        int fishingActivityId = 5;
+
+        Instant now = Instant.now();
+
+        FishingTripEntity fishingTrip = new FishingTripEntity();
+
+        FishingActivityEntity fishingActivity = new FishingActivityEntity();
+        fishingActivity.setId(1);
+        fishingActivity.setOccurence(now.plus(5, ChronoUnit.MINUTES));
+
+        fishingTrip.getFishingActivities().add(fishingActivity);
+
+        fishingActivity.setFishingTrip(fishingTrip);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(null);
+
+        // When
+        int previousFishingActivity = activityService.getPreviousFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(-1, previousFishingActivity);
+    }
+
+    @Test
+    public void getPreviousFishingActivity_noFishingTrip() {
+        // Given
+        int fishingActivityId = 5;
+
+        FishingTripEntity fishingTrip = new FishingTripEntity();
+
+        FishingActivityEntity fishingActivity = new FishingActivityEntity();
+
+        fishingTrip.getFishingActivities().add(fishingActivity);
+
+        fishingActivity.setFishingTrip(null);
+
+        when(fishingActivityDao.getFishingActivityById(fishingActivityId, null)).thenReturn(fishingActivity);
+
+        // When
+        int previousFishingActivity = activityService.getPreviousFishingActivity(fishingActivityId);
+
+        // Then
+        assertEquals(-1, previousFishingActivity);
+    }
 
     @Test
     @SneakyThrows
