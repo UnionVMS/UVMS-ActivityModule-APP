@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.dto.facatch;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 /**
  * Created by kovian on 03/03/2017.
@@ -20,31 +18,24 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActiv
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FaCatchDenomLocationDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String territory;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String faoArea;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String icesStatRectangle;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String effortZone;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String rfmo;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String gfcmGsa;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String gfcmStatRectangle;
 

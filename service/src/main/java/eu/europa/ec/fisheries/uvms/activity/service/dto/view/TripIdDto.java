@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 /**
  * Created by sanera on 23/03/2017.
@@ -20,10 +18,8 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActiv
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TripIdDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String id;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String schemeId;
 
     public String getId() {

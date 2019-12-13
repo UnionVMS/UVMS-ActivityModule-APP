@@ -12,8 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 import java.util.List;
 import java.util.Map;
@@ -23,34 +21,24 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class GearShotRetrievalDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String occurrence;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private int activityId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double duration;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Double calculatedDuration;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String durationMeasure;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private GearDto gear;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private Map<String, String> characteristics;
 
-    @JsonView({FishingActivityView.FishingOperation.class, FishingActivityView.GearShotAndRetrieval.class})
     private List<GearProblemDto> gearProblems;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private FluxLocationDto location;
 
     public String getType() {

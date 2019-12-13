@@ -13,26 +13,17 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.facatch;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView.CommonView;
-
 @JsonInclude(Include.NON_NULL)
 public class FaCatchGroupDto {
 
-    @JsonView(CommonView.class)
     private Double calculatedWeight;
-    @JsonView(CommonView.class)
     private String type;
-    @JsonView(CommonView.class)
     private String species;
-    @JsonView(CommonView.class)
     private FaCatchDenomLocationDto locations;
-
-    @JsonView(CommonView.class)
     private Map<String, FaCatchGroupDetailsDto> groupingDetails;
 
     public FaCatchGroupDto() {
