@@ -119,18 +119,6 @@ public class FishingTripResource extends UnionVMSResource {
     }
 
     @GET
-    @Path("/cronology/{tripId}/{count}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Interceptors(ActivityExceptionInterceptor.class)
-    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getCronologyOfFishingTrip(@Context HttpServletRequest request,
-                                              @Context HttpServletResponse response,
-                                              @PathParam("tripId") String tripId,
-                                              @PathParam("count") Integer count) throws ServiceException {
-        return createSuccessResponse(fishingTripService.getCronologyOfFishingTrip(tripId, count));
-    }
-
-    @GET
     @Path("/mapData/{tripId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)

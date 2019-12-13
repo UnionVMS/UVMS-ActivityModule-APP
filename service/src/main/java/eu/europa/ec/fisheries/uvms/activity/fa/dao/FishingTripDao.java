@@ -36,10 +36,6 @@ import java.util.Set;
 @Slf4j
 public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
 
-    private static final String VESSEL_ID = "vesselId";
-    private static final String VESSEL_SCHEME_ID = "vesselSchemeId";
-    private static final String TRIP_ID = "tripId";
-
     private EntityManager em;
 
     public FishingTripDao(EntityManager em) {
@@ -117,36 +113,4 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(), Object[].class);
         return search.fillInValuesForQuery(query, typedQuery);
     }
-
-    public FishingTripEntity getCurrentTrip(String vesselId, String vesselSchemeId) {
-        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIPS_FOR_VESSEL_ORDERED_BY_DATE_LATEST_FIRST, FishingTripEntity.class);
-        query.setParameter(VESSEL_ID, vesselId);
-        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
-        query.setMaxResults(1);
-        List<FishingTripEntity> fishingTripIdentifies = query.getResultList();
-        if (CollectionUtils.isNotEmpty(fishingTripIdentifies)) {
-            return fishingTripIdentifies.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    public List<FishingTripEntity> getPreviousTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
-        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIPS_BEFORE_TRIP_WITH_ID, FishingTripEntity.class);
-        query.setParameter(VESSEL_ID, vesselId);
-        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
-        query.setParameter(TRIP_ID, tripId);
-        query.setMaxResults(limit);
-        return query.getResultList();
-    }
-
-    public List<FishingTripEntity> getNextTrips(String vesselId, String vesselSchemeId, String tripId, Integer limit) {
-        TypedQuery<FishingTripEntity> query = getEntityManager().createNamedQuery(FishingTripEntity.FIND_TRIPS_AFTER_TRIP_WITH_ID, FishingTripEntity.class);
-        query.setParameter(VESSEL_ID, vesselId);
-        query.setParameter(VESSEL_SCHEME_ID, vesselSchemeId);
-        query.setParameter(TRIP_ID, tripId);
-        query.setMaxResults(limit);
-        return query.getResultList();
-    }
-
 }
