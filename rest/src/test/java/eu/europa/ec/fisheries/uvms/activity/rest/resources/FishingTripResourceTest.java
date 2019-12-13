@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.ContactPartyDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
@@ -40,13 +41,15 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -58,7 +61,6 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         super.setUp();
     }
 
-    @Ignore("TODO fix for new test data")
     @Test
     public void getFishingTripSummary_noGeometry() throws JsonProcessingException {
         // Given
@@ -67,7 +69,7 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         String responseAsString = getWebTarget()
                 .path("trip")
                 .path("reports")
-                .path("QPS-ECV-7513J636531W5")
+                .path("UUR-XSM-45913768")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .header("scopeName", null) // "null" means that we will not look up any geometry
@@ -87,27 +89,95 @@ public class FishingTripResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         FishingTripSummaryViewDTO data = responseDto.getData();
-        assertEquals(1, data.getSummary().size());
+        assertEquals(2, data.getSummary().size());
+
         FishingActivityTypeDTO departure = data.getSummary().get("DEPARTURE");
-        assertEquals(1351923792000L, departure.getDate().getTime());
+        assertEquals(1364927847000L, departure.getDate().getTime());
+        assertNull(departure.getLocations());
+
+        FishingActivityTypeDTO arrival = data.getSummary().get("ARRIVAL");
+        assertEquals(1365102447000L, arrival.getDate().getTime());
+        assertNull(arrival.getLocations());
 
         List<ReportDTO> activityReports = data.getActivityReports();
-        assertEquals(2, activityReports.size());
+        assertEquals(22, activityReports.size());
 
-        ReportDTO activityReportDto0 = activityReports.get(0);
-        ReportDTO activityReportDto1 = activityReports.get(1);
+        assertReportDto(activityReports.get(0), 1365087630000L, "NOTIFICATION", false, "8b84d89d-57c5-456f-a96a-f60a035f8bf8", null, "ARRIVAL", 1365100647000L, "LAN", null);
+        assertReportDto(activityReports.get(1), 1365091060000L, "NOTIFICATION", true, "14bdf7bd-a5db-4aa5-b8b8-0cc5ed7d7ab2", "8b84d89d-57c5-456f-a96a-f60a035f8bf8", "ARRIVAL", 1365100647000L, "LAN", null);
+        assertReportDto(activityReports.get(2), 1365115480000L, "DECLARATION", false, "a84f1363-6a23-4a49-975a-e73c95837bcb", null, "ARRIVAL", 1365102447000L, null, null);
+        assertReportDto(activityReports.get(3), 1364927280000L, "DECLARATION", false, "094946e6-544b-4e42-85e6-a199774a31c1", null, "DEPARTURE", 1364927847000L, "FIS", null);
+        for (int i = 4; i <= 19; i++) {
+            assertIsGenericFishingOperation(activityReports.get(i));
+        }
+        assertReportDto(activityReports.get(20), 1365115483000L, "DECLARATION", false, "8c90fa8b-9778-4b08-811b-050608589590", null, "LANDING", null, null, new DelimitedPeriodDTO(new Date(1365104247000L), new Date(1365104247000L), null, null));
+        assertReportDto(activityReports.get(21), 1365175252000L, "DECLARATION", true, "27d8c389-c792-4271-90d4-e7108d6f5f79", "8c90fa8b-9778-4b08-811b-050608589590", "LANDING", null, null, new DelimitedPeriodDTO(new Date(1365104247000L), new Date(1365104247000L), null, null));
+    }
 
-        assertEquals(Instant.parse("2012-11-03T06:23:12Z"), activityReportDto0.getOccurence().toInstant());
-        assertEquals(Instant.parse("2012-11-07T21:48:12Z"), activityReportDto0.getFaReportAcceptedDateTime().toInstant());
-        assertEquals(14, activityReportDto0.getFishingActivityId());
-        assertEquals(14, activityReportDto0.getFaReportID());
-        assertEquals("DEPARTURE", activityReportDto0.getActivityType());
+    private void assertReportDto(ReportDTO dto, long acceptedDateTime, String type, boolean correction, String faUniqueReportId, String faReferenceId, String activityType, Long occurrence, String reason, DelimitedPeriodDTO delimitedPeriodDTO) {
+        assertEquals(acceptedDateTime, dto.getFaReportAcceptedDateTime().getTime());
+        assertEquals(type, dto.getFaReportDocumentType());
+        assertNull(dto.getLocations());
+        assertEquals(correction, dto.isCorrection());
+        assertNull(dto.getUniqueFAReportId());
+        assertNotEquals(0, dto.getFishingActivityId());
+        assertNotEquals(0, dto.getFaReportID());
+        assertEquals(0, dto.getCancelingReportID());
+        assertEquals(0, dto.getDeletingReportID());
+        assertEquals(faUniqueReportId, dto.getFaUniqueReportID());
+        assertEquals(faUniqueReportId == null ? null : "UUID", dto.getFaUniqueReportSchemeID());
+        assertEquals(faReferenceId, dto.getFaReferenceID());
+        assertEquals(faReferenceId == null ? null : "UUID", dto.getFaReferenceSchemeID());
+        assertEquals(activityType, dto.getActivityType());
+        assertNull(dto.getGeometry());
 
-        assertEquals(Instant.parse("2012-11-04T00:30:12Z"), activityReportDto1.getOccurence().toInstant());
-        assertEquals(Instant.parse("2012-11-07T21:48:13Z"), activityReportDto1.getFaReportAcceptedDateTime().toInstant());
-        assertEquals(15, activityReportDto1.getFishingActivityId());
-        assertEquals(15, activityReportDto1.getFaReportID());
-        assertEquals("FISHING_OPERATION", activityReportDto1.getActivityType());
+        if (occurrence == null) {
+            assertNull(dto.getOccurence());
+        } else {
+            assertEquals(occurrence.longValue(), dto.getOccurence().getTime());
+        }
+        assertEquals(reason, dto.getReason());
+        assertEquals(correction ? "5" : "9", dto.getPurposeCode());
+        assertNull(dto.getFluxLocations());
+        assertNull(dto.getFluxCharacteristics());
+
+        if (delimitedPeriodDTO == null) {
+            assertTrue(dto.getDelimitedPeriod() == null || dto.getDelimitedPeriod().isEmpty());
+        } else {
+            assertEquals(1, dto.getDelimitedPeriod().size());
+            assertEquals(delimitedPeriodDTO.getStartDate(), dto.getDelimitedPeriod().get(0).getStartDate());
+            assertEquals(delimitedPeriodDTO.getEndDate(), dto.getDelimitedPeriod().get(0).getEndDate());
+            assertEquals(delimitedPeriodDTO.getDuration(), dto.getDelimitedPeriod().get(0).getDuration());
+            assertEquals(delimitedPeriodDTO.getUnitCode(), dto.getDelimitedPeriod().get(0).getUnitCode());
+        }
+    }
+
+    private void assertIsGenericFishingOperation(ReportDTO dto) {
+        assertNotNull(dto.getFaReportAcceptedDateTime());
+        assertEquals("DECLARATION", dto.getFaReportDocumentType());
+        assertNull(dto.getLocations());
+        assertNull(dto.getUniqueFAReportId());
+        assertNotEquals(0, dto.getFishingActivityId());
+        assertNotEquals(0, dto.getFaReportID());
+        assertEquals(0, dto.getCancelingReportID());
+        assertEquals(0, dto.getDeletingReportID());
+        assertNotNull(dto.getFaUniqueReportID());
+        assertEquals("UUID", dto.getFaUniqueReportSchemeID());
+        if (dto.isCorrection()) {
+            assertNotNull(dto.getFaReferenceID());
+            assertEquals("UUID", dto.getFaReferenceSchemeID());
+        } else {
+            assertNull(dto.getFaReferenceID());
+            assertNull(dto.getFaReferenceSchemeID());
+        }
+        assertEquals("FISHING_OPERATION", dto.getActivityType());
+        assertNull(dto.getGeometry());
+        assertNotNull(dto.getOccurence());
+        assertNull(dto.getReason());
+        assertEquals(dto.isCorrection() ? "5" : "9", dto.getPurposeCode());
+        assertNull(dto.getFluxLocations());
+        assertEquals(1, dto.getFishingGears().size());
+        assertNull(dto.getFluxCharacteristics());
+        assertEquals(1, dto.getDelimitedPeriod().size());
     }
 
     @Ignore("TODO fix for new test data")
