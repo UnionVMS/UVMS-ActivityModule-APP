@@ -16,8 +16,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.GearCharacteristicsMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base.ViewConstants;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -45,13 +43,13 @@ public class GearCharacteristicsMapperTest {
                 toBuilder(). // weird way of creating the builder, but otherwise Lombok removes field initializers
                         valueMeasure(20.25).
                         valueMeasureUnitCode("kg").
-                        typeCode(ViewConstants.GEAR_CHARAC_TYPE_CODE_GD).
+                        typeCode(GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GD).
                         description("Trawls & Seines")
                 .build();
 
         return $(
-                $(entity, ViewConstants.GEAR_CHARAC_TYPE_CODE_GD, GearDto.builder().description("Trawls & Seines").build()),
-                $(entity, ViewConstants.GEAR_CHARAC_TYPE_CODE_ME, GearDto.builder().meshSize("20.25kg").build())
+                $(entity, GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GD, GearDto.builder().description("Trawls & Seines").build()),
+                $(entity, GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_ME, GearDto.builder().meshSize("20.25kg").build())
                 // TODO TEST ALL CASES
         );
     }

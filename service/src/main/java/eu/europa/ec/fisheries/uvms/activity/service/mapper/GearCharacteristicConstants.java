@@ -8,14 +8,14 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http//www.gnu.org/licenses/>.
 
 */
-package eu.europa.ec.fisheries.uvms.activity.service.mapper.view.base;
+package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 /**
  * Created by kovian on 14/02/2017.
  */
-public final class ViewConstants {
+public final class GearCharacteristicConstants {
 
-    private ViewConstants(){
+    private GearCharacteristicConstants(){
         super();
     }
     public static final String GEAR_CHARAC_TYPE_CODE_ME = "ME";
