@@ -402,16 +402,26 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     }
 
     public int getPreviousFishingActivity(int fishingActivityId) {
-        log.info("Retrieve fishing activity from db: {}", fishingActivityId);
-        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info("activityEntity received from db Id: {} typeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        FishingTripEntity fishingTrip = getFishingTripForActivity(fishingActivityId);
 
-        FishingTripEntity fishingTrip = activityEntity.getFishingTrip();
         Set<FishingActivityEntity> fishingActivities = fishingTrip.getFishingActivities();
-
         List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>(fishingActivities);
         fishingActivityEntityList.sort(Comparator.comparing(FishingActivityEntity::getOccurence).reversed());
 
+        return getNextActivityInList(fishingActivityId, fishingActivityEntityList);
+    }
+
+    public int getNextFishingActivity(int fishingActivityId) {
+        FishingTripEntity fishingTrip = getFishingTripForActivity(fishingActivityId);
+
+        Set<FishingActivityEntity> fishingActivities = fishingTrip.getFishingActivities();
+        List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>(fishingActivities);
+        fishingActivityEntityList.sort(Comparator.comparing(FishingActivityEntity::getOccurence));
+
+        return getNextActivityInList(fishingActivityId, fishingActivityEntityList);
+    }
+
+    private int getNextActivityInList(int fishingActivityId, List<FishingActivityEntity> fishingActivityEntityList) {
         int index = -1;
         for (int i = 0; i < fishingActivityEntityList.size(); i++) {
             FishingActivityEntity fishingActivityEntity = fishingActivityEntityList.get(i);
@@ -427,31 +437,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return index;
     }
 
-
-    public int getNextFishingActivity(int fishingActivityId) {
+    private FishingTripEntity getFishingTripForActivity(int fishingActivityId) {
         log.info("Retrieve fishing activity from db: {}", fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
         log.info("activityEntity received from db Id: {} typeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
 
-        FishingTripEntity fishingTrip = activityEntity.getFishingTrip();
-        Set<FishingActivityEntity> fishingActivities = fishingTrip.getFishingActivities();
-
-        List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>(fishingActivities);
-
-        fishingActivityEntityList.sort(Comparator.comparing(FishingActivityEntity::getOccurence));
-
-        int index = -1;
-        for (int i = 0; i < fishingActivityEntityList.size(); i++) {
-            FishingActivityEntity fishingActivityEntity = fishingActivityEntityList.get(i);
-            if (fishingActivityEntity.getId() == fishingActivityId) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index > -1 && index < fishingActivityEntityList.size() - 1) {
-            return fishingActivityEntityList.get(index + 1).getId();
-        }
-        return index;
+        return activityEntity.getFishingTrip();
     }
 }
