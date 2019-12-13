@@ -403,6 +403,9 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     public int getPreviousFishingActivity(int fishingActivityId) {
         FishingTripEntity fishingTrip = getFishingTripForActivity(fishingActivityId);
+        if (fishingTrip == null) {
+            return -1;
+        }
 
         Set<FishingActivityEntity> fishingActivities = fishingTrip.getFishingActivities();
         List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>(fishingActivities);
@@ -413,12 +416,28 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     public int getNextFishingActivity(int fishingActivityId) {
         FishingTripEntity fishingTrip = getFishingTripForActivity(fishingActivityId);
+        if (fishingTrip == null) {
+            return -1;
+        }
 
         Set<FishingActivityEntity> fishingActivities = fishingTrip.getFishingActivities();
         List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>(fishingActivities);
         fishingActivityEntityList.sort(Comparator.comparing(FishingActivityEntity::getOccurence));
 
         return getNextActivityInList(fishingActivityId, fishingActivityEntityList);
+    }
+
+    private FishingTripEntity getFishingTripForActivity(int fishingActivityId) {
+        FishingActivityEntity fishingActivity = getFishingActivity(fishingActivityId);
+        if (fishingActivity == null) {
+            log.warn("Could not find Fishing Activity for ID: {}", fishingActivityId);
+            return null;
+        }
+        FishingTripEntity fishingTrip = fishingActivity.getFishingTrip();
+        if (fishingTrip == null) {
+            log.warn("Could not find Fishing Trip on Activity with ID: {}", fishingActivityId);
+        }
+        return fishingTrip;
     }
 
     private int getNextActivityInList(int fishingActivityId, List<FishingActivityEntity> fishingActivityEntityList) {
@@ -437,11 +456,13 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return index;
     }
 
-    private FishingTripEntity getFishingTripForActivity(int fishingActivityId) {
-        log.info("Retrieve fishing activity from db: {}", fishingActivityId);
+    private FishingActivityEntity getFishingActivity(int fishingActivityId) {
+        log.info("Retrieve fishing activity from database: {}", fishingActivityId);
         FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
-        log.info("activityEntity received from db Id: {} typeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
-
-        return activityEntity.getFishingTrip();
+        if (activityEntity == null) {
+            return null;
+        }
+        log.info("FishingActivityEntity loaded from database. ID: {} TypeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return activityEntity;
     }
 }
