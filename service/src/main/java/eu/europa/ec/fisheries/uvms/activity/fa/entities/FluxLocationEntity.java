@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.AllArgsConstructor;
@@ -25,12 +26,11 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -90,17 +90,15 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "country_id")
 	private String countryId;
 
-	@Column(name = "rfmo_code")
-	private String rfmoCode; // TODO remove column this was replaced by regionalFisheriesManagementOrganizationCode
-
 	@Column(precision = 17, scale = 17)
 	private Double longitude;
 
 	@Column(precision = 17, scale = 17)
 	private Double latitude;
 
-	@Column(name = "flux_location_type", nullable = false)
-	private String fluxLocationType;
+	@Column(name = "flux_location_catch_type_mapper_info", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private FluxLocationCatchTypeEnum fluxLocationCatchTypeMapperInfo;
 
 	@Column(name = "country_id_scheme_id")
 	private String countryIdSchemeId;
@@ -123,20 +121,11 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "name_laguage_id")
 	private String nameLanguageId;
 
-	@Embedded
-	@AttributeOverrides({
-			@AttributeOverride( name = "value", column = @Column(name = "codetype_value")),
-			@AttributeOverride( name = "listID", column = @Column(name = "codetype_listID")),
-			@AttributeOverride( name = "listAgencyID", column = @Column(name = "codetype_listAgencyID")),
-			@AttributeOverride( name = "listAgencyName", column = @Column(name = "codetype_listAgencyName")),
-			@AttributeOverride( name = "listName", column = @Column(name = "codetype_listName")),
-			@AttributeOverride( name = "listVersionID", column = @Column(name = "codetype_listVersionID")),
-			@AttributeOverride( name = "name", column = @Column(name = "codetype_name")),
-			@AttributeOverride( name = "languageID", column = @Column(name = "codetype_languageID")),
-			@AttributeOverride( name = "listURI", column = @Column(name = "codetype_listURI")),
-			@AttributeOverride( name = "listSchemeURI", column = @Column(name = "codetype_listSchemeURI"))
-	})
-	private CodeType regionalFisheriesManagementOrganizationCode;
+	@Column(name = "rfmo_code")
+	private String regionalFisheriesManagementOrganizationCode;
+
+	@Column(name = "rfmo_code_list_id")
+	private String regionalFisheriesManagementOrganizationCodeListId;
 
 	@Column(name = "sovereign_rights_country_code")
 	private String sovereignRightsCountryCode;
