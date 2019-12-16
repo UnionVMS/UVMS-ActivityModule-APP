@@ -371,6 +371,12 @@
                 <artifactId>uvms-test</artifactId>
                 <version>${uvms.test.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.ninja-squad</groupId>
+                        <artifactId>DbSetup</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
