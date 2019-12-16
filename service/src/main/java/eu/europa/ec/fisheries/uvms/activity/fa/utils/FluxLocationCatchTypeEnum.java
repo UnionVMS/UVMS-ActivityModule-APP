@@ -13,18 +13,9 @@ package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 
 public enum FluxLocationCatchTypeEnum {
 
-    FA_CATCH_SPECIFIED("fa_catch_specified"),
-    FA_CATCH_DESTINATION("fa_catch_destination"),
-    FA_RELATED("fa_related"),
-    GEAR_PROBLEM("gear_problem");
+    FA_CATCH_SPECIFIED,
+    FA_CATCH_DESTINATION,
+    FA_RELATED,
+    GEAR_PROBLEM;
 
-    private String type;
-
-    FluxLocationCatchTypeEnum(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return this.type;
-    }
 }

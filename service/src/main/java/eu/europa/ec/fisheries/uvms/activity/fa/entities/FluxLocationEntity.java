@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,8 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -94,7 +97,8 @@ public class FluxLocationEntity implements Serializable {
 	private Double latitude;
 
 	@Column(name = "flux_location_catch_type_mapper_info", nullable = false)
-	private String fluxLocationCatchTypeMapperInfo;
+	@Enumerated(EnumType.STRING)
+	private FluxLocationCatchTypeEnum fluxLocationCatchTypeMapperInfo;
 
 	@Column(name = "country_id_scheme_id")
 	private String countryIdSchemeId;

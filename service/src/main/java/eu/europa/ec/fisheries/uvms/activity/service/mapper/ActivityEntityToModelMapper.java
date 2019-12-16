@@ -221,10 +221,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         List<FLUXLocation> specified = new ArrayList<>();
         List<FLUXLocation> destination = new ArrayList<>();
         for (FluxLocationEntity fluxLocation : Utils.safeIterable(fluxLocations)) {
-            if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType().equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
+            if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
                 specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
             }
-            if (FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType().equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
+            if (FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
                 destination.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
             }
         }

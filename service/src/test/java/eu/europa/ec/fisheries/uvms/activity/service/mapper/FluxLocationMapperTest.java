@@ -60,9 +60,8 @@ public class FluxLocationMapperTest {
 
     private FluxLocationEntity getFluxLocationEntityMock() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationCatchTypeEnum fluxLocationCatchTypeEnum = FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED;
         FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-        fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(fluxLocationCatchTypeEnum.getType());
+        fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
         return fluxLocationEntity;
     }
 }

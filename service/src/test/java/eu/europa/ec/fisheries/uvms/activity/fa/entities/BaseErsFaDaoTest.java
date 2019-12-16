@@ -393,31 +393,31 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
                             "flux_location_catch_type_mapper_info", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "namevalue",
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
-                    .values(1, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "J", "EFFORT_ZONE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(1, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "J", "EFFORT_ZONE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(2, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "IRL", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(2, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "IRL", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(3, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(3, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(4, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(4, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(5, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(5, 2, 1, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(6, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(6, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(8, 5, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(8, 5, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(7, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(7, 6, 6, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(9, 5,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(9, 5,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(10, 3, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(10, 3, 7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "GBR", "TERRITORY", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(11, 3,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(11, 3,7, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(12, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(12, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
-                    .values(13, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
+                    .values(13, 9,9, "LOCATION", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "FA_CATCH_SPECIFIED", "38F1", "ICES_STAT_RECTANGLE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
                     .build()
 
