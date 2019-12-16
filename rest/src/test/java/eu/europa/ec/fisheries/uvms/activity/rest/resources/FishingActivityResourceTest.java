@@ -15,7 +15,9 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginatedResponse;
+import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -33,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -89,14 +92,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -138,6 +134,263 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         }
     }
 
+    @Test
+    public void listActivityReportsByQuery_multipleActivityTypes() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        List<String> activityTypeValues = new ArrayList<>();
+        activityTypeValues.add("FISHING_OPERATION");
+        activityTypeValues.add("DEPARTURE");
+        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        // When
+        String responseAsString = list(query);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FishingActivityReportDTO> resultList = responseDto.getResultList();
+
+        assertEquals(41, responseDto.getTotalItemsCount());
+        assertEquals(41, resultList.size());
+
+        for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
+            String activityType = fishingActivityReportDTO.getActivityType();
+            assertTrue(activityType.equals("FISHING_OPERATION") || activityType.equals("DEPARTURE"));
+        }
+    }
+
+    @Test
+    public void listActivityReportsByQuery_byReportId() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        // When
+        String responseAsString = list(query);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FishingActivityReportDTO> resultList = responseDto.getResultList();
+
+        FishingActivityReportDTO fishingActivityReportDTO = resultList.get(0);
+        int faReportID = fishingActivityReportDTO.getFaReportID();
+
+        FishingActivityQuery query2 = new FishingActivityQuery();
+
+        query2.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, Integer.toString(faReportID));
+        query2.setSearchCriteriaMap(searchCriteriaMap);
+
+        String responseString2 = list(query2);
+
+        PaginatedResponse<FishingActivityReportDTO> response2 =
+                objectMapper.readValue(responseString2, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, response2.getCode());
+
+        List<FishingActivityReportDTO> resultList2 = response2.getResultList();
+
+        assertEquals(1, response2.getTotalItemsCount());
+        assertEquals(1, resultList2.size());
+
+        FishingActivityReportDTO dto = resultList2.get(0);
+        assertEquals(faReportID, dto.getFaReportID());
+    }
+
+    @Test
+    public void listActivityReportsByQuery_byReportType() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        // When
+        String responseAsString = list(query);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FishingActivityReportDTO> resultList = responseDto.getResultList();
+
+        assertEquals(49, responseDto.getTotalItemsCount());
+        assertEquals(49, resultList.size());
+
+        for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
+            assertEquals("DECLARATION", fishingActivityReportDTO.getFAReportType());
+        }
+    }
+
+    @Test
+    public void listActivityReportsByQuery_byReportType_withPagination() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query1 = new FishingActivityQuery();
+        FishingActivityQuery query2 = new FishingActivityQuery();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query1.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+        query2.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+        query1.setSearchCriteriaMap(searchCriteriaMap);
+        query2.setSearchCriteriaMap(searchCriteriaMap);
+
+        PaginationDto pagination1 = new PaginationDto();
+        pagination1.setPageSize(2);
+        pagination1.setOffset(0);
+        query1.setPagination(pagination1);
+
+        PaginationDto pagination2 = new PaginationDto();
+        pagination2.setPageSize(2);
+        pagination2.setOffset(1); // note: offset is 1 item, not 1 page
+        query2.setPagination(pagination2);
+
+        // make sorting deterministic
+        SortKey sortingDto = new SortKey();
+        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
+        sortingDto.setReversed(false);
+        query1.setSorting(sortingDto);
+        query2.setSorting(sortingDto);
+
+        // When
+        String query1Response = list(query1);
+
+        String query2Response = list(query2);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> response1 =
+                objectMapper.readValue(query1Response, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        PaginatedResponse<FishingActivityReportDTO> response2 =
+                objectMapper.readValue(query2Response, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, response1.getCode());
+        assertEquals(200, response2.getCode());
+
+        List<FishingActivityReportDTO> resultList1 = response1.getResultList();
+        List<FishingActivityReportDTO> resultList2 = response2.getResultList();
+
+        assertEquals(49, response1.getTotalItemsCount());
+        assertEquals(2, resultList1.size());
+
+        assertEquals(49, response2.getTotalItemsCount());
+        assertEquals(2, resultList2.size());
+
+        assertEquals(resultList2.get(0).getFishingActivityId(), resultList1.get(1).getFishingActivityId());
+    }
+
+    @Test
+    public void listActivityReportsByQuery_byPort() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.PORT, "PAZIM");
+        query.setSearchCriteriaMap(searchCriteriaMap);
+
+        // When
+        String responseAsString = list(query);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FishingActivityReportDTO> resultList = responseDto.getResultList();
+
+        assertEquals(4, responseDto.getTotalItemsCount());
+        assertEquals(4, resultList.size());
+
+        for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
+            List<String> portList = fishingActivityReportDTO.getPort();
+            assertEquals(1, portList.size());
+
+            String port = portList.get(0);
+            assertEquals("PAZIM", port);
+        }
+    }
+
+    @Test
+    public void listActivityReportsByQuery_incorrectPurposeCode_expectNoResults() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("929"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        // When
+        String responseAsString = list(query);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FishingActivityReportDTO> resultList = responseDto.getResultList();
+
+        assertEquals(0, responseDto.getTotalItemsCount());
+        assertEquals(0, resultList.size());
+    }
+
     /**
      * This test currently asserts that we get zero results back when we query with a valid vessel ID.
      * This is because this test is 50% complete: when AssetModuleServiceBean is updated to actually make
@@ -161,14 +414,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -232,6 +478,32 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
     }
 
     @Test
+    public void getAllCorrections_reportNotFound() throws JsonProcessingException {
+        // When
+        String responseAsString = getWebTarget()
+                .path("fa")
+                .path("history")
+                .path("unrecognised-report-id")
+                .path("UUID")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ResponseDto<List<FaReportCorrectionDTO>> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<List<FaReportCorrectionDTO>>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FaReportCorrectionDTO> data = responseDto.getData();
+        assertEquals(0, data.size());
+    }
+
+    @Test
     public void getAllCorrections() throws JsonProcessingException {
         // When
         String responseAsString = getWebTarget()
@@ -288,14 +560,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
-        String activityListResponseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String activityListResponseAsString = list(query);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -343,14 +608,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
-        String activityListResponseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String activityListResponseAsString = list(query);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -382,5 +640,16 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         assertEquals(nextActivity.getFishingActivityId(), responseDto.getData().intValue());
+    }
+
+    private String list(FishingActivityQuery query) {
+        return getWebTarget()
+                .path("fa")
+                .path("list")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .header("scopeName", null)
+                .header("roleName", "myRole")
+                .post(Entity.json(query), String.class);
     }
 }
