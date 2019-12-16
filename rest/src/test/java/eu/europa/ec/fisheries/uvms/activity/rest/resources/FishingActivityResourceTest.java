@@ -92,14 +92,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -155,14 +148,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -194,14 +180,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -253,23 +232,9 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query2.setSorting(sortingDto);
 
         // When
-        String query1Response = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query1), String.class);
+        String query1Response = list(query1);
 
-        String query2Response = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query2), String.class);
+        String query2Response = list(query2);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -311,14 +276,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -346,14 +304,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -394,14 +345,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
-        String responseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String responseAsString = list(query);
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
@@ -521,14 +465,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
-        String activityListResponseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String activityListResponseAsString = list(query);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -576,14 +513,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
-        String activityListResponseAsString = getWebTarget()
-                .path("fa")
-                .path("list")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .header("scopeName", null)
-                .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+        String activityListResponseAsString = list(query);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -615,5 +545,16 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertNull(responseDto.getMsg());
 
         assertEquals(nextActivity.getFishingActivityId(), responseDto.getData().intValue());
+    }
+
+    private String list(FishingActivityQuery query) {
+        return getWebTarget()
+                .path("fa")
+                .path("list")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .header("scopeName", null)
+                .header("roleName", "myRole")
+                .post(Entity.json(query), String.class);
     }
 }
