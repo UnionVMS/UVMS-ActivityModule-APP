@@ -167,6 +167,55 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
     }
 
     @Test
+    public void listActivityReportsByQuery_byReportId() throws JsonProcessingException {
+        // Given
+        FishingActivityQuery query = new FishingActivityQuery();
+
+        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        // When
+        String responseAsString = list(query);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PaginatedResponse<FishingActivityReportDTO> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FishingActivityReportDTO> resultList = responseDto.getResultList();
+
+        FishingActivityReportDTO fishingActivityReportDTO = resultList.get(0);
+        int faReportID = fishingActivityReportDTO.getFaReportID();
+
+        FishingActivityQuery query2 = new FishingActivityQuery();
+
+        query2.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+
+        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+        searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, Integer.toString(faReportID));
+        query2.setSearchCriteriaMap(searchCriteriaMap);
+
+        String responseString2 = list(query2);
+
+        PaginatedResponse<FishingActivityReportDTO> response2 =
+                objectMapper.readValue(responseString2, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
+                });
+
+        assertEquals(200, response2.getCode());
+
+        List<FishingActivityReportDTO> resultList2 = response2.getResultList();
+
+        assertEquals(1, response2.getTotalItemsCount());
+        assertEquals(1, resultList2.size());
+    }
+
+    @Test
     public void listActivityReportsByQuery_byReportType() throws JsonProcessingException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
