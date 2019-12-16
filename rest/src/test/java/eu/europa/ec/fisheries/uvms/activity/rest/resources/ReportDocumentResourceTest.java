@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -28,7 +27,6 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,7 +71,7 @@ public class ReportDocumentResourceTest extends BaseActivityArquillianTest {
         fluxfaQueryMessage.setFAQuery(query);
 
         // When
-        String xmlResponse = list(fluxfaQueryMessage);
+        String xmlResponse = report(fluxfaQueryMessage);
 
         // Then
         FLUXFAReportMessage fluxfaReportMessage = JAXBMarshaller.unmarshallTextMessage(xmlResponse, FLUXFAReportMessage.class);
@@ -82,7 +80,7 @@ public class ReportDocumentResourceTest extends BaseActivityArquillianTest {
         assertEquals(22, faReportDocuments.size());
     }
 
-    private String list(FLUXFAQueryMessage fluxfaQueryMessage) throws ActivityModelMarshallException {
+    private String report(FLUXFAQueryMessage fluxfaQueryMessage) throws ActivityModelMarshallException {
         String stringQuery = JAXBMarshaller.marshallJaxBObjectToString(fluxfaQueryMessage);
 
         return getWebTarget()
