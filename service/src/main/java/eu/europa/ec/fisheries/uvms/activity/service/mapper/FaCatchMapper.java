@@ -237,7 +237,7 @@ public abstract class FaCatchMapper extends BaseMapper {
 
                 fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
                 fluxLocationEntity.setFaCatch(faCatchEntity);
-                fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType());
+                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType());
                 fluxLocationEntities.add(fluxLocationEntity);
             }
         }
@@ -246,7 +246,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             for (FLUXLocation fluxLocation : destFluxLocations) {
                 FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
                 fluxLocationEntity.setFaCatch(faCatchEntity);
-                fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType());
+                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType());
                 fluxLocationEntities.add(fluxLocationEntity);
             }
         }

@@ -93,8 +93,8 @@ public class FluxLocationEntity implements Serializable {
 	@Column(precision = 17, scale = 17)
 	private Double latitude;
 
-	@Column(name = "flux_location_type", nullable = false)
-	private String fluxLocationType;
+	@Column(name = "flux_location_catch_type_mapper_info", nullable = false)
+	private String fluxLocationCatchTypeMapperInfo;
 
 	@Column(name = "country_id_scheme_id")
 	private String countryIdSchemeId;

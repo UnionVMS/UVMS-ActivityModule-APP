@@ -33,7 +33,7 @@ public interface FluxLocationMapper {
 
     @Mappings({
             @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "fluxLocationType", source = "typeCode.value"), // Why is this duplicated?
+            @Mapping(target = "fluxLocationCatchTypeMapperInfo", ignore = true), // Stored but only used for mapping decisions
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "countryId", source = "countryID.value"),
             @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value"),

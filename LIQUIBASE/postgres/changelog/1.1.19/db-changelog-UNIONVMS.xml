@@ -77,4 +77,10 @@
 
     <!-- REMOVE EMBEDDED CODETYPE - ...END -->
 
+    <changeSet author="pesjob" id="ERS-434-rename-flux-location-type">
+        <renameColumn newColumnName="flux_location_catch_type_mapper_info"
+                      oldColumnName="flux_location_type"
+                      tableName="activity_flux_location"/>
+    </changeSet>
+
 </databaseChangeLog>

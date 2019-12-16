@@ -13,8 +13,8 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.BaseDAOTest;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 
 import java.sql.Timestamp;
 
@@ -391,7 +391,7 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
     protected static final Operation INSERT_FLUX_LOCATION = sequenceOf(
             insertInto("activity.activity_flux_location")
                     .columns("id", "fa_catch_id", "fishing_activity_id", "type_code", "type_code_list_id", "country_id", "country_id_scheme_id", "rfmo_code", "longitude", "latitude",
-                            "flux_location_type", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "namevalue",
+                            "flux_location_catch_type_mapper_info", "flux_location_identifier", "flux_location_identifier_scheme_id", "geopolitical_region_code", "geopolitical_region_code_list_id", "namevalue",
                             "sovereign_rights_country_code", "jurisdiction_country_code", "altitude", "system_id")
                     .values(1, 1, 1, "AREA", "FAO_AREA", "ISO", "SCHEME_COUNTRY_ID1", "NAFO", null, null, "AREA", "J", "EFFORT_ZONE", "GEOGRAPHICAL_REGION", "GEOGRAPHICAL_REGION_LISTID",
                             "FLUX_LOCATION_NAME", null, null, null, null)
