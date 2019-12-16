@@ -458,6 +458,32 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
     }
 
     @Test
+    public void getAllCorrections_reportNotFound() throws JsonProcessingException {
+        // When
+        String responseAsString = getWebTarget()
+                .path("fa")
+                .path("history")
+                .path("unrecognised-report-id")
+                .path("UUID")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .get(String.class);
+
+        // Then
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ResponseDto<List<FaReportCorrectionDTO>> responseDto =
+                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<List<FaReportCorrectionDTO>>>() {
+                });
+
+        assertEquals(200, responseDto.getCode());
+        assertNull(responseDto.getMsg());
+
+        List<FaReportCorrectionDTO> data = responseDto.getData();
+        assertEquals(0, data.size());
+    }
+
+    @Test
     public void getAllCorrections() throws JsonProcessingException {
         // When
         String responseAsString = getWebTarget()
