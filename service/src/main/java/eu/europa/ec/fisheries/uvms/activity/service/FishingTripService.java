@@ -39,21 +39,6 @@ import java.util.Map;
 public interface FishingTripService {
 
     /**
-     * <p>
-     * This API returns the list of cronology of selected fishing trip,
-     * Additionally it also return the current trip for the vessel.
-     * <p>
-     * <code>if (Count == 0)</code> Then return all the previous and next
-     * </p>
-     *
-     * @param tripId currently selected
-     * @param count  number of trip Id to view
-     * @return list of fishing trips
-     */
-    CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException;
-
-
-    /**
      * Return FishingTripSummary view screen data for specified Fishing Trip ID
      *
      * @param fishingTripId

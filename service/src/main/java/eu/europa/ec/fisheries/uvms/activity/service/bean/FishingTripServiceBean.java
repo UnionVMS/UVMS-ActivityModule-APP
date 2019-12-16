@@ -14,20 +14,14 @@
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableMap;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.ActivityConfigurationDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
@@ -48,7 +42,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselD
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionProgressDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.MessageCountDTO;
@@ -80,7 +73,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -97,7 +89,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -110,8 +101,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private static final String DECLARATION = "Declaration";
     private static final String NOTIFICATION = "Notification";
-    private static final String PREVIOUS = "PREVIOUS";
-    private static final String NEXT = "NEXT";
 
     @EJB
     private SpatialModuleService spatialModule;
@@ -127,121 +116,20 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
-    private VesselIdentifierDao vesselIdentifierDao;
     private VesselTransportMeansDao vesselTransportMeansDao;
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
-    private ActivityConfigurationDao activityConfigurationDao;
 
     private static final CatchEvolutionProgressProcessor catchEvolutionProgressProcessor =
             new CatchEvolutionProgressProcessor(new TripCatchEvolutionProgressRegistry());
 
     @PostConstruct
     public void init() {
-        vesselIdentifierDao = new VesselIdentifierDao(entityManager);
         fishingActivityDao = new FishingActivityDao(entityManager);
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
         faCatchDao = new FaCatchDao(entityManager);
         fishingTripDao = new FishingTripDao(entityManager);
         vesselTransportMeansDao = new VesselTransportMeansDao(entityManager);
-        activityConfigurationDao = new ActivityConfigurationDao(entityManager);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException {
-        List<VesselIdentifierEntity> latestVesselIdentifiers = vesselIdentifierDao.getLatestVesselIdByTrip(tripId); // Find the latest Vessel for the Trip for finding the trip of that vessel
-        CronologyTripDTO cronologyTripDTO = new CronologyTripDTO();
-        cronologyTripDTO.setCurrentTrip(getCurrentTrip(latestVesselIdentifiers));
-        cronologyTripDTO.setSelectedTrip(tripId);
-
-        List<String> previousTrips = new ArrayList<>(getPreviousTrips(tripId, count, latestVesselIdentifiers));
-        List<String> nextTrips = new ArrayList<>(getNextTrips(tripId, count, latestVesselIdentifiers));
-
-        Map<String, Integer> countMap = calculateTripCounts(count, previousTrips.size(), nextTrips.size());
-        log.info("Number of previous record to find : " + countMap.get(PREVIOUS));
-        log.info("Number of next record to find : " + countMap.get(NEXT));
-
-        cronologyTripDTO.setPreviousTrips(previousTrips.subList(previousTrips.size() - countMap.get(PREVIOUS), previousTrips.size()));
-        cronologyTripDTO.setNextTrips(nextTrips.subList(0, countMap.get(NEXT)));
-
-        return cronologyTripDTO;
-    }
-
-    private Map<String, Integer> calculateTripCounts(Integer count, Integer previousTripCount, Integer nextTripCount) {
-
-        Integer previous = 0;
-        Integer next = 0;
-
-        if (count == 0) {
-            log.info("All the previous and next result will be returned");
-            previous = previousTripCount;
-            next = nextTripCount;
-        } else if (count != 1) {
-            log.info("Count the number of previous and next result based on count received");
-            count = count - 1;
-            if (count % 2 == 0) {
-                previous = count / 2;
-                next = count / 2;
-            } else if (count % 2 == 1) {
-                previous = count / 2 + 1;
-                next = count / 2;
-            }
-            if (previous > previousTripCount) {
-                previous = previousTripCount;
-                next = count - previous;
-            }
-            if (next > nextTripCount) {
-                next = nextTripCount;
-                previous = count - next;
-                if (previous > previousTripCount) {
-                    previous = previousTripCount;
-                }
-            }
-        }
-        return ImmutableMap.<String, Integer>builder().put(PREVIOUS, previous).put(NEXT, next).build();
-    }
-
-    private String getCurrentTrip(List<VesselIdentifierEntity> vesselIdentifiers) {
-        String currentTrip = null;
-        for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
-            FishingTripEntity identifierEntity = fishingTripDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
-                    vesselIdentifier.getVesselIdentifierSchemeId());
-            currentTrip = identifierEntity != null ? identifierEntity.getFishingTripKey().getTripId() : null;
-            if (StringUtils.isEmpty(currentTrip)) {
-                break;
-            }
-        }
-        log.info("Current Trip : " + currentTrip);
-        return currentTrip;
-    }
-
-    private Set<String> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
-        Set<String> tripIds = new LinkedHashSet<>();
-        for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
-            List<FishingTripEntity> identifierEntities = fishingTripDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
-                    vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-            for (FishingTripEntity identifiers : identifierEntities) {
-                tripIds.add(identifiers.getFishingTripKey().getTripId());
-            }
-        }
-        log.debug("Previous Trips : " + tripIds);
-        return tripIds;
-    }
-
-    private Set<String> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) {
-        Set<String> tripIds = new LinkedHashSet<>();
-        for (VesselIdentifierEntity vesselIdentifier : Utils.safeIterable(vesselIdentifiers)) {
-            List<FishingTripEntity> identifierEntities = fishingTripDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
-                    vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-            for (FishingTripEntity identifiers : identifierEntities) {
-                tripIds.add(identifiers.getFishingTripKey().getTripId());
-            }
-        }
-        log.debug("Next Trips : " + tripIds);
-        return tripIds;
     }
 
     @Override
@@ -591,21 +479,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         // build Fishing trip response from FishingTripEntityList and return
         return buildFishingTripSearchRespose(fishingTripIds, true);
     }
-
-
-    public void checkThresholdForFishingTripList(Set<FishingTripId> fishingTripIds) throws ServiceException {
-        if (CollectionUtils.isNotEmpty(fishingTripIds)) {
-            String tresholdTrips = activityConfigurationDao.getPropertyValue(ActivityConfiguration.LIMIT_FISHING_TRIPS);
-            if (tresholdTrips != null) {
-                int threshold = Integer.parseInt(tresholdTrips);
-                log.debug("fishing trip threshold value:" + threshold);
-                if (fishingTripIds.size() > threshold)
-                    throw new ServiceException("Fishing Trips found for matching criteria exceed threshold value. Please restrict resultset by modifying filters");
-                log.info("fishing trip list size is within threshold value:" + fishingTripIds.size());
-            }
-        }
-    }
-
 
     /**
      * This method filters fishing Trips for Activity tab
