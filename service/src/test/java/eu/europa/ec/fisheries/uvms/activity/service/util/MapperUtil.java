@@ -14,8 +14,6 @@
 package eu.europa.ec.fisheries.uvms.activity.service.util;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
@@ -27,7 +25,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntit
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
@@ -97,11 +94,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 
-/**
- * Created by padhyad on 7/27/2016.
- */
 public class MapperUtil {
 
     private static WKTReader wktReader = new WKTReader();
@@ -151,37 +144,7 @@ public class MapperUtil {
                 "OWNER_FLUX_ID1",
                 "flux1");
 
-        FluxReportDocumentEntity fluxReportDocumentEntity2 = ActivityDataUtil.getFluxReportDocumentEntity(
-                "FLUX_REPORT_DOCUMENT2",
-                null,
-                parseDate("2016-06-27 07:47:31"),
-                "PURPOSE",
-                "PURPOSE_CODE_LIST",
-                null,
-                "OWNER_FLUX_ID2",
-                "flux2");
-        FluxReportDocumentEntity fluxReportDocumentEntity3 = ActivityDataUtil.getFluxReportDocumentEntity(
-                "FLUX_REPORT_DOCUMENT3",
-                null,
-                parseDate("2016-06-27 07:47:31"),
-                "PURPOSE",
-                "PURPOSE_CODE_LIST",
-                null,
-                "OWNER_FLUX_ID3",
-                "flux3");
-        FluxReportDocumentEntity fluxReportDocumentEntity4 = ActivityDataUtil.getFluxReportDocumentEntity(
-                "FLUX_REPORT_DOCUMENT4",
-                null,
-                parseDate("2016-06-27 07:47:31"),
-                "PURPOSE",
-                "PURPOSE_CODE_LIST",
-                null,
-                "OWNER_FLUX_ID4",
-                "flux4");
-
         VesselTransportMeansEntity vesselTransportMeansEntity1 = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
-        VesselTransportMeansEntity vesselTransportMeansEntity2 = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
-        VesselTransportMeansEntity vesselTransportMeansEntity3 = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
 
         vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1", "CFR"));
 
@@ -193,25 +156,7 @@ public class MapperUtil {
                 vesselTransportMeansEntity1,
                 FaReportStatusType.NEW);
 
-        FaReportDocumentEntity faReportDocumentEntity2 = ActivityDataUtil.getFaReportDocumentEntity(
-                "Declaration" ,
-                "FLUX_FA_REPORT_TYPE",
-                parseDate("2015-06-27 07:47:31"),
-                fluxReportDocumentEntity2,
-                vesselTransportMeansEntity2,
-                FaReportStatusType.NEW);
-
-        FaReportDocumentEntity faReportDocumentEntity3 = ActivityDataUtil.getFaReportDocumentEntity(
-                "Declaration" ,
-                "FLUX_FA_REPORT_TYPE",
-                parseDate("2015-06-27 07:47:31"),
-                fluxReportDocumentEntity3,
-                vesselTransportMeansEntity3,
-                FaReportStatusType.NEW);
-
         FishingActivityEntity fishingActivityEntity1 = ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity1,null);
-        FishingActivityEntity fishingActivityEntity2 = ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
-        FishingActivityEntity fishingActivityEntity3 = ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity3,null);
 
         SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("BFT", "FA_BFT_SIZE_CATEGORY");
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(
@@ -234,27 +179,6 @@ public class MapperUtil {
         entity.setCalculatedTripStartDate(Instant.parse("2013-01-12T00:00:00Z"));
         return entity;
     }
-
-    public static FishingTripEntity getFishingTripEntityWithContactParties() {
-        FishingTripEntity fishingTripEntity = getFishingTripEntity();
-        Set<VesselTransportMeansEntity> vesselTransportEntityList = fishingTripEntity.getFishingActivities().iterator().next().getFaReportDocument().getVesselTransportMeans();
-
-        ContactPartyEntity contPartEntity_1 = ActivityDataUtil.getContactPartyEntity("title1","givenName1","middleName1","familyName1","familyNamePrefix1","nameSuffix1","gender1","alias1");
-        ContactPartyEntity contPartEntity_2 = ActivityDataUtil.getContactPartyEntity("title2","givenName2","middleName2","familyName2","familyNamePrefix2","nameSuffix2","gender2","alias2");
-
-        Set<ContactPartyRoleEntity> roleList_1 = ActivityDataUtil.getContactPartyRole("SOMEROLE", "ROLE_CODE1", contPartEntity_1);
-        Set<ContactPartyRoleEntity> roleList_2 = ActivityDataUtil.getContactPartyRole("MASTER", "ROLE_CODE2", contPartEntity_2);
-        contPartEntity_1.setContactPartyRole(roleList_1);
-        contPartEntity_2.setContactPartyRole(roleList_2);
-
-        Set<ContactPartyEntity> contactParties = new HashSet<>(Arrays.asList(contPartEntity_1, contPartEntity_2));
-        for (VesselTransportMeansEntity vesselTransportMeansEntity : vesselTransportEntityList) {
-            vesselTransportMeansEntity.setContactParty(contactParties);
-        }
-
-        return fishingTripEntity;
-    }
-
 
     public static List<FishingActivityEntity> getFishingActivityEntityList() {
         FluxReportDocumentEntity fluxReportDocumentEntity1 = ActivityDataUtil.getFluxReportDocumentEntity(
@@ -825,12 +749,6 @@ public class MapperUtil {
         measureType.setUnitCode(unitCode);
         measureType.setUnitCodeListVersionID(listId);
         return measureType;
-    }
-
-    public static List<VesselIdentifierEntity> getVesselIdentifiersList() {
-        Set<VesselTransportMeansEntity> vesselTransportMeans = getFishingTripEntityWithContactParties().getFishingActivities().iterator().next().getFaReportDocument().getVesselTransportMeans();
-        Set<VesselIdentifierEntity> vesselIdentifiersSet = vesselTransportMeans.iterator().next().getVesselIdentifiers();
-        return new ArrayList<>(vesselIdentifiersSet);
     }
 
     public static List<Object[]> getFaCaches() {

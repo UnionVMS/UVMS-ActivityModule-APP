@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.util;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -119,7 +116,6 @@ public class ActivityDataUtil {
         return faCatchEntity;
     }
 
-
     public static FishingTripEntity getFishingTripEntity(String typeCode, String typeCodeListId, FaCatchEntity faCatchEntity, FishingActivityEntity fishingActivityEntity) {
         FishingTripEntity fishingTripEntity = new FishingTripEntity();
         fishingTripEntity.setTypeCode(typeCode);
@@ -127,31 +123,6 @@ public class ActivityDataUtil {
         fishingTripEntity.getCatchEntities().add(faCatchEntity);
         fishingTripEntity.getFishingActivities().add(fishingActivityEntity);
         return fishingTripEntity;
-    }
-
-    public static ContactPartyEntity getContactPartyEntity(String title, String givenName, String middleName, String familyName, String familyNamePrefix, String nameSuffix, String gender, String alias) {
-        ContactPartyEntity contPartEntity = new ContactPartyEntity();
-        ContactPersonEntity contactPersonEntity = new ContactPersonEntity();
-        contactPersonEntity.setTitle(title);
-        contactPersonEntity.setGivenName(givenName);
-        contactPersonEntity.setMiddleName(middleName);
-        contactPersonEntity.setFamilyName(familyName);
-        contactPersonEntity.setFamilyNamePrefix(familyNamePrefix);
-        contactPersonEntity.setNameSuffix(nameSuffix);
-        contactPersonEntity.setGender(gender);
-        contactPersonEntity.setAlias(alias);
-        contPartEntity.setContactPerson(contactPersonEntity);
-        return contPartEntity;
-    }
-
-    public static Set<ContactPartyRoleEntity> getContactPartyRole(String roleCode, String roleID, ContactPartyEntity contPartEntity) {
-        Set<ContactPartyRoleEntity> rolesList = new HashSet<>();
-        ContactPartyRoleEntity entity_1 = new ContactPartyRoleEntity();
-        entity_1.setContactParty(contPartEntity);
-        entity_1.setRoleCode(roleCode);
-        entity_1.setRoleCodeListId(roleID);
-        rolesList.add(entity_1);
-        return rolesList;
     }
 
     public static Set<VesselIdentifierEntity> getVesselIdentifiers(VesselTransportMeansEntity vesselTransportMeansEntity1, String ident_, String scheme_) {
