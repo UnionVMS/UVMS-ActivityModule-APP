@@ -13,29 +13,21 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "activity_size_distribution")
 @Data
-@EqualsAndHashCode(exclude = "sizeDistributionClassCodeEntities")
-@ToString(exclude = {"sizeDistributionClassCodeEntities", "faCatch"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class SizeDistributionEntity implements Serializable {
@@ -54,12 +46,4 @@ public class SizeDistributionEntity implements Serializable {
 
 	@OneToOne(mappedBy = "sizeDistribution")
 	private FaCatchEntity faCatch;
-
-	@OneToMany(mappedBy = "sizeDistribution", cascade = CascadeType.ALL)
-	private Set<SizeDistributionClassCodeEntity> sizeDistributionClassCodeEntities = new HashSet<>();
-
-	public void addSizeDistribution(SizeDistributionClassCodeEntity classCodeEntity){
-		sizeDistributionClassCodeEntities.add(classCodeEntity);
-		classCodeEntity.setSizeDistribution(this);
-	}
 }

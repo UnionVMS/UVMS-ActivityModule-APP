@@ -83,4 +83,17 @@
                       tableName="activity_flux_location"/>
     </changeSet>
 
+    <!-- FA CATCH CHANGES -->
+
+    <changeSet author="robmil" id="add_size_distribution_columns_to_fa_catch">
+        <addColumn tableName="activity_fa_catch">
+            <column name="size_distribution_class_code" type="varchar(255)"/>
+            <column name="size_distribution_class_code_list_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_classcode_table">
+        <dropTable tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+
 </databaseChangeLog>

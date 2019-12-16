@@ -24,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
@@ -540,8 +539,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
                 sizeDistributionEntity.setFaCatch(faCatchEntity);
                 List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
                 for (CodeType classCode : Utils.safeIterable(classCodes)) {
-                    SizeDistributionClassCodeEntity sizeDistributionClassCodeEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(classCode);
-                    sizeDistributionEntity.addSizeDistribution(sizeDistributionClassCodeEntity);
+                    faCatchEntity.setSizeDistributionClassCode(classCode.getValue());
+                    faCatchEntity.setSizeDistributionClassCodeListId(classCode.getListID());
                 }
 
                 faCatchEntity.setSizeDistribution(sizeDistributionEntity);

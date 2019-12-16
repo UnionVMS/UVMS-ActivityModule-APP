@@ -147,6 +147,12 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "fish_class_code")
 	private String fishClassCode;
 
+	@Column(name = "size_distribution_class_code")
+	private String sizeDistributionClassCode;
+
+	@Column(name = "size_distribution_class_code_list_id")
+	private String sizeDistributionClassCodeListId;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapProcessEntity> aapProcesses = new HashSet<>();
 

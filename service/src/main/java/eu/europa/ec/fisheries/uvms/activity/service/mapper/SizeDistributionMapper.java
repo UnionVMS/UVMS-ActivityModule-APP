@@ -11,16 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(imports = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
@@ -32,30 +29,7 @@ public interface SizeDistributionMapper {
             @Mapping(target = "categoryCode", source = "categoryCode.value"),
             @Mapping(target = "categoryCodeListId", source = "categoryCode.listID"),
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "faCatch", ignore = true),
-            @Mapping(target = "sizeDistributionClassCodeEntities", ignore = true)
+            @Mapping(target = "faCatch", ignore = true)
     })
     SizeDistributionEntity mapToSizeDistributionEntity(SizeDistribution sizeDistribution);
-
-    @Mappings({
-            @Mapping(target = "classCode", source = "value"),
-            @Mapping(target = "classCodeListId", source = "listID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "sizeDistribution", ignore = true),
-    })
-    SizeDistributionClassCodeEntity mapToSizeDistributionClassCodeEntity(CodeType codeType);
-
-    @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "listAgencyID", ignore = true),
-            @Mapping(target = "listAgencyName", ignore = true),
-            @Mapping(target = "listName", ignore = true),
-            @Mapping(target = "listVersionID", ignore = true),
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "languageID", ignore = true),
-            @Mapping(target = "listURI", ignore = true),
-            @Mapping(target = "listSchemeURI", ignore = true)
-    })
-    CodeType mapToSizeDistributionClassCode(SizeDistributionClassCodeEntity classCodeEntity);
-
 }

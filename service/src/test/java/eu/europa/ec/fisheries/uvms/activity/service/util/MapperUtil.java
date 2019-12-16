@@ -213,7 +213,7 @@ public class MapperUtil {
         FishingActivityEntity fishingActivityEntity2 = ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
         FishingActivityEntity fishingActivityEntity3 = ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity3,null);
 
-        SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
+        SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("BFT", "FA_BFT_SIZE_CATEGORY");
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(
                 fishingActivityEntity1,
                 "DEPARTURE",
