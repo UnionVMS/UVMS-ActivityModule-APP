@@ -164,6 +164,11 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
         assertEquals(41, responseDto.getTotalItemsCount());
         assertEquals(41, resultList.size());
+
+        for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
+            String activityType = fishingActivityReportDTO.getActivityType();
+            assertTrue(activityType.equals("FISHING_OPERATION") || activityType.equals("DEPARTURE"));
+        }
     }
 
     @Test
@@ -213,6 +218,9 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
         assertEquals(1, response2.getTotalItemsCount());
         assertEquals(1, resultList2.size());
+
+        FishingActivityReportDTO dto = resultList2.get(0);
+        assertEquals(faReportID, dto.getFaReportID());
     }
 
     @Test
@@ -245,6 +253,10 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
         assertEquals(49, responseDto.getTotalItemsCount());
         assertEquals(49, resultList.size());
+
+        for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
+            assertEquals("DECLARATION", fishingActivityReportDTO.getFAReportType());
+        }
     }
 
     @Test
@@ -341,6 +353,14 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
 
         assertEquals(4, responseDto.getTotalItemsCount());
         assertEquals(4, resultList.size());
+
+        for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
+            List<String> portList = fishingActivityReportDTO.getPort();
+            assertEquals(1, portList.size());
+
+            String port = portList.get(0);
+            assertEquals("PAZIM", port);
+        }
     }
 
     @Test
