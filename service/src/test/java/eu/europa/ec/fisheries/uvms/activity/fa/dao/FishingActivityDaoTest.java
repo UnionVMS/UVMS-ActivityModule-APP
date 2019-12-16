@@ -21,7 +21,12 @@ import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,85 +38,73 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(MockitoJUnitRunner.class)
 @Ignore
-public class FishingActivityDaoTest extends BaseErsFaDaoTest {
+public class FishingActivityDaoTest {
 
-    private FishingActivityDao dao = new FishingActivityDao(em);
+    @Mock
+    private EntityManager entityManager;
 
-    @Before
-    public void prepare() {
-        super.prepare();
+    @InjectMocks
+    private FishingActivityDao dao;
 
-        dbSetupTracker.skipNextLaunch();
-    }
+//    @Test
+//    @SneakyThrows
+//    public void getFishingActivityListByQuery_byMultiValueCriteriaMap() {
+//        // Given
+//        FishingActivityQuery query = new FishingActivityQuery();
+//
+//        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
+//        List<String> activityTypeValues = new ArrayList<>();
+//        activityTypeValues.add("FISHING_OPERATION");
+//        activityTypeValues.add("DEPARTURE");
+//        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
+//        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
+//
+//        // When
+//        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
+//
+//        // Then
+//        assertIds(result, 4, 5, 6, 7, 8);
+//
+//        for (int i = 0; i < 5; i++) {
+//            assertEquals("FISHING_OPERATION", result.get(i).getTypeCode());
+//        }
+//    }
 
-    @Test
-    @SneakyThrows
-    public void findEntityById() {
-        // When
-        FishingActivityEntity entity = dao.findEntityById(FishingActivityEntity.class, 1);
+//    @Test
+//    @SneakyThrows
+//    public void getFishingActivityListByQuery_byReportType() {
+//        // Given
+//        FishingActivityQuery query = new FishingActivityQuery();
+//        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+//
+//        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+//        query.setSearchCriteriaMap(searchCriteriaMap);
+//
+//        // When
+//        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
+//
+//        // Then
+//        assertIds(result, 2, 3, 4, 6);
+//    }
 
-        // Then
-        assertEquals(1, entity.getId());
-    }
-
-    @Test
-    @SneakyThrows
-    public void getFishingActivityListByQuery_byMultiValueCriteriaMap() {
-        // Given
-        FishingActivityQuery query = new FishingActivityQuery();
-
-        Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        List<String> activityTypeValues = new ArrayList<>();
-        activityTypeValues.add("FISHING_OPERATION");
-        activityTypeValues.add("DEPARTURE");
-        searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
-        query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
-
-        // When
-        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
-
-        // Then
-        assertIds(result, 4, 5, 6, 7, 8);
-
-        for (int i = 0; i < 5; i++) {
-            assertEquals("FISHING_OPERATION", result.get(i).getTypeCode());
-        }
-    }
-
-    @Test
-    @SneakyThrows
-    public void getFishingActivityListByQuery_byReportType() {
-        // Given
-        FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-
-        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-        query.setSearchCriteriaMap(searchCriteriaMap);
-
-        // When
-        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
-
-        // Then
-        assertIds(result, 2, 3, 4, 6);
-    }
-
-    @Test
-    @SneakyThrows
-    public void getFishingActivityListByQuery_byPort() {
-        // Given
-        FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-
-        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
-        query.setSearchCriteriaMap(searchCriteriaMap);
-
-        // When
-        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
-
-        // Then
-        assertIds(result, 6, 7);
-    }
+//    @Test
+//    @SneakyThrows
+//    public void getFishingActivityListByQuery_byPort() {
+//        // Given
+//        FishingActivityQuery query = new FishingActivityQuery();
+//        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+//
+//        searchCriteriaMap.put(SearchFilter.PORT, "GBR");
+//        query.setSearchCriteriaMap(searchCriteriaMap);
+//
+//        // When
+//        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
+//
+//        // Then
+//        assertIds(result, 6, 7);
+//    }
 
     /**
      * The test that only has REPORT_TYPE in the search criteria map returns the activities 2, 3, 4 and 6.
@@ -121,6 +114,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
      */
     @Test
     @SneakyThrows
+    // TODO Not sure we have a good combination of this to test
     public void getFishingActivityListByQuery_byReportTypeAndPort() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
@@ -138,25 +132,26 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertIds(result, 6);
     }
 
+//    @Test
+//    @SneakyThrows
+//    public void getFishingActivityListByQuery_noResult() {
+//        // Given
+//        FishingActivityQuery query = new FishingActivityQuery();
+//        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+//
+//        searchCriteriaMap.put(SearchFilter.PURPOSE, "Plundering the Spanish treasure fleet");
+//        query.setSearchCriteriaMap(searchCriteriaMap);
+//
+//        // When
+//        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
+//
+//        // Then
+//        assertTrue(result.isEmpty());
+//    }
+
     @Test
     @SneakyThrows
-    public void getFishingActivityListByQuery_noResult() {
-        // Given
-        FishingActivityQuery query = new FishingActivityQuery();
-        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-
-        searchCriteriaMap.put(SearchFilter.PURPOSE, "Plundering the Spanish treasure fleet");
-        query.setSearchCriteriaMap(searchCriteriaMap);
-
-        // When
-        List<FishingActivityEntity> result = dao.getFishingActivityListByQuery(query);
-
-        // Then
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    @SneakyThrows
+    // TODO We don't have the database id and it seems it's not possible to query on actual report id
     public void getFishingActivityListByQuery_GetByFaReportID() {
         FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
@@ -217,42 +212,42 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         assertIds(result, 1, 2, 3);
     }
 
-    @Test
-    @SneakyThrows
-    public void getFishingActivityListByQuery_byReportType_paginate() {
-        // Given
-        FishingActivityQuery page0Query = new FishingActivityQuery();
-        FishingActivityQuery page1Query = new FishingActivityQuery();
-        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-
-        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
-        page0Query.setSearchCriteriaMap(searchCriteriaMap);
-        page1Query.setSearchCriteriaMap(searchCriteriaMap);
-
-        PaginationDto page0Pagination = new PaginationDto();
-        PaginationDto page1Pagination = new PaginationDto();
-        page0Pagination.setPageSize(2);
-        page1Pagination.setPageSize(2);
-        page0Pagination.setOffset(0);
-        page1Pagination.setOffset(1); // note: offset is 1 item, not 1 page
-        page0Query.setPagination(page0Pagination);
-        page1Query.setPagination(page1Pagination);
-
-        // make sorting deterministic
-        SortKey sortingDto = new SortKey();
-        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
-        sortingDto.setReversed(false);
-        page0Query.setSorting(sortingDto);
-        page1Query.setSorting(sortingDto);
-
-        // When
-        List<FishingActivityEntity> page0Result = dao.getFishingActivityListByQuery(page0Query);
-        List<FishingActivityEntity> page1Result = dao.getFishingActivityListByQuery(page1Query);
-
-        // Then
-        assertIds(page0Result, 6, 4);
-        assertIds(page1Result, 4, 3); // ID 4 again, since offset is 1 item, not 1 page
-    }
+//    @Test
+//    @SneakyThrows
+//    public void getFishingActivityListByQuery_byReportType_paginate() {
+//        // Given
+//        FishingActivityQuery page0Query = new FishingActivityQuery();
+//        FishingActivityQuery page1Query = new FishingActivityQuery();
+//        Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
+//
+//        searchCriteriaMap.put(SearchFilter.REPORT_TYPE, "DECLARATION");
+//        page0Query.setSearchCriteriaMap(searchCriteriaMap);
+//        page1Query.setSearchCriteriaMap(searchCriteriaMap);
+//
+//        PaginationDto page0Pagination = new PaginationDto();
+//        PaginationDto page1Pagination = new PaginationDto();
+//        page0Pagination.setPageSize(2);
+//        page1Pagination.setPageSize(2);
+//        page0Pagination.setOffset(0);
+//        page1Pagination.setOffset(1); // note: offset is 1 item, not 1 page
+//        page0Query.setPagination(page0Pagination);
+//        page1Query.setPagination(page1Pagination);
+//
+//        // make sorting deterministic
+//        SortKey sortingDto = new SortKey();
+//        sortingDto.setSortBy(SearchFilter.OCCURRENCE);
+//        sortingDto.setReversed(false);
+//        page0Query.setSorting(sortingDto);
+//        page1Query.setSorting(sortingDto);
+//
+//        // When
+//        List<FishingActivityEntity> page0Result = dao.getFishingActivityListByQuery(page0Query);
+//        List<FishingActivityEntity> page1Result = dao.getFishingActivityListByQuery(page1Query);
+//
+//        // Then
+//        assertIds(page0Result, 6, 4);
+//        assertIds(page1Result, 4, 3); // ID 4 again, since offset is 1 item, not 1 page
+//    }
 
     private void assertIds(Collection<FishingActivityEntity> activities, Integer ... expectedIdsAsArray) {
         Set<Integer> expectedIds = Sets.newHashSet(expectedIdsAsArray);
