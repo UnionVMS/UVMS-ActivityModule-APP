@@ -6,14 +6,13 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportDocumentType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionProgressDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.SpeciesQuantityDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.CatchEvolutionProgressHandler;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.FishingActivityCalculatedDateComparator;
 import eu.europa.ec.fisheries.uvms.activity.service.util.ActivityDataUtil;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -21,12 +20,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
@@ -42,7 +42,8 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
     }
 
     @Test
-    public void testFishingActivityCalculatedDateComparator() {
+    public void fishingActivityCalculatedDateComparator() {
+        // Given
         FishingActivityEntity fishingActivityEntity1 = new FishingActivityEntity();
         fishingActivityEntity1.setCalculatedStartTime(Instant.ofEpochMilli(1000002));
         FishingActivityEntity fishingActivityEntity2 = new FishingActivityEntity();
@@ -54,27 +55,33 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
 
         List<FishingActivityEntity> fishingActivities = Arrays.asList(fishingActivityEntity1, fishingActivityEntity2, fishingActivityEntity3, fishingActivityEntity4);
 
-        Collections.sort(fishingActivities, new FishingActivityCalculatedDateComparator());
+        // When
+        fishingActivities.sort(new FishingActivityCalculatedDateComparator());
 
-        Assert.assertEquals(fishingActivities.get(0).getCalculatedStartTime(), fishingActivityEntity2.getCalculatedStartTime());
-        Assert.assertEquals(fishingActivities.get(2).getCalculatedStartTime(), fishingActivityEntity1.getCalculatedStartTime());
-        Assert.assertEquals(fishingActivities.get(3).getCalculatedStartTime(), null);
+        // Then
+        assertEquals(fishingActivities.get(0).getCalculatedStartTime(), fishingActivityEntity2.getCalculatedStartTime());
+        assertEquals(fishingActivities.get(2).getCalculatedStartTime(), fishingActivityEntity1.getCalculatedStartTime());
+        assertNull(fishingActivities.get(3).getCalculatedStartTime());
     }
 
     @Test
-    public void testInitCatchEvolutionProgressDTO() {
+    public void initCatchEvolutionProgressDTO() {
+        // Given
         FishingActivityEntity fishingActivityEntity = ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE",
                 parseToUTCDate("2014-05-27 07:47:31"), "FISHING", "FIS", null, null);
 
-        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<String, Double>());
+        // When
+        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<>());
 
+        // Then
         assertTrue(catchEvolutionProgressDTO.getCatchEvolution().containsKey("onboard"));
         assertTrue(catchEvolutionProgressDTO.getCatchEvolution().containsKey("cumulated"));
-        assertTrue(catchEvolutionProgressDTO.getReportType().equals(FaReportDocumentType.DECLARATION.name()));
+        assertEquals(FaReportDocumentType.DECLARATION.name(), catchEvolutionProgressDTO.getReportType());
     }
 
     @Test
-    public void testHandleOnboardCatch() {
+    public void handleOnboardCatch() {
+        // Given
         FaReportDocumentEntity faReportDocumentEntity = ActivityDataUtil.getFaReportDocumentEntity(FaReportDocumentType.DECLARATION.name(), "FLUX_FA_REPORT_TYPE",
                 parseToUTCDate("2016-06-27 07:47:31"), null,
                 null, FaReportStatusType.NEW);
@@ -83,17 +90,20 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "LOADED", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
                 11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS");
         faCatchEntity.setCalculatedWeightMeasure(11112D);
-        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<String, Double>());
+        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<>());
 
+        // When
         handleOnboardCatch(faCatchEntity, catchEvolutionProgressDTO);
 
-        assertTrue(!catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().isEmpty());
+        // Then
+        assertFalse(catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().isEmpty());
         assertEquals(catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().get(0).getSpeciesCode(), "COD");
-        assertTrue(catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().get(0).getWeight() == 11112D);
+        assertEquals(11112d, catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().get(0).getWeight(), 0.0001d);
     }
 
     @Test
-    public void testHandleCumulatedCatchNoDeletion() {
+    public void handleCumulatedCatchNoDeletion() {
+        // Given
         FaReportDocumentEntity faReportDocumentEntity = ActivityDataUtil.getFaReportDocumentEntity(FaReportDocumentType.DECLARATION.name(), "FLUX_FA_REPORT_TYPE",
                 parseToUTCDate("2016-06-27 07:47:31"), null,
                 null, FaReportStatusType.NEW);
@@ -102,17 +112,20 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "LOADED", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
                 11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS");
         faCatchEntity.setCalculatedWeightMeasure(11112D);
-        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<String, Double>());
+        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<>());
 
-        handleCumulatedCatchNoDeletion(faCatchEntity, catchEvolutionProgressDTO, new HashMap<String, Double>());
+        // When
+        handleCumulatedCatchNoDeletion(faCatchEntity, catchEvolutionProgressDTO, new HashMap<>());
 
-        assertTrue(!catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().isEmpty());
+        // Then
+        assertFalse(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().isEmpty());
         assertEquals(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getSpeciesCode(), "COD");
-        assertTrue(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getWeight() == 11112D);
+        assertEquals(11112d, catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getWeight(), 0.0001d);
     }
 
     @Test
-    public void testHandleCumulatedCatchWithDeletion() {
+    public void handleCumulatedCatchWithDeletion() {
+        // Given
         FaReportDocumentEntity faReportDocumentEntity = ActivityDataUtil.getFaReportDocumentEntity(FaReportDocumentType.DECLARATION.name(), "FLUX_FA_REPORT_TYPE",
                 parseToUTCDate("2016-06-27 07:47:31"), null,
                 null, FaReportStatusType.NEW);
@@ -121,7 +134,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "DEMINIMIS", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
                 11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS");
         faCatchEntity.setCalculatedWeightMeasure(11112D);
-        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<String, Double>());
+        CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<>());
 
         SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO();
         speciesQuantityDTO.setSpeciesCode("COD");
@@ -131,11 +144,12 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         catchEvolutionProgressDTO.getCatchEvolution().get("onboard").addSpecieAndQuantity("COD", 11112D, StringUtils.EMPTY);
         catchEvolutionProgressDTO.getCatchEvolution().get("onboard").addSpecieAndQuantity("HKE", 11112D, StringUtils.EMPTY);
 
-        handleCumulatedCatchWithDeletion(faCatchEntity, catchEvolutionProgressDTO, new HashMap<String, Double>(), Arrays.asList(FaCatchTypeEnum.DEMINIMIS));
+        // When
+        handleCumulatedCatchWithDeletion(faCatchEntity, catchEvolutionProgressDTO, new HashMap<>(), Arrays.asList(FaCatchTypeEnum.DEMINIMIS));
 
-        assertTrue(!catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().isEmpty());
+        // Then
+        assertFalse(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().isEmpty());
         assertEquals(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getSpeciesCode(), "COD");
-        assertTrue(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getWeight() == 0);
+        assertEquals(0.0d, catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getWeight(), 0.0001d);
     }
-
 }
