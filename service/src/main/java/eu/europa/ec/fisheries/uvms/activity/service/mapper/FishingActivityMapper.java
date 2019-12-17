@@ -537,10 +537,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
             if (specifiedSizeDistribution != null) {
                 SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(specifiedSizeDistribution);
                 sizeDistributionEntity.setFaCatch(faCatchEntity);
+
                 List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
-                for (CodeType classCode : Utils.safeIterable(classCodes)) {
-                    faCatchEntity.setSizeDistributionClassCode(classCode.getValue());
-                    faCatchEntity.setSizeDistributionClassCodeListId(classCode.getListID());
+                if (!CollectionUtils.isEmpty(classCodes)) {
+                    if (classCodes.size() > 1) {
+                        throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found");
+                    }
+                    faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
+                    faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
                 }
 
                 faCatchEntity.setSizeDistribution(sizeDistributionEntity);
