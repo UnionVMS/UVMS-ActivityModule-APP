@@ -11,7 +11,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>1.1.19-SWE-SNAPSHOT</version>
+    <version>1.1.21-SWE-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Swedish version of UnionVms activity module for handling fishing activities.</description>
 
@@ -30,7 +30,7 @@
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
 
         <!-- Docker configuration -->
-        <docker.dev.version>3.40.16.w18-ERS</docker.dev.version>
+        <docker.dev.version>3.40.17.w18-ERS</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
