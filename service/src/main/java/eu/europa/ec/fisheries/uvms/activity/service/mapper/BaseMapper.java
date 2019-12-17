@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
@@ -26,10 +25,8 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
@@ -56,7 +53,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -93,47 +89,6 @@ public class BaseMapper {
 
     public static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         return FishingTripEntity.create(fishingTrip);
-    }
-
-    protected static DelimitedPeriodDTO calculateFishingTime(Set<DelimitedPeriodEntity> periodEntities) {
-        BigDecimal fishingTime = BigDecimal.ZERO;
-        Instant startInstant = null;
-        Instant endInstant = null;
-        String unitCode = null;
-        for (DelimitedPeriodEntity period : periodEntities) {
-            Double calcDur = period.getCalculatedDuration();
-            Instant start = period.getStartDate();
-            Instant end = period.getEndDate();
-
-            if (startInstant == null || start.isBefore(startInstant)) {
-                startInstant = start;
-            }
-            if (endInstant == null || end.isAfter(endInstant)) {
-                endInstant = end;
-            }
-            if (calcDur != null) {
-                fishingTime = fishingTime.add(new BigDecimal(calcDur));
-            }
-            if (unitCode == null) {
-                unitCode = periodEntities.size() > 1 || period.getDurationMeasure() == null ? UnitCodeEnum.MIN.getUnit() : period.getDurationMeasure().getUnitCode();
-            }
-        }
-
-        Date startDate = startInstant != null ? Date.from(startInstant) : null;
-        Date endDate = endInstant != null ? Date.from(endInstant) : null;
-
-        DelimitedPeriodDTO build = DelimitedPeriodDTO
-                .builder()
-                .duration(fishingTime.doubleValue())
-                .endDate(endDate)
-                .startDate(startDate)
-                .unitCode(unitCode)
-                .build();
-
-        if (Math.abs(BigDecimal.ZERO.doubleValue() - build.getDuration()) < 0.00000001) {
-            build.setDuration(null);
-        }
-        return build;
     }
 
     public static RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
