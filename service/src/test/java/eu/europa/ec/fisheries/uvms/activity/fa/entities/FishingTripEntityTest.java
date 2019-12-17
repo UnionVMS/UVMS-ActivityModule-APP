@@ -35,13 +35,11 @@ public class FishingTripEntityTest {
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
 
-        Set<DelimitedPeriodEntity> delimitedPeriods = fishingTripEntity.getDelimitedPeriods();
-        assertEquals(1, delimitedPeriods.size());
+        DelimitedPeriodEmbeddable delimitedPeriod = fishingTripEntity.getDelimitedPeriod();
 
-        DelimitedPeriodEntity delimitedPeriodEntity = delimitedPeriods.iterator().next();
-        Instant startDate = delimitedPeriodEntity.getStartDate();
-        Instant endDate = delimitedPeriodEntity.getEndDate();
-        MeasureType durationMeasure = delimitedPeriodEntity.getDurationMeasure();
+        Instant startDate = delimitedPeriod.getStartDate();
+        Instant endDate = delimitedPeriod.getEndDate();
+        MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
 
         assertEquals("2011-07-01T11:15:00Z", startDate.toString());
         assertEquals("2016-07-01T11:15:00Z", endDate.toString());
