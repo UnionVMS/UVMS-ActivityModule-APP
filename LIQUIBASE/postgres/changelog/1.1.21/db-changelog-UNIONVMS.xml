@@ -16,4 +16,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="robkra" id="move_delimited_period_columns_to_fishing_activity_table">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="end_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="calculated_duration" type="FLOAT8" />
+            <column name="duration_value" type="FLOAT8" />
+            <column name="duration_unit_code" type="VARCHAR(255)" />
+            <column name="duration_unit_code_list_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

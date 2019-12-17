@@ -11,11 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEmbeddable;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -102,7 +103,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faReportDocument", source = "faReportDocumentEntity"),
             @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
-            @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
+            @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodEmbeddable(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
             @Mapping(target = "fishingTrip", expression = "java(BaseMapper.mapToFishingTripEntity(fishingActivity.getSpecifiedFishingTrip()))"),
             @Mapping(target = "fishingGears", ignore = true),
             @Mapping(target = "fluxCharacteristics", ignore = true),
@@ -288,22 +289,41 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected Date getEndDate(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
+        if (entity == null) {
             return null;
         }
 
-        return entity.getDelimitedPeriods().iterator().next().getEndDateAsDate().orElse(null);
+        DelimitedPeriodEmbeddable delimitedPeriod = entity.getDelimitedPeriod();
+        if (delimitedPeriod == null) {
+            return null;
+        }
+
+        Instant endDate = delimitedPeriod.getEndDate();
+        if (endDate == null) {
+            return null;
+        }
+
+        return Date.from(endDate);
     }
 
     protected List<DelimitedPeriodDTO> getDelimitedPeriodDTOList(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
+        if (entity == null || entity.getDelimitedPeriod() == null) {
             return Collections.emptyList();
         }
-        List<DelimitedPeriodDTO> delimitedPeriodDTOEntities = new ArrayList<>();
-        for (DelimitedPeriodEntity dp : entity.getDelimitedPeriods()) {
-            delimitedPeriodDTOEntities.add(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDTO(dp));
+        DelimitedPeriodEmbeddable delimitedPeriod = entity.getDelimitedPeriod();
+        DelimitedPeriodDTO delimitedPeriodDTO = new DelimitedPeriodDTO();
+
+        Instant startDate = delimitedPeriod.getStartDate();
+        if (startDate != null) {
+            delimitedPeriodDTO.setStartDate(Date.from(startDate));
         }
-        return delimitedPeriodDTOEntities;
+
+        Instant endDate = delimitedPeriod.getEndDate();
+        if (endDate != null) {
+            delimitedPeriodDTO.setEndDate(Date.from(endDate));
+        }
+
+        return Lists.newArrayList(delimitedPeriodDTO);
     }
 
     protected String getUniqueFaReportId(FishingActivityEntity entity) {
@@ -667,17 +687,16 @@ public abstract class FishingActivityMapper extends BaseMapper {
         return fishingActivityEntity.getFishingTrip().getFishingTripKey().getTripId();
     }
 
-    protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
+    protected DelimitedPeriodEmbeddable getDelimitedPeriodEmbeddable(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
         if (delimitedPeriods == null || delimitedPeriods.isEmpty()) {
-            return Collections.emptySet();
+            return null;
         }
-        Set<DelimitedPeriodEntity> delimitedPeriodEntities = new HashSet<>();
-        for (DelimitedPeriod delimitedPeriod : delimitedPeriods) {
-            DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod);
-            delimitedPeriodEntity.setFishingActivity(fishingActivityEntity);
-            delimitedPeriodEntities.add(delimitedPeriodEntity);
+        if (delimitedPeriods.size() > 1) {
+            throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingActivity with id " + fishingActivityEntity.getId());
         }
-        return delimitedPeriodEntities;
+        DelimitedPeriod delimitedPeriod = delimitedPeriods.get(0);
+
+        return DelimitedPeriodEmbeddable.create(delimitedPeriod);
     }
 
     protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {

@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -62,10 +61,7 @@ public class FishingActivityMapperTest {
         assertNotNull(fishingActivityEntity.getDestVesselCharId());
         assertFishingActivityFields(fishingActivity, fishingActivityEntity.getDestVesselCharId().getFishingActivitiesForDestVesselCharId());
 
-        assertNotNull(fishingActivityEntity.getDelimitedPeriods());
-        DelimitedPeriodEntity delimitedPeriodEntity = fishingActivityEntity.getDelimitedPeriods().iterator().next();
-        assertNotNull(delimitedPeriodEntity);
-        assertFishingActivityFields(fishingActivity, delimitedPeriodEntity.getFishingActivity());
+        assertNotNull(fishingActivityEntity.getDelimitedPeriod());
 
         assertNotNull(fishingActivityEntity.getFluxLocations());
         FluxLocationEntity fluxLocationEntity = fishingActivityEntity.getFluxLocations().iterator().next();

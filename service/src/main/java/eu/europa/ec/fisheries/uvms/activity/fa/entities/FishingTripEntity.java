@@ -112,8 +112,10 @@ public class FishingTripEntity implements Serializable {
 
         fishingTrip.setIDS(idTypes);
 
-        DelimitedPeriod convert = delimitedPeriod.convert();
-        fishingTrip.setSpecifiedDelimitedPeriods(Lists.newArrayList(convert));
+        if (delimitedPeriod != null) {
+            DelimitedPeriod convert = delimitedPeriod.convert();
+            fishingTrip.setSpecifiedDelimitedPeriods(Lists.newArrayList(convert));
+        }
 
         if (typeCode != null && typeCodeListId != null) {
             CodeType codeType = new CodeType();

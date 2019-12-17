@@ -65,7 +65,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
 						"where (intersects(fa.geom, :area) = true " +
-						"and ft.fishingTripKey.tripId =:fishingTripId) " +
+						"and ft.fishingTripKey.tripId =: fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime"),
 		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
 				query = "SELECT DISTINCT a from FishingActivityEntity a " +
@@ -190,8 +190,8 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<DelimitedPeriodEntity> delimitedPeriods;
+	@Embedded
+	private DelimitedPeriodEmbeddable delimitedPeriod;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumns({
@@ -273,33 +273,28 @@ public class FishingActivityEntity implements Serializable {
         flapDocumentEntity.setFishingActivity(this);
     }
 
-    public Double getCalculatedDuration(){
-        if (isEmpty(delimitedPeriods)) {
-            return null;
-        }
-        Double durationSubTotal = null;
-        for (DelimitedPeriodEntity period : delimitedPeriods) {
-            durationSubTotal = Utils.addDoubles(period.getCalculatedDuration(), durationSubTotal);
-        }
-        return durationSubTotal;
+    public Double getCalculatedDuration() {
+		if (delimitedPeriod == null) {
+			return null;
+		}
+		return delimitedPeriod.getCalculatedDuration();
 	}
 
 	public Double getDuration(){
-		if (isEmpty(delimitedPeriods)) {
+    	if (delimitedPeriod == null || delimitedPeriod.getDurationMeasure() == null) {
 			return null;
 		}
-		Double durationSubTotal = null;
-		for (DelimitedPeriodEntity period : delimitedPeriods) {
-			durationSubTotal = Utils.addDoubles(period.getDurationMeasure().getValue(), durationSubTotal);
-		}
-		return durationSubTotal;
+		MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+    	return durationMeasure.getValue();
 	}
 
-	public String getDurationMeasure(){
-        if (CollectionUtils.isEmpty(delimitedPeriods)) {
-            return null;
-        }
-        return delimitedPeriods.iterator().next().getDurationMeasure().getUnitCode(); // As per rules only MIN is allowed
+	public String getDurationMeasure() {
+    	if (delimitedPeriod == null || delimitedPeriod.getDurationMeasure() == null) {
+    		return null;
+		}
+
+		MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+    	return durationMeasure.getUnitCode();
     }
 
     public Set<FluxLocationDto> getLocations_() {

@@ -10,8 +10,10 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEmbeddable;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
@@ -35,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
@@ -175,7 +178,11 @@ public class ActivityEntityToModelMapper extends BaseMapper {
             mapFluxCharacteristics(target, fluxCharacteristics);
         }
 
-        target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
+        DelimitedPeriodEmbeddable delimitedPeriod = source.getDelimitedPeriod();
+        if (delimitedPeriod != null) {
+            DelimitedPeriod convert = delimitedPeriod.convert();
+            target.setSpecifiedDelimitedPeriods(Lists.newArrayList(convert));
+        }
 
         FishingTripEntity fishingTripEntity = source.getFishingTrip();
         if (fishingTripEntity != null) {
