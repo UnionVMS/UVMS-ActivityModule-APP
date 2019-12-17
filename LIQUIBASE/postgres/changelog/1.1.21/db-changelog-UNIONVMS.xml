@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.21/db-changelog-UNIONVMS.xml">
+
+    <!-- FA CATCH CHANGES -->
+
+    <changeSet author="robmil" id="add_size_distribution_columns_to_fa_catch">
+        <addColumn tableName="activity_fa_catch">
+            <column name="size_distribution_class_code" type="varchar(255)"/>
+            <column name="size_distribution_class_code_list_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_classcode_table">
+        <dropTable tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+
+</databaseChangeLog>
