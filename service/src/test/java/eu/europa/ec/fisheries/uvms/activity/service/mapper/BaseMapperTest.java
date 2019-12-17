@@ -14,15 +14,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
-import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.BaseMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
@@ -77,11 +76,13 @@ public class BaseMapperTest extends BaseUnitilsTest {
 
         FluxLocationEntity entity1 = new FluxLocationEntity();
         entity1.setTypeCode("LOCATION");
-        entity1.setRfmoCode("RFMO1");
+        entity1.setRegionalFisheriesManagementOrganizationCode("RFMO1");
+        entity1.setRegionalFisheriesManagementOrganizationCodeListId("RFMO");
 
         FluxLocationEntity entity2 = new FluxLocationEntity();
         entity2.setTypeCode("DUMMY");
-        entity2.setRfmoCode("RFMO2");
+        entity2.setRegionalFisheriesManagementOrganizationCode("RFMO2");
+        entity2.setRegionalFisheriesManagementOrganizationCodeListId("RFMO");
 
         Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(newSet(entity1, entity2), FluxLocationEnum.LOCATION);
 

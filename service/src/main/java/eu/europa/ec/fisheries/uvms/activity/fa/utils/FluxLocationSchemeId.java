@@ -21,7 +21,6 @@ public enum FluxLocationSchemeId {
     EFFORT_ZONE("effortZone"),
     GFCM_GSA("gfcmGsa"),
     GFCM_STAT_RECTANGLE("gfcmStatRectangle"),
-    RFMO("rfmo"),
     MANAGEMENT_AREA("managementArea");
 
     private String columnName;

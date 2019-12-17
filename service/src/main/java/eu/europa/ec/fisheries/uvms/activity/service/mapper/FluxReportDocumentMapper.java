@@ -20,9 +20,8 @@ import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(uses = {XMLDateUtils.class, FluxReportIdentifierMapper.class, FluxPartyMapper.class, CodeTypeMapper.class},
+@Mapper(uses = {XMLDateUtils.class, FluxReportIdentifierMapper.class, FluxPartyMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FluxReportDocumentMapper {
 
@@ -44,19 +43,6 @@ public interface FluxReportDocumentMapper {
     FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument);
 
     @InheritInverseConfiguration
+    @Mapping(target = "typeCode", ignore = true) // In XML schema but its usage is not stated in the FLUX specification document
     FLUXReportDocument mapToFluxReportDocument(FluxReportDocumentEntity fluxReportDocument);
-
-    @Mappings({
-            @Mapping(target = "listID", ignore = true),
-            @Mapping(target = "listAgencyID", ignore = true),
-            @Mapping(target = "listAgencyName", ignore = true),
-            @Mapping(target = "listName", ignore = true),
-            @Mapping(target = "listVersionID", ignore = true),
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "languageID", ignore = true),
-            @Mapping(target = "listURI", ignore = true),
-            @Mapping(target = "listSchemeURI", ignore = true)
-    })
-    CodeType map(java.lang.String value);
-
 }
