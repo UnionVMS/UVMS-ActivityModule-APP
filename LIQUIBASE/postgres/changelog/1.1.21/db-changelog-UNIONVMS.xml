@@ -27,4 +27,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="robkra" id="drop_unused_table_delimited_period">
+        <dropTable tableName="activity_delimited_period"/>
+    </changeSet>
+
 </databaseChangeLog>
