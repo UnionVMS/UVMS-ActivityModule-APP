@@ -636,7 +636,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
             FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-            fluxLocationEntity.setFluxLocationType(FluxLocationCatchTypeEnum.FA_RELATED.getType());
+            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_RELATED);
             fluxLocationEntity.setFishingActivity(fishingActivityEntity);
             fluxLocationEntities.add(fluxLocationEntity);
         }
@@ -749,7 +749,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     protected String getLandingCountryId(FishingActivityEntity entity) {
         if (entity.getFluxLocations() != null) {
             for (FluxLocationEntity fluxLocation : entity.getFluxLocations()) {
-                if (FluxLocationCatchTypeEnum.FA_RELATED.getType().equals(fluxLocation.getFluxLocationType())) {
+                if (FluxLocationCatchTypeEnum.FA_RELATED.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
                     return fluxLocation.getCountryId();
                 }
             }

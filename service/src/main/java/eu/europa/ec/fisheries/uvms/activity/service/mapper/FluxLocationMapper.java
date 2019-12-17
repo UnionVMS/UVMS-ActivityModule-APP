@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper(imports = BaseMapper.class,
-        uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class, FluxCharacteristicsMapper.class, CodeTypeMapper.class},
+        uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class, FluxCharacteristicsMapper.class},
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FluxLocationMapper {
 
@@ -33,7 +33,7 @@ public interface FluxLocationMapper {
 
     @Mappings({
             @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "fluxLocationType", source = "typeCode.value"), // Why is this duplicated?
+            @Mapping(target = "fluxLocationCatchTypeMapperInfo", ignore = true), // Stored but only used for mapping decisions
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
             @Mapping(target = "countryId", source = "countryID.value"),
             @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value"),
@@ -48,7 +48,9 @@ public interface FluxLocationMapper {
             @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))"),
             @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryID.value"),
             @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryID.value"),
-            @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value")
+            @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value"),
+            @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value"),
+            @Mapping(target = "regionalFisheriesManagementOrganizationCodeListId", source = "regionalFisheriesManagementOrganizationCode.listID")
     })
     FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
 
@@ -61,6 +63,7 @@ public interface FluxLocationMapper {
             @Mapping(target = "geometry", source = "wkt"),
             @Mapping(target = "sovereignCountry", source = "sovereignRightsCountryCode"),
             @Mapping(target = "jurisdictionCountry", source = "jurisdictionCountryCode"),
+            @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode")
     })
     FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
 
