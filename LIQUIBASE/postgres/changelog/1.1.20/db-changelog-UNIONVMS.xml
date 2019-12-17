@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.18/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="robkra" id="move_delimited_period_columns_to_fishing_trip_table">
+        <addColumn tableName="activity_fishing_trip">
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="end_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="calculated_duration" type="FLOAT8" />
+            <column name="duration_value" type="FLOAT8" />
+            <column name="duration_unit_code" type="VARCHAR(255)" />
+            <column name="duration_unit_code_list_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -24,6 +24,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -66,6 +67,9 @@ public class FishingTripEntity implements Serializable {
 
     @Column(name = "calculated_trip_end_date")
     private Instant calculatedTripEndDate;
+
+    @Embedded
+    private DelimitedPeriodEmbeddable delimitedPeriod;
 
     public void addDelimitedPeriods(DelimitedPeriodEntity periodEntity) {
         delimitedPeriods.add(periodEntity);

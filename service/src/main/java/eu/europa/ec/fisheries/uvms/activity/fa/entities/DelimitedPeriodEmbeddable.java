@@ -2,8 +2,6 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
@@ -12,25 +10,24 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Embeddable
-public class DelimitedPeriod {
+public class DelimitedPeriodEmbeddable {
+
+    @Column(name = "start_date")
     private Instant startDate;
+    @Column(name = "end_date")
     private Instant endDate;
+    @Column(name = "calculated_duration")
     private double calculatedDuration;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride( name = "value", column = @Column(name = "durationmeasure_value")),
-            @AttributeOverride( name = "unitCode", column = @Column(name = "durationmeasure_unitCode")),
-            @AttributeOverride( name = "unitCodeListVersionID", column = @Column(name = "durationmeasure_unitCodeListID"))
-    })
-    private MeasureType durationMeasure =  new MeasureType();
+    private MeasureType durationMeasure = new MeasureType();
 
     @PrePersist
     public void prePersist(){
         if (durationMeasure != null && durationMeasure.getUnitCode() != null && durationMeasure.getValue() != null) {
             UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(durationMeasure.getUnitCode());
             if (unitCodeEnum != null) {
-                BigDecimal measuredValue = new BigDecimal(durationMeasure.getValue());
+                BigDecimal measuredValue = BigDecimal.valueOf(durationMeasure.getValue());
                 BigDecimal result = measuredValue.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
                 calculatedDuration = result.doubleValue();
             }
