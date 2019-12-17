@@ -22,7 +22,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntit
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
@@ -90,17 +89,8 @@ public class ActivityDataUtil {
         return fishingActivityEntity;
     }
 
-
-    public static SizeDistributionEntity getSizeDistributionEntity(String categoryCode, String categoryCodeListId) {
-        SizeDistributionEntity sizeDistributionEntity = new SizeDistributionEntity();
-
-        sizeDistributionEntity.setCategoryCode(categoryCode);
-        sizeDistributionEntity.setCategoryCodeListId(categoryCodeListId);
-        return sizeDistributionEntity;
-    }
-
     public static FaCatchEntity getFaCatchEntity(FishingActivityEntity fishingActivityEntity, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Double unitQuantity, Double weightMeasure, String weightMeasureUnitCode,
-                                                 String weighingMeansCode, String weighingMeansCodeListId, SizeDistributionEntity sizeDistributionEntity) {
+                                                 String weighingMeansCode, String weighingMeansCodeListId) {
         FaCatchEntity faCatchEntity = new FaCatchEntity();
         faCatchEntity.setFishingActivity(fishingActivityEntity);
         faCatchEntity.setTypeCode(typeCode);
@@ -111,7 +101,6 @@ public class ActivityDataUtil {
         faCatchEntity.setWeightMeasure(weightMeasure);
         faCatchEntity.setWeightMeasureUnitCode(weightMeasureUnitCode);
         faCatchEntity.setWeighingMeansCode(weighingMeansCode);
-        faCatchEntity.setSizeDistribution(sizeDistributionEntity);
         faCatchEntity.setWeighingMeansCodeListId(weighingMeansCodeListId);
         return faCatchEntity;
     }

@@ -24,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
@@ -158,7 +157,6 @@ public class MapperUtil {
 
         FishingActivityEntity fishingActivityEntity1 = ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity1,null);
 
-        SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("BFT", "FA_BFT_SIZE_CATEGORY");
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(
                 fishingActivityEntity1,
                 "DEPARTURE",
@@ -169,8 +167,7 @@ public class MapperUtil {
                 11112.0D,
                 "FLUX_UNIT",
                 "BFT",
-                "WEIGHT_MEANS",
-                sizeDistributionEntity);
+                "WEIGHT_MEANS");
 
         FishingTripEntity entity = ActivityDataUtil.getFishingTripEntity("JFO", "EU_TRIP_ID", faCatchEntity, fishingActivityEntity1);
 

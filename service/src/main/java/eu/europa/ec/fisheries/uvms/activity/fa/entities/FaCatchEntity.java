@@ -30,7 +30,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -70,10 +69,6 @@ public class FaCatchEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
-
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "size_distribution_id")
-	private SizeDistributionEntity sizeDistribution;
 
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
@@ -152,6 +147,12 @@ public class FaCatchEntity implements Serializable {
 
 	@Column(name = "size_distribution_class_code_list_id")
 	private String sizeDistributionClassCodeListId;
+
+	@Column(name = "size_distribution_category_code")
+	private String sizeDistributionCategoryCode;
+
+	@Column(name = "size_distribution_category_code_list_id")
+	private String sizeDistributionCategoryCodeListId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapProcessEntity> aapProcesses = new HashSet<>();

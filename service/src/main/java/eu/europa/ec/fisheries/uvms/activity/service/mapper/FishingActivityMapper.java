@@ -24,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
@@ -535,8 +534,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
             SizeDistribution specifiedSizeDistribution = faCatch.getSpecifiedSizeDistribution();
             if (specifiedSizeDistribution != null) {
-                SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(specifiedSizeDistribution);
-                sizeDistributionEntity.setFaCatch(faCatchEntity);
+                if (specifiedSizeDistribution.getCategoryCode() != null) {
+                    faCatchEntity.setSizeDistributionCategoryCode(specifiedSizeDistribution.getCategoryCode().getValue());
+                    faCatchEntity.setSizeDistributionCategoryCodeListId(specifiedSizeDistribution.getCategoryCode().getListID());
+                }
 
                 List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
                 if (!CollectionUtils.isEmpty(classCodes)) {
@@ -546,8 +547,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
                     faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
                     faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
                 }
-
-                faCatchEntity.setSizeDistribution(sizeDistributionEntity);
             }
 
             faCatchEntity.setFishingActivity(fishingActivityEntity);

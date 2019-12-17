@@ -81,7 +81,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         FishingActivityEntity fishingActivityEntity = ActivityDataUtil.getFishingActivityEntity(FishingActivityTypeEnum.FISHING_OPERATION.name(), "FLUX_FA_TYPE",
                 parseToUTCDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity, null);
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "LOADED", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
-                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS", null);
+                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS");
         faCatchEntity.setCalculatedWeightMeasure(11112D);
         CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<String, Double>());
 
@@ -100,7 +100,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         FishingActivityEntity fishingActivityEntity = ActivityDataUtil.getFishingActivityEntity(FishingActivityTypeEnum.FISHING_OPERATION.name(), "FLUX_FA_TYPE",
                 parseToUTCDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity, null);
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "LOADED", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
-                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS", null);
+                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS");
         faCatchEntity.setCalculatedWeightMeasure(11112D);
         CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<String, Double>());
 
@@ -119,7 +119,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
         FishingActivityEntity fishingActivityEntity = ActivityDataUtil.getFishingActivityEntity(FishingActivityTypeEnum.DISCARD.name(), "FLUX_FA_TYPE",
                 parseToUTCDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity, null);
         FaCatchEntity faCatchEntity = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity, "DEMINIMIS", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
-                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS", null);
+                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS");
         faCatchEntity.setCalculatedWeightMeasure(11112D);
         CatchEvolutionProgressDTO catchEvolutionProgressDTO = initCatchEvolutionProgressDTO(fishingActivityEntity, FaReportDocumentType.DECLARATION, new HashMap<String, Double>());
 

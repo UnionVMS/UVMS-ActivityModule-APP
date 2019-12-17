@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
+@Mapper(uses = {CustomBigDecimal.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
@@ -74,7 +74,8 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "usageCodeListId", source = "faCatch.usageCode.listID"),
             @Mapping(target = "weighingMeansCode", source = "faCatch.weighingMeansCode.value"),
             @Mapping(target = "weighingMeansCodeListId", source = "faCatch.weighingMeansCode.listID"),
-            @Mapping(target = "sizeDistribution", ignore = true),
+            @Mapping(target = "sizeDistributionCategoryCode", expression = "java(getSizeDistributionCategoryCode(faCatch.getSpecifiedSizeDistribution()))"),
+            @Mapping(target = "sizeDistributionCategoryCodeListId", expression = "java(getSizeDistributionCategoryCodeListId(faCatch.getSpecifiedSizeDistribution()))"),
             @Mapping(target = "sizeDistributionClassCode", expression = "java(getSizeDistributionClassCode(faCatch.getSpecifiedSizeDistribution()))"),
             @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))"),
             @Mapping(target = "aapProcesses", ignore = true),
@@ -189,10 +190,10 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
 
         SizeDistribution result = new SizeDistribution();
-        if (faCatch.getSizeDistribution() != null) {
+        if (faCatch.getSizeDistributionCategoryCode() != null && faCatch.getSizeDistributionCategoryCodeListId() != null) {
             CodeType code = new CodeType();
-            code.setValue(faCatch.getSizeDistribution().getCategoryCode());
-            code.setListID(faCatch.getSizeDistribution().getCategoryCodeListId());
+            code.setValue(faCatch.getSizeDistributionCategoryCode());
+            code.setListID(faCatch.getSizeDistributionCategoryCodeListId());
         }
 
         if (faCatch.getSizeDistributionClassCode() != null && faCatch.getSizeDistributionClassCodeListId() != null) {
@@ -203,6 +204,22 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
 
         return result;
+    }
+
+    protected String getSizeDistributionCategoryCode(SizeDistribution sizeDistribution) {
+        if (sizeDistribution == null || sizeDistribution.getCategoryCode() == null) {
+            return null;
+        }
+
+        return sizeDistribution.getCategoryCode().getValue();
+    }
+
+    protected String getSizeDistributionCategoryCodeListId(SizeDistribution sizeDistribution) {
+        if (sizeDistribution == null || sizeDistribution.getCategoryCode() == null) {
+            return null;
+        }
+
+        return sizeDistribution.getCategoryCode().getListID();
     }
 
     protected String getSizeDistributionClassCode(SizeDistribution sizeDistribution) {
