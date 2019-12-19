@@ -197,7 +197,7 @@ public abstract class SearchQueryBuilder {
         // Make sure that the field which we want to sort, table Join is present for it.
         switch (getFiledCase(sql, field)) {
             case 1:
-                appendLeftJoinFetch(sql, filterMap.DELIMITED_PERIOD_TABLE_ALIAS); //@
+                appendLeftJoinFetch(sql, filterMap.DELIMITED_PERIOD_TABLE_ALIAS);
                 break;
             case 2:
                 appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
@@ -312,7 +312,7 @@ public abstract class SearchQueryBuilder {
         SortKey sort = query.getSorting();
         if (sort != null && sort.getSortBy() != null) {
             SearchFilter field = sort.getSortBy();
-            if (SearchFilter.PERIOD_END.equals(field) ) {
+            if (SearchFilter.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
             }
             if(SearchFilter.PERIOD_END_TRIP.equals(field)){
@@ -337,11 +337,6 @@ public abstract class SearchQueryBuilder {
             return;
         }
         sql.append(" and a.typeCode = 'ARRIVAL'  ");
-//        sql.append(FilterMap.getFilterSortMappings().get(filter));
-//        sql.append(" =(select max(").append(FilterMap.getFilterSortWhereMappings().get(filter)).append(") from a  ");
-//        sql.append(" where a.typeCode = 'ARRIVAL'");
-//        sql.append(" )) ");
-//        sql.append(" OR dp is null ) ");
     }
 
     /**
