@@ -69,14 +69,18 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         boolean isSorted = query.getSorting().getSortBy() != null;
 
         sql.append(FISHING_TRIP_SELECT);
-        if(isSorted) { updateSQLQueryFilter(query,sql); } // Add Order by clause for only requested Sort field
+        if(isSorted) {
+            updateSQLQueryFilter(query,sql); // Add Order by clause for only requested Sort field
+        }
 
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         LOG.info("sql :" + sql);
 
-        if(isSorted) {createSortPartForQuery(sql, query);}
+        if(isSorted) {
+            createSortPartForQuery(sql, query);
+        }
         return sql;
     }
 
