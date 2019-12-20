@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.DelimitedPeriodMapper;
-import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ import lombok.ToString;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.persistence.CascadeType;
@@ -33,7 +31,6 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,17 +85,15 @@ public class FishingTripEntity implements Serializable {
 
         if (!specifiedDelimitedPeriods.isEmpty()) {
             DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
-            DateTimeType startDateTime = delimitedPeriod.getStartDateTime();
-            DateTimeType endDateTime = delimitedPeriod.getEndDateTime();
+            Instant startDate = DelimitedPeriodMapper.getStartDate(delimitedPeriod);
+            Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
 
-            if (startDateTime != null) {
-                Date date = XMLDateUtils.xmlGregorianCalendarToDate(startDateTime.getDateTime());
-                fishingTripEntity.setCalculatedTripStartDate(date.toInstant());
+            if (startDate != null) {
+                fishingTripEntity.setCalculatedTripStartDate(startDate);
             }
 
-            if (endDateTime != null) {
-                Date date = XMLDateUtils.xmlGregorianCalendarToDate(endDateTime.getDateTime());
-                fishingTripEntity.setCalculatedTripEndDate(date.toInstant());
+            if (endDate != null) {
+                fishingTripEntity.setCalculatedTripEndDate(endDate);
             }
         }
 

@@ -4,14 +4,76 @@ import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class DelimitedPeriodMapper {
+    public static Instant getStartDate(DelimitedPeriod delimitedPeriod) {
+        if (delimitedPeriod == null) {
+            return null;
+        }
+
+        DateTimeType startDateTime = delimitedPeriod.getStartDateTime();
+        DateTimeType endDateTime = delimitedPeriod.getEndDateTime();
+        MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+
+        if (startDateTime != null) {
+            Date date = XMLDateUtils.xmlGregorianCalendarToDate(startDateTime.getDateTime());
+            return date.toInstant();
+        }
+
+        if (endDateTime == null || durationMeasure == null) {
+            return null;
+        }
+
+        Date endDate = XMLDateUtils.xmlGregorianCalendarToDate(endDateTime.getDateTime());
+        Instant endDateInstant = endDate.toInstant();
+
+        BigDecimal bigDecimalDuration = durationMeasure.getValue();
+        if (bigDecimalDuration == null) {
+            return null;
+        }
+
+        int durationInMinutes = bigDecimalDuration.intValue();
+        return endDateInstant.minus(durationInMinutes, ChronoUnit.MINUTES);
+    }
+
+    public static Instant getEndDate(DelimitedPeriod delimitedPeriod) {
+        if (delimitedPeriod == null) {
+            return null;
+        }
+
+        DateTimeType startDateTime = delimitedPeriod.getStartDateTime();
+        DateTimeType endDateTime = delimitedPeriod.getEndDateTime();
+        MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+
+        if (endDateTime != null) {
+            Date date = XMLDateUtils.xmlGregorianCalendarToDate(endDateTime.getDateTime());
+            return date.toInstant();
+        }
+
+        if (startDateTime == null || durationMeasure == null) {
+            return null;
+        }
+
+        Date startDate = XMLDateUtils.xmlGregorianCalendarToDate(startDateTime.getDateTime());
+        Instant startDateInstant = startDate.toInstant();
+
+        BigDecimal bigDecimalDuration = durationMeasure.getValue();
+        if (bigDecimalDuration == null) {
+            return null;
+        }
+
+        int durationInMinutes = bigDecimalDuration.intValue();
+        return startDateInstant.plus(durationInMinutes, ChronoUnit.MINUTES);
+    }
+
     public static DelimitedPeriod convert(Instant startDate, Instant endDate) {
         DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
 
