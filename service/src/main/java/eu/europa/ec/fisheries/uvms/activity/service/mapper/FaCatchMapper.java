@@ -194,6 +194,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             CodeType code = new CodeType();
             code.setValue(faCatch.getSizeDistributionCategoryCode());
             code.setListID(faCatch.getSizeDistributionCategoryCodeListId());
+            result.setCategoryCode(code);
         }
 
         if (faCatch.getSizeDistributionClassCode() != null && faCatch.getSizeDistributionClassCodeListId() != null) {

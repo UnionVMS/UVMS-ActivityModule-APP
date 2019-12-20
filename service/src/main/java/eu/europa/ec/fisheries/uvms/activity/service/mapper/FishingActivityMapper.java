@@ -72,6 +72,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Mapper(imports = {FaReportStatusType.class},
@@ -542,7 +543,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
                 List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
                 if (!CollectionUtils.isEmpty(classCodes)) {
                     if (classCodes.size() > 1) {
-                        throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found");
+                        String values = classCodes.stream().map(CodeType::getValue).collect(Collectors.joining(", "));
+                        throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found. Values: " + values);
                     }
                     faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
                     faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
