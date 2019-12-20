@@ -40,4 +40,10 @@
         <dropColumn tableName="activity_fishing_trip" columnName="duration_unit_code_list_id" />
     </changeSet>
 
+    <changeSet author="robkra" id="add_calculated_end_time_column_to_fishing_activity">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="calculated_end_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

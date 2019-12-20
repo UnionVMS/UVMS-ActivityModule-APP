@@ -183,6 +183,9 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "calculated_start_time")
 	private Instant calculatedStartTime;
 
+	@Column(name = "calculated_end_time")
+	private Instant calculatedEndTime;
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
 	private FishingActivityEntity relatedFishingActivity;
