@@ -37,7 +37,6 @@ public interface FluxReportDocumentMapper {
             @Mapping(target = "fluxReportIdentifiers", source = "IDS"),
             @Mapping(target = "fluxParty", source = "ownerFLUXParty"),
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "fluxFaReportMessage", ignore = true),
             @Mapping(target = "faReportDocument", ignore = true)
     })
     FluxReportDocumentEntity mapToFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument);

@@ -45,8 +45,11 @@ public class FluxPartyEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @OneToOne(mappedBy = "fluxParty", optional=false)
+    @OneToOne(mappedBy = "fluxParty", optional=true)
     private FluxReportDocumentEntity fluxReportDocument;
+
+    @OneToOne(mappedBy = "fluxReportDocument_FluxParty", optional=true)
+    private FluxFaReportMessageEntity fluxFaReportMessage;
 
     @Column(name = "flux_party_name")
     private String fluxPartyName;

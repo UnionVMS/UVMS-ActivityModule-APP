@@ -71,6 +71,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -408,9 +409,21 @@ public class BaseMapper {
 
     @Named("xmlGregorianCalendarToInstant")
     protected Instant xmlGregorianCalendarToInstant(XMLGregorianCalendar value) {
-        if (value ==  null) {
+        if (value == null) {
             return null;
         }
         return value.toGregorianCalendar().toInstant();
+    }
+
+    @Named("OnlyInvokedByCustomMappers")
+    protected final <O, P> P getObjectPropertyFromListOfObjectsWithMaxOneItem(List<O> listOfO, Function<O, P> getPfromOFunction) {
+        if (CollectionUtils.isEmpty(listOfO)) {
+            return null;
+        }
+        if (listOfO.size() > 1) {
+            String values = listOfO.stream().map(getPfromOFunction).map(Object::toString).collect(Collectors.joining(", "));
+            throw new IllegalArgumentException("Failed to map list of type " + listOfO.getClass().getTypeName() + " since there are more than one value. Values: " + values);
+        }
+        return getPfromOFunction.apply(listOfO.get(0));
     }
 }

@@ -68,10 +68,6 @@ public class FluxReportDocumentEntity implements Serializable {
     @Column(columnDefinition = "text", name = "purpose")
     private String purpose;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "flux_fa_report_message_id")
-    private FluxFaReportMessageEntity fluxFaReportMessage;
-
     @OneToOne(mappedBy = "fluxReportDocument")
     private FaReportDocumentEntity faReportDocument;
 
