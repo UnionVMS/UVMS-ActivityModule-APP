@@ -93,7 +93,6 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         groupByFields.add(GroupCriteria.GFCM_GSA);
         groupByFields.add(GroupCriteria.GFCM_STAT_RECTANGLE);
         groupByFields.add(GroupCriteria.ICES_STAT_RECTANGLE);
-        groupByFields.add(GroupCriteria.RFMO);
         groupByFields.add(GroupCriteria.SPECIES);
 
         if(isLanding)

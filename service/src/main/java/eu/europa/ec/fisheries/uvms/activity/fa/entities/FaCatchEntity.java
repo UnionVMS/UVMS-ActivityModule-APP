@@ -124,9 +124,6 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "effort_zone")
 	private String effortZone;
 
-    @Column(name = "rfmo")
-    private String rfmo;
-
     @Column(name = "gfcm_gsa")
     private String gfcmGsa;
 

@@ -91,7 +91,6 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "faoArea", ignore = true),
             @Mapping(target = "icesStatRectangle", ignore = true),
             @Mapping(target = "effortZone", ignore = true),
-            @Mapping(target = "rfmo", ignore = true),
             @Mapping(target = "gfcmGsa", ignore = true),
             @Mapping(target = "gfcmStatRectangle", ignore = true),
             @Mapping(target = "presentation", ignore = true),

@@ -591,9 +591,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return faCatchEntity;
         }
         for (FLUXLocation location : fluxLocations) {
-            if (location.getRegionalFisheriesManagementOrganizationCode() != null) {
-                faCatchEntity.setRfmo(location.getRegionalFisheriesManagementOrganizationCode().getValue());
-            }
             IDType id = location.getID();
             if (id != null) {
                 FluxLocationSchemeId fluxLocationSchemeId = null;
