@@ -11,11 +11,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -63,6 +63,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,7 +102,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faReportDocument", source = "faReportDocumentEntity"),
             @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
-            @Mapping(target = "delimitedPeriods", expression = "java(getDelimitedPeriodEntities(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
             @Mapping(target = "fishingTrip", expression = "java(BaseMapper.mapToFishingTripEntity(fishingActivity.getSpecifiedFishingTrip()))"),
             @Mapping(target = "fishingGears", ignore = true),
             @Mapping(target = "fluxCharacteristics", ignore = true),
@@ -111,7 +111,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "vesselTransportMeans", expression = "java(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity, fishingActivityEntity))"),
             @Mapping(target = "allRelatedFishingActivities", expression = "java(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, fishingActivityEntity))"),
             @Mapping(target = "flagState", expression = "java(getFlagState(fishingActivity))"),
-            @Mapping(target = "calculatedStartTime", expression = "java(getCalculatedStartTime(fishingActivity))"), // FIXME
+            @Mapping(target = "calculatedStartTime", expression = "java(getCalculatedStartTime(fishingActivity))"),
+            @Mapping(target = "calculatedEndTime", expression = "java(getCalculatedEndTime(fishingActivity))"),
             @Mapping(target = "latest", constant = "true"),
             @Mapping(target = "flapDocuments", ignore = true)
     })
@@ -135,7 +136,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fluxLocations", expression = "java(null)"),
             @Mapping(target = "fishingGears", expression = "java(null)"),
             @Mapping(target = "fluxCharacteristics", expression = "java(null)"),
-            @Mapping(target = "delimitedPeriod", expression = "java(null)"),
             @Mapping(target = "dataSource", source = "faReportDocument.source"),
             @Mapping(target = "vesselIdTypes", expression = "java(getVesselIdType(entity))"),
             @Mapping(target = "startDate", source = "calculatedStartTime", qualifiedByName = "instantToDate"),
@@ -254,55 +254,129 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingActivity == null) {
             return null;
         }
-        DateTimeType dateTimeType;
+        Instant startTimeInstant = null;
+
         DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
         if (occurrenceDateTime != null && occurrenceDateTime.getDateTime() != null) {
-            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+            startTimeInstant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
         }
-        if (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())) {
-            List<DelimitedPeriod> delimitedPeriodEntities = fishingActivity.getSpecifiedDelimitedPeriods();
-            dateTimeType = delimitedPeriodEntities.iterator().next().getStartDateTime();
-            if (dateTimeType != null && dateTimeType.getDateTime() != null) {
-                return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime()).toInstant();
+
+        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
+        if (specifiedDelimitedPeriods.size() > 1) {
+            throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingActivity");
+        }
+
+        if (!specifiedDelimitedPeriods.isEmpty()) {
+            DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
+            Instant startDate = DelimitedPeriodMapper.getStartDate(delimitedPeriod);
+            if (startDate != null) {
+                if (startTimeInstant == null || startDate.isBefore(startTimeInstant)) {
+                    return startDate;
+                }
             }
         }
-        // We reached till this point of code means FishingActivity has neither occurrence date or startDate for DelimitedPeriod.
-        // In such cases, we need to check if its subactivities have date mentioned.
-        // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
+
         List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
-        for (FishingActivity subFishingActivity : Utils.safeIterable(relatedFishingActivities)) {
-            if (subFishingActivity.getOccurrenceDateTime() != null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
-                    fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime() != null)) {
-                dateTimeType = subFishingActivity.getOccurrenceDateTime();
-                if (dateTimeType == null) {
-                    dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
-                }
-                if (dateTimeType != null && dateTimeType.getDateTime() != null) {
-                    return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime()).toInstant();
+        for (FishingActivity relatedFishingActivity : relatedFishingActivities) {
+            Instant calculatedStartTime = getCalculatedStartTime(relatedFishingActivity);
+
+            if (startTimeInstant == null) {
+                startTimeInstant = calculatedStartTime;
+            } else if (calculatedStartTime != null && calculatedStartTime.isBefore(startTimeInstant)) {
+                startTimeInstant = calculatedStartTime;
+            }
+        }
+
+        return startTimeInstant;
+    }
+
+    protected Instant getCalculatedEndTime(FishingActivity fishingActivity) {
+        if (fishingActivity == null) {
+            return null;
+        }
+        DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
+
+        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
+        if (specifiedDelimitedPeriods.size() > 1) {
+            throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingActivity");
+        }
+
+        if (!specifiedDelimitedPeriods.isEmpty()) {
+            DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
+            Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
+            if (endDate != null) {
+                return endDate;
+            } else {
+                Duration duration = DelimitedPeriodMapper.getDuration(delimitedPeriod);
+                if (duration != null && occurrenceDateTime != null) {
+                    Instant instant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+                    return instant.plus(duration);
                 }
             }
+        }
+
+        Instant relatedFishingActivityEndDate = null;
+        List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
+        for (FishingActivity relatedFishingActivity : relatedFishingActivities) {
+            Instant calculatedEndTime = getCalculatedEndTime(relatedFishingActivity);
+
+            if (relatedFishingActivityEndDate == null) {
+                relatedFishingActivityEndDate = calculatedEndTime;
+            } else if (calculatedEndTime != null && calculatedEndTime.isAfter(relatedFishingActivityEndDate)) {
+                relatedFishingActivityEndDate = calculatedEndTime;
+            }
+        }
+
+        if (relatedFishingActivityEndDate != null) {
+            return relatedFishingActivityEndDate;
+        }
+
+        if (occurrenceDateTime != null) {
+            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
         }
 
         return null;
     }
 
     protected Date getEndDate(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
+        if (entity == null) {
             return null;
         }
 
-        return entity.getDelimitedPeriods().iterator().next().getEndDateAsDate().orElse(null);
+        Instant calculatedEndTime = entity.getCalculatedEndTime();
+        if (calculatedEndTime != null) {
+            return Date.from(calculatedEndTime);
+        }
+
+        return null;
     }
 
     protected List<DelimitedPeriodDTO> getDelimitedPeriodDTOList(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriods() == null || entity.getDelimitedPeriods().isEmpty()) {
+        if (entity == null) {
             return Collections.emptyList();
         }
-        List<DelimitedPeriodDTO> delimitedPeriodDTOEntities = new ArrayList<>();
-        for (DelimitedPeriodEntity dp : entity.getDelimitedPeriods()) {
-            delimitedPeriodDTOEntities.add(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodDTO(dp));
+
+        Instant calculatedStartTime = entity.getCalculatedStartTime();
+        Instant calculatedEndTime = entity.getCalculatedEndTime();
+
+        DelimitedPeriodDTO delimitedPeriodDTO = new DelimitedPeriodDTO();
+
+        if (calculatedStartTime != null) {
+            delimitedPeriodDTO.setStartDate(Date.from(calculatedStartTime));
         }
-        return delimitedPeriodDTOEntities;
+
+        if (calculatedEndTime != null) {
+            delimitedPeriodDTO.setEndDate(Date.from(calculatedEndTime));
+        }
+
+        if (calculatedStartTime != null && calculatedEndTime != null) {
+            Duration between = Duration.between(calculatedStartTime, calculatedEndTime);
+            long durationInMinutes = between.toMinutes();
+            delimitedPeriodDTO.setDuration((double) durationInMinutes);
+            delimitedPeriodDTO.setUnitCode("MIN");
+        }
+
+        return Lists.newArrayList(delimitedPeriodDTO);
     }
 
     protected String getUniqueFaReportId(FishingActivityEntity entity) {
@@ -666,19 +740,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
 
         return fishingActivityEntity.getFishingTrip().getFishingTripKey().getTripId();
-    }
-
-    protected Set<DelimitedPeriodEntity> getDelimitedPeriodEntities(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
-        if (delimitedPeriods == null || delimitedPeriods.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<DelimitedPeriodEntity> delimitedPeriodEntities = new HashSet<>();
-        for (DelimitedPeriod delimitedPeriod : delimitedPeriods) {
-            DelimitedPeriodEntity delimitedPeriodEntity = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod);
-            delimitedPeriodEntity.setFishingActivity(fishingActivityEntity);
-            delimitedPeriodEntities.add(delimitedPeriodEntity);
-        }
-        return delimitedPeriodEntities;
     }
 
     protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {

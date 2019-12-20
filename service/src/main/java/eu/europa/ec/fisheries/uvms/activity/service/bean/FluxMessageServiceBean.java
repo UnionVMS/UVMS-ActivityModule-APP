@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
@@ -57,7 +56,6 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -322,8 +320,10 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private List<Geometry> deriveMultipointsFromActivitiesAndMovements(List<Geometry> multiPointsToAddTo, FishingActivityEntity fishingActivityEntity, List<MicroMovement> movements) throws ServiceException {
         List<Geometry> multiPointForFa = new ArrayList<>();
-        Instant activityDate = fishingActivityEntity.getOccurence() != null ? fishingActivityEntity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivityEntity.getDelimitedPeriods());
+
+        Instant activityDate = getActivityDate(fishingActivityEntity);
         Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
+
         for (FluxLocationEntity fluxLocation : fishingActivityEntity.getFluxLocations()) {
             Geometry point = null;
             String fluxLocationStr = fluxLocation.getTypeCode();
@@ -345,6 +345,17 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
         fishingActivityEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFa));
         return multiPointsToAddTo;
+    }
+
+    private Instant getActivityDate(FishingActivityEntity fishingActivityEntity) {
+        Instant occurenceence = fishingActivityEntity.getOccurence();
+        Instant calculatedStartTime = fishingActivityEntity.getCalculatedStartTime();
+
+        if (occurenceence != null) {
+            return occurenceence;
+        }
+
+        return calculatedStartTime;
     }
 
     private Geometry getGeometryForLocation(FluxLocationEntity fluxLocation) throws ServiceException {
@@ -441,26 +452,14 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
             if (fishingActivity.getOccurence() != null) {
                 dates.add(fishingActivity.getOccurence());
-            } else if (CollectionUtils.isNotEmpty(fishingActivity.getDelimitedPeriods())) {
-                Instant firstDate = getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+            } else {
+                Instant firstDate = getActivityDate(fishingActivity);
                 if (firstDate != null) {
                     dates.add(firstDate);
                 }
             }
         }
         return ImmutableMap.<String, Instant>builder().put(START_DATE, dates.first()).put(END_DATE, dates.last()).build();
-    }
-
-    private Instant getFirstDateFromDelimitedPeriods(Collection<DelimitedPeriodEntity> delimitedPeriods) {
-        TreeSet<Instant> set = new TreeSet<>();
-        for (DelimitedPeriodEntity delimitedPeriodEntity : delimitedPeriods) {
-            if (delimitedPeriodEntity.getStartDate() != null)
-                set.add(delimitedPeriodEntity.getStartDate());
-        }
-        if (CollectionUtils.isEmpty(set)) {
-            return null;
-        }
-        return set.first();
     }
 
     private List<MicroMovement> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers,
