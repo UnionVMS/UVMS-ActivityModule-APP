@@ -257,36 +257,38 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingActivity == null) {
             return null;
         }
-        DateTimeType dateTimeType;
+
         DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
         if (occurrenceDateTime != null && occurrenceDateTime.getDateTime() != null) {
             return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
         }
-        if (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods())) {
-            List<DelimitedPeriod> delimitedPeriodEntities = fishingActivity.getSpecifiedDelimitedPeriods();
-            dateTimeType = delimitedPeriodEntities.iterator().next().getStartDateTime();
-            if (dateTimeType != null && dateTimeType.getDateTime() != null) {
-                return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime()).toInstant();
-            }
+
+        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
+        if (specifiedDelimitedPeriods.size() > 1) {
+            throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingActivity");
         }
-        // We reached till this point of code means FishingActivity has neither occurrence date or startDate for DelimitedPeriod.
-        // In such cases, we need to check if its subactivities have date mentioned.
-        // If yes, then take the first subactivity occurrence date and consider it as start date for parent fishing activity
-        List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
-        for (FishingActivity subFishingActivity : Utils.safeIterable(relatedFishingActivities)) {
-            if (subFishingActivity.getOccurrenceDateTime() != null || (CollectionUtils.isNotEmpty(fishingActivity.getSpecifiedDelimitedPeriods()) &&
-                    fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime() != null)) {
-                dateTimeType = subFishingActivity.getOccurrenceDateTime();
-                if (dateTimeType == null) {
-                    dateTimeType = fishingActivity.getSpecifiedDelimitedPeriods().iterator().next().getStartDateTime();
-                }
-                if (dateTimeType != null && dateTimeType.getDateTime() != null) {
-                    return XMLDateUtils.xmlGregorianCalendarToDate(dateTimeType.getDateTime()).toInstant();
-                }
+
+        if (!specifiedDelimitedPeriods.isEmpty()) {
+            DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
+            Instant startDate = DelimitedPeriodMapper.getStartDate(delimitedPeriod);
+            if (startDate != null) {
+                return startDate;
             }
         }
 
-        return null;
+        Instant relatedFishingActivityStartDate = null;
+        List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
+        for (FishingActivity relatedFishingActivity : relatedFishingActivities) {
+            Instant calculatedStartTime = getCalculatedStartTime(relatedFishingActivity);
+
+            if (relatedFishingActivityStartDate == null) {
+                relatedFishingActivityStartDate = calculatedStartTime;
+            } else if (calculatedStartTime != null && calculatedStartTime.isBefore(relatedFishingActivityStartDate)) {
+                relatedFishingActivityStartDate = calculatedStartTime;
+            }
+        }
+
+        return relatedFishingActivityStartDate;
     }
 
     protected Instant getCalculatedEndTime(FishingActivity fishingActivity) {
