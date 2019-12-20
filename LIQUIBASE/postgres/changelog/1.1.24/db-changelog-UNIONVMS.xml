@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.24/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="pesjob" id="ERS-434-merge-flux-report-document-into-flux-fa-report-message">
+        <addColumn tableName="activity_flux_fa_report_message">
+            <column name="flux_report_document_id" type="VARCHAR(255)"/>
+            <column name="flux_report_document_id_scheme_id" type="VARCHAR(255)"/>
+
+            <column name="flux_report_document_reference_id" type="VARCHAR(255)"/>
+            <column name="flux_report_document_reference_scheme_id" type="VARCHAR(255)"/>
+
+            <column name="flux_report_document_creation_datetime" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_report_document_purpose_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_report_document_purpose_code_list_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_report_document_purpose" type="TEXT"/>
+
+            <column name="flux_report_document_flux_party_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
