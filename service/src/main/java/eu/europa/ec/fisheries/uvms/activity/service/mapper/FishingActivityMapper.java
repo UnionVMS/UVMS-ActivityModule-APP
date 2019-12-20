@@ -269,10 +269,10 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (!specifiedDelimitedPeriods.isEmpty()) {
             DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
             Instant startDate = DelimitedPeriodMapper.getStartDate(delimitedPeriod);
-            if (startDate != null && startTimeInstant == null) {
-                return startDate;
-            } else if (startDate != null && startDate.isBefore(startTimeInstant)) {
-                return startDate;
+            if (startDate != null) {
+                if (startTimeInstant == null || startDate.isBefore(startTimeInstant)) {
+                    return startDate;
+                }
             }
         }
 

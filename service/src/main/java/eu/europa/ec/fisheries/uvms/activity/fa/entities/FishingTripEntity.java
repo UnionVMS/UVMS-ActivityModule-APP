@@ -38,8 +38,6 @@ import java.util.Set;
 @Entity
 @Table(name = "activity_fishing_trip")
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Data
 public class FishingTripEntity implements Serializable {
 
