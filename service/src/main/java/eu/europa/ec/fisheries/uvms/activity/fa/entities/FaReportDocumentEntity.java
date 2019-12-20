@@ -65,14 +65,6 @@ import java.util.Set;
                                 ":startDate <= flxrep.creationDatetime " +
                                 "AND flxrep.creationDatetime <= :endDate)"
         ),
-        @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
-                query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
-                        "LEFT JOIN FETCH rpt.fishingActivities act " +
-                        "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
-                        "JOIN FETCH act.fishingTrip fshtrp " +
-                        "WHERE fshtrp.fishingTripKey.tripId = :tripId " +
-                        "AND ((:area IS NULL) OR intersects(act.geom, :area) = true)"
-        ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_IDS_LIST,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
                         "WHERE fareport.id IN (:ids)"
@@ -88,7 +80,6 @@ public class FaReportDocumentEntity implements Serializable {
 
     public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
     public static final String FIND_BY_FA_IDS_LIST = "findByFaIds";
-    public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
