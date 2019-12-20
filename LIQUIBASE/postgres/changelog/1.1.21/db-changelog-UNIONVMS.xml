@@ -5,6 +5,38 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
         logicalFilePath="changelog/1.1.21/db-changelog-UNIONVMS.xml">
 
+    <!-- FA CATCH CHANGES -->
+
+    <changeSet author="robmil" id="add_size_distribution_columns_to_fa_catch">
+        <addColumn tableName="activity_fa_catch">
+            <column name="size_distribution_class_code" type="varchar(255)"/>
+            <column name="size_distribution_class_code_list_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_classcode_table">
+        <dropTable tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="add_size_distribution_columns_to_fa_catch_part_2">
+        <addColumn tableName="activity_fa_catch">
+            <column name="size_distribution_category_code" type="varchar(255)"/>
+            <column name="size_distribution_category_code_list_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_foreign_key">
+        <dropForeignKeyConstraint baseTableName="activity_fa_catch" constraintName="size_distribution_fc_fk"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_id_column">
+        <dropColumn tableName="activity_fa_catch" columnName="size_distribution_id"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_table">
+        <dropTable tableName="activity_size_distribution"/>
+  </changeSet>
+
     <changeSet author="robmil" id="ERS-458-remove-rfmo-column-in-fa-catch">
         <dropColumn tableName="activity_fa_catch" columnName="rfmo"/>
     </changeSet>

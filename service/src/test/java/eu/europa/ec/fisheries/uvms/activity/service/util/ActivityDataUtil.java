@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.util;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPersonEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -25,27 +22,19 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntit
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Created by sanera on 31/08/2016.
  */
 public class ActivityDataUtil {
-
-    private static List<Object[]> faCatches;
-    private static List<FaCatchEntity> faCatchesEntities;
 
     public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID, Instant creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName) {
         FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
@@ -100,22 +89,8 @@ public class ActivityDataUtil {
         return fishingActivityEntity;
     }
 
-
-    public static SizeDistributionEntity getSizeDistributionEntity(String classCode, String classCodeListId, String categoryCode, String categoryCodeListId) {
-        SizeDistributionEntity sizeDistributionEntity = new SizeDistributionEntity();
-
-        SizeDistributionClassCodeEntity entity = new SizeDistributionClassCodeEntity();
-        entity.setClassCode(classCode);
-        entity.setClassCodeListId(classCodeListId);
-        sizeDistributionEntity.setSizeDistributionClassCodeEntities(new HashSet<>(Arrays.asList(entity)));
-
-        sizeDistributionEntity.setCategoryCode(categoryCode);
-        sizeDistributionEntity.setCategoryCodeListId(categoryCodeListId);
-        return sizeDistributionEntity;
-    }
-
     public static FaCatchEntity getFaCatchEntity(FishingActivityEntity fishingActivityEntity, String typeCode, String typeCodeListId, String speciesCode, String speciesCodeListid, Double unitQuantity, Double weightMeasure, String weightMeasureUnitCode,
-                                                 String weighingMeansCode, String weighingMeansCodeListId, SizeDistributionEntity sizeDistributionEntity) {
+                                                 String weighingMeansCode, String weighingMeansCodeListId) {
         FaCatchEntity faCatchEntity = new FaCatchEntity();
         faCatchEntity.setFishingActivity(fishingActivityEntity);
         faCatchEntity.setTypeCode(typeCode);
@@ -126,11 +101,9 @@ public class ActivityDataUtil {
         faCatchEntity.setWeightMeasure(weightMeasure);
         faCatchEntity.setWeightMeasureUnitCode(weightMeasureUnitCode);
         faCatchEntity.setWeighingMeansCode(weighingMeansCode);
-        faCatchEntity.setSizeDistribution(sizeDistributionEntity);
         faCatchEntity.setWeighingMeansCodeListId(weighingMeansCodeListId);
         return faCatchEntity;
     }
-
 
     public static FishingTripEntity getFishingTripEntity(String typeCode, String typeCodeListId, FaCatchEntity faCatchEntity, FishingActivityEntity fishingActivityEntity) {
         FishingTripEntity fishingTripEntity = new FishingTripEntity();
@@ -141,31 +114,6 @@ public class ActivityDataUtil {
         return fishingTripEntity;
     }
 
-    public static ContactPartyEntity getContactPartyEntity(String title, String givenName, String middleName, String familyName, String familyNamePrefix, String nameSuffix, String gender, String alias) {
-        ContactPartyEntity contPartEntity = new ContactPartyEntity();
-        ContactPersonEntity contactPersonEntity = new ContactPersonEntity();
-        contactPersonEntity.setTitle(title);
-        contactPersonEntity.setGivenName(givenName);
-        contactPersonEntity.setMiddleName(middleName);
-        contactPersonEntity.setFamilyName(familyName);
-        contactPersonEntity.setFamilyNamePrefix(familyNamePrefix);
-        contactPersonEntity.setNameSuffix(nameSuffix);
-        contactPersonEntity.setGender(gender);
-        contactPersonEntity.setAlias(alias);
-        contPartEntity.setContactPerson(contactPersonEntity);
-        return contPartEntity;
-    }
-
-    public static Set<ContactPartyRoleEntity> getContactPartyRole(String roleCode, String roleID, ContactPartyEntity contPartEntity) {
-        Set<ContactPartyRoleEntity> rolesList = new HashSet<>();
-        ContactPartyRoleEntity entity_1 = new ContactPartyRoleEntity();
-        entity_1.setContactParty(contPartEntity);
-        entity_1.setRoleCode(roleCode);
-        entity_1.setRoleCodeListId(roleID);
-        rolesList.add(entity_1);
-        return rolesList;
-    }
-
     public static Set<VesselIdentifierEntity> getVesselIdentifiers(VesselTransportMeansEntity vesselTransportMeansEntity1, String ident_, String scheme_) {
         Set<VesselIdentifierEntity> identifiers = new HashSet<>();
         VesselIdentifierEntity identifier = new VesselIdentifierEntity();
@@ -174,33 +122,5 @@ public class ActivityDataUtil {
         identifier.setVesselIdentifierSchemeId(scheme_);
         identifiers.add(identifier);
         return identifiers;
-    }
-
-    public static List<FaCatchEntity> getFaCatchesEntities() {
-        List<FaCatchEntity> faCatchEntities = new ArrayList<>();
-        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
-                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
-        VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
-        vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1", "CFR"));
-        FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
-                vesselTransportMeansEntity1, FaReportStatusType.NEW);
-        FishingActivityEntity fishingActivityEntity1 = ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity1, null);
-        SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
-
-        FaCatchEntity faCatchEntity1 = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity1, "LOADED", "FA_CATCH_TYPE", "COD", "FAO_SPECIES",
-                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS", sizeDistributionEntity);
-        FaCatchEntity faCatchEntity2 = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity1, "ONBOARD", "FA_CATCH_TYPE", "HKE", "FAO_SPECIES",
-                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS", sizeDistributionEntity);
-        FaCatchEntity faCatchEntity3 = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity1, "UNLOADED", "FA_CATCH_TYPE", "HAD", "FAO_SPECIES",
-                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS", sizeDistributionEntity);
-        FaCatchEntity faCatchEntity4 = ActivityDataUtil.getFaCatchEntity(fishingActivityEntity1, "DEMINIMIS", "FA_CATCH_TYPE", "POK", "FAO_SPECIES",
-                11112D, 11112.0D, "KGM", "BFT", "WEIGHT_MEANS", sizeDistributionEntity);
-
-        faCatchEntities.add(faCatchEntity1);
-        faCatchEntities.add(faCatchEntity2);
-        faCatchEntities.add(faCatchEntity3);
-        faCatchEntities.add(faCatchEntity4);
-
-        return faCatchEntities;
     }
 }

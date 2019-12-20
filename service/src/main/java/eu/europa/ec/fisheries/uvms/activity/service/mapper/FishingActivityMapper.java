@@ -24,8 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionClassCodeEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
@@ -74,6 +72,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Mapper(imports = {FaReportStatusType.class},
@@ -536,15 +535,20 @@ public abstract class FishingActivityMapper extends BaseMapper {
 
             SizeDistribution specifiedSizeDistribution = faCatch.getSpecifiedSizeDistribution();
             if (specifiedSizeDistribution != null) {
-                SizeDistributionEntity sizeDistributionEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionEntity(specifiedSizeDistribution);
-                sizeDistributionEntity.setFaCatch(faCatchEntity);
-                List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
-                for (CodeType classCode : Utils.safeIterable(classCodes)) {
-                    SizeDistributionClassCodeEntity sizeDistributionClassCodeEntity = SizeDistributionMapper.INSTANCE.mapToSizeDistributionClassCodeEntity(classCode);
-                    sizeDistributionEntity.addSizeDistribution(sizeDistributionClassCodeEntity);
+                if (specifiedSizeDistribution.getCategoryCode() != null) {
+                    faCatchEntity.setSizeDistributionCategoryCode(specifiedSizeDistribution.getCategoryCode().getValue());
+                    faCatchEntity.setSizeDistributionCategoryCodeListId(specifiedSizeDistribution.getCategoryCode().getListID());
                 }
 
-                faCatchEntity.setSizeDistribution(sizeDistributionEntity);
+                List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
+                if (!CollectionUtils.isEmpty(classCodes)) {
+                    if (classCodes.size() > 1) {
+                        String values = classCodes.stream().map(CodeType::getValue).collect(Collectors.joining(", "));
+                        throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found. Values: " + values);
+                    }
+                    faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
+                    faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
+                }
             }
 
             faCatchEntity.setFishingActivity(fishingActivityEntity);
