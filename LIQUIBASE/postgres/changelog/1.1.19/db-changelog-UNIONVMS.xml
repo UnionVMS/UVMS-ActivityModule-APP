@@ -82,5 +82,4 @@
                       oldColumnName="flux_location_type"
                       tableName="activity_flux_location"/>
     </changeSet>
-
 </databaseChangeLog>
