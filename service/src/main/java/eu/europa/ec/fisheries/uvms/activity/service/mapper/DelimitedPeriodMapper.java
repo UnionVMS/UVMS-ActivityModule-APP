@@ -74,6 +74,25 @@ public class DelimitedPeriodMapper {
         return startDateInstant.plus(durationInMinutes, ChronoUnit.MINUTES);
     }
 
+    public static Duration getDuration(DelimitedPeriod delimitedPeriod) {
+        if (delimitedPeriod == null) {
+            return null;
+        }
+
+        MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+        if (durationMeasure == null) {
+            return null;
+        }
+
+        BigDecimal bigDecimalDuration = durationMeasure.getValue();
+        if (bigDecimalDuration == null) {
+            return null;
+        }
+
+        int durationInMinutes = bigDecimalDuration.intValue();
+        return Duration.of(durationInMinutes, ChronoUnit.MINUTES);
+    }
+
     public static DelimitedPeriod convert(Instant startDate, Instant endDate) {
         DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
 

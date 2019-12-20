@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEmbeddable;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -66,6 +65,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,7 +103,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "faReportDocument", source = "faReportDocumentEntity"),
             @Mapping(target = "sourceVesselCharId", expression = "java(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), fishingActivityEntity))"),
             @Mapping(target = "destVesselCharId", expression = "java(getDestVesselStorageCharacteristics(fishingActivity.getDestinationVesselStorageCharacteristic(), fishingActivityEntity))"),
-            @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodEmbeddable(fishingActivity.getSpecifiedDelimitedPeriods(), fishingActivityEntity))"),
             @Mapping(target = "fishingTrip", expression = "java(BaseMapper.mapToFishingTripEntity(fishingActivity.getSpecifiedFishingTrip()))"),
             @Mapping(target = "fishingGears", ignore = true),
             @Mapping(target = "fluxCharacteristics", ignore = true),
@@ -138,7 +137,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fluxLocations", expression = "java(null)"),
             @Mapping(target = "fishingGears", expression = "java(null)"),
             @Mapping(target = "fluxCharacteristics", expression = "java(null)"),
-            @Mapping(target = "delimitedPeriod", expression = "java(null)"),
             @Mapping(target = "dataSource", source = "faReportDocument.source"),
             @Mapping(target = "vesselIdTypes", expression = "java(getVesselIdType(entity))"),
             @Mapping(target = "startDate", source = "calculatedStartTime", qualifiedByName = "instantToDate"),
@@ -257,10 +255,11 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingActivity == null) {
             return null;
         }
+        Instant startTimeInstant = null;
 
         DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
         if (occurrenceDateTime != null && occurrenceDateTime.getDateTime() != null) {
-            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+            startTimeInstant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
         }
 
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
@@ -271,24 +270,25 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (!specifiedDelimitedPeriods.isEmpty()) {
             DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
             Instant startDate = DelimitedPeriodMapper.getStartDate(delimitedPeriod);
-            if (startDate != null) {
+            if (startDate != null && startTimeInstant == null) {
+                return startDate;
+            } else if (startDate != null && startDate.isBefore(startTimeInstant)) {
                 return startDate;
             }
         }
 
-        Instant relatedFishingActivityStartDate = null;
         List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
         for (FishingActivity relatedFishingActivity : relatedFishingActivities) {
             Instant calculatedStartTime = getCalculatedStartTime(relatedFishingActivity);
 
-            if (relatedFishingActivityStartDate == null) {
-                relatedFishingActivityStartDate = calculatedStartTime;
-            } else if (calculatedStartTime != null && calculatedStartTime.isBefore(relatedFishingActivityStartDate)) {
-                relatedFishingActivityStartDate = calculatedStartTime;
+            if (startTimeInstant == null) {
+                startTimeInstant = calculatedStartTime;
+            } else if (calculatedStartTime != null && calculatedStartTime.isBefore(startTimeInstant)) {
+                startTimeInstant = calculatedStartTime;
             }
         }
 
-        return relatedFishingActivityStartDate;
+        return startTimeInstant;
     }
 
     protected Instant getCalculatedEndTime(FishingActivity fishingActivity) {
@@ -307,6 +307,12 @@ public abstract class FishingActivityMapper extends BaseMapper {
             Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
             if (endDate != null) {
                 return endDate;
+            } else {
+                Duration duration = DelimitedPeriodMapper.getDuration(delimitedPeriod);
+                if (duration != null && occurrenceDateTime != null) {
+                    Instant instant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+                    return instant.plus(duration);
+                }
             }
         }
 
@@ -338,34 +344,37 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return null;
         }
 
-        DelimitedPeriodEmbeddable delimitedPeriod = entity.getDelimitedPeriod();
-        if (delimitedPeriod == null) {
-            return null;
+        Instant calculatedEndTime = entity.getCalculatedEndTime();
+        if (calculatedEndTime != null) {
+            return Date.from(calculatedEndTime);
         }
 
-        Instant endDate = delimitedPeriod.getEndDate();
-        if (endDate == null) {
-            return null;
-        }
-
-        return Date.from(endDate);
+        return null;
     }
 
     protected List<DelimitedPeriodDTO> getDelimitedPeriodDTOList(FishingActivityEntity entity) {
-        if (entity == null || entity.getDelimitedPeriod() == null) {
+        if (entity == null) {
             return Collections.emptyList();
         }
-        DelimitedPeriodEmbeddable delimitedPeriod = entity.getDelimitedPeriod();
+
+        Instant calculatedStartTime = entity.getCalculatedStartTime();
+        Instant calculatedEndTime = entity.getCalculatedEndTime();
+
         DelimitedPeriodDTO delimitedPeriodDTO = new DelimitedPeriodDTO();
 
-        Instant startDate = delimitedPeriod.getStartDate();
-        if (startDate != null) {
-            delimitedPeriodDTO.setStartDate(Date.from(startDate));
+        if (calculatedStartTime != null) {
+            delimitedPeriodDTO.setStartDate(Date.from(calculatedStartTime));
         }
 
-        Instant endDate = delimitedPeriod.getEndDate();
-        if (endDate != null) {
-            delimitedPeriodDTO.setEndDate(Date.from(endDate));
+        if (calculatedEndTime != null) {
+            delimitedPeriodDTO.setEndDate(Date.from(calculatedEndTime));
+        }
+
+        if (calculatedStartTime != null && calculatedEndTime != null) {
+            Duration between = Duration.between(calculatedStartTime, calculatedEndTime);
+            long durationInMinutes = between.toMinutes();
+            delimitedPeriodDTO.setDuration((double) durationInMinutes);
+            delimitedPeriodDTO.setUnitCode("MIN");
         }
 
         return Lists.newArrayList(delimitedPeriodDTO);
@@ -730,18 +739,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
 
         return fishingActivityEntity.getFishingTrip().getFishingTripKey().getTripId();
-    }
-
-    protected DelimitedPeriodEmbeddable getDelimitedPeriodEmbeddable(List<DelimitedPeriod> delimitedPeriods, FishingActivityEntity fishingActivityEntity) {
-        if (delimitedPeriods == null || delimitedPeriods.isEmpty()) {
-            return null;
-        }
-        if (delimitedPeriods.size() > 1) {
-            throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingActivity with id " + fishingActivityEntity.getId());
-        }
-        DelimitedPeriod delimitedPeriod = delimitedPeriods.get(0);
-
-        return DelimitedPeriodEmbeddable.create(delimitedPeriod);
     }
 
     protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {

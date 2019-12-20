@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEmbeddable;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
@@ -349,18 +348,14 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private Instant getActivityDate(FishingActivityEntity fishingActivityEntity) {
-        DelimitedPeriodEmbeddable delimitedPeriod = fishingActivityEntity.getDelimitedPeriod();
-        Instant occurence = fishingActivityEntity.getOccurence();
+        Instant occurenceence = fishingActivityEntity.getOccurence();
+        Instant calculatedStartTime = fishingActivityEntity.getCalculatedStartTime();
 
-        if (occurence != null) {
-            return occurence;
+        if (occurenceence != null) {
+            return occurenceence;
         }
 
-        if (delimitedPeriod != null) {
-            return delimitedPeriod.getStartDate();
-        }
-
-        return null;
+        return calculatedStartTime;
     }
 
     private Geometry getGeometryForLocation(FluxLocationEntity fluxLocation) throws ServiceException {

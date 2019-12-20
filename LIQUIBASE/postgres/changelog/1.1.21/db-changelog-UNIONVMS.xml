@@ -46,4 +46,13 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="robkra" id="drop_delimited_period_from_fishing_activity">
+        <dropColumn tableName="activity_fishing_activity" columnName="start_date" />
+        <dropColumn tableName="activity_fishing_activity" columnName="end_date" />
+        <dropColumn tableName="activity_fishing_activity" columnName="calculated_duration" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_value" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_unit_code" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_unit_code_list_id" />
+    </changeSet>
+
 </databaseChangeLog>

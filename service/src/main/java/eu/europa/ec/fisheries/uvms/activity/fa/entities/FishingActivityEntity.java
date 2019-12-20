@@ -14,14 +14,12 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxLocationMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.AttributeOverride;
@@ -193,9 +191,6 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs;
 
-	@Embedded
-	private DelimitedPeriodEmbeddable delimitedPeriod;
-
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name = "trip_id", referencedColumnName = "trip_id"),
@@ -274,30 +269,6 @@ public class FishingActivityEntity implements Serializable {
     public void addFlapDocuments(FlapDocumentEntity flapDocumentEntity){
         flapDocuments.add(flapDocumentEntity);
         flapDocumentEntity.setFishingActivity(this);
-    }
-
-    public Double getCalculatedDuration() {
-		if (delimitedPeriod == null) {
-			return null;
-		}
-		return delimitedPeriod.getCalculatedDuration();
-	}
-
-	public Double getDuration(){
-    	if (delimitedPeriod == null || delimitedPeriod.getDurationMeasure() == null) {
-			return null;
-		}
-		MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
-    	return durationMeasure.getValue();
-	}
-
-	public String getDurationMeasure() {
-    	if (delimitedPeriod == null || delimitedPeriod.getDurationMeasure() == null) {
-    		return null;
-		}
-
-		MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
-    	return durationMeasure.getUnitCode();
     }
 
     public Set<FluxLocationDto> getLocations_() {

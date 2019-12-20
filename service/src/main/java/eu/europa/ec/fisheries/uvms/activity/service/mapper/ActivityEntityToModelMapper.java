@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEmbeddable;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
@@ -178,11 +177,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
             mapFluxCharacteristics(target, fluxCharacteristics);
         }
 
-        DelimitedPeriodEmbeddable delimitedPeriod = source.getDelimitedPeriod();
-        if (delimitedPeriod != null) {
-            DelimitedPeriod convert = delimitedPeriod.convert();
-            target.setSpecifiedDelimitedPeriods(Lists.newArrayList(convert));
-        }
+        Instant calculatedStartTime = source.getCalculatedStartTime();
+        Instant calculatedEndTime = source.getCalculatedEndTime();
+        DelimitedPeriod delimitedPeriod = DelimitedPeriodMapper.convert(calculatedStartTime, calculatedEndTime);
+        target.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
 
         FishingTripEntity fishingTripEntity = source.getFishingTrip();
         if (fishingTripEntity != null) {
