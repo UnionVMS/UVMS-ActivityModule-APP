@@ -43,7 +43,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.info("sql :" + sql);
+        LOG.debug("sql :" + sql);
         return sql;
     }
 
@@ -53,7 +53,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         sql.append(FISHING_TRIP_COUNT_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.info("sql :" + sql);
+        LOG.debug("sql :" + sql);
         return sql;
     }
 
