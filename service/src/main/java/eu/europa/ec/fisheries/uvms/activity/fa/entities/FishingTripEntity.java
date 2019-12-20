@@ -12,6 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import com.google.common.collect.Lists;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.DelimitedPeriodMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,11 +21,11 @@ import lombok.ToString;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -31,6 +33,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,8 +41,8 @@ import java.util.Set;
 @Entity
 @Table(name = "activity_fishing_trip")
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"delimitedPeriod"})
-@ToString(exclude = {"delimitedPeriod"})
+@EqualsAndHashCode
+@ToString
 @Data
 public class FishingTripEntity implements Serializable {
 
@@ -64,9 +67,6 @@ public class FishingTripEntity implements Serializable {
     @Column(name = "calculated_trip_end_date")
     private Instant calculatedTripEndDate;
 
-    @Embedded
-    private DelimitedPeriodEmbeddable delimitedPeriod;
-
     public static FishingTripEntity create(FishingTrip fishingTrip) {
         if (fishingTrip == null) {
             return null;
@@ -88,8 +88,18 @@ public class FishingTripEntity implements Serializable {
 
         if (!specifiedDelimitedPeriods.isEmpty()) {
             DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
-            DelimitedPeriodEmbeddable delimitedPeriodEmbeddable = DelimitedPeriodEmbeddable.create(delimitedPeriod);
-            fishingTripEntity.setDelimitedPeriod(delimitedPeriodEmbeddable);
+            DateTimeType startDateTime = delimitedPeriod.getStartDateTime();
+            DateTimeType endDateTime = delimitedPeriod.getEndDateTime();
+
+            if (startDateTime != null) {
+                Date date = XMLDateUtils.xmlGregorianCalendarToDate(startDateTime.getDateTime());
+                fishingTripEntity.setCalculatedTripStartDate(date.toInstant());
+            }
+
+            if (endDateTime != null) {
+                Date date = XMLDateUtils.xmlGregorianCalendarToDate(endDateTime.getDateTime());
+                fishingTripEntity.setCalculatedTripEndDate(date.toInstant());
+            }
         }
 
         CodeType typeCode = fishingTrip.getTypeCode();
@@ -112,10 +122,8 @@ public class FishingTripEntity implements Serializable {
 
         fishingTrip.setIDS(idTypes);
 
-        if (delimitedPeriod != null) {
-            DelimitedPeriod convert = delimitedPeriod.convert();
-            fishingTrip.setSpecifiedDelimitedPeriods(Lists.newArrayList(convert));
-        }
+        DelimitedPeriod delimitedPeriod = DelimitedPeriodMapper.convert(calculatedTripStartDate, calculatedTripEndDate);
+        fishingTrip.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
 
         if (typeCode != null && typeCodeListId != null) {
             CodeType codeType = new CodeType();
