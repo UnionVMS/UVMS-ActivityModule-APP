@@ -64,14 +64,14 @@ public class FluxReportMessageSaver {
     }
 
     private void deleteDuplicatedReportsFromXMLDocument(FLUXFAReportMessage fluxfaReportMessage) {
-        List<ActivityIDType> documentIdList = collectAllIdsFromMessage(fluxfaReportMessage);
+        List<ActivityIDType> documentIdList = collectAllIdsRelatedToFaReportDocumentsFromMessage(fluxfaReportMessage);
 
         List<ActivityIDType> matchingIds = matchingIdsService.getMatchingIds(documentIdList, ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY);
         List<FAReportDocument> faReportDocuments = fluxfaReportMessage.getFAReportDocuments();
         deleteBranchesThatMatchWithTheIdsList(matchingIds, faReportDocuments);
     }
 
-    private List<ActivityIDType> collectAllIdsFromMessage(FLUXFAReportMessage fluxfaReportMessage) {
+    private List<ActivityIDType> collectAllIdsRelatedToFaReportDocumentsFromMessage(FLUXFAReportMessage fluxfaReportMessage) {
         List<IDType> fluxFaReportMessageDocumentIdList = new ArrayList<>();
 
         if (fluxfaReportMessage == null) {

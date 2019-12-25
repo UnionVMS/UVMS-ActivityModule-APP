@@ -12,20 +12,15 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripCache;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
@@ -38,25 +33,34 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {FAReportIdentifierMapper.class},
+@Mapper(uses = {FluxPartyMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaReportDocumentMapper extends BaseMapper {
 
     public static final FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
 
     @Mappings({
+            @Mapping(target = "fluxReportDocument_Id", source = "faReportDocument.relatedFLUXReportDocument.IDS", qualifiedByName = "singleIDTypeValue"),
+            @Mapping(target = "fluxReportDocument_IdSchemeId", source = "faReportDocument.relatedFLUXReportDocument.IDS", qualifiedByName = "singleIDTypeSchemeID"),
+
+            @Mapping(target = "fluxReportDocument_ReferenceId", source = "faReportDocument.relatedFLUXReportDocument.referencedID.value"),
+            @Mapping(target = "fluxReportDocument_ReferenceIdSchemeId", source = "faReportDocument.relatedFLUXReportDocument.referencedID.schemeID"),
+            @Mapping(target = "fluxReportDocument_CreationDatetime", source = "faReportDocument.relatedFLUXReportDocument.creationDateTime.dateTime"),
+            @Mapping(target = "fluxReportDocument_PurposeCode", source = "faReportDocument.relatedFLUXReportDocument.purposeCode.value"),
+            @Mapping(target = "fluxReportDocument_PurposeCodeListId", source = "faReportDocument.relatedFLUXReportDocument.purposeCode.listID"),
+            @Mapping(target = "fluxReportDocument_Purpose", source = "faReportDocument.relatedFLUXReportDocument.purpose.value"),
+            @Mapping(target = "fluxReportDocument_FluxParty", source = "faReportDocument.relatedFLUXReportDocument.ownerFLUXParty"),
+
             @Mapping(target = "typeCode", source = "faReportDocument.typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "faReportDocument.typeCode.listID"),
             @Mapping(target = "acceptedDatetime", source = "faReportDocument.acceptanceDateTime", qualifiedByName = "dateTimeTypeToInstant"),
@@ -64,7 +68,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fmcMarkerListId", source = "faReportDocument.FMCMarkerCode.listID"),
             @Mapping(target = "status", constant = "NEW"),
             @Mapping(target = "source", source = "faReportSourceEnum.sourceType"),
-            @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(faReportDocument.getRelatedFLUXReportDocument(), faReportDocumentEntity))"),
             @Mapping(target = "faReportIdentifiers", source = "faReportDocument.relatedReportIDs"),
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "geom", ignore = true),
@@ -76,34 +79,28 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
     @Mappings({
             @Mapping(target = "correctionType", source = "status"),
-            @Mapping(target = "creationDate", source = "fluxReportDocument.creationDatetime"),
+            @Mapping(target = "creationDate", source = "fluxReportDocument_CreationDatetime"),
             @Mapping(target = "acceptedDate", source = "acceptedDatetime"),
-            @Mapping(target = "faReportIdentifiers", expression = "java(getReportIdMap(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers()))"),
-            @Mapping(target = "ownerFluxPartyName", source = "fluxReportDocument.fluxParty.fluxPartyName"),
-            @Mapping(target = "purposeCode", source = "fluxReportDocument.purposeCode")
+            @Mapping(target = "faReportIdentifiers", expression = "java(getReportIdMap(faReportDocumentEntity.getFluxReportDocument_Id(), faReportDocumentEntity.getFluxReportDocument_IdSchemeId())"),
+            @Mapping(target = "ownerFluxPartyName", source = "fluxReportDocument_FluxParty.fluxPartyName"),
+            @Mapping(target = "purposeCode", source = "fluxReportDocument_PurposeCode")
     })
     public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
 
     public abstract List<FaReportCorrectionDTO> mapToFaReportCorrectionDtoList(List<FaReportDocumentEntity> faReportDocumentEntities);
 
     @Mappings({
-            @Mapping(target = "type" , source = "typeCode"),
-            @Mapping(target = "acceptedDate" , expression = "java(instantToDateUtilsStringFormat(faReportDocument.getAcceptedDatetime()))"),
-            @Mapping(target = "creationDate" , source = "fluxReportDocument.creationDatetime", qualifiedByName = "instantToDateUtilsStringFormat"),
+            @Mapping(target = "type", source = "typeCode"),
+            @Mapping(target = "acceptedDate", expression = "java(instantToDateUtilsStringFormat(faReportDocument.getAcceptedDatetime()))"),
+            @Mapping(target = "creationDate", source = "fluxReportDocument_CreationDatetime", qualifiedByName = "instantToDateUtilsStringFormat"),
             @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getReportOwner())"),
-            @Mapping(target = "refId" , source = "fluxReportDocument.referenceId"),
-            @Mapping(target = "purposeCode" , source = "fluxReportDocument.purposeCode"),
-            @Mapping(target = "fmcMark" , source = "fmcMarker"),
-            @Mapping(target = "relatedReports" , source = "faReportIdentifiers"),
+            @Mapping(target = "refId", source = "fluxReportDocument_ReferenceId"),
+            @Mapping(target = "purposeCode", source = "fluxReportDocument_PurposeCode"),
+            @Mapping(target = "fmcMark", source = "fmcMarker"),
+            @Mapping(target = "relatedReports", source = "faReportIdentifiers"),
             @Mapping(target = "id", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"UUID\"))"),
     })
     public abstract ReportDocumentDto mapFaReportDocumentToReportDocumentDto(FaReportDocumentEntity faReportDocument);
-
-    @Mappings({
-            @Mapping(target = "id" , source = "faReportIdentifierId"),
-            @Mapping(target = "schemeId" , source = "faReportIdentifierSchemeId"),
-    })
-    public abstract RelatedReportDto mapFaReportDocumentEntityToRelatedReportDto(FaReportIdentifierEntity entity);
 
     public static Set<VesselTransportMeansEntity> mapVesselTransportMeansEntity(VesselTransportMeans vesselTransportMeans, FaReportDocumentEntity faReportDocumentEntity) {
         if (vesselTransportMeans == null) {
@@ -115,7 +112,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
         List<FLAPDocument> grantedFLAPDocuments = vesselTransportMeans.getGrantedFLAPDocuments();
 
-        if (CollectionUtils.isNotEmpty(grantedFLAPDocuments)){
+        if (CollectionUtils.isNotEmpty(grantedFLAPDocuments)) {
             Set<FlapDocumentEntity> flapDocumentEntities = new HashSet<>();
             for (FLAPDocument grantedFLAPDocument : grantedFLAPDocuments) {
                 FlapDocumentEntity flapDocumentEntity = FlapDocumentMapper.INSTANCE.mapToFlapDocumentEntity(grantedFLAPDocument);
@@ -186,26 +183,4 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         }
         return specifiedFishingActivityEntities;
     }
-
-    protected FluxReportDocumentEntity getFluxReportDocument(FLUXReportDocument fluxReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
-        if (fluxReportDocument == null) {
-            return null;
-        }
-        FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
-        if (fluxReportDocument.getOwnerFLUXParty() != null){
-            FluxPartyEntity fluxPartyEntity = FluxPartyMapper.INSTANCE.mapToFluxPartyEntity(fluxReportDocument.getOwnerFLUXParty());
-            fluxPartyEntity.setFluxReportDocument(fluxReportDocumentEntity);
-            fluxReportDocumentEntity.setFluxParty(fluxPartyEntity);
-        }
-        Set<FluxReportIdentifierEntity> reportIdentifierEntitySet = new HashSet<>();
-        for (IDType idType : Utils.safeIterable(fluxReportDocument.getIDS())) {
-            FluxReportIdentifierEntity fluxReportIdentifierEntity = FluxReportIdentifierMapper.INSTANCE.mapToFluxReportIdentifierEntity(idType);
-            fluxReportIdentifierEntity.setFluxReportDocument(fluxReportDocumentEntity);
-            reportIdentifierEntitySet.add(fluxReportIdentifierEntity);
-        }
-        fluxReportDocumentEntity.setFluxReportIdentifiers(reportIdentifierEntitySet);
-        fluxReportDocumentEntity.setFaReportDocument(faReportDocumentEntity);
-        return fluxReportDocumentEntity;
-    }
-
 }

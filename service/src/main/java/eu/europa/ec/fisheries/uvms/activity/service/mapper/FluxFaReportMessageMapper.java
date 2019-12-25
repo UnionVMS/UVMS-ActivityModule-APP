@@ -70,16 +70,6 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
 
     }
 
-    @Named("singleIDTypeValue")
-    protected String singleIDTypeValue(List<IDType> idTypes) {
-        return super.getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getValue);
-    }
-
-    @Named("singleIDTypeSchemeID")
-    protected String singleIDTypeSchemeID(List<IDType> idTypes) {
-        return super.getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getSchemeID);
-    }
-
     private Set<FaReportDocumentEntity> mapFaReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage) {
         FishingTripCache fishingTripCache = new FishingTripCache();
 

@@ -46,8 +46,8 @@ public abstract class FluxPartyMapper {
             @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxParty.getNames()))"),
             @Mapping(target = "fluxPartyIdentifiers", expression = "java(mapToFluxPartyIdentifierEntities(fluxParty.getIDS(), fluxPartyEntity))"),
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "fluxReportDocument", ignore = true),
-            @Mapping(target = "fluxFaReportMessage", ignore = true)
+            @Mapping(target = "faReportDocumentEntity", ignore = true),
+            @Mapping(target = "fluxFaReportMessageEntity", ignore = true)
     })
     public abstract FluxPartyEntity mapToFluxPartyEntity(FLUXParty fluxParty);
 

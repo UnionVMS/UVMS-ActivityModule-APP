@@ -76,7 +76,17 @@ import java.util.Set;
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_IDS_LIST,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
                         "WHERE fareport.id IN (:ids)"
-        )
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_MATCHING_IDENTIFIER,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "WHERE fareport.fluxReportDocument_Id = :reportId " +
+                        "AND fareport.fluxReportDocument_IdSchemeId = :schemeId"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_RELATED_MATCHING_IDENTIFIER,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "WHERE fareport.fluxReportDocument_ReferenceId = :reportId " +
+                        "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeId"
+        ),
 })
 @Entity
 @Table(name = "activity_fa_report_document")
@@ -92,6 +102,8 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
+    public static final String FIND_MATCHING_IDENTIFIER = "findMatchingIdentifier";
+    public static final String FIND_RELATED_MATCHING_IDENTIFIER = "findRelatedMatchingIdentifier";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -99,9 +111,33 @@ public class FaReportDocumentEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "flux_report_document_id", nullable = false)
-    private FluxReportDocumentEntity fluxReportDocument;
+    @Column(name = "flux_report_document_id")
+    private String fluxReportDocument_Id;
+
+    @Column(name = "flux_report_document_id_scheme_id")
+    private String fluxReportDocument_IdSchemeId;
+
+    @Column(name = "flux_report_document_reference_id")
+    private String fluxReportDocument_ReferenceId;
+
+    @Column(name = "flux_report_document_reference_scheme_id")
+    private String fluxReportDocument_ReferenceIdSchemeId;
+
+    @Column(name = "flux_report_document_creation_datetime", nullable = false)
+    private Instant fluxReportDocument_CreationDatetime;
+
+    @Column(name = "flux_report_document_purpose_code", nullable = false)
+    private String fluxReportDocument_PurposeCode;
+
+    @Column(name = "flux_report_document_purpose_code_list_id", nullable = false)
+    private String fluxReportDocument_PurposeCodeListId;
+
+    @Column(name = "flux_report_document_purpose")
+    private String fluxReportDocument_Purpose;
+
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "flux_report_document_flux_party_id")
+    private FluxPartyEntity fluxReportDocument_FluxParty;
 
     @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;

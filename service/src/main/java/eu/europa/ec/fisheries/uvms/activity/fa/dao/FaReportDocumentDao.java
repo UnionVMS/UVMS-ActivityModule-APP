@@ -13,20 +13,21 @@ package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,15 +66,14 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         history.add(faReportEntity);
 
         // Find reports that refer to this report
-        FluxReportIdentifierEntity repId = faReportEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
-        FaReportDocumentEntity reportThatRefersToThisOne = findFaReportByRefIdAndRefScheme(repId.getFluxReportIdentifierId(), repId.getFluxReportIdentifierSchemeId());
+        FaReportDocumentEntity reportThatRefersToThisOne = findFaReportByRefIdAndRefScheme(faReportEntity.getFluxReportDocument_Id(), faReportEntity.getFluxReportDocument_IdSchemeId());
         if (reportThatRefersToThisOne != null && !history.contains(reportThatRefersToThisOne)) {
             populateHistoryOfFaReport(reportThatRefersToThisOne, history);
         }
 
         // Find reports that this report refers to
-        String repRefId = faReportEntity.getFluxReportDocument().getReferenceId();
-        String repRefSchemeId = faReportEntity.getFluxReportDocument().getReferenceSchemeId();
+        String repRefId = faReportEntity.getFluxReportDocument_ReferenceId();
+        String repRefSchemeId = faReportEntity.getFluxReportDocument_ReferenceIdSchemeId();
         if (StringUtils.isNotEmpty(repRefId) && StringUtils.isNotEmpty(repRefSchemeId)) {
             FaReportDocumentEntity referredReport = findFaReportByIdAndScheme(repRefId, repRefSchemeId);
             if (referredReport != null && !history.contains(referredReport)) {
@@ -97,7 +97,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         FaReportDocumentEntity singleResult;
         try {
             singleResult = query.getSingleResult();
-        } catch (NoResultException ex){
+        } catch (NoResultException ex) {
             singleResult = null; // no need to log this exception!
         }
         return singleResult;
@@ -152,7 +152,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return query.getResultList();
     }
 
-    public List<FaReportDocumentEntity> findReportsByIdsList(List<Integer> ids){
+    public List<FaReportDocumentEntity> findReportsByIdsList(List<Integer> ids) {
         TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_IDS_LIST, FaReportDocumentEntity.class);
         query.setParameter("ids", ids);
         return query.getResultList();
@@ -180,4 +180,19 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
             }
         }
     }
+
+    public List<FaReportDocumentEntity> getMatchingIdentifiers(List<ActivityIDType> ids, ActivityTableType tableType) {
+        String namedQueryToSelect = tableType == ActivityTableType.FLUX_REPORT_DOCUMENT_ENTITY ? FaReportDocumentEntity.FIND_MATCHING_IDENTIFIER : FaReportDocumentEntity.FIND_RELATED_MATCHING_IDENTIFIER;
+        List<FaReportDocumentEntity> resultList = new ArrayList<>();
+        // FIXME avoid looping and querying
+        for (ActivityIDType idType : ids) {
+            TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(namedQueryToSelect, FaReportDocumentEntity.class);
+            query.setParameter(REPORT_ID, idType.getValue());
+            query.setParameter(SCHEME_ID, idType.getIdentifierSchemeId());
+            resultList.addAll(query.getResultList());
+        }
+        resultList.removeAll(Collections.singleton(null));
+        return resultList;
+    }
+
 }
