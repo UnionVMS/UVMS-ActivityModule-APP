@@ -19,8 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
@@ -31,30 +29,26 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by sanera on 31/08/2016.
- */
 public class ActivityDataUtil {
 
-    public static FluxReportDocumentEntity getFluxReportDocumentEntity(String fluxDocumentID, String referenceID, Instant creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName) {
-        FluxReportDocumentEntity fluxReportDocumentEntity = new FluxReportDocumentEntity();
+    public static void addFluxReportFieldsToFaReportDocumentEntity(FaReportDocumentEntity faReportDocumentEntity, String fluxDocumentID, String referenceID, Instant creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName) {
+        faReportDocumentEntity.setFluxReportDocument_Id(fluxDocumentID);
+        faReportDocumentEntity.setFluxReportDocument_ReferenceId(referenceID);
+        faReportDocumentEntity.setFluxReportDocument_CreationDatetime(creationDateTime);
+        faReportDocumentEntity.setFluxReportDocument_PurposeCode(purposeCode);
+        faReportDocumentEntity.setFluxReportDocument_PurposeCodeListId(purposeCodeListId);
+        faReportDocumentEntity.setFluxReportDocument_Purpose(purpose);
 
-        FluxReportIdentifierEntity entity = new FluxReportIdentifierEntity();
-        entity.setFluxReportIdentifierId(fluxDocumentID);
-        fluxReportDocumentEntity.setFluxReportIdentifiers(new HashSet<>(Arrays.asList(entity)));
-        fluxReportDocumentEntity.setCreationDatetime(creationDateTime);
+        FluxPartyIdentifierEntity fluxPartyIdentifierEntity = new FluxPartyIdentifierEntity();
+        fluxPartyIdentifierEntity.setFluxPartyIdentifierId(ownerFluxPartyId);
+
+        Set<FluxPartyIdentifierEntity> partyIdentifiers = new HashSet<>();
+        partyIdentifiers.add(fluxPartyIdentifierEntity);
 
         FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
         fluxPartyEntity.setFluxPartyName(ownerFluxPartyName);
-        FluxPartyIdentifierEntity fluxPartyIdentifierEntity = new FluxPartyIdentifierEntity();
-        fluxPartyIdentifierEntity.setFluxPartyIdentifierId(ownerFluxPartyId);
-        fluxReportDocumentEntity.setFluxParty(fluxPartyEntity);
-
-        fluxReportDocumentEntity.setPurpose(purpose);
-        fluxReportDocumentEntity.setPurposeCode(purposeCode);
-        fluxReportDocumentEntity.setPurposeCodeListId(purposeCodeListId);
-        fluxReportDocumentEntity.setReferenceId(referenceID);
-        return fluxReportDocumentEntity;
+        fluxPartyEntity.setFluxPartyIdentifiers(partyIdentifiers);
+        faReportDocumentEntity.setFluxReportDocument_FluxParty(fluxPartyEntity);
     }
 
     public static VesselTransportMeansEntity getVesselTransportMeansEntity(String roleCode, String roleCodeListId, String name, RegistrationEventEntity registrationEventEntity) {
@@ -66,12 +60,11 @@ public class ActivityDataUtil {
         return vesselTransportMeansEntity;
     }
 
-    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Instant acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportStatusType status) {
+    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Instant acceptedDatetime, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportStatusType status) {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setTypeCode(typeCode);
         faReportDocumentEntity.setTypeCodeListId(typeCodeListId);
         faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
-        faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
         faReportDocumentEntity.setVesselTransportMeans(new HashSet<>(Arrays.asList(vesselTransportMeansEntity)));
         faReportDocumentEntity.setStatus(status.name());
         return faReportDocumentEntity;

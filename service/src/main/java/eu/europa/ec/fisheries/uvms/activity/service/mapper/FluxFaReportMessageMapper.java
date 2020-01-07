@@ -41,8 +41,8 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
     public static FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
 
     @Mappings({
-            @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxReportDocument.ids))"),
-            @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxReportDocument.ids))"),
+            @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxFaReportMessage.getFLUXReportDocument().getIDS()))"),
+            @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxFaReportMessage.getFLUXReportDocument().getIDS()))"),
 
             @Mapping(target = "fluxReportDocument_ReferenceId", source = "FLUXReportDocument.referencedID.value"),
             @Mapping(target = "fluxReportDocument_ReferenceIdSchemeId", source = "FLUXReportDocument.referencedID.schemeID"),

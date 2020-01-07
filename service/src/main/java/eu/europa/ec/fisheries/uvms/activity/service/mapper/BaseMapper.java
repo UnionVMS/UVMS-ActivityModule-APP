@@ -11,14 +11,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
@@ -34,6 +38,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -45,6 +50,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Named;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
@@ -433,7 +440,7 @@ public class BaseMapper {
         return getPfromOFunction.apply(listOfO.get(0));
     }
 
-    private Set<FaReportIdentifierEntity> mapRelatedReportIDs(FAReportDocument target) {
+    protected Set<FaReportIdentifierEntity> mapRelatedReportIDs(FAReportDocument target) {
         Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<>();
         if (CollectionUtils.isNotEmpty(faReportIdentifiers)) {
             List<IDType> idTypeList = new ArrayList<>();
@@ -451,7 +458,7 @@ public class BaseMapper {
         return faReportIdentifiers;
     }
 
-    private List<RelatedReportDto> mapToRelatedReportDtoList(Set<FaReportIdentifierEntity> faReportIdentifierEntities) {
+    protected List<RelatedReportDto> mapToRelatedReportDtoList(Set<FaReportIdentifierEntity> faReportIdentifierEntities) {
         List<RelatedReportDto> relatedReportDtos = new ArrayList<>();
         for (FaReportIdentifierEntity faReportIdentifierEntity : faReportIdentifierEntities) {
             RelatedReportDto relatedReportDto = new RelatedReportDto();
@@ -460,5 +467,80 @@ public class BaseMapper {
         }
 
         return relatedReportDtos;
+    }
+
+    protected FLUXReportDocument mapToFluxReportDocument(FaReportDocumentEntity faReportDocumentEntity) {
+        FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
+
+        Instant fluxReportDocument_creationDatetime = faReportDocumentEntity.getFluxReportDocument_CreationDatetime();
+        DateTimeType creationDateTime = new DateTimeType();
+        creationDateTime.setDateTime(XMLDateUtils.dateToXmlGregorian(new Date(fluxReportDocument_creationDatetime.toEpochMilli())));
+
+        String fluxReportDocument_id = faReportDocumentEntity.getFluxReportDocument_Id();
+        String fluxReportDocument_idSchemeId = faReportDocumentEntity.getFluxReportDocument_IdSchemeId();
+
+        IDType idType = new IDType();
+        idType.setValue(fluxReportDocument_id);
+        idType.setSchemeID(fluxReportDocument_idSchemeId);
+        ArrayList<IDType> idTypes = Lists.newArrayList(idType);
+
+        FluxPartyEntity fluxReportDocument_fluxParty = faReportDocumentEntity.getFluxReportDocument_FluxParty();
+        FLUXParty fluxParty = mapToFluxParty(fluxReportDocument_fluxParty);
+
+        String fluxReportDocument_purpose = faReportDocumentEntity.getFluxReportDocument_Purpose();
+        TextType purpose = new TextType();
+        purpose.setValue(fluxReportDocument_purpose);
+
+        String fluxReportDocument_purposeCode = faReportDocumentEntity.getFluxReportDocument_PurposeCode();
+        String fluxReportDocument_purposeCodeListId = faReportDocumentEntity.getFluxReportDocument_PurposeCodeListId();
+        CodeType purposeCode = new CodeType();
+        purposeCode.setValue(fluxReportDocument_purposeCode);
+        purposeCode.setListID(fluxReportDocument_purposeCodeListId);
+
+        String fluxReportDocument_referenceId = faReportDocumentEntity.getFluxReportDocument_ReferenceId();
+        String fluxReportDocument_referenceIdSchemeId = faReportDocumentEntity.getFluxReportDocument_ReferenceIdSchemeId();
+
+        IDType referenceId = new IDType();
+        referenceId.setValue(fluxReportDocument_referenceId);
+        referenceId.setSchemeID(fluxReportDocument_referenceIdSchemeId);
+
+        fluxReportDocument.setCreationDateTime(creationDateTime);
+        fluxReportDocument.setIDS(idTypes);
+        fluxReportDocument.setOwnerFLUXParty(fluxParty);
+        fluxReportDocument.setPurpose(purpose);
+        fluxReportDocument.setPurposeCode(purposeCode);
+        fluxReportDocument.setReferencedID(referenceId);
+
+        return fluxReportDocument;
+    }
+
+    private FLUXParty mapToFluxParty(FluxPartyEntity fluxPartyEntity) {
+        String fluxPartyNameValue = fluxPartyEntity.getFluxPartyName();
+        String nameLanguageId = fluxPartyEntity.getNameLanguageId();
+
+        TextType fluxPartyName = new TextType();
+        fluxPartyName.setValue(fluxPartyNameValue);
+        fluxPartyName.setLanguageID(nameLanguageId);
+        ArrayList<TextType> fluxPartyNameList = Lists.newArrayList(fluxPartyName);
+
+        List<IDType> fluxPartyIdList = new ArrayList<>();
+
+        Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = fluxPartyEntity.getFluxPartyIdentifiers();
+        for (FluxPartyIdentifierEntity fluxPartyIdentifierEntity : fluxPartyIdentifiers) {
+            String fluxPartyIdentifierId = fluxPartyIdentifierEntity.getFluxPartyIdentifierId();
+            String fluxPartyIdentifierSchemeId = fluxPartyIdentifierEntity.getFluxPartyIdentifierSchemeId();
+
+            IDType fluxPartyIdType = new IDType();
+            fluxPartyIdType.setValue(fluxPartyIdentifierId);
+            fluxPartyIdType.setSchemeID(fluxPartyIdentifierSchemeId);
+
+            fluxPartyIdList.add(fluxPartyIdType);
+        }
+
+        FLUXParty ownerFluxParty = new FLUXParty();
+        ownerFluxParty.setNames(fluxPartyNameList);
+        ownerFluxParty.setIDS(fluxPartyIdList);
+
+        return ownerFluxParty;
     }
 }

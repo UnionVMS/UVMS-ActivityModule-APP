@@ -50,8 +50,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     public static final FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
 
     @Mappings({
-            @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxReportDocument.ids))"),
-            @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxReportDocument.ids))"),
+            @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(faReportDocument.getRelatedFLUXReportDocument().getIDS()))"),
+            @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(faReportDocument.getRelatedFLUXReportDocument().getIDS()))"),
 
             @Mapping(target = "fluxReportDocument_ReferenceId", source = "faReportDocument.relatedFLUXReportDocument.referencedID.value"),
             @Mapping(target = "fluxReportDocument_ReferenceIdSchemeId", source = "faReportDocument.relatedFLUXReportDocument.referencedID.schemeID"),
@@ -68,7 +68,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fmcMarkerListId", source = "faReportDocument.FMCMarkerCode.listID"),
             @Mapping(target = "status", constant = "NEW"),
             @Mapping(target = "source", source = "faReportSourceEnum.sourceType"),
-            @Mapping(target = "faReportIdentifiers", expression = "java(mapRelatedReportIDs(faReportDocument.relatedReportIDs))"),
+            @Mapping(target = "faReportIdentifiers", expression = "java(mapRelatedReportIDs(faReportDocument))"),
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "geom", ignore = true),
             @Mapping(target = "fluxFaReportMessage", ignore = true),
@@ -93,12 +93,12 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "acceptedDate", expression = "java(instantToDateUtilsStringFormat(faReportDocument.getAcceptedDatetime()))"),
             @Mapping(target = "creationDate", source = "fluxReportDocument_CreationDatetime", qualifiedByName = "instantToDateUtilsStringFormat"),
-            @Mapping(target = "owner", expression = "java(faReportDocument.getFluxReportDocument().getReportOwner())"),
+            @Mapping(target = "owner", source = "fluxReportDocument_FluxParty.fluxPartyName"),
             @Mapping(target = "refId", source = "fluxReportDocument_ReferenceId"),
             @Mapping(target = "purposeCode", source = "fluxReportDocument_PurposeCode"),
             @Mapping(target = "fmcMark", source = "fmcMarker"),
-            @Mapping(target = "relatedReports", expression = "java(mapToRelatedReportDtoList(faReportIdentifiers))"),
-            @Mapping(target = "id", expression = "java(faReportDocument.getFluxReportDocument().getFluxPartyIdentifierBySchemeId(\"UUID\"))"),
+            @Mapping(target = "relatedReports", expression = "java(mapToRelatedReportDtoList(faReportDocument.getFaReportIdentifiers()))"),
+            @Mapping(target = "id", expression = "java(faReportDocument.getFluxReportDocument_Id())"),
     })
     public abstract ReportDocumentDto mapFaReportDocumentToReportDocumentDto(FaReportDocumentEntity faReportDocument);
 
