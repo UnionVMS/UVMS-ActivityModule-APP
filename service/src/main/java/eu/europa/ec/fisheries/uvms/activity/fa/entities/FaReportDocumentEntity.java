@@ -93,7 +93,6 @@ public class FaReportDocumentEntity implements Serializable {
 
     public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
     public static final String FIND_BY_FA_IDS_LIST = "findByFaIds";
-    public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";

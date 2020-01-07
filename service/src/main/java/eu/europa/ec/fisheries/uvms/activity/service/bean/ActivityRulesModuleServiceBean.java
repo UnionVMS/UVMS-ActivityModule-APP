@@ -80,7 +80,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaQuery(faQueryForTrip);
             if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
                 final List<SubscriptionParameter> parameters = subscriptionPermissionResponse.getParameters();
-                String dataFlow = extractParameterByName(parameters, "DF");
+                String dataFlow = getDataFlowParameter(parameters);
                 // TODO : mocking up df value untill subscription is ready
                 if (StringUtils.isEmpty(dataFlow)) {
                     dataFlow = "urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2";
@@ -118,7 +118,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaReport(faReportXMLObj);
             if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
                 final List<SubscriptionParameter> parameters = subscriptionPermissionResponse.getParameters();
-                String dataFlow = extractParameterByName(parameters, "DF");
+                String dataFlow = getDataFlowParameter(parameters);
                 // TODO : mocking up df value untill subscription is ready
                 if (StringUtils.isEmpty(dataFlow)) {
                     dataFlow = "urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2";
@@ -170,16 +170,13 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
         return owner;
     }
 
-    private String extractParameterByName(List<SubscriptionParameter> parameters, String paramName) {
-        String paramValue = null;
-        if (CollectionUtils.isNotEmpty(parameters) && StringUtils.isNoneBlank(paramName)) {
-            for (SubscriptionParameter param : parameters) {
-                if (paramName.equalsIgnoreCase(param.getName())) {
-                    paramValue = param.getValues().get(0);
-                    break;
-                }
+    private String getDataFlowParameter(List<SubscriptionParameter> parameters) {
+        for (SubscriptionParameter parameter : Utils.safeIterable(parameters)) {
+            if ("DF".equalsIgnoreCase(parameter.getName())) {
+                return parameter.getValues().get(0);
             }
         }
-        return paramValue;
+
+        return null;
     }
 }

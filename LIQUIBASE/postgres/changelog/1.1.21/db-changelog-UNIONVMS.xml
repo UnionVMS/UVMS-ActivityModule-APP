@@ -5,6 +5,58 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
         logicalFilePath="changelog/1.1.21/db-changelog-UNIONVMS.xml">
 
+    <!-- DELIMITED PERIOD CHANGES -->
+
+    <changeSet author="robkra" id="move_delimited_period_columns_to_fishing_trip_table">
+        <addColumn tableName="activity_fishing_trip">
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="end_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="calculated_duration" type="FLOAT8" />
+            <column name="duration_value" type="FLOAT8" />
+            <column name="duration_unit_code" type="VARCHAR(255)" />
+            <column name="duration_unit_code_list_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="move_delimited_period_columns_to_fishing_activity_table">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="end_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="calculated_duration" type="FLOAT8" />
+            <column name="duration_value" type="FLOAT8" />
+            <column name="duration_unit_code" type="VARCHAR(255)" />
+            <column name="duration_unit_code_list_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="drop_unused_table_delimited_period">
+        <dropTable tableName="activity_delimited_period"/>
+    </changeSet>
+
+    <changeSet author="robkra" id="drop_delimited_period_from_fishing_trip">
+        <dropColumn tableName="activity_fishing_trip" columnName="start_date" />
+        <dropColumn tableName="activity_fishing_trip" columnName="end_date" />
+        <dropColumn tableName="activity_fishing_trip" columnName="calculated_duration" />
+        <dropColumn tableName="activity_fishing_trip" columnName="duration_value" />
+        <dropColumn tableName="activity_fishing_trip" columnName="duration_unit_code" />
+        <dropColumn tableName="activity_fishing_trip" columnName="duration_unit_code_list_id" />
+    </changeSet>
+
+    <changeSet author="robkra" id="add_calculated_end_time_column_to_fishing_activity">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="calculated_end_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="drop_delimited_period_from_fishing_activity">
+        <dropColumn tableName="activity_fishing_activity" columnName="start_date" />
+        <dropColumn tableName="activity_fishing_activity" columnName="end_date" />
+        <dropColumn tableName="activity_fishing_activity" columnName="calculated_duration" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_value" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_unit_code" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_unit_code_list_id" />
+    </changeSet>
+
     <!-- FA CATCH CHANGES -->
 
     <changeSet author="robmil" id="add_size_distribution_columns_to_fa_catch">

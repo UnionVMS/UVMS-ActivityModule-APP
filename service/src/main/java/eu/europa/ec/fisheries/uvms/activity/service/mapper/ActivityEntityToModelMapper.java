@@ -10,6 +10,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
@@ -178,7 +180,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
             mapFluxCharacteristics(target, fluxCharacteristics);
         }
 
-        target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
+        Instant calculatedStartTime = source.getCalculatedStartTime();
+        Instant calculatedEndTime = source.getCalculatedEndTime();
+        DelimitedPeriod delimitedPeriod = DelimitedPeriodMapper.convert(calculatedStartTime, calculatedEndTime);
+        target.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
 
         FishingTripEntity fishingTripEntity = source.getFishingTrip();
         if (fishingTripEntity != null) {

@@ -14,14 +14,12 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxLocationMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.AttributeOverride;
@@ -65,7 +63,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
 						"where (intersects(fa.geom, :area) = true " +
-						"and ft.fishingTripKey.tripId =:fishingTripId) " +
+						"and ft.fishingTripKey.tripId =: fishingTripId) " +
 						"order by a.typeCode,fa.acceptedDatetime"),
 		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
 				query = "SELECT DISTINCT a from FishingActivityEntity a " +
@@ -183,15 +181,15 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "calculated_start_time")
 	private Instant calculatedStartTime;
 
+	@Column(name = "calculated_end_time")
+	private Instant calculatedEndTime;
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
 	private FishingActivityEntity relatedFishingActivity;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<DelimitedPeriodEntity> delimitedPeriods;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumns({
@@ -271,35 +269,6 @@ public class FishingActivityEntity implements Serializable {
     public void addFlapDocuments(FlapDocumentEntity flapDocumentEntity){
         flapDocuments.add(flapDocumentEntity);
         flapDocumentEntity.setFishingActivity(this);
-    }
-
-    public Double getCalculatedDuration(){
-        if (isEmpty(delimitedPeriods)) {
-            return null;
-        }
-        Double durationSubTotal = null;
-        for (DelimitedPeriodEntity period : delimitedPeriods) {
-            durationSubTotal = Utils.addDoubles(period.getCalculatedDuration(), durationSubTotal);
-        }
-        return durationSubTotal;
-	}
-
-	public Double getDuration(){
-		if (isEmpty(delimitedPeriods)) {
-			return null;
-		}
-		Double durationSubTotal = null;
-		for (DelimitedPeriodEntity period : delimitedPeriods) {
-			durationSubTotal = Utils.addDoubles(period.getDurationMeasure().getValue(), durationSubTotal);
-		}
-		return durationSubTotal;
-	}
-
-	public String getDurationMeasure(){
-        if (CollectionUtils.isEmpty(delimitedPeriods)) {
-            return null;
-        }
-        return delimitedPeriods.iterator().next().getDurationMeasure().getUnitCode(); // As per rules only MIN is allowed
     }
 
     public Set<FluxLocationDto> getLocations_() {
