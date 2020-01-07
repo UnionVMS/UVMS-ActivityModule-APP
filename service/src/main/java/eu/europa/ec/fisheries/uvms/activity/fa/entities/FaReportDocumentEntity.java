@@ -41,34 +41,29 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "LEFT JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
-                        "WHERE identifier.fluxReportIdentifierId IN (lower(:reportId), upper(:reportId), :reportId) " +
-                        "AND identifier.fluxReportIdentifierSchemeId = :schemeId"
+                        "WHERE fareport.fluxReportDocument_Id IN (lower(:reportId), upper(:reportId), :reportId) " +
+                        "AND fareport.fluxReportDocument_IdSchemeId = :schemeId"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE fluxreport.referenceId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
-                        "AND fluxreport.referenceSchemeId = :schemeRefId"
+                        "WHERE fareport.fluxReportDocument_ReferenceId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
+                        "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeRefId"
         ),
         @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
                         "LEFT JOIN FETCH rpt.fishingActivities act " +
                         "LEFT JOIN FETCH rpt.vesselTransportMeans vtm " +
                         "LEFT OUTER JOIN FETCH vtm.vesselIdentifiers vtmids " +
-                        "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
                         "JOIN FETCH act.fishingTrip fshtrp " +
                         "WHERE rpt.status IN (:statuses) " +
                         "AND ((:tripId IS NULL) OR fshtrp.fishingTripKey.tripId = :tripId) " +
                         "AND (" +
-                                ":startDate <= flxrep.creationDatetime " +
-                                "AND flxrep.creationDatetime <= :endDate)"
+                                ":startDate <= rpt.fluxReportDocument_CreationDatetime " +
+                                "AND rpt.fluxReportDocument_CreationDatetime <= :endDate)"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
                         "LEFT JOIN FETCH rpt.fishingActivities act " +
-                        "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
                         "JOIN FETCH act.fishingTrip fshtrp " +
                         "WHERE fshtrp.fishingTripKey.tripId = :tripId " +
                         "AND ((:area IS NULL) OR intersects(act.geom, :area) = true)"
