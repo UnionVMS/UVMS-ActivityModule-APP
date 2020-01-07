@@ -65,10 +65,6 @@ public class ActivityEntityToModelMapperTest {
         String clearControlSource = clearEmptyTags(controlSource);
         String clearTestSource = clearEmptyTags(testSource);
 
-        System.out.println(clearControlSource);
-        System.out.println("#############################################");
-        System.out.println(clearTestSource);
-
         org.xmlunit.diff.Diff myDiffSimilar = DiffBuilder
                 .compare(clearControlSource)
                 .withTest(clearTestSource)
@@ -86,29 +82,29 @@ public class ActivityEntityToModelMapperTest {
     private Object[] resources() {
 
         return $(
-                $("fa_flux_message4.xml")
-//                $("fa_flux_message5.xml"),
-//                $("fa_flux_message6.xml"),
-//                $("fa_flux_message7.xml"),
-//                $("fa_flux_message8.xml"),
-//                $("UNFA_IRCS6_14_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_15_CANCEL_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_19_LANDING_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_18_ARRIVAL_DCL_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_07_DELETE_FOP4_withError_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_09_EXIT_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS5_08B_TRA-LOAD_EST-TRP-20170531000000000001.xml"),
-//                $("UNFA_IRCS4_08_ARRIVAL_DCL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
-//                $("UNFA_IRCS4_07_ARRIVAL_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
-//                $("UNFA_IRCS4_06_BFT-TRANSFER_DECL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
-//                $("UNFA_IRCS4_04_BFT-TRANSFER_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
-//                $("UNFA_IRCS6_08A_TRA-UNL_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_01_DEPARTURE_COB_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_02_FOP1_CYP-TRP-20170608000000000010.xml"),
-//                $("UNFA_IRCS6_03_ENTRY_CYP-TRP-20170608000000000010.xml"),
-//                //$("UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml"),
-//                $("multipleReports.xml"),
-//                $("multipleReports2.xml")
+                $("fa_flux_message4.xml"),
+                $("fa_flux_message5.xml"),
+                $("fa_flux_message6.xml"),
+                $("fa_flux_message7.xml"),
+                $("fa_flux_message8.xml"),
+                $("UNFA_IRCS6_14_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_15_CANCEL_ARRIVAL_NOT_ESFNE_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_19_LANDING_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_18_ARRIVAL_DCL_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_07_DELETE_FOP4_withError_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_09_EXIT_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS5_08B_TRA-LOAD_EST-TRP-20170531000000000001.xml"),
+                $("UNFA_IRCS4_08_ARRIVAL_DCL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS4_07_ARRIVAL_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS4_06_BFT-TRANSFER_DECL_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS4_04_BFT-TRANSFER_NOT_SVN-TRP-SVN-TRP-20170622000000000008.xml"),
+                $("UNFA_IRCS6_08A_TRA-UNL_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_01_DEPARTURE_COB_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_02_FOP1_CYP-TRP-20170608000000000010.xml"),
+                $("UNFA_IRCS6_03_ENTRY_CYP-TRP-20170608000000000010.xml"),
+                //$("UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml"),
+                $("multipleReports.xml"),
+                $("multipleReports2.xml")
 
         );
     }

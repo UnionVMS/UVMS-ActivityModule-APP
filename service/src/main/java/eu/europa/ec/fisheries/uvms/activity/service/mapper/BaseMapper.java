@@ -38,7 +38,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -420,10 +419,12 @@ public class BaseMapper {
         return value.toGregorianCalendar().toInstant();
     }
 
+    @Named("singleIDTypeValue")
     protected String singleIDTypeValue(List<IDType> idTypes) {
         return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getValue);
     }
 
+    @Named("singleIDTypeSchemeID")
     protected String singleIDTypeSchemeID(List<IDType> idTypes) {
         return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getSchemeID);
     }
@@ -440,19 +441,16 @@ public class BaseMapper {
         return getPfromOFunction.apply(listOfO.get(0));
     }
 
-    protected Set<FaReportIdentifierEntity> mapRelatedReportIDs(FAReportDocument target) {
+    protected Set<FaReportIdentifierEntity> mapRelatedReportIDs(FAReportDocument faReportDocument) {
         Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<>();
-        if (CollectionUtils.isNotEmpty(faReportIdentifiers)) {
-            List<IDType> idTypeList = new ArrayList<>();
-            for (FaReportIdentifierEntity source : faReportIdentifiers) {
-                IDType idType = new IDType();
-                String faReportIdentifierId = source.getFaReportIdentifierId();
-                String faReportIdentifierSchemeId = source.getFaReportIdentifierSchemeId();
-                idType.setSchemeID(faReportIdentifierSchemeId);
-                idType.setValue(faReportIdentifierId);
-                idTypeList.add(idType);
-            }
-            target.setRelatedReportIDs(idTypeList);
+
+        List<IDType> relatedReportIDs = faReportDocument.getRelatedReportIDs();
+        for (IDType relatedReportID : relatedReportIDs) {
+            FaReportIdentifierEntity faReportIdentifierEntity = new FaReportIdentifierEntity();
+            faReportIdentifierEntity.setFaReportIdentifierId(relatedReportID.getValue());
+            faReportIdentifierEntity.setFaReportIdentifierSchemeId(relatedReportID.getSchemeID());
+
+            faReportIdentifiers.add(faReportIdentifierEntity);
         }
 
         return faReportIdentifiers;
@@ -464,6 +462,7 @@ public class BaseMapper {
             RelatedReportDto relatedReportDto = new RelatedReportDto();
             relatedReportDto.setId(faReportIdentifierEntity.getFaReportIdentifierId());
             relatedReportDto.setSchemeId(faReportIdentifierEntity.getFaReportIdentifierSchemeId());
+            relatedReportDtos.add(relatedReportDto);
         }
 
         return relatedReportDtos;
@@ -474,7 +473,8 @@ public class BaseMapper {
 
         Instant fluxReportDocument_creationDatetime = faReportDocumentEntity.getFluxReportDocument_CreationDatetime();
         DateTimeType creationDateTime = new DateTimeType();
-        creationDateTime.setDateTime(XMLDateUtils.dateToXmlGregorian(new Date(fluxReportDocument_creationDatetime.toEpochMilli())));
+        XMLGregorianCalendar xmlGregorianCalendar = instantToXMLGregorianCalendarUTC(fluxReportDocument_creationDatetime);
+        creationDateTime.setDateTime(xmlGregorianCalendar);
 
         String fluxReportDocument_id = faReportDocumentEntity.getFluxReportDocument_Id();
         String fluxReportDocument_idSchemeId = faReportDocumentEntity.getFluxReportDocument_IdSchemeId();

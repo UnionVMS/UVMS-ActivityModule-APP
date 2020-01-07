@@ -50,8 +50,8 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     public static final FaReportDocumentMapper INSTANCE = Mappers.getMapper(FaReportDocumentMapper.class);
 
     @Mappings({
-            @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(faReportDocument.getRelatedFLUXReportDocument().getIDS()))"),
-            @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(faReportDocument.getRelatedFLUXReportDocument().getIDS()))"),
+            @Mapping(target = "fluxReportDocument_Id", source = "faReportDocument.relatedFLUXReportDocument.IDS", qualifiedByName = "singleIDTypeValue"),
+            @Mapping(target = "fluxReportDocument_IdSchemeId", source = "faReportDocument.relatedFLUXReportDocument.IDS", qualifiedByName = "singleIDTypeSchemeID"),
 
             @Mapping(target = "fluxReportDocument_ReferenceId", source = "faReportDocument.relatedFLUXReportDocument.referencedID.value"),
             @Mapping(target = "fluxReportDocument_ReferenceIdSchemeId", source = "faReportDocument.relatedFLUXReportDocument.referencedID.schemeID"),

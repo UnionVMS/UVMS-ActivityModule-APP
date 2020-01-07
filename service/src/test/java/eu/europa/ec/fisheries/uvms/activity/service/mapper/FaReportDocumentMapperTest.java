@@ -35,9 +35,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-/**
- * Created by padhyad on 7/18/2016.
- */
 public class FaReportDocumentMapperTest {
 
     @Test

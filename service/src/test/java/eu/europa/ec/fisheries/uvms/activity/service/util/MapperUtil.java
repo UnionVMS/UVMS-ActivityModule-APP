@@ -288,6 +288,8 @@ public class MapperUtil {
         faReportDocumentEntity.setFluxReportDocument_PurposeCode("5");
         faReportDocumentEntity.setFluxReportDocument_PurposeCodeListId("57thf-58fj88-4d9834-thdue");
         faReportDocumentEntity.setFluxReportDocument_ReferenceId("Ref Id 1");
+
+        faReportDocumentEntity.setFluxReportDocument_CreationDatetime(Instant.now());
         return faReportDocumentEntity;
     }
 

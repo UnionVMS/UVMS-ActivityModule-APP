@@ -25,9 +25,6 @@ import java.time.Instant;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by kovian on 26/01/2017.
- */
 public class FluxFaReportMessageMapperTest {
 
     @Test
@@ -42,7 +39,6 @@ public class FluxFaReportMessageMapperTest {
         FluxFaReportMessageEntity mapped = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
 
         // Then
-
         assertEquals("FLUX_REPORT_ID_1", mapped.getFluxReportDocument_Id());
         assertEquals("FLUX_SCHEME_ID1", mapped.getFluxReportDocument_IdSchemeId());
         assertEquals("REF_ID 1", mapped.getFluxReportDocument_ReferenceId());
