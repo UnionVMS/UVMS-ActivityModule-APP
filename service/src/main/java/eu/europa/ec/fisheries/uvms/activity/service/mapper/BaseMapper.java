@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
@@ -30,6 +31,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
@@ -42,6 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Named;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
@@ -61,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -409,12 +413,10 @@ public class BaseMapper {
         return value.toGregorianCalendar().toInstant();
     }
 
-    @Named("singleIDTypeValue")
     protected String singleIDTypeValue(List<IDType> idTypes) {
         return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getValue);
     }
 
-    @Named("singleIDTypeSchemeID")
     protected String singleIDTypeSchemeID(List<IDType> idTypes) {
         return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getSchemeID);
     }
@@ -429,5 +431,34 @@ public class BaseMapper {
             throw new IllegalArgumentException("Failed to map list of type " + listOfO.getClass().getTypeName() + " since there are more than one value. Values: " + values);
         }
         return getPfromOFunction.apply(listOfO.get(0));
+    }
+
+    private Set<FaReportIdentifierEntity> mapRelatedReportIDs(FAReportDocument target) {
+        Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(faReportIdentifiers)) {
+            List<IDType> idTypeList = new ArrayList<>();
+            for (FaReportIdentifierEntity source : faReportIdentifiers) {
+                IDType idType = new IDType();
+                String faReportIdentifierId = source.getFaReportIdentifierId();
+                String faReportIdentifierSchemeId = source.getFaReportIdentifierSchemeId();
+                idType.setSchemeID(faReportIdentifierSchemeId);
+                idType.setValue(faReportIdentifierId);
+                idTypeList.add(idType);
+            }
+            target.setRelatedReportIDs(idTypeList);
+        }
+
+        return faReportIdentifiers;
+    }
+
+    private List<RelatedReportDto> mapToRelatedReportDtoList(Set<FaReportIdentifierEntity> faReportIdentifierEntities) {
+        List<RelatedReportDto> relatedReportDtos = new ArrayList<>();
+        for (FaReportIdentifierEntity faReportIdentifierEntity : faReportIdentifierEntities) {
+            RelatedReportDto relatedReportDto = new RelatedReportDto();
+            relatedReportDto.setId(faReportIdentifierEntity.getFaReportIdentifierId());
+            relatedReportDto.setSchemeId(faReportIdentifierEntity.getFaReportIdentifierSchemeId());
+        }
+
+        return relatedReportDtos;
     }
 }
