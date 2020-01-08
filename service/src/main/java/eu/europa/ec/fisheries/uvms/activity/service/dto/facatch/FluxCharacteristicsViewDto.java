@@ -14,9 +14,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
 
-/**
- * Created by kovian on 02/03/2017.
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FluxCharacteristicsViewDto {
 

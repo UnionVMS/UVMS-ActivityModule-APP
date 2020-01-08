@@ -14,8 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy;
 /**
  * This class do not consider PRESENTATION value in equals in Hashcode.
  * For landing screen we want to calculate values for PRESENTATION separately so, we want to omit it from equals and hashCode.
- *
- * Created by sanera on 03/03/2017.
  */
 public class FaCatchSummaryCustomChildProxy extends FaCatchSummaryCustomProxy {
 

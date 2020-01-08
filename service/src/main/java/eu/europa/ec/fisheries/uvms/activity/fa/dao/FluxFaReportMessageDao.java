@@ -15,9 +15,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 
 import javax.persistence.EntityManager;
 
-/**
- * Created by kovian on 19/01/2017.
- */
 public class FluxFaReportMessageDao extends AbstractDAO<FluxFaReportMessageEntity> {
 
     private EntityManager em;

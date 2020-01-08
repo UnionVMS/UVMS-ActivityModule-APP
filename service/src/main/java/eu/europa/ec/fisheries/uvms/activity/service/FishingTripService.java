@@ -33,9 +33,6 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by padhyad on 9/22/2016.
- */
 public interface FishingTripService {
 
     /**
@@ -93,6 +90,13 @@ public interface FishingTripService {
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
+    /**
+     * Returns TripWidgetDto based on the tripId and activityId
+     *
+     * @param activityEntity
+     * @param tripId
+     * @return
+     */
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;

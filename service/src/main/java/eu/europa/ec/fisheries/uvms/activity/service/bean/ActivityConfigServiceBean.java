@@ -33,37 +33,25 @@ public class ActivityConfigServiceBean implements ActivityConfigService {
 
     @Override
     @SneakyThrows
-    /**
-     * {@inheritDoc}
-     */
-    public ActivityConfigDTO getAdminConfig(String adminConfig) throws ServiceException {
+    public ActivityConfigDTO getAdminConfig(String adminConfig) {
         return getConfiguration(adminConfig);
     }
 
     @Override
     @SneakyThrows
-    /**
-     * {@inheritDoc}
-     */
-    public ActivityConfigDTO getUserConfig(String userConfig, String adminConfig) throws ServiceException {
+    public ActivityConfigDTO getUserConfig(String userConfig, String adminConfig) {
         return PreferenceConfigMapper.INSTANCE.mergeUserPreference(getConfiguration(adminConfig), getConfiguration(userConfig));
     }
 
     @Override
     @SneakyThrows
-    /**
-     * {@inheritDoc}
-     */
-    public String saveAdminConfig(ActivityConfigDTO config) throws ServiceException {
+    public String saveAdminConfig(ActivityConfigDTO config) {
         return getJson(config);
     }
 
     @Override
     @SneakyThrows
-    /**
-     * {@inheritDoc}
-     */
-    public String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig) throws ServiceException {
+    public String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig) {
         ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
         ActivityConfigDTO mergedConfig = PreferenceConfigMapper.INSTANCE.mergeUserPreference(usmUserConfig, updatedConfig);
         return getJson(mergedConfig);
@@ -71,10 +59,7 @@ public class ActivityConfigServiceBean implements ActivityConfigService {
 
     @Override
     @SneakyThrows
-    /**
-     * {@inheritDoc}
-     */
-    public String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) throws ServiceException {
+    public String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) {
         ActivityConfigDTO usmUserConfig = getConfiguration(userConfig);
         ActivityConfigDTO mergedConfig = PreferenceConfigMapper.INSTANCE.resetUserPreference(usmUserConfig, resetConfig);
         return getJson(mergedConfig);

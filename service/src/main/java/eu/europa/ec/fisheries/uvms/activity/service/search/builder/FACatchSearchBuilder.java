@@ -24,9 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by sanera on 20/01/2017.
- */
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
 

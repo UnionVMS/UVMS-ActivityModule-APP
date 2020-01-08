@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
  * This is base class used to Group by results.
  * If you want to group by results with different set of variables. Then just extend this class and override equals and hashcode method with
  * variables with which you want to GROUP BY
- * Created by sanera on 26/01/2017.
  */
 
 @NoArgsConstructor

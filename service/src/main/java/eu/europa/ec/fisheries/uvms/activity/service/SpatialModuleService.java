@@ -18,9 +18,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 
 import java.util.Collection;
 
-/**
- * Created by padhyad on 10/11/2016.
- */
 public interface SpatialModuleService {
 
     /**

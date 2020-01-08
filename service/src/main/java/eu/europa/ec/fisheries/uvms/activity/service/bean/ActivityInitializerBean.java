@@ -32,6 +32,4 @@ public class ActivityInitializerBean extends AbstractModuleInitializerBean {
     protected boolean mustRedeploy() {
         return true;
     }
-
-
 }

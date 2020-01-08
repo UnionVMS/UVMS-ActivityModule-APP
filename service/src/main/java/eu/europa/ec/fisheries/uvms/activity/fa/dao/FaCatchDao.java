@@ -32,9 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by padhyad on 5/3/2016.
- */
 @Slf4j
 public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 

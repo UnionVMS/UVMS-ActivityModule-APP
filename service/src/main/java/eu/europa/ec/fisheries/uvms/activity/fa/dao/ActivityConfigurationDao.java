@@ -17,9 +17,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-/**
- * Created by sanera on 20/06/2017.
- */
 public class ActivityConfigurationDao  extends AbstractDAO<ActivityConfiguration> {
 
     private EntityManager em;
