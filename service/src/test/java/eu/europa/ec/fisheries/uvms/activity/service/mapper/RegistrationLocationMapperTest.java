@@ -22,9 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by padhyad on 7/28/2016.
- */
 public class RegistrationLocationMapperTest {
 
     @Test

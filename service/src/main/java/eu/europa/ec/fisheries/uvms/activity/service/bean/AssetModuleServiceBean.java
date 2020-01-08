@@ -15,8 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.VesselTypeAssetQueryEnum;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
@@ -46,21 +44,13 @@ import java.util.stream.Collectors;
 public class AssetModuleServiceBean extends ModuleService implements AssetModuleService {
 
     @EJB
-    private AssetProducerBean assetProducer;
-
-    @EJB
-    private ActivityConsumerBean activityConsumer;
-
-    @EJB
     private AssetClient assetClient;
 
     public AssetModuleServiceBean() {
     }
 
     @Inject
-    public AssetModuleServiceBean(AssetProducerBean assetProducerBean, ActivityConsumerBean activityConsumerBean, AssetClient assetClient) {
-        this.assetProducer = assetProducerBean;
-        this.activityConsumer = activityConsumerBean;
+    public AssetModuleServiceBean(AssetClient assetClient) {
         this.assetClient = assetClient;
     }
 
@@ -70,9 +60,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         return assetClient.getAssetList(assetQuery, dynamic);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) {
         Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new EnumMap(VesselTypeAssetQueryEnum.class);

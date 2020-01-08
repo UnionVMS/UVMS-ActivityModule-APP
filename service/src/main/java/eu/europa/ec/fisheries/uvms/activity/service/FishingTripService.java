@@ -33,25 +33,7 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by padhyad on 9/22/2016.
- */
 public interface FishingTripService {
-
-    /**
-     * <p>
-     * This API returns the list of cronology of selected fishing trip,
-     * Additionally it also return the current trip for the vessel.
-     * <p>
-     * <code>if (Count == 0)</code> Then return all the previous and next
-     * </p>
-     *
-     * @param tripId currently selected
-     * @param count  number of trip Id to view
-     * @return list of fishing trips
-     */
-    CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException;
-
 
     /**
      * Return FishingTripSummary view screen data for specified Fishing Trip ID
@@ -108,6 +90,13 @@ public interface FishingTripService {
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
+    /**
+     * Returns TripWidgetDto based on the tripId and activityId
+     *
+     * @param activityEntity
+     * @param tripId
+     * @return
+     */
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;

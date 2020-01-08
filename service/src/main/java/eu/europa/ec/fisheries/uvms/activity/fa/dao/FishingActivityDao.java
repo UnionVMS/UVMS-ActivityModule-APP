@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -37,9 +36,8 @@ import java.util.Map;
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
+    private static final String QUERY_PARAM_FISHING_TRIP_ID = "fishingTripId";
     private static final String QUERY_PARAM_FISHING_ACTIVITY_ID = "fishingActivityId";
-    private static final String QUERY_PARAM_ACTIVITY_TYPE_CODE = "activityTypeCode";
-    private static final String QUERY_PARAM_ACTIVITY_START_TIME = "activityStartTime";
     private static final String QUERY_PARAM_AREA = "area";
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
@@ -53,104 +51,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     @Override
     public EntityManager getEntityManager() {
         return em;
-    }
-
-    /**
-     * To find out previous Activity date
-     * Use referenceId to find our previous FishingActivityReportDocument.
-     * Then choose all the fishingActivities from that document with same FishingActivity Type and having date less than or equal to current fishingActivity
-     */
-    public int getPreviousFishingActivityId(FishingActivityEntity fishingActivityEntity) {
-        int previousActivityId = 0;
-        if (fishingActivityEntity.getTypeCode() == null || fishingActivityEntity.getCalculatedStartTime() == null) {
-            LOG.warn("activityTypeCode OR activityCalculatedStartTime is null.");
-            return previousActivityId;
-        }
-
-        String queryString = "SELECT a.id from FishingActivityEntity a " +
-                "JOIN a.faReportDocument fa " +
-                "JOIN fa.fluxReportDocument flux " +
-                "JOIN flux.fluxReportIdentifiers fluxIds " +
-                "where fluxIds.fluxReportIdentifierId IN " +
-                "( select frd.referenceId from " +
-                "   FluxReportDocumentEntity frd " +
-                "   JOIN frd.faReportDocument fa " +
-                "   JOIN  fa.fishingActivities fishingActivities where " +
-                "   fishingActivities.id = :fishingActivityId and " +
-                "   fishingActivities.typeCode = :activityTypeCode" +
-                ") AND " +
-                "a.calculatedStartTime <= :activityStartTime " +
-                "ORDER BY a.calculatedStartTime desc";
-
-        Query query = getEntityManager().createQuery(queryString);
-        query.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, fishingActivityEntity.getId());
-        query.setParameter(QUERY_PARAM_ACTIVITY_TYPE_CODE, fishingActivityEntity.getTypeCode());
-        query.setParameter(QUERY_PARAM_ACTIVITY_START_TIME, fishingActivityEntity.getCalculatedStartTime());
-
-        query.setMaxResults(1); // There could be multiple fishing Activities matching the condition, but we need just one.
-
-        Object result = null;
-        try {
-            result = query.getSingleResult();
-        } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for: {}", fishingActivityEntity.getId());
-        }
-
-        LOG.debug("Previous Fishing Activity: {}", result);
-        if (result != null) {
-            previousActivityId = (int) result;
-        }
-
-        return previousActivityId;
-    }
-
-
-    /**
-     *  To find out next fishingActivityId
-     *  Take fluxIdentifierId of current fishingActivity. Find  which other faReportDocument referenceId has fluxIdentifierId of current fishingActivity.
-     *  Take that faReportDocument , and all the fishingActivities from that document with same FishingActivity Type and having date greater than or equal to current fishingActivity
-     *
-     */
-    public int getNextFishingActivityId(FishingActivityEntity fishingActivityEntity) {
-        int nextFishingActivity = 0;
-        if (fishingActivityEntity.getTypeCode() == null || fishingActivityEntity.getCalculatedStartTime() == null) {
-            LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
-            return nextFishingActivity;
-        }
-        String queryString = "SELECT a.id from FishingActivityEntity a " +
-                "JOIN a.faReportDocument fa " +
-                "JOIN fa.fluxReportDocument flux " +
-                "where flux.referenceId IN " +
-                "( select fri.fluxReportIdentifierId from " +
-                "   FluxReportIdentifierEntity fri JOIN " +
-                "   fri.fluxReportDocument frd JOIN" +
-                "   frd.faReportDocument fa JOIN  " +
-                "   fa.fishingActivities fishingActivities " +
-                "   where fishingActivities.id = :fishingActivityId and " +
-                "         fishingActivities.typeCode = :activityTypeCode" +
-                ") AND " +
-                "a.calculatedStartTime >= :activityStartTime " +
-                "ORDER BY a.calculatedStartTime asc";
-
-        Query query = getEntityManager().createQuery(queryString);
-        query.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, fishingActivityEntity.getId());
-        query.setParameter(QUERY_PARAM_ACTIVITY_TYPE_CODE, fishingActivityEntity.getTypeCode());
-        query.setParameter(QUERY_PARAM_ACTIVITY_START_TIME, fishingActivityEntity.getCalculatedStartTime());
-
-        query.setMaxResults(1);
-
-        Object result = null;
-        try {
-            result = query.getSingleResult();
-        } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for: {}", fishingActivityEntity.getId());
-        }
-
-        LOG.debug("Next Fishing Activity: {}", result);
-        if (result != null) {
-            nextFishingActivity = (int) result;
-        }
-        return nextFishingActivity;
     }
 
     /**
@@ -171,9 +71,9 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
 
         TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
-        typedQuery.setParameter(QUERY_PARAM_FISHING_ACTIVITY_ID, fishingTripId);
+        typedQuery.setParameter(QUERY_PARAM_FISHING_TRIP_ID, fishingTripId);
         if (multipolygon != null) {
-            typedQuery.setParameter("area", multipolygon);
+            typedQuery.setParameter(QUERY_PARAM_AREA, multipolygon);
         }
 
         return typedQuery.getResultList();
@@ -273,19 +173,15 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                 .append("LEFT JOIN FETCH relvtm.vesselIdentifiers relvid ")
                 .append("LEFT JOIN FETCH relatedActivities.faCatchs relCatch ")
                 .append("LEFT JOIN FETCH fCatch.fluxLocations ")
-                .append("LEFT JOIN FETCH fCatch.sizeDistribution ")
                 .append("LEFT JOIN FETCH fCatch.fishingGears ")
                 .append("LEFT JOIN FETCH fCatch.fluxCharacteristics ")
                 .append("LEFT JOIN FETCH fg.fishingGearRole ")
                 .append("LEFT JOIN FETCH fg.gearCharacteristics ")
-                .append("LEFT JOIN FETCH fa.fluxReportDocument flux ")
                 .append("LEFT JOIN FETCH a.fluxCharacteristics fluxChar ")
                 .append("LEFT JOIN FETCH fCatch.fluxCharacteristics fluxCharFa ")
                 .append("LEFT JOIN FETCH fl.fluxCharacteristic fluxCharFluxLoc ")
                 .append("LEFT JOIN FETCH fl.structuredAddresses flAd ")
                 .append("LEFT JOIN FETCH a.flapDocuments flapDoc ")
-                .append("LEFT JOIN FETCH flux.fluxParty fluxParty ")
-                .append("LEFT JOIN FETCH a.fishingActivityIdentifiers faId ")
                 .append("LEFT JOIN FETCH flAd.fluxLocation flAdFluxLoc ")
                 .append("LEFT JOIN FETCH a.fishingTrip faFiTrip ")
                 .append("LEFT JOIN FETCH faFiTrip.catchEntities faFiTripsFaCatch ")

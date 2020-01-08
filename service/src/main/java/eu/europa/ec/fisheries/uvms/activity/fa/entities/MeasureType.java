@@ -10,15 +10,42 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
-import lombok.Data;
-
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-@Data
 public class MeasureType {
 
+    @Column(name = "duration_value")
     private Double value;
+
+    @Column(name = "duration_unit_code")
     private String unitCode;
+
+    @Column(name = "duration_unit_code_list_id")
     private String unitCodeListVersionID;
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
+    public String getUnitCode() {
+        return unitCode;
+    }
+
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
+    }
+
+    public String getUnitCodeListVersionID() {
+        return unitCodeListVersionID;
+    }
+
+    public void setUnitCodeListVersionID(String unitCodeListVersionID) {
+        this.unitCodeListVersionID = unitCodeListVersionID;
+    }
 }

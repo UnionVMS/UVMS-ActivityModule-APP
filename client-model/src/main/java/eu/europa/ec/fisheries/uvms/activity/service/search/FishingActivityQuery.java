@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 /**
  * This class is used to define Filters to be applied on Fishing Activities
  * It also contains list of grouping Criteria to be applied
- * Created by sanera on 24/06/2016.
  */
 public class FishingActivityQuery {
 

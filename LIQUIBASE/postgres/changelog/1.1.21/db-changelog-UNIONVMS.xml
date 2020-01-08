@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.21/db-changelog-UNIONVMS.xml">
+
+    <!-- DELIMITED PERIOD CHANGES -->
+
+    <changeSet author="robkra" id="move_delimited_period_columns_to_fishing_trip_table">
+        <addColumn tableName="activity_fishing_trip">
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="end_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="calculated_duration" type="FLOAT8" />
+            <column name="duration_value" type="FLOAT8" />
+            <column name="duration_unit_code" type="VARCHAR(255)" />
+            <column name="duration_unit_code_list_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="move_delimited_period_columns_to_fishing_activity_table">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="end_date" type="TIMESTAMP WITHOUT TIME ZONE" />
+            <column name="calculated_duration" type="FLOAT8" />
+            <column name="duration_value" type="FLOAT8" />
+            <column name="duration_unit_code" type="VARCHAR(255)" />
+            <column name="duration_unit_code_list_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="drop_unused_table_delimited_period">
+        <dropTable tableName="activity_delimited_period"/>
+    </changeSet>
+
+    <changeSet author="robkra" id="drop_delimited_period_from_fishing_trip">
+        <dropColumn tableName="activity_fishing_trip" columnName="start_date" />
+        <dropColumn tableName="activity_fishing_trip" columnName="end_date" />
+        <dropColumn tableName="activity_fishing_trip" columnName="calculated_duration" />
+        <dropColumn tableName="activity_fishing_trip" columnName="duration_value" />
+        <dropColumn tableName="activity_fishing_trip" columnName="duration_unit_code" />
+        <dropColumn tableName="activity_fishing_trip" columnName="duration_unit_code_list_id" />
+    </changeSet>
+
+    <changeSet author="robkra" id="add_calculated_end_time_column_to_fishing_activity">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="calculated_end_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robkra" id="drop_delimited_period_from_fishing_activity">
+        <dropColumn tableName="activity_fishing_activity" columnName="start_date" />
+        <dropColumn tableName="activity_fishing_activity" columnName="end_date" />
+        <dropColumn tableName="activity_fishing_activity" columnName="calculated_duration" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_value" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_unit_code" />
+        <dropColumn tableName="activity_fishing_activity" columnName="duration_unit_code_list_id" />
+    </changeSet>
+
+    <!-- FA CATCH CHANGES -->
+
+    <changeSet author="robmil" id="add_size_distribution_columns_to_fa_catch">
+        <addColumn tableName="activity_fa_catch">
+            <column name="size_distribution_class_code" type="varchar(255)"/>
+            <column name="size_distribution_class_code_list_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_classcode_table">
+        <dropTable tableName="activity_size_distribution_classcode"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="add_size_distribution_columns_to_fa_catch_part_2">
+        <addColumn tableName="activity_fa_catch">
+            <column name="size_distribution_category_code" type="varchar(255)"/>
+            <column name="size_distribution_category_code_list_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_foreign_key">
+        <dropForeignKeyConstraint baseTableName="activity_fa_catch" constraintName="size_distribution_fc_fk"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_id_column">
+        <dropColumn tableName="activity_fa_catch" columnName="size_distribution_id"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="drop_size_distribution_table">
+        <dropTable tableName="activity_size_distribution"/>
+  </changeSet>
+
+    <changeSet author="robmil" id="ERS-458-remove-rfmo-column-in-fa-catch">
+        <dropColumn tableName="activity_fa_catch" columnName="rfmo"/>
+    </changeSet>
+
+</databaseChangeLog>

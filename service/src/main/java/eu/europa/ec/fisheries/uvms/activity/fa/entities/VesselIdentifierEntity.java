@@ -24,33 +24,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-@NamedQueries({
-		@NamedQuery(name = VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
-				//TODO: Rewrite
-				query = "SELECT vi FROM FishingActivityEntity fa " +
-						"INNER JOIN fa.faReportDocument frd " +
-						"INNER JOIN frd.vesselTransportMeans vtm " +
-						"INNER JOIN vtm.vesselIdentifiers vi " +
-						"WHERE fa.fishingTrip.fishingTripKey.tripId = :tripId " +
-						"ORDER BY frd.acceptedDatetime DESC")
-
-})
 @Entity
 @Table(name = "activity_vessel_identifier")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-//@EqualsAndHashCode(of = {"vesselIdentifierId", "vesselIdentifierSchemeId"})
 public class VesselIdentifierEntity implements Serializable {
-
-	public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "findLatestVesselByTripId";
 
 	@Id
 	@Column(unique = true, nullable = false)
@@ -67,5 +51,4 @@ public class VesselIdentifierEntity implements Serializable {
 
 	@Column(name = "vessel_identifier_scheme_id")
 	private String vesselIdentifierSchemeId;
-
 }

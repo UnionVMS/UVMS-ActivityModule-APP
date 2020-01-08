@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRe
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -79,7 +80,8 @@ public class FACatchResource extends UnionVMSResource {
                                              @HeaderParam("roleName") String roleName,
                                              @PathParam("fishingTripId") String tripId) throws ServiceException {
         log.debug("getFACatchSummaryDetails: " + tripId);
-        return createSuccessResponse( reportService.getCatchDetailsScreen(tripId));
+        FACatchDetailsDTO catchDetailsScreen = reportService.getCatchDetailsScreen(tripId);
+        return createSuccessResponse(catchDetailsScreen);
     }
 }
 

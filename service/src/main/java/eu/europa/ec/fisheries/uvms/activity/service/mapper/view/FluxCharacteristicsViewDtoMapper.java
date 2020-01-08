@@ -21,9 +21,6 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by kovian on 06/03/2017.
- */
 @Mapper
 public abstract class FluxCharacteristicsViewDtoMapper extends BaseMapper {
 

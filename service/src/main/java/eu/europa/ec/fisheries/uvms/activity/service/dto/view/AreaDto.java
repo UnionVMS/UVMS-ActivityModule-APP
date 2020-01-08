@@ -13,8 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,19 +31,14 @@ public class AreaDto {
     @JsonIgnore
     private Set<FluxLocationDto> fluxLocations;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private PositionDto transmission;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private PositionDto crossing;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private PositionDto startActivity;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private PositionDto startFishing;
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonAnyGetter
     public Map<String, String> getIdentifiers() {
 

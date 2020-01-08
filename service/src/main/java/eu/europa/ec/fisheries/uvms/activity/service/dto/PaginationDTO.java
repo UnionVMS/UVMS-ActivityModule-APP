@@ -15,9 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by sanera on 19/09/2016.
- */
 public class PaginationDTO {
 
     @JsonProperty("totalPageCount")

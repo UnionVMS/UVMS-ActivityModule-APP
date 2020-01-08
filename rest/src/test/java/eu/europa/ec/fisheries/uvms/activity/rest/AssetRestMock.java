@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.activity.rest;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetListResponse;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -31,26 +32,67 @@ public class AssetRestMock {
                                  @DefaultValue("false") @QueryParam("includeInactivated") boolean includeInactivated,
                                  AssetQuery query) {
 
-        final String SWE_TEST_CFR = "SWEFAKE00001";
-        if (query.getCfr() != null && query.getCfr().size() > 0 &&
-                SWE_TEST_CFR.equals(query.getCfr().get(0))) {
-            List<AssetDTO> assetDtoList = new ArrayList<>();
-
-            AssetDTO assetSweTestDto = new AssetDTO();
-            assetSweTestDto.setId(UUID.fromString("054cef8a-5cb2-48d2-9247-61a3be5ef03a"));
-            assetSweTestDto.setCfr(SWE_TEST_CFR);
-            assetSweTestDto.setImo("7774444");
-            assetSweTestDto.setName("The so called " + SWE_TEST_CFR);
-            assetDtoList.add(assetSweTestDto);
-
-            AssetListResponse listAssetResponse = new AssetListResponse();
-            listAssetResponse.setCurrentPage(1);
-            listAssetResponse.setTotalNumberOfPages(1);
-            listAssetResponse.getAssetList().addAll(assetDtoList);
-
-            return Response.ok(listAssetResponse).build();
+        if (CollectionUtils.isEmpty(query.getCfr()) &&
+            CollectionUtils.isEmpty(query.getIrcs()) &&
+            CollectionUtils.isEmpty(query.getExternalMarking())) {
+            throw new IllegalStateException("*** The mock " + this.getClass().getName() + " was called without any ship identifier");
         }
 
-        throw new IllegalStateException("*** The mock " + this.getClass().getName() + " called with unknown parameters");
+        List<AssetDTO> assetDtoList = new ArrayList<>();
+
+        AssetDTO assetSweTestDto = new AssetDTO();
+        assetSweTestDto.setId(getId(query));
+        assetSweTestDto.setCfr(getFirstElementOrNull(query.getCfr()));
+        assetSweTestDto.setImo(getImo(query));
+        assetSweTestDto.setName(getName(query));
+        assetDtoList.add(assetSweTestDto);
+
+        AssetListResponse listAssetResponse = new AssetListResponse();
+        listAssetResponse.setCurrentPage(1);
+        listAssetResponse.setTotalNumberOfPages(1);
+        listAssetResponse.getAssetList().addAll(assetDtoList);
+
+        return Response.ok(listAssetResponse).build();
+    }
+
+    private UUID getId(AssetQuery query) {
+        String seed = "";
+        if (query.getCfr() != null) {
+            seed += String.join("", query.getCfr());
+        }
+        if (query.getExternalMarking() != null) {
+            seed += String.join("", query.getExternalMarking());
+        }
+        if (query.getIrcs() != null) {
+            seed += String.join("", query.getIrcs());
+        }
+        return UUID.nameUUIDFromBytes(seed.getBytes());
+    }
+
+    private String getImo(AssetQuery query) {
+        // TODO based on IDs in query
+        return "7774444";
+    }
+
+    private String getFirstElementOrNull(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+
+        return list.get(0);
+    }
+
+    private String getName(AssetQuery query) {
+        if (!CollectionUtils.isEmpty(query.getCfr())) {
+            return "The so called " + query.getCfr().get(0);
+        }
+        if (!CollectionUtils.isEmpty(query.getIrcs())) {
+            return "The so called " + query.getIrcs().get(0);
+        }
+        if (!CollectionUtils.isEmpty(query.getExternalMarking())) {
+            return "The so called " + query.getExternalMarking().get(0);
+        }
+
+        return "Generic Boat Name";
     }
 }

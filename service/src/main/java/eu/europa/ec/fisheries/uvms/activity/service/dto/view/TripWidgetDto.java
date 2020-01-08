@@ -13,10 +13,8 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 import java.util.List;
 import java.util.Set;
@@ -26,12 +24,10 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class TripWidgetDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private VesselDetailsDTO vesselDetails;
 
     private Set<FlapDocumentDto> flapDocuments;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private List<TripOverviewDto> trips;
 
     public VesselDetailsDTO getVesselDetails() {
@@ -50,7 +46,6 @@ public class TripWidgetDto {
         this.trips = trips;
     }
 
-    @JsonView(FishingActivityView.CommonView.class)
     @JsonProperty("authorizations")
     public Set<FlapDocumentDto> getFlapDocuments() {
         return flapDocuments;

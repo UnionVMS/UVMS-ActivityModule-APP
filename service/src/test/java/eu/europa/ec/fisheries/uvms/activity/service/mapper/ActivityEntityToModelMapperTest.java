@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.ElementSelectors;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
@@ -29,6 +30,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -39,7 +41,6 @@ import static junitparams.JUnitParamsRunner.$;
 public class ActivityEntityToModelMapperTest {
 
     private Unmarshaller unmarshaller;
-    private FluxFaReportMessageMapper incomingFAReportMapper = new FluxFaReportMessageMapper();
 
     @Before
     public void setUp() throws Exception {
@@ -52,7 +53,7 @@ public class ActivityEntityToModelMapperTest {
     public void testMapToFLUXFAReportMessage(String resource) throws Exception {
 
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
-        FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
+        FluxFaReportMessageEntity entity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
 
         FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
 
@@ -66,9 +67,10 @@ public class ActivityEntityToModelMapperTest {
         String clearControlSource = clearEmptyTags(controlSource);
         String clearTestSource = clearEmptyTags(testSource);
 
-        org.xmlunit.diff.Diff myDiffSimilar = DiffBuilder
+        Diff myDiffSimilar = DiffBuilder
                 .compare(clearControlSource)
                 .withTest(clearTestSource)
+                .withNodeFilter(node -> !node.getNodeName().equalsIgnoreCase("ram:SpecifiedDelimitedPeriod"))
                 .ignoreWhitespace()
                 .ignoreComments()
                 .checkForSimilar()
@@ -125,7 +127,7 @@ public class ActivityEntityToModelMapperTest {
         return source.getFAReportDocuments().get(0);
     }
 
-    private FLUXFAReportMessage sourceToEntity(String resource) throws JAXBException {
+    private FLUXFAReportMessage sourceToEntity(String resource) throws JAXBException, IOException {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(resource);
         return (FLUXFAReportMessage) unmarshaller.unmarshal(is);
     }

@@ -12,8 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 
 import java.util.List;
 
@@ -22,31 +20,22 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class ReportDocumentDto {
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String type;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String creationDate;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String purposeCode;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String owner;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String id;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String refId;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String acceptedDate;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String fmcMark;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private List<RelatedReportDto> relatedReports;
 
     public String getType() {

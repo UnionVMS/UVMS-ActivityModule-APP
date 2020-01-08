@@ -40,8 +40,6 @@
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityIdentifierEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselPositionEventEntity</class>

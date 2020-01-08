@@ -10,9 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 
-/**
- * Created by sanera on 24/01/2017.
- */
 public enum FluxLocationSchemeId {
 
     TERRITORY("territory"),
@@ -21,7 +18,6 @@ public enum FluxLocationSchemeId {
     EFFORT_ZONE("effortZone"),
     GFCM_GSA("gfcmGsa"),
     GFCM_STAT_RECTANGLE("gfcmStatRectangle"),
-    RFMO("rfmo"),
     MANAGEMENT_AREA("managementArea");
 
     private String columnName;

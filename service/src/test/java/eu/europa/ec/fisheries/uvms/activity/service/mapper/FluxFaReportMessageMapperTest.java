@@ -12,11 +12,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -27,9 +25,6 @@ import java.time.Instant;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by kovian on 26/01/2017.
- */
 public class FluxFaReportMessageMapperTest {
 
     @Test
@@ -41,25 +36,19 @@ public class FluxFaReportMessageMapperTest {
         FLUXFAReportMessage original = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
 
         // When
-        FluxFaReportMessageEntity mapped = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
+        FluxFaReportMessageEntity mapped = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
 
         // Then
-
-        // assert FLUX report document
-        FLUXReportDocument originalFluxReportDocument = original.getFLUXReportDocument();
-        FluxReportDocumentEntity mappedFluxReportDocument = mapped.getFluxReportDocument();
-        assertEquals("FLUX_REPORT_ID_1", mappedFluxReportDocument.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId());
-        assertEquals("FLUX_SCHEME_ID1", mappedFluxReportDocument.getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId());
-        assertEquals("REF_ID 1", mappedFluxReportDocument.getReferenceId());
-        assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFluxReportDocument.getReferenceSchemeId());
-        assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mappedFluxReportDocument.getCreationDatetime());
-        assertEquals("9", mappedFluxReportDocument.getPurposeCode());
-        assertEquals("Purpose", mappedFluxReportDocument.getPurpose());
-        assertEquals("type Code1", mappedFluxReportDocument.getTypeCode().getValue());
-        assertEquals("fhr574fh-thrud754-kgitjf754-gjtufe89", mappedFluxReportDocument.getTypeCode().getListID());
-        assertEquals("Owner flux party id 1", mappedFluxReportDocument.getFluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierId());
-        assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFluxReportDocument.getFluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierSchemeId());
-        assertEquals("fluxPartyOwnerName 1", mappedFluxReportDocument.getFluxParty().getFluxPartyName());
+        assertEquals("FLUX_REPORT_ID_1", mapped.getFluxReportDocument_Id());
+        assertEquals("FLUX_SCHEME_ID1", mapped.getFluxReportDocument_IdSchemeId());
+        assertEquals("REF_ID 1", mapped.getFluxReportDocument_ReferenceId());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mapped.getFluxReportDocument_ReferenceIdSchemeId());
+        assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mapped.getFluxReportDocument_CreationDatetime());
+        assertEquals("9", mapped.getFluxReportDocument_PurposeCode());
+        assertEquals("Purpose", mapped.getFluxReportDocument_Purpose());
+        assertEquals("Owner flux party id 1", mapped.getFluxReportDocument_FluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierId());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mapped.getFluxReportDocument_FluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierSchemeId());
+        assertEquals("fluxPartyOwnerName 1", mapped.getFluxReportDocument_FluxParty().getFluxPartyName());
 
         // assert FA report documents
         assertEquals(2, mapped.getFaReportDocuments().size());

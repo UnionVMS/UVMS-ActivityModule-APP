@@ -78,7 +78,7 @@
                     <EndDateTime>
                         <ns2:DateTime>2016-07-01T11:14:00Z</ns2:DateTime>
                     </EndDateTime>
-                    <DurationMeasure unitCode="C62" unitCodeListVersionID="4rhfy5-fhtydr-tyfr85-ghtyd54">500</DurationMeasure>
+                    <DurationMeasure unitCode="MIN">2630880</DurationMeasure>
                 </SpecifiedDelimitedPeriod>
             </SpecifiedFishingTrip>
         </SpecifiedFishingActivity>

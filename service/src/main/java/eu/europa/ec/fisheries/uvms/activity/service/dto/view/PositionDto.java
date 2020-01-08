@@ -11,9 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
 import java.util.Date;
@@ -24,10 +22,8 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 public class PositionDto {
 
     @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonView(FishingActivityView.CommonView.class)
     private Date occurence;
 
-    @JsonView(FishingActivityView.CommonView.class)
     private String geometry;
 
     public Date getOccurence() {

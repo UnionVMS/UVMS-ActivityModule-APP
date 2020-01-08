@@ -1,19 +1,27 @@
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Set;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class FishingTripEntityTest {
+
+    @BeforeClass
+    public static void setUp() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 
     @Test
     public void create() {
@@ -35,19 +43,8 @@ public class FishingTripEntityTest {
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
 
-        Set<DelimitedPeriodEntity> delimitedPeriods = fishingTripEntity.getDelimitedPeriods();
-        assertEquals(1, delimitedPeriods.size());
-
-        DelimitedPeriodEntity delimitedPeriodEntity = delimitedPeriods.iterator().next();
-        Instant startDate = delimitedPeriodEntity.getStartDate();
-        Instant endDate = delimitedPeriodEntity.getEndDate();
-        MeasureType durationMeasure = delimitedPeriodEntity.getDurationMeasure();
-
-        assertEquals("2011-07-01T11:15:00Z", startDate.toString());
-        assertEquals("2016-07-01T11:15:00Z", endDate.toString());
-        assertEquals(500, durationMeasure.getValue(), 0);
-        assertEquals("C62", durationMeasure.getUnitCode());
-        assertEquals("4rhfy5-fhtydr-tyfr85-ghtyd54", durationMeasure.getUnitCodeListVersionID());
+        assertEquals(Instant.parse("2011-07-01T11:15:00Z"), fishingTripEntity.getCalculatedTripStartDate());
+        assertEquals(Instant.parse("2016-07-01T11:15:00Z"), fishingTripEntity.getCalculatedTripEndDate());
 
         assertTrue(fishingTripEntity.getFishingActivities().isEmpty());
     }
@@ -55,7 +52,14 @@ public class FishingTripEntityTest {
     @Test
     public void convert() {
         // Given
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
         FishingTripEntity fishingTripEntity = MapperUtil.getFishingTripEntity();
+
+        Instant startDate = Instant.parse("2011-07-01T11:15:00.023Z");
+        Instant endDate = startDate.plus(54, ChronoUnit.MINUTES);
+        fishingTripEntity.setCalculatedTripStartDate(startDate);
+        fishingTripEntity.setCalculatedTripEndDate(endDate);
 
         // When
         FishingTrip fishingTrip = fishingTripEntity.convert();
@@ -73,6 +77,18 @@ public class FishingTripEntityTest {
         assertEquals(fishingTripEntity.getTypeCodeListId(), fishingTrip.getTypeCode().getListID());
 
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
-        assertTrue(specifiedDelimitedPeriods.isEmpty());
+        assertEquals(1, specifiedDelimitedPeriods.size());
+
+        DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
+
+        DateTimeType startDateTime = delimitedPeriod.getStartDateTime();
+        DateTimeType endDateTime = delimitedPeriod.getEndDateTime();
+        un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+
+        assertEquals("2011-07-01T11:15:00Z", startDateTime.getDateTime().toString());
+        assertEquals("2011-07-01T12:09:00Z", endDateTime.getDateTime().toString());
+
+        assertEquals(54, durationMeasure.getValue().doubleValue(), 0.0);
+        assertEquals("MIN", durationMeasure.getUnitCode());
     }
 }

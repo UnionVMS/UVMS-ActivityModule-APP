@@ -1,21 +1,17 @@
 package eu.europa.ec.fisheries.uvms.activity.service.search.builder;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
-import eu.europa.ec.fisheries.uvms.activity.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.search.GroupCriteriaMapper;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by sanera on 01/03/2017.
- */
 public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
 
     private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +

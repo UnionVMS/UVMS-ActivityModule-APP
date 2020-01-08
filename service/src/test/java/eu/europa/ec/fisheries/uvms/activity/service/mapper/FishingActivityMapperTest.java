@@ -13,9 +13,9 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -23,17 +23,24 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
-/**
- * Created by padhyad on 8/1/2016.
- */
 public class FishingActivityMapperTest {
 
     @Test
@@ -61,11 +68,6 @@ public class FishingActivityMapperTest {
 
         assertNotNull(fishingActivityEntity.getDestVesselCharId());
         assertFishingActivityFields(fishingActivity, fishingActivityEntity.getDestVesselCharId().getFishingActivitiesForDestVesselCharId());
-
-        assertNotNull(fishingActivityEntity.getDelimitedPeriods());
-        DelimitedPeriodEntity delimitedPeriodEntity = fishingActivityEntity.getDelimitedPeriods().iterator().next();
-        assertNotNull(delimitedPeriodEntity);
-        assertFishingActivityFields(fishingActivity, delimitedPeriodEntity.getFishingActivity());
 
         assertNotNull(fishingActivityEntity.getFluxLocations());
         FluxLocationEntity fluxLocationEntity = fishingActivityEntity.getFluxLocations().iterator().next();
@@ -124,7 +126,6 @@ public class FishingActivityMapperTest {
 
     @Test
     public void testSpeciesCodeWithDuplicatedShouldFilterDuplicates() {
-
         FaCatchEntity faCatchEntity = new FaCatchEntity();
         faCatchEntity.setSpeciesCode("2222");
 
@@ -142,6 +143,232 @@ public class FishingActivityMapperTest {
         List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
 
         assertEquals(1, speciesCode.size());
+    }
 
+    @Test
+    public void getCalculatedStartTime_specifiedDelimitedPeriod() throws Exception {
+        // Given
+        Instant expectedStartDate = Instant.parse("2019-01-01T15:45:32.012Z");
+        DateTimeType dateTimeType = getDateTimeType(expectedStartDate);
+
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setStartDateTime(dateTimeType);
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+
+        // When
+        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedStartDate, calculatedStartTime);
+    }
+
+    @Test
+    public void getCalculatedStartTime_occurrenceAndSpecifiedDelimitedPeriod_expectFirst() throws Exception {
+        // Given
+        Instant expectedStartDate = Instant.parse("2019-01-01T15:45:32.012Z");
+        Instant occurrenceStartDate = Instant.parse("2019-01-01T15:50:32.012Z");
+        DateTimeType dateTimeType = getDateTimeType(expectedStartDate);
+        DateTimeType occurrenceDateTimeType = getDateTimeType(occurrenceStartDate);
+
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setStartDateTime(dateTimeType);
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setOccurrenceDateTime(occurrenceDateTimeType);
+        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+
+        // When
+        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedStartDate, calculatedStartTime);
+    }
+
+    @Test
+    public void getCalculatedStartTime_specifiedDelimitedPeriodOnRelatedActivity() throws Exception {
+        // Given
+        Instant startDate1 = Instant.parse("2019-01-01T15:45:32.012Z");
+        Instant expectedStartDate = Instant.parse("2019-01-01T15:43:32.012Z");
+        DateTimeType dateTimeType1 = getDateTimeType(startDate1);
+        DateTimeType dateTimeType2 = getDateTimeType(expectedStartDate);
+
+        DelimitedPeriod delimitedPeriod1 = new DelimitedPeriod();
+        delimitedPeriod1.setStartDateTime(dateTimeType1);
+
+        DelimitedPeriod delimitedPeriod2 = new DelimitedPeriod();
+        delimitedPeriod2.setStartDateTime(dateTimeType2);
+
+        FishingActivity relatedFishingActivity1 = new FishingActivity();
+        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod1));
+
+        FishingActivity relatedFishingActivity2 = new FishingActivity();
+        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod2));
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setRelatedFishingActivities(Lists.newArrayList(relatedFishingActivity1, relatedFishingActivity2));
+
+        // When
+        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedStartDate, calculatedStartTime);
+    }
+
+    @Test
+    public void getCalculatedStartTime_occurrenceAndSpecifiedDelimitedPeriodOnRelatedActivity_expectFirst() throws Exception {
+        // Given
+        Instant occurrenceStartDate = Instant.parse("2019-01-01T15:44:32.012Z");
+        Instant startDate1 = Instant.parse("2019-01-01T15:45:32.012Z");
+        Instant expectedStartDate = Instant.parse("2019-01-01T15:43:32.012Z");
+
+        DateTimeType dateTimeType1 = getDateTimeType(startDate1);
+        DateTimeType dateTimeType2 = getDateTimeType(expectedStartDate);
+        DateTimeType occurrenceDateTimeType = getDateTimeType(occurrenceStartDate);
+
+        DelimitedPeriod delimitedPeriod1 = new DelimitedPeriod();
+        delimitedPeriod1.setStartDateTime(dateTimeType1);
+
+        DelimitedPeriod delimitedPeriod2 = new DelimitedPeriod();
+        delimitedPeriod2.setStartDateTime(dateTimeType2);
+
+        FishingActivity relatedFishingActivity1 = new FishingActivity();
+        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod1));
+
+        FishingActivity relatedFishingActivity2 = new FishingActivity();
+        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod2));
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setOccurrenceDateTime(occurrenceDateTimeType);
+        fishingActivity.setRelatedFishingActivities(Lists.newArrayList(relatedFishingActivity1, relatedFishingActivity2));
+
+        // When
+        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedStartDate, calculatedStartTime);
+    }
+
+    @Test
+    public void getCalculatedStartTime_occurrence() throws Exception {
+        // Given
+        Instant expectedStartTime = Instant.parse("2019-01-01T15:45:32.012Z");
+        DateTimeType dateTimeType = getDateTimeType(expectedStartTime);
+
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setStartDateTime(dateTimeType);
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setOccurrenceDateTime(dateTimeType);
+
+        // When
+        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedStartTime, calculatedStartTime);
+    }
+
+    @Test
+    public void getCalculatedEndTime_specifiedDelimitedPeriod() throws Exception {
+        // Given
+        Instant expectedEndDate = Instant.parse("2019-01-01T15:45:32.012Z");
+        DateTimeType dateTimeType = getDateTimeType(expectedEndDate);
+
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setEndDateTime(dateTimeType);
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+
+        // When
+        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedEndDate, calculatedEndTime);
+    }
+
+    @Test
+    public void getCalculatedEndTime_specifiedDelimitedPeriodWithOnlyDuration() throws Exception {
+        // Given
+        Instant expectedEndDate = Instant.parse("2019-01-01T16:27:32.012Z");
+        Instant occurrence = Instant.parse("2019-01-01T15:45:32.012Z");
+        DateTimeType dateTimeType = getDateTimeType(occurrence);
+
+        MeasureType measureType = new MeasureType();
+        measureType.setValue(BigDecimal.valueOf(42));
+
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setDurationMeasure(measureType);
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setOccurrenceDateTime(dateTimeType);
+        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+
+        // When
+        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedEndDate, calculatedEndTime);
+    }
+
+    @Test
+    public void getCalculatedEndTime_specifiedDelimitedPeriodOnRelatedActivity() throws Exception {
+        // Given
+        Instant endDate1 = Instant.parse("2019-01-01T15:43:32.012Z");
+        Instant expectedEndDate = Instant.parse("2019-01-01T15:45:32.012Z");
+        DateTimeType dateTimeType1 = getDateTimeType(endDate1);
+        DateTimeType dateTimeType2 = getDateTimeType(expectedEndDate);
+
+        DelimitedPeriod delimitedPeriod1 = new DelimitedPeriod();
+        delimitedPeriod1.setEndDateTime(dateTimeType1);
+
+        DelimitedPeriod delimitedPeriod2 = new DelimitedPeriod();
+        delimitedPeriod2.setEndDateTime(dateTimeType2);
+
+        FishingActivity relatedFishingActivity1 = new FishingActivity();
+        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod1));
+
+        FishingActivity relatedFishingActivity2 = new FishingActivity();
+        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod2));
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setRelatedFishingActivities(Lists.newArrayList(relatedFishingActivity1, relatedFishingActivity2));
+
+        // When
+        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedEndDate, calculatedEndTime);
+    }
+
+    @Test
+    public void getCalculatedEndTime_occurrence() throws Exception {
+        // Given
+        Instant expectedEndDate = Instant.parse("2019-01-01T15:45:32.012Z");
+        DateTimeType dateTimeType = getDateTimeType(expectedEndDate);
+
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setEndDateTime(dateTimeType);
+
+        FishingActivity fishingActivity = new FishingActivity();
+        fishingActivity.setOccurrenceDateTime(dateTimeType);
+
+        // When
+        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+
+        // Then
+        assertEquals(expectedEndDate, calculatedEndTime);
+    }
+
+    private DateTimeType getDateTimeType(Instant instant) throws DatatypeConfigurationException {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(Date.from(instant));
+        XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+
+        DateTimeType dateTimeType = new DateTimeType();
+        dateTimeType.setDateTime(xmlGregorianCalendar);
+
+        return dateTimeType;
     }
 }

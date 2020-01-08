@@ -10,8 +10,8 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxReportIdentifierDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
@@ -41,12 +41,12 @@ public class ActivityMatchingIdsServiceTest {
     private ActivityMatchingIdsService matchingBean;
 
     @Mock
-    private FluxReportIdentifierDao fluxRepIdentDao;
+    private FaReportDocumentDao faReportDocumentDao;
 
     @Test
     public void getMatchingIdsResponse() throws Exception {
         // Given
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
@@ -60,7 +60,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIds_simpleListOfIds() {
         // Given
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityIDType> activityIDTypes = new ArrayList<>();
         activityIDTypes.add(new ActivityIDType("46DCC44C-0AE2-434C-BC14-B85D86B29512iiiii", "scheme-idvv"));
@@ -76,7 +76,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIdsResponseNullPointer() {
         // Given
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
+        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
 
         // When
         List<ActivityUniquinessList> matchingIds = matchingBean.getMatchingIds(null);
@@ -88,7 +88,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIdsResponseNullMap() throws Exception {
         // Given
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
+        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
 
         List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
@@ -102,7 +102,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIdsResponseMappingEmptyList() throws Exception {
         // Given
-        when(fluxRepIdentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
@@ -138,13 +138,13 @@ public class ActivityMatchingIdsServiceTest {
                 "</ns2:GetNonUniqueIdsRequest>";
     }
 
-    private List<FluxReportIdentifierEntity> getMockedIdentifiers() {
-        FluxReportIdentifierEntity ident1 = new FluxReportIdentifierEntity();
-        FluxReportIdentifierEntity ident2 = new FluxReportIdentifierEntity();
-        ident1.setFluxReportIdentifierId("46DCC44C-0AE2-434C-BC14-B85D86B29512iiiii");
-        ident1.setFluxReportIdentifierSchemeId("scheme-idvv");
-        ident1.setFluxReportIdentifierId("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb");
-        ident1.setFluxReportIdentifierSchemeId("scheme-idqq");
-        return Arrays.asList(ident1, ident2);
+    private List<FaReportDocumentEntity> getMockedIdentifiers() {
+        FaReportDocumentEntity faReportDocumentEntity1 = new FaReportDocumentEntity();
+        FaReportDocumentEntity faReportDocumentEntity2 = new FaReportDocumentEntity();
+        faReportDocumentEntity1.setFluxReportDocument_Id("46DCC44C-0AE2-434C-BC14-B85D86B29512iiiii");
+        faReportDocumentEntity1.setFluxReportDocument_IdSchemeId("scheme-idvv");
+        faReportDocumentEntity2.setFluxReportDocument_Id("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb");
+        faReportDocumentEntity2.setFluxReportDocument_IdSchemeId("scheme-idqq");
+        return Arrays.asList(faReportDocumentEntity1, faReportDocumentEntity2);
     }
 }

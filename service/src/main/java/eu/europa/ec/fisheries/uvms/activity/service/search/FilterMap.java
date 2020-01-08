@@ -24,10 +24,10 @@ import java.util.Set;
 
 
 /**
- * Created by sanera on 12/07/2016.
  * <p>
  * Filter Fishing Activity Reports functionality require Query to be generated Dynamically based on Filters provided.
  * This class provides mapping information to Query Builder.
+ * </p>
  */
 public class FilterMap {
 
@@ -55,9 +55,8 @@ public class FilterMap {
     public static final String VESSEL_TRANSPORT_TABLE_ALIAS = "fa.vesselTransportMeans vt";
     public static final String CONTACT_PARTY_TABLE_ALIAS = "vt.contactParty cparty";
     private static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
-    public static final String FLUX_REPORT_DOC_TABLE_ALIAS = " fa.fluxReportDocument flux ";
     public static final String FA_REPORT_DOC_TABLE_ALIAS = " fa ";
-    public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
+    public static final String FLUX_PARTY_TABLE_ALIAS = " fa.fluxReportDocument_FluxParty fp  ";
     private static final String GEAR_TYPE_TABLE_ALIAS = " a.fishingGears fg ";
     private static final String FISHING_TRIP_TABLE_ALIAS = " a.fishingTrip fishingTrip ";
     public static final String AAP_PROCESS_TABLE_ALIAS = " faCatch.aapProcesses aprocess ";
@@ -73,7 +72,6 @@ public class FilterMap {
     private static final String FA_CATCH_GFCM_GSA = "faCatch.gfcmGsa";
     private static final String FA_CATCH_GFCM_STAT_RECTANGLE = "faCatch.gfcmStatRectangle";
     public static final String FLUX_REP_MESSAGE_FROM_FA_REP = "fa.fluxFaReportMessage fluxMsg ";
-    public static final String FLUX_REP_DOC_FROM_MESSAGE = "fluxMsg.fluxReportDocument fluxRepDoc ";
     public static final String FLUX_PARTY_FOR_MESSAGE = "fluxRepDoc.fluxParty fpFrom ";
     // For Sort criteria, which expression should be used
     private static EnumMap<SearchFilter, String> filterSortMappings = new EnumMap<>(SearchFilter.class);
@@ -232,7 +230,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.VESSEL_NAME, new FilterDetails("fa.vesselTransportMeans vt", "vt.name IN (:" + VESSEL_IDENTITY_NAME + ")"));
         filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, new FilterDetails("vt.vesselIdentifiers vi", "vi.vesselIdentifierId IN (:" + VESSEL_IDENTIFIRE + ")"));
         filterMappings.put(SearchFilter.VESSEL_GUIDS, new FilterDetails("fa.vesselTransportMeans vtMeans", "vtMeans.guid IN (:" + VTM_GUIDS + ")"));
-        filterMappings.put(SearchFilter.PURPOSE, new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS, "flux.purposeCode IN (:" + PURPOSE_CODE + ")"));
+        filterMappings.put(SearchFilter.PURPOSE, new FilterDetails(" ", "fa.fluxReportDocument_PurposeCode IN (:" + PURPOSE_CODE + ")"));
         filterMappings.put(SearchFilter.FA_STATUS, new FilterDetails(FA_REPORT_DOC_TABLE_ALIAS, "fa.status IN (:" + STATUS_LIST + ")"));
         filterMappings.put(SearchFilter.REPORT_TYPE, new FilterDetails(StringUtils.SPACE, "fa.typeCode IN (:" + REPORT_TYPE_CODE + ")"));
         filterMappings.put(SearchFilter.ACTIVITY_TYPE, new FilterDetails(StringUtils.SPACE, "a.typeCode IN (:" + ACTIVITY_TYPE_CODE + ")"));
@@ -248,7 +246,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FA_REPORT_ID, new FilterDetails(StringUtils.SPACE, "fa.id =:" + FAREPORT_ID));
         filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(StringUtils.SPACE, "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
         filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripId =:" + TRIP_ID + StringUtils.SPACE));
-        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     /**
@@ -273,8 +271,8 @@ public class FilterMap {
 
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + " LEFT JOIN  " + AAP_PROCESS_TABLE_ALIAS + " LEFT JOIN  " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));
 
-        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripId =:" + TRIP_ID + StringUtils.SPACE));
-        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
     public void populateFilterMAppingsWithChangeForFACatchReport() {
@@ -285,7 +283,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.MASTER, new FilterDetails(" cparty.contactPerson cPerson", "(UPPER(cPerson.title) IN (:" + CONTACT_PERSON_NAME + ") " + " or " +
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
                 "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
-        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey..tripId =:" + TRIP_ID + StringUtils.SPACE));
+        filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripId =:" + TRIP_ID + StringUtils.SPACE));
 
     }
 

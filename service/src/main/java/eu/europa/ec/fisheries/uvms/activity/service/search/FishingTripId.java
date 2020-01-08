@@ -15,9 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.search;
 
 import lombok.Data;
 
-/**
- * Created by sanera on 01/12/2016.
- */
 @Data
 public class FishingTripId {
 

@@ -13,11 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.search.builder;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterDetails;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -120,13 +120,11 @@ public abstract class SearchQueryBuilder {
                 appendJoinString(sql, joinString);
                 break;
             case OWNER:
-                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS); // Add missing join for required table
                 appendJoinFetchString(sql, joinString);
                 break;
             case FROM:
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REP_MESSAGE_FROM_FA_REP);
-                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REP_DOC_FROM_MESSAGE);
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_FOR_MESSAGE);
                 appendJoinFetchString(sql, joinString);
                 break;
@@ -195,42 +193,14 @@ public abstract class SearchQueryBuilder {
             return sql;
         }
         // Make sure that the field which we want to sort, table Join is present for it.
-        switch (getFiledCase(sql, field)) {
-            case 1:
-                appendLeftJoinFetch(sql, filterMap.DELIMITED_PERIOD_TABLE_ALIAS);
-                break;
-            case 2:
-                appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-                break;
-            case 3:
-                checkAndAppendIfNeededFluxReportDocTable(sql);
-                break;
-            default:
-                break;
+        if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
+            appendLeftJoinFetch(sql);
         }
         return sql;
     }
 
-    private void checkAndAppendIfNeededFluxReportDocTable(StringBuilder sql) {
-        if (sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
-            appendLeftJoinFetch(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
-        }
-        if (sql.indexOf(FilterMap.FLUX_PARTY_TABLE_ALIAS) == -1) {
-            appendLeftJoinFetch(sql, FilterMap.FLUX_PARTY_TABLE_ALIAS);
-        }
-    }
-
-    private int getFiledCase(StringBuilder sql, SearchFilter field) {
-        if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(filterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
-            return 1;
-        } else if (SearchFilter.PURPOSE.equals(field) && sql.indexOf(FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS) == -1) {
-            return 2;
-        }
-        return 0;
-    }
-
-    protected void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
-        sql.append(LEFT).append(JOIN_FETCH).append(delimitedPeriodTableAlias);
+    protected void appendLeftJoinFetch(StringBuilder sql) {
+        sql.append(LEFT).append(JOIN_FETCH).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
     }
 
     void createWherePartForQueryForFilters(StringBuilder sql, FishingActivityQuery query) {

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.19/db-changelog-UNIONVMS.xml">
+
+    <!-- REMOVE EMBEDDED CODETYPE - BEGIN... -->
+
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-1">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_languageid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-2">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_listagencyid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-3">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_listagencyname"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-4">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_listid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-5">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_listname"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-6">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_listschemeuri"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-7">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_listuri"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-8">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_listversionid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-9">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_name"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-10">
+        <dropColumn tableName="activity_flux_report_document" columnName="codetype_value"/>
+    </changeSet>
+
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-11">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_languageid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-12">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_listagencyid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-13">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_listagencyname"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-14">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_listid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-15">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_listname"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-16">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_listschemeuri"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-17">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_listuri"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-18">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_listversionid"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-19">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_name"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-20">
+        <dropColumn tableName="activity_flux_location" columnName="codetype_value"/>
+    </changeSet>
+
+    <changeSet author="pesjob" id="ERS-434-remove-embedded-codetype-21">
+        <addColumn tableName="activity_flux_location">
+            <column name="rfmo_code_list_id" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- REMOVE EMBEDDED CODETYPE - ...END -->
+
+    <changeSet author="pesjob" id="ERS-434-rename-flux-location-type">
+        <renameColumn newColumnName="flux_location_catch_type_mapper_info"
+                      oldColumnName="flux_location_type"
+                      tableName="activity_flux_location"/>
+    </changeSet>
+</databaseChangeLog>

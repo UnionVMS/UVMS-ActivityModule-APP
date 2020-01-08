@@ -10,6 +10,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
@@ -27,7 +28,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteris
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
@@ -70,12 +72,11 @@ import static java.util.Collections.singletonList;
 public class ActivityEntityToModelMapper extends BaseMapper {
 
     public static final ActivityEntityToModelMapper INSTANCE = new ActivityEntityToModelMapper();
-  
-    private ActivityEntityToModelMapper(){
 
+    private ActivityEntityToModelMapper() {
     }
 
-    public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity){
+    public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity) {
         FLUXFAReportMessage target = new FLUXFAReportMessage();
 
         FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
@@ -93,7 +94,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         DateTimeType dateTimeType = new DateTimeType();
 
         try {
-            XMLGregorianCalendar currentDate = DateUtils.getCurrentDate();
+            XMLGregorianCalendar currentDate = XMLDateUtils.getCurrentDate();
             dateTimeType.setDateTime(currentDate);
         } catch (DatatypeConfigurationException e) {
             log.warn(e.getMessage(), e);
@@ -112,7 +113,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         fluxReportDocument.setOwnerFLUXParty(party);
 
         target.setFLUXReportDocument(fluxReportDocument);
-        if (CollectionUtils.isNotEmpty(faReportMessageEntity)){
+        if (CollectionUtils.isNotEmpty(faReportMessageEntity)) {
             mapFAReportDocuments(target, faReportMessageEntity);
         }
         return target;
@@ -120,7 +121,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
     private void mapFAReportDocuments(FLUXFAReportMessage target, List<FaReportDocumentEntity> faReportDocuments) {
         List<FAReportDocument> faReportDocumentList = new ArrayList<>();
-        for (FaReportDocumentEntity faReportDocumentEntity : faReportDocuments){
+        for (FaReportDocumentEntity faReportDocumentEntity : faReportDocuments) {
             FAReportDocument faReportDocument = new FAReportDocument();
             mapFAReportDocument(faReportDocument, faReportDocumentEntity);
             faReportDocumentList.add(faReportDocument);
@@ -132,7 +133,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         mapAcceptanceDateTime(target, source.getAcceptedDatetime());
         mapPurposeCode(target, source.getTypeCode(), source.getTypeCodeListId());
         mapFMCMarkerCode(target, source.getFmcMarker(), source.getFmcMarkerListId());
-        target.setRelatedFLUXReportDocument(FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocument(source.getFluxReportDocument()));
+
+        FLUXReportDocument fluxReportDocument = mapToFluxReportDocument(source);
+        target.setRelatedFLUXReportDocument(fluxReportDocument);
+
         mapRelatedReportIDs(target, source.getFaReportIdentifiers());
         mapSpecifiedVesselTransportMeans(target, source.getVesselTransportMeans());
         mapFishingActivities(target, source.getFishingActivities());
@@ -173,20 +177,13 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
         Set<FluxCharacteristicEntity> fluxCharacteristics = source.getFluxCharacteristics();
         if (CollectionUtils.isNotEmpty(fluxCharacteristics)) {
-            List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
-            for (FluxCharacteristicEntity fluxCharacteristicEntity : fluxCharacteristics) {
-                FLUXCharacteristic fLUXCharacteristic = FluxCharacteristicsMapper.INSTANCE.mapToFLUXCharacteristic(fluxCharacteristicEntity);
-                FluxLocationEntity fluxLocation = fluxCharacteristicEntity.getFluxLocation();
-                FLUXLocation location = FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation);
-                if (fluxLocation != null) {
-                    fLUXCharacteristic.setSpecifiedFLUXLocations(Collections.singletonList(location));
-                }
-                fluxCharacteristicList.add(fLUXCharacteristic);
-            }
-            target.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
+            mapFluxCharacteristics(target, fluxCharacteristics);
         }
 
-        target.setSpecifiedDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(source.getDelimitedPeriods()));
+        Instant calculatedStartTime = source.getCalculatedStartTime();
+        Instant calculatedEndTime = source.getCalculatedEndTime();
+        DelimitedPeriod delimitedPeriod = DelimitedPeriodMapper.convert(calculatedStartTime, calculatedEndTime);
+        target.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
 
         FishingTripEntity fishingTripEntity = source.getFishingTrip();
         if (fishingTripEntity != null) {
@@ -198,32 +195,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         Set<FaCatchEntity> faCatchs = source.getFaCatchs();
 
         if (CollectionUtils.isNotEmpty(faCatchs)) {
-            List<FACatch> faCatchList = new ArrayList<>();
-            for (FaCatchEntity faCatchEntity : faCatchs) {
-                FACatch faCatch = FaCatchMapper.INSTANCE.mapToFaCatch(faCatchEntity);
-                Set<FluxLocationEntity> fluxLocations = faCatchEntity.getFluxLocations();
-                List<FLUXLocation> specified = new ArrayList<>();
-                List<FLUXLocation> destination = new ArrayList<>();
-                if (CollectionUtils.isNotEmpty(fluxLocations)) {
-                    for (FluxLocationEntity fluxLocation : Utils.safeIterable(fluxLocations)) {
-                        if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.getType().equals(fluxLocation.getFluxLocationType())) {
-                            specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
-                        }
-                        if (FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.getType().equals(fluxLocation.getFluxLocationType())) {
-                            destination.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
-                        }
-                    }
-                    faCatch.setSpecifiedFLUXLocations(specified);
-                    faCatch.setDestinationFLUXLocations(destination);
-                }
-
-                FishingTripEntity catchFishingTrip = faCatchEntity.getFishingTrip();
-                if (catchFishingTrip != null) {
-                    faCatch.getRelatedFishingTrips().add(catchFishingTrip.convert());
-                }
-                faCatchList.add(faCatch);
-            }
-            target.setSpecifiedFACatches(faCatchList);
+            mapCatches(target, faCatchs);
         }
 
         mapRelatedVesselTransportMeans(target, source.getVesselTransportMeans());
@@ -233,6 +205,53 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         source.getFlagState(); // TODO MAP
 
         return target;
+    }
+
+    private void mapCatches(FishingActivity target, Set<FaCatchEntity> faCatchs) {
+        List<FACatch> faCatchList = new ArrayList<>();
+        for (FaCatchEntity faCatchEntity : faCatchs) {
+            FACatch faCatch = FaCatchMapper.INSTANCE.mapToFaCatch(faCatchEntity);
+            Set<FluxLocationEntity> fluxLocations = faCatchEntity.getFluxLocations();
+            if (CollectionUtils.isNotEmpty(fluxLocations)) {
+                mapFluxLocations(faCatch, fluxLocations);
+            }
+
+            FishingTripEntity catchFishingTrip = faCatchEntity.getFishingTrip();
+            if (catchFishingTrip != null) {
+                faCatch.getRelatedFishingTrips().add(catchFishingTrip.convert());
+            }
+            faCatchList.add(faCatch);
+        }
+        target.setSpecifiedFACatches(faCatchList);
+    }
+
+    private void mapFluxLocations(FACatch faCatch, Set<FluxLocationEntity> fluxLocations) {
+        List<FLUXLocation> specified = new ArrayList<>();
+        List<FLUXLocation> destination = new ArrayList<>();
+        for (FluxLocationEntity fluxLocation : Utils.safeIterable(fluxLocations)) {
+            if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
+                specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+            }
+            if (FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
+                destination.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+            }
+        }
+        faCatch.setSpecifiedFLUXLocations(specified);
+        faCatch.setDestinationFLUXLocations(destination);
+    }
+
+    private void mapFluxCharacteristics(FishingActivity target, Set<FluxCharacteristicEntity> fluxCharacteristics) {
+        List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
+        for (FluxCharacteristicEntity fluxCharacteristicEntity : fluxCharacteristics) {
+            FLUXCharacteristic fLUXCharacteristic = FluxCharacteristicsMapper.INSTANCE.mapToFLUXCharacteristic(fluxCharacteristicEntity);
+            FluxLocationEntity fluxLocation = fluxCharacteristicEntity.getFluxLocation();
+            FLUXLocation location = FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation);
+            if (fluxLocation != null) {
+                fLUXCharacteristic.setSpecifiedFLUXLocations(Collections.singletonList(location));
+            }
+            fluxCharacteristicList.add(fLUXCharacteristic);
+        }
+        target.setSpecifiedFLUXCharacteristics(fluxCharacteristicList);
     }
 
     private void mapDestinationVesselStorageCharacteristic(FishingActivity target, VesselStorageCharacteristicsEntity source) {
@@ -254,7 +273,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapVesselStorageCharCodes(VesselStorageCharacteristic target, Set<VesselStorageCharCodeEntity> vesselStorageCharCode) {
-        if (CollectionUtils.isNotEmpty(vesselStorageCharCode) && target != null){
+        if (CollectionUtils.isNotEmpty(vesselStorageCharCode) && target != null) {
             List<CodeType> codeTypeList = new ArrayList<>();
             for (VesselStorageCharCodeEntity source : vesselStorageCharCode) {
                 CodeType codeType = new CodeType();
@@ -279,10 +298,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         if (ObjectUtils.allNotNull(target, source) && (StringUtils.isNotEmpty(source.getVesselActivityCode()) || StringUtils.isNotEmpty(source.getVesselActivityCodeListId()))) {
             CodeType codeType = new CodeType();
 
-            if (StringUtils.isNotEmpty(source.getVesselActivityCode())){
+            if (StringUtils.isNotEmpty(source.getVesselActivityCode())) {
                 codeType.setValue(source.getVesselActivityCode());
             }
-            if (StringUtils.isNotEmpty(source.getVesselActivityCodeListId())){
+            if (StringUtils.isNotEmpty(source.getVesselActivityCodeListId())) {
                 codeType.setListID(source.getVesselActivityCodeListId());
             }
             target.setVesselRelatedActivityCode(codeType);
@@ -293,13 +312,13 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         if (ObjectUtils.allNotNull(target, source)) {
             MeasureType measureType = new MeasureType();
             Double fishingDurationMeasure = source.getFishingDurationMeasure();
-            if (fishingDurationMeasure != null){
+            if (fishingDurationMeasure != null) {
                 measureType.setValue(new BigDecimal(fishingDurationMeasure));
             }
-            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureCode())){
+            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureCode())) {
                 measureType.setUnitCode(source.getFishingDurationMeasureCode());
             }
-            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureUnitCodeListVersionID())){
+            if (StringUtils.isNotEmpty(source.getFishingDurationMeasureUnitCodeListVersionID())) {
                 measureType.setUnitCodeListVersionID(source.getFishingDurationMeasureUnitCodeListVersionID());
             }
             target.setFishingDurationMeasure(measureType);
@@ -310,10 +329,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         if (ObjectUtils.allNotNull(target, source) && (StringUtils.isNotEmpty(source.getSpeciesTargetCode()) || StringUtils.isNotEmpty(source.getSpeciesTargetCodeListId()))) {
             CodeType codeType = new CodeType();
 
-            if (StringUtils.isNotEmpty(source.getSpeciesTargetCode())){
+            if (StringUtils.isNotEmpty(source.getSpeciesTargetCode())) {
                 codeType.setValue(source.getSpeciesTargetCode());
             }
-            if (StringUtils.isNotEmpty(source.getSpeciesTargetCodeListId())){
+            if (StringUtils.isNotEmpty(source.getSpeciesTargetCodeListId())) {
                 codeType.setListID(source.getSpeciesTargetCodeListId());
             }
             target.setSpeciesTargetCode(codeType);
@@ -323,10 +342,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     private void mapFisheryTypeCode(FishingActivity target, FishingActivityEntity source) {
         if (ObjectUtils.allNotNull(target, source) && (StringUtils.isNotEmpty(source.getFisheryTypeCode()) || StringUtils.isNotEmpty(source.getFisheryTypeCodeListId()))) {
             CodeType codeType = new CodeType();
-            if (StringUtils.isNotEmpty(source.getFisheryTypeCode())){
+            if (StringUtils.isNotEmpty(source.getFisheryTypeCode())) {
                 codeType.setValue(source.getFisheryTypeCode());
             }
-            if (StringUtils.isNotEmpty(source.getFisheryTypeCodeListId())){
+            if (StringUtils.isNotEmpty(source.getFisheryTypeCodeListId())) {
                 codeType.setListID(source.getFisheryTypeCodeListId());
             }
             target.setFisheryTypeCode(codeType);
@@ -334,19 +353,19 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapOperationsQuantity(FishingActivity target, FishingActivityEntity source) {
-        if (ObjectUtils.allNotNull(target, target)){
+        if (ObjectUtils.allNotNull(target, target)) {
             QuantityType quantityType = new QuantityType();
-            if (source.getOperationsQuantity() != null){
+            if (source.getOperationsQuantity() != null) {
                 Double operationQuantity = source.getOperationsQuantity().getValue();
-                if (operationQuantity != null){
+                if (operationQuantity != null) {
                     quantityType.setValue(new BigDecimal(operationQuantity));
                 }
                 String unitCode = source.getOperationsQuantity().getUnitCode();
-                if (StringUtils.isNotEmpty(unitCode)){
+                if (StringUtils.isNotEmpty(unitCode)) {
                     quantityType.setUnitCode(unitCode);
                 }
                 String unitCodeListID = source.getOperationsQuantity().getUnitCodeListID();
-                if (StringUtils.isNotEmpty(unitCodeListID)){
+                if (StringUtils.isNotEmpty(unitCodeListID)) {
                     quantityType.setUnitCodeListID(unitCodeListID);
                 }
                 target.setOperationsQuantity(quantityType);
@@ -355,7 +374,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapReasonCode(FishingActivity target, FishingActivityEntity source) {
-        if (ObjectUtils.allNotNull(target, target)){
+        if (ObjectUtils.allNotNull(target, target)) {
             CodeType codeType = new CodeType();
             codeType.setValue(source.getReasonCode());
             codeType.setListID(source.getReasonCodeListId());
@@ -380,7 +399,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapRelatedVesselTransportMeans(FishingActivity target, Set<VesselTransportMeansEntity> entities) {
-        if (CollectionUtils.isNotEmpty(entities) && target != null){
+        if (CollectionUtils.isNotEmpty(entities) && target != null) {
             List<VesselTransportMeans> vesselTransportMeansList = new ArrayList<>();
             for (VesselTransportMeansEntity source : entities) {
                 VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
@@ -398,7 +417,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapSpecifiedVesselTransportMeans(FAReportDocument target, Set<VesselTransportMeansEntity> entities) {
-        if (CollectionUtils.isNotEmpty(entities) && target != null){
+        if (CollectionUtils.isNotEmpty(entities) && target != null) {
             VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
             VesselTransportMeansEntity source = entities.iterator().next();
             setRoleCode(vesselTransportMeans, source.getRoleCodeListId(), source.getRoleCode());
@@ -420,7 +439,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
             ContactPerson contactPerson = ContactPersonMapper.INSTANCE.mapToContactPerson(source.getContactPerson());
 
-            if (contactPerson != null){
+            if (contactPerson != null) {
                 contactParty.setSpecifiedContactPersons(Collections.singletonList(contactPerson)); // TODO @Greg mapstruct add non-iterable type
             }
             mapRoles(contactParty, source.getContactPartyRole());
@@ -443,11 +462,11 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapIDs(VesselTransportMeans vesselTransportMeans, Set<VesselIdentifierEntity> vesselIdentifiers) {
-        if (CollectionUtils.isNotEmpty(vesselIdentifiers)){
+        if (CollectionUtils.isNotEmpty(vesselIdentifiers)) {
             List<IDType> idTypeList = new ArrayList<>();
-            for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifiers){
+            for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifiers) {
                 IDType idType = new IDType();
-                idType.setValue( vesselIdentifierEntity.getVesselIdentifierId());
+                idType.setValue(vesselIdentifierEntity.getVesselIdentifierId());
                 idType.setSchemeID(vesselIdentifierEntity.getVesselIdentifierSchemeId());
                 idTypeList.add(idType);
             }
@@ -456,7 +475,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapRegistrationEvent(VesselTransportMeans target, RegistrationEventEntity source) {
-        if (ObjectUtils.allNotNull(target, source)){
+        if (ObjectUtils.allNotNull(target, source)) {
             RegistrationEvent registrationEvent = new RegistrationEvent();
             mapOccurrenceDateTime(registrationEvent, source.getOccurrenceDatetime());
             mapDescription(registrationEvent, source.getDescription(), source.getDescLanguageId());
@@ -468,10 +487,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     private void mapDescription(RegistrationEvent target, String description, String descLanguageId) {
         if (ObjectUtils.allNotNull(target) && StringUtils.isNotEmpty(description) || StringUtils.isNotEmpty(descLanguageId)) {
             TextType textType = new TextType();
-            if (StringUtils.isNotEmpty(description)){
+            if (StringUtils.isNotEmpty(description)) {
                 textType.setValue(description);
             }
-            if (StringUtils.isNotEmpty(descLanguageId)){
+            if (StringUtils.isNotEmpty(descLanguageId)) {
                 textType.setLanguageID(descLanguageId);
             }
             target.setDescriptions(Collections.singletonList(textType));
@@ -508,7 +527,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         }
     }
 
-    private void setDescriptions(RegistrationLocation target,  RegistrationLocationEntity source) {
+    private void setDescriptions(RegistrationLocation target, RegistrationLocationEntity source) {
         if (ObjectUtils.allNotNull(target, source)) {
             TextType textType = new TextType();
             textType.setValue(source.getDescription());
@@ -562,9 +581,9 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     }
 
     private void mapRelatedReportIDs(FAReportDocument target, Set<FaReportIdentifierEntity> faReportIdentifiers) {
-        if (CollectionUtils.isNotEmpty(faReportIdentifiers)){
+        if (CollectionUtils.isNotEmpty(faReportIdentifiers)) {
             List<IDType> idTypeList = new ArrayList<>();
-            for (FaReportIdentifierEntity source : faReportIdentifiers){
+            for (FaReportIdentifierEntity source : faReportIdentifiers) {
                 IDType idType = new IDType();
                 String faReportIdentifierId = source.getFaReportIdentifierId();
                 String faReportIdentifierSchemeId = source.getFaReportIdentifierSchemeId();
@@ -580,10 +599,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         if (ObjectUtils.allNotNull(target) && (StringUtils.isNotEmpty(fmcMarkerValue) || StringUtils.isNotEmpty(fmcMarkerListId))) {
             CodeType codeType = new CodeType();
 
-            if (StringUtils.isNotEmpty(fmcMarkerValue)){
+            if (StringUtils.isNotEmpty(fmcMarkerValue)) {
                 codeType.setValue(fmcMarkerValue);
             }
-            if (StringUtils.isNotEmpty(fmcMarkerListId)){
+            if (StringUtils.isNotEmpty(fmcMarkerListId)) {
                 codeType.setListID(fmcMarkerListId);
             }
             target.setFMCMarkerCode(codeType);

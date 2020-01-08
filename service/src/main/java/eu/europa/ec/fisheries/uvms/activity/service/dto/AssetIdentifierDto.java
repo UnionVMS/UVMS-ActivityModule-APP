@@ -15,10 +15,8 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.IdentifierDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.parent.FishingActivityView;
 import lombok.EqualsAndHashCode;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
@@ -31,7 +29,6 @@ public class AssetIdentifierDto extends IdentifierDto {
     private Boolean fromAssets = false;
 
     @JsonProperty("schemeId")
-    @JsonView(FishingActivityView.CommonView.class)
     private VesselIdentifierSchemeIdEnum identifierSchemeId;
 
     public AssetIdentifierDto() {
