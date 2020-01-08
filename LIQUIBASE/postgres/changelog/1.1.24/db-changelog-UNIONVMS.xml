@@ -30,9 +30,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="robkra" id="ERS-434-drop-foreign-key-constraint-before-changing-column-data-type">
+        <dropForeignKeyConstraint baseTableName="activity_fa_report_document"
+                                  constraintName="flux_report_document_frd_fk"/>
+    </changeSet>
+
     <changeSet author="pesjob" id="ERS-434-merge-flux-report-document-into-fa-report-document_1">
         <modifyDataType tableName="activity_fa_report_document" columnName="flux_report_document_id" newDataType="VARCHAR(255)"/>
     </changeSet>
+
     <changeSet author="pesjob" id="ERS-434-merge-flux-report-document-into-fa-report-document_2">
         <addColumn tableName="activity_fa_report_document">
             <column name="flux_report_document_id_scheme_id" type="VARCHAR(255)"/>
@@ -56,6 +62,12 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet author="robkra" id="ERS-434-drop-foreign-key-constraint-before-dropping-table">
+        <dropForeignKeyConstraint baseTableName="activity_flux_report_identifier"
+                                  constraintName="activity_activity_flux_report_identifier_fk"/>
+    </changeSet>
+
     <changeSet author="pesjob" id="ERS-434-merge-flux-report-document-into-fa-report-document_3">
         <dropTable tableName="activity_flux_report_document"/>
     </changeSet>
