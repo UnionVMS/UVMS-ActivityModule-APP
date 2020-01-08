@@ -62,7 +62,7 @@ public class FishingActivityResource extends UnionVMSResource {
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/commChannel")
-    public Response getCommunicationChannels() throws ServiceException {
+    public Response getCommunicationChannels() {
         log.debug("getCommunicationChannels");
         return createSuccessResponse(FaReportSourceEnum.values());
     }
@@ -128,14 +128,9 @@ public class FishingActivityResource extends UnionVMSResource {
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getPreviousFishingActivity(@Context HttpServletRequest request,
                                                @Context HttpServletResponse response,
-                                               @PathParam("activityId") String activityId) {
-        int converstedActivityId = 0;
-        log.debug("Received ActivityId from frontEnd as: " + activityId);
-        if (activityId != null) {
-
-            converstedActivityId = Integer.parseInt(activityId);
-        }
-        int previousFishingActivity = activityService.getPreviousFishingActivity(converstedActivityId);
+                                               @PathParam("activityId") int activityId) {
+        log.debug("Received Activity ID {}", activityId);
+        int previousFishingActivity = activityService.getPreviousFishingActivity(activityId);
         return createSuccessResponse(previousFishingActivity);
     }
 
@@ -146,14 +141,9 @@ public class FishingActivityResource extends UnionVMSResource {
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
     public Response getNextFishingActivity(@Context HttpServletRequest request,
                                            @Context HttpServletResponse response,
-                                           @PathParam("activityId") String activityId) {
-        int converstedActivityId = 0;
-        log.debug("Received ActivityId from frontEnd as: " + activityId);
-        if (activityId != null) {
-
-            converstedActivityId = Integer.parseInt(activityId);
-        }
-        int nextFishingActivity = activityService.getNextFishingActivity(converstedActivityId);
+                                           @PathParam("activityId") int activityId) {
+        log.debug("Received Activity ID {}", activityId);
+        int nextFishingActivity = activityService.getNextFishingActivity(activityId);
         return createSuccessResponse(nextFishingActivity);
     }
 }

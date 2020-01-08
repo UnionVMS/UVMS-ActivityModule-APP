@@ -12,9 +12,6 @@
  */
 package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 
-/**
- * Created by sanera on 21/03/2017.
- */
 public enum FishingActivityTypeEnum {
     DEPARTURE,
     ARRIVAL,

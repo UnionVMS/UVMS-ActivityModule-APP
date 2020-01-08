@@ -25,9 +25,6 @@ import java.util.Map;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-/**
- * Created by padhyad on 8/5/2016.
- */
 @JsonInclude(Include.NON_EMPTY)
 public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportCorrectionDTO> {
 

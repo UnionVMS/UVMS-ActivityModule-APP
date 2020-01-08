@@ -48,5 +48,4 @@ public class ActivityConfigRegistration implements ConfigHelper {
     public EntityManager getEntityManager() {
         return em;
     }
-
 }

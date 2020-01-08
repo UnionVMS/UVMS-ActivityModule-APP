@@ -36,10 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * Created by sanera on 30/01/2017.
- */
 @Mapper
 @Slf4j
 public abstract class FACatchSummaryMapper extends BaseMapper {

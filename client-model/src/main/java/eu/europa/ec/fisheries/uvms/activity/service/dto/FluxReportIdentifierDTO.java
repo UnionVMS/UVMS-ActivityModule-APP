@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-/**
- * Created by sanera on 20/09/2016.
- */
 public class FluxReportIdentifierDTO {
 
     private String fluxReportId;

@@ -99,9 +99,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
@@ -253,7 +250,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             }
         }
     }
-
 
     private void checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(FaReportDocumentEntity faReportDocumentEntity, FaReportStatusType faReportStatusEnum,
                                                                                     int idOfCfPotentiallyCancellingOrDeletingReport) {

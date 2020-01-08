@@ -74,9 +74,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) {
         FaReportDocumentEntity faReport = faReportDocumentDao.findFaReportByIdAndScheme(refReportId, refSchemeId);

@@ -29,9 +29,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 
-/**
- * Created by padhyad on 12/9/2016.
- */
 @Stateless
 @LocalBean
 @Slf4j

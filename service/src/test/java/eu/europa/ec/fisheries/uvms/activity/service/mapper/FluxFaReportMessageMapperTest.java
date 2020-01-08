@@ -27,9 +27,6 @@ import java.time.Instant;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by kovian on 26/01/2017.
- */
 public class FluxFaReportMessageMapperTest {
 
     @Test

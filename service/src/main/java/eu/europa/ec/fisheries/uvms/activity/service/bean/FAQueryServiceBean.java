@@ -52,13 +52,11 @@ public class FAQueryServiceBean extends BaseActivityBean implements FaQueryServi
                 } else if (subCriteria == SubCriteriaType.START_DATE) {
                     startDate = Instant.parse(value);
                 }
-
             }
 
             List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(null, "N", startDate, endDate);
             return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
         }
-
         return null;
     }
 }

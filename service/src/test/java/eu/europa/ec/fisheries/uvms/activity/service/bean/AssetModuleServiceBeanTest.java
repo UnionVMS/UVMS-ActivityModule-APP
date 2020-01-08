@@ -1,14 +1,12 @@
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -25,20 +23,10 @@ import static org.mockito.Mockito.when;
 public class AssetModuleServiceBeanTest {
 
     @Mock
-    private AssetProducerBean assetProducerBean;
-
-    @Mock
-    private ActivityConsumerBean activityConsumerBean;
-
-    @Mock
     private AssetClient assetClient;
 
+    @InjectMocks
     private AssetModuleServiceBean assetModuleServiceBean;
-
-    @Before
-    public void setUp() {
-        assetModuleServiceBean = new AssetModuleServiceBean(assetProducerBean, activityConsumerBean, assetClient);
-    }
 
     @Test
     public void getAssetGuids_withCFR() {

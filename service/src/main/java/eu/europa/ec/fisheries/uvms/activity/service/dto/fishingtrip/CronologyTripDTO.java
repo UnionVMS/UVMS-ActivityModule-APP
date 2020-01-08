@@ -18,9 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-/**
- * Created by padhyad on 9/22/2016.
- */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CronologyTripDTO {
 

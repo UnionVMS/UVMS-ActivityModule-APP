@@ -26,13 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * /**
- * Created by sanera on 06/03/2017.
  * These classes help creating table structure for FACatch summary reports.
  * Every class is handling specific table structure formatting requirements .
  * If new type of table structure is required. Just extend FACatchSummaryHelper and modify methods suitable to your needs
- *
- *
  */
 @Slf4j
 public class FACatchSummaryReportHelper extends FACatchSummaryHelper {

@@ -3,9 +3,6 @@ package eu.europa.ec.fisheries.uvms.activity.service;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by patilva on 06/04/2017.
- */
 public interface MdrModuleService {
 
     /**

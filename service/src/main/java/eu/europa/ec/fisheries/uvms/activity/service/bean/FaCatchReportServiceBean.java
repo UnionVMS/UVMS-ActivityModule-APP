@@ -158,7 +158,4 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
 
         return faCatchSummaryReportResponse;
     }
-
-
-
 }
